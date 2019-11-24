@@ -13,7 +13,9 @@ class BroCastAPI {
         fun getTest(): Call<ResponseBody>
 
         @GET("/api/v1.0/register/{username}/{password}")
-        fun registerUser(@Path("username") username: String, @Path("password") password: String): Call<ResponseBody>
+        fun registerUser(
+            @Path("username") username: String,
+            @Path("password") password: String): Call<ResponseBody>
     }
 
     companion object {

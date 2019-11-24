@@ -1,5 +1,6 @@
 package com.bro.brocast
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -42,36 +43,48 @@ class RegisterActivity : AppCompatActivity() {
                 val username = inputFieldUserName.text.toString()
                 val password = inputFieldPassword.text.toString()
                 val passwordEncrypt = encryption!!.encryptOrNull(password)
-                println("user: " + username)
-                println("passwordEncrypt: " + passwordEncrypt)
-
-                println("A user wants to register!")
-                BroCastAPI
-                    .service
-                    .registerUser(username, passwordEncrypt)
-                    .enqueue(object : Callback<ResponseBody> {
-                        override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                            println("An exception occured with the GET call:: " + t.message)
-                        }
-                        override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                            if (response.isSuccessful) {
-                                val msg = response.body()?.string()
-                                println("The GET message returned from the server:: " + msg)
-                                Toast.makeText(applicationContext, msg, Toast.LENGTH_SHORT).show()
-                                if (msg != null) {
-                                    val parser: Parser = Parser.default()
-                                    val stringBuilder: StringBuilder = StringBuilder(msg)
-                                    val json: JsonObject = parser.parse(stringBuilder) as JsonObject
-                                    val decrypted = encryption!!.decryptOrNull(json.get("password").toString())
-                                    println("The GET message returned from the server:: " + msg)
-                                    Toast.makeText(applicationContext,
-                                        "user " + json.get("username") + " signed up with password: " + decrypted,
-                                        Toast.LENGTH_SHORT).show()
-                                }
-                            }
-                        }
-                    })
+                println("user $username wants to register!")
+                registerUser(username, passwordEncrypt)
             }
         }
+    }
+
+    private fun registerUser(username: String, password: String) {
+        BroCastAPI
+            .service
+            .registerUser(username, password)
+            .enqueue(object : Callback<ResponseBody> {
+                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                    println("An exception occured with the GET call:: " + t.message)
+                    startActivity(Intent(
+                        this@RegisterActivity, RegisterActivity::class.java))
+                }
+                override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                    if (response.isSuccessful) {
+                        val msg = response.body()?.string()
+                        println("The GET message returned from the server:: $msg")
+                        Toast.makeText(applicationContext, msg, Toast.LENGTH_SHORT).show()
+                        if (msg != null) {
+                            val parser: Parser = Parser.default()
+                            val stringBuilder: StringBuilder = StringBuilder(msg)
+                            val json: JsonObject = parser.parse(stringBuilder) as JsonObject
+                            // TODO @Sander: remove this at some point.
+                            val decrypted =
+                                encryption!!.decryptOrNull(json.get("password").toString())
+                            println("The GET message returned from the server:: $msg")
+                            Toast.makeText(
+                                applicationContext,
+                                "user " + json["username"] + " signed up with password: " + decrypted,
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                        startActivity(Intent(
+                            this@RegisterActivity, BroCastHome::class.java))
+                    } else {
+                        startActivity(Intent(
+                            this@RegisterActivity, RegisterActivity::class.java))
+                    }
+                }
+            })
     }
 }
