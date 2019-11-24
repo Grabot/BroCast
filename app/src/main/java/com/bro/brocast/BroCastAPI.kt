@@ -16,6 +16,11 @@ class BroCastAPI {
         fun registerUser(
             @Path("username") username: String,
             @Path("password") password: String): Call<ResponseBody>
+
+        @GET("/api/v1.0/login/{username}/{password}")
+        fun loginUser(
+            @Path("username") username: String,
+            @Path("password") password: String): Call<ResponseBody>
     }
 
     companion object {
