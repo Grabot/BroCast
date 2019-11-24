@@ -1,5 +1,6 @@
 package com.bro.brocast
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -73,6 +74,11 @@ class LoginActivity: AppCompatActivity() {
                         val successIntent = Intent(this@LoginActivity, BroCastHome::class.java).apply {
                             putExtra("username", username)
                         }
+                        val sharedPreferences = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
+                        val editor = sharedPreferences.edit()
+                        editor.putString("USERNAME", username)
+                        editor.putString("PASSWORD", password)
+                        editor.apply()
                         startActivity(successIntent)
                     } else {
                         startActivity(

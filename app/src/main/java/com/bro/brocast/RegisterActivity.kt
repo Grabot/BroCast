@@ -1,5 +1,6 @@
 package com.bro.brocast
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -69,6 +70,11 @@ class RegisterActivity : AppCompatActivity() {
                             val json: JsonObject = parser.parse(stringBuilder) as JsonObject
                             val result = json.get("result")
                             if (result!!.equals(true)) {
+                                val sharedPreferences = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
+                                val editor = sharedPreferences.edit()
+                                editor.putString("USERNAME", username)
+                                editor.putString("PASSWORD", password)
+                                editor.apply()
                                 successfulRegistration(username, json.get("message").toString())
                             } else {
                                 failedRegistration("That username is already, please select another one")
