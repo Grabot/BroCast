@@ -78,8 +78,10 @@ class RegisterActivity : AppCompatActivity() {
                                 Toast.LENGTH_SHORT
                             ).show()
                         }
-                        startActivity(Intent(
-                            this@RegisterActivity, BroCastHome::class.java))
+                        val successIntent = Intent(this@RegisterActivity, BroCastHome::class.java).apply {
+                            putExtra("username", username)
+                        }
+                        startActivity(successIntent)
                     } else {
                         startActivity(Intent(
                             this@RegisterActivity, RegisterActivity::class.java))
