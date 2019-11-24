@@ -55,9 +55,7 @@ class RegisterActivity : AppCompatActivity() {
             .registerUser(username, password)
             .enqueue(object : Callback<ResponseBody> {
                 override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                    println("An exception occured with the GET call:: " + t.message)
-                    startActivity(Intent(
-                        this@RegisterActivity, RegisterActivity::class.java))
+                    failedRegistration("Something went wrong, we apologize for the inconvenience")
                     TODO("the user will come back to the register screen, show which error occured")
                 }
                 override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
@@ -69,26 +67,43 @@ class RegisterActivity : AppCompatActivity() {
                             val parser: Parser = Parser.default()
                             val stringBuilder: StringBuilder = StringBuilder(msg)
                             val json: JsonObject = parser.parse(stringBuilder) as JsonObject
-                            // TODO @Sander: remove this at some point.
-                            val decrypted =
-                                encryption!!.decryptOrNull(json.get("password").toString())
-                            println("The GET message returned from the server:: $msg")
-                            Toast.makeText(
-                                applicationContext,
-                                "user " + json["username"] + " signed up with password: " + decrypted,
-                                Toast.LENGTH_SHORT
-                            ).show()
+                            val result = json.get("result")
+                            if (result!!.equals(true)) {
+                                successfulRegistration(username, json.get("message").toString())
+                            } else {
+                                failedRegistration("That username is already, please select another one")
+                            }
+                        } else {
+                            failedRegistration("Something went wrong, we apologize for the inconvenience")
+                            TODO("the user will come back to the register screen, show which error occured")
                         }
-                        val successIntent = Intent(this@RegisterActivity, BroCastHome::class.java).apply {
-                            putExtra("username", username)
-                        }
-                        startActivity(successIntent)
                     } else {
-                        startActivity(Intent(
-                            this@RegisterActivity, RegisterActivity::class.java))
+                        failedRegistration("Something went wrong, we apologize for the inconvenience")
                         TODO("the user will come back to the register screen, show which error occured")
                     }
                 }
             })
+    }
+
+    fun successfulRegistration(username: String, reason: String) {
+        Toast.makeText(
+            applicationContext,
+            "you just logged in! \n$reason",
+            Toast.LENGTH_SHORT
+        ).show()
+        val successIntent = Intent(this@RegisterActivity, BroCastHome::class.java).apply {
+            putExtra("username", username)
+        }
+        startActivity(successIntent)
+    }
+
+    fun failedRegistration(reason: String) {
+        Toast.makeText(
+            applicationContext,
+            "A problem occurred \n$reason",
+            Toast.LENGTH_SHORT
+        ).show()
+        startActivity(Intent(
+            this@RegisterActivity, RegisterActivity::class.java))
     }
 }
