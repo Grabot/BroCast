@@ -10,6 +10,7 @@
         android:id="@+id/inputFieldUserName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="300dp"
         android:autofillHints="TODO"
         android:hint="User Name"
         android:inputType="text"
@@ -23,6 +24,7 @@
         android:id="@+id/inputFieldPassword"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="300dp"
         android:autofillHints="TODO"
         android:hint="Password"
         android:inputType="textPassword"
@@ -31,5 +33,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/inputFieldUserName" />
+
+    <Button
+        android:id="@+id/buttonRegisterBro"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="200dp"
+        android:text="Register!"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/inputFieldPassword" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
