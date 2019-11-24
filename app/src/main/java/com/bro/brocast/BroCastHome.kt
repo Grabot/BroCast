@@ -12,6 +12,7 @@ class BroCastHome: AppCompatActivity() {
 
         val intent = intent
         val username= intent.getStringExtra("username")
-        broCastWelcomeView.text = "Heey $username!"
+        val welcomeText = getString(R.string.brocast_welcome) + " $username"
+        broCastWelcomeView.text = welcomeText
     }
 }

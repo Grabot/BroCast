@@ -22,7 +22,7 @@ class MainActivity : AppCompatActivity() {
         when (view.getId()) {
             R.id.buttonLogin -> {
                 println("brocast login")
-                TODO("First working on registering. Login is next!")
+                startActivity(Intent(this, LoginActivity::class.java))
             }
             R.id.buttonRegister -> {
                 println("brocast register")

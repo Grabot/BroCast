@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">BroCast</string>
+    <string name="brocast_welcome">Heey</string>
+    <string name="brocast_main">"This is BroCast! \n Welcome :)"</string>
+    <string name="password_hint">Password</string>
+    <string name="username_hint">Username</string>
+    <string name="brocast_register">"Register!"</string>
+    <string name="brocast_login">"Login!"</string>
+    <string name="bro_login">"Login Bro!"</string>
+    <string name="bro_register">"Register Bro!"</string>
 </resources>

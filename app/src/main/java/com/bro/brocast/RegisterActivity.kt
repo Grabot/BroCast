@@ -40,8 +40,8 @@ class RegisterActivity : AppCompatActivity() {
     private val clickRegisterListener = View.OnClickListener { view ->
         when (view.getId()) {
             R.id.buttonRegisterBro -> {
-                val username = inputFieldUserName.text.toString()
-                val password = inputFieldPassword.text.toString()
+                val username = userNameRegister.text.toString()
+                val password = passwordRegister.text.toString()
                 val passwordEncrypt = encryption!!.encryptOrNull(password)
                 println("user $username wants to register!")
                 registerUser(username, passwordEncrypt)
@@ -58,6 +58,7 @@ class RegisterActivity : AppCompatActivity() {
                     println("An exception occured with the GET call:: " + t.message)
                     startActivity(Intent(
                         this@RegisterActivity, RegisterActivity::class.java))
+                    TODO("the user will come back to the register screen, show which error occured")
                 }
                 override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                     if (response.isSuccessful) {
@@ -85,6 +86,7 @@ class RegisterActivity : AppCompatActivity() {
                     } else {
                         startActivity(Intent(
                             this@RegisterActivity, RegisterActivity::class.java))
+                        TODO("the user will come back to the register screen, show which error occured")
                     }
                 }
             })
