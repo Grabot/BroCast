@@ -42,8 +42,8 @@ class MainActivity : AppCompatActivity() {
                 })
         }
 
-        val key = "toBeDetermined"
-        val salt = "verySalty"
+        val key = secretBroCastKey
+        val salt = saltyBroCastKey
         val iv = ByteArray(16)
         val encryption: Encryption = Encryption.getDefault(key, salt, iv)
 
