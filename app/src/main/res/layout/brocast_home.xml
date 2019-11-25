@@ -36,4 +36,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/broCastHomeView" />
+
+    <Button
+        android:id="@+id/buttonFindBros"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/brocast_find_bros"
+        app:layout_constraintBottom_toTopOf="@+id/broCastWelcomeView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

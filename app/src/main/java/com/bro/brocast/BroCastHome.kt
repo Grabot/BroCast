@@ -18,10 +18,11 @@ class BroCastHome: AppCompatActivity() {
         val welcomeText = getString(R.string.brocast_welcome) + " $username"
         broCastWelcomeView.text = welcomeText
 
-        buttonLogout.setOnClickListener(clickLogoutListener)
+        buttonLogout.setOnClickListener(clickButtonListener)
+        buttonFindBros.setOnClickListener(clickButtonListener)
     }
 
-    private val clickLogoutListener = View.OnClickListener { view ->
+    private val clickButtonListener = View.OnClickListener { view ->
         when (view.getId()) {
             R.id.buttonLogout -> {
                 val sharedPreferences = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
@@ -35,6 +36,9 @@ class BroCastHome: AppCompatActivity() {
                     Intent(
                         this@BroCastHome, MainActivity::class.java)
                 )
+            }
+            R.id.buttonFindBros -> {
+                
             }
         }
     }

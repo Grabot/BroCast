@@ -27,6 +27,7 @@
         <activity android:name=".RegisterActivity" />
         <activity android:name=".LoginActivity" />
         <activity android:name=".BroCastHome" />
+        <activity android:name=".FindBroActivity" />
     </application>
 
 </manifest>
