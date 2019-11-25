@@ -11,5 +11,6 @@
     <string name="brocast_forgot_pass">"Forgot pass Bro?</string>
     <string name="brocast_logout">"Logout"</string>
     <string name="brocast_find_bros">Find Bro\'s!</string>
+    <string name="brocast_phone_number">Phone number</string>
     <string name="preference_file_key">com.bro.brocast.brocast_file_key</string>
 </resources>

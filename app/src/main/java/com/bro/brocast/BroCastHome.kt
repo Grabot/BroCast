@@ -7,6 +7,7 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.brocast_home.*
 
+
 class BroCastHome: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,7 +39,10 @@ class BroCastHome: AppCompatActivity() {
                 )
             }
             R.id.buttonFindBros -> {
-                
+                startActivity(
+                    Intent(
+                        this@BroCastHome, FindBroActivity::class.java)
+                )
             }
         }
     }

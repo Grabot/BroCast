@@ -17,7 +17,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
 
         val sharedPreferences = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
         val username: String = sharedPreferences.getString("USERNAME", "")!!
@@ -28,9 +27,12 @@ class MainActivity : AppCompatActivity() {
         // We automatically log in if this is the case.
         if (username != "" && password != "") {
             automaticLogin(username, password)
+        } else {
+            setContentView(R.layout.activity_main)
+
+            buttonLogin.setOnClickListener(clickButtonListener)
+            buttonRegister.setOnClickListener(clickButtonListener)
         }
-        buttonLogin.setOnClickListener(clickButtonListener)
-        buttonRegister.setOnClickListener(clickButtonListener)
     }
 
     private val clickButtonListener = View.OnClickListener { view ->
