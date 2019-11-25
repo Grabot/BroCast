@@ -39,7 +39,4 @@ dependencies {
     implementation 'com.github.simbiose:Encryption:2.0.1'
     implementation 'com.beust:klaxon:5.0.1'
     implementation 'com.hbb20:ccp:2.3.4'
-
-    implementation 'io.michaelrocks:libphonenumber-android:8.10.14'
-    implementation 'com.github.joielechong:countrycodepicker:2.1.5'
 }

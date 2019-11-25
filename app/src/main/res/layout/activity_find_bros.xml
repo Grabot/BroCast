@@ -1,17 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/linearLayout4"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <com.hbb20.CountryCodePicker
         android:id="@+id/ccp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:ccp_countryPreference="us,in"
-        />
+        android:layout_width="99dp"
+        android:layout_height="56dp" />
 
     <EditText
         android:id="@+id/editText_carrierNumber"
