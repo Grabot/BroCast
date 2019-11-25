@@ -27,7 +27,6 @@ class MainActivity : AppCompatActivity() {
         // previously made or logged in with an account for which he knows the login information
         // We automatically log in if this is the case.
         if (username != "" && password != "") {
-            // TODO @Sander: automatically log in if the data is provided.
             automaticLogin(username, password)
         }
         buttonLogin.setOnClickListener(clickButtonListener)

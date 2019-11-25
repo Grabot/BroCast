@@ -6,8 +6,6 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.beust.klaxon.JsonObject
-import com.beust.klaxon.Parser
 import kotlinx.android.synthetic.main.activity_login.*
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -31,6 +29,7 @@ class LoginActivity: AppCompatActivity() {
             Encryption.getDefault(secretBroCastKey, saltyBroCastSalt, ByteArray(16))
 
         buttonLoginBro.setOnClickListener(clickLoginListener)
+        buttonForgotPass.setOnClickListener(clickLoginListener)
     }
 
     private val clickLoginListener = View.OnClickListener { view ->
@@ -41,6 +40,9 @@ class LoginActivity: AppCompatActivity() {
                 val passwordEncrypt = encryption!!.encryptOrNull(password)
                 println("user $username wants to login!")
                 loginUser(username, passwordEncrypt)
+            }
+            R.id.buttonForgotPass -> {
+                TODO("implement the 'forgot pass' screen.")
             }
         }
     }
