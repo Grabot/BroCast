@@ -57,7 +57,13 @@ class RegisterActivity : AppCompatActivity() {
             .enqueue(object : Callback<ResponseBody> {
                 override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                     failedRegistration("Something went wrong, we apologize for the inconvenience")
-                    TODO("the user will come back to the register screen, show which error occured")
+                    // The BroCast Backend server is not running
+                    Toast.makeText(
+                        applicationContext,
+                        "The BroCast server is not responding. " +
+                                "We appologize for the inconvenience, please try again later",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
                 override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                     if (response.isSuccessful) {
