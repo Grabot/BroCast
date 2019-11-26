@@ -1,9 +1,9 @@
 package com.bro.brocast
 
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.ArrayAdapter
+import android.widget.ListView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_find_bros.*
@@ -13,9 +13,20 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class FindBroActivity: AppCompatActivity() {
+
+    var countries = arrayOf("Melbourne", "Vienna", "Vancouver", "Toronto", "Calgary",
+        "Adelaide", "Perth", "Auckland", "Helsinki", "Hamburg", "Munich", "New York", "Sydney",
+        "Paris", "Cape Town", "Barcelona", "London", "Bangkok")
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_find_bros)
+
+        val adapter = ArrayAdapter(this,
+            R.layout.bro_list, countries)
+
+        val listView:ListView = findViewById(R.id.recipe_list_view)
+        listView.setAdapter(adapter)
 
         buttonSearchBros.setOnClickListener(clickButtonListener)
     }
