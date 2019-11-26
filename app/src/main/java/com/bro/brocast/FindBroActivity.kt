@@ -1,60 +1,67 @@
 package com.bro.brocast
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
-import android.telephony.TelephonyManager
-import android.widget.EditText
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.hbb20.CountryCodePicker
-import java.util.*
+import kotlinx.android.synthetic.main.activity_find_bros.*
+import okhttp3.ResponseBody
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
-
-class FindBroActivity: AppCompatActivity(), CountryCodePicker.OnCountryChangeListener, CountryCodePicker.PhoneNumberValidityChangeListener {
-
-    private var ccp:CountryCodePicker?=null
-    private var countryCode:String?=null
-    private var countryName:String?=null
-
-    var editTextCarrierNumber: EditText? = null
-
-
+class FindBroActivity: AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_find_bros)
 
-        // TODO @Sander: Work the locale and the countryISOCode into the preferences in a nice way.
-        val teleMgr =
-            getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
-        val countryISOCode = teleMgr.simCountryIso
-        val locale: Locale = Locale.getDefault()
-        System.out.println("The country that this user has set for himself is " +locale.country)
-        println("Bro's country! $countryISOCode")
-        ccp = findViewById(R.id.ccp)
-        ccp!!.setCountryPreference("NL")
-        ccp!!.setDefaultCountryUsingNameCode("NL")
-        // For some reason you need to set the default and then reset to that default for it to work
-        ccp!!.resetToDefaultCountry()
-
-        ccp!!.setOnCountryChangeListener(this)
-        editTextCarrierNumber = findViewById(R.id.editText_carrierNumber)
-        ccp!!.registerCarrierNumberEditText(editTextCarrierNumber)
-        ccp!!.setPhoneNumberValidityChangeListener(this)
+        buttonSearchBros.setOnClickListener(clickButtonListener)
     }
 
-    override fun onValidityChanged(isValidNumber: Boolean) {
-        if (isValidNumber) {
-            println("Valid! :D")
-        } else {
-            Toast.makeText(applicationContext, "invalid phone number! Please enter a valid phone number so your bro's can find you", Toast.LENGTH_SHORT).show()
+    private val clickButtonListener = View.OnClickListener { view ->
+        when (view.getId()) {
+            R.id.buttonSearchBros -> {
+                val potentialBro = userNameBroSearch.text.toString()
+                if (potentialBro == "") {
+                    Toast.makeText(this,"No Bro filled in yet", Toast.LENGTH_SHORT).show()
+                } else {
+
+                    BroCastAPI
+                        .service
+                        .findBro(potentialBro)
+                        .enqueue(object : Callback<ResponseBody> {
+                            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                                println("An exception occured with the GET call:: " + t.message)
+                                // The BroCast Backend server is not running
+                                Toast.makeText(
+                                    applicationContext,
+                                    "The BroCast server is not responding. " +
+                                            "We appologize for the inconvenience, please try again later",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                                if (response.isSuccessful) {
+                                    val msg = response.body()?.string()
+                                    println("The GET message returned from the server:: $msg")
+                                    Toast.makeText(applicationContext, msg, Toast.LENGTH_SHORT).show()
+                                    if (msg != null) {
+                                        println("The GET message returned from the server:: $msg")
+                                        Toast.makeText(
+                                            applicationContext,
+                                            "found a new possible bro!",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
+                                } else {
+                                    TODO("the user will come back to the login screen, show which error occured")
+                                }
+                            }
+                        })
+                }
+            }
         }
-    }
-
-    override fun onCountrySelected() {
-        countryCode=ccp!!.selectedCountryCode
-        countryName=ccp!!.selectedCountryName
-
-        Toast.makeText(this,"Country Code "+countryCode,Toast.LENGTH_SHORT).show()
-        Toast.makeText(this,"Country Name "+countryName,Toast.LENGTH_SHORT).show()
     }
 }

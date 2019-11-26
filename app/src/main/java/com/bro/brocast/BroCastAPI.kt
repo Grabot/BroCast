@@ -9,8 +9,6 @@ import retrofit2.http.*
 
 class BroCastAPI {
     interface APIService {
-        @GET("/test")
-        fun getTest(): Call<ResponseBody>
 
         @GET("/api/v1.0/register/{username}/{password}")
         fun registerUser(
@@ -21,6 +19,11 @@ class BroCastAPI {
         fun loginUser(
             @Path("username") username: String,
             @Path("password") password: String): Call<ResponseBody>
+
+        @GET("/api/v1.0/search/{bro}")
+        fun findBro(
+            @Path("bro") bro: String): Call<ResponseBody>
+
     }
 
     companion object {

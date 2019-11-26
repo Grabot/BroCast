@@ -54,10 +54,6 @@ class LoginActivity: AppCompatActivity() {
             .enqueue(object : Callback<ResponseBody> {
                 override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                     println("An exception occured with the GET call:: " + t.message)
-                    startActivity(
-                        Intent(
-                            this@LoginActivity, LoginActivity::class.java)
-                    )
                     // The BroCast Backend server is not running
                     Toast.makeText(
                         applicationContext,
@@ -89,10 +85,6 @@ class LoginActivity: AppCompatActivity() {
                         editor.apply()
                         startActivity(successIntent)
                     } else {
-                        startActivity(
-                            Intent(
-                                this@LoginActivity, LoginActivity::class.java)
-                        )
                         TODO("the user will come back to the login screen, show which error occured")
                     }
                 }

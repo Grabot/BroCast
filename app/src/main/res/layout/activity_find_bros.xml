@@ -1,22 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/linearLayout4"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/linearLayout5"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.hbb20.CountryCodePicker
-        android:id="@+id/ccp"
-        android:layout_width="99dp"
-        android:layout_height="56dp" />
-
     <EditText
-        android:id="@+id/editText_carrierNumber"
-        android:layout_width="match_parent"
+        android:id="@+id/userNameBroSearch"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="507dp"
-        android:editable="false"
-        android:hint="phone"
-        android:inputType="phone"
-        android:singleLine="true" />
-</RelativeLayout>
+        android:layout_marginBottom="400dp"
+        android:autofillHints="TODO"
+        android:hint="@string/username_hint"
+        android:inputType="text"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/buttonSearchBros"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="100dp"
+        android:text="Search your Bro"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>
