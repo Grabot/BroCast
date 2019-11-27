@@ -75,7 +75,7 @@ class RegisterActivity : AppCompatActivity() {
                             val stringBuilder: StringBuilder = StringBuilder(msg)
                             val json: JsonObject = parser.parse(stringBuilder) as JsonObject
                             val result = json.get("result")
-                            if (result!!.equals(true)) {
+                            if (result!! == true) {
                                 val sharedPreferences = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
                                 val editor = sharedPreferences.edit()
                                 editor.putString("USERNAME", username)
@@ -83,7 +83,7 @@ class RegisterActivity : AppCompatActivity() {
                                 editor.apply()
                                 successfulRegistration(username, json.get("message").toString())
                             } else {
-                                failedRegistration("That username is already, please select another one")
+                                failedRegistration("That username is already taken, please select another one")
                             }
                         } else {
                             failedRegistration("Something went wrong, we apologize for the inconvenience")

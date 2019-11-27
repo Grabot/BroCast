@@ -5,10 +5,14 @@ import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
-import android.widget.ArrayAdapter
 import android.widget.ListView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.beust.klaxon.JsonArray
+import com.beust.klaxon.JsonObject
+import com.beust.klaxon.Parser
+import com.bro.brocast.objects.Bro
+import com.bro.brocast.objects.BroAdapter
 import kotlinx.android.synthetic.main.activity_find_bros.*
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -21,15 +25,14 @@ class FindBroActivity: AppCompatActivity() {
 
     lateinit var listView:ListView
 
-    var bros = ArrayList<String>()
-    var broAdapter: ArrayAdapter<String>? = null
+    var potentialBros = ArrayList<String>()
+    var broAdapter: BroAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_find_bros)
 
-        broAdapter = ArrayAdapter(this,
-            R.layout.bro_list, bros)
+        broAdapter = BroAdapter(this, potentialBros)
 
         listView = findViewById(R.id.bro_list_view)
         listView.adapter = broAdapter
@@ -85,13 +88,20 @@ class FindBroActivity: AppCompatActivity() {
                                         .show()
                                     if (msg != null) {
                                         println("The GET message returned from the server:: $msg")
-                                        Toast.makeText(
-                                            applicationContext,
-                                            "found a new possible bro!",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                        bros.clear()
-                                        bros.add(potentialBro)
+
+                                        val parser: Parser = Parser.default()
+                                        val stringBuilder: StringBuilder = StringBuilder(msg)
+                                        val json: JsonObject = parser.parse(stringBuilder) as JsonObject
+                                        val bros = json.get("bros") as JsonArray<*>
+
+                                        potentialBros.clear()
+                                        for (b in bros) {
+                                            val foundBro = b as JsonObject
+                                            val username: String = foundBro.get("username") as String
+                                            val id: Int = foundBro.get("id") as Int
+                                            val bro: Bro = Bro(username, id)
+                                            potentialBros.add(bro.getUsername())
+                                        }
                                         broAdapter!!.notifyDataSetChanged()
                                         listView.visibility = View.VISIBLE
                                         try {

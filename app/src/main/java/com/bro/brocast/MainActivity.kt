@@ -27,12 +27,12 @@ class MainActivity : AppCompatActivity() {
         // We automatically log in if this is the case.
         if (username != "" && password != "") {
             automaticLogin(username, password)
-        } else {
-            setContentView(R.layout.activity_main)
-
-            buttonLogin.setOnClickListener(clickButtonListener)
-            buttonRegister.setOnClickListener(clickButtonListener)
         }
+
+        setContentView(R.layout.activity_main)
+        buttonLogin.setOnClickListener(clickButtonListener)
+        buttonRegister.setOnClickListener(clickButtonListener)
+
     }
 
     private val clickButtonListener = View.OnClickListener { view ->
@@ -54,7 +54,7 @@ class MainActivity : AppCompatActivity() {
             .loginUser(username, password)
             .enqueue(object : Callback<ResponseBody> {
                 override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                    println("An exception occured with the GET call:: " + t.message)
+                     println("An exception occured with the GET call:: " + t.message)
                     // The server is not responding. Open the main activity and the error will
                     // be shown if the user tries to login with the login screen or register.
                     startActivity(
