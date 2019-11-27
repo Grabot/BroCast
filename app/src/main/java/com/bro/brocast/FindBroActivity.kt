@@ -95,6 +95,7 @@ class FindBroActivity: AppCompatActivity() {
                                         broAdapter!!.notifyDataSetChanged()
                                         listView.visibility = View.VISIBLE
                                         try {
+                                            // We want to show the listview and hide the keyboard.
                                             val imm: InputMethodManager =
                                                 getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                                             imm.hideSoftInputFromWindow(
