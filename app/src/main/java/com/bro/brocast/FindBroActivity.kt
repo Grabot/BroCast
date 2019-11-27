@@ -25,36 +25,34 @@ class FindBroActivity: AppCompatActivity() {
 
     lateinit var listView:ListView
 
-    var potentialBros = ArrayList<String>()
+    var potentialBros = ArrayList<Bro>()
     var broAdapter: BroAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_find_bros)
 
-        broAdapter = BroAdapter(this, potentialBros)
+        broAdapter = BroAdapter(this, R.layout.bro_list, potentialBros)
 
         listView = findViewById(R.id.bro_list_view)
         listView.adapter = broAdapter
         listView.visibility = View.INVISIBLE
 
-        listView.onItemClickListener = object : AdapterView.OnItemClickListener {
-
-            override fun onItemClick(parent: AdapterView<*>, view: View,
-                                     position: Int, id: Long) {
-
-                // value of item that is clicked
-                val itemValue = listView.getItemAtPosition(position) as String
-
-                // Toast the values
-                Toast.makeText(applicationContext,
-                    "Position :$position\nItem Value : $itemValue", Toast.LENGTH_LONG)
-                    .show()
-            }
-        }
+        listView.onItemClickListener = broClickListener
 
         buttonSearchBros.setOnClickListener(clickButtonListener)
     }
+
+    private val broClickListener = AdapterView.OnItemClickListener {  parent, view, position, id ->
+
+        val itemValue = listView.getItemAtPosition(position) as Bro
+        // TODO @Sander: Toast the values for now, add actual functionality to add the bro.
+        Toast.makeText(applicationContext,
+            "Position :$position\nItem Value : " + itemValue.username, Toast.LENGTH_LONG)
+            .show()
+
+    }
+
     private val clickButtonListener = View.OnClickListener { view ->
         when (view.getId()) {
             R.id.buttonSearchBros -> {
@@ -99,8 +97,8 @@ class FindBroActivity: AppCompatActivity() {
                                             val foundBro = b as JsonObject
                                             val username: String = foundBro.get("username") as String
                                             val id: Int = foundBro.get("id") as Int
-                                            val bro: Bro = Bro(username, id)
-                                            potentialBros.add(bro.getUsername())
+                                            val bro = Bro(username, id, "")
+                                            potentialBros.add(bro)
                                         }
                                         broAdapter!!.notifyDataSetChanged()
                                         listView.visibility = View.VISIBLE
