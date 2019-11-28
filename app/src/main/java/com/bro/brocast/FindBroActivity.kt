@@ -116,7 +116,7 @@ class FindBroActivity: AppCompatActivity() {
                                         }
                                     }
                                 } else {
-                                    TODO("the user will come back to the login screen, show which error occured")
+                                    TODO("the bro will come back to the login screen, show which error occured")
                                 }
                             }
                         })

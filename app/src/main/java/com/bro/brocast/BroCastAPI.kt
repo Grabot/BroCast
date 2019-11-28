@@ -11,12 +11,12 @@ class BroCastAPI {
     interface APIService {
 
         @GET("/api/v1.0/register/{bro_name}/{password}")
-        fun registerUser(
+        fun registerBro(
             @Path("bro_name") broName: String,
             @Path("password") password: String): Call<ResponseBody>
 
         @GET("/api/v1.0/login/{bro_name}/{password}")
-        fun loginUser(
+        fun loginBro(
             @Path("bro_name") broName: String,
             @Path("password") password: String): Call<ResponseBody>
 

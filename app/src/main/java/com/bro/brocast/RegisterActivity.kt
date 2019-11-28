@@ -24,13 +24,13 @@ class RegisterActivity : AppCompatActivity() {
         setContentView(R.layout.activity_register)
 
         // Initialization of the keys. For anyone reading this, I know you shouldn't compile the
-        // keys with the app because it can be decompiled from the apk. But I wanted users to have
+        // keys with the app because it can be decompiled from the apk. But I wanted bros to have
         // their passwords encrypted and the application level and also have the ability to switch
         // phones and log in again. This way their passwords are encrypted before sending to the
         // server and any person who wants to do malice and scans traffic will not be able to read
-        // it and he would have to specially target the user and the app in order to decrypt it,
+        // it and he would have to specially target the bro and the app in order to decrypt it,
         // which would be way to much trouble for this simple app. On top of that, most companies
-        // (Including Google and Facebook) send their user/pass in cleartext over https because
+        // (Including Google and Facebook) send their bro/pass in cleartext over https because
         // they don't feel the need to do this. So I think this is already pretty nice of me.
         encryption =
             Encryption.getDefault(secretBroCastKey, saltyBroCastSalt, ByteArray(16))
@@ -44,16 +44,16 @@ class RegisterActivity : AppCompatActivity() {
                 val broName = broNameRegister.text.toString()
                 val password = passwordRegister.text.toString()
                 val passwordEncrypt = encryption!!.encryptOrNull(password)
-                println("user $broName wants to register!")
-                registerUser(broName, passwordEncrypt)
+                println("bro $broName wants to register!")
+                registerBro(broName, passwordEncrypt)
             }
         }
     }
 
-    private fun registerUser(broName: String, password: String) {
+    private fun registerBro(broName: String, password: String) {
         BroCastAPI
             .service
-            .registerUser(broName, password)
+            .registerBro(broName, password)
             .enqueue(object : Callback<ResponseBody> {
                 override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                     failedRegistration("Something went wrong, we apologize for the inconvenience")
@@ -87,11 +87,11 @@ class RegisterActivity : AppCompatActivity() {
                             }
                         } else {
                             failedRegistration("Something went wrong, we apologize for the inconvenience")
-                            TODO("the user will come back to the register screen, show which error occured")
+                            TODO("the bro will come back to the register screen, show which error occured")
                         }
                     } else {
                         failedRegistration("Something went wrong, we apologize for the inconvenience")
-                        TODO("the user will come back to the register screen, show which error occured")
+                        TODO("the bro will come back to the register screen, show which error occured")
                     }
                 }
             })

@@ -59,7 +59,7 @@ class BroCastHome: AppCompatActivity() {
             R.id.buttonLogout -> {
                 val sharedPreferences = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
                 val editor = sharedPreferences.edit()
-                // The user is logged out so we will empty the stored user data
+                // The bro is logged out so we will empty the stored bro data
                 // and return to the home screen
                 editor.putString("BRONAME", "")
                 editor.putString("PASSWORD", "")

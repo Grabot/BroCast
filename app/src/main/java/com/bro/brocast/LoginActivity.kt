@@ -6,6 +6,8 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.beust.klaxon.JsonObject
+import com.beust.klaxon.Parser
 import kotlinx.android.synthetic.main.activity_login.*
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -38,8 +40,8 @@ class LoginActivity: AppCompatActivity() {
                 val broName = broNameLogin.text.toString()
                 val password = passwordLogin.text.toString()
                 val passwordEncrypt = encryption!!.encryptOrNull(password)
-                println("user $broName wants to login!")
-                loginUser(broName, passwordEncrypt)
+                println("bro $broName wants to login!")
+                loginBro(broName, passwordEncrypt)
             }
             R.id.buttonForgotPass -> {
                 TODO("implement the 'forgot pass' screen.")
@@ -47,10 +49,10 @@ class LoginActivity: AppCompatActivity() {
         }
     }
 
-    private fun loginUser(broName: String, password: String) {
+    private fun loginBro(broName: String, password: String) {
         BroCastAPI
             .service
-            .loginUser(broName, password)
+            .loginBro(broName, password)
             .enqueue(object : Callback<ResponseBody> {
                 override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                     println("An exception occured with the GET call:: " + t.message)
@@ -61,31 +63,45 @@ class LoginActivity: AppCompatActivity() {
                                 "We appologize for the inconvenience, please try again later",
                         Toast.LENGTH_SHORT
                     ).show()
+                    TODO("it seems that if it fails it still logs in. Fix it")
                 }
                 override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                     if (response.isSuccessful) {
                         val msg = response.body()?.string()
-                        println("The GET message returned from the server:: $msg")
                         Toast.makeText(applicationContext, msg, Toast.LENGTH_SHORT).show()
                         if (msg != null) {
                             println("The GET message returned from the server:: $msg")
-                            Toast.makeText(
-                                applicationContext,
-                                "you just logged in!",
-                                Toast.LENGTH_SHORT
-                            ).show()
+                            val parser: Parser = Parser.default()
+                            val stringBuilder: StringBuilder = StringBuilder(msg)
+                            val json: JsonObject = parser.parse(stringBuilder) as JsonObject
+                            val result = json.get("result")
+                            if (result!! == true) {
+                                Toast.makeText(
+                                    applicationContext,
+                                    "you just logged in!",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                val successIntent = Intent(this@LoginActivity, BroCastHome::class.java).apply {
+                                    putExtra("broName", broName)
+                                }
+                                val sharedPreferences = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
+                                val editor = sharedPreferences.edit()
+                                editor.putString("BRONAME", broName)
+                                editor.putString("PASSWORD", password)
+                                editor.apply()
+                                startActivity(successIntent)
+                            } else {
+                                val reason: String = json.get("reason").toString()
+                                Toast.makeText(
+                                    applicationContext,
+                                    reason,
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
                         }
-                        val successIntent = Intent(this@LoginActivity, BroCastHome::class.java).apply {
-                            putExtra("broName", broName)
-                        }
-                        val sharedPreferences = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
-                        val editor = sharedPreferences.edit()
-                        editor.putString("BRONAME", broName)
-                        editor.putString("PASSWORD", password)
-                        editor.apply()
-                        startActivity(successIntent)
+
                     } else {
-                        TODO("the user will come back to the login screen, show which error occured")
+                        TODO("the bro will come back to the login screen, show which error occured")
                     }
                 }
             })

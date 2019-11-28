@@ -22,7 +22,7 @@ class MainActivity : AppCompatActivity() {
         val broName: String = sharedPreferences.getString("BRONAME", "")!!
         val password: String = sharedPreferences.getString("PASSWORD", "")!!
 
-        // If a broName and password are stored in the shared preferences than the user has
+        // If a broName and password are stored in the shared preferences than the bro has
         // previously made or logged in with an account for which he knows the login information
         // We automatically log in if this is the case.
         if (broName != "" && password != "") {
@@ -51,12 +51,12 @@ class MainActivity : AppCompatActivity() {
     fun automaticLogin(broName: String, password: String) {
         BroCastAPI
             .service
-            .loginUser(broName, password)
+            .loginBro(broName, password)
             .enqueue(object : Callback<ResponseBody> {
                 override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                      println("An exception occured with the GET call:: " + t.message)
                     // The server is not responding. Open the main activity and the error will
-                    // be shown if the user tries to login with the login screen or register.
+                    // be shown if the bro tries to login with the login screen or register.
                     startActivity(
                         Intent(
                             this@MainActivity, MainActivity::class.java)
@@ -89,7 +89,7 @@ class MainActivity : AppCompatActivity() {
                             Intent(
                                 this@MainActivity, MainActivity::class.java)
                         )
-                        TODO("the user will come back to the login screen, show which error occured")
+                        TODO("the bro will come back to the login screen, show which error occured")
                     }
                 }
             })
