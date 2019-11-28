@@ -7,12 +7,12 @@
     android:layout_height="match_parent">
 
     <EditText
-        android:id="@+id/userNameLogin"
+        android:id="@+id/broNameLogin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="500dp"
         android:autofillHints="TODO"
-        android:hint="@string/username_hint"
+        android:hint="@string/broname_hint"
         android:inputType="text"
         android:textAlignment="center"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -32,7 +32,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/userNameLogin" />
+        app:layout_constraintTop_toBottomOf="@+id/broNameLogin" />
 
     <Button
         android:id="@+id/buttonLoginBro"

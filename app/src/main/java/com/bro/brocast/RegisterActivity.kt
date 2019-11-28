@@ -41,19 +41,19 @@ class RegisterActivity : AppCompatActivity() {
     private val clickRegisterListener = View.OnClickListener { view ->
         when (view.getId()) {
             R.id.buttonRegisterBro -> {
-                val username = userNameRegister.text.toString()
+                val broName = broNameRegister.text.toString()
                 val password = passwordRegister.text.toString()
                 val passwordEncrypt = encryption!!.encryptOrNull(password)
-                println("user $username wants to register!")
-                registerUser(username, passwordEncrypt)
+                println("user $broName wants to register!")
+                registerUser(broName, passwordEncrypt)
             }
         }
     }
 
-    private fun registerUser(username: String, password: String) {
+    private fun registerUser(broName: String, password: String) {
         BroCastAPI
             .service
-            .registerUser(username, password)
+            .registerUser(broName, password)
             .enqueue(object : Callback<ResponseBody> {
                 override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                     failedRegistration("Something went wrong, we apologize for the inconvenience")
@@ -78,12 +78,12 @@ class RegisterActivity : AppCompatActivity() {
                             if (result!! == true) {
                                 val sharedPreferences = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
                                 val editor = sharedPreferences.edit()
-                                editor.putString("USERNAME", username)
+                                editor.putString("BRONAME", broName)
                                 editor.putString("PASSWORD", password)
                                 editor.apply()
-                                successfulRegistration(username, json.get("message").toString())
+                                successfulRegistration(broName, json.get("message").toString())
                             } else {
-                                failedRegistration("That username is already taken, please select another one")
+                                failedRegistration("That broName is already taken, please select another one")
                             }
                         } else {
                             failedRegistration("Something went wrong, we apologize for the inconvenience")
@@ -97,14 +97,14 @@ class RegisterActivity : AppCompatActivity() {
             })
     }
 
-    fun successfulRegistration(username: String, reason: String) {
+    fun successfulRegistration(broName: String, reason: String) {
         Toast.makeText(
             applicationContext,
             "you just logged in! \n$reason",
             Toast.LENGTH_SHORT
         ).show()
         val successIntent = Intent(this@RegisterActivity, BroCastHome::class.java).apply {
-            putExtra("username", username)
+            putExtra("broName", broName)
         }
         startActivity(successIntent)
     }

@@ -19,14 +19,14 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         val sharedPreferences = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
-        val username: String = sharedPreferences.getString("USERNAME", "")!!
+        val broName: String = sharedPreferences.getString("BRONAME", "")!!
         val password: String = sharedPreferences.getString("PASSWORD", "")!!
 
-        // If a username and password are stored in the shared preferences than the user has
+        // If a broName and password are stored in the shared preferences than the user has
         // previously made or logged in with an account for which he knows the login information
         // We automatically log in if this is the case.
-        if (username != "" && password != "") {
-            automaticLogin(username, password)
+        if (broName != "" && password != "") {
+            automaticLogin(broName, password)
         }
 
         setContentView(R.layout.activity_main)
@@ -48,10 +48,10 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun automaticLogin(username: String, password: String) {
+    fun automaticLogin(broName: String, password: String) {
         BroCastAPI
             .service
-            .loginUser(username, password)
+            .loginUser(broName, password)
             .enqueue(object : Callback<ResponseBody> {
                 override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                      println("An exception occured with the GET call:: " + t.message)
@@ -76,11 +76,11 @@ class MainActivity : AppCompatActivity() {
                             ).show()
                         }
                         val successIntent = Intent(this@MainActivity, BroCastHome::class.java).apply {
-                            putExtra("username", username)
+                            putExtra("broName", broName)
                         }
                         val sharedPreferences = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
                         val editor = sharedPreferences.edit()
-                        editor.putString("USERNAME", username)
+                        editor.putString("BRONAME", broName)
                         editor.putString("PASSWORD", password)
                         editor.apply()
                         startActivity(successIntent)

@@ -28,7 +28,7 @@ class BroAdapter(private val context: Activity,
 
         val person: Bro = bros.get(position)
 
-        textView.text = person.username
+        textView.text = person.broName
         textView1.text = person.id.toString()
 
         return view

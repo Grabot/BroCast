@@ -24,8 +24,8 @@ class BroCastHome: AppCompatActivity() {
         setContentView(R.layout.brocast_home)
 
         val intent = intent
-        val username= intent.getStringExtra("username")
-        val welcomeText = getString(R.string.brocast_welcome) + " $username"
+        val broName= intent.getStringExtra("broName")
+        val welcomeText = getString(R.string.brocast_welcome) + " $broName"
         broCastWelcomeView.text = welcomeText
 
         buttonLogout.setOnClickListener(clickButtonListener)
@@ -61,7 +61,7 @@ class BroCastHome: AppCompatActivity() {
                 val editor = sharedPreferences.edit()
                 // The user is logged out so we will empty the stored user data
                 // and return to the home screen
-                editor.putString("USERNAME", "")
+                editor.putString("BRONAME", "")
                 editor.putString("PASSWORD", "")
                 editor.apply()
                 startActivity(

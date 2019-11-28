@@ -6,12 +6,12 @@
     android:layout_height="match_parent">
 
     <EditText
-        android:id="@+id/userNameBroSearch"
+        android:id="@+id/broNameBroSearch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="400dp"
         android:autofillHints="TODO"
-        android:hint="@string/username_hint"
+        android:hint="@string/broname_hint"
         android:inputType="text"
         android:textAlignment="center"
         app:layout_constraintBottom_toBottomOf="parent"

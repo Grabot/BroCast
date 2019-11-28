@@ -48,7 +48,7 @@ class FindBroActivity: AppCompatActivity() {
         val itemValue = listView.getItemAtPosition(position) as Bro
         // TODO @Sander: Toast the values for now, add actual functionality to add the bro.
         Toast.makeText(applicationContext,
-            "Position :$position\nItem Value : " + itemValue.username, Toast.LENGTH_LONG)
+            "Position :$position\nItem Value : " + itemValue.broName, Toast.LENGTH_LONG)
             .show()
 
     }
@@ -56,7 +56,7 @@ class FindBroActivity: AppCompatActivity() {
     private val clickButtonListener = View.OnClickListener { view ->
         when (view.getId()) {
             R.id.buttonSearchBros -> {
-                val potentialBro = userNameBroSearch.text.toString()
+                val potentialBro = broNameBroSearch.text.toString()
                 if (potentialBro == "") {
                     Toast.makeText(this, "No Bro filled in yet", Toast.LENGTH_SHORT).show()
                 } else {
@@ -95,9 +95,9 @@ class FindBroActivity: AppCompatActivity() {
                                         potentialBros.clear()
                                         for (b in bros) {
                                             val foundBro = b as JsonObject
-                                            val username: String = foundBro.get("username") as String
+                                            val broName: String = foundBro.get("bro_name") as String
                                             val id: Int = foundBro.get("id") as Int
-                                            val bro = Bro(username, id, "")
+                                            val bro = Bro(broName, id, "")
                                             potentialBros.add(bro)
                                         }
                                         broAdapter!!.notifyDataSetChanged()

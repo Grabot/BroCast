@@ -35,11 +35,11 @@ class LoginActivity: AppCompatActivity() {
     private val clickLoginListener = View.OnClickListener { view ->
         when (view.getId()) {
             R.id.buttonLoginBro -> {
-                val username = userNameLogin.text.toString()
+                val broName = broNameLogin.text.toString()
                 val password = passwordLogin.text.toString()
                 val passwordEncrypt = encryption!!.encryptOrNull(password)
-                println("user $username wants to login!")
-                loginUser(username, passwordEncrypt)
+                println("user $broName wants to login!")
+                loginUser(broName, passwordEncrypt)
             }
             R.id.buttonForgotPass -> {
                 TODO("implement the 'forgot pass' screen.")
@@ -47,10 +47,10 @@ class LoginActivity: AppCompatActivity() {
         }
     }
 
-    private fun loginUser(username: String, password: String) {
+    private fun loginUser(broName: String, password: String) {
         BroCastAPI
             .service
-            .loginUser(username, password)
+            .loginUser(broName, password)
             .enqueue(object : Callback<ResponseBody> {
                 override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                     println("An exception occured with the GET call:: " + t.message)
@@ -76,11 +76,11 @@ class LoginActivity: AppCompatActivity() {
                             ).show()
                         }
                         val successIntent = Intent(this@LoginActivity, BroCastHome::class.java).apply {
-                            putExtra("username", username)
+                            putExtra("broName", broName)
                         }
                         val sharedPreferences = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
                         val editor = sharedPreferences.edit()
-                        editor.putString("USERNAME", username)
+                        editor.putString("BRONAME", broName)
                         editor.putString("PASSWORD", password)
                         editor.apply()
                         startActivity(successIntent)
