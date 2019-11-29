@@ -80,7 +80,9 @@ class RegisterActivity : AppCompatActivity() {
                                 val sharedPreferences = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
                                 val editor = sharedPreferences.edit()
                                 editor.putString("BRONAME", broName)
-                                editor.putString("PASSWORD", password)
+                                // There seems to be an issue with storing password because of newline characters.
+                                // We concatenate it with an ending that we will remove when we load the password
+                                editor.putString("PASSWORD", "$password:broCastPasswordEnd")
                                 editor.apply()
                                 successfulRegistration(broName, json.get("message").toString())
                             } else {

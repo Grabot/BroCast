@@ -82,7 +82,6 @@ class LoginActivity: AppCompatActivity() {
                     pressedLogin = false
                     if (response.isSuccessful) {
                         val msg = response.body()?.string()
-                        Toast.makeText(applicationContext, msg, Toast.LENGTH_SHORT).show()
                         if (msg != null) {
                             val parser: Parser = Parser.default()
                             val stringBuilder: StringBuilder = StringBuilder(msg)
@@ -100,7 +99,9 @@ class LoginActivity: AppCompatActivity() {
                                 val sharedPreferences = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
                                 val editor = sharedPreferences.edit()
                                 editor.putString("BRONAME", broName)
-                                editor.putString("PASSWORD", password)
+                                // There seems to be an issue with storing password because of newline characters.
+                                // We concatenate it with an ending that we will remove when we load the password
+                                editor.putString("PASSWORD", "$password:broCastPasswordEnd")
                                 editor.apply()
                                 startActivity(successIntent)
                             } else {

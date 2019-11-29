@@ -6,6 +6,8 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.beust.klaxon.JsonObject
+import com.beust.klaxon.Parser
 import kotlinx.android.synthetic.main.activity_main.*
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -20,16 +22,20 @@ class MainActivity : AppCompatActivity() {
 
         val sharedPreferences = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
         val broName: String = sharedPreferences.getString("BRONAME", "")!!
-        val password: String = sharedPreferences.getString("PASSWORD", "")!!
+        val password: String = sharedPreferences.getString("PASSWORD", "")!!.
+            replace(":broCastPasswordEnd", "")
 
         // If a broName and password are stored in the shared preferences than the bro has
         // previously made or logged in with an account for which he knows the login information
         // We automatically log in if this is the case.
         if (broName != "" && password != "") {
             println("Welcome back br $broName we will start the autmoatic login")
+            // TODO @Skools: The password seems to get a bunch of tabs behind it?!?!?! check if this is correct.
             automaticLogin(broName, password)
         } else {
             // TODO @Skools: doing it like this will show a white screen until it fails, maybe add loading screen?
+            // TODO @Skools: Maybe make the MainActivity a pre-screen that will
+            //  either show this screen or the home screen with only the logo of BroCast.
             showScreen()
         }
     }
@@ -79,23 +85,34 @@ class MainActivity : AppCompatActivity() {
                 override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                     if (response.isSuccessful) {
                         val msg = response.body()?.string()
-                        Toast.makeText(applicationContext, msg, Toast.LENGTH_SHORT).show()
                         if (msg != null) {
-                            Toast.makeText(
-                                applicationContext,
-                                "you just logged in!",
-                                Toast.LENGTH_SHORT
-                            ).show()
+                            val parser: Parser = Parser.default()
+                            val stringBuilder: StringBuilder = StringBuilder(msg)
+                            val json: JsonObject = parser.parse(stringBuilder) as JsonObject
+                            val result = json.get("result")
+                            if (result!! == true) {
+                                Toast.makeText(
+                                    applicationContext,
+                                    "you just logged in!",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                val successIntent = Intent(this@MainActivity, BroCastHome::class.java).apply {
+                                    putExtra("broName", broName)
+                                }
+                                val sharedPreferences = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
+                                val editor = sharedPreferences.edit()
+                                editor.putString("BRONAME", broName)
+                                editor.putString("PASSWORD", password)
+                                editor.apply()
+                                startActivity(successIntent)
+                            } else {
+                                // It failed to login, so we will show the main screen
+                                showScreen()
+                            }
+                        } else {
+                            // There was an empty message from the server so we will show the main screen
+                            showScreen()
                         }
-                        val successIntent = Intent(this@MainActivity, BroCastHome::class.java).apply {
-                            putExtra("broName", broName)
-                        }
-                        val sharedPreferences = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
-                        val editor = sharedPreferences.edit()
-                        editor.putString("BRONAME", broName)
-                        editor.putString("PASSWORD", password)
-                        editor.apply()
-                        startActivity(successIntent)
                     } else {
                         startActivity(
                             Intent(
