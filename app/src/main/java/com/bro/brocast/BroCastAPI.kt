@@ -1,11 +1,15 @@
 package com.bro.brocast
 
 import com.google.gson.GsonBuilder
+import okhttp3.OkHttpClient
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.http.*
+import retrofit2.http.GET
+import retrofit2.http.Path
+import java.util.concurrent.TimeUnit
+
 
 class BroCastAPI {
     interface APIService {
@@ -27,10 +31,18 @@ class BroCastAPI {
     }
 
     companion object {
+
+        // This allows us to set a timeout. We don't want to wait a long time for a server response.
+        val okHttpClient = OkHttpClient.Builder()
+            .readTimeout(2, TimeUnit.SECONDS)
+            .connectTimeout(2, TimeUnit.SECONDS)
+            .build()
+
         // The URL is how to get from the android emulator the the localhost on the computer.
         private val retrofit = Retrofit.Builder()
             .baseUrl("http://10.0.2.2:5000")
             .addConverterFactory(GsonConverterFactory.create(GsonBuilder().create()))
+            .client(okHttpClient)
             .build()
 
         var service = retrofit.create(APIService::class.java)

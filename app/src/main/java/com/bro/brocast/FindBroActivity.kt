@@ -81,12 +81,9 @@ class FindBroActivity: AppCompatActivity() {
                             ) {
                                 if (response.isSuccessful) {
                                     val msg = response.body()?.string()
-                                    println("The GET message returned from the server:: $msg")
                                     Toast.makeText(applicationContext, msg, Toast.LENGTH_SHORT)
                                         .show()
                                     if (msg != null) {
-                                        println("The GET message returned from the server:: $msg")
-
                                         val parser: Parser = Parser.default()
                                         val stringBuilder: StringBuilder = StringBuilder(msg)
                                         val json: JsonObject = parser.parse(stringBuilder) as JsonObject

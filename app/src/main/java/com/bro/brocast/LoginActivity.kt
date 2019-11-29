@@ -18,6 +18,8 @@ import se.simbio.encryption.Encryption
 class LoginActivity: AppCompatActivity() {
 
     var encryption: Encryption? = null
+    // This variable is a simple lock for the login button functionality.
+    private var pressedLogin = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,16 +34,20 @@ class LoginActivity: AppCompatActivity() {
 
         buttonLoginBro.setOnClickListener(clickLoginListener)
         buttonForgotPass.setOnClickListener(clickLoginListener)
+        pressedLogin = false
     }
 
     private val clickLoginListener = View.OnClickListener { view ->
         when (view.getId()) {
             R.id.buttonLoginBro -> {
-                val broName = broNameLogin.text.toString()
-                val password = passwordLogin.text.toString()
-                val passwordEncrypt = encryption!!.encryptOrNull(password)
-                println("bro $broName wants to login!")
-                loginBro(broName, passwordEncrypt)
+                if (!pressedLogin) {
+                    pressedLogin = true
+                    val broName = broNameLogin.text.toString()
+                    val password = passwordLogin.text.toString()
+                    val passwordEncrypt = encryption!!.encryptOrNull(password)
+                    println("bro $broName wants to login!")
+                    loginBro(broName, passwordEncrypt)
+                }
             }
             R.id.buttonForgotPass -> {
                 TODO("implement the 'forgot pass' screen.")
@@ -55,7 +61,7 @@ class LoginActivity: AppCompatActivity() {
             .loginBro(broName, password)
             .enqueue(object : Callback<ResponseBody> {
                 override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                    println("An exception occured with the GET call:: " + t.message)
+                    pressedLogin = false
                     // The BroCast Backend server is not running
                     Toast.makeText(
                         applicationContext,
@@ -63,14 +69,21 @@ class LoginActivity: AppCompatActivity() {
                                 "We appologize for the inconvenience, please try again later",
                         Toast.LENGTH_SHORT
                     ).show()
-                    TODO("it seems that if it fails it still logs in. Fix it")
+                    // We will empty the stored login when this fails.
+                    val sharedPreferences = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
+                    val editor = sharedPreferences.edit()
+                    // The bro is logged out so we will empty the stored bro data
+                    // and return to the home screen
+                    editor.putString("BRONAME", "")
+                    editor.putString("PASSWORD", "")
+                    editor.apply()
                 }
                 override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                    pressedLogin = false
                     if (response.isSuccessful) {
                         val msg = response.body()?.string()
                         Toast.makeText(applicationContext, msg, Toast.LENGTH_SHORT).show()
                         if (msg != null) {
-                            println("The GET message returned from the server:: $msg")
                             val parser: Parser = Parser.default()
                             val stringBuilder: StringBuilder = StringBuilder(msg)
                             val json: JsonObject = parser.parse(stringBuilder) as JsonObject

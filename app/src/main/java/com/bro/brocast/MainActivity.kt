@@ -26,13 +26,18 @@ class MainActivity : AppCompatActivity() {
         // previously made or logged in with an account for which he knows the login information
         // We automatically log in if this is the case.
         if (broName != "" && password != "") {
+            println("Welcome back br $broName we will start the autmoatic login")
             automaticLogin(broName, password)
+        } else {
+            // TODO @Skools: doing it like this will show a white screen until it fails, maybe add loading screen?
+            showScreen()
         }
+    }
 
+    private val showScreen = {
         setContentView(R.layout.activity_main)
         buttonLogin.setOnClickListener(clickButtonListener)
         buttonRegister.setOnClickListener(clickButtonListener)
-
     }
 
     private val clickButtonListener = View.OnClickListener { view ->
@@ -54,21 +59,28 @@ class MainActivity : AppCompatActivity() {
             .loginBro(broName, password)
             .enqueue(object : Callback<ResponseBody> {
                 override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                     println("An exception occured with the GET call:: " + t.message)
-                    // The server is not responding. Open the main activity and the error will
-                    // be shown if the bro tries to login with the login screen or register.
-                    startActivity(
-                        Intent(
-                            this@MainActivity, MainActivity::class.java)
-                    )
+                    // The server is not responding. show an error and display the main screen
+                    Toast.makeText(
+                        applicationContext,
+                        "The BroCast server is not responding. " +
+                                "We appologize for the inconvenience, please try again later",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    // TODO @Skools: It will show a white screen for a while, possibly add loading screen or something?
+                    showScreen()
+                    val sharedPreferences = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
+                    val editor = sharedPreferences.edit()
+                    // The bro is logged out so we will empty the stored bro data
+                    // and return to the home screen
+                    editor.putString("BRONAME", "")
+                    editor.putString("PASSWORD", "")
+                    editor.apply()
                 }
                 override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                     if (response.isSuccessful) {
                         val msg = response.body()?.string()
-                        println("The GET message returned from the server:: $msg")
                         Toast.makeText(applicationContext, msg, Toast.LENGTH_SHORT).show()
                         if (msg != null) {
-                            println("The GET message returned from the server:: $msg")
                             Toast.makeText(
                                 applicationContext,
                                 "you just logged in!",

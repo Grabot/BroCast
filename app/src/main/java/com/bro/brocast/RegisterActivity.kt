@@ -18,6 +18,8 @@ import se.simbio.encryption.Encryption
 class RegisterActivity : AppCompatActivity() {
 
     var encryption: Encryption? = null
+    // A simple variable to lock the register button after it's pressed
+    private var pressedRegister = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,16 +38,20 @@ class RegisterActivity : AppCompatActivity() {
             Encryption.getDefault(secretBroCastKey, saltyBroCastSalt, ByteArray(16))
 
         buttonRegisterBro.setOnClickListener(clickRegisterListener)
+        pressedRegister = false
     }
 
     private val clickRegisterListener = View.OnClickListener { view ->
         when (view.getId()) {
             R.id.buttonRegisterBro -> {
-                val broName = broNameRegister.text.toString()
-                val password = passwordRegister.text.toString()
-                val passwordEncrypt = encryption!!.encryptOrNull(password)
-                println("bro $broName wants to register!")
-                registerBro(broName, passwordEncrypt)
+                if (!pressedRegister) {
+                    pressedRegister = true
+                    val broName = broNameRegister.text.toString()
+                    val password = passwordRegister.text.toString()
+                    val passwordEncrypt = encryption!!.encryptOrNull(password)
+                    println("bro $broName wants to register!")
+                    registerBro(broName, passwordEncrypt)
+                }
             }
         }
     }
@@ -56,20 +62,15 @@ class RegisterActivity : AppCompatActivity() {
             .registerBro(broName, password)
             .enqueue(object : Callback<ResponseBody> {
                 override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                    failedRegistration("Something went wrong, we apologize for the inconvenience")
-                    // The BroCast Backend server is not running
-                    Toast.makeText(
-                        applicationContext,
-                        "The BroCast server is not responding. " +
-                                "We appologize for the inconvenience, please try again later",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    pressedRegister = false
+                    failedRegistration("The BroCast server is not responding. \n" +
+                            "We appologize for the inconvenience, please try again later")
+
                 }
                 override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                    pressedRegister = false
                     if (response.isSuccessful) {
                         val msg = response.body()?.string()
-                        println("The GET message returned from the server:: $msg")
-                        Toast.makeText(applicationContext, msg, Toast.LENGTH_SHORT).show()
                         if (msg != null) {
                             val parser: Parser = Parser.default()
                             val stringBuilder: StringBuilder = StringBuilder(msg)
@@ -112,10 +113,8 @@ class RegisterActivity : AppCompatActivity() {
     fun failedRegistration(reason: String) {
         Toast.makeText(
             applicationContext,
-            "A problem occurred \n$reason",
+            reason,
             Toast.LENGTH_SHORT
         ).show()
-        startActivity(Intent(
-            this@RegisterActivity, RegisterActivity::class.java))
     }
 }
