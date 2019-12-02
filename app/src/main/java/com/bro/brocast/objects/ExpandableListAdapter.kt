@@ -10,9 +10,9 @@ import android.widget.TextView
 import android.widget.Toast
 import com.bro.brocast.R
 
-class ExpandableListAdapter(var context: Context, var expandableListView : ExpandableListView, var header : MutableList<String>, var body : MutableList<MutableList<String>>) : BaseExpandableListAdapter() {
+class ExpandableListAdapter(var context: Context, var expandableListView : ExpandableListView, var header : MutableList<Bro>, var body : MutableList<MutableList<Bro>>) : BaseExpandableListAdapter() {
 
-    override fun getGroup(groupPosition: Int): String {
+    override fun getGroup(groupPosition: Int): Bro {
         return header[groupPosition]
     }
 
@@ -38,14 +38,19 @@ class ExpandableListAdapter(var context: Context, var expandableListView : Expan
             view = layoutInflater.inflate(R.layout.bro_list, parent, false)
         }
 
-        val title = view?.findViewById<TextView>(R.id.broListBroName)
-        title?.text = getGroup(groupPosition)
-        title?.setOnClickListener {
+        val textView: TextView = view!!.findViewById(R.id.broListBroName)
+
+        val bro: Bro = getGroup(groupPosition)
+//        val headerText: String = getGroup(groupPosition)
+
+        textView.text = bro.broName
+
+        view.setOnClickListener {
             if(expandableListView.isGroupExpanded(groupPosition))
                 expandableListView.collapseGroup(groupPosition)
             else
                 expandableListView.expandGroup(groupPosition)
-            Toast.makeText(context, getGroup(groupPosition), Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, getGroup(groupPosition).broName, Toast.LENGTH_SHORT).show()
         }
         return view
     }
@@ -54,7 +59,7 @@ class ExpandableListAdapter(var context: Context, var expandableListView : Expan
         return body[groupPosition].size
     }
 
-    override fun getChild(groupPosition: Int, childPosition: Int): String {
+    override fun getChild(groupPosition: Int, childPosition: Int): Bro {
         return body[groupPosition][childPosition]
     }
 
@@ -72,14 +77,13 @@ class ExpandableListAdapter(var context: Context, var expandableListView : Expan
         var view: View? = convertView
         if(view == null){
             val layoutInflater: LayoutInflater = LayoutInflater.from(context)
-            // We will just assume that this always holds.
             view = layoutInflater.inflate(R.layout.bro_list_click, parent, false)
         }
         val title = view?.findViewById<TextView>(R.id.broListClicked)
-        title?.text = getChild(groupPosition,childPosition)
-        t
+        title?.text = getChild(groupPosition,childPosition).broName
+
         title?.setOnClickListener {
-            Toast.makeText(context, getChild(groupPosition,childPosition),Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, getChild(groupPosition,childPosition).broName,Toast.LENGTH_SHORT).show()
         }
         return view
     }

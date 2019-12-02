@@ -23,14 +23,10 @@ class BroAdapter(private val context: Activity,
         }
 
         val textView: TextView = view!!.findViewById(R.id.broListBroName)
-        // TODO @Sander: Only added to see if I can add multiple resources. Find something better
-        val textView1: TextView = view.findViewById(R.id.broListBroId)
-        val textView2: TextView = view.findViewById(R.id.broListClicked)
 
         val person: Bro = bros.get(position)
 
         textView.text = person.broName
-        textView1.text = person.id.toString()
 
         return view
     }

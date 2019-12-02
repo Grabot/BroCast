@@ -18,11 +18,6 @@
             android:textSize="15sp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
-        <TextView
-            android:id="@+id/broListBroId"
-            android:text="@string/bro_id"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
     </LinearLayout>
 
 </LinearLayout>
