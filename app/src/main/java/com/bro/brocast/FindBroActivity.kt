@@ -4,6 +4,8 @@ import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.widget.BaseExpandableListAdapter
+import android.widget.ExpandableListView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.beust.klaxon.JsonArray
@@ -35,6 +37,20 @@ class FindBroActivity: AppCompatActivity() {
 
 
         broAdapter!!.expandableListView.visibility = View.INVISIBLE
+
+        broAdapter!!.expandableListView.setOnGroupExpandListener { groupPosition ->
+            Toast.makeText(applicationContext, potentialBros[groupPosition].broName + " List Expanded.", Toast.LENGTH_SHORT).show()
+        }
+
+        broAdapter!!.expandableListView.setOnGroupCollapseListener { groupPosition ->
+            Toast.makeText(applicationContext, potentialBros[groupPosition].broName + " List Collapsed.", Toast.LENGTH_SHORT).show()
+        }
+
+        broAdapter!!.expandableListView.setOnChildClickListener { parent, v, groupPosition, childPosition, id ->
+            Toast.makeText(applicationContext, "Clicked: " + potentialBros[groupPosition].broName + " -> " + body[groupPosition].get(childPosition).id.toString(), Toast.LENGTH_SHORT).show()
+            false
+        }
+
 
         buttonSearchBros.setOnClickListener(clickButtonListener)
     }
