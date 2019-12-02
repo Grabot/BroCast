@@ -10,7 +10,7 @@ import android.widget.TextView
 import android.widget.Toast
 import com.bro.brocast.R
 
-class ExpandableListAdapter(var context: Context, var expandableListView : ExpandableListView, var header : MutableList<Bro>, var body : MutableList<MutableList<Bro>>) : BaseExpandableListAdapter() {
+class ExpandableListAdapter(var context: Context, var expandableListView : ExpandableListView, var header : ArrayList<Bro>, var body : ArrayList<ArrayList<Bro>>) : BaseExpandableListAdapter() {
 
     override fun getGroup(groupPosition: Int): Bro {
         return header[groupPosition]

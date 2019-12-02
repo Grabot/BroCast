@@ -72,7 +72,7 @@ class BroCastHome: AppCompatActivity() {
             R.id.buttonFindBros -> {
                 startActivity(
                     Intent(
-                        this@BroCastHome, FindBroTest::class.java)
+                        this@BroCastHome, FindBroActivity::class.java)
                 )
             }
         }

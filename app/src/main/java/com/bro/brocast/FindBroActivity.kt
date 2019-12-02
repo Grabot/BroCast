@@ -4,53 +4,39 @@ import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import android.widget.AdapterView
-import android.widget.ListView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.beust.klaxon.JsonArray
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Parser
 import com.bro.brocast.objects.Bro
-import com.bro.brocast.objects.BroAdapter
+import com.bro.brocast.objects.ExpandableListAdapter
 import kotlinx.android.synthetic.main.activity_find_bros.*
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.lang.Exception
 
 
 class FindBroActivity: AppCompatActivity() {
 
-    lateinit var listView:ListView
+    val body: ArrayList<ArrayList<Bro>> = ArrayList()
 
     var potentialBros = ArrayList<Bro>()
-    var broAdapter: BroAdapter? = null
+    var broAdapter: ExpandableListAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_find_bros)
 
-        broAdapter = BroAdapter(this, R.layout.bro_list, potentialBros)
+        val listView = bro_list_view
+        broAdapter = ExpandableListAdapter(this@FindBroActivity, listView, potentialBros, body)
+        listView.setAdapter(broAdapter)
 
-        listView = findViewById(R.id.bro_list_view)
-        listView.adapter = broAdapter
-        listView.visibility = View.INVISIBLE
 
-        listView.onItemClickListener = broClickListener
+        broAdapter!!.expandableListView.visibility = View.INVISIBLE
 
         buttonSearchBros.setOnClickListener(clickButtonListener)
-    }
-
-    private val broClickListener = AdapterView.OnItemClickListener {  parent, view, position, id ->
-
-        val itemValue = listView.getItemAtPosition(position) as Bro
-        // TODO @Sander: Toast the values for now, add actual functionality to add the bro.
-        Toast.makeText(applicationContext,
-            "Position :$position\nItem Value : " + itemValue.broName, Toast.LENGTH_LONG)
-            .show()
-
     }
 
     private val clickButtonListener = View.OnClickListener { view ->
@@ -90,15 +76,19 @@ class FindBroActivity: AppCompatActivity() {
                                         val bros = json.get("bros") as JsonArray<*>
 
                                         potentialBros.clear()
+                                        body.clear()
                                         for (b in bros) {
                                             val foundBro = b as JsonObject
                                             val broName: String = foundBro.get("bro_name") as String
                                             val id: Int = foundBro.get("id") as Int
                                             val bro = Bro(broName, id, "")
+                                            val brorray = ArrayList<Bro>()
                                             potentialBros.add(bro)
+                                            brorray.add(bro)
+                                            body.add(brorray)
                                         }
                                         broAdapter!!.notifyDataSetChanged()
-                                        listView.visibility = View.VISIBLE
+                                        broAdapter!!.expandableListView.visibility = View.VISIBLE
                                         try {
                                             // We want to show the listview and hide the keyboard.
                                             val imm: InputMethodManager =
