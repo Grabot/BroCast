@@ -82,12 +82,22 @@ class OpeningActivity : AppCompatActivity() {
                                 val sharedPreferences = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
                                 val editor = sharedPreferences.edit()
                                 editor.putString("BRONAME", broName)
-                                editor.putString("PASSWORD", password)
+                                editor.putString("PASSWORD", "$password:broCastPasswordEnd")
                                 editor.apply()
                                 startActivity(successIntent)
                             } else {
-                                // It failed to login, so we will show the main screen
-                                TODO("implement action if it arrives here")
+                                // The login failed. We show the main screen and empty the preferences.
+                                val sharedPreferences = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
+                                val editor = sharedPreferences.edit()
+                                // The bro is logged out so we will empty the stored bro data
+                                // and return to the home screen
+                                editor.putString("BRONAME", "")
+                                editor.putString("PASSWORD", "")
+                                editor.apply()
+                                startActivity(
+                                    Intent(
+                                        this@OpeningActivity, MainActivity::class.java)
+                                )
                             }
                         } else {
                             // There was an empty message from the server so we will show the main screen

@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="400dp"
         android:autofillHints="TODO"
-        android:hint="@string/broname_hint"
+        android:hint="test bro"
         android:inputType="text"
         android:textAlignment="center"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -24,14 +24,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="100dp"
-        android:text="Search your Bro"
+        android:text="test button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ExpandableListView
-        android:id="@+id/bro_list_view"
+        android:id="@+id/bro_list_view2"
         android:layout_width="match_parent"
         android:layout_height="300dp"
         app:layout_constraintBottom_toBottomOf="parent"/>
