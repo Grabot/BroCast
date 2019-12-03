@@ -24,9 +24,15 @@ class BroCastAPI {
             @Path("bro_name") broName: String,
             @Path("password") password: String): Call<ResponseBody>
 
-        @GET("/api/v1.0/search/{bro}")
+        @GET("/api/v1.0/search/{bro}/{bros_bro}")
         fun findBro(
-            @Path("bro") bro: String): Call<ResponseBody>
+            @Path("bro") bro: String,
+            @Path("bros_bro") brosBro: String): Call<ResponseBody>
+
+        @GET("/api/v1.0/add/{bro}/{bros_bro}")
+        fun addBro(
+            @Path("bro") bro: String,
+            @Path("bros_bro") brosBro: String): Call<ResponseBody>
 
     }
 

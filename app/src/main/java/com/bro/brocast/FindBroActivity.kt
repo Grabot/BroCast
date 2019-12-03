@@ -38,21 +38,26 @@ class FindBroActivity: AppCompatActivity() {
 
         broAdapter!!.expandableListView.visibility = View.INVISIBLE
 
-        broAdapter!!.expandableListView.setOnGroupExpandListener { groupPosition ->
-            Toast.makeText(applicationContext, potentialBros[groupPosition].broName + " List Expanded.", Toast.LENGTH_SHORT).show()
-        }
-
-        broAdapter!!.expandableListView.setOnGroupCollapseListener { groupPosition ->
-            Toast.makeText(applicationContext, potentialBros[groupPosition].broName + " List Collapsed.", Toast.LENGTH_SHORT).show()
-        }
+//        broAdapter!!.expandableListView.setOnGroupExpandListener { groupPosition ->
+//            Toast.makeText(applicationContext, potentialBros[groupPosition].broName + " List Expanded.", Toast.LENGTH_SHORT).show()
+//        }
+//        broAdapter!!.expandableListView.setOnGroupCollapseListener { groupPosition ->
+//            Toast.makeText(applicationContext, potentialBros[groupPosition].broName + " List Collapsed.", Toast.LENGTH_SHORT).show()
+//        }
 
         broAdapter!!.expandableListView.setOnChildClickListener { parent, v, groupPosition, childPosition, id ->
+            var bro = potentialBros[groupPosition]
             Toast.makeText(applicationContext, "Clicked: " + potentialBros[groupPosition].broName + " -> " + body[groupPosition].get(childPosition).id.toString(), Toast.LENGTH_SHORT).show()
+            addBro(bro)
             false
         }
 
 
         buttonSearchBros.setOnClickListener(clickButtonListener)
+    }
+
+    fun addBro(bro: Bro) {
+
     }
 
     private val clickButtonListener = View.OnClickListener { view ->
@@ -64,7 +69,7 @@ class FindBroActivity: AppCompatActivity() {
                 } else {
                     BroCastAPI
                         .service
-                        .findBro(potentialBro)
+                        .findBro("Mark", potentialBro)  // TODO @Skools: change "Mark" to be the current logged in user
                         .enqueue(object : Callback<ResponseBody> {
                             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                                 println("An exception occured with the GET call:: " + t.message)
@@ -93,6 +98,7 @@ class FindBroActivity: AppCompatActivity() {
 
                                         potentialBros.clear()
                                         body.clear()
+
                                         for (b in bros) {
                                             val foundBro = b as JsonObject
                                             val broName: String = foundBro.get("bro_name") as String
@@ -103,6 +109,11 @@ class FindBroActivity: AppCompatActivity() {
                                             brorray.add(bro)
                                             body.add(brorray)
                                         }
+                                        var temp = Bro("temp", 4, "")
+                                        potentialBros.add(temp)
+                                        val brorray = ArrayList<Bro>()
+                                        brorray.add(temp)
+                                        body.add(brorray)
                                         broAdapter!!.notifyDataSetChanged()
                                         broAdapter!!.expandableListView.visibility = View.VISIBLE
                                         try {
