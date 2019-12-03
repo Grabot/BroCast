@@ -70,8 +70,8 @@ class BroAdapter(var context: Context, var expandableListView : ExpandableListVi
             val layoutInflater: LayoutInflater = LayoutInflater.from(context)
             view = layoutInflater.inflate(R.layout.bro_list_click, parent, false)
         }
-        val title = view?.findViewById<TextView>(R.id.broListClicked)
-        title?.text = getChild(groupPosition,childPosition).broName
+        val add_bro = view?.findViewById<TextView>(R.id.broListClicked)
+        add_bro?.text = "Add bro " + getChild(groupPosition,childPosition).broName
 
         return view
     }
