@@ -19,12 +19,14 @@ class BroCastHome: AppCompatActivity() {
     var bros = ArrayList<String>()
     var broAdapter: ArrayAdapter<String>? = null
 
+    var broName: String? = ""
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.brocast_home)
 
         val intent = intent
-        val broName= intent.getStringExtra("broName")
+        broName = intent.getStringExtra("broName")
         val welcomeText = getString(R.string.brocast_welcome) + " $broName"
         broCastWelcomeView.text = welcomeText
 
@@ -52,6 +54,12 @@ class BroCastHome: AppCompatActivity() {
                     .show()
             }
         }
+
+        fillBroList()
+    }
+
+    private fun fillBroList() {
+
     }
 
     private val clickButtonListener = View.OnClickListener { view ->
@@ -70,10 +78,10 @@ class BroCastHome: AppCompatActivity() {
                 )
             }
             R.id.buttonFindBros -> {
-                startActivity(
-                    Intent(
-                        this@BroCastHome, FindBroActivity::class.java)
-                )
+                val successIntent = Intent(this@BroCastHome, FindBroActivity::class.java).apply {
+                    putExtra("broName", broName)
+                }
+                startActivity(successIntent)
             }
         }
     }

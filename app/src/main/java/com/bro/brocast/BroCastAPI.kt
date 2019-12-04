@@ -24,15 +24,18 @@ class BroCastAPI {
             @Path("bro_name") broName: String,
             @Path("password") password: String): Call<ResponseBody>
 
-        @GET("/api/v1.0/search/{bro}/{bros_bro}")
+        @GET("/api/v1.0/search/{bro}")
         fun findBro(
-            @Path("bro") bro: String,
-            @Path("bros_bro") brosBro: String): Call<ResponseBody>
+            @Path("bro") bro: String): Call<ResponseBody>
 
         @GET("/api/v1.0/add/{bro}/{bros_bro}")
         fun addBro(
             @Path("bro") bro: String,
             @Path("bros_bro") brosBro: String): Call<ResponseBody>
+
+        @GET("/api/v1.0/get/bros/{bro}")
+        fun getBros(
+            @Path("bro") bro: String): Call<ResponseBody>
 
     }
 
@@ -45,6 +48,7 @@ class BroCastAPI {
             .build()
 
         private var baseURL = "http://brocast-env.cb7edmnitt.eu-central-1.elasticbeanstalk.com/"
+//        private var baseURL = "http://10.0.2.2:5000"
         // The URL is how to get from the android emulator the the localhost on the computer.
         private val retrofit = Retrofit.Builder()
             .baseUrl(baseURL)

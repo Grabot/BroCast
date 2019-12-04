@@ -1,6 +1,7 @@
 package com.bro.brocast
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -27,9 +28,14 @@ class FindBroActivity: AppCompatActivity() {
     var potentialBros = ArrayList<Bro>()
     var broAdapter: BroAdapter? = null
 
+    var broName: String = ""
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_find_bros)
+
+        val intent = intent
+        broName = intent.getStringExtra("broName")
 
         val listView = bro_list_view
         broAdapter = BroAdapter(this@FindBroActivity, listView, potentialBros, body)
@@ -57,7 +63,66 @@ class FindBroActivity: AppCompatActivity() {
     }
 
     fun addBro(bro: Bro) {
-
+        println("bro $broName wants to add ${bro.broName} to his brolist")
+        BroCastAPI
+            .service
+            .addBro(broName, bro.broName)
+            .enqueue(object : Callback<ResponseBody> {
+                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                    println("An exception occured with the GET call:: " + t.message)
+                    // The BroCast Backend server is not running
+                    Toast.makeText(
+                        applicationContext,
+                        "The BroCast server is not responding. " +
+                                "We appologize for the inconvenience, please try again later",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+                override fun onResponse(
+                    call: Call<ResponseBody>,
+                    response: Response<ResponseBody>
+                ) {
+                    if (response.isSuccessful) {
+                        val msg = response.body()?.string()
+                        Toast.makeText(applicationContext, msg, Toast.LENGTH_SHORT)
+                            .show()
+                        if (msg != null) {
+                            val parser: Parser = Parser.default()
+                            val stringBuilder: StringBuilder = StringBuilder(msg)
+                            val json: JsonObject = parser.parse(stringBuilder) as JsonObject
+//                            val result = json.get("result")
+                            val result = json.get("results")
+                            if (result!! == true) {
+                                println("bro $broName wants to add ${bro.broName} to his brolist")
+                                Toast.makeText(
+                                    applicationContext,
+                                    "bro $broName and bro ${bro.broName} are now bros",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                val successIntent = Intent(this@FindBroActivity, BroCastHome::class.java).apply {
+                                    putExtra("broName", broName)
+                                }
+                                startActivity(successIntent)
+                            } else {
+                                Toast.makeText(
+                                    applicationContext,
+                                    "Something went wrong " +
+                                            "We appologize for the inconvenience, please try again later",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }
+                    } else {
+                        // The BroCast Backend server gave an error
+                        Toast.makeText(
+                            applicationContext,
+                            "The BroCast server is down right. " +
+                                    "We appologize for the inconvenience, please try again later",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+            })
     }
 
     private val clickButtonListener = View.OnClickListener { view ->
@@ -69,7 +134,7 @@ class FindBroActivity: AppCompatActivity() {
                 } else {
                     BroCastAPI
                         .service
-                        .findBro("Mark", potentialBro)  // TODO @Skools: change "Mark" to be the current logged in user
+                        .findBro(potentialBro)
                         .enqueue(object : Callback<ResponseBody> {
                             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                                 println("An exception occured with the GET call:: " + t.message)
@@ -103,17 +168,14 @@ class FindBroActivity: AppCompatActivity() {
                                             val foundBro = b as JsonObject
                                             val broName: String = foundBro.get("bro_name") as String
                                             val id: Int = foundBro.get("id") as Int
+
+                                            // Add the bro to the potential bro list
                                             val bro = Bro(broName, id, "")
                                             val brorray = ArrayList<Bro>()
                                             potentialBros.add(bro)
                                             brorray.add(bro)
                                             body.add(brorray)
                                         }
-                                        var temp = Bro("temp", 4, "")
-                                        potentialBros.add(temp)
-                                        val brorray = ArrayList<Bro>()
-                                        brorray.add(temp)
-                                        body.add(brorray)
                                         broAdapter!!.notifyDataSetChanged()
                                         broAdapter!!.expandableListView.visibility = View.VISIBLE
                                         try {
