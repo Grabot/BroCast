@@ -47,10 +47,8 @@ class BroCastAPI {
             .connectTimeout(2, TimeUnit.SECONDS)
             .build()
 
-        private var baseURL = brocastURL
-
         private val retrofit = Retrofit.Builder()
-            .baseUrl(baseURL)
+            .baseUrl(brocastURLHome)
             .addConverterFactory(GsonConverterFactory.create(GsonBuilder().create()))
             .client(okHttpClient)
             .build()

@@ -5,15 +5,13 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import android.widget.BaseExpandableListAdapter
-import android.widget.ExpandableListView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.beust.klaxon.JsonArray
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Parser
 import com.bro.brocast.objects.Bro
-import com.bro.brocast.objects.BroAdapter
+import com.bro.brocast.objects.ExpandableBroAdapter
 import kotlinx.android.synthetic.main.activity_find_bros.*
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -26,7 +24,7 @@ class FindBroActivity: AppCompatActivity() {
     val body: ArrayList<ArrayList<Bro>> = ArrayList()
 
     var potentialBros = ArrayList<Bro>()
-    var broAdapter: BroAdapter? = null
+    var expandableBroAdapter: ExpandableBroAdapter? = null
 
     var broName: String = ""
 
@@ -38,20 +36,20 @@ class FindBroActivity: AppCompatActivity() {
         broName = intent.getStringExtra("broName")
 
         val listView = bro_list_view
-        broAdapter = BroAdapter(this@FindBroActivity, listView, potentialBros, body)
-        listView.setAdapter(broAdapter)
+        expandableBroAdapter = ExpandableBroAdapter(this@FindBroActivity, listView, potentialBros, body)
+        listView.setAdapter(expandableBroAdapter)
 
 
-        broAdapter!!.expandableListView.visibility = View.INVISIBLE
+        expandableBroAdapter!!.expandableListView.visibility = View.INVISIBLE
 
-//        broAdapter!!.expandableListView.setOnGroupExpandListener { groupPosition ->
+//        expandableBroAdapter!!.expandableListView.setOnGroupExpandListener { groupPosition ->
 //            Toast.makeText(applicationContext, potentialBros[groupPosition].broName + " List Expanded.", Toast.LENGTH_SHORT).show()
 //        }
-//        broAdapter!!.expandableListView.setOnGroupCollapseListener { groupPosition ->
+//        expandableBroAdapter!!.expandableListView.setOnGroupCollapseListener { groupPosition ->
 //            Toast.makeText(applicationContext, potentialBros[groupPosition].broName + " List Collapsed.", Toast.LENGTH_SHORT).show()
 //        }
 
-        broAdapter!!.expandableListView.setOnChildClickListener { parent, v, groupPosition, childPosition, id ->
+        expandableBroAdapter!!.expandableListView.setOnChildClickListener { parent, v, groupPosition, childPosition, id ->
             var bro = potentialBros[groupPosition]
             Toast.makeText(applicationContext, "Clicked: " + potentialBros[groupPosition].broName + " -> " + body[groupPosition].get(childPosition).id.toString(), Toast.LENGTH_SHORT).show()
             addBro(bro)
@@ -91,7 +89,7 @@ class FindBroActivity: AppCompatActivity() {
                             val stringBuilder: StringBuilder = StringBuilder(msg)
                             val json: JsonObject = parser.parse(stringBuilder) as JsonObject
 //                            val result = json.get("result")
-                            val result = json.get("results")
+                            val result = json.get("result")
                             if (result!! == true) {
                                 println("bro $broName wants to add ${bro.broName} to his brolist")
                                 Toast.makeText(
@@ -164,6 +162,7 @@ class FindBroActivity: AppCompatActivity() {
                                         potentialBros.clear()
                                         body.clear()
 
+                                        // TODO @Skools: add a check that will exclude the logged in bro. We will do this client side instead of server side to not do too much on the server side
                                         for (b in bros) {
                                             val foundBro = b as JsonObject
                                             val broName: String = foundBro.get("bro_name") as String
@@ -176,8 +175,8 @@ class FindBroActivity: AppCompatActivity() {
                                             brorray.add(bro)
                                             body.add(brorray)
                                         }
-                                        broAdapter!!.notifyDataSetChanged()
-                                        broAdapter!!.expandableListView.visibility = View.VISIBLE
+                                        expandableBroAdapter!!.notifyDataSetChanged()
+                                        expandableBroAdapter!!.expandableListView.visibility = View.VISIBLE
                                         try {
                                             // We want to show the listview and hide the keyboard.
                                             val imm: InputMethodManager =

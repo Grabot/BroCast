@@ -104,11 +104,15 @@ class OpeningActivity : AppCompatActivity() {
                             TODO("implement action if it arrives here")
                         }
                     } else {
+                        Toast.makeText(
+                            applicationContext,
+                            "The server is down, we're sorry for the inconvenience. Please try again later!",
+                            Toast.LENGTH_SHORT
+                        ).show()
                         startActivity(
                             Intent(
                                 this@OpeningActivity, MainActivity::class.java)
                         )
-                        TODO("the bro will come back to the login screen, show which error occured")
                     }
                 }
             })

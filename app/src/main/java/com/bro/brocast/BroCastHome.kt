@@ -5,12 +5,14 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
-import android.widget.ArrayAdapter
 import android.widget.ListView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.beust.klaxon.JsonArray
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Parser
+import com.bro.brocast.objects.Bro
+import com.bro.brocast.objects.Brodapter
 import kotlinx.android.synthetic.main.brocast_home.*
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -22,8 +24,8 @@ class BroCastHome: AppCompatActivity() {
 
     lateinit var listView: ListView
 
-    var bros = ArrayList<String>()
-    var broAdapter: ArrayAdapter<String>? = null
+    var bros = ArrayList<Bro>()
+    var brodapter: Brodapter? = null
 
     var broName: String = ""
 
@@ -39,29 +41,26 @@ class BroCastHome: AppCompatActivity() {
         buttonLogout.setOnClickListener(clickButtonListener)
         buttonFindBros.setOnClickListener(clickButtonListener)
 
-        broAdapter = ArrayAdapter(this,
+        brodapter = Brodapter(this,
             R.layout.bro_list, bros)
 
         listView = findViewById(R.id.bro_home_list_view)
-        listView.adapter = broAdapter
+        listView.adapter = brodapter
         listView.visibility = View.VISIBLE
 
-        listView.onItemClickListener = object : AdapterView.OnItemClickListener {
-
-            override fun onItemClick(parent: AdapterView<*>, view: View,
-                                     position: Int, id: Long) {
-
-                // value of item that is clicked
-                val itemValue = listView.getItemAtPosition(position) as String
-
-                // Toast the values
-                Toast.makeText(applicationContext,
-                    "Position :$position\nItem Value : $itemValue", Toast.LENGTH_LONG)
-                    .show()
-            }
-        }
+        listView.onItemClickListener = broClickListener
 
         fillBroList()
+    }
+
+    private val broClickListener = AdapterView.OnItemClickListener {  parent, view, position, id ->
+
+        val itemValue = listView.getItemAtPosition(position) as Bro
+        // TODO @Sander: Toast the values for now, add actual functionality to add the bro.
+        Toast.makeText(applicationContext,
+            "Position :$position\nItem Value : " + itemValue.broName, Toast.LENGTH_LONG)
+            .show()
+
     }
 
     private fun fillBroList() {
@@ -87,11 +86,19 @@ class BroCastHome: AppCompatActivity() {
                             val json: JsonObject = parser.parse(stringBuilder) as JsonObject
                             val result = json.get("result")
                             if (result!! == true) {
-                                Toast.makeText(
-                                    applicationContext,
-                                    "you just logged in!",
-                                    Toast.LENGTH_SHORT
-                                ).show()
+                                val broList = json.get("bro_list") as JsonArray<*>
+                                bros.clear()
+                                // TODO @Skools: add a check that will exclude the logged in bro. We will do this client side instead of server side to not do too much on the server side
+                                for (b in broList) {
+                                    val foundBro = b as JsonObject
+                                    val broName: String = foundBro.get("bro_name") as String
+                                    val id: Int = foundBro.get("id") as Int
+
+                                    // Add the bro to the potential bro list
+                                    val bro = Bro(broName, id, "")
+                                    bros.add(bro)
+                                }
+                                brodapter!!.notifyDataSetChanged()
                             } else {
                                 Toast.makeText(
                                     applicationContext,
@@ -101,7 +108,6 @@ class BroCastHome: AppCompatActivity() {
                                 ).show()
                             }
                         }
-
                     } else {
                         TODO("the bro will come back to the login screen, show which error occured")
                     }
