@@ -31,6 +31,7 @@
             android:name=".FindBroActivity"
             android:windowSoftInputMode="adjustNothing"/>
         <activity android:name=".MainActivity" android:windowSoftInputMode="adjustNothing" />
+        <activity android:name=".MessagingActivity" />
     </application>
 
 </manifest>
