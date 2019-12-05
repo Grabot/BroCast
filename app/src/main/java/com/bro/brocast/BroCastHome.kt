@@ -9,7 +9,13 @@ import android.widget.ArrayAdapter
 import android.widget.ListView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.beust.klaxon.JsonObject
+import com.beust.klaxon.Parser
 import kotlinx.android.synthetic.main.brocast_home.*
+import okhttp3.ResponseBody
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 
 class BroCastHome: AppCompatActivity() {
@@ -19,7 +25,7 @@ class BroCastHome: AppCompatActivity() {
     var bros = ArrayList<String>()
     var broAdapter: ArrayAdapter<String>? = null
 
-    var broName: String? = ""
+    var broName: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,7 +65,48 @@ class BroCastHome: AppCompatActivity() {
     }
 
     private fun fillBroList() {
+        BroCastAPI
+            .service
+            .getBros(broName)
+            .enqueue(object : Callback<ResponseBody> {
+                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                    // The BroCast Backend server is not running
+                    Toast.makeText(
+                        applicationContext,
+                        "The BroCast server is not responding. " +
+                                "We appologize for the inconvenience, please try again later",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+                override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                    if (response.isSuccessful) {
+                        val msg = response.body()?.string()
+                        if (msg != null) {
+                            val parser: Parser = Parser.default()
+                            val stringBuilder: StringBuilder = StringBuilder(msg)
+                            val json: JsonObject = parser.parse(stringBuilder) as JsonObject
+                            val result = json.get("result")
+                            if (result!! == true) {
+                                Toast.makeText(
+                                    applicationContext,
+                                    "you just logged in!",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            } else {
+                                Toast.makeText(
+                                    applicationContext,
+                                    "The BroCast server is not responding. " +
+                                            "We appologize for the inconvenience, please try again later",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }
 
+                    } else {
+                        TODO("the bro will come back to the login screen, show which error occured")
+                    }
+                }
+            })
     }
 
     private val clickButtonListener = View.OnClickListener { view ->

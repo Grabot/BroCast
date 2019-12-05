@@ -47,9 +47,8 @@ class BroCastAPI {
             .connectTimeout(2, TimeUnit.SECONDS)
             .build()
 
-        private var baseURL = "http://brocast-env.cb7edmnitt.eu-central-1.elasticbeanstalk.com/"
-//        private var baseURL = "http://10.0.2.2:5000"
-        // The URL is how to get from the android emulator the the localhost on the computer.
+        private var baseURL = brocastURL
+
         private val retrofit = Retrofit.Builder()
             .baseUrl(baseURL)
             .addConverterFactory(GsonConverterFactory.create(GsonBuilder().create()))
