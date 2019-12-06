@@ -3,23 +3,30 @@ package com.bro.brocast
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bro.brocast.objects.Message
 import com.bro.brocast.objects.MessagesAdapter
 import kotlinx.android.synthetic.main.activity_messaging.*
 
 class MessagingActivity: AppCompatActivity() {
 
-    val animals: ArrayList<String> = ArrayList()
+    val messages: ArrayList<Message> = ArrayList()
     private lateinit var broMessageList: RecyclerView
     private lateinit var messagesAdapter: MessagesAdapter
+
+    var broName: String = ""
+    var brosBro: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_messaging)
 
-        addAnimals()
+        val intent = intent
+        broName = intent.getStringExtra("broName")
+        brosBro = intent.getStringExtra("brosBro")
+
+        addMessages()
 
         // Creates a vertical Layout Manager
         broMessageList = findViewById(R.id.broMessages)
@@ -28,8 +35,8 @@ class MessagingActivity: AppCompatActivity() {
         layoutMgr.stackFromEnd = true
         broMessageList.layoutManager = layoutMgr
 
-        println("animals " + animals.size)
-        messagesAdapter = MessagesAdapter("1", animals)
+        println("animals " + messages.size)
+        messagesAdapter = MessagesAdapter(messages)
         broMessages.adapter = messagesAdapter
 
         sendBroMessage.setOnClickListener(clickButtonListener)
@@ -46,40 +53,19 @@ class MessagingActivity: AppCompatActivity() {
         }
     }
 
-    // Adds animals to the empty animals ArrayList
-    fun addAnimals() {
-        animals.add("dog")
-        animals.add("cat")
-        animals.add("owl")
-        animals.add("cheetah")
-        animals.add("raccoon")
-        animals.add("bird")
-        animals.add("snake")
-        animals.add("lizard")
-        animals.add("hamster")
-        animals.add("bear")
-        animals.add("lion")
-        animals.add("tiger")
-        animals.add("horse")
-        animals.add("frog")
-        animals.add("fish")
-        animals.add("shark")
-        animals.add("turtle")
-        animals.add("elephant")
-        animals.add("cow")
-        animals.add("beaver")
-        animals.add("bison")
-        animals.add("porcupine")
-        animals.add("rat")
-        animals.add("mouse")
-        animals.add("goose")
-        animals.add("deer")
-        animals.add("fox")
-        animals.add("moose")
-        animals.add("buffalo")
-        animals.add("monkey")
-        animals.add("penguin")
-        animals.add("parrot")
+    private fun addMessages() {
+        messages.add(Message(true, "hello Bro"))
+        messages.add(Message(true, "how are you doing?"))
+        messages.add(Message(false, "Heey Bro, nice to hear from you!"))
+        messages.add(Message(false, "I'm terrible"))
+        messages.add(Message(false, "I cannot express my emotions properly via chat apps"))
+        messages.add(Message(false, "I'm crying right now and you can't tell"))
+        messages.add(Message(true, "I was thinking the same the other day bro"))
+        messages.add(Message(true, "If only there was some sort of app that let's you chat with your emotions, rather than just text"))
+        messages.add(Message(false, "I think that that is impossible"))
+        messages.add(Message(false, "But I will continue to hope"))
+        messages.add(Message(true, "Me to Bro"))
+        messages.add(Message(true, "Smiley face"))
     }
 
 }

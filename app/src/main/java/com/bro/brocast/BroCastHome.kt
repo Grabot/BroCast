@@ -62,6 +62,8 @@ class BroCastHome: AppCompatActivity() {
             .show()
 
         val successIntent = Intent(this@BroCastHome, MessagingActivity::class.java)
+        successIntent.putExtra("broName", broName)
+        successIntent.putExtra("brosBro", bro.broName)
         startActivity(successIntent)
     }
 

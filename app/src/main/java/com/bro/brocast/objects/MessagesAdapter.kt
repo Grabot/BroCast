@@ -7,8 +7,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bro.brocast.R
 
-class MessagesAdapter(private val uid: String,
-                      private var messages: MutableList<String>)  : RecyclerView.Adapter<MessagesAdapter.MessageViewHolder>() {
+class MessagesAdapter(private var messages: MutableList<Message>)  : RecyclerView.Adapter<MessagesAdapter.MessageViewHolder>() {
 
     companion object {
         private const val SENT = 0
@@ -32,33 +31,27 @@ class MessagesAdapter(private val uid: String,
     override fun getItemCount() = messages.size
 
     override fun onBindViewHolder(holder: MessageViewHolder, position: Int) {
-        holder.bind(messages[position])
+        holder.bind(messages[position].body)
     }
 
     override fun getItemViewType(position: Int): Int {
-        if (position % 2 == 0) {
-            println("received on position $position")
-            return RECEIVED
-        } else {
-            println("send on position $position")
+        if (messages[position].sender) {
             return SENT
+        } else {
+            return RECEIVED
         }
-//        return if (messages[position].sender?.uid!!.contentEquals(uid )) {
-//            SENT
-//        } else {
-//            RECEIVED
-//        }
     }
 
-    fun updateMessages(messages: List<String>) {
-        this.messages = messages.toMutableList()
-        notifyDataSetChanged()
-    }
-
-    fun appendMessage(message: String) {
-        this.messages.add(message)
-        notifyItemInserted(this.messages.size - 1)
-    }
+    // TODO @Skools: find out if these are easy to be used to add messages
+//    fun updateMessages(messages: List<String>) {
+//        this.messages = messages.toMutableList()
+//        notifyDataSetChanged()
+//    }
+//
+//    fun appendMessage(message: String) {
+//        this.messages.add(message)
+//        notifyItemInserted(this.messages.size - 1)
+//    }
 
     inner class MessageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val messageText: TextView = itemView.findViewById(R.id.message_text)
@@ -66,9 +59,7 @@ class MessagesAdapter(private val uid: String,
         fun bind(message: String) {
             println("message: $message")
             messageText.text = message
-//            if (message is TextMessage) {
-//                messageText.text = message.text
-//            }
+            // TODO @Skools: possibly expand it here to include pictures and stuff.
         }
     }
 }
