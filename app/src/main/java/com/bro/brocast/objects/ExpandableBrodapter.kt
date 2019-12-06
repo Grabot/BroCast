@@ -9,7 +9,7 @@ import android.widget.ExpandableListView
 import android.widget.TextView
 import com.bro.brocast.R
 
-class ExpandableBroAdapter(var context: Context, var expandableListView : ExpandableListView, var header : ArrayList<Bro>, var body : ArrayList<ArrayList<Bro>>) : BaseExpandableListAdapter() {
+class ExpandableBrodapter(var context: Context, var expandableListView : ExpandableListView, var header : ArrayList<Bro>, var body : ArrayList<ArrayList<Bro>>) : BaseExpandableListAdapter() {
 
     override fun getGroup(groupPosition: Int): Bro {
         return header[groupPosition]
