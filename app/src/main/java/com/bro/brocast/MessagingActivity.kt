@@ -59,9 +59,9 @@ class MessagingActivity: AppCompatActivity() {
                 println("bro $broName wants to send a message to $brosBro. The message is $message")
 
                 val jsonObj = JsonObject()
-                jsonObj.addProperty("bericht", "Een bericht met een boel text erin!")
-
-                println("sending: " + jsonObj.toString())
+                jsonObj.addProperty("bro", broName)
+                jsonObj.addProperty("bros_bro", brosBro)
+                jsonObj.addProperty("message", message)
 
                 BroCastAPI
                     .service

@@ -38,7 +38,7 @@ class BroCastAPI {
             @Path("bro") bro: String): Call<ResponseBody>
 
         @Headers("Content-type: application/json")
-        @POST("/api/post_test")
+        @POST("/api/v1.0/message")
         fun sendMessage(@Body body: JsonObject): Call<ResponseBody>
 
     }
