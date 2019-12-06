@@ -2,12 +2,19 @@ package com.bro.brocast
 
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.beust.klaxon.Parser
 import com.bro.brocast.objects.Message
 import com.bro.brocast.objects.MessagesAdapter
+import com.google.gson.JsonObject
 import kotlinx.android.synthetic.main.activity_messaging.*
+import okhttp3.ResponseBody
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class MessagingActivity: AppCompatActivity() {
 
@@ -48,7 +55,30 @@ class MessagingActivity: AppCompatActivity() {
     private val clickButtonListener = View.OnClickListener { view ->
         when (view.getId()) {
             R.id.sendBroMessage -> {
-                val potentialBro = broMessageField.text.toString()
+                val message = broMessageField.text.toString()
+                println("bro $broName wants to send a message to $brosBro. The message is $message")
+
+                val jsonObj = JsonObject()
+                jsonObj.addProperty("bericht", "Een bericht met een boel text erin!")
+
+                println("sending: " + jsonObj.toString())
+
+                BroCastAPI
+                    .service
+                    .sendMessage(jsonObj)
+                    .enqueue(object : Callback<ResponseBody> {
+                        override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                            println("failed: " + t.message)
+                        }
+
+                        override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                            if (response.isSuccessful) {
+                                val msg = response.body()?.string()
+                                println("response: " + msg)
+                                Toast.makeText(applicationContext, msg, Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    })
             }
         }
     }

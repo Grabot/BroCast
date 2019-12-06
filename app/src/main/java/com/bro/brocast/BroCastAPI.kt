@@ -1,13 +1,13 @@
 package com.bro.brocast
 
 import com.google.gson.GsonBuilder
+import com.google.gson.JsonObject
 import okhttp3.OkHttpClient
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.http.GET
-import retrofit2.http.Path
+import retrofit2.http.*
 import java.util.concurrent.TimeUnit
 
 
@@ -37,6 +37,10 @@ class BroCastAPI {
         fun getBros(
             @Path("bro") bro: String): Call<ResponseBody>
 
+        @Headers("Content-type: application/json")
+        @POST("/api/post_test")
+        fun sendMessage(@Body body: JsonObject): Call<ResponseBody>
+
     }
 
     companion object {
@@ -48,7 +52,7 @@ class BroCastAPI {
             .build()
 
         private val retrofit = Retrofit.Builder()
-            .baseUrl(brocastURL)
+            .baseUrl(brocastURLHome)
             .addConverterFactory(GsonConverterFactory.create(GsonBuilder().create()))
             .client(okHttpClient)
             .build()
