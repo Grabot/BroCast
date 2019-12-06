@@ -16,4 +16,6 @@
     <string name="bro_name">Bro\'s name</string>
     <string name="bro_id">Bro\'s id</string>
     <string name="add_bro">Add bro</string>
+    <string name="bro_message">Type a message</string>
+    <string name="send">send</string>
 </resources>

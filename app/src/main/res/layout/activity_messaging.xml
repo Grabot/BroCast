@@ -6,13 +6,44 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
+    <EditText
+        android:id="@+id/broMessageField"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Message"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:autofillHints="TODO"
+        android:hint="@string/bro_message"
+        android:inputType="text"
+        android:textAlignment="center"
+        app:layout_constraintEnd_toStartOf="@+id/sendBroMessage"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+
+
+    <Button
+        android:id="@+id/sendBroMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="@string/send"
+        app:layout_constraintBottom_toBottomOf="@+id/broMessageField"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/broMessageField"
+        app:layout_constraintTop_toTopOf="@+id/broMessageField" />
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/broMessages"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/broMessageField"
+        tools:layout_editor_absoluteX="8dp" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
