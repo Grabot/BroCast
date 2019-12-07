@@ -71,6 +71,7 @@ class MessagingActivity: AppCompatActivity() {
                         if (msg != null) {
                             val parser: Parser = Parser.default()
                             val stringBuilder: StringBuilder = StringBuilder(msg)
+                            // TODO @Sander: find out a way to send jsonObject as post call as well as get call.
                             val json: com.beust.klaxon.JsonObject =
                                 parser.parse(stringBuilder) as com.beust.klaxon.JsonObject
                             val result = json.get("result")
@@ -79,9 +80,10 @@ class MessagingActivity: AppCompatActivity() {
                                 // TODO @Skools: add a check that will exclude the logged in bro. We will do this client side instead of server side to not do too much on the server side
                                 messages.clear()
                                 for (message in messageList) {
-                                    var body = message as String
-                                    var m = Message(true, body)
-                                    messages.add(m)
+                                    val m = message as com.beust.klaxon.JsonObject
+                                    val sender = m.get("sender") as Boolean
+                                    val body = m.get("body") as String
+                                    messages.add(Message(sender, body))
                                 }
                                 messagesAdapter!!.notifyDataSetChanged()
                             }
