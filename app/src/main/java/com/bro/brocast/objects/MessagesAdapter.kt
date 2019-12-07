@@ -17,11 +17,9 @@ class MessagesAdapter(private var messages: MutableList<Message>)  : RecyclerVie
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MessageViewHolder {
         val view = when (viewType) {
             SENT -> {
-                println("send?")
                 LayoutInflater.from(parent.context).inflate(R.layout.bro_message_send, parent, false)
             }
             else -> {
-                println("received?")
                 LayoutInflater.from(parent.context).inflate(R.layout.bro_message_received, parent, false)
             }
         }
@@ -57,7 +55,6 @@ class MessagesAdapter(private var messages: MutableList<Message>)  : RecyclerVie
         private val messageText: TextView = itemView.findViewById(R.id.message_text)
 
         fun bind(message: String) {
-            println("message: $message")
             messageText.text = message
             // TODO @Skools: possibly expand it here to include pictures and stuff.
         }

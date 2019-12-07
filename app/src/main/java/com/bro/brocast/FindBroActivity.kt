@@ -81,7 +81,6 @@ class FindBroActivity: AppCompatActivity() {
                             val parser: Parser = Parser.default()
                             val stringBuilder: StringBuilder = StringBuilder(msg)
                             val json: JsonObject = parser.parse(stringBuilder) as JsonObject
-//                            val result = json.get("result")
                             val result = json.get("result")
                             if (result!! == true) {
                                 println("bro $broName wants to add ${bro.broName} to his brolist")

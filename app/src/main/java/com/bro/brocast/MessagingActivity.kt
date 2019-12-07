@@ -6,6 +6,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.beust.klaxon.JsonArray
 import com.beust.klaxon.Parser
 import com.bro.brocast.objects.Message
 import com.bro.brocast.objects.MessagesAdapter
@@ -33,8 +34,6 @@ class MessagingActivity: AppCompatActivity() {
         broName = intent.getStringExtra("broName")
         brosBro = intent.getStringExtra("brosBro")
 
-        addMessages()
-
         // Creates a vertical Layout Manager
         broMessageList = findViewById(R.id.broMessages)
 
@@ -50,6 +49,46 @@ class MessagingActivity: AppCompatActivity() {
 
         broMessageList.scrollToPosition(messagesAdapter.itemCount - 1)
 
+        loadMessages()
+    }
+
+    private fun loadMessages() {
+        BroCastAPI
+            .service
+            .getMessages(broName, brosBro)
+            .enqueue(object : Callback<ResponseBody> {
+                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                    Toast.makeText(
+                        applicationContext,
+                        "The BroCast server is not responding. " +
+                                "We appologize for the inconvenience, please try again later",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+                override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                    if (response.isSuccessful) {
+                        val msg = response.body()?.string()
+                        if (msg != null) {
+                            val parser: Parser = Parser.default()
+                            val stringBuilder: StringBuilder = StringBuilder(msg)
+                            val json: com.beust.klaxon.JsonObject =
+                                parser.parse(stringBuilder) as com.beust.klaxon.JsonObject
+                            val result = json.get("result")
+                            if (result!! == true) {
+                                val messageList = json.get("message_list") as JsonArray<*>
+                                // TODO @Skools: add a check that will exclude the logged in bro. We will do this client side instead of server side to not do too much on the server side
+                                messages.clear()
+                                for (message in messageList) {
+                                    var body = message as String
+                                    var m = Message(true, body)
+                                    messages.add(m)
+                                }
+                                messagesAdapter!!.notifyDataSetChanged()
+                            }
+                        }
+                    }
+                }
+            })
     }
 
     private val clickButtonListener = View.OnClickListener { view ->
@@ -59,43 +98,46 @@ class MessagingActivity: AppCompatActivity() {
                 println("bro $broName wants to send a message to $brosBro. The message is $message")
 
                 val jsonObj = JsonObject()
-                jsonObj.addProperty("bro", broName)
-                jsonObj.addProperty("bros_bro", brosBro)
                 jsonObj.addProperty("message", message)
 
                 BroCastAPI
                     .service
-                    .sendMessage(jsonObj)
+                    .sendMessage(broName, brosBro, jsonObj)
                     .enqueue(object : Callback<ResponseBody> {
                         override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                            println("failed: " + t.message)
+                            Toast.makeText(
+                                applicationContext,
+                                "The BroCast server is not responding. " +
+                                        "We appologize for the inconvenience, please try again later",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
-
                         override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                             if (response.isSuccessful) {
                                 val msg = response.body()?.string()
-                                println("response: " + msg)
-                                Toast.makeText(applicationContext, msg, Toast.LENGTH_SHORT).show()
+                                if (msg != null) {
+                                    val parser: Parser = Parser.default()
+                                    val stringBuilder: StringBuilder = StringBuilder(msg)
+                                    val json: com.beust.klaxon.JsonObject =
+                                        parser.parse(stringBuilder) as com.beust.klaxon.JsonObject
+                                    val result = json.get("result")
+                                    if (result!! == true) {
+                                        // When it was successful we only want to re-load the messages.
+                                        loadMessages()
+                                    } else {
+                                        Toast.makeText(
+                                            applicationContext,
+                                            "Something went wrong " +
+                                                    "We appologize for the inconvenience, please try again later",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
+                                }
                             }
                         }
                     })
             }
         }
-    }
-
-    private fun addMessages() {
-        messages.add(Message(true, "hello Bro"))
-        messages.add(Message(true, "how are you doing?"))
-        messages.add(Message(false, "Heey Bro, nice to hear from you!"))
-        messages.add(Message(false, "I'm terrible"))
-        messages.add(Message(false, "I cannot express my emotions properly via chat apps"))
-        messages.add(Message(false, "I'm crying right now and you can't tell"))
-        messages.add(Message(true, "I was thinking the same the other day bro"))
-        messages.add(Message(true, "If only there was some sort of app that let's you chat with your emotions, rather than just text"))
-        messages.add(Message(false, "I think that that is impossible"))
-        messages.add(Message(false, "But I will continue to hope"))
-        messages.add(Message(true, "Me to Bro"))
-        messages.add(Message(true, "Smiley face"))
     }
 
 }
