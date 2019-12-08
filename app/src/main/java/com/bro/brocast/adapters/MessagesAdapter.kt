@@ -41,6 +41,20 @@ class MessagesAdapter(private var messages: MutableList<Message>)  : RecyclerVie
         }
     }
 
+    fun clearmessages() {
+        this.messages.clear()
+    }
+
+    fun updateMessages(messages: List<Message>) {
+        this.messages = messages.toMutableList()
+        notifyDataSetChanged()
+    }
+
+    fun appendMessage(message: Message) {
+        this.messages.add(message)
+        notifyItemInserted(this.messages.size - 1)
+    }
+
     inner class MessageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val messageText: TextView = itemView.findViewById(R.id.message_text)
 

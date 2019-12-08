@@ -13,6 +13,7 @@ import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Parser
 import com.bro.brocast.objects.Bro
 import com.bro.brocast.adapters.Brodapter
+import com.bro.brocast.api.BroCastAPI
 import kotlinx.android.synthetic.main.brocast_home.*
 import okhttp3.ResponseBody
 import retrofit2.Call

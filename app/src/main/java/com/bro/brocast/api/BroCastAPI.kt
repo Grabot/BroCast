@@ -1,5 +1,6 @@
-package com.bro.brocast
+package com.bro.brocast.api
 
+import com.bro.brocast.brocastURLHome
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
 import okhttp3.OkHttpClient

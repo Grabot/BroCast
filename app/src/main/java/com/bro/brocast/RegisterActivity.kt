@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Parser
+import com.bro.brocast.api.BroCastAPI
 import kotlinx.android.synthetic.main.activity_register.*
 import okhttp3.ResponseBody
 import retrofit2.Callback

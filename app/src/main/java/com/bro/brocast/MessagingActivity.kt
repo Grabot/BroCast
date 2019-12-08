@@ -8,14 +8,16 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.beust.klaxon.JsonArray
 import com.beust.klaxon.Parser
-import com.bro.brocast.objects.Message
 import com.bro.brocast.adapters.MessagesAdapter
+import com.bro.brocast.api.BroCastAPI
+import com.bro.brocast.objects.Message
 import com.google.gson.JsonObject
 import kotlinx.android.synthetic.main.activity_messaging.*
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+
 
 class MessagingActivity: AppCompatActivity() {
 
@@ -38,7 +40,8 @@ class MessagingActivity: AppCompatActivity() {
         broMessageList = findViewById(R.id.broMessages)
 
         val layoutMgr = LinearLayoutManager(this)
-        layoutMgr.stackFromEnd = true
+        // TODO @Sander: fix this damn scroll thing. I've got no idea how it works
+//        layoutMgr.scrollToPosition(0)
         broMessageList.layoutManager = layoutMgr
 
         println("animals " + messages.size)
@@ -47,9 +50,16 @@ class MessagingActivity: AppCompatActivity() {
 
         sendBroMessage.setOnClickListener(clickButtonListener)
 
-        broMessageList.scrollToPosition(messagesAdapter.itemCount - 1)
-
         loadMessages()
+
+        broMessageList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                if (!recyclerView.canScrollVertically(1)) {
+                    println("bottom of the thingy")
+                }
+            }
+        })
     }
 
     private fun loadMessages() {
@@ -78,14 +88,13 @@ class MessagingActivity: AppCompatActivity() {
                             if (result!! == true) {
                                 val messageList = json.get("message_list") as JsonArray<*>
                                 // TODO @Skools: add a check that will exclude the logged in bro. We will do this client side instead of server side to not do too much on the server side
-                                messages.clear()
+                                messagesAdapter.clearmessages()
                                 for (message in messageList) {
                                     val m = message as com.beust.klaxon.JsonObject
                                     val sender = m.get("sender") as Boolean
                                     val body = m.get("body") as String
-                                    messages.add(Message(sender, body))
+                                    messagesAdapter.appendMessage(Message(sender, body))
                                 }
-
                                 messagesAdapter!!.notifyDataSetChanged()
                             }
                         }
