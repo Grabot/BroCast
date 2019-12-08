@@ -11,7 +11,7 @@ import com.beust.klaxon.JsonArray
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Parser
 import com.bro.brocast.objects.Bro
-import com.bro.brocast.objects.ExpandableBrodapter
+import com.bro.brocast.adapters.ExpandableBrodapter
 import kotlinx.android.synthetic.main.activity_find_bros.*
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -36,7 +36,12 @@ class FindBroActivity: AppCompatActivity() {
         broName = intent.getStringExtra("broName")
 
         val listView = bro_list_view
-        expandableBrodapter = ExpandableBrodapter(this@FindBroActivity, listView, potentialBros, body)
+        expandableBrodapter = ExpandableBrodapter(
+            this@FindBroActivity,
+            listView,
+            potentialBros,
+            body
+        )
         listView.setAdapter(expandableBrodapter)
 
 

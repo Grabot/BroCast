@@ -1,4 +1,4 @@
-package com.bro.brocast.objects
+package com.bro.brocast.adapters
 
 import android.view.LayoutInflater
 import android.view.View
@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bro.brocast.R
+import com.bro.brocast.objects.Message
 
 class MessagesAdapter(private var messages: MutableList<Message>)  : RecyclerView.Adapter<MessagesAdapter.MessageViewHolder>() {
 
@@ -33,23 +34,12 @@ class MessagesAdapter(private var messages: MutableList<Message>)  : RecyclerVie
     }
 
     override fun getItemViewType(position: Int): Int {
-        if (messages[position].sender) {
-            return SENT
+        return if (messages[position].sender) {
+            SENT
         } else {
-            return RECEIVED
+            RECEIVED
         }
     }
-
-    // TODO @Skools: find out if these are easy to be used to add messages
-//    fun updateMessages(messages: List<String>) {
-//        this.messages = messages.toMutableList()
-//        notifyDataSetChanged()
-//    }
-//
-//    fun appendMessage(message: String) {
-//        this.messages.add(message)
-//        notifyItemInserted(this.messages.size - 1)
-//    }
 
     inner class MessageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val messageText: TextView = itemView.findViewById(R.id.message_text)

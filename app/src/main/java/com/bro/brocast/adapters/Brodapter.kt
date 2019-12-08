@@ -1,4 +1,4 @@
-package com.bro.brocast.objects
+package com.bro.brocast.adapters
 
 import android.app.Activity
 import android.view.LayoutInflater
@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.TextView
 import com.bro.brocast.R
+import com.bro.brocast.objects.Bro
 
 class Brodapter(private val context: Activity,
                 resource:Int,

@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.beust.klaxon.JsonArray
 import com.beust.klaxon.Parser
 import com.bro.brocast.objects.Message
-import com.bro.brocast.objects.MessagesAdapter
+import com.bro.brocast.adapters.MessagesAdapter
 import com.google.gson.JsonObject
 import kotlinx.android.synthetic.main.activity_messaging.*
 import okhttp3.ResponseBody
@@ -85,6 +85,7 @@ class MessagingActivity: AppCompatActivity() {
                                     val body = m.get("body") as String
                                     messages.add(Message(sender, body))
                                 }
+
                                 messagesAdapter!!.notifyDataSetChanged()
                             }
                         }

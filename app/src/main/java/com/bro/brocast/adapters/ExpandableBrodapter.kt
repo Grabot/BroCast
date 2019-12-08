@@ -1,4 +1,4 @@
-package com.bro.brocast.objects
+package com.bro.brocast.adapters
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -8,6 +8,7 @@ import android.widget.BaseExpandableListAdapter
 import android.widget.ExpandableListView
 import android.widget.TextView
 import com.bro.brocast.R
+import com.bro.brocast.objects.Bro
 
 class ExpandableBrodapter(var context: Context, var expandableListView : ExpandableListView, var header : ArrayList<Bro>, var body : ArrayList<ArrayList<Bro>>) : BaseExpandableListAdapter() {
 

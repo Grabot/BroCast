@@ -12,7 +12,7 @@ import com.beust.klaxon.JsonArray
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Parser
 import com.bro.brocast.objects.Bro
-import com.bro.brocast.objects.Brodapter
+import com.bro.brocast.adapters.Brodapter
 import kotlinx.android.synthetic.main.brocast_home.*
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -41,8 +41,10 @@ class BroCastHome: AppCompatActivity() {
         buttonLogout.setOnClickListener(clickButtonListener)
         buttonFindBros.setOnClickListener(clickButtonListener)
 
-        brodapter = Brodapter(this,
-            R.layout.bro_list, bros)
+        brodapter = Brodapter(
+            this,
+            R.layout.bro_list, bros
+        )
 
         listView = findViewById(R.id.bro_home_list_view)
         listView.adapter = brodapter
