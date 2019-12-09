@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Parser
 import com.bro.brocast.api.BroCastAPI
+import com.bro.brocast.api.RegisterAPI
 import kotlinx.android.synthetic.main.activity_register.*
 import okhttp3.ResponseBody
 import retrofit2.Callback
@@ -51,73 +52,10 @@ class RegisterActivity : AppCompatActivity() {
                     val password = passwordRegister.text.toString()
                     val passwordEncrypt = encryption!!.encryptOrNull(password)
                     println("bro $broName wants to register!")
-                    registerBro(broName, passwordEncrypt)
+                    RegisterAPI.registerBro(broName, passwordEncrypt, this@RegisterActivity, applicationContext)
                 }
             }
         }
     }
 
-    private fun registerBro(broName: String, password: String) {
-        BroCastAPI
-            .service
-            .registerBro(broName, password)
-            .enqueue(object : Callback<ResponseBody> {
-                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                    pressedRegister = false
-                    failedRegistration("The BroCast server is not responding. \n" +
-                            "We appologize for the inconvenience, please try again later")
-
-                }
-                override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                    pressedRegister = false
-                    if (response.isSuccessful) {
-                        val msg = response.body()?.string()
-                        if (msg != null) {
-                            val parser: Parser = Parser.default()
-                            val stringBuilder: StringBuilder = StringBuilder(msg)
-                            val json: JsonObject = parser.parse(stringBuilder) as JsonObject
-                            val result = json.get("result")
-                            if (result!! == true) {
-                                val sharedPreferences = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
-                                val editor = sharedPreferences.edit()
-                                editor.putString("BRONAME", broName)
-                                // There seems to be an issue with storing password because of newline characters.
-                                // We concatenate it with an ending that we will remove when we load the password
-                                editor.putString("PASSWORD", "$password:broCastPasswordEnd")
-                                editor.apply()
-                                successfulRegistration(broName, json.get("message").toString())
-                            } else {
-                                failedRegistration("That broName is already taken, please select another one")
-                            }
-                        } else {
-                            failedRegistration("Something went wrong, we apologize for the inconvenience")
-                            TODO("the bro will come back to the register screen, show which error occured")
-                        }
-                    } else {
-                        failedRegistration("Something went wrong, we apologize for the inconvenience")
-                        TODO("the bro will come back to the register screen, show which error occured")
-                    }
-                }
-            })
-    }
-
-    fun successfulRegistration(broName: String, reason: String) {
-        Toast.makeText(
-            applicationContext,
-            "you just logged in! \n$reason",
-            Toast.LENGTH_SHORT
-        ).show()
-        val successIntent = Intent(this@RegisterActivity, BroCastHome::class.java).apply {
-            putExtra("broName", broName)
-        }
-        startActivity(successIntent)
-    }
-
-    fun failedRegistration(reason: String) {
-        Toast.makeText(
-            applicationContext,
-            reason,
-            Toast.LENGTH_SHORT
-        ).show()
-    }
 }

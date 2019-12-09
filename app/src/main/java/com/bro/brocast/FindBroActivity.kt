@@ -142,7 +142,6 @@ class FindBroActivity: AppCompatActivity() {
                                     Toast.LENGTH_SHORT
                                 ).show()
                             }
-
                             override fun onResponse(
                                 call: Call<ResponseBody>,
                                 response: Response<ResponseBody>

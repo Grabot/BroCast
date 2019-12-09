@@ -50,13 +50,7 @@ object LoginAPI {
                     editor.putString("PASSWORD", "")
                     editor.apply()
                     pressedLogin = false
-                    if (openingActivity != null) {
-                        val successIntent = Intent(openingActivity, MainActivity::class.java)
-                        successIntent.putExtra("broName", broName)
-                        // Because this is called outside of the activity you need to indicate that it is ok to start a new activity
-                        successIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                        context.startActivity(successIntent)
-                    }
+                    failedLogin(openingActivity, broName, context)
                 }
                 override fun onResponse(
                     call: Call<ResponseBody>,
@@ -86,15 +80,7 @@ object LoginAPI {
                                 // We concatenate it with an ending that we will remove when we load the password
                                 editor.putString("PASSWORD", "$password:broCastPasswordEnd")
                                 editor.apply()
-                                val successIntent = if (loginActivity != null) {
-                                    Intent(loginActivity, BroCastHome::class.java)
-                                } else {
-                                    Intent(openingActivity, BroCastHome::class.java)
-                                }
-                                successIntent.putExtra("broName", broName)
-                                // Because this is called outside of the activity you need to indicate that it is ok to start a new activity
-                                successIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                                context.startActivity(successIntent)
+                                successfulLogin(loginActivity, openingActivity, broName, context)
                             } else {
                                 val reason: String = json.get("reason").toString()
                                 Toast.makeText(
@@ -102,21 +88,8 @@ object LoginAPI {
                                     reason,
                                     Toast.LENGTH_SHORT
                                 ).show()
-                                if (openingActivity != null) {
-                                    val successIntent = Intent(openingActivity, MainActivity::class.java)
-                                    successIntent.putExtra("broName", broName)
-                                    // Because this is called outside of the activity you need to indicate that it is ok to start a new activity
-                                    successIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                                    context.startActivity(successIntent)
-                                }
+                                failedLogin(openingActivity, broName, context)
                             }
-                        }
-                        if (openingActivity != null) {
-                            val successIntent = Intent(openingActivity, MainActivity::class.java)
-                            successIntent.putExtra("broName", broName)
-                            // Because this is called outside of the activity you need to indicate that it is ok to start a new activity
-                            successIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                            context.startActivity(successIntent)
                         }
                     } else {
                         Toast.makeText(
@@ -125,15 +98,31 @@ object LoginAPI {
                                     "We appologize for the inconvenience, please try again later",
                             Toast.LENGTH_SHORT
                         ).show()
-                        if (openingActivity != null) {
-                            val successIntent = Intent(openingActivity, MainActivity::class.java)
-                            successIntent.putExtra("broName", broName)
-                            // Because this is called outside of the activity you need to indicate that it is ok to start a new activity
-                            successIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                            context.startActivity(successIntent)
-                        }
+                        failedLogin(openingActivity, broName, context)
                     }
                 }
             })
+    }
+
+    fun successfulLogin(loginActivity: LoginActivity?, openingActivity: OpeningActivity?, broName: String, context: Context) {
+        val successIntent = if (loginActivity != null) {
+            Intent(loginActivity, BroCastHome::class.java)
+        } else {
+            Intent(openingActivity, BroCastHome::class.java)
+        }
+        successIntent.putExtra("broName", broName)
+        // Because this is called outside of the activity you need to indicate that it is ok to start a new activity
+        successIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        context.startActivity(successIntent)
+    }
+
+    fun failedLogin(openingActivity: OpeningActivity?, broName: String, context: Context) {
+        if (openingActivity != null) {
+            val successIntent = Intent(openingActivity, MainActivity::class.java)
+            successIntent.putExtra("broName", broName)
+            // Because this is called outside of the activity you need to indicate that it is ok to start a new activity
+            successIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            context.startActivity(successIntent)
+        }
     }
 }
