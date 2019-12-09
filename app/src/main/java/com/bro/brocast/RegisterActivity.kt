@@ -1,20 +1,10 @@
 package com.bro.brocast
 
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.beust.klaxon.JsonObject
-import com.beust.klaxon.Parser
-import com.bro.brocast.api.BroCastAPI
 import com.bro.brocast.api.RegisterAPI
 import kotlinx.android.synthetic.main.activity_register.*
-import okhttp3.ResponseBody
-import retrofit2.Callback
-import retrofit2.Call
-import retrofit2.Response
 import se.simbio.encryption.Encryption
 
 class RegisterActivity : AppCompatActivity() {
