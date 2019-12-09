@@ -26,93 +26,27 @@ class LoginActivity: AppCompatActivity() {
 
         buttonLoginBro.setOnClickListener(clickLoginListener)
         buttonForgotPass.setOnClickListener(clickLoginListener)
-        pressedLogin = false
+        LoginAPI.pressedLogin = false
     }
 
     private val clickLoginListener = View.OnClickListener { view ->
         when (view.getId()) {
             R.id.buttonLoginBro -> {
-                if (!pressedLogin) {
-                    pressedLogin = true
+                if (!LoginAPI.pressedLogin) {
+                    LoginAPI.pressedLogin = true
                     val broName = broNameLogin.text.toString()
                     val password = passwordLogin.text.toString()
                     val passwordEncrypt = encryption!!.encryptOrNull(password)
                     println("bro $broName wants to login!")
-                    loginBro(broName, passwordEncrypt)
+
+                    // We call the Login functionality of the API with the loginActivity class
+                    LoginAPI.loginBro(
+                        broName, passwordEncrypt, applicationContext, this@LoginActivity, null)
                 }
             }
             R.id.buttonForgotPass -> {
                 TODO("implement the 'forgot pass' screen.")
             }
         }
-    }
-
-    private fun loginBro(broName: String, password: String) {
-        pressedLogin = false
-        LoginAPI.loginBro(broName, password, applicationContext, this@LoginActivity)
-
-//        BroCastAPI
-//            .service
-//            .loginBro(broName, password)
-//            .enqueue(object : Callback<ResponseBody> {
-//                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-//                    pressedLogin = false
-//                    // The BroCast Backend server is not running
-//                    Toast.makeText(
-//                        applicationContext,
-//                        "The BroCast server is not responding. " +
-//                                "We appologize for the inconvenience, please try again later",
-//                        Toast.LENGTH_SHORT
-//                    ).show()
-//                    // We will empty the stored login when this fails.
-//                    val sharedPreferences = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
-//                    val editor = sharedPreferences.edit()
-//                    // The bro is logged out so we will empty the stored bro data
-//                    // and return to the home screen
-//                    editor.putString("BRONAME", "")
-//                    editor.putString("PASSWORD", "")
-//                    editor.apply()
-//                }
-//                override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-//                    pressedLogin = false
-//                    if (response.isSuccessful) {
-//                        val msg = response.body()?.string()
-//                        if (msg != null) {
-//                            val parser: Parser = Parser.default()
-//                            val stringBuilder: StringBuilder = StringBuilder(msg)
-//                            val json: JsonObject = parser.parse(stringBuilder) as JsonObject
-//                            val result = json.get("result")
-//                            if (result!! == true) {
-//                                Toast.makeText(
-//                                    applicationContext,
-//                                    "you just logged in!",
-//                                    Toast.LENGTH_SHORT
-//                                ).show()
-//                                val successIntent = Intent(this@LoginActivity, BroCastHome::class.java).apply {
-//                                    putExtra("broName", broName)
-//                                }
-//                                val sharedPreferences = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
-//                                val editor = sharedPreferences.edit()
-//                                editor.putString("BRONAME", broName)
-//                                // There seems to be an issue with storing password because of newline characters.
-//                                // We concatenate it with an ending that we will remove when we load the password
-//                                editor.putString("PASSWORD", "$password:broCastPasswordEnd")
-//                                editor.apply()
-//                                startActivity(successIntent)
-//                            } else {
-//                                val reason: String = json.get("reason").toString()
-//                                Toast.makeText(
-//                                    applicationContext,
-//                                    reason,
-//                                    Toast.LENGTH_SHORT
-//                                ).show()
-//                            }
-//                        }
-//
-//                    } else {
-//                        TODO("the bro will come back to the login screen, show which error occured")
-//                    }
-//                }
-//            })
     }
 }

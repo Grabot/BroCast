@@ -5,9 +5,7 @@ import android.content.Intent
 import android.widget.Toast
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Parser
-import com.bro.brocast.BroCastHome
-import com.bro.brocast.LoginActivity
-import com.bro.brocast.R
+import com.bro.brocast.*
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
@@ -16,12 +14,18 @@ import retrofit2.Response
 
 object LoginAPI {
 
+    var pressedLogin: Boolean = false
+
     fun loginBro(
         broName: String,
         password: String,
         context: Context,
-        activity: LoginActivity
+        loginActivity: LoginActivity?,
+        openingActivity: OpeningActivity?
     ) {
+        // TODO @Skools: This can be called from 2 separate activities, I didn't know how to
+        //  fix it neatly, so I pass both arguments with them being nullable. The one that
+        //  isn't null should be used. Find a way to solve this better
         BroCastAPI
             .service
             .loginBro(broName, password)
@@ -45,12 +49,20 @@ object LoginAPI {
                     editor.putString("BRONAME", "")
                     editor.putString("PASSWORD", "")
                     editor.apply()
+                    pressedLogin = false
+                    if (openingActivity != null) {
+                        val successIntent = Intent(openingActivity, MainActivity::class.java)
+                        successIntent.putExtra("broName", broName)
+                        // Because this is called outside of the activity you need to indicate that it is ok to start a new activity
+                        successIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        context.startActivity(successIntent)
+                    }
                 }
                 override fun onResponse(
                     call: Call<ResponseBody>,
                     response: Response<ResponseBody>
                 ) {
-//                    pressedLogin = false
+                    pressedLogin = false
                     if (response.isSuccessful) {
                         val msg = response.body()?.string()
                         if (msg != null) {
@@ -74,9 +86,12 @@ object LoginAPI {
                                 // We concatenate it with an ending that we will remove when we load the password
                                 editor.putString("PASSWORD", "$password:broCastPasswordEnd")
                                 editor.apply()
-                                val successIntent = Intent(activity, BroCastHome::class.java).apply {
-                                    putExtra("broName", broName)
+                                val successIntent = if (loginActivity != null) {
+                                    Intent(loginActivity, BroCastHome::class.java)
+                                } else {
+                                    Intent(openingActivity, BroCastHome::class.java)
                                 }
+                                successIntent.putExtra("broName", broName)
                                 // Because this is called outside of the activity you need to indicate that it is ok to start a new activity
                                 successIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                                 context.startActivity(successIntent)
@@ -87,11 +102,36 @@ object LoginAPI {
                                     reason,
                                     Toast.LENGTH_SHORT
                                 ).show()
+                                if (openingActivity != null) {
+                                    val successIntent = Intent(openingActivity, MainActivity::class.java)
+                                    successIntent.putExtra("broName", broName)
+                                    // Because this is called outside of the activity you need to indicate that it is ok to start a new activity
+                                    successIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                    context.startActivity(successIntent)
+                                }
                             }
                         }
-
+                        if (openingActivity != null) {
+                            val successIntent = Intent(openingActivity, MainActivity::class.java)
+                            successIntent.putExtra("broName", broName)
+                            // Because this is called outside of the activity you need to indicate that it is ok to start a new activity
+                            successIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                            context.startActivity(successIntent)
+                        }
                     } else {
-                        TODO("Sander: the bro will come back to the login screen, show which error occured")
+                        Toast.makeText(
+                            context,
+                            "The BroCast server is not responding. " +
+                                    "We appologize for the inconvenience, please try again later",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        if (openingActivity != null) {
+                            val successIntent = Intent(openingActivity, MainActivity::class.java)
+                            successIntent.putExtra("broName", broName)
+                            // Because this is called outside of the activity you need to indicate that it is ok to start a new activity
+                            successIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                            context.startActivity(successIntent)
+                        }
                     }
                 }
             })
