@@ -12,6 +12,7 @@ import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Parser
 import com.bro.brocast.objects.Bro
 import com.bro.brocast.adapters.ExpandableBrodapter
+import com.bro.brocast.api.AddAPI
 import com.bro.brocast.api.BroCastAPI
 import com.bro.brocast.api.FindAPI
 import kotlinx.android.synthetic.main.activity_find_bros.*
@@ -58,64 +59,65 @@ class FindBroActivity: AppCompatActivity() {
 
     fun addBro(bro: Bro) {
         println("bro $broName wants to add ${bro.broName} to his brolist")
-        BroCastAPI
-            .service
-            .addBro(broName, bro.broName)
-            .enqueue(object : Callback<ResponseBody> {
-                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                    println("An exception occured with the GET call:: " + t.message)
-                    // The BroCast Backend server is not running
-                    Toast.makeText(
-                        applicationContext,
-                        "The BroCast server is not responding. " +
-                                "We appologize for the inconvenience, please try again later",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-                override fun onResponse(
-                    call: Call<ResponseBody>,
-                    response: Response<ResponseBody>
-                ) {
-                    if (response.isSuccessful) {
-                        val msg = response.body()?.string()
-                        Toast.makeText(applicationContext, msg, Toast.LENGTH_SHORT)
-                            .show()
-                        if (msg != null) {
-                            val parser: Parser = Parser.default()
-                            val stringBuilder: StringBuilder = StringBuilder(msg)
-                            val json: JsonObject = parser.parse(stringBuilder) as JsonObject
-                            val result = json.get("result")
-                            if (result!! == true) {
-                                println("bro $broName wants to add ${bro.broName} to his brolist")
-                                Toast.makeText(
-                                    applicationContext,
-                                    "bro $broName and bro ${bro.broName} are now bros",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                                val successIntent = Intent(this@FindBroActivity, BroCastHome::class.java).apply {
-                                    putExtra("broName", broName)
-                                }
-                                startActivity(successIntent)
-                            } else {
-                                Toast.makeText(
-                                    applicationContext,
-                                    "Something went wrong " +
-                                            "We appologize for the inconvenience, please try again later",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            }
-                        }
-                    } else {
-                        // The BroCast Backend server gave an error
-                        Toast.makeText(
-                            applicationContext,
-                            "The BroCast server is down right. " +
-                                    "We appologize for the inconvenience, please try again later",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                }
-            })
+        AddAPI.addBro(broName, bro.broName, applicationContext, this@FindBroActivity)
+//        BroCastAPI
+//            .service
+//            .addBro(broName, bro.broName)
+//            .enqueue(object : Callback<ResponseBody> {
+//                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+//                    println("An exception occured with the GET call:: " + t.message)
+//                    // The BroCast Backend server is not running
+//                    Toast.makeText(
+//                        applicationContext,
+//                        "The BroCast server is not responding. " +
+//                                "We appologize for the inconvenience, please try again later",
+//                        Toast.LENGTH_SHORT
+//                    ).show()
+//                }
+//                override fun onResponse(
+//                    call: Call<ResponseBody>,
+//                    response: Response<ResponseBody>
+//                ) {
+//                    if (response.isSuccessful) {
+//                        val msg = response.body()?.string()
+//                        Toast.makeText(applicationContext, msg, Toast.LENGTH_SHORT)
+//                            .show()
+//                        if (msg != null) {
+//                            val parser: Parser = Parser.default()
+//                            val stringBuilder: StringBuilder = StringBuilder(msg)
+//                            val json: JsonObject = parser.parse(stringBuilder) as JsonObject
+//                            val result = json.get("result")
+//                            if (result!! == true) {
+//                                println("bro $broName wants to add ${bro.broName} to his brolist")
+//                                Toast.makeText(
+//                                    applicationContext,
+//                                    "bro $broName and bro ${bro.broName} are now bros",
+//                                    Toast.LENGTH_SHORT
+//                                ).show()
+//                                val successIntent = Intent(this@FindBroActivity, BroCastHome::class.java).apply {
+//                                    putExtra("broName", broName)
+//                                }
+//                                startActivity(successIntent)
+//                            } else {
+//                                Toast.makeText(
+//                                    applicationContext,
+//                                    "Something went wrong " +
+//                                            "We appologize for the inconvenience, please try again later",
+//                                    Toast.LENGTH_SHORT
+//                                ).show()
+//                            }
+//                        }
+//                    } else {
+//                        // The BroCast Backend server gave an error
+//                        Toast.makeText(
+//                            applicationContext,
+//                            "The BroCast server is down right. " +
+//                                    "We appologize for the inconvenience, please try again later",
+//                            Toast.LENGTH_SHORT
+//                        ).show()
+//                    }
+//                }
+//            })
     }
 
     fun notifyAdapter() {
