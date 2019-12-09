@@ -39,11 +39,6 @@ class FindBroActivity: AppCompatActivity() {
         buttonSearchBros.setOnClickListener(clickButtonListener)
     }
 
-    fun addBro(bro: Bro) {
-        println("bro $broName wants to add ${bro.broName} to his brolist")
-        AddAPI.addBro(broName, bro.broName, applicationContext, this@FindBroActivity)
-    }
-
     fun notifyAdapter() {
         expandableBrodapter!!.notifyDataSetChanged()
         expandableBrodapter!!.expandableListView.visibility = View.VISIBLE
@@ -51,9 +46,11 @@ class FindBroActivity: AppCompatActivity() {
 
     private val onChildClickListener = ExpandableListView.OnChildClickListener {
             parent, v, groupPosition, childPosition, id ->
-        var bro = FindAPI.potentialBros[groupPosition]
+        val bro = FindAPI.potentialBros[groupPosition]
         Toast.makeText(applicationContext, "Clicked: " + FindAPI.potentialBros[groupPosition].broName + " -> " + FindAPI.body[groupPosition].get(childPosition).id.toString(), Toast.LENGTH_SHORT).show()
-        addBro(bro)
+
+        println("bro $broName wants to add ${bro.broName} to his brolist")
+        AddAPI.addBro(broName, bro.broName, applicationContext, this@FindBroActivity)
         false
     }
 
