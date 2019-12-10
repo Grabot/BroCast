@@ -18,8 +18,8 @@ class MessagingActivity: AppCompatActivity() {
     val messages: ArrayList<Message> = ArrayList()
     private lateinit var broMessageList: RecyclerView
 
-    var broName: String = ""
-    var brosBro: String = ""
+    var broName: String? = ""
+    var brosBro: String? = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,7 +37,6 @@ class MessagingActivity: AppCompatActivity() {
 //        layoutMgr.scrollToPosition(0)
         broMessageList.layoutManager = layoutMgr
 
-        println("animals " + messages.size)
         GetMessagesAPI.messagesAdapter = MessagesAdapter(messages)
         broMessages.adapter = GetMessagesAPI.messagesAdapter
 
@@ -56,19 +55,32 @@ class MessagingActivity: AppCompatActivity() {
     }
 
     fun loadMessages() {
-        GetMessagesAPI.getMessages(broName, brosBro, applicationContext)
+        GetMessagesAPI.getMessages(broName!!, brosBro!!, applicationContext)
     }
 
     private val clickButtonListener = View.OnClickListener { view ->
         when (view.getId()) {
             R.id.sendBroMessage -> {
                 val message = broMessageField.text.toString()
-                println("bro $broName wants to send a message to $brosBro. The message is $message")
+                // Simple check to make sure the user cannot send an empty message.
+                // This check is also done in the backend, but also here.
+                if (message != "") {
+                    println("bro $broName wants to send a message to $brosBro. The message is $message")
 
-                val jsonObj = JsonObject()
-                jsonObj["message"] = message
+                    val jsonObj = JsonObject()
+                    jsonObj["message"] = message
 
-                SendMessagesAPI.sendMessages(broName, brosBro, jsonObj, applicationContext, this@MessagingActivity)
+                    SendMessagesAPI.sendMessages(
+                        broName!!,
+                        brosBro!!,
+                        jsonObj,
+                        applicationContext,
+                        this@MessagingActivity
+                    )
+
+                    // clear the input field
+                    broMessageField.text.clear()
+                }
             }
         }
     }
