@@ -45,15 +45,16 @@ object GetBroAPI {
                             if (result!! == true) {
                                 val broList = json.get("bro_list") as JsonArray<*>
                                 bros.clear()
-                                // TODO @Skools: add a check that will exclude the logged in bro. We will do this client side instead of server side to not do too much on the server side
                                 for (b in broList) {
                                     val foundBro = b as JsonObject
                                     val broName: String = foundBro.get("bro_name") as String
                                     val id: Int = foundBro.get("id") as Int
 
-                                    // Add the bro to the potential bro list
-                                    val bro = Bro(broName, id, "")
-                                    bros.add(bro)
+                                    if (loggedInBroName != broName) {
+                                        // Add the bro to the potential bro list
+                                        val bro = Bro(broName, id, "")
+                                        bros.add(bro)
+                                    }
                                 }
                                 broCastHome.notifyBrodapter()
                             } else {

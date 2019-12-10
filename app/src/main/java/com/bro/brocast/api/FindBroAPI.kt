@@ -18,7 +18,7 @@ object FindBroAPI {
     var potentialBros = ArrayList<Bro>()
     val body: ArrayList<ArrayList<Bro>> = ArrayList()
 
-    fun findBro(potentialBro: String, context: Context, findBroActivity: FindBroActivity) {
+    fun findBro(loggedInBro: String, potentialBro: String, context: Context, findBroActivity: FindBroActivity) {
         BroCastAPI
             .service
             .findBro(potentialBro)
@@ -50,18 +50,19 @@ object FindBroAPI {
                             potentialBros.clear()
                             body.clear()
 
-                            // TODO @Skools: add a check that will exclude the logged in bro. We will do this client side instead of server side to not do too much on the server side
                             for (b in bros) {
                                 val foundBro = b as JsonObject
                                 val broName: String = foundBro.get("bro_name") as String
                                 val id: Int = foundBro.get("id") as Int
 
-                                // Add the bro to the potential bro list
-                                val bro = Bro(broName, id, "")
-                                val brorray = ArrayList<Bro>()
-                                potentialBros.add(bro)
-                                brorray.add(bro)
-                                body.add(brorray)
+                                if (broName != loggedInBro) {
+                                    // Add the bro to the potential bro list
+                                    val bro = Bro(broName, id, "")
+                                    val brorray = ArrayList<Bro>()
+                                    potentialBros.add(bro)
+                                    brorray.add(bro)
+                                    body.add(brorray)
+                                }
                             }
                             findBroActivity.notifyAdapter()
                             try {

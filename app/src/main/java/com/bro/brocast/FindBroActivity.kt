@@ -13,7 +13,7 @@ import kotlinx.android.synthetic.main.activity_find_bros.*
 
 class FindBroActivity: AppCompatActivity() {
 
-    var broName: String = ""
+    var broName: String? = ""
     var expandableBrodapter: ExpandableBrodapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,7 +49,7 @@ class FindBroActivity: AppCompatActivity() {
         Toast.makeText(applicationContext, "Clicked: " + FindBroAPI.potentialBros[groupPosition].broName + " -> " + FindBroAPI.body[groupPosition].get(childPosition).id.toString(), Toast.LENGTH_SHORT).show()
 
         println("bro $broName wants to add ${bro.broName} to his brolist")
-        AddBroAPI.addBro(broName, bro.broName, applicationContext, this@FindBroActivity)
+        AddBroAPI.addBro(broName!!, bro.broName, applicationContext, this@FindBroActivity)
         false
     }
 
@@ -60,7 +60,7 @@ class FindBroActivity: AppCompatActivity() {
                 if (potentialBro == "") {
                     Toast.makeText(this, "No Bro filled in yet", Toast.LENGTH_SHORT).show()
                 } else {
-                    FindBroAPI.findBro(potentialBro, applicationContext, this)
+                    FindBroAPI.findBro(broName!!, potentialBro, applicationContext, this)
                 }
             }
         }
