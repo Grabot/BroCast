@@ -6,9 +6,8 @@ import android.widget.ExpandableListView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.bro.brocast.adapters.ExpandableBrodapter
-import com.bro.brocast.api.AddAPI
-import com.bro.brocast.api.FindAPI
-import com.bro.brocast.objects.Bro
+import com.bro.brocast.api.AddBroAPI
+import com.bro.brocast.api.FindBroAPI
 import kotlinx.android.synthetic.main.activity_find_bros.*
 
 
@@ -28,8 +27,8 @@ class FindBroActivity: AppCompatActivity() {
         expandableBrodapter = ExpandableBrodapter(
             this@FindBroActivity,
             listView,
-            FindAPI.potentialBros,
-            FindAPI.body
+            FindBroAPI.potentialBros,
+            FindBroAPI.body
         )
         listView.setAdapter(expandableBrodapter)
 
@@ -46,11 +45,11 @@ class FindBroActivity: AppCompatActivity() {
 
     private val onChildClickListener = ExpandableListView.OnChildClickListener {
             parent, v, groupPosition, childPosition, id ->
-        val bro = FindAPI.potentialBros[groupPosition]
-        Toast.makeText(applicationContext, "Clicked: " + FindAPI.potentialBros[groupPosition].broName + " -> " + FindAPI.body[groupPosition].get(childPosition).id.toString(), Toast.LENGTH_SHORT).show()
+        val bro = FindBroAPI.potentialBros[groupPosition]
+        Toast.makeText(applicationContext, "Clicked: " + FindBroAPI.potentialBros[groupPosition].broName + " -> " + FindBroAPI.body[groupPosition].get(childPosition).id.toString(), Toast.LENGTH_SHORT).show()
 
         println("bro $broName wants to add ${bro.broName} to his brolist")
-        AddAPI.addBro(broName, bro.broName, applicationContext, this@FindBroActivity)
+        AddBroAPI.addBro(broName, bro.broName, applicationContext, this@FindBroActivity)
         false
     }
 
@@ -61,7 +60,7 @@ class FindBroActivity: AppCompatActivity() {
                 if (potentialBro == "") {
                     Toast.makeText(this, "No Bro filled in yet", Toast.LENGTH_SHORT).show()
                 } else {
-                    FindAPI.findBro(potentialBro, applicationContext, this)
+                    FindBroAPI.findBro(potentialBro, applicationContext, this)
                 }
             }
         }

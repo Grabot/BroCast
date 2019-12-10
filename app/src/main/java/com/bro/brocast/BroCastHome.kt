@@ -8,24 +8,16 @@ import android.widget.AdapterView
 import android.widget.ListView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.beust.klaxon.JsonArray
-import com.beust.klaxon.JsonObject
-import com.beust.klaxon.Parser
 import com.bro.brocast.objects.Bro
 import com.bro.brocast.adapters.Brodapter
-import com.bro.brocast.api.BroCastAPI
+import com.bro.brocast.api.GetBroAPI
 import kotlinx.android.synthetic.main.brocast_home.*
-import okhttp3.ResponseBody
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 
 class BroCastHome: AppCompatActivity() {
 
     lateinit var listView: ListView
 
-    var bros = ArrayList<Bro>()
     var brodapter: Brodapter? = null
 
     var broName: String = ""
@@ -44,7 +36,7 @@ class BroCastHome: AppCompatActivity() {
 
         brodapter = Brodapter(
             this,
-            R.layout.bro_list, bros
+            R.layout.bro_list, GetBroAPI.bros
         )
 
         listView = findViewById(R.id.bro_home_list_view)
@@ -53,7 +45,12 @@ class BroCastHome: AppCompatActivity() {
 
         listView.onItemClickListener = broClickListener
 
-        fillBroList()
+        // Fill the broList of the bro
+        GetBroAPI.getBroAPI(broName, applicationContext, this@BroCastHome)
+    }
+
+    fun notifyBrodapter() {
+        brodapter!!.notifyDataSetChanged()
     }
 
     private val broClickListener = AdapterView.OnItemClickListener {  parent, view, position, id ->
@@ -70,57 +67,6 @@ class BroCastHome: AppCompatActivity() {
         startActivity(successIntent)
     }
 
-    private fun fillBroList() {
-        BroCastAPI
-            .service
-            .getBros(broName)
-            .enqueue(object : Callback<ResponseBody> {
-                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                    // The BroCast Backend server is not running
-                    Toast.makeText(
-                        applicationContext,
-                        "The BroCast server is not responding. " +
-                                "We appologize for the inconvenience, please try again later",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-                override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                    if (response.isSuccessful) {
-                        val msg = response.body()?.string()
-                        if (msg != null) {
-                            val parser: Parser = Parser.default()
-                            val stringBuilder: StringBuilder = StringBuilder(msg)
-                            val json: JsonObject = parser.parse(stringBuilder) as JsonObject
-                            val result = json.get("result")
-                            if (result!! == true) {
-                                val broList = json.get("bro_list") as JsonArray<*>
-                                bros.clear()
-                                // TODO @Skools: add a check that will exclude the logged in bro. We will do this client side instead of server side to not do too much on the server side
-                                for (b in broList) {
-                                    val foundBro = b as JsonObject
-                                    val broName: String = foundBro.get("bro_name") as String
-                                    val id: Int = foundBro.get("id") as Int
-
-                                    // Add the bro to the potential bro list
-                                    val bro = Bro(broName, id, "")
-                                    bros.add(bro)
-                                }
-                                brodapter!!.notifyDataSetChanged()
-                            } else {
-                                Toast.makeText(
-                                    applicationContext,
-                                    "The BroCast server is not responding. " +
-                                            "We appologize for the inconvenience, please try again later",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            }
-                        }
-                    } else {
-                        TODO("the bro will come back to the login screen, show which error occured")
-                    }
-                }
-            })
-    }
 
     private val clickButtonListener = View.OnClickListener { view ->
         when (view.getId()) {

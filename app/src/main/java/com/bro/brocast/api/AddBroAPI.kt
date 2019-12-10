@@ -13,7 +13,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-object AddAPI {
+object AddBroAPI {
 
     fun addBro(broName: String, otherBroName: String, context: Context, findBroActivity: FindBroActivity) {
         BroCastAPI
