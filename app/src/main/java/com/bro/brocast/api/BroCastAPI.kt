@@ -1,9 +1,9 @@
 package com.bro.brocast.api
 
+import com.beust.klaxon.JsonObject
 import com.bro.brocast.brocastURL
 import com.bro.brocast.brocastURLHome
 import com.google.gson.GsonBuilder
-import com.google.gson.JsonObject
 import okhttp3.OkHttpClient
 import okhttp3.ResponseBody
 import retrofit2.Call

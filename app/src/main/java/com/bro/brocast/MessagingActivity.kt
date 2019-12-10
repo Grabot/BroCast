@@ -2,22 +2,15 @@ package com.bro.brocast
 
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.beust.klaxon.JsonArray
-import com.beust.klaxon.Parser
+import com.beust.klaxon.JsonObject
 import com.bro.brocast.adapters.MessagesAdapter
-import com.bro.brocast.api.BroCastAPI
 import com.bro.brocast.api.GetMessagesAPI
+import com.bro.brocast.api.SendMessagesAPI
 import com.bro.brocast.objects.Message
-import com.google.gson.JsonObject
 import kotlinx.android.synthetic.main.activity_messaging.*
-import okhttp3.ResponseBody
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 
 class MessagingActivity: AppCompatActivity() {
@@ -62,7 +55,7 @@ class MessagingActivity: AppCompatActivity() {
         })
     }
 
-    private fun loadMessages() {
+    fun loadMessages() {
         GetMessagesAPI.getMessages(broName, brosBro, applicationContext)
     }
 
@@ -73,44 +66,9 @@ class MessagingActivity: AppCompatActivity() {
                 println("bro $broName wants to send a message to $brosBro. The message is $message")
 
                 val jsonObj = JsonObject()
-                jsonObj.addProperty("message", message)
+                jsonObj["message"] = message
 
-                BroCastAPI
-                    .service
-                    .sendMessage(broName, brosBro, jsonObj)
-                    .enqueue(object : Callback<ResponseBody> {
-                        override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                            Toast.makeText(
-                                applicationContext,
-                                "The BroCast server is not responding. " +
-                                        "We appologize for the inconvenience, please try again later",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-                        override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                            if (response.isSuccessful) {
-                                val msg = response.body()?.string()
-                                if (msg != null) {
-                                    val parser: Parser = Parser.default()
-                                    val stringBuilder: StringBuilder = StringBuilder(msg)
-                                    val json: com.beust.klaxon.JsonObject =
-                                        parser.parse(stringBuilder) as com.beust.klaxon.JsonObject
-                                    val result = json.get("result")
-                                    if (result!! == true) {
-                                        // When it was successful we only want to re-load the messages.
-                                        loadMessages()
-                                    } else {
-                                        Toast.makeText(
-                                            applicationContext,
-                                            "Something went wrong " +
-                                                    "We appologize for the inconvenience, please try again later",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                    }
-                                }
-                            }
-                        }
-                    })
+                SendMessagesAPI.sendMessages(broName, brosBro, jsonObj, applicationContext, this@MessagingActivity)
             }
         }
     }
