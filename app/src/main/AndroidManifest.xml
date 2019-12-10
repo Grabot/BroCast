@@ -32,6 +32,7 @@
             android:windowSoftInputMode="adjustNothing"/>
         <activity android:name=".MainActivity" android:windowSoftInputMode="adjustNothing" />
         <activity android:name=".MessagingActivity" />
+        <activity android:name=".KeyboardTestActivtiy" />
     </application>
 
 </manifest>

@@ -33,6 +33,7 @@ class BroCastHome: AppCompatActivity() {
 
         buttonLogout.setOnClickListener(clickButtonListener)
         buttonFindBros.setOnClickListener(clickButtonListener)
+        testButton.setOnClickListener(clickButtonListener)
 
         brodapter = Brodapter(
             this,
@@ -87,6 +88,11 @@ class BroCastHome: AppCompatActivity() {
                 val successIntent = Intent(this@BroCastHome, FindBroActivity::class.java).apply {
                     putExtra("broName", broName)
                 }
+                startActivity(successIntent)
+            }
+            R.id.testButton -> {
+                println("start test activity")
+                val successIntent = Intent(this@BroCastHome, KeyboardTestActivtiy::class.java)
                 startActivity(successIntent)
             }
         }
