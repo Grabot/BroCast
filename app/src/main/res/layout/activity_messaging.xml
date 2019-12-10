@@ -19,7 +19,7 @@
         app:layout_constraintEnd_toStartOf="@+id/sendBroMessage"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 
 
@@ -42,8 +42,8 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/broMessageField"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/broMessageField"
         tools:layout_editor_absoluteX="8dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
