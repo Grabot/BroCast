@@ -31,6 +31,9 @@ class MessagingActivity: AppCompatActivity() {
 
     var broTextField: EditText? = null
 
+    // A simple solution to determine how many message should be loaded.
+    var page: Int = 1
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_messaging)
@@ -75,7 +78,8 @@ class MessagingActivity: AppCompatActivity() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 if (!recyclerView.canScrollVertically(1)) {
-                    println("bottom of the thingy")
+                    page = 2
+                    loadMessages()
                 }
             }
         })
@@ -121,7 +125,6 @@ class MessagingActivity: AppCompatActivity() {
     }
 
     fun loadMessages() {
-        GetMessagesAPI.getMessages(broName!!, brosBro!!, applicationContext)
+        GetMessagesAPI.getMessages(broName!!, brosBro!!, page, applicationContext)
     }
-
 }

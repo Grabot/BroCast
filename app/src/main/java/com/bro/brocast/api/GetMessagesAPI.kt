@@ -16,10 +16,10 @@ object GetMessagesAPI {
 
     lateinit var messagesAdapter: MessagesAdapter
 
-    fun getMessages(broName: String, brosBro: String, context: Context) {
+    fun getMessages(broName: String, brosBro: String, page: Int, context: Context) {
         BroCastAPI
             .service
-            .getMessages(broName, brosBro, 0)
+            .getMessages(broName, brosBro, page)
             .enqueue(object : Callback<ResponseBody> {
                 override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                     Toast.makeText(
