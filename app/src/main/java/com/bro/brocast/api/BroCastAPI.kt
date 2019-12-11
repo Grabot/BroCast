@@ -40,16 +40,18 @@ class BroCastAPI {
             @Path("bro") bro: String): Call<ResponseBody>
 
         // The URL's are the same for the next 2 functions. The first is a get and the other a post.
-        @GET("/api/v1.0/message/{bro}/{bros_bro}")
+        @GET("/api/v1.0/message/{bro}/{bros_bro}/{page}")
         fun getMessages(
             @Path("bro") bro: String,
-            @Path("bros_bro") brosBro: String): Call<ResponseBody>
+            @Path("bros_bro") brosBro: String,
+            @Path("page") page: Int): Call<ResponseBody>
 
         @Headers("Content-type: application/json")
-        @POST("/api/v1.0/message/{bro}/{bros_bro}")
+        @POST("/api/v1.0/message/{bro}/{bros_bro}/{page}")
         fun sendMessage(
             @Path("bro") bro: String,
             @Path("bros_bro") brosBro: String,
+            @Path("page") page: Int,
             @Body body: JsonObject): Call<ResponseBody>
 
     }

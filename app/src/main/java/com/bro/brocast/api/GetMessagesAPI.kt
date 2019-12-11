@@ -19,7 +19,7 @@ object GetMessagesAPI {
     fun getMessages(broName: String, brosBro: String, context: Context) {
         BroCastAPI
             .service
-            .getMessages(broName, brosBro)
+            .getMessages(broName, brosBro, 0)
             .enqueue(object : Callback<ResponseBody> {
                 override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                     Toast.makeText(

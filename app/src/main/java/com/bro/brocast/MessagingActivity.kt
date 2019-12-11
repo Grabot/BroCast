@@ -41,6 +41,23 @@ class MessagingActivity: AppCompatActivity() {
 
         // Creates a vertical Layout Manager
         broMessageList = findViewById(R.id.broMessages)
+        broTextField = findViewById(R.id.broMessageField) as EditText
+        val keyboard = findViewById(R.id.keyboard) as MyKeyboard
+
+        broTextField!!.setOnClickListener(clickButtonListener)
+        val buttonBack = findViewById(R.id.button_back) as Button
+        buttonBack.setOnClickListener(clickButtonListener)
+
+        broTextField!!.setRawInputType(InputType.TYPE_CLASS_TEXT)
+        broTextField!!.setTextIsSelectable(true)
+        // TODO @Skools: set the minimum SDK to this version (LOLLIPOP).
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            broTextField!!.requestFocus()
+            broTextField!!.showSoftInputOnFocus = false
+        }
+
+        val ic = broTextField!!.onCreateInputConnection(EditorInfo())
+        keyboard.setInputConnection(ic)
 
         val layoutMgr = LinearLayoutManager(this)
         // TODO @Sander: fix this damn scroll thing. I've got no idea how it works
@@ -63,28 +80,6 @@ class MessagingActivity: AppCompatActivity() {
             }
         })
 
-        broTextField = findViewById(R.id.broMessageField) as EditText
-        val keyboard = findViewById(R.id.keyboard) as MyKeyboard
-
-        broTextField!!.setRawInputType(InputType.TYPE_CLASS_TEXT)
-        broTextField!!.setTextIsSelectable(true)
-        // TODO @Skools: set the minimum SDK to this version (LOLLIPOP).
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            broTextField!!.requestFocus()
-            broTextField!!.showSoftInputOnFocus = false
-        }
-
-        val ic = broTextField!!.onCreateInputConnection(EditorInfo())
-        keyboard.setInputConnection(ic)
-
-        broTextField!!.setOnClickListener(clickButtonListener)
-
-        val buttonBack = findViewById(R.id.button_back) as Button
-        buttonBack.setOnClickListener(clickButtonListener)
-    }
-
-    fun loadMessages() {
-        GetMessagesAPI.getMessages(broName!!, brosBro!!, applicationContext)
     }
 
     private val clickButtonListener = View.OnClickListener { view ->
@@ -123,6 +118,10 @@ class MessagingActivity: AppCompatActivity() {
                 }
             }
         }
+    }
+
+    fun loadMessages() {
+        GetMessagesAPI.getMessages(broName!!, brosBro!!, applicationContext)
     }
 
 }
