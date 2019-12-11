@@ -58,8 +58,8 @@ class BroCastAPI {
 
         // This allows us to set a timeout. We don't want to wait a long time for a server response.
         val okHttpClient = OkHttpClient.Builder()
-            .readTimeout(2, TimeUnit.SECONDS)
-            .connectTimeout(2, TimeUnit.SECONDS)
+            .readTimeout(10, TimeUnit.SECONDS)
+            .connectTimeout(10, TimeUnit.SECONDS)
             .build()
 
         private val retrofit = Retrofit.Builder()

@@ -7,6 +7,7 @@ import android.text.InputType
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import android.widget.Button
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -64,7 +65,6 @@ class MessagingActivity: AppCompatActivity() {
 
         broTextField = findViewById(R.id.broMessageField) as EditText
         val keyboard = findViewById(R.id.keyboard) as MyKeyboard
-        keyboard.visibility = View.GONE
 
         broTextField!!.setRawInputType(InputType.TYPE_CLASS_TEXT)
         broTextField!!.setTextIsSelectable(true)
@@ -77,18 +77,10 @@ class MessagingActivity: AppCompatActivity() {
         val ic = broTextField!!.onCreateInputConnection(EditorInfo())
         keyboard.setInputConnection(ic)
 
-        try {
-            // We want to show the listview and hide the keyboard.
-            val imm: InputMethodManager =
-                applicationContext.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            imm.hideSoftInputFromWindow(
-                this@MessagingActivity.currentFocus!!.windowToken,
-                0
-            )
-        } catch (e: Exception) {
-            // This is for the keyboard. If something went wrong
-            // than, whatever! It will not effect the app!
-        }
+        broTextField!!.setOnClickListener(clickButtonListener)
+
+        val buttonBack = findViewById(R.id.button_back) as Button
+        buttonBack.setOnClickListener(clickButtonListener)
     }
 
     fun loadMessages() {
@@ -117,6 +109,17 @@ class MessagingActivity: AppCompatActivity() {
 
                     // clear the input field
                     broTextField!!.text.clear()
+                }
+            }
+            R.id.broMessageField -> {
+                // We want to make the keyboard visible if it isn't yet.
+                if (keyboard.visibility != View.VISIBLE) {
+                    keyboard.visibility = View.VISIBLE
+                }
+            }
+            R.id.button_back -> {
+                if (keyboard.visibility == View.VISIBLE) {
+                    keyboard.visibility = View.GONE
                 }
             }
         }

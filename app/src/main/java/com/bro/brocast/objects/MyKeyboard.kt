@@ -38,8 +38,6 @@ class MyKeyboard: LinearLayout {
         button2 = findViewById(R.id.button_2) as Button
         button2!!.setOnClickListener(clickButtonListener)
 
-//        keyValues.put(R.id.button_1, "1")
-//        keyValues.put(R.id.button_2, "2")
     }
 
     private val clickButtonListener = View.OnClickListener { view ->
