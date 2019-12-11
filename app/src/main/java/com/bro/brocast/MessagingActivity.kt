@@ -1,7 +1,13 @@
 package com.bro.brocast
 
+import android.content.Context
+import android.os.Build
 import android.os.Bundle
+import android.text.InputType
 import android.view.View
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -10,6 +16,7 @@ import com.bro.brocast.adapters.MessagesAdapter
 import com.bro.brocast.api.GetMessagesAPI
 import com.bro.brocast.api.SendMessagesAPI
 import com.bro.brocast.objects.Message
+import com.bro.brocast.objects.MyKeyboard
 import kotlinx.android.synthetic.main.activity_messaging.*
 
 
@@ -20,6 +27,8 @@ class MessagingActivity: AppCompatActivity() {
 
     var broName: String? = ""
     var brosBro: String? = ""
+
+    var broTextField: EditText? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,6 +61,34 @@ class MessagingActivity: AppCompatActivity() {
                 }
             }
         })
+
+        broTextField = findViewById(R.id.broMessageField) as EditText
+        val keyboard = findViewById(R.id.keyboard) as MyKeyboard
+        keyboard.visibility = View.GONE
+
+        broTextField!!.setRawInputType(InputType.TYPE_CLASS_TEXT)
+        broTextField!!.setTextIsSelectable(true)
+        // TODO @Skools: set the minimum SDK to this version (LOLLIPOP).
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            broTextField!!.requestFocus()
+            broTextField!!.showSoftInputOnFocus = false
+        }
+
+        val ic = broTextField!!.onCreateInputConnection(EditorInfo())
+        keyboard.setInputConnection(ic)
+
+        try {
+            // We want to show the listview and hide the keyboard.
+            val imm: InputMethodManager =
+                applicationContext.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(
+                this@MessagingActivity.currentFocus!!.windowToken,
+                0
+            )
+        } catch (e: Exception) {
+            // This is for the keyboard. If something went wrong
+            // than, whatever! It will not effect the app!
+        }
     }
 
     fun loadMessages() {
@@ -61,7 +98,7 @@ class MessagingActivity: AppCompatActivity() {
     private val clickButtonListener = View.OnClickListener { view ->
         when (view.getId()) {
             R.id.sendBroMessage -> {
-                val message = broMessageField.text.toString()
+                val message = broTextField!!.text.toString()
                 // Simple check to make sure the user cannot send an empty message.
                 // This check is also done in the backend, but also here.
                 if (message != "") {
@@ -79,7 +116,7 @@ class MessagingActivity: AppCompatActivity() {
                     )
 
                     // clear the input field
-                    broMessageField.text.clear()
+                    broTextField!!.text.clear()
                 }
             }
         }
