@@ -12,7 +12,7 @@
         android:padding="5dp"
         android:layout_alignParentTop="true"/>
 
-    <com.bro.brocast.KeyboardTestActivity
+    <com.bro.brocast.objects.MyKeyboard
         android:id="@+id/keyboard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
