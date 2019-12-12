@@ -5,10 +5,12 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.NotificationManagerCompat
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Parser
 import com.bro.brocast.api.BroCastAPI
 import com.bro.brocast.api.LoginAPI
+import com.bro.brocast.notification.NotificationUtil
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
@@ -19,6 +21,12 @@ class OpeningActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.opening_screen)
+
+        NotificationUtil.createNotificationChannel(
+            this,
+            NotificationManagerCompat.IMPORTANCE_DEFAULT,
+            getString(R.string.app_name),
+            "App notification channel.")
 
         val sharedPreferences = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
         val broName: String = sharedPreferences.getString("BRONAME", "")!!
