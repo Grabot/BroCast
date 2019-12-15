@@ -11,6 +11,7 @@
      I added the 'stateAlwaysHidden' to the messaging activity. This is to ignore the initial focus
      on the edit text field on that window. Any next call is also suppresed so that our own keyboard
      is the only one that the user can use.
+     The message icon is awesome, but maybe change it to a fist in the future.
      -->
     <application
         android:allowBackup="true"
@@ -42,6 +43,13 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/brocastmessage" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/colorGreen" />
     </application>
 
 </manifest>
