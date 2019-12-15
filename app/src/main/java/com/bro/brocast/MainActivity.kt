@@ -16,7 +16,7 @@ class MainActivity : AppCompatActivity() {
         buttonLogin.setOnClickListener(clickButtonListener)
         buttonRegister.setOnClickListener(clickButtonListener)
 
-        NotificationUtil.createTestNotification(this@MainActivity,"test1","test2","test3", true)
+//        NotificationUtil.createTestNotification(this@MainActivity,"test1","test2","test3", true)
     }
 
     private val clickButtonListener = View.OnClickListener { view ->
