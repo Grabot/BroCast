@@ -1,5 +1,7 @@
 package com.bro.brocast.notification
 
+import android.content.Context
+import com.bro.brocast.R
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 
@@ -50,6 +52,9 @@ class MessagingService : FirebaseMessagingService() {
         //  should store the token first and send it allong with the user registration. Since the
         //  user can close the app before first creating it's account you should store the token in
         //  sharedpreferences.
-//        sendRegistrationToServer(token)
+        val sharedPreferences = this.getSharedPreferences(this.getString(R.string.preference_file_key), Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putString("REGISTRATION_TOKEN", token)
+        editor.apply()
     }
 }

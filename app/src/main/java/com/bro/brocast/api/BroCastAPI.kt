@@ -16,10 +16,11 @@ import java.util.concurrent.TimeUnit
 class BroCastAPI {
     interface APIService {
 
-        @GET("/api/v1.0/register/{bro_name}/{password}")
+        @GET("/api/v1.0/register/{bro_name}/{password}/{token}")
         fun registerBro(
             @Path("bro_name") broName: String,
-            @Path("password") password: String): Call<ResponseBody>
+            @Path("password") password: String,
+            @Path("token") token: String): Call<ResponseBody>
 
         @GET("/api/v1.0/login/{bro_name}/{password}")
         fun loginBro(
@@ -53,6 +54,11 @@ class BroCastAPI {
             @Path("bros_bro") brosBro: String,
             @Path("page") page: Int,
             @Body body: JsonObject): Call<ResponseBody>
+
+        @GET("/api/v1.0/update/token/{bro}/{token}")
+        fun updateToken(
+            @Path("bro") bro: String,
+            @Path("token") token: String): Call<ResponseBody>
 
     }
 

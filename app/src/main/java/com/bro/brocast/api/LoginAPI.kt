@@ -75,6 +75,12 @@ object LoginAPI {
                                     Context.MODE_PRIVATE
                                 )
                                 val editor = sharedPreferences.edit()
+                                // We check if this is a different phone. If it is we change the token
+                                val token: String = sharedPreferences.getString("REGISTRATION_TOKEN", "")!!
+                                val current_token = json.get("token")
+                                if (token != current_token) {
+                                    UpdateTokenAPI.updateToken(broName, token, context)
+                                }
                                 editor.putString("BRONAME", broName)
                                 // There seems to be an issue with storing password because of newline characters.
                                 // We concatenate it with an ending that we will remove when we load the password

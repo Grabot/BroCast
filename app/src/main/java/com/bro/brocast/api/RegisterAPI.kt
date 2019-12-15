@@ -18,9 +18,10 @@ object RegisterAPI {
     var pressedRegister: Boolean = false
 
     fun registerBro(broName: String, password: String, registerActivity: RegisterActivity?, context: Context ) {
+        val token = getToken(context)
         BroCastAPI
             .service
-            .registerBro(broName, password)
+            .registerBro(broName, password, token)
             .enqueue(object : Callback<ResponseBody> {
                 override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                     pressedRegister = false
@@ -77,5 +78,10 @@ object RegisterAPI {
             reason,
             Toast.LENGTH_SHORT
         ).show()
+    }
+
+    private fun getToken(context: Context): String {
+        val sharedPreferences = context.getSharedPreferences(context.getString(R.string.preference_file_key), Context.MODE_PRIVATE)
+        return sharedPreferences.getString("REGISTRATION_TOKEN", "")!!
     }
 }
