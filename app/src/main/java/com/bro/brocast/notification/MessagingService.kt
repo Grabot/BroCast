@@ -10,6 +10,7 @@ class MessagingService : FirebaseMessagingService() {
         // Not getting messages here? See why this may be: https://goo.gl/39bRNJ
         println("From: " + remoteMessage.from)
         // Check if message contains a data payload.
+        // TODO @Sander: We only use notifications, so possibly remove this part.
         if (remoteMessage.data.size > 0) {
             println("Message data payload: " + remoteMessage.data)
             if ( /* Check if data needs to be processed by long running job */true) { // For long-running tasks (10 seconds or more) use Firebase Job Dispatcher.
@@ -44,6 +45,11 @@ class MessagingService : FirebaseMessagingService() {
         // manage this apps subscriptions on the server side, send the
         // Instance ID token to your app server.
         println("send registration")
+        // TODO @Sander: Here you should send the token to your database. This token can be used to
+        //  determine the correct user. Since the user is not created when the app is opened you
+        //  should store the token first and send it allong with the user registration. Since the
+        //  user can close the app before first creating it's account you should store the token in
+        //  sharedpreferences.
 //        sendRegistrationToServer(token)
     }
 }
