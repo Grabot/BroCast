@@ -48,11 +48,10 @@ class MessagingActivity: AppCompatActivity() {
         val keyboard = findViewById(R.id.keyboard) as MyKeyboard
 
         broTextField!!.setOnClickListener(clickButtonListener)
-        val buttonBack = findViewById(R.id.button_back) as Button
-        buttonBack.setOnClickListener(clickButtonListener)
 
         broTextField!!.setRawInputType(InputType.TYPE_CLASS_TEXT)
         broTextField!!.setTextIsSelectable(true)
+        broTextField!!.setTextSize(20f)
         // TODO @Skools: set the minimum SDK to this version (LOLLIPOP).
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             broTextField!!.requestFocus()
@@ -114,11 +113,6 @@ class MessagingActivity: AppCompatActivity() {
                 // We want to make the keyboard visible if it isn't yet.
                 if (keyboard.visibility != View.VISIBLE) {
                     keyboard.visibility = View.VISIBLE
-                }
-            }
-            R.id.button_back -> {
-                if (keyboard.visibility == View.VISIBLE) {
-                    keyboard.visibility = View.GONE
                 }
             }
         }

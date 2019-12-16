@@ -59,6 +59,7 @@ class MessagesAdapter(private var messages: MutableList<Message>)  : RecyclerVie
         private val messageText: TextView = itemView.findViewById(R.id.message_text)
 
         fun bind(message: String) {
+            messageText.setTextSize(20f)
             messageText.text = message
             // TODO @Skools: possibly expand it here to include pictures and stuff.
         }

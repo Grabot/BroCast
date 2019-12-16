@@ -18,4 +18,6 @@
     <string name="add_bro">Add bro</string>
     <string name="bro_message">Type a message</string>
     <string name="send">send</string>
+    <string name="channel_id">com.bro.brocast.BroCast</string>
+    <string name="channel_name">BroCast</string>
 </resources>

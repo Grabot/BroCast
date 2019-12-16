@@ -25,7 +25,6 @@ class OpeningActivity : AppCompatActivity() {
         NotificationUtil.createNotificationChannel(
             this,
             NotificationManagerCompat.IMPORTANCE_DEFAULT,
-            getString(R.string.app_name),
             "App notification channel.")
 
         val sharedPreferences = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
