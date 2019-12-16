@@ -43,13 +43,18 @@ class MyKeyboard: LinearLayout {
     private val clickButtonListener = View.OnClickListener { view ->
         when (view.getId()) {
             R.id.button_1 -> {
-                inputConnection!!.commitText("1", 1)
+                inputConnection!!.commitText(getEmojiByUnicode(Integer.valueOf("0x1F60A")), 1)
             }
             R.id.button_2 -> {
-                inputConnection!!.commitText("2", 1)
+                inputConnection!!.commitText(getEmojiByUnicode(Integer.valueOf("Ux1F601")), 1)
             }
         }
     }
+
+    private fun getEmojiByUnicode(unicode: Int): String {
+        return String(Character.toChars(unicode))
+    }
+
 
     fun setInputConnection(ic: InputConnection) {
         inputConnection = ic

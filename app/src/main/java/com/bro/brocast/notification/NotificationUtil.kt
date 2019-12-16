@@ -33,7 +33,7 @@ object NotificationUtil {
         val channelId = "${context.packageName}-${context.getString(R.string.app_name)}"
         val notificationBuilder = NotificationCompat.Builder(context, channelId).apply {
             // TODO @Skools: give it a better icon, or none at all.
-            setSmallIcon(R.drawable.flag_brazil)
+            setSmallIcon(R.drawable.brocastmessage)
             setContentTitle(title)
             setContentText(message)
             setStyle(NotificationCompat.BigTextStyle().bigText(bigText))
