@@ -28,8 +28,6 @@ class BroCastHome: AppCompatActivity() {
 
         val intent = intent
         broName = intent.getStringExtra("broName")
-        val welcomeText = getString(R.string.brocast_welcome) + " $broName"
-        broCastWelcomeView.text = welcomeText
 
         buttonLogout.setOnClickListener(clickButtonListener)
         buttonFindBros.setOnClickListener(clickButtonListener)

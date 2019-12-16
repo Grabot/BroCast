@@ -11,9 +11,7 @@ import android.net.Uri
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import com.bro.brocast.BuildConfig
-import com.bro.brocast.MainActivity
-import com.bro.brocast.R
+import com.bro.brocast.*
 
 
 object NotificationUtil {
@@ -40,30 +38,28 @@ object NotificationUtil {
                 .build()
 
             channel.setSound(NOTIFICATION_SOUND_URI, audioAttributes)
-//            channel.lightColor = NOTIFICATION_COLOR
-//            channel.vibrationPattern = VIBRATE_PATTERN
+            channel.vibrationPattern = VIBRATE_PATTERN
             channel.enableVibration(true)
 
             // create the channel using NotificationManager
             val notificationManager = context.getSystemService(NotificationManager::class.java)
             notificationManager!!.createNotificationChannel(channel)
-
         }
     }
 
-    fun createTestNotification(context: Context, title: String, message: String, bigText: String, autoCancel: Boolean) {
-        val channelId = "${context.packageName}-${context.getString(R.string.app_name)}"
+    fun createNotification(context: Context, title: String, message: String, autoCancel: Boolean) {
+        val channelId = context.getString(R.string.channel_id)
         val notificationBuilder = NotificationCompat.Builder(context, channelId).apply {
             // TODO @Skools: give it a better icon, or none at all.
             setSmallIcon(R.drawable.brocastmessage)
             setContentTitle(title)
             setContentText(message)
-            setStyle(NotificationCompat.BigTextStyle().bigText(bigText))
             priority = NotificationCompat.PRIORITY_DEFAULT
             setAutoCancel(autoCancel)
-
-            // When the user taps the notification he is directed to the mainactivity.
-            val intent = Intent(context, MainActivity::class.java)
+            setSound(NOTIFICATION_SOUND_URI)
+            setVibrate(VIBRATE_PATTERN)
+            // When the user taps the notification he is directed to the BroCastHome. He already has the app open
+            val intent = Intent(context, OpeningActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             val pendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
             setContentIntent(pendingIntent)
