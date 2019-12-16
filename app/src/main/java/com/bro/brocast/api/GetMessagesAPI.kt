@@ -17,6 +17,8 @@ object GetMessagesAPI {
     lateinit var messagesAdapter: MessagesAdapter
 
     fun getMessages(broName: String, brosBro: String, page: Int, context: Context) {
+        messagesAdapter.setBro(broName)
+        messagesAdapter.setBrosBro(brosBro)
         BroCastAPI
             .service
             .getMessages(broName, brosBro, page)
@@ -45,7 +47,8 @@ object GetMessagesAPI {
                                     val m = message as JsonObject
                                     val sender = m.get("sender") as Boolean
                                     val body = m.get("body") as String
-                                    messagesAdapter.appendMessage(Message(sender, body))
+                                    val timeStamp = m.get("timestamp") as String
+                                    messagesAdapter.appendMessage(Message(sender, body, timeStamp))
                                 }
                                 messagesAdapter.notifyDataSetChanged()
                             }
