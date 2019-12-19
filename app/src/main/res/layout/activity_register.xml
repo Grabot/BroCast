@@ -9,6 +9,7 @@
 
 
     <EditText
+        android:focusable="true"
         android:id="@+id/broNameRegister"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -22,17 +23,17 @@
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginRight="150dp"
         android:layout_marginEnd="150dp"
-        android:layout_marginStart="40dp"
-        android:layout_marginLeft="40dp" />
+        android:layout_marginStart="50dp"
+        android:layout_marginLeft="50dp" />
 
     <EditText
         android:id="@+id/broNameRegisterEmotion"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="40dp"
-        android:layout_marginLeft="40dp"
-        android:layout_marginRight="40dp"
-        android:layout_marginEnd="40dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
+        android:layout_marginEnd="50dp"
         android:autofillHints="TODO"
         android:hint="@string/broname_emotion"
         android:inputType="text"
@@ -76,5 +77,15 @@
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         tools:layout_editor_absoluteX="0dp" />
+
+    <TextView
+        android:id="@+id/textViewRegisterBro"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/bro_register_text"
+        app:layout_constraintBottom_toTopOf="@+id/broNameRegisterEmotion"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

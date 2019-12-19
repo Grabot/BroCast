@@ -17,11 +17,13 @@ object RegisterAPI {
 
     var pressedRegister: Boolean = false
 
-    fun registerBro(broName: String, password: String, registerActivity: RegisterActivity?, context: Context ) {
+    fun registerBro(broName: String, bromotion: String, password: String, registerActivity: RegisterActivity?, context: Context ) {
         val token = getToken(context)
+        println("bromotion")
+        println(bromotion)
         BroCastAPI
             .service
-            .registerBro(broName, password, token)
+            .registerBro(broName, bromotion, password, token)
             .enqueue(object : Callback<ResponseBody> {
                 override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                     pressedRegister = false
@@ -48,7 +50,7 @@ object RegisterAPI {
                                 editor.apply()
                                 successfulRegistration(broName, json.get("message").toString(), registerActivity, context)
                             } else {
-                                failedRegistration("That broName is already taken, please select another one", context)
+                                failedRegistration("That broName is already taken, please pick another name or bromotion", context)
                             }
                         } else {
                             failedRegistration("Something went wrong, we apologize for the inconvenience", context)

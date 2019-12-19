@@ -27,6 +27,8 @@ class LoginActivity: AppCompatActivity() {
         buttonLoginBro.setOnClickListener(clickLoginListener)
         buttonForgotPass.setOnClickListener(clickLoginListener)
         LoginAPI.pressedLogin = false
+
+        // TODO @Sander: If the user has logged in before autofill the fields.
     }
 
     private val clickLoginListener = View.OnClickListener { view ->

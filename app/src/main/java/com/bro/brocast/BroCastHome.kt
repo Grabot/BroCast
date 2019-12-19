@@ -45,6 +45,7 @@ class BroCastHome: AppCompatActivity() {
 
         // Fill the broList of the bro
         GetBroAPI.getBroAPI(broName, applicationContext, this@BroCastHome)
+        // TODO @Sander: If the list is empty it shows an error message. Don't show the message when the list is empty.
     }
 
     fun notifyBrodapter() {

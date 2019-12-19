@@ -20,5 +20,6 @@
     <string name="send">send</string>
     <string name="channel_id">com.bro.brocast.BroCast</string>
     <string name="channel_name">BroCast</string>
-    <string name="broname_emotion">Bromotion</string>
+    <string name="broname_emotion">😊</string>
+    <string name="bro_register_text">Please give your bro name with a bromotion to register</string>
 </resources>

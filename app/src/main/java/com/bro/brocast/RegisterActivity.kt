@@ -1,33 +1,34 @@
 package com.bro.brocast
 
-import android.app.Activity
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
+import android.text.Editable
 import android.text.InputType
+import android.text.Selection
+import android.text.TextWatcher
 import android.view.View
+import android.view.View.OnFocusChangeListener
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
-import com.beust.klaxon.JsonObject
 import com.bro.brocast.api.RegisterAPI
-import com.bro.brocast.api.SendMessagesAPI
 import com.bro.brocast.objects.MyKeyboard
-import kotlinx.android.synthetic.main.activity_messaging.*
 import kotlinx.android.synthetic.main.activity_register.*
-import kotlinx.android.synthetic.main.activity_register.keyboard
 import se.simbio.encryption.Encryption
+
 
 class RegisterActivity : AppCompatActivity() {
 
     var encryption: Encryption? = null
-    // A simple variable to lock the register button after it's pressed
-    private var pressedRegister = false
 
     var bromotion: EditText? = null
     var broName: EditText? = null
+    var broPassword: EditText? = null
+
+    // I use this variable because I'm not sure if an emoji is always length 2
+    var emojiLength: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,14 +47,16 @@ class RegisterActivity : AppCompatActivity() {
             Encryption.getDefault(secretBroCastKey, saltyBroCastSalt, ByteArray(16))
 
         buttonRegisterBro.setOnClickListener(clickRegisterListener)
-        pressedRegister = false
+        RegisterAPI.pressedRegister = false
 
         bromotion = findViewById(R.id.broNameRegisterEmotion) as EditText
         broName = findViewById(R.id.broNameRegister) as EditText
         val keyboard = findViewById(R.id.keyboard) as MyKeyboard
+        broPassword = findViewById(R.id.passwordRegister) as EditText
 
-        bromotion!!.setOnClickListener(clickRegisterListener)
-        broName!!.setOnClickListener(clickRegisterListener)
+        bromotion!!.setOnFocusChangeListener(focusChangeListener)
+        broName!!.setOnFocusChangeListener(focusChangeListener)
+        broPassword!!.setOnFocusChangeListener(focusChangeListener)
 
         bromotion!!.setRawInputType(InputType.TYPE_CLASS_TEXT)
         bromotion!!.setTextIsSelectable(true)
@@ -67,27 +70,107 @@ class RegisterActivity : AppCompatActivity() {
         val ic = bromotion!!.onCreateInputConnection(EditorInfo())
         keyboard.setInputConnection(ic)
 
+        bromotion!!.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable) {
+                if (emojiLength > 0) {
+                    s.delete(0, emojiLength)
+                    emojiLength = 0
+                }
+            }
+
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int ) {
+                emojiLength = start
+            }
+
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+            }
+        })
+    }
+
+    private val focusChangeListener = OnFocusChangeListener { view, b ->
+        when (view.getId()) {
+            R.id.broNameRegisterEmotion -> {
+                if (b) {
+                    println("focus on bromotion field")
+                    try {
+                        // We want to show the listview and hide the keyboard.
+                        val imm: InputMethodManager =
+                            applicationContext.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                        imm.hideSoftInputFromWindow(
+                            this.currentFocus!!.windowToken,
+                            0
+                        )
+                        println("keyboard hidden")
+                    } catch (e: Exception) {
+                        // This is for the keyboard. If something went wrong
+                        // than, whatever! It will not effect the app!
+                    }
+
+                    // We want to make the keyboard visible if it isn't yet.
+                    if (keyboard.visibility != View.VISIBLE) {
+                        keyboard.visibility = View.VISIBLE
+                    }
+
+                }
+            }
+            R.id.broNameRegister -> {
+                if (b) {
+                    println("focus on the broname field")
+                    // The user clicked on the other field so we make the emotion keyboard invisible
+                    if (keyboard.visibility == View.VISIBLE) {
+                        keyboard.visibility = View.INVISIBLE
+                    }
+                }
+            }
+            R.id.passwordRegister -> {
+                if (b) {
+                    println("password field touched")
+                    // We don't want the user to see the emotion keyboard when this field is active
+                    if (keyboard.visibility == View.VISIBLE) {
+                        keyboard.visibility = View.INVISIBLE
+                    }
+                }
+            }
+        }
     }
 
     private val clickRegisterListener = View.OnClickListener { view ->
         when (view.getId()) {
             R.id.buttonRegisterBro -> {
-                if (!pressedRegister) {
-                    pressedRegister = true
-                    val broName = broNameRegister.text.toString()
-                    val password = passwordRegister.text.toString()
+                if (!RegisterAPI.pressedRegister) {
+                    RegisterAPI.pressedRegister = true
+                    val broName = broName!!.text.toString()
+                    val password = broPassword!!.text.toString()
+                    val bromotion = broNameRegisterEmotion!!.text.toString()
                     val passwordEncrypt = encryption!!.encryptOrNull(password)
                     println("bro $broName wants to register!")
-                    RegisterAPI.registerBro(broName, passwordEncrypt, this@RegisterActivity, applicationContext)
+                    RegisterAPI.registerBro(broName, bromotion, passwordEncrypt, this@RegisterActivity, applicationContext)
                 }
             }
-            R.id.broMessageField -> {
+            R.id.broNameRegisterEmotion -> {
+                println("bro emotion field touched")
+                try {
+                    // We want to show the listview and hide the keyboard.
+                    val imm: InputMethodManager =
+                        applicationContext.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.hideSoftInputFromWindow(
+                        this.currentFocus!!.windowToken,
+                        0
+                    )
+                    println("keyboard hidden")
+                } catch (e: Exception) {
+                    // This is for the keyboard. If something went wrong
+                    // than, whatever! It will not effect the app!
+                }
+
                 // We want to make the keyboard visible if it isn't yet.
                 if (keyboard.visibility != View.VISIBLE) {
                     keyboard.visibility = View.VISIBLE
                 }
+
             }
             R.id.broNameRegister -> {
+                println("broname field touched")
                 // The user clicked on the other field so we make the emotion keyboard invisible
                 if (keyboard.visibility == View.VISIBLE) {
                     keyboard.visibility = View.INVISIBLE
