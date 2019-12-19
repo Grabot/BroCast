@@ -53,11 +53,12 @@ object FindBroAPI {
                             for (b in bros) {
                                 val foundBro = b as JsonObject
                                 val broName: String = foundBro.get("bro_name") as String
+                                val bromotion: String = foundBro.get("bromotion") as String
                                 val id: Int = foundBro.get("id") as Int
 
                                 if (broName != loggedInBro) {
                                     // Add the bro to the potential bro list
-                                    val bro = Bro(broName, id, "")
+                                    val bro = Bro(broName, id, bromotion)
                                     val brorray = ArrayList<Bro>()
                                     potentialBros.add(bro)
                                     brorray.add(bro)

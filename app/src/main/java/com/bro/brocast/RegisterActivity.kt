@@ -12,7 +12,9 @@ import android.view.View.OnFocusChangeListener
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.bro.brocast.api.LoginAPI
 import com.bro.brocast.api.RegisterAPI
 import com.bro.brocast.objects.MyKeyboard
 import kotlinx.android.synthetic.main.activity_register.*
@@ -144,7 +146,12 @@ class RegisterActivity : AppCompatActivity() {
                     val bromotion = broNameRegisterEmotion!!.text.toString()
                     val passwordEncrypt = encryption!!.encryptOrNull(password)
                     println("bro $broName wants to register!")
-                    RegisterAPI.registerBro(broName, bromotion, passwordEncrypt, this@RegisterActivity, applicationContext)
+                    if (broName != "" && bromotion != "" && password != "") {
+                        RegisterAPI.registerBro(broName, bromotion, passwordEncrypt, this@RegisterActivity, applicationContext)
+                    } else {
+                        Toast.makeText(applicationContext, "On of the fields is not filled in, please fill it in.", Toast.LENGTH_SHORT).show()
+                        RegisterAPI.pressedRegister = false
+                    }
                 }
             }
             R.id.broNameRegisterEmotion -> {

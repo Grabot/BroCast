@@ -42,7 +42,7 @@ class ExpandableBrodapter(var context: Context, var expandableListView : Expanda
 
         val bro: Bro = getGroup(groupPosition)
 
-        textView.text = bro.broName
+        textView.text = bro.getFullBroName()
 
         return view
     }
@@ -72,7 +72,7 @@ class ExpandableBrodapter(var context: Context, var expandableListView : Expanda
             view = layoutInflater.inflate(R.layout.bro_list_click, parent, false)
         }
         val add_bro = view?.findViewById<TextView>(R.id.broListClicked)
-        add_bro?.text = "Add bro " + getChild(groupPosition,childPosition).broName
+        add_bro?.text = "Add bro " + getChild(groupPosition,childPosition).getFullBroName()
 
         return view
     }

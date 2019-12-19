@@ -14,6 +14,7 @@ import kotlinx.android.synthetic.main.activity_find_bros.*
 class FindBroActivity: AppCompatActivity() {
 
     var broName: String? = ""
+    var bromotion: String? = ""
     var expandableBrodapter: ExpandableBrodapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -22,6 +23,7 @@ class FindBroActivity: AppCompatActivity() {
 
         val intent = intent
         broName = intent.getStringExtra("broName")
+        bromotion = intent.getStringExtra("bromotion")
 
         val listView = bro_list_view
         expandableBrodapter = ExpandableBrodapter(
@@ -56,6 +58,7 @@ class FindBroActivity: AppCompatActivity() {
     private val clickButtonListener = View.OnClickListener { view ->
         when (view.getId()) {
             R.id.buttonSearchBros -> {
+                // TODO @Sander: potentially expand it with an emoji search
                 val potentialBro = broNameBroSearch.text.toString()
                 if (potentialBro == "") {
                     Toast.makeText(this, "No Bro filled in yet", Toast.LENGTH_SHORT).show()

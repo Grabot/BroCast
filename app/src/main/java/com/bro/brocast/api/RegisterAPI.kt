@@ -19,8 +19,6 @@ object RegisterAPI {
 
     fun registerBro(broName: String, bromotion: String, password: String, registerActivity: RegisterActivity?, context: Context ) {
         val token = getToken(context)
-        println("bromotion")
-        println(bromotion)
         BroCastAPI
             .service
             .registerBro(broName, bromotion, password, token)
@@ -44,11 +42,12 @@ object RegisterAPI {
                                 val sharedPreferences = context.getSharedPreferences(context.getString(R.string.preference_file_key), Context.MODE_PRIVATE)
                                 val editor = sharedPreferences.edit()
                                 editor.putString("BRONAME", broName)
+                                editor.putString("BROMOTION", bromotion)
                                 // There seems to be an issue with storing password because of newline characters.
                                 // We concatenate it with an ending that we will remove when we load the password
                                 editor.putString("PASSWORD", "$password:broCastPasswordEnd")
                                 editor.apply()
-                                successfulRegistration(broName, json.get("message").toString(), registerActivity, context)
+                                successfulRegistration(broName, bromotion, json.get("message").toString(), registerActivity, context)
                             } else {
                                 failedRegistration("That broName is already taken, please pick another name or bromotion", context)
                             }
@@ -62,7 +61,7 @@ object RegisterAPI {
             })
     }
 
-    fun successfulRegistration(broName: String, reason: String, registerActivity: RegisterActivity?, context: Context) {
+    fun successfulRegistration(broName: String, bromotion: String, reason: String, registerActivity: RegisterActivity?, context: Context) {
         Toast.makeText(
             context,
             "you just logged in! \n$reason",
@@ -70,6 +69,7 @@ object RegisterAPI {
         ).show()
         val successIntent = Intent(registerActivity, BroCastHome::class.java)
         successIntent.putExtra("broName", broName)
+        successIntent.putExtra("bromotion", bromotion)
         successIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         context.startActivity(successIntent)
     }

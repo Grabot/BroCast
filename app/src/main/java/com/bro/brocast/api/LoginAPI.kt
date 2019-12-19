@@ -18,6 +18,7 @@ object LoginAPI {
 
     fun loginBro(
         broName: String,
+        bromotion: String,
         password: String,
         context: Context,
         loginActivity: LoginActivity?,
@@ -28,7 +29,7 @@ object LoginAPI {
         //  isn't null should be used. Find a way to solve this better
         BroCastAPI
             .service
-            .loginBro(broName, password)
+            .loginBro(broName, bromotion, password)
             .enqueue(object : Callback<ResponseBody> {
                 override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                     // The BroCast Backend server is not running
@@ -47,6 +48,7 @@ object LoginAPI {
                     // The bro is logged out so we will empty the stored bro data
                     // and return to the home screen
                     editor.putString("BRONAME", "")
+                    editor.putString("BROMOTION", "")
                     editor.putString("PASSWORD", "")
                     editor.apply()
                     pressedLogin = false
@@ -82,11 +84,12 @@ object LoginAPI {
                                     UpdateTokenAPI.updateToken(broName, token, context)
                                 }
                                 editor.putString("BRONAME", broName)
+                                editor.putString("BROMOTION", bromotion)
                                 // There seems to be an issue with storing password because of newline characters.
                                 // We concatenate it with an ending that we will remove when we load the password
                                 editor.putString("PASSWORD", "$password:broCastPasswordEnd")
                                 editor.apply()
-                                successfulLogin(loginActivity, openingActivity, broName, context)
+                                successfulLogin(loginActivity, openingActivity, broName, bromotion, context)
                             } else {
                                 val reason: String = json.get("reason").toString()
                                 Toast.makeText(
@@ -110,13 +113,14 @@ object LoginAPI {
             })
     }
 
-    fun successfulLogin(loginActivity: LoginActivity?, openingActivity: OpeningActivity?, broName: String, context: Context) {
+    fun successfulLogin(loginActivity: LoginActivity?, openingActivity: OpeningActivity?, broName: String, bromotion: String, context: Context) {
         val successIntent = if (loginActivity != null) {
             Intent(loginActivity, BroCastHome::class.java)
         } else {
             Intent(openingActivity, BroCastHome::class.java)
         }
         successIntent.putExtra("broName", broName)
+        successIntent.putExtra("bromotion", bromotion)
         // Because this is called outside of the activity you need to indicate that it is ok to start a new activity
         successIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         context.startActivity(successIntent)

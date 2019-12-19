@@ -29,15 +29,16 @@ class OpeningActivity : AppCompatActivity() {
 
         val sharedPreferences = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
         val broName: String = sharedPreferences.getString("BRONAME", "")!!
+        val bromotion: String = sharedPreferences.getString("BROMOTION", "")!!
         val password: String = sharedPreferences.getString("PASSWORD", "")!!.
             replace(":broCastPasswordEnd", "")
 
-        // If a broName and password are stored in the shared preferences than the bro has
-        // previously made or logged in with an account for which he knows the login information
-        // We automatically log in if this is the case.
-        if (broName != "" && password != "") {
-            println("Welcome back br $broName we will start the autmoatic login")
-            LoginAPI.loginBro(broName, password, applicationContext, null, this@OpeningActivity)
+        // If a broName, bromotion and password are stored in the shared preferences than the
+        // bro has previously made or logged in with an account for which he knows the login
+        // information We automatically log in if this is the case.
+        if (broName != "" && bromotion != "" && password != "") {
+            println("Welcome back bro $broName $bromotion we will start the autmoatic login")
+            LoginAPI.loginBro(broName, bromotion, password, applicationContext, null, this@OpeningActivity)
         } else {
             startActivity(
                 Intent(

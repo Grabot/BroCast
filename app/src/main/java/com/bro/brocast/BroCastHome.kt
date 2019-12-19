@@ -21,6 +21,7 @@ class BroCastHome: AppCompatActivity() {
     var brodapter: Brodapter? = null
 
     var broName: String = ""
+    var bromotion: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,6 +29,7 @@ class BroCastHome: AppCompatActivity() {
 
         val intent = intent
         broName = intent.getStringExtra("broName")
+        bromotion = intent.getStringExtra("bromotion")
 
         buttonLogout.setOnClickListener(clickButtonListener)
         buttonFindBros.setOnClickListener(clickButtonListener)
@@ -75,6 +77,7 @@ class BroCastHome: AppCompatActivity() {
                 // The bro is logged out so we will empty the stored bro data
                 // and return to the home screen
                 editor.putString("BRONAME", "")
+                editor.putString("BROMOTION", "")
                 editor.putString("PASSWORD", "")
                 editor.apply()
                 startActivity(
@@ -83,9 +86,9 @@ class BroCastHome: AppCompatActivity() {
                 )
             }
             R.id.buttonFindBros -> {
-                val successIntent = Intent(this@BroCastHome, FindBroActivity::class.java).apply {
-                    putExtra("broName", broName)
-                }
+                val successIntent = Intent(this@BroCastHome, FindBroActivity::class.java)
+                successIntent.putExtra("broName", broName)
+                successIntent.putExtra("bromotion", bromotion)
                 startActivity(successIntent)
             }
         }

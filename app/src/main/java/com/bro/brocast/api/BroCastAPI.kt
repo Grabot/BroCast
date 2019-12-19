@@ -23,9 +23,10 @@ class BroCastAPI {
             @Path("password") password: String,
             @Path("token") token: String): Call<ResponseBody>
 
-        @GET("/api/v1.0/login/{bro_name}/{password}")
+        @GET("/api/v1.0/login/{bro_name}/{bromotion}/{password}")
         fun loginBro(
             @Path("bro_name") broName: String,
+            @Path("bromotion") bromotion: String,
             @Path("password") password: String): Call<ResponseBody>
 
         @GET("/api/v1.0/search/{bro}")
