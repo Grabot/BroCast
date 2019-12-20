@@ -1,13 +1,10 @@
 package com.bro.brocast
 
-import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.text.InputType
 import android.view.View
 import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
-import android.widget.Button
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -27,7 +24,9 @@ class MessagingActivity: AppCompatActivity() {
     private lateinit var broMessageList: RecyclerView
 
     var broName: String? = ""
+    var bromotion: String? = ""
     var brosBro: String? = ""
+    var brosBromotion: String? = ""
 
     var broTextField: EditText? = null
 
@@ -40,7 +39,9 @@ class MessagingActivity: AppCompatActivity() {
 
         val intent = intent
         broName = intent.getStringExtra("broName")
+        bromotion = intent.getStringExtra("bromotion")
         brosBro = intent.getStringExtra("brosBro")
+        brosBromotion = intent.getStringExtra("brosBromotion")
 
         // Creates a vertical Layout Manager
         broMessageList = findViewById(R.id.broMessages)
@@ -99,7 +100,9 @@ class MessagingActivity: AppCompatActivity() {
 
                     SendMessagesAPI.sendMessages(
                         broName!!,
+                        bromotion!!,
                         brosBro!!,
+                        brosBromotion!!,
                         jsonObj,
                         applicationContext,
                         this@MessagingActivity
@@ -119,6 +122,6 @@ class MessagingActivity: AppCompatActivity() {
     }
 
     fun loadMessages() {
-        GetMessagesAPI.getMessages(broName!!, brosBro!!, page, applicationContext)
+        GetMessagesAPI.getMessages(broName!!, bromotion!!, brosBro!!, brosBromotion!!, page, applicationContext)
     }
 }

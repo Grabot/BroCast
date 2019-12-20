@@ -16,12 +16,13 @@ object GetMessagesAPI {
 
     lateinit var messagesAdapter: MessagesAdapter
 
-    fun getMessages(broName: String, brosBro: String, page: Int, context: Context) {
-        messagesAdapter.setBro(broName)
-        messagesAdapter.setBrosBro(brosBro)
+    fun getMessages(broName: String, bromotion: String, brosBro: String, brosBromotion: String, page: Int, context: Context) {
+        // TODO @Sander: this is for setting the full name, maybe use the function you created.
+        messagesAdapter.setBro(broName + " " + bromotion)
+        messagesAdapter.setBrosBro(brosBro + " " + brosBromotion)
         BroCastAPI
             .service
-            .getMessages(broName, brosBro, page)
+            .getMessages(broName, bromotion, brosBro, brosBromotion, page)
             .enqueue(object : Callback<ResponseBody> {
                 override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                     Toast.makeText(

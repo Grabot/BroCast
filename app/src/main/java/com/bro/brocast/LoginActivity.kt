@@ -149,7 +149,6 @@ class LoginActivity: AppCompatActivity() {
                         Toast.makeText(applicationContext, "On of the fields is not filled in, please fill it in.", Toast.LENGTH_SHORT).show()
                         LoginAPI.pressedLogin = false
                     }
-
                 }
             }
             R.id.buttonForgotPass -> {

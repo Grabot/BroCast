@@ -12,10 +12,10 @@ import retrofit2.Response
 
 object SendMessagesAPI {
 
-    fun sendMessages(broName: String, brosBro: String, jsonObj: JsonObject, context: Context, messagingActivity: MessagingActivity) {
+    fun sendMessages(broName: String, bromotion: String, brosBro: String, brosBromotion: String, jsonObj: JsonObject, context: Context, messagingActivity: MessagingActivity) {
         BroCastAPI
             .service
-            .sendMessage(broName, brosBro, 0, jsonObj)
+            .sendMessage(broName, bromotion, brosBro, brosBromotion, 0, jsonObj)
             .enqueue(object : Callback<ResponseBody> {
                 override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                     Toast.makeText(

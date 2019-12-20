@@ -18,12 +18,13 @@ object GetBroAPI {
 
     fun getBroAPI(
         loggedInBroName: String,
+        bromotion: String,
         context: Context,
         broCastHome: BroCastHome
     ) {
         BroCastAPI
             .service
-            .getBros(loggedInBroName)
+            .getBros(loggedInBroName, bromotion)
             .enqueue(object : Callback<ResponseBody> {
                 override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                     // The BroCast Backend server is not running
@@ -48,11 +49,12 @@ object GetBroAPI {
                                 for (b in broList) {
                                     val foundBro = b as JsonObject
                                     val broName: String = foundBro.get("bro_name") as String
+                                    val bromotion: String = foundBro.get("bromotion") as String
                                     val id: Int = foundBro.get("id") as Int
 
                                     if (loggedInBroName != broName) {
                                         // Add the bro to the potential bro list
-                                        val bro = Bro(broName, id, "")
+                                        val bro = Bro(broName, id, bromotion)
                                         bros.add(bro)
                                     }
                                 }

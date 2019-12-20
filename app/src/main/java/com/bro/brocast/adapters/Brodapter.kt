@@ -27,7 +27,7 @@ class Brodapter(private val context: Activity,
 
         val person: Bro = bros.get(position)
 
-        textView.text = person.broName
+        textView.text = person.getFullBroName()
 
         return view
     }

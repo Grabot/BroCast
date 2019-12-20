@@ -11,10 +11,10 @@ import retrofit2.Response
 
 object UpdateTokenAPI {
 
-    fun updateToken(bro: String, token: String, context: Context) {
+    fun updateToken(bro: String, bromotion: String, token: String, context: Context) {
         BroCastAPI
             .service
-            .updateToken(bro, token)
+            .updateToken(bro, bromotion, token)
             .enqueue(object : Callback<ResponseBody> {
                 override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                     // The BroCast Backend server is not running
@@ -34,7 +34,7 @@ object UpdateTokenAPI {
                             val json: JsonObject = parser.parse(stringBuilder) as JsonObject
                             val result = json.get("result")
                             if (result!! == true) {
-
+                                // TODO @Sander: do something here.
                             } else {
                                 Toast.makeText(
                                     context,

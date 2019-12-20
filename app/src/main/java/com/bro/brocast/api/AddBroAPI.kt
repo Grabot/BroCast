@@ -15,10 +15,10 @@ import retrofit2.Response
 
 object AddBroAPI {
 
-    fun addBro(broName: String, otherBroName: String, context: Context, findBroActivity: FindBroActivity) {
+    fun addBro(broName: String, bromotion: String, otherBroName: String, otherBromotion: String, context: Context, findBroActivity: FindBroActivity) {
         BroCastAPI
             .service
-            .addBro(broName, otherBroName)
+            .addBro(broName, bromotion, otherBroName, otherBromotion)
             .enqueue(object : Callback<ResponseBody> {
                 override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                     println("An exception occured with the GET call:: " + t.message)
@@ -52,6 +52,7 @@ object AddBroAPI {
                                 ).show()
                                 val successIntent = Intent(findBroActivity, BroCastHome::class.java)
                                 successIntent.putExtra("broName", broName)
+                                successIntent.putExtra("bromotion", bromotion)
                                 // Because this is called outside of the activity you need to indicate that it is ok to start a new activity
                                 successIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                                 context.startActivity(successIntent)

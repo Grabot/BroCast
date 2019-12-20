@@ -46,7 +46,7 @@ class BroCastHome: AppCompatActivity() {
         listView.onItemClickListener = broClickListener
 
         // Fill the broList of the bro
-        GetBroAPI.getBroAPI(broName, applicationContext, this@BroCastHome)
+        GetBroAPI.getBroAPI(broName, bromotion, applicationContext, this@BroCastHome)
         // TODO @Sander: If the list is empty it shows an error message. Don't show the message when the list is empty.
     }
 
@@ -64,7 +64,9 @@ class BroCastHome: AppCompatActivity() {
 
         val successIntent = Intent(this@BroCastHome, MessagingActivity::class.java)
         successIntent.putExtra("broName", broName)
+        successIntent.putExtra("bromotion", bromotion)
         successIntent.putExtra("brosBro", bro.broName)
+        successIntent.putExtra("brosBromotion", bro.bromotion)
         startActivity(successIntent)
     }
 

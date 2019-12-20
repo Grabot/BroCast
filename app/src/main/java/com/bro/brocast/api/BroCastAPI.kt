@@ -33,33 +33,41 @@ class BroCastAPI {
         fun findBro(
             @Path("bro") bro: String): Call<ResponseBody>
 
-        @GET("/api/v1.0/add/{bro}/{bros_bro}")
+        @GET("/api/v1.0/add/{bro}/{bromotion}/{bros_bro}/{bros_bromotion}")
         fun addBro(
             @Path("bro") bro: String,
-            @Path("bros_bro") brosBro: String): Call<ResponseBody>
+            @Path("bromotion") bromotion: String,
+            @Path("bros_bro") brosBro: String,
+            @Path("bros_bromotion") otherBromotion: String): Call<ResponseBody>
 
-        @GET("/api/v1.0/get/bros/{bro}")
+        @GET("/api/v1.0/get/bros/{bro}/{bromotion}")
         fun getBros(
-            @Path("bro") bro: String): Call<ResponseBody>
+            @Path("bro") bro: String,
+            @Path("bromotion") bromotion: String): Call<ResponseBody>
 
         // The URL's are the same for the next 2 functions. The first is a get and the other a post.
-        @GET("/api/v1.0/message/{bro}/{bros_bro}/{page}")
+        @GET("/api/v1.0/message/{bro}/{bromotion}/{bros_bro}/{bros_bromotion}/{page}")
         fun getMessages(
             @Path("bro") bro: String,
+            @Path("bromotion") bromotion: String,
             @Path("bros_bro") brosBro: String,
+            @Path("bros_bromotion") brosBromotion: String,
             @Path("page") page: Int): Call<ResponseBody>
 
         @Headers("Content-type: application/json")
-        @POST("/api/v1.0/message/{bro}/{bros_bro}/{page}")
+        @POST("/api/v1.0/message/{bro}/{bromotion}/{bros_bro}/{bros_bromotion}/{page}")
         fun sendMessage(
             @Path("bro") bro: String,
+            @Path("bromotion") bromotion: String,
             @Path("bros_bro") brosBro: String,
+            @Path("bros_bromotion") brosBromotion: String,
             @Path("page") page: Int,
             @Body body: JsonObject): Call<ResponseBody>
 
-        @GET("/api/v1.0/update/token/{bro}/{token}")
+        @GET("/api/v1.0/update/token/{bro}/{bromotion}/{token}")
         fun updateToken(
             @Path("bro") bro: String,
+            @Path("bromotion") bromotion: String,
             @Path("token") token: String): Call<ResponseBody>
 
     }

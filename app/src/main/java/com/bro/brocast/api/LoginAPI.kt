@@ -81,7 +81,7 @@ object LoginAPI {
                                 val token: String = sharedPreferences.getString("REGISTRATION_TOKEN", "")!!
                                 val current_token = json.get("token")
                                 if (token != current_token) {
-                                    UpdateTokenAPI.updateToken(broName, token, context)
+                                    UpdateTokenAPI.updateToken(broName, bromotion, token, context)
                                 }
                                 editor.putString("BRONAME", broName)
                                 editor.putString("BROMOTION", bromotion)

@@ -51,7 +51,7 @@ class FindBroActivity: AppCompatActivity() {
         Toast.makeText(applicationContext, "Clicked: " + FindBroAPI.potentialBros[groupPosition].broName + " -> " + FindBroAPI.body[groupPosition].get(childPosition).id.toString(), Toast.LENGTH_SHORT).show()
 
         println("bro $broName wants to add ${bro.broName} to his brolist")
-        AddBroAPI.addBro(broName!!, bro.broName, applicationContext, this@FindBroActivity)
+        AddBroAPI.addBro(broName!!, bromotion!!, bro.broName, bro.bromotion, applicationContext, this@FindBroActivity)
         false
     }
 
