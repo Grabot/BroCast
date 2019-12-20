@@ -79,7 +79,7 @@ class LoginActivity: AppCompatActivity() {
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
             }
         })
-
+        broName!!.requestFocus()
         // TODO @Sander: If the user has logged in before autofill the fields.
     }
 

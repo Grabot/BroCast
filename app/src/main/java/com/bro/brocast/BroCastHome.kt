@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ListView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.bro.brocast.objects.Bro
@@ -48,6 +49,9 @@ class BroCastHome: AppCompatActivity() {
         // Fill the broList of the bro
         GetBroAPI.getBroAPI(broName, bromotion, applicationContext, this@BroCastHome)
         // TODO @Sander: If the list is empty it shows an error message. Don't show the message when the list is empty.
+
+        val temp = findViewById(R.id.textViewHome) as TextView
+        temp.text = "Heey $broName $bromotion"
     }
 
     fun notifyBrodapter() {

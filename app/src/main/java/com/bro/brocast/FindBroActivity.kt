@@ -1,14 +1,28 @@
 package com.bro.brocast
 
+import android.content.Context
+import android.os.Build
 import android.os.Bundle
+import android.text.Editable
+import android.text.InputType
+import android.text.TextWatcher
 import android.view.View
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import android.widget.ExpandableListView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.bro.brocast.adapters.ExpandableBrodapter
 import com.bro.brocast.api.AddBroAPI
 import com.bro.brocast.api.FindBroAPI
+import com.bro.brocast.objects.MyKeyboard
 import kotlinx.android.synthetic.main.activity_find_bros.*
+import androidx.core.app.ComponentActivity.ExtraData
+import androidx.core.content.ContextCompat.getSystemService
+import android.icu.lang.UCharacter.GraphemeClusterBreak.T
+
+
 
 
 class FindBroActivity: AppCompatActivity() {
@@ -16,6 +30,12 @@ class FindBroActivity: AppCompatActivity() {
     var broName: String? = ""
     var bromotion: String? = ""
     var expandableBrodapter: ExpandableBrodapter? = null
+
+    var bromotionField: EditText? = null
+    var broNameField: EditText? = null
+
+    // I use this variable because I'm not sure if an emoji is always length 2
+    var emojiLength: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,6 +58,82 @@ class FindBroActivity: AppCompatActivity() {
         expandableBrodapter!!.expandableListView.setOnChildClickListener(onChildClickListener)
 
         buttonSearchBros.setOnClickListener(clickButtonListener)
+
+        bromotionField = findViewById(R.id.broNameSearchEmotion) as EditText
+        broNameField = findViewById(R.id.broNameBroSearch) as EditText
+        val keyboard = findViewById(R.id.keyboard) as MyKeyboard
+
+        bromotionField!!.setRawInputType(InputType.TYPE_CLASS_TEXT)
+        bromotionField!!.setTextIsSelectable(true)
+        bromotionField!!.setTextSize(20f)
+        // TODO @Skools: set the minimum SDK to this version (LOLLIPOP).
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            bromotionField!!.requestFocus()
+            bromotionField!!.showSoftInputOnFocus = false
+        }
+
+        bromotionField!!.setOnFocusChangeListener(focusChangeListener)
+        broNameField!!.setOnFocusChangeListener(focusChangeListener)
+
+        val ic = bromotionField!!.onCreateInputConnection(EditorInfo())
+        keyboard.setInputConnection(ic)
+
+        bromotionField!!.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable) {
+                if (emojiLength > 0) {
+                    s.delete(0, emojiLength)
+                    emojiLength = 0
+                }
+            }
+
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int ) {
+                emojiLength = start
+            }
+
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+            }
+        })
+
+        // We set the focus to the broname field
+        broNameField!!.requestFocus()
+    }
+
+    private val focusChangeListener = View.OnFocusChangeListener { view, b ->
+        when (view.getId()) {
+            R.id.broNameSearchEmotion -> {
+                if (b) {
+                    println("focus on bromotion field")
+                    try {
+                        // We want to show the listview and hide the keyboard.
+                        val imm: InputMethodManager =
+                            applicationContext.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                        imm.hideSoftInputFromWindow(
+                            this.currentFocus!!.windowToken,
+                            0
+                        )
+                        println("keyboard hidden")
+                    } catch (e: Exception) {
+                        // This is for the keyboard. If something went wrong
+                        // than, whatever! It will not effect the app!
+                    }
+
+                    // We want to make the keyboard visible if it isn't yet.
+                    if (keyboard.visibility != View.VISIBLE) {
+                        keyboard.visibility = View.VISIBLE
+                    }
+
+                }
+            }
+            R.id.broNameBroSearch -> {
+                if (b) {
+                    println("focus on the broname field")
+                    // The user clicked on the other field so we make the emotion keyboard invisible
+                    if (keyboard.visibility == View.VISIBLE) {
+                        keyboard.visibility = View.INVISIBLE
+                    }
+                }
+            }
+        }
     }
 
     fun notifyAdapter() {
@@ -63,7 +159,12 @@ class FindBroActivity: AppCompatActivity() {
                 if (potentialBro == "") {
                     Toast.makeText(this, "No Bro filled in yet", Toast.LENGTH_SHORT).show()
                 } else {
-                    FindBroAPI.findBro(broName!!, potentialBro, applicationContext, this)
+                    var potentialBromotion = broNameSearchEmotion.text.toString()
+                    if (potentialBromotion == "") {
+                        // The backend will look for 'None' to determine whether or not the bromotion should be used.
+                        potentialBromotion = "None"
+                    }
+                    FindBroAPI.findBro(broName!!, potentialBro, potentialBromotion, applicationContext, this)
                 }
             }
         }

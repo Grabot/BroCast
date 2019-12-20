@@ -18,10 +18,10 @@ object FindBroAPI {
     var potentialBros = ArrayList<Bro>()
     val body: ArrayList<ArrayList<Bro>> = ArrayList()
 
-    fun findBro(loggedInBro: String, potentialBro: String, context: Context, findBroActivity: FindBroActivity) {
+    fun findBro(loggedInBro: String, potentialBro: String, potentialBromotion: String, context: Context, findBroActivity: FindBroActivity) {
         BroCastAPI
             .service
-            .findBro(potentialBro)
+            .findBro(potentialBro, potentialBromotion)
             .enqueue(object : Callback<ResponseBody> {
                 override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                     println("An exception occured with the GET call:: " + t.message)

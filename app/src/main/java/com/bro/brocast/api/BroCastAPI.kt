@@ -29,9 +29,10 @@ class BroCastAPI {
             @Path("bromotion") bromotion: String,
             @Path("password") password: String): Call<ResponseBody>
 
-        @GET("/api/v1.0/search/{bro}")
+        @GET("/api/v1.0/search/{bro}/{bromotion}")
         fun findBro(
-            @Path("bro") bro: String): Call<ResponseBody>
+            @Path("bro") bro: String,
+            @Path("bromotion") bromotion: String): Call<ResponseBody>
 
         @GET("/api/v1.0/add/{bro}/{bromotion}/{bros_bro}/{bros_bromotion}")
         fun addBro(

@@ -87,6 +87,7 @@ class RegisterActivity : AppCompatActivity() {
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
             }
         })
+        broName!!.requestFocus()
     }
 
     private val focusChangeListener = OnFocusChangeListener { view, b ->

@@ -6,19 +6,51 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <EditText
-        android:id="@+id/broNameBroSearch"
+    <TextView
+        android:id="@+id/textViewSearch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="400dp"
+        android:text="@string/brocast_search"
+        app:layout_constraintBottom_toTopOf="@id/broNameBroSearch"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+
+    <EditText
+        android:id="@+id/broNameBroSearch"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:autofillHints="TODO"
         android:hint="@string/broname_hint"
         android:inputType="text"
         android:textAlignment="center"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/buttonSearchBros"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginRight="150dp"
+        android:layout_marginEnd="150dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginLeft="50dp" />
+
+    <EditText
+        android:id="@+id/broNameSearchEmotion"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="50dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
+        android:layout_marginEnd="50dp"
+        android:autofillHints="TODO"
+        android:hint="@string/broname_emotion"
+        android:inputType="text"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toBottomOf="@+id/broNameBroSearch"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/broNameBroSearch"
+        app:layout_constraintTop_toTopOf="@+id/broNameBroSearch" />
 
     <Button
         android:id="@+id/buttonSearchBros"
@@ -36,5 +68,14 @@
         android:layout_width="match_parent"
         android:layout_height="300dp"
         app:layout_constraintBottom_toBottomOf="parent"/>
+
+
+    <com.bro.brocast.objects.MyKeyboard
+        android:id="@+id/keyboard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
