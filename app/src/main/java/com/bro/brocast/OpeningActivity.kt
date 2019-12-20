@@ -38,6 +38,7 @@ class OpeningActivity : AppCompatActivity() {
         // information We automatically log in if this is the case.
         if (broName != "" && bromotion != "" && password != "") {
             println("Welcome back bro $broName $bromotion we will start the autmoatic login")
+            // TODO @Skools: If the login data is known, maybe the login call doesn't have to be made.
             LoginAPI.loginBro(broName, bromotion, password, applicationContext, null, this@OpeningActivity)
         } else {
             startActivity(

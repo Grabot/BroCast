@@ -9,6 +9,7 @@ import android.widget.ListView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import com.bro.brocast.objects.Bro
 import com.bro.brocast.adapters.Brodapter
 import com.bro.brocast.api.GetBroAPI
@@ -98,5 +99,10 @@ class BroCastHome: AppCompatActivity() {
                 startActivity(successIntent)
             }
         }
+    }
+
+    override fun onBackPressed() {
+        // We close the app
+        ActivityCompat.finishAffinity(this)
     }
 }

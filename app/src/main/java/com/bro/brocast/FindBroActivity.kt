@@ -1,6 +1,7 @@
 package com.bro.brocast
 
 import android.content.Context
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.text.Editable
@@ -21,8 +22,8 @@ import kotlinx.android.synthetic.main.activity_find_bros.*
 import androidx.core.app.ComponentActivity.ExtraData
 import androidx.core.content.ContextCompat.getSystemService
 import android.icu.lang.UCharacter.GraphemeClusterBreak.T
-
-
+import kotlinx.android.synthetic.main.activity_find_bros.keyboard
+import kotlinx.android.synthetic.main.activity_messaging.*
 
 
 class FindBroActivity: AppCompatActivity() {
@@ -167,6 +168,15 @@ class FindBroActivity: AppCompatActivity() {
                     FindBroAPI.findBro(broName!!, potentialBro, potentialBromotion, applicationContext, this)
                 }
             }
+        }
+    }
+
+    override fun onBackPressed() {
+        // We want to make the keyboard visible if it isn't yet.
+        if (keyboard.visibility == View.VISIBLE) {
+            keyboard.visibility = View.GONE
+        } else {
+            super.onBackPressed()
         }
     }
 }

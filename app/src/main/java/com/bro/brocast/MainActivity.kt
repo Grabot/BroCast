@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import com.bro.brocast.notification.NotificationUtil
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -32,4 +33,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onBackPressed() {
+        // We close the app (otherwise we will end up on the openingscreen)
+        ActivityCompat.finishAffinity(this)
+    }
 }

@@ -1,5 +1,6 @@
 package com.bro.brocast
 
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.text.InputType
@@ -16,6 +17,11 @@ import com.bro.brocast.api.SendMessagesAPI
 import com.bro.brocast.objects.Message
 import com.bro.brocast.objects.MyKeyboard
 import kotlinx.android.synthetic.main.activity_messaging.*
+import androidx.core.app.ComponentActivity.ExtraData
+import androidx.core.content.ContextCompat.getSystemService
+import android.icu.lang.UCharacter.GraphemeClusterBreak.T
+
+
 
 
 class MessagingActivity: AppCompatActivity() {
@@ -123,5 +129,18 @@ class MessagingActivity: AppCompatActivity() {
 
     fun loadMessages() {
         GetMessagesAPI.getMessages(broName!!, bromotion!!, brosBro!!, brosBromotion!!, page, applicationContext)
+    }
+
+    override fun onBackPressed() {
+        // We want to make the keyboard visible if it isn't yet.
+        if (keyboard.visibility == View.VISIBLE) {
+            keyboard.visibility = View.GONE
+        } else {
+            // Here the keyboard is invisible and we go back to the BroCast Home screen
+            val successIntent = Intent(this@MessagingActivity, BroCastHome::class.java)
+            successIntent.putExtra("broName", broName)
+            successIntent.putExtra("bromotion", bromotion)
+            startActivity(successIntent)
+        }
     }
 }
