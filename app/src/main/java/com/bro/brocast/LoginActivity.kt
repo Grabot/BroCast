@@ -25,8 +25,6 @@ class LoginActivity: AppCompatActivity() {
     var broName: EditText? = null
     var broPassword: EditText? = null
 
-    // I use this variable because I'm not sure if an emoji is always length 2
-    var emojiLength: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,15 +63,14 @@ class LoginActivity: AppCompatActivity() {
         keyboard.setInputConnection(ic)
 
         bromotion!!.addTextChangedListener(object : TextWatcher {
+            // We assume the emoji length is always 2
             override fun afterTextChanged(s: Editable) {
-                if (emojiLength > 0) {
-                    s.delete(0, emojiLength)
-                    emojiLength = 0
+                if (s.length > 2) {
+                    s.delete(0, 2)
                 }
             }
 
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int ) {
-                emojiLength = start
             }
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
