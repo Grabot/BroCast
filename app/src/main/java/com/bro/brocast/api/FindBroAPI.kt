@@ -39,8 +39,6 @@ object FindBroAPI {
                 ) {
                     if (response.isSuccessful) {
                         val msg = response.body()?.string()
-                        Toast.makeText(context, msg, Toast.LENGTH_SHORT)
-                            .show()
                         if (msg != null) {
                             val parser: Parser = Parser.default()
                             val stringBuilder: StringBuilder = StringBuilder(msg)

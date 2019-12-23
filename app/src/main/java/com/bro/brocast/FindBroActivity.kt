@@ -159,7 +159,6 @@ class FindBroActivity: AppCompatActivity() {
     private val onChildClickListener = ExpandableListView.OnChildClickListener {
             parent, v, groupPosition, childPosition, id ->
         val bro = FindBroAPI.potentialBros[groupPosition]
-        Toast.makeText(applicationContext, "Clicked: " + FindBroAPI.potentialBros[groupPosition].broName + " -> " + FindBroAPI.body[groupPosition].get(childPosition).id.toString(), Toast.LENGTH_SHORT).show()
 
         println("bro $broName wants to add ${bro.broName} to his brolist")
         AddBroAPI.addBro(broName!!, bromotion!!, bro.broName, bro.bromotion, applicationContext, this@FindBroActivity)

@@ -203,11 +203,11 @@
                 android:text="🍷"/>
 
             <Button
-                android:id="@+id/button_clinking_glasses"
+                android:id="@+id/button_thinking_face"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="🥂"/>
+                android:text="🤔"/>
 
         </LinearLayout>
 

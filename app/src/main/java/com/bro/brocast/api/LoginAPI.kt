@@ -67,11 +67,6 @@ object LoginAPI {
                             val json: JsonObject = parser.parse(stringBuilder) as JsonObject
                             val result = json.get("result")
                             if (result!! == true) {
-                                Toast.makeText(
-                                    context,
-                                    "you just logged in!",
-                                    Toast.LENGTH_SHORT
-                                ).show()
                                 val sharedPreferences = context.getSharedPreferences(
                                     context.getString(R.string.preference_file_key),
                                     Context.MODE_PRIVATE

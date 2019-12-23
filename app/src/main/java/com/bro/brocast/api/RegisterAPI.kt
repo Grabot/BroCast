@@ -62,11 +62,6 @@ object RegisterAPI {
     }
 
     fun successfulRegistration(broName: String, bromotion: String, reason: String, registerActivity: RegisterActivity?, context: Context) {
-        Toast.makeText(
-            context,
-            "you just logged in! \n$reason",
-            Toast.LENGTH_SHORT
-        ).show()
         val successIntent = Intent(registerActivity, BroCastHome::class.java)
         successIntent.putExtra("broName", broName)
         successIntent.putExtra("bromotion", bromotion)

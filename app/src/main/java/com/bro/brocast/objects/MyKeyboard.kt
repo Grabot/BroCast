@@ -54,7 +54,7 @@ class MyKeyboard: LinearLayout {
     var buttonFire: Button? = null
     var buttonRainbow: Button? = null
     var buttonClinkingBeerMugs: Button? = null
-    var buttonClinkingGlasses: Button? = null
+    var buttonThinkingFace: Button? = null
     var buttonWineGlass: Button? = null
 
     // button row 4
@@ -96,7 +96,7 @@ class MyKeyboard: LinearLayout {
     val emoji_fire = 0x1F525
     val emoji_rainbow = 0x1F308
     val emoji_clinking_beer_mugs = 0x1F37B
-    val emoji_clinking_glasses = 0x1F942
+    val emoji_thinking_face = 0x1F914
     val emoji_wine_glass = 0x1F377
 
     // emoji row 4
@@ -167,8 +167,8 @@ class MyKeyboard: LinearLayout {
         buttonRainbow!!.setOnClickListener(clickButtonListener)
         buttonClinkingBeerMugs = findViewById(R.id.button_clinking_beer_mugs)
         buttonClinkingBeerMugs!!.setOnClickListener(clickButtonListener)
-        buttonClinkingGlasses = findViewById(R.id.button_clinking_glasses)
-        buttonClinkingGlasses!!.setOnClickListener(clickButtonListener)
+        buttonThinkingFace = findViewById(R.id.button_thinking_face)
+        buttonThinkingFace!!.setOnClickListener(clickButtonListener)
         buttonWineGlass = findViewById(R.id.button_wine_glass)
         buttonWineGlass!!.setOnClickListener(clickButtonListener)
 
@@ -219,7 +219,7 @@ class MyKeyboard: LinearLayout {
         buttonFire!!.text = getEmojiByUnicode(emoji_fire)
         buttonRainbow!!.text = getEmojiByUnicode(emoji_rainbow)
         buttonClinkingBeerMugs!!.text = getEmojiByUnicode(emoji_clinking_beer_mugs)
-        buttonClinkingGlasses!!.text = getEmojiByUnicode(emoji_clinking_glasses)
+        buttonThinkingFace!!.text = getEmojiByUnicode(emoji_thinking_face)
         buttonWineGlass!!.text = getEmojiByUnicode(emoji_wine_glass)
 
         // row 4
@@ -327,8 +327,8 @@ class MyKeyboard: LinearLayout {
             R.id.button_clinking_beer_mugs -> {
                 inputConnection!!.commitText(getEmojiByUnicode(emoji_clinking_beer_mugs), 1)
             }
-            R.id.button_clinking_glasses -> {
-                inputConnection!!.commitText(getEmojiByUnicode(emoji_clinking_glasses), 1)
+            R.id.button_thinking_face -> {
+                inputConnection!!.commitText(getEmojiByUnicode(emoji_thinking_face), 1)
             }
             R.id.button_wine_glass -> {
                 inputConnection!!.commitText(getEmojiByUnicode(emoji_wine_glass), 1)

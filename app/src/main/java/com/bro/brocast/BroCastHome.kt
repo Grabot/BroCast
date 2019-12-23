@@ -62,10 +62,6 @@ class BroCastHome: AppCompatActivity() {
     private val broClickListener = AdapterView.OnItemClickListener {  parent, view, position, id ->
 
         val bro = listView.getItemAtPosition(position) as Bro
-        // TODO @Sander: Toast the values for now, add actual functionality to add the bro.
-        Toast.makeText(applicationContext,
-            "Position :$position\nItem Value : " + bro.broName, Toast.LENGTH_LONG)
-            .show()
 
         val successIntent = Intent(this@BroCastHome, MessagingActivity::class.java)
         successIntent.putExtra("broName", broName)

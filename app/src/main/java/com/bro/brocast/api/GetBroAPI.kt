@@ -28,12 +28,12 @@ object GetBroAPI {
             .enqueue(object : Callback<ResponseBody> {
                 override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                     // The BroCast Backend server is not running
-                    Toast.makeText(
-                        context,
-                        "The BroCast server is not responding. " +
-                                "We appologize for the inconvenience, please try again later",
-                        Toast.LENGTH_SHORT
-                    ).show()
+//                    Toast.makeText(
+//                        context,
+//                        "The BroCast server is not responding. " +
+//                                "We appologize for the inconvenience, please try again later",
+//                        Toast.LENGTH_SHORT
+//                    ).show()
                 }
                 override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                     if (response.isSuccessful) {
@@ -60,12 +60,12 @@ object GetBroAPI {
                                 }
                                 broCastHome.notifyBrodapter()
                             } else {
-                                Toast.makeText(
-                                    context,
-                                    "The BroCast server is not responding. " +
-                                            "We appologize for the inconvenience, please try again later",
-                                    Toast.LENGTH_SHORT
-                                ).show()
+//                                Toast.makeText(
+//                                    context,
+//                                    "The BroCast server is not responding. " +
+//                                            "We appologize for the inconvenience, please try again later",
+//                                    Toast.LENGTH_SHORT
+//                                ).show()
                             }
                         }
                     } else {
