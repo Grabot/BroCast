@@ -51,6 +51,20 @@ class MyKeyboard: LinearLayout {
     var buttonSweatDroplets: Button? = null
     var buttonHeartShapedEyes: Button? = null
     var buttonThumbsUp: Button? = null
+    var buttonFire: Button? = null
+    var buttonRainbow: Button? = null
+    var buttonClinkingBeerMugs: Button? = null
+    var buttonClinkingGlasses: Button? = null
+    var buttonWineGlass: Button? = null
+
+    // button row 4
+    var buttonMushroom: Button? = null
+    var buttonPeach: Button? = null
+    var buttonParrot: Button? = null
+    var buttonPersonFacepalming: Button? = null
+    var buttonFireworks: Button? = null
+    var buttonPartyPoppers: Button? = null
+    var buttonConfettiBall: Button? = null
     var buttonExlamationMark: Button? = null
     var buttonQuestionMark: Button? = null
 
@@ -79,6 +93,20 @@ class MyKeyboard: LinearLayout {
     val emoji_sweat_droplets = 0x1F4A6
     val emoji_heart_shaped_eyes = 0x1F60D
     val emoji_thumbs_up = 0x1F44D
+    val emoji_fire = 0x1F525
+    val emoji_rainbow = 0x1F308
+    val emoji_clinking_beer_mugs = 0x1F37B
+    val emoji_clinking_glasses = 0x1F942
+    val emoji_wine_glass = 0x1F377
+
+    // emoji row 4
+    val emoji_mushroom = 0x1F344
+    val emoji_peach = 0x1F351
+    val emoji_parrot = 0x1F99C
+    val emoji_person_facepalming = 0x1F926
+    val emoji_fireworks = 0x1F386
+    val emoji_party_poppers = 0x1F389
+    val emoji_confetti_ball = 0x1F38A
 
     private var inputConnection: InputConnection? = null
 
@@ -133,11 +161,36 @@ class MyKeyboard: LinearLayout {
         buttonBanana!!.setOnClickListener(clickButtonListener)
         buttonThumbsUp = findViewById(R.id.button_thumbs_up)
         buttonThumbsUp!!.setOnClickListener(clickButtonListener)
+        buttonFire = findViewById(R.id.button_fire)
+        buttonFire!!.setOnClickListener((clickButtonListener))
+        buttonRainbow = findViewById(R.id.button_rainbow)
+        buttonRainbow!!.setOnClickListener(clickButtonListener)
+        buttonClinkingBeerMugs = findViewById(R.id.button_clinking_beer_mugs)
+        buttonClinkingBeerMugs!!.setOnClickListener(clickButtonListener)
+        buttonClinkingGlasses = findViewById(R.id.button_clinking_glasses)
+        buttonClinkingGlasses!!.setOnClickListener(clickButtonListener)
+        buttonWineGlass = findViewById(R.id.button_wine_glass)
+        buttonWineGlass!!.setOnClickListener(clickButtonListener)
+
+        // row 4
+        buttonMushroom = findViewById(R.id.button_mushroom)
+        buttonMushroom!!.setOnClickListener(clickButtonListener)
+        buttonPeach = findViewById(R.id.button_peach)
+        buttonPeach!!.setOnClickListener(clickButtonListener)
         buttonExlamationMark = findViewById(R.id.button_exlamation_mark)
         buttonExlamationMark!!.setOnClickListener(clickButtonListener)
         buttonQuestionMark = findViewById(R.id.button_question_mark)
         buttonQuestionMark!!.setOnClickListener(clickButtonListener)
-
+        buttonParrot = findViewById(R.id.button_parrot)
+        buttonParrot!!.setOnClickListener(clickButtonListener)
+        buttonPersonFacepalming = findViewById(R.id.button_person_facepalming)
+        buttonPersonFacepalming!!.setOnClickListener(clickButtonListener)
+        buttonFireworks = findViewById(R.id.button_fireworks)
+        buttonFireworks!!.setOnClickListener(clickButtonListener)
+        buttonPartyPoppers = findViewById(R.id.button_party_poppers)
+        buttonPartyPoppers!!.setOnClickListener(clickButtonListener)
+        buttonConfettiBall = findViewById(R.id.button_confetti_ball)
+        buttonConfettiBall!!.setOnClickListener(clickButtonListener)
 
         // row 1
         buttonSmile!!.text = getEmojiByUnicode(emoji_Smile)
@@ -163,6 +216,20 @@ class MyKeyboard: LinearLayout {
         buttonSweatDroplets!!.text = getEmojiByUnicode(emoji_sweat_droplets)
         buttonBanana!!.text = getEmojiByUnicode(emoji_banana)
         buttonThumbsUp!!.text = getEmojiByUnicode(emoji_thumbs_up)
+        buttonFire!!.text = getEmojiByUnicode(emoji_fire)
+        buttonRainbow!!.text = getEmojiByUnicode(emoji_rainbow)
+        buttonClinkingBeerMugs!!.text = getEmojiByUnicode(emoji_clinking_beer_mugs)
+        buttonClinkingGlasses!!.text = getEmojiByUnicode(emoji_clinking_glasses)
+        buttonWineGlass!!.text = getEmojiByUnicode(emoji_wine_glass)
+
+        // row 4
+        buttonMushroom!!.text = getEmojiByUnicode(emoji_mushroom)
+        buttonPeach!!.text = getEmojiByUnicode(emoji_peach)
+        buttonParrot!!.text = getEmojiByUnicode(emoji_parrot)
+        buttonPersonFacepalming!!.text = getEmojiByUnicode(emoji_person_facepalming)
+        buttonFireworks!!.text = getEmojiByUnicode(emoji_fireworks)
+        buttonPartyPoppers!!.text = getEmojiByUnicode(emoji_party_poppers)
+        buttonConfettiBall!!.text = getEmojiByUnicode(emoji_confetti_ball)
         buttonExlamationMark!!.text = "!"
         buttonQuestionMark!!.text = "?"
     }
@@ -250,6 +317,44 @@ class MyKeyboard: LinearLayout {
             }
             R.id.button_thumbs_up -> {
                 inputConnection!!.commitText(getEmojiByUnicode(emoji_thumbs_up), 1)
+            }
+            R.id.button_fire -> {
+                inputConnection!!.commitText(getEmojiByUnicode(emoji_fire), 1)
+            }
+            R.id.button_rainbow -> {
+                inputConnection!!.commitText(getEmojiByUnicode(emoji_rainbow), 1)
+            }
+            R.id.button_clinking_beer_mugs -> {
+                inputConnection!!.commitText(getEmojiByUnicode(emoji_clinking_beer_mugs), 1)
+            }
+            R.id.button_clinking_glasses -> {
+                inputConnection!!.commitText(getEmojiByUnicode(emoji_clinking_glasses), 1)
+            }
+            R.id.button_wine_glass -> {
+                inputConnection!!.commitText(getEmojiByUnicode(emoji_wine_glass), 1)
+            }
+
+            // row 4
+            R.id.button_mushroom -> {
+                inputConnection!!.commitText(getEmojiByUnicode(emoji_mushroom), 1)
+            }
+            R.id.button_peach -> {
+                inputConnection!!.commitText(getEmojiByUnicode(emoji_peach), 1)
+            }
+            R.id.button_parrot -> {
+                inputConnection!!.commitText(getEmojiByUnicode(emoji_parrot), 1)
+            }
+            R.id.button_person_facepalming -> {
+                inputConnection!!.commitText(getEmojiByUnicode(emoji_person_facepalming), 1)
+            }
+            R.id.button_fireworks -> {
+                inputConnection!!.commitText(getEmojiByUnicode(emoji_fireworks), 1)
+            }
+            R.id.button_party_poppers -> {
+                inputConnection!!.commitText(getEmojiByUnicode(emoji_party_poppers), 1)
+            }
+            R.id.button_confetti_ball -> {
+                inputConnection!!.commitText(getEmojiByUnicode(emoji_confetti_ball), 1)
             }
             R.id.button_exlamation_mark -> {
                 inputConnection!!.commitText("!", 1)

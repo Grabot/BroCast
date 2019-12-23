@@ -79,8 +79,26 @@ class FindBroActivity: AppCompatActivity() {
 
         bromotionField!!.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable) {
+                // TODO @Skools: Code reuse in the Login, Register en FindBro application with the bromotion input
+                if (s.length > 1 ) {
+                    if (s.toString().endsWith("❤")
+                        || s.toString().endsWith("!")
+                        || s.toString().endsWith("?")
+                    ) {
+                        // An emoji was entered and the last was a heart (or ?/!)
+                        // It is too long, so we remove only 1
+                        s.delete(0, 1)
+                    }
+                }
                 if (s.length > 2) {
-                    s.delete(0, 2)
+                    if (s.toString().startsWith("❤")
+                        || s.toString().startsWith("!")
+                        || s.toString().startsWith("?")
+                    ) {
+                        s.delete(0, 1)
+                    } else {
+                        s.delete(0, 2)
+                    }
                 }
             }
 

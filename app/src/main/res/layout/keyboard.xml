@@ -175,6 +175,96 @@
                 android:text="👍"/>
 
             <Button
+                android:id="@+id/button_fire"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="🔥"/>
+
+            <Button
+                android:id="@+id/button_rainbow"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="🌈"/>
+
+            <Button
+                android:id="@+id/button_clinking_beer_mugs"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="🍻"/>
+
+            <Button
+                android:id="@+id/button_wine_glass"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="🍷"/>
+
+            <Button
+                android:id="@+id/button_clinking_glasses"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="🥂"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/button_mushroom"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="🍄"/>
+
+            <Button
+                android:id="@+id/button_peach"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="🍑"/>
+
+            <Button
+                android:id="@+id/button_parrot"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="🦜"/>
+
+            <Button
+                android:id="@+id/button_person_facepalming"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="🤦"/>
+
+            <Button
+                android:id="@+id/button_fireworks"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="🎆"/>
+
+            <Button
+                android:id="@+id/button_party_poppers"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="🎉"/>
+
+            <Button
+                android:id="@+id/button_confetti_ball"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="🎊"/>
+            <Button
                 android:id="@+id/button_exlamation_mark"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
