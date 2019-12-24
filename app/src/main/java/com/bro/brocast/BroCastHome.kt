@@ -1,18 +1,20 @@
 package com.bro.brocast
 
+import android.app.AlertDialog
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
+import android.widget.AdapterView.OnItemLongClickListener
 import android.widget.ListView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import com.bro.brocast.objects.Bro
 import com.bro.brocast.adapters.Brodapter
 import com.bro.brocast.api.GetBroAPI
+import com.bro.brocast.objects.Bro
 import kotlinx.android.synthetic.main.brocast_home.*
 
 
@@ -51,8 +53,40 @@ class BroCastHome: AppCompatActivity() {
         GetBroAPI.getBroAPI(broName, bromotion, applicationContext, this@BroCastHome)
         // TODO @Sander: If the list is empty it shows an error message. Don't show the message when the list is empty.
 
-        val temp = findViewById(R.id.textViewHome) as TextView
-        temp.text = "Heey $broName $bromotion"
+        val welcomeText = findViewById(R.id.textViewHome) as TextView
+        welcomeText.text = "Heey $broName $bromotion"
+
+        listView.setOnItemLongClickListener(OnItemLongClickListener { parent, v, position, id ->
+
+            println("long press itemlist: " + position)
+            // TODO @Skools: set an option box where the user can remove the user (maybe other stuff as well)
+//            val alert = AlertDialog.Builder(
+//                this@BroCastHome
+//            )
+//            alert.setTitle("Alert!!")
+//            alert.setMessage("Are you sure to delete record")
+//            alert.setPositiveButton("YES", object : DialogInterface.OnClickListener {
+//
+//                override fun onClick(dialog: DialogInterface, which: Int) {
+//                    println("clicked YES?! :O")
+//                    //do your work here
+//                    dialog.dismiss()
+//
+//                }
+//            })
+//            alert.setNegativeButton("NO", object : DialogInterface.OnClickListener {
+//
+//                override fun onClick(dialog: DialogInterface, which: Int) {
+//                    println("clicked no :)")
+//
+//                    dialog.dismiss()
+//                }
+//            })
+//
+//            alert.show()
+
+                true
+            })
     }
 
     fun notifyBrodapter() {

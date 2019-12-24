@@ -178,7 +178,7 @@ class FindBroActivity: AppCompatActivity() {
                         // The backend will look for 'None' to determine whether or not the bromotion should be used.
                         potentialBromotion = "None"
                     }
-                    FindBroAPI.findBro(broName!!, potentialBro, potentialBromotion, applicationContext, this)
+                    FindBroAPI.findBro(broName!!, bromotion!!, potentialBro, potentialBromotion, applicationContext, this)
                 }
             }
         }

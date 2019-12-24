@@ -49,14 +49,21 @@ object GetBroAPI {
                                 for (b in broList) {
                                     val foundBro = b as JsonObject
                                     val broName: String = foundBro.get("bro_name") as String
-                                    val bromotion: String = foundBro.get("bromotion") as String
+                                    val bro_emotion: String = foundBro.get("bromotion") as String
                                     val id: Int = foundBro.get("id") as Int
 
-                                    if (loggedInBroName != broName) {
+                                    if (!((broName == loggedInBroName) && (bro_emotion == bromotion))) {
                                         // Add the bro to the potential bro list
-                                        val bro = Bro(broName, id, bromotion)
+                                        val bro = Bro(broName, id, bro_emotion)
+                                        val messageCount = foundBro.get("message_count") as Int
+                                        val lastMessageTimeUnix = foundBro.get("last_message_time") as Double
+                                        bro.setNewMessage(messageCount)
+                                        bro.setLastMessage(lastMessageTimeUnix)
                                         bros.add(bro)
                                     }
+                                }
+                                bros.sortByDescending {
+                                        bro -> bro.lastMessageTime
                                 }
                                 broCastHome.notifyBrodapter()
                             } else {

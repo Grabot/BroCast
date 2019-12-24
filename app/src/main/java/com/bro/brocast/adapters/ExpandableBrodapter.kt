@@ -39,6 +39,9 @@ class ExpandableBrodapter(var context: Context, var expandableListView : Expanda
         }
 
         val textView: TextView = view!!.findViewById(R.id.broListBroName)
+        // We don't want to utilize the messeageCount here.
+        val messageCount: TextView = view.findViewById(R.id.broMessageCount)
+        messageCount.text = ""
 
         val bro: Bro = getGroup(groupPosition)
 

@@ -18,7 +18,7 @@ object FindBroAPI {
     var potentialBros = ArrayList<Bro>()
     val body: ArrayList<ArrayList<Bro>> = ArrayList()
 
-    fun findBro(loggedInBro: String, potentialBro: String, potentialBromotion: String, context: Context, findBroActivity: FindBroActivity) {
+    fun findBro(loggedInBro: String, bromotion: String, potentialBro: String, potentialBromotion: String, context: Context, findBroActivity: FindBroActivity) {
         BroCastAPI
             .service
             .findBro(potentialBro, potentialBromotion)
@@ -51,12 +51,12 @@ object FindBroAPI {
                             for (b in bros) {
                                 val foundBro = b as JsonObject
                                 val broName: String = foundBro.get("bro_name") as String
-                                val bromotion: String = foundBro.get("bromotion") as String
+                                val bro_emotion: String = foundBro.get("bromotion") as String
                                 val id: Int = foundBro.get("id") as Int
 
-                                if (broName != loggedInBro) {
+                                if (!((broName == loggedInBro) && (bro_emotion == bromotion))) {
                                     // Add the bro to the potential bro list
-                                    val bro = Bro(broName, id, bromotion)
+                                    val bro = Bro(broName, id, bro_emotion)
                                     val brorray = ArrayList<Bro>()
                                     potentialBros.add(bro)
                                     brorray.add(bro)

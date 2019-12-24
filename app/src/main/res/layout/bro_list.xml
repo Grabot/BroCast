@@ -11,16 +11,28 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:orientation="vertical"
         android:paddingRight="20dp"
         android:paddingLeft="20dp"
-        android:paddingStart="20dp">
+        android:paddingStart="20dp"
+        android:orientation="horizontal">
+
         <TextView
             android:id="@+id/broListBroName"
             android:text="@string/bro_name"
             android:textSize="15sp"
+            android:layout_weight="1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/broMessageCount"
+            android:text="@string/bro_message_count"
+            android:textSize="15sp"
+            android:layout_gravity="end"
+            android:layout_weight="10"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
     </LinearLayout>
 
 </LinearLayout>
