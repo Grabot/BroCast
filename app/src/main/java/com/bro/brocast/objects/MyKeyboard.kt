@@ -60,7 +60,7 @@ class MyKeyboard: LinearLayout {
     // button row 4
     var buttonMushroom: Button? = null
     var buttonPeach: Button? = null
-    var buttonParrot: Button? = null
+    var buttonPileOfPoo: Button? = null
     var buttonPersonFacepalming: Button? = null
     var buttonFireworks: Button? = null
     var buttonPartyPoppers: Button? = null
@@ -102,7 +102,7 @@ class MyKeyboard: LinearLayout {
     // emoji row 4
     val emoji_mushroom = 0x1F344
     val emoji_peach = 0x1F351
-    val emoji_parrot = 0x1F99C
+    val emoji_pile_of_poo = 0x1F4A9
     val emoji_person_facepalming = 0x1F926
     val emoji_fireworks = 0x1F386
     val emoji_party_poppers = 0x1F389
@@ -181,8 +181,8 @@ class MyKeyboard: LinearLayout {
         buttonExlamationMark!!.setOnClickListener(clickButtonListener)
         buttonQuestionMark = findViewById(R.id.button_question_mark)
         buttonQuestionMark!!.setOnClickListener(clickButtonListener)
-        buttonParrot = findViewById(R.id.button_parrot)
-        buttonParrot!!.setOnClickListener(clickButtonListener)
+        buttonPileOfPoo = findViewById(R.id.button_pile_of_poo)
+        buttonPileOfPoo!!.setOnClickListener(clickButtonListener)
         buttonPersonFacepalming = findViewById(R.id.button_person_facepalming)
         buttonPersonFacepalming!!.setOnClickListener(clickButtonListener)
         buttonFireworks = findViewById(R.id.button_fireworks)
@@ -225,7 +225,7 @@ class MyKeyboard: LinearLayout {
         // row 4
         buttonMushroom!!.text = getEmojiByUnicode(emoji_mushroom)
         buttonPeach!!.text = getEmojiByUnicode(emoji_peach)
-        buttonParrot!!.text = getEmojiByUnicode(emoji_parrot)
+        buttonPileOfPoo!!.text = getEmojiByUnicode(emoji_pile_of_poo)
         buttonPersonFacepalming!!.text = getEmojiByUnicode(emoji_person_facepalming)
         buttonFireworks!!.text = getEmojiByUnicode(emoji_fireworks)
         buttonPartyPoppers!!.text = getEmojiByUnicode(emoji_party_poppers)
@@ -341,8 +341,8 @@ class MyKeyboard: LinearLayout {
             R.id.button_peach -> {
                 inputConnection!!.commitText(getEmojiByUnicode(emoji_peach), 1)
             }
-            R.id.button_parrot -> {
-                inputConnection!!.commitText(getEmojiByUnicode(emoji_parrot), 1)
+            R.id.button_pile_of_poo -> {
+                inputConnection!!.commitText(getEmojiByUnicode(emoji_pile_of_poo), 1)
             }
             R.id.button_person_facepalming -> {
                 inputConnection!!.commitText(getEmojiByUnicode(emoji_person_facepalming), 1)
