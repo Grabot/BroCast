@@ -167,7 +167,7 @@ class LoginActivity: AppCompatActivity() {
                 }
             }
             R.id.buttonForgotPass -> {
-                TODO("implement the 'forgot pass' screen.")
+                // TODO @Sander: implement the 'forgot pass' screen
             }
         }
     }
