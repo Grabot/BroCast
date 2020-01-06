@@ -1,4 +1,4 @@
-package com.bro.brocast.objects
+package com.bro.brocast.keyboards
 
 import android.content.Context
 import android.text.TextUtils
@@ -11,7 +11,7 @@ import android.widget.LinearLayout
 import com.bro.brocast.R
 
 
-class MyKeyboard: LinearLayout {
+class FirstKeyboard: LinearLayout {
 
     constructor(context: Context) : super(context){
         init(context)
@@ -112,7 +112,7 @@ class MyKeyboard: LinearLayout {
 
 
     fun init(context: Context) {
-        LayoutInflater.from(context).inflate(R.layout.keyboard, this, true)
+        LayoutInflater.from(context).inflate(R.layout.first_keyboard, this, true)
 
         buttonBack = findViewById(R.id.button_back)
         buttonBack!!.setOnClickListener(clickButtonListener)

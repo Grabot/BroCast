@@ -70,7 +70,7 @@
         app:layout_constraintBottom_toBottomOf="parent"/>
 
 
-    <com.bro.brocast.objects.MyKeyboard
+    <com.bro.brocast.keyboards.FirstKeyboard
         android:id="@+id/keyboard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -1,10 +1,10 @@
-package com.bro.brocast
+package com.bro.brocast.adapters
 
 import android.content.Context
 import android.util.AttributeSet
 import androidx.viewpager.widget.ViewPager
 
-class MyViewPager : ViewPager {
+class BroViewPager : ViewPager {
 
     constructor(context: Context) : super(context)
 

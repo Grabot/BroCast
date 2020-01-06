@@ -9,7 +9,7 @@
     is because localhost testing is on http and it only allows https.
      TODO Don't forget to test and remove the cleartext for the final version
      I added the 'stateAlwaysHidden' to the messaging activity. This is to ignore the initial focus
-     on the edit text field on that window. Any next call is also suppresed so that our own keyboard
+     on the edit text field on that window. Any next call is also suppresed so that our own first_keyboard
      is the only one that the user can use.
      The message icon is awesome, but maybe change it to a fist in the future.
      -->

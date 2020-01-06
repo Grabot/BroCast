@@ -1,10 +1,11 @@
 package com.bro.brocast
 
+import android.content.Intent
+import android.opengl.Visibility
 import android.os.Build
 import android.os.Bundle
 import android.text.InputType
 import android.view.View
-import android.view.View.MeasureSpec
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -13,12 +14,13 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.viewpager.widget.PagerTabStrip
 import androidx.viewpager.widget.ViewPager
 import com.beust.klaxon.JsonObject
+import com.bro.brocast.adapters.BroViewPager
 import com.bro.brocast.adapters.MessagesAdapter
 import com.bro.brocast.api.GetMessagesAPI
 import com.bro.brocast.api.SendMessagesAPI
+import com.bro.brocast.keyboards.FirstKeyboardFragment
 import com.bro.brocast.objects.Message
 import kotlinx.android.synthetic.main.activity_messaging.*
 
@@ -34,6 +36,8 @@ class MessagingActivity: AppCompatActivity() {
     var brosBromotion: String? = ""
 
     var broTextField: EditText? = null
+
+    var vpPager: BroViewPager? = null
 
     // A simple solution to determine how many message should be loaded.
     var page: Int = 1
@@ -83,16 +87,12 @@ class MessagingActivity: AppCompatActivity() {
             }
         })
 
-//        val keyboard = adapterViewPager.getKeyboard()
-//        val ic = broTextField!!.onCreateInputConnection(EditorInfo())
-//        keyboard.setInputConnection(ic)
-
-        val vpPager = findViewById(R.id.vpPager) as MyViewPager
+        vpPager = findViewById(R.id.vpPager) as BroViewPager
         val adapterViewPager = MyPagerAdapter(supportFragmentManager)
         adapterViewPager.broTextField = broTextField
 
-        vpPager.adapter = adapterViewPager
-        vpPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+        vpPager!!.adapter = adapterViewPager
+        vpPager!!.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
 
             // This method will be invoked when a new page becomes selected.
             override fun onPageSelected(position: Int) {
@@ -118,7 +118,7 @@ class MessagingActivity: AppCompatActivity() {
             }
         })
 
-
+        vpPager!!.visibility = View.GONE
     }
 
     private val clickButtonListener = View.OnClickListener { view ->
@@ -147,12 +147,12 @@ class MessagingActivity: AppCompatActivity() {
                     broTextField!!.text.clear()
                 }
             }
-//            R.id.broMessageField -> {
-//                // We want to make the keyboard visible if it isn't yet.
-//                if (keyboard.visibility != View.VISIBLE) {
-//                    keyboard.visibility = View.VISIBLE
-//                }
-//            }
+            R.id.broMessageField -> {
+                // We want to make the first_keyboard visible if it isn't yet.
+                if (vpPager!!.visibility != View.VISIBLE) {
+                    vpPager!!.visibility = View.VISIBLE
+                }
+            }
         }
     }
 
@@ -160,18 +160,14 @@ class MessagingActivity: AppCompatActivity() {
         GetMessagesAPI.getMessages(broName!!, bromotion!!, brosBro!!, brosBromotion!!, page, applicationContext)
     }
 
-//    override fun onBackPressed() {
-//        // We want to make the keyboard visible if it isn't yet.
-//        if (keyboard.visibility == View.VISIBLE) {
-//            keyboard.visibility = View.GONE
-//        } else {
-//            // Here the keyboard is invisible and we go back to the BroCast Home screen
-//            val successIntent = Intent(this@MessagingActivity, BroCastHome::class.java)
-//            successIntent.putExtra("broName", broName)
-//            successIntent.putExtra("bromotion", bromotion)
-//            startActivity(successIntent)
-//        }
-//    }
+    override fun onBackPressed() {
+        // We want to make the first_keyboard visible if it isn't yet.
+        if (vpPager!!.visibility == View.VISIBLE) {
+            vpPager!!.visibility = View.GONE
+        } else {
+            super.onBackPressed()
+        }
+    }
 
     class MyPagerAdapter(fragmentManager: FragmentManager) : FragmentPagerAdapter(fragmentManager) {
 
@@ -186,19 +182,19 @@ class MessagingActivity: AppCompatActivity() {
         override fun getItem(position: Int): Fragment {
             when (position) {
                 0  -> {
-                    var first = FirstFragment.newInstance(0, "Page # 1", broTextField!!)
+                    var first = FirstKeyboardFragment.newInstance(0, "Page # 1", broTextField!!)
                     return first
                 }
                 1 -> {
-                    var second = FirstFragment.newInstance(1, "Page # 2", broTextField!!)
+                    var second = FirstKeyboardFragment.newInstance(1, "Page # 2", broTextField!!)
                     return second
                 }
                 2 -> {
-                    var third = FirstFragment.newInstance(2, "Page # 3", broTextField!!)
+                    var third = FirstKeyboardFragment.newInstance(2, "Page # 3", broTextField!!)
                     return third
                 }
                 else -> {
-                    var first = FirstFragment.newInstance(0, "Page # 1", broTextField!!)
+                    var first = FirstKeyboardFragment.newInstance(0, "Page # 1", broTextField!!)
                     return first
                 }
             }

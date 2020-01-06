@@ -13,7 +13,7 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.bro.brocast.api.LoginAPI
-import com.bro.brocast.objects.MyKeyboard
+import com.bro.brocast.keyboards.FirstKeyboard
 import kotlinx.android.synthetic.main.activity_login.*
 import se.simbio.encryption.Encryption
 
@@ -43,7 +43,7 @@ class LoginActivity: AppCompatActivity() {
 
         bromotion = findViewById(R.id.broNameLoginEmotion) as EditText
         broName = findViewById(R.id.broNameLogin) as EditText
-        val keyboard = findViewById(R.id.keyboard) as MyKeyboard
+        val keyboard = findViewById(R.id.keyboard) as FirstKeyboard
         broPassword = findViewById(R.id.passwordLogin) as EditText
 
         bromotion!!.setOnFocusChangeListener(focusChangeListener)
@@ -104,20 +104,20 @@ class LoginActivity: AppCompatActivity() {
                 if (b) {
                     println("focus on bromotion field")
                     try {
-                        // We want to show the listview and hide the keyboard.
+                        // We want to show the listview and hide the first_keyboard.
                         val imm: InputMethodManager =
                             applicationContext.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                         imm.hideSoftInputFromWindow(
                             this.currentFocus!!.windowToken,
                             0
                         )
-                        println("keyboard hidden")
+                        println("first_keyboard hidden")
                     } catch (e: Exception) {
-                        // This is for the keyboard. If something went wrong
+                        // This is for the first_keyboard. If something went wrong
                         // than, whatever! It will not effect the app!
                     }
 
-                    // We want to make the keyboard visible if it isn't yet.
+                    // We want to make the first_keyboard visible if it isn't yet.
                     if (keyboard.visibility != View.VISIBLE) {
                         keyboard.visibility = View.VISIBLE
                     }
@@ -127,7 +127,7 @@ class LoginActivity: AppCompatActivity() {
             R.id.broNameLogin -> {
                 if (b) {
                     println("focus on the broname field")
-                    // The user clicked on the other field so we make the emotion keyboard invisible
+                    // The user clicked on the other field so we make the emotion first_keyboard invisible
                     if (keyboard.visibility == View.VISIBLE) {
                         keyboard.visibility = View.INVISIBLE
                     }
@@ -136,7 +136,7 @@ class LoginActivity: AppCompatActivity() {
             R.id.passwordLogin -> {
                 if (b) {
                     println("password field touched")
-                    // We don't want the user to see the emotion keyboard when this field is active
+                    // We don't want the user to see the emotion first_keyboard when this field is active
                     if (keyboard.visibility == View.VISIBLE) {
                         keyboard.visibility = View.INVISIBLE
                     }
