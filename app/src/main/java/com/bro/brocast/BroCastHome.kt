@@ -1,8 +1,6 @@
 package com.bro.brocast
 
-import android.app.AlertDialog
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -37,6 +35,7 @@ class BroCastHome: AppCompatActivity() {
 
         buttonLogout.setOnClickListener(clickButtonListener)
         buttonFindBros.setOnClickListener(clickButtonListener)
+        buttonTest.setOnClickListener(clickButtonListener)
 
         brodapter = Brodapter(
             this,
@@ -126,6 +125,10 @@ class BroCastHome: AppCompatActivity() {
                 val successIntent = Intent(this@BroCastHome, FindBroActivity::class.java)
                 successIntent.putExtra("broName", broName)
                 successIntent.putExtra("bromotion", bromotion)
+                startActivity(successIntent)
+            }
+            R.id.buttonTest -> {
+                val successIntent = Intent(this@BroCastHome, TabLayoutTestActivity::class.java)
                 startActivity(successIntent)
             }
         }

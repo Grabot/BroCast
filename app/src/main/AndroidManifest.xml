@@ -37,6 +37,7 @@
         <activity android:name=".MainActivity" android:windowSoftInputMode="adjustNothing" />
         <activity android:name=".MessagingActivity"
             android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity android:name="TabLayoutTestActivity" />
 
         <service android:name=".notification.MessagingService">
             <intent-filter>
