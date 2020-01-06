@@ -18,7 +18,7 @@
         android:hint="@string/bro_message"
         android:inputType="text"
         android:textAlignment="center"
-        app:layout_constraintBottom_toTopOf="@+id/keyboard"
+        app:layout_constraintBottom_toTopOf="@+id/vpPager"
         app:layout_constraintEnd_toStartOf="@+id/sendBroMessage"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent" />
@@ -46,13 +46,23 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:layout_editor_absoluteX="8dp" />
 
-    <com.bro.brocast.objects.MyKeyboard
-        android:id="@+id/keyboard"
+    <com.bro.brocast.MyViewPager
+        android:id="@+id/vpPager"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_alignParentBottom="true"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
-        tools:layout_editor_absoluteX="0dp" />
+        tools:layout_editor_absoluteX="0dp">
+
+        <androidx.viewpager.widget.PagerTabStrip
+            android:id="@+id/pager_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp" />
+
+    </com.bro.brocast.MyViewPager>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

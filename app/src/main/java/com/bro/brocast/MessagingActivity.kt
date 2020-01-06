@@ -1,27 +1,26 @@
 package com.bro.brocast
 
-import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.text.InputType
 import android.view.View
-import android.view.inputmethod.EditorInfo
+import android.view.View.MeasureSpec
 import android.widget.EditText
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentPagerAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager.widget.PagerTabStrip
+import androidx.viewpager.widget.ViewPager
 import com.beust.klaxon.JsonObject
 import com.bro.brocast.adapters.MessagesAdapter
 import com.bro.brocast.api.GetMessagesAPI
 import com.bro.brocast.api.SendMessagesAPI
 import com.bro.brocast.objects.Message
-import com.bro.brocast.objects.MyKeyboard
 import kotlinx.android.synthetic.main.activity_messaging.*
-import androidx.core.app.ComponentActivity.ExtraData
-import androidx.core.content.ContextCompat.getSystemService
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
-
-
 
 
 class MessagingActivity: AppCompatActivity() {
@@ -52,7 +51,6 @@ class MessagingActivity: AppCompatActivity() {
         // Creates a vertical Layout Manager
         broMessageList = findViewById(R.id.broMessages)
         broTextField = findViewById(R.id.broMessageField) as EditText
-        val keyboard = findViewById(R.id.keyboard) as MyKeyboard
 
         broTextField!!.setOnClickListener(clickButtonListener)
 
@@ -65,12 +63,7 @@ class MessagingActivity: AppCompatActivity() {
             broTextField!!.showSoftInputOnFocus = false
         }
 
-        val ic = broTextField!!.onCreateInputConnection(EditorInfo())
-        keyboard.setInputConnection(ic)
-
         val layoutMgr = LinearLayoutManager(this)
-        // TODO @Sander: fix this damn scroll thing. I've got no idea how it works
-//        layoutMgr.scrollToPosition(0)
         broMessageList.layoutManager = layoutMgr
 
         GetMessagesAPI.messagesAdapter = MessagesAdapter(messages)
@@ -89,6 +82,42 @@ class MessagingActivity: AppCompatActivity() {
                 }
             }
         })
+
+//        val keyboard = adapterViewPager.getKeyboard()
+//        val ic = broTextField!!.onCreateInputConnection(EditorInfo())
+//        keyboard.setInputConnection(ic)
+
+        val vpPager = findViewById(R.id.vpPager) as MyViewPager
+        val adapterViewPager = MyPagerAdapter(supportFragmentManager)
+        adapterViewPager.broTextField = broTextField
+
+        vpPager.adapter = adapterViewPager
+        vpPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+
+            // This method will be invoked when a new page becomes selected.
+            override fun onPageSelected(position: Int) {
+                Toast.makeText(
+                    this@MessagingActivity,
+                    "Selected page position: $position", Toast.LENGTH_SHORT
+                ).show()
+            }
+
+            // This method will be invoked when the current page is scrolled
+            override fun onPageScrolled(
+                position: Int,
+                positionOffset: Float,
+                positionOffsetPixels: Int
+            ) {
+                // Code goes here
+            }
+
+            // Called when the scroll state changes:
+            // SCROLL_STATE_IDLE, SCROLL_STATE_DRAGGING, SCROLL_STATE_SETTLING
+            override fun onPageScrollStateChanged(state: Int) {
+                // Code goes here
+            }
+        })
+
 
     }
 
@@ -118,12 +147,12 @@ class MessagingActivity: AppCompatActivity() {
                     broTextField!!.text.clear()
                 }
             }
-            R.id.broMessageField -> {
-                // We want to make the keyboard visible if it isn't yet.
-                if (keyboard.visibility != View.VISIBLE) {
-                    keyboard.visibility = View.VISIBLE
-                }
-            }
+//            R.id.broMessageField -> {
+//                // We want to make the keyboard visible if it isn't yet.
+//                if (keyboard.visibility != View.VISIBLE) {
+//                    keyboard.visibility = View.VISIBLE
+//                }
+//            }
         }
     }
 
@@ -131,16 +160,57 @@ class MessagingActivity: AppCompatActivity() {
         GetMessagesAPI.getMessages(broName!!, bromotion!!, brosBro!!, brosBromotion!!, page, applicationContext)
     }
 
-    override fun onBackPressed() {
-        // We want to make the keyboard visible if it isn't yet.
-        if (keyboard.visibility == View.VISIBLE) {
-            keyboard.visibility = View.GONE
-        } else {
-            // Here the keyboard is invisible and we go back to the BroCast Home screen
-            val successIntent = Intent(this@MessagingActivity, BroCastHome::class.java)
-            successIntent.putExtra("broName", broName)
-            successIntent.putExtra("bromotion", bromotion)
-            startActivity(successIntent)
+//    override fun onBackPressed() {
+//        // We want to make the keyboard visible if it isn't yet.
+//        if (keyboard.visibility == View.VISIBLE) {
+//            keyboard.visibility = View.GONE
+//        } else {
+//            // Here the keyboard is invisible and we go back to the BroCast Home screen
+//            val successIntent = Intent(this@MessagingActivity, BroCastHome::class.java)
+//            successIntent.putExtra("broName", broName)
+//            successIntent.putExtra("bromotion", bromotion)
+//            startActivity(successIntent)
+//        }
+//    }
+
+    class MyPagerAdapter(fragmentManager: FragmentManager) : FragmentPagerAdapter(fragmentManager) {
+
+        var broTextField: EditText? = null
+
+        // Returns total number of pages
+        override fun getCount(): Int {
+            return NUM_ITEMS
+        }
+
+        // Returns the fragment to display for that page
+        override fun getItem(position: Int): Fragment {
+            when (position) {
+                0  -> {
+                    var first = FirstFragment.newInstance(0, "Page # 1", broTextField!!)
+                    return first
+                }
+                1 -> {
+                    var second = FirstFragment.newInstance(1, "Page # 2", broTextField!!)
+                    return second
+                }
+                2 -> {
+                    var third = FirstFragment.newInstance(2, "Page # 3", broTextField!!)
+                    return third
+                }
+                else -> {
+                    var first = FirstFragment.newInstance(0, "Page # 1", broTextField!!)
+                    return first
+                }
+            }
+        }
+
+        // Returns the page title for the top indicator
+        override fun getPageTitle(position: Int): CharSequence? {
+            return "Page $position"
+        }
+
+        companion object {
+            private val NUM_ITEMS = 3
         }
     }
 }
