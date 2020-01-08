@@ -26,7 +26,7 @@ class FirstKeyboardFragment : Fragment() {
 
     // Inflate the view for the fragment based on layout XML
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.first_keyboard_fragment, container, false)
+        val view = inflater.inflate(R.layout.keyboard_first_fragment, container, false)
 
         val keyboard = view.findViewById(R.id.keyboard) as FirstKeyboard
 
@@ -39,7 +39,7 @@ class FirstKeyboardFragment : Fragment() {
     companion object {
 
         // newInstance constructor for creating fragment with arguments
-        // We added the editText here that the focus of the first_keyboard should be on.
+        // We added the editText here that the focus of the keyboard_first should be on.
         fun newInstance(page: Int, title: String, broTextField: EditText): FirstKeyboardFragment {
             val fragmentFirst = FirstKeyboardFragment()
             fragmentFirst.broTextField = broTextField

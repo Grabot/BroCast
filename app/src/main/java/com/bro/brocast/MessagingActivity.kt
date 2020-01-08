@@ -148,7 +148,7 @@ class MessagingActivity: AppCompatActivity() {
                 }
             }
             R.id.broMessageField -> {
-                // We want to make the first_keyboard visible if it isn't yet.
+                // We want to make the keyboard_first visible if it isn't yet.
                 if (vpPager!!.visibility != View.VISIBLE) {
                     vpPager!!.visibility = View.VISIBLE
                 }
@@ -161,7 +161,7 @@ class MessagingActivity: AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        // We want to make the first_keyboard visible if it isn't yet.
+        // We want to make the keyboard_first visible if it isn't yet.
         if (vpPager!!.visibility == View.VISIBLE) {
             vpPager!!.visibility = View.GONE
         } else {

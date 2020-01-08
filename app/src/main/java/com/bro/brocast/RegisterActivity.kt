@@ -108,20 +108,20 @@ class RegisterActivity : AppCompatActivity() {
                 if (b) {
                     println("focus on bromotion field")
                     try {
-                        // We want to show the listview and hide the first_keyboard.
+                        // We want to show the listview and hide the keyboard_first.
                         val imm: InputMethodManager =
                             applicationContext.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                         imm.hideSoftInputFromWindow(
                             this.currentFocus!!.windowToken,
                             0
                         )
-                        println("first_keyboard hidden")
+                        println("keyboard_first hidden")
                     } catch (e: Exception) {
-                        // This is for the first_keyboard. If something went wrong
+                        // This is for the keyboard_first. If something went wrong
                         // than, whatever! It will not effect the app!
                     }
 
-                    // We want to make the first_keyboard visible if it isn't yet.
+                    // We want to make the keyboard_first visible if it isn't yet.
                     if (keyboard.visibility != View.VISIBLE) {
                         keyboard.visibility = View.VISIBLE
                     }
@@ -131,7 +131,7 @@ class RegisterActivity : AppCompatActivity() {
             R.id.broNameRegister -> {
                 if (b) {
                     println("focus on the broname field")
-                    // The user clicked on the other field so we make the emotion first_keyboard invisible
+                    // The user clicked on the other field so we make the emotion keyboard_first invisible
                     if (keyboard.visibility == View.VISIBLE) {
                         keyboard.visibility = View.INVISIBLE
                     }
@@ -140,7 +140,7 @@ class RegisterActivity : AppCompatActivity() {
             R.id.passwordRegister -> {
                 if (b) {
                     println("password field touched")
-                    // We don't want the user to see the emotion first_keyboard when this field is active
+                    // We don't want the user to see the emotion keyboard_first when this field is active
                     if (keyboard.visibility == View.VISIBLE) {
                         keyboard.visibility = View.INVISIBLE
                     }
@@ -170,20 +170,20 @@ class RegisterActivity : AppCompatActivity() {
             R.id.broNameRegisterEmotion -> {
                 println("bro emotion field touched")
                 try {
-                    // We want to show the listview and hide the first_keyboard.
+                    // We want to show the listview and hide the keyboard_first.
                     val imm: InputMethodManager =
                         applicationContext.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                     imm.hideSoftInputFromWindow(
                         this.currentFocus!!.windowToken,
                         0
                     )
-                    println("first_keyboard hidden")
+                    println("keyboard_first hidden")
                 } catch (e: Exception) {
-                    // This is for the first_keyboard. If something went wrong
+                    // This is for the keyboard_first. If something went wrong
                     // than, whatever! It will not effect the app!
                 }
 
-                // We want to make the first_keyboard visible if it isn't yet.
+                // We want to make the keyboard_first visible if it isn't yet.
                 if (keyboard.visibility != View.VISIBLE) {
                     keyboard.visibility = View.VISIBLE
                 }
@@ -191,7 +191,7 @@ class RegisterActivity : AppCompatActivity() {
             }
             R.id.broNameRegister -> {
                 println("broname field touched")
-                // The user clicked on the other field so we make the emotion first_keyboard invisible
+                // The user clicked on the other field so we make the emotion keyboard_first invisible
                 if (keyboard.visibility == View.VISIBLE) {
                     keyboard.visibility = View.INVISIBLE
                 }

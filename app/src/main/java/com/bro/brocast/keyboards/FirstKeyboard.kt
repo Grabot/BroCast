@@ -112,7 +112,7 @@ class FirstKeyboard: LinearLayout {
 
 
     fun init(context: Context) {
-        LayoutInflater.from(context).inflate(R.layout.first_keyboard, this, true)
+        LayoutInflater.from(context).inflate(R.layout.keyboard_first, this, true)
 
         buttonBack = findViewById(R.id.button_back)
         buttonBack!!.setOnClickListener(clickButtonListener)

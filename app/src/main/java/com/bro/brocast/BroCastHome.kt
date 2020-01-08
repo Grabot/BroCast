@@ -13,7 +13,7 @@ import androidx.core.app.ActivityCompat
 import com.bro.brocast.adapters.Brodapter
 import com.bro.brocast.api.GetBroAPI
 import com.bro.brocast.objects.Bro
-import kotlinx.android.synthetic.main.brocast_home.*
+import kotlinx.android.synthetic.main.activity_brocast_home.*
 
 
 class BroCastHome: AppCompatActivity() {
@@ -27,7 +27,7 @@ class BroCastHome: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.brocast_home)
+        setContentView(R.layout.activity_brocast_home)
 
         val intent = intent
         broName = intent.getStringExtra("broName")
