@@ -28,7 +28,7 @@ class SecondKeyboardFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.keyboard_second_fragment, container, false)
 
-        val keyboard = view.findViewById(R.id.keyboard) as FirstKeyboard
+        val keyboard = view.findViewById(R.id.keyboard) as SecondKeyboard
 
         val ic = broTextField!!.onCreateInputConnection(EditorInfo())
         keyboard.setInputConnection(ic)

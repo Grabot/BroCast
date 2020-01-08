@@ -29,7 +29,6 @@ class SecondKeyboard: LinearLayout {
     // button row 1
     var buttonSmile: Button? = null
     var buttonWink: Button? = null
-    var buttonThrowingAKiss: Button? = null
     var buttonKissingFaceClosedEyes: Button? = null
     var buttonStuckOutTongue: Button? = null
     var buttonColdSweat: Button? = null
@@ -114,88 +113,85 @@ class SecondKeyboard: LinearLayout {
     fun init(context: Context) {
         LayoutInflater.from(context).inflate(R.layout.keyboard_second, this, true)
 
-        buttonBack = findViewById(R.id.button_back)
+        buttonBack = findViewById(R.id.button_back_2)
         buttonBack!!.setOnClickListener(clickButtonListener)
         // row 1
-        buttonSmile = findViewById(R.id.button_smile)
+        buttonSmile = findViewById(R.id.button_smile_2)
         buttonSmile!!.setOnClickListener(clickButtonListener)
-        buttonWink = findViewById(R.id.button_wink)
+        buttonWink = findViewById(R.id.button_wink_2)
         buttonWink!!.setOnClickListener(clickButtonListener)
-        buttonThrowingAKiss = findViewById(R.id.button_throwing_a_kiss)
-        buttonThrowingAKiss!!.setOnClickListener(clickButtonListener)
-        buttonKissingFaceClosedEyes = findViewById(R.id.button_kissing_face_closed_eyes)
+        buttonKissingFaceClosedEyes = findViewById(R.id.button_kissing_face_closed_eyes_2)
         buttonKissingFaceClosedEyes!!.setOnClickListener(clickButtonListener)
-        buttonStuckOutTongue = findViewById(R.id.button_stuck_out_tongue)
+        buttonStuckOutTongue = findViewById(R.id.button_stuck_out_tongue_2)
         buttonStuckOutTongue!!.setOnClickListener(clickButtonListener)
-        buttonColdSweat = findViewById(R.id.button_cold_sweat)
+        buttonColdSweat = findViewById(R.id.button_cold_sweat_2)
         buttonColdSweat!!.setOnClickListener(clickButtonListener)
-        buttonPensive = findViewById(R.id.button_pensive)
+        buttonPensive = findViewById(R.id.button_pensive_2)
         buttonPensive!!.setOnClickListener(clickButtonListener)
 
         // row 2
-        buttonTearsOfJoy = findViewById(R.id.button_tears_of_joy)
+        buttonTearsOfJoy = findViewById(R.id.button_tears_of_joy_2)
         buttonTearsOfJoy!!.setOnClickListener(clickButtonListener)
-        buttonHeartShapedEyes = findViewById(R.id.button_heart_shaped_eyes)
+        buttonHeartShapedEyes = findViewById(R.id.button_heart_shaped_eyes_2)
         buttonHeartShapedEyes!!.setOnClickListener(clickButtonListener)
-        buttonHeart = findViewById(R.id.button_heart)
+        buttonHeart = findViewById(R.id.button_heart_2)
         buttonHeart!!.setOnClickListener(clickButtonListener)
-        buttonRollingOnTheFloor = findViewById(R.id.button_rolling_on_the_floor)
+        buttonRollingOnTheFloor = findViewById(R.id.button_rolling_on_the_floor_2)
         buttonRollingOnTheFloor!!.setOnClickListener(clickButtonListener)
-        buttonFaceWithHearts = findViewById(R.id.button_face_with_hearts)
+        buttonFaceWithHearts = findViewById(R.id.button_face_with_hearts_2)
         buttonFaceWithHearts!!.setOnClickListener(clickButtonListener)
-        buttonFoldedHands = findViewById(R.id.button_folded_hands)
+        buttonFoldedHands = findViewById(R.id.button_folded_hands_2)
         buttonFoldedHands!!.setOnClickListener(clickButtonListener)
-        buttonLoudlyCrying = findViewById(R.id.button_loudly_crying)
+        buttonLoudlyCrying = findViewById(R.id.button_loudly_crying_2)
         buttonLoudlyCrying!!.setOnClickListener(clickButtonListener)
-        buttonRightFacingFist = findViewById(R.id.button_right_facing_fist)
+        buttonRightFacingFist = findViewById(R.id.button_right_facing_fist_2)
         buttonRightFacingFist!!.setOnClickListener(clickButtonListener)
-        buttonLeftFacingFist = findViewById(R.id.button_left_facing_fist)
+        buttonLeftFacingFist = findViewById(R.id.button_left_facing_fist_2)
         buttonLeftFacingFist!!.setOnClickListener(clickButtonListener)
 
         // row 3
-        buttonEggplant = findViewById(R.id.button_eggplant)
+        buttonEggplant = findViewById(R.id.button_eggplant_2)
         buttonEggplant!!.setOnClickListener(clickButtonListener)
-        buttonSweatDroplets = findViewById(R.id.button_sweat_droplets)
+        buttonSweatDroplets = findViewById(R.id.button_sweat_droplets_2)
         buttonSweatDroplets!!.setOnClickListener(clickButtonListener)
-        buttonBanana = findViewById(R.id.button_banana)
+        buttonBanana = findViewById(R.id.button_banana_2)
         buttonBanana!!.setOnClickListener(clickButtonListener)
-        buttonThumbsUp = findViewById(R.id.button_thumbs_up)
+        buttonThumbsUp = findViewById(R.id.button_thumbs_up_2)
         buttonThumbsUp!!.setOnClickListener(clickButtonListener)
-        buttonFire = findViewById(R.id.button_fire)
+        buttonFire = findViewById(R.id.button_fire_2)
         buttonFire!!.setOnClickListener((clickButtonListener))
-        buttonRainbow = findViewById(R.id.button_rainbow)
+        buttonRainbow = findViewById(R.id.button_rainbow_2)
         buttonRainbow!!.setOnClickListener(clickButtonListener)
-        buttonClinkingBeerMugs = findViewById(R.id.button_clinking_beer_mugs)
+        buttonClinkingBeerMugs = findViewById(R.id.button_clinking_beer_mugs_2)
         buttonClinkingBeerMugs!!.setOnClickListener(clickButtonListener)
-        buttonThinkingFace = findViewById(R.id.button_thinking_face)
+        buttonThinkingFace = findViewById(R.id.button_thinking_face_2)
         buttonThinkingFace!!.setOnClickListener(clickButtonListener)
-        buttonWineGlass = findViewById(R.id.button_wine_glass)
+        buttonWineGlass = findViewById(R.id.button_wine_glass_2)
         buttonWineGlass!!.setOnClickListener(clickButtonListener)
 
         // row 4
-        buttonMushroom = findViewById(R.id.button_mushroom)
+        buttonMushroom = findViewById(R.id.button_mushroom_2)
         buttonMushroom!!.setOnClickListener(clickButtonListener)
-        buttonPeach = findViewById(R.id.button_peach)
+        buttonPeach = findViewById(R.id.button_peach_2)
         buttonPeach!!.setOnClickListener(clickButtonListener)
-        buttonExlamationMark = findViewById(R.id.button_exlamation_mark)
+        buttonExlamationMark = findViewById(R.id.button_exlamation_mark_2)
         buttonExlamationMark!!.setOnClickListener(clickButtonListener)
-        buttonQuestionMark = findViewById(R.id.button_question_mark)
+        buttonQuestionMark = findViewById(R.id.button_question_mark_2)
         buttonQuestionMark!!.setOnClickListener(clickButtonListener)
-        buttonPileOfPoo = findViewById(R.id.button_pile_of_poo)
+        buttonPileOfPoo = findViewById(R.id.button_pile_of_poo_2)
         buttonPileOfPoo!!.setOnClickListener(clickButtonListener)
-        buttonPersonFacepalming = findViewById(R.id.button_person_facepalming)
+        buttonPersonFacepalming = findViewById(R.id.button_person_facepalming_2)
         buttonPersonFacepalming!!.setOnClickListener(clickButtonListener)
-        buttonFireworks = findViewById(R.id.button_fireworks)
+        buttonFireworks = findViewById(R.id.button_fireworks_2)
         buttonFireworks!!.setOnClickListener(clickButtonListener)
-        buttonPartyPoppers = findViewById(R.id.button_party_poppers)
+        buttonPartyPoppers = findViewById(R.id.button_party_poppers_2)
         buttonPartyPoppers!!.setOnClickListener(clickButtonListener)
-        buttonConfettiBall = findViewById(R.id.button_confetti_ball)
+        buttonConfettiBall = findViewById(R.id.button_confetti_ball_2)
         buttonConfettiBall!!.setOnClickListener(clickButtonListener)
 
         // row 1
         buttonSmile!!.text = getEmojiByUnicode(emoji_Smile)
         buttonWink!!.text = getEmojiByUnicode(emoji_Wink)
-        buttonThrowingAKiss!!.text = getEmojiByUnicode(emoji_throwing_a_kiss)
         buttonKissingFaceClosedEyes!!.text = getEmojiByUnicode(emoji_kissing_face_closed_eyes)
         buttonStuckOutTongue!!.text = getEmojiByUnicode(emoji_stuck_out_tongue)
         buttonColdSweat!!.text = getEmojiByUnicode(emoji_cold_sweat)
@@ -236,7 +232,7 @@ class SecondKeyboard: LinearLayout {
 
     private val clickButtonListener = OnClickListener { view ->
         when (view.getId()) {
-            R.id.button_back -> {
+            R.id.button_back_2 -> {
                 val selectedText = inputConnection!!.getSelectedText(0)
 
                 if (TextUtils.isEmpty(selectedText)) {
@@ -256,110 +252,107 @@ class SecondKeyboard: LinearLayout {
                 }
             }
             // row 1
-            R.id.button_smile -> {
+            R.id.button_smile_2 -> {
                 inputConnection!!.commitText(getEmojiByUnicode(emoji_Smile), 1)
             }
-            R.id.button_wink -> {
+            R.id.button_wink_2 -> {
                 inputConnection!!.commitText(getEmojiByUnicode(emoji_Wink), 1)
             }
-            R.id.button_throwing_a_kiss -> {
-                inputConnection!!.commitText(getEmojiByUnicode(emoji_throwing_a_kiss), 1)
-            }
-            R.id.button_kissing_face_closed_eyes -> {
+            R.id.button_kissing_face_closed_eyes_2 -> {
                 inputConnection!!.commitText(getEmojiByUnicode(emoji_kissing_face_closed_eyes), 1)
             }
-            R.id.button_stuck_out_tongue -> {
+            R.id.button_stuck_out_tongue_2 -> {
                 inputConnection!!.commitText(getEmojiByUnicode(emoji_stuck_out_tongue), 1)
             }
-            R.id.button_cold_sweat -> {
+            R.id.button_cold_sweat_2 -> {
                 inputConnection!!.commitText(getEmojiByUnicode(emoji_cold_sweat), 1)
             }
-            R.id.button_pensive -> {
+            R.id.button_pensive_2 -> {
                 inputConnection!!.commitText(getEmojiByUnicode(emoji_pensive), 1)
             }
             // row 2
-            R.id.button_tears_of_joy -> {
+            R.id.button_tears_of_joy_2 -> {
                 inputConnection!!.commitText(getEmojiByUnicode(emoji_tears_of_joy), 1)
             }
-            R.id.button_heart_shaped_eyes -> {
+            R.id.button_heart_shaped_eyes_2 -> {
                 inputConnection!!.commitText(getEmojiByUnicode(emoji_heart_shaped_eyes), 1)
             }
-            R.id.button_heart -> {
+            R.id.button_heart_2 -> {
                 inputConnection!!.commitText(getEmojiByUnicode(emoji_heart), 1)
             }
-            R.id.button_rolling_on_the_floor -> {
+            R.id.button_rolling_on_the_floor_2 -> {
                 inputConnection!!.commitText(getEmojiByUnicode(emoji_rolling_on_the_floor), 1)
             }
-            R.id.button_face_with_hearts -> {
+            R.id.button_face_with_hearts_2 -> {
                 inputConnection!!.commitText(getEmojiByUnicode(emoji_face_with_hearts), 1)
             }
-            R.id.button_folded_hands -> {
+            R.id.button_folded_hands_2 -> {
                 inputConnection!!.commitText(getEmojiByUnicode(emoji_folded_hands), 1)
             }
-            R.id.button_loudly_crying -> {
+            R.id.button_loudly_crying_2 -> {
                 inputConnection!!.commitText(getEmojiByUnicode(emoji_loudly_crying), 1)
             }
-            R.id.button_right_facing_fist -> {
+            R.id.button_right_facing_fist_2 -> {
                 inputConnection!!.commitText(getEmojiByUnicode(emoji_right_facing_fist), 1)
             }
-            R.id.button_left_facing_fist -> {
+            R.id.button_left_facing_fist_2 -> {
                 inputConnection!!.commitText(getEmojiByUnicode(emoji_left_facing_fist), 1)
             }
             // row 3
-            R.id.button_eggplant -> {
+            R.id.button_eggplant_2 -> {
                 inputConnection!!.commitText(getEmojiByUnicode(emoji_eggplant), 1)
             }
-            R.id.button_sweat_droplets -> {
+            R.id.button_sweat_droplets_2 -> {
                 inputConnection!!.commitText(getEmojiByUnicode(emoji_sweat_droplets), 1)
             }
-            R.id.button_banana -> {
+            R.id.button_banana_2 -> {
                 inputConnection!!.commitText(getEmojiByUnicode(emoji_banana), 1)
             }
-            R.id.button_thumbs_up -> {
+            R.id.button_thumbs_up_2 -> {
                 inputConnection!!.commitText(getEmojiByUnicode(emoji_thumbs_up), 1)
             }
-            R.id.button_fire -> {
+            R.id.button_fire_2 -> {
                 inputConnection!!.commitText(getEmojiByUnicode(emoji_fire), 1)
             }
-            R.id.button_rainbow -> {
+            R.id.button_rainbow_2 -> {
                 inputConnection!!.commitText(getEmojiByUnicode(emoji_rainbow), 1)
             }
-            R.id.button_clinking_beer_mugs -> {
+            R.id.button_clinking_beer_mugs_2 -> {
                 inputConnection!!.commitText(getEmojiByUnicode(emoji_clinking_beer_mugs), 1)
             }
-            R.id.button_thinking_face -> {
+            R.id.button_thinking_face_2 -> {
                 inputConnection!!.commitText(getEmojiByUnicode(emoji_thinking_face), 1)
             }
-            R.id.button_wine_glass -> {
+            R.id.button_wine_glass_2 -> {
                 inputConnection!!.commitText(getEmojiByUnicode(emoji_wine_glass), 1)
             }
 
             // row 4
-            R.id.button_mushroom -> {
+            R.id.button_mushroom_2 -> {
                 inputConnection!!.commitText(getEmojiByUnicode(emoji_mushroom), 1)
             }
-            R.id.button_peach -> {
+            R.id.button_peach_2 -> {
                 inputConnection!!.commitText(getEmojiByUnicode(emoji_peach), 1)
             }
-            R.id.button_pile_of_poo -> {
+            R.id.button_pile_of_poo_2 -> {
                 inputConnection!!.commitText(getEmojiByUnicode(emoji_pile_of_poo), 1)
             }
-            R.id.button_person_facepalming -> {
+            R.id.button_person_facepalming_2 -> {
                 inputConnection!!.commitText(getEmojiByUnicode(emoji_person_facepalming), 1)
             }
-            R.id.button_fireworks -> {
+            R.id.button_fireworks_2 -> {
                 inputConnection!!.commitText(getEmojiByUnicode(emoji_fireworks), 1)
             }
-            R.id.button_party_poppers -> {
+            R.id.button_party_poppers_2 -> {
                 inputConnection!!.commitText(getEmojiByUnicode(emoji_party_poppers), 1)
             }
-            R.id.button_confetti_ball -> {
+            R.id.button_confetti_ball_2 -> {
                 inputConnection!!.commitText(getEmojiByUnicode(emoji_confetti_ball), 1)
             }
-            R.id.button_exlamation_mark -> {
+            R.id.button_exlamation_mark_2 -> {
                 inputConnection!!.commitText("!", 1)
             }
-            R.id.button_question_mark -> {
+            R.id.button_question_mark_2 -> {
                 inputConnection!!.commitText("?", 1)
             }
         }
