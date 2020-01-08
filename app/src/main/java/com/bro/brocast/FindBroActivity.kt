@@ -114,20 +114,20 @@ class FindBroActivity: AppCompatActivity() {
                 if (b) {
                     println("focus on bromotion field")
                     try {
-                        // We want to show the listview and hide the keyboard_first.
+                        // We want to show the listview and hide the keyboard.
                         val imm: InputMethodManager =
                             applicationContext.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                         imm.hideSoftInputFromWindow(
                             this.currentFocus!!.windowToken,
                             0
                         )
-                        println("keyboard_first hidden")
+                        println("keyboard hidden")
                     } catch (e: Exception) {
-                        // This is for the keyboard_first. If something went wrong
+                        // This is for the keyboard. If something went wrong
                         // than, whatever! It will not effect the app!
                     }
 
-                    // We want to make the keyboard_first visible if it isn't yet.
+                    // We want to make the keyboard visible if it isn't yet.
                     if (keyboard.visibility != View.VISIBLE) {
                         keyboard.visibility = View.VISIBLE
                     }
@@ -137,7 +137,7 @@ class FindBroActivity: AppCompatActivity() {
             R.id.broNameBroSearch -> {
                 if (b) {
                     println("focus on the broname field")
-                    // The user clicked on the other field so we make the emotion keyboard_first invisible
+                    // The user clicked on the other field so we make the emotion keyboard invisible
                     if (keyboard.visibility == View.VISIBLE) {
                         keyboard.visibility = View.INVISIBLE
                     }
@@ -180,7 +180,7 @@ class FindBroActivity: AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        // We want to make the keyboard_first visible if it isn't yet.
+        // We want to make the keyboard visible if it isn't yet.
         if (keyboard.visibility == View.VISIBLE) {
             keyboard.visibility = View.GONE
         } else {

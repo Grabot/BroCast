@@ -21,6 +21,7 @@ import com.bro.brocast.adapters.MessagesAdapter
 import com.bro.brocast.api.GetMessagesAPI
 import com.bro.brocast.api.SendMessagesAPI
 import com.bro.brocast.keyboards.FirstKeyboardFragment
+import com.bro.brocast.keyboards.SecondKeyboardFragment
 import com.bro.brocast.objects.Message
 import kotlinx.android.synthetic.main.activity_messaging.*
 
@@ -148,7 +149,7 @@ class MessagingActivity: AppCompatActivity() {
                 }
             }
             R.id.broMessageField -> {
-                // We want to make the keyboard_first visible if it isn't yet.
+                // We want to make the keyboard visible if it isn't yet.
                 if (vpPager!!.visibility != View.VISIBLE) {
                     vpPager!!.visibility = View.VISIBLE
                 }
@@ -161,7 +162,7 @@ class MessagingActivity: AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        // We want to make the keyboard_first visible if it isn't yet.
+        // We want to make the keyboard invisible if it isn't yet.
         if (vpPager!!.visibility == View.VISIBLE) {
             vpPager!!.visibility = View.GONE
         } else {
@@ -186,7 +187,7 @@ class MessagingActivity: AppCompatActivity() {
                     return first
                 }
                 1 -> {
-                    var second = FirstKeyboardFragment.newInstance(1, "Page # 2", broTextField!!)
+                    var second = SecondKeyboardFragment.newInstance(1, "Page # 2", broTextField!!)
                     return second
                 }
                 2 -> {
