@@ -1,7 +1,5 @@
 package com.bro.brocast
 
-import android.content.Intent
-import android.opengl.Visibility
 import android.os.Build
 import android.os.Bundle
 import android.text.InputType
@@ -9,19 +7,15 @@ import android.view.View
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentPagerAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
 import com.beust.klaxon.JsonObject
 import com.bro.brocast.adapters.BroViewPager
 import com.bro.brocast.adapters.MessagesAdapter
+import com.bro.brocast.adapters.PagerBrodapter
 import com.bro.brocast.api.GetMessagesAPI
 import com.bro.brocast.api.SendMessagesAPI
-import com.bro.brocast.keyboards.FirstKeyboardFragment
-import com.bro.brocast.keyboards.SecondKeyboardFragment
 import com.bro.brocast.objects.Message
 import kotlinx.android.synthetic.main.activity_messaging.*
 
@@ -39,6 +33,7 @@ class MessagingActivity: AppCompatActivity() {
     var broTextField: EditText? = null
 
     var vpPager: BroViewPager? = null
+    var mSlidingTabLayout: SlidingTabLayout? = null
 
     // A simple solution to determine how many message should be loaded.
     var page: Int = 1
@@ -89,10 +84,16 @@ class MessagingActivity: AppCompatActivity() {
         })
 
         vpPager = findViewById(R.id.vpPager) as BroViewPager
-        val adapterViewPager = MyPagerAdapter(supportFragmentManager)
+        val adapterViewPager = PagerBrodapter(supportFragmentManager)
         adapterViewPager.broTextField = broTextField
 
+        // TODO @Skools: We set the pagerBrodapter twice. See if you can fix this.
         vpPager!!.adapter = adapterViewPager
+        vpPager!!.pagerBrodapter = adapterViewPager
+
+        mSlidingTabLayout = findViewById(R.id.sliding_tabs) as SlidingTabLayout
+        mSlidingTabLayout!!.setViewPager(vpPager)
+
         vpPager!!.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
 
             // This method will be invoked when a new page becomes selected.
@@ -120,6 +121,7 @@ class MessagingActivity: AppCompatActivity() {
         })
 
         vpPager!!.visibility = View.GONE
+        mSlidingTabLayout!!.visibility = View.GONE
     }
 
     private val clickButtonListener = View.OnClickListener { view ->
@@ -152,6 +154,7 @@ class MessagingActivity: AppCompatActivity() {
                 // We want to make the keyboard visible if it isn't yet.
                 if (vpPager!!.visibility != View.VISIBLE) {
                     vpPager!!.visibility = View.VISIBLE
+                    mSlidingTabLayout!!.visibility = View.VISIBLE
                 }
             }
         }
@@ -165,49 +168,9 @@ class MessagingActivity: AppCompatActivity() {
         // We want to make the keyboard invisible if it isn't yet.
         if (vpPager!!.visibility == View.VISIBLE) {
             vpPager!!.visibility = View.GONE
+            mSlidingTabLayout!!.visibility = View.GONE
         } else {
             super.onBackPressed()
-        }
-    }
-
-    class MyPagerAdapter(fragmentManager: FragmentManager) : FragmentPagerAdapter(fragmentManager) {
-
-        var broTextField: EditText? = null
-
-        // Returns total number of pages
-        override fun getCount(): Int {
-            return NUM_ITEMS
-        }
-
-        // Returns the fragment to display for that page
-        override fun getItem(position: Int): Fragment {
-            when (position) {
-                0  -> {
-                    var first = FirstKeyboardFragment.newInstance(0, "Page # 1", broTextField!!)
-                    return first
-                }
-                1 -> {
-                    var second = SecondKeyboardFragment.newInstance(1, "Page # 2", broTextField!!)
-                    return second
-                }
-                2 -> {
-                    var third = FirstKeyboardFragment.newInstance(2, "Page # 3", broTextField!!)
-                    return third
-                }
-                else -> {
-                    var first = FirstKeyboardFragment.newInstance(0, "Page # 1", broTextField!!)
-                    return first
-                }
-            }
-        }
-
-        // Returns the page title for the top indicator
-        override fun getPageTitle(position: Int): CharSequence? {
-            return "Page $position"
-        }
-
-        companion object {
-            private val NUM_ITEMS = 3
         }
     }
 }
