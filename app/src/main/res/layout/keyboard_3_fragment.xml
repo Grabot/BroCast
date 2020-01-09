@@ -5,11 +5,10 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <com.bro.brocast.keyboards.SecondKeyboard
+    <com.bro.brocast.keyboards.ThirdKeyboard
         android:id="@+id/keyboard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"/>
-
 
 </LinearLayout>

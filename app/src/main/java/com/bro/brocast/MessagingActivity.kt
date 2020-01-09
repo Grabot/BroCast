@@ -97,6 +97,7 @@ class MessagingActivity: AppCompatActivity() {
         val iconArray = arrayOf(
             R.drawable.tab_smile,
             R.drawable.tab_animals,
+            R.drawable.tab_food,
             R.drawable.tab_food
         )
         mSlidingTabLayout!!.setTabIcons(iconArray)

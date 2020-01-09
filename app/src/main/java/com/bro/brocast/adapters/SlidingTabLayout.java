@@ -180,8 +180,8 @@ public class SlidingTabLayout extends HorizontalScrollView {
                 tabTitleView = (TextView) tabView;
             }
 
-            tabView = LayoutInflater.from(getContext()).inflate(R.layout.keyboard_custom_tab, mTabStrip,
-                    false);
+            tabView = LayoutInflater.from(getContext()).inflate(R.layout.keyboard_custom_tab,
+                    mTabStrip, false);
 
             ImageView iconImageView = tabView.findViewById(R.id.keyboard_custom_tab_image);
             iconImageView.setImageDrawable(getContext().getResources().getDrawable(tabIcon[i]));

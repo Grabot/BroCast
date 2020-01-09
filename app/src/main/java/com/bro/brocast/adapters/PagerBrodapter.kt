@@ -5,7 +5,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import com.bro.brocast.keyboards.FirstKeyboardFragment
+import com.bro.brocast.keyboards.FourthKeyboardFragment
 import com.bro.brocast.keyboards.SecondKeyboardFragment
+import com.bro.brocast.keyboards.ThirdKeyboardFragment
 
 class PagerBrodapter(fragmentManager: FragmentManager) : FragmentPagerAdapter(fragmentManager) {
 
@@ -20,30 +22,24 @@ class PagerBrodapter(fragmentManager: FragmentManager) : FragmentPagerAdapter(fr
     override fun getItem(position: Int): Fragment {
         when (position) {
             0  -> {
-                var first = FirstKeyboardFragment.newInstance(0, "Page # 1", broTextField!!)
-                return first
+                return FirstKeyboardFragment.newInstance(0, "Page # 1", broTextField!!)
             }
             1 -> {
-                var second = SecondKeyboardFragment.newInstance(1, "Page # 2", broTextField!!)
-                return second
+                return SecondKeyboardFragment.newInstance(1, "Page # 2", broTextField!!)
             }
             2 -> {
-                var third = FirstKeyboardFragment.newInstance(2, "Page # 3", broTextField!!)
-                return third
+                return ThirdKeyboardFragment.newInstance(2, "Page # 3", broTextField!!)
+            }
+            3 -> {
+                return FourthKeyboardFragment.newInstance(3, "Page # 4", broTextField!!)
             }
             else -> {
-                var first = FirstKeyboardFragment.newInstance(0, "Page # 1", broTextField!!)
-                return first
+                return FirstKeyboardFragment.newInstance(0, "Page # 1", broTextField!!)
             }
         }
     }
 
-    // Returns the page title for the top indicator
-    override fun getPageTitle(position: Int): CharSequence? {
-        return "Page $position"
-    }
-
     companion object {
-        private val NUM_ITEMS = 3
+        private val NUM_ITEMS = 4
     }
 }
