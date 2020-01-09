@@ -95,9 +95,9 @@ class MessagingActivity: AppCompatActivity() {
         mSlidingTabLayout = findViewById(R.id.sliding_tabs) as SlidingTabLayout
 
         val iconArray = arrayOf(
-            R.drawable.flag_netherlands,
-            R.drawable.brocastmessage,
-            R.drawable.ccp_down_arrow
+            R.drawable.tab_smile,
+            R.drawable.tab_animals,
+            R.drawable.tab_food
         )
         mSlidingTabLayout!!.setTabIcons(iconArray)
 
