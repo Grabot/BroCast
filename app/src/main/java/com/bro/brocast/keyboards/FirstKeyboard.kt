@@ -257,7 +257,7 @@ class FirstKeyboard: LinearLayout {
             }
             // row 1
             R.id.button_smile -> {
-                inputConnection!!.commitText(getEmojiByUnicode(emoji_Smile), 1)
+                inputConnection!!.commitText(context.getString(R.string.emoji2), 1)
             }
             R.id.button_wink -> {
                 inputConnection!!.commitText(getEmojiByUnicode(emoji_Wink), 1)
