@@ -1,4 +1,4 @@
-package com.bro.brocast;
+package com.bro.brocast.adapters;
 
 import android.content.Context;
 import android.graphics.Typeface;
@@ -10,14 +10,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
-import com.bro.brocast.adapters.BroViewPager;
-import com.bro.brocast.adapters.PagerBrodapter;
+import com.bro.brocast.R;
 
 public class SlidingTabLayout extends HorizontalScrollView {
     /**
@@ -48,6 +47,9 @@ public class SlidingTabLayout extends HorizontalScrollView {
     private ViewPager.OnPageChangeListener mViewPagerPageChangeListener;
 
     private final SlidingTabStrip mTabStrip;
+
+    // This is used to store the tab icons
+    private Integer[] tabIcon;
 
     public SlidingTabLayout(Context context) {
         this(context, null);
@@ -178,6 +180,12 @@ public class SlidingTabLayout extends HorizontalScrollView {
                 tabTitleView = (TextView) tabView;
             }
 
+            tabView = LayoutInflater.from(getContext()).inflate(R.layout.keyboard_custom_tab, mTabStrip,
+                    false);
+
+            ImageView iconImageView = tabView.findViewById(R.id.keyboard_custom_tab_image);
+            iconImageView.setImageDrawable(getContext().getResources().getDrawable(tabIcon[i]));
+
             if (mDistributeEvenly) {
                 LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) tabView.getLayoutParams();
                 lp.width = 0;
@@ -291,4 +299,7 @@ public class SlidingTabLayout extends HorizontalScrollView {
         }
     }
 
+    public void setTabIcons(Integer[] tabIcon) {
+        this.tabIcon = tabIcon;
+    }
 }

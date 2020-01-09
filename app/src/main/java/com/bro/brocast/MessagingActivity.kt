@@ -14,6 +14,7 @@ import com.beust.klaxon.JsonObject
 import com.bro.brocast.adapters.BroViewPager
 import com.bro.brocast.adapters.MessagesAdapter
 import com.bro.brocast.adapters.PagerBrodapter
+import com.bro.brocast.adapters.SlidingTabLayout
 import com.bro.brocast.api.GetMessagesAPI
 import com.bro.brocast.api.SendMessagesAPI
 import com.bro.brocast.objects.Message
@@ -92,7 +93,17 @@ class MessagingActivity: AppCompatActivity() {
         vpPager!!.pagerBrodapter = adapterViewPager
 
         mSlidingTabLayout = findViewById(R.id.sliding_tabs) as SlidingTabLayout
+
+        val iconArray = arrayOf(
+            R.drawable.flag_netherlands,
+            R.drawable.brocastmessage,
+            R.drawable.ccp_down_arrow
+        )
+        mSlidingTabLayout!!.setTabIcons(iconArray)
+
+        mSlidingTabLayout!!.setDistributeEvenly(true)
         mSlidingTabLayout!!.setViewPager(vpPager)
+
 
         vpPager!!.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
 

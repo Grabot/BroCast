@@ -1,4 +1,4 @@
-package com.bro.brocast;
+package com.bro.brocast.adapters;
 
 import android.R;
 import android.content.Context;
