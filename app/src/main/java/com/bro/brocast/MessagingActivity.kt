@@ -98,7 +98,11 @@ class MessagingActivity: AppCompatActivity() {
             R.drawable.tab_smile,
             R.drawable.tab_animals,
             R.drawable.tab_food,
-            R.drawable.tab_food
+            R.drawable.tab_sports,
+            R.drawable.tab_travel,
+            R.drawable.tab_objects,
+            R.drawable.tab_symbol,
+            R.drawable.tab_flags
         )
         mSlidingTabLayout!!.setTabIcons(iconArray)
 
@@ -110,10 +114,7 @@ class MessagingActivity: AppCompatActivity() {
 
             // This method will be invoked when a new page becomes selected.
             override fun onPageSelected(position: Int) {
-                Toast.makeText(
-                    this@MessagingActivity,
-                    "Selected page position: $position", Toast.LENGTH_SHORT
-                ).show()
+                // The page which is currently active
             }
 
             // This method will be invoked when the current page is scrolled

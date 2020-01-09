@@ -4,10 +4,7 @@ import android.widget.EditText
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
-import com.bro.brocast.keyboards.FirstKeyboardFragment
-import com.bro.brocast.keyboards.FourthKeyboardFragment
-import com.bro.brocast.keyboards.SecondKeyboardFragment
-import com.bro.brocast.keyboards.ThirdKeyboardFragment
+import com.bro.brocast.keyboards.*
 
 class PagerBrodapter(fragmentManager: FragmentManager) : FragmentPagerAdapter(fragmentManager) {
 
@@ -33,6 +30,22 @@ class PagerBrodapter(fragmentManager: FragmentManager) : FragmentPagerAdapter(fr
             3 -> {
                 return FourthKeyboardFragment.newInstance(3, "Page # 4", broTextField!!)
             }
+            4 -> {
+                return FifthKeyboardFragment.newInstance(4, "Page # 5", broTextField!!)
+            }
+            5 -> {
+                return SixthsKeyboardFragment.newInstance(5, "Page # 6", broTextField!!)
+            }
+            6 -> {
+                return SeventhKeyboardFragment.newInstance(6, "Page # 7", broTextField!!)
+            }
+            7 -> {
+                return EighthKeyboardFragment.newInstance(7, "Page # 8", broTextField!!)
+            }
+            // TODO @Sander: add a most used keyboard?
+//            8 -> {
+//                return NinthKeyboardFragment.newInstance(8, "Page # 9", broTextField!!)
+//            }
             else -> {
                 return FirstKeyboardFragment.newInstance(0, "Page # 1", broTextField!!)
             }
@@ -40,6 +53,6 @@ class PagerBrodapter(fragmentManager: FragmentManager) : FragmentPagerAdapter(fr
     }
 
     companion object {
-        private val NUM_ITEMS = 4
+        private val NUM_ITEMS = 8
     }
 }
