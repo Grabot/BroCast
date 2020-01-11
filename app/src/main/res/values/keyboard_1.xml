@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="emoji_smile">&#x1F604;</string>
+    <string name="emoji_wink">&#x1F609;</string>
+    <string name="emoji_throwing_a_kiss">&#x1F618;</string>
+    <string name="emoji_kissing_face_closed_eyes">&#x1F61A;</string>
+    <string name="emoji_stuck_out_tongue">&#x1F61B;</string>
+    <string name="emoji_cold_sweat">&#x1F613;</string>
+    <string name="emoji_pensive">&#x1F614;</string>
+    <string name="emoji_eggplant">&#x1F346;</string>
+    <string name="emoji_banana">&#x1F34C;</string>
+    <string name="emoji_heart">&#x2764;</string>
+    <string name="emoji_rolling_on_the_floor">&#x1F923;</string>
+    <string name="emoji_face_with_hearts">&#x1F970;</string>
+    <string name="emoji_folded_hands">&#x1F64F;</string>
+    <string name="emoji_loudly_crying">&#x1F62D;</string>
+    <string name="emoji_right_facing_fist">&#x1F91C;</string>
+    <string name="emoji_left_facing_fist">&#x1F91B;</string>
+    <string name="emoji_tears_of_joy">&#x1F602;</string>
+    <string name="emoji_sweat_droplets">&#x1F4A6;</string>
+    <string name="emoji_heart_shaped_eyes">&#x1F60D;</string>
+    <string name="emoji_thumbs_up">&#x1F44D;</string>
+    <string name="emoji_fire">&#x1F525;</string>
+    <string name="emoji_rainbow">&#x1F308;</string>
+    <string name="emoji_clinking_beer_mugs">&#x1F37B;</string>
+    <string name="emoji_thinking_face">&#x1F914;</string>
+    <string name="emoji_wine_glass">&#x1F377;</string>
+    <string name="emoji_mushroom">&#x1F344;</string>
+    <string name="emoji_peach">&#x1F351;</string>
+    <string name="emoji_pile_of_poo">&#x1F4A9;</string>
+    <string name="emoji_person_facepalming">&#x1F926;</string>
+    <string name="emoji_fireworks">&#x1F386;</string>
+    <string name="emoji_party_poppers">&#x1F389;</string>
+    <string name="emoji_confetti_ball">&#x1F38A;</string>
+</resources>

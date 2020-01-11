@@ -15,56 +15,72 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="😄"/>
+                android:text="@string/emoji_smile"
+                style="?android:attr/borderlessButtonStyle"
+            />
 
             <Button
                 android:id="@+id/button_wink"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="😉"/>
+                android:text="@string/emoji_wink"
+                style="?android:attr/borderlessButtonStyle"
+            />
 
             <Button
                 android:id="@+id/button_throwing_a_kiss"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="😘"/>
+                android:text="@string/emoji_throwing_a_kiss"
+                style="?android:attr/borderlessButtonStyle"
+            />
 
             <Button
                 android:id="@+id/button_kissing_face_closed_eyes"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="😚"/>
+                android:text="@string/emoji_kissing_face_closed_eyes"
+                style="?android:attr/borderlessButtonStyle"
+            />
 
             <Button
                 android:id="@+id/button_stuck_out_tongue"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="😛"/>
+                android:text="@string/emoji_stuck_out_tongue"
+                style="?android:attr/borderlessButtonStyle"
+            />
 
             <Button
                 android:id="@+id/button_cold_sweat"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="😓"/>
+                android:text="@string/emoji_cold_sweat"
+                style="?android:attr/borderlessButtonStyle"
+            />
 
             <Button
                 android:id="@+id/button_pensive"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="😔"/>
+                android:text="@string/emoji_pensive"
+                style="?android:attr/borderlessButtonStyle"
+            />
 
             <Button
                 android:id="@+id/button_back"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
-                android:text="Back"/>
+                android:text="Back"
+                style="?android:attr/borderlessButtonStyle"
+            />
 
 
         </LinearLayout>
@@ -80,63 +96,81 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="😂"/>
+                android:text="@string/emoji_tears_of_joy"
+                style="?android:attr/borderlessButtonStyle"
+            />
 
             <Button
                 android:id="@+id/button_heart_shaped_eyes"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="😍"/>
+                android:text="@string/emoji_heart_shaped_eyes"
+                style="?android:attr/borderlessButtonStyle"
+            />
 
             <Button
                 android:id="@+id/button_heart"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="❤"/>
+                android:text="@string/emoji_heart"
+                style="?android:attr/borderlessButtonStyle"
+            />
 
             <Button
                 android:id="@+id/button_rolling_on_the_floor"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="🤣"/>
+                android:text="@string/emoji_rolling_on_the_floor"
+                style="?android:attr/borderlessButtonStyle"
+            />
 
             <Button
                 android:id="@+id/button_face_with_hearts"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="🥰"/>
+                android:text="@string/emoji_face_with_hearts"
+                style="?android:attr/borderlessButtonStyle"
+            />
 
             <Button
                 android:id="@+id/button_folded_hands"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="🙏"/>
+                android:text="@string/emoji_folded_hands"
+                style="?android:attr/borderlessButtonStyle"
+            />
 
             <Button
                 android:id="@+id/button_loudly_crying"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="😭"/>
+                android:text="@string/emoji_loudly_crying"
+                style="?android:attr/borderlessButtonStyle"
+            />
 
             <Button
                 android:id="@+id/button_right_facing_fist"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="🤜"/>
+                android:text="@string/emoji_right_facing_fist"
+                style="?android:attr/borderlessButtonStyle"
+            />
 
             <Button
                 android:id="@+id/button_left_facing_fist"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="🤛"/>
+                android:text="@string/emoji_left_facing_fist"
+                style="?android:attr/borderlessButtonStyle"
+            />
 
         </LinearLayout>
 
@@ -151,63 +185,81 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="🍆"/>
+                android:text="@string/emoji_eggplant"
+                style="?android:attr/borderlessButtonStyle"
+            />
 
             <Button
                 android:id="@+id/button_sweat_droplets"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="💦"/>
+                android:text="@string/emoji_sweat_droplets"
+                style="?android:attr/borderlessButtonStyle"
+            />
 
             <Button
                 android:id="@+id/button_banana"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="🍌"/>
+                android:text="@string/emoji_banana"
+                style="?android:attr/borderlessButtonStyle"
+            />
 
             <Button
                 android:id="@+id/button_thumbs_up"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="👍"/>
+                android:text="@string/emoji_thumbs_up"
+                style="?android:attr/borderlessButtonStyle"
+            />
 
             <Button
                 android:id="@+id/button_fire"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="🔥"/>
+                android:text="@string/emoji_fire"
+                style="?android:attr/borderlessButtonStyle"
+            />
 
             <Button
                 android:id="@+id/button_rainbow"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="🌈"/>
+                android:text="@string/emoji_rainbow"
+                style="?android:attr/borderlessButtonStyle"
+            />
 
             <Button
                 android:id="@+id/button_clinking_beer_mugs"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="🍻"/>
+                android:text="@string/emoji_clinking_beer_mugs"
+                style="?android:attr/borderlessButtonStyle"
+            />
 
             <Button
                 android:id="@+id/button_wine_glass"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="🍷"/>
+                android:text="@string/emoji_wine_glass"
+                style="?android:attr/borderlessButtonStyle"
+            />
 
             <Button
                 android:id="@+id/button_thinking_face"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="🤔"/>
+                android:text="@string/emoji_thinking_face"
+                style="?android:attr/borderlessButtonStyle"
+            />
 
         </LinearLayout>
 
@@ -221,62 +273,81 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="🍄"/>
+                android:text="@string/emoji_mushroom"
+                style="?android:attr/borderlessButtonStyle"
+            />
 
             <Button
                 android:id="@+id/button_peach"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="🍑"/>
+                android:text="@string/emoji_peach"
+                style="?android:attr/borderlessButtonStyle"
+            />
 
             <Button
                 android:id="@+id/button_pile_of_poo"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="💩"/>
+                android:text="@string/emoji_pile_of_poo"
+                style="?android:attr/borderlessButtonStyle"
+            />
 
             <Button
                 android:id="@+id/button_person_facepalming"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="🤦"/>
+                android:text="@string/emoji_person_facepalming"
+                style="?android:attr/borderlessButtonStyle"
+            />
 
             <Button
                 android:id="@+id/button_fireworks"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="🎆"/>
+                android:text="@string/emoji_fireworks"
+                style="?android:attr/borderlessButtonStyle"
+            />
 
             <Button
                 android:id="@+id/button_party_poppers"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="🎉"/>
+                android:text="@string/emoji_party_poppers"
+                style="?android:attr/borderlessButtonStyle"
+            />
 
             <Button
                 android:id="@+id/button_confetti_ball"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="🎊"/>
+                android:text="@string/emoji_confetti_ball"
+                style="?android:attr/borderlessButtonStyle"
+            />
+
             <Button
                 android:id="@+id/button_exlamation_mark"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="!"/>
+                android:text="!"
+                style="?android:attr/borderlessButtonStyle"
+            />
 
             <Button
                 android:id="@+id/button_question_mark"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="\?"/>
+                android:text="\?"
+                style="?android:attr/borderlessButtonStyle"
+            />
 
         </LinearLayout>
 
