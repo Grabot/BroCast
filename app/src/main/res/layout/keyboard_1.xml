@@ -188,7 +188,7 @@
                     android:layout_weight="1"
                     android:text="@string/kissing_face_with_smiling_eyes"
                     style="?android:attr/borderlessButtonStyle"
-                    />
+                />
                 <Button
                     android:id="@+id/button_kissing_face_with_closed_eyes"
                     android:layout_width="0dp"
@@ -196,7 +196,7 @@
                     android:layout_weight="1"
                     android:text="@string/kissing_face_with_closed_eyes"
                     style="?android:attr/borderlessButtonStyle"
-                    />
+                />
                 <Button
                     android:id="@+id/button_face_savouring_delicious_food"
                     android:layout_width="0dp"
@@ -204,7 +204,7 @@
                     android:layout_weight="1"
                     android:text="@string/face_savouring_delicious_food"
                     style="?android:attr/borderlessButtonStyle"
-                    />
+                />
                 <Button
                     android:id="@+id/button_face_with_stuck_out_tongue"
                     android:layout_width="0dp"
@@ -212,7 +212,7 @@
                     android:layout_weight="1"
                     android:text="@string/face_with_stuck_out_tongue"
                     style="?android:attr/borderlessButtonStyle"
-                    />
+                />
                 <Button
                     android:id="@+id/button_face_with_stuck_out_tongue_and_closed_eyes"
                     android:layout_width="0dp"
@@ -220,7 +220,7 @@
                     android:layout_weight="1"
                     android:text="@string/face_with_stuck_out_tongue_and_closed_eyes"
                     style="?android:attr/borderlessButtonStyle"
-                    />
+                />
             </LinearLayout>
 
             <LinearLayout
@@ -235,7 +235,7 @@
                     android:layout_weight="1"
                     android:text="@string/face_with_stuck_out_tongue_and_winking_eye"
                     style="?android:attr/borderlessButtonStyle"
-                    />
+                />
                 <Button
                     android:id="@+id/button_crazy_face"
                     android:layout_width="0dp"
@@ -243,7 +243,7 @@
                     android:layout_weight="1"
                     android:text="@string/crazy_face"
                     style="?android:attr/borderlessButtonStyle"
-                    />
+                />
                 <Button
                     android:id="@+id/button_face_with_raised_eyebrow"
                     android:layout_width="0dp"
@@ -251,7 +251,7 @@
                     android:layout_weight="1"
                     android:text="@string/face_with_raised_eyebrow"
                     style="?android:attr/borderlessButtonStyle"
-                    />
+                />
                 <Button
                     android:id="@+id/button_face_with_monocle"
                     android:layout_width="0dp"
@@ -259,7 +259,7 @@
                     android:layout_weight="1"
                     android:text="@string/face_with_monocle"
                     style="?android:attr/borderlessButtonStyle"
-                    />
+                />
                 <Button
                     android:id="@+id/button_nerd_face"
                     android:layout_width="0dp"
@@ -267,7 +267,7 @@
                     android:layout_weight="1"
                     android:text="@string/nerd_face"
                     style="?android:attr/borderlessButtonStyle"
-                    />
+                />
                 <Button
                     android:id="@+id/button_star_struck"
                     android:layout_width="0dp"
@@ -275,7 +275,7 @@
                     android:layout_weight="1"
                     android:text="@string/star_struck"
                     style="?android:attr/borderlessButtonStyle"
-                    />
+                />
                 <Button
                     android:id="@+id/button_smiling_face_with_sunglasses"
                     android:layout_width="0dp"
@@ -283,7 +283,7 @@
                     android:layout_weight="1"
                     android:text="@string/smiling_face_with_sunglasses"
                     style="?android:attr/borderlessButtonStyle"
-                    />
+                />
                 <Button
                     android:id="@+id/button_partying_face"
                     android:layout_width="0dp"
@@ -291,7 +291,7 @@
                     android:layout_weight="1"
                     android:text="@string/partying_face"
                     style="?android:attr/borderlessButtonStyle"
-                    />
+                />
             </LinearLayout>
 
             <LinearLayout
@@ -306,7 +306,7 @@
                     android:layout_weight="1"
                     android:text="@string/smirking_face"
                     style="?android:attr/borderlessButtonStyle"
-                    />
+                />
                 <Button
                     android:id="@+id/button_unamused_face"
                     android:layout_width="0dp"
@@ -314,7 +314,7 @@
                     android:layout_weight="1"
                     android:text="@string/unamused_face"
                     style="?android:attr/borderlessButtonStyle"
-                    />
+                />
                 <Button
                     android:id="@+id/button_disappointed_face"
                     android:layout_width="0dp"
@@ -322,7 +322,7 @@
                     android:layout_weight="1"
                     android:text="@string/disappointed_face"
                     style="?android:attr/borderlessButtonStyle"
-                    />
+                />
                 <Button
                     android:id="@+id/button_pensive_face"
                     android:layout_width="0dp"
@@ -330,7 +330,7 @@
                     android:layout_weight="1"
                     android:text="@string/pensive_face"
                     style="?android:attr/borderlessButtonStyle"
-                    />
+                />
                 <Button
                     android:id="@+id/button_worried_face"
                     android:layout_width="0dp"
@@ -338,7 +338,7 @@
                     android:layout_weight="1"
                     android:text="@string/worried_face"
                     style="?android:attr/borderlessButtonStyle"
-                    />
+                />
                 <Button
                     android:id="@+id/button_confused_face"
                     android:layout_width="0dp"
@@ -346,8 +346,180 @@
                     android:layout_weight="1"
                     android:text="@string/confused_face"
                     style="?android:attr/borderlessButtonStyle"
-                    />
+                />
+                <Button
+                    android:id="@+id/button_slightly_frowning_face"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/slightly_frowning_face"
+                    style="?android:attr/borderlessButtonStyle"
+                />
+                <Button
+                    android:id="@+id/button_frowning_face"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/frowning_face"
+                    style="?android:attr/borderlessButtonStyle"
+                />
+            </LinearLayout>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/button_persevering_face"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/persevering_face"
+                    style="?android:attr/borderlessButtonStyle"
+                />
+                <Button
+                    android:id="@+id/button_confounded_face"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/confounded_face"
+                    style="?android:attr/borderlessButtonStyle"
+                />
+                <Button
+                    android:id="@+id/button_tired_face"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/tired_face"
+                    style="?android:attr/borderlessButtonStyle"
+                />
+                <Button
+                    android:id="@+id/button_weary_face"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/weary_face"
+                    style="?android:attr/borderlessButtonStyle"
+                />
+                <Button
+                    android:id="@+id/button_pleading_face"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/pleading_face"
+                    style="?android:attr/borderlessButtonStyle"
+                />
+                <Button
+                    android:id="@+id/button_crying_face"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/crying_face"
+                    style="?android:attr/borderlessButtonStyle"
+                />
+                <Button
+                    android:id="@+id/button_loudly_crying_face"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/loudly_crying_face"
+                    style="?android:attr/borderlessButtonStyle"
+                />
+                <Button
+                    android:id="@+id/button_face_with_steam_from_nose"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/face_with_steam_from_nose"
+                    style="?android:attr/borderlessButtonStyle"
+                />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/button_angry_face"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/angry_face"
+                    style="?android:attr/borderlessButtonStyle"
+                />
+                <Button
+                    android:id="@+id/button_pouting_face"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/pouting_face"
+                    style="?android:attr/borderlessButtonStyle"
+                />
+                <Button
+                    android:id="@+id/button_face_with_symbols_over_mouth"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/face_with_symbols_over_mouth"
+                    style="?android:attr/borderlessButtonStyle"
+                />
+                <Button
+                    android:id="@+id/button_exploding_head"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/exploding_head"
+                    style="?android:attr/borderlessButtonStyle"
+                />
+                <Button
+                    android:id="@+id/button_flushed_face"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/flushed_face"
+                    style="?android:attr/borderlessButtonStyle"
+                />
+                <Button
+                    android:id="@+id/button_hot_face"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/hot_face"
+                    style="?android:attr/borderlessButtonStyle"
+                />
+                <Button
+                    android:id="@+id/button_cold_face"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/cold_face"
+                    style="?android:attr/borderlessButtonStyle"
+                />
+                <Button
+                    android:id="@+id/button_face_screaming_in_fear"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/face_screaming_in_fear"
+                    style="?android:attr/borderlessButtonStyle"
+                />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/button_fearful_face"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/fearful_face"
+                    style="?android:attr/borderlessButtonStyle"
+                />
             </LinearLayout>
 
         </LinearLayout>

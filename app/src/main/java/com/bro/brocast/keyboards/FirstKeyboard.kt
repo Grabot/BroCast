@@ -46,6 +46,25 @@ import com.bro.brocast.R.id.button_disappointed_face
 import com.bro.brocast.R.id.button_pensive_face
 import com.bro.brocast.R.id.button_worried_face
 import com.bro.brocast.R.id.button_confused_face
+import com.bro.brocast.R.id.button_slightly_frowning_face
+import com.bro.brocast.R.id.button_frowning_face
+import com.bro.brocast.R.id.button_persevering_face
+import com.bro.brocast.R.id.button_confounded_face
+import com.bro.brocast.R.id.button_tired_face
+import com.bro.brocast.R.id.button_weary_face
+import com.bro.brocast.R.id.button_pleading_face
+import com.bro.brocast.R.id.button_crying_face
+import com.bro.brocast.R.id.button_loudly_crying_face
+import com.bro.brocast.R.id.button_face_with_steam_from_nose
+import com.bro.brocast.R.id.button_angry_face
+import com.bro.brocast.R.id.button_pouting_face
+import com.bro.brocast.R.id.button_face_with_symbols_over_mouth
+import com.bro.brocast.R.id.button_exploding_head
+import com.bro.brocast.R.id.button_flushed_face
+import com.bro.brocast.R.id.button_hot_face
+import com.bro.brocast.R.id.button_cold_face
+import com.bro.brocast.R.id.button_face_screaming_in_fear
+import com.bro.brocast.R.id.button_fearful_face
 
 class FirstKeyboard: LinearLayout {
 
@@ -104,7 +123,26 @@ class FirstKeyboard: LinearLayout {
             button_disappointed_face,
             button_pensive_face,
             button_worried_face,
-            button_confused_face
+            button_confused_face,
+            button_slightly_frowning_face,
+            button_frowning_face,
+            button_persevering_face,
+            button_confounded_face,
+            button_tired_face,
+            button_weary_face,
+            button_pleading_face,
+            button_crying_face,
+            button_loudly_crying_face,
+            button_face_with_steam_from_nose,
+            button_angry_face,
+            button_pouting_face,
+            button_face_with_symbols_over_mouth,
+            button_exploding_head,
+            button_flushed_face,
+            button_hot_face,
+            button_cold_face,
+            button_face_screaming_in_fear,
+            button_fearful_face
         )
 
         for (b in buttonIds) {
@@ -227,6 +265,63 @@ class FirstKeyboard: LinearLayout {
             }
             button_confused_face -> {
                 inputConnection!!.commitText(context.getString(R.string.confused_face), 1)
+            }
+            button_slightly_frowning_face -> {
+                inputConnection!!.commitText(context.getString(R.string.slightly_frowning_face), 1)
+            }
+            button_frowning_face -> {
+                inputConnection!!.commitText(context.getString(R.string.frowning_face), 1)
+            }
+            button_persevering_face -> {
+                inputConnection!!.commitText(context.getString(R.string.persevering_face), 1)
+            }
+            button_confounded_face -> {
+                inputConnection!!.commitText(context.getString(R.string.confounded_face), 1)
+            }
+            button_tired_face -> {
+                inputConnection!!.commitText(context.getString(R.string.tired_face), 1)
+            }
+            button_weary_face -> {
+                inputConnection!!.commitText(context.getString(R.string.weary_face), 1)
+            }
+            button_pleading_face -> {
+                inputConnection!!.commitText(context.getString(R.string.pleading_face), 1)
+            }
+            button_crying_face -> {
+                inputConnection!!.commitText(context.getString(R.string.crying_face), 1)
+            }
+            button_loudly_crying_face -> {
+                inputConnection!!.commitText(context.getString(R.string.loudly_crying_face), 1)
+            }
+            button_face_with_steam_from_nose -> {
+                inputConnection!!.commitText(context.getString(R.string.face_with_steam_from_nose), 1)
+            }
+            button_angry_face -> {
+                inputConnection!!.commitText(context.getString(R.string.angry_face), 1)
+            }
+            button_pouting_face -> {
+                inputConnection!!.commitText(context.getString(R.string.pouting_face), 1)
+            }
+            button_face_with_symbols_over_mouth -> {
+                inputConnection!!.commitText(context.getString(R.string.face_with_symbols_over_mouth), 1)
+            }
+            button_exploding_head -> {
+                inputConnection!!.commitText(context.getString(R.string.exploding_head), 1)
+            }
+            button_flushed_face -> {
+                inputConnection!!.commitText(context.getString(R.string.flushed_face), 1)
+            }
+            button_hot_face -> {
+                inputConnection!!.commitText(context.getString(R.string.hot_face), 1)
+            }
+            button_cold_face -> {
+                inputConnection!!.commitText(context.getString(R.string.cold_face), 1)
+            }
+            button_face_screaming_in_fear -> {
+                inputConnection!!.commitText(context.getString(R.string.face_screaming_in_fear), 1)
+            }
+            button_fearful_face -> {
+                inputConnection!!.commitText(context.getString(R.string.fearful_face), 1)
             }
         }
     }
