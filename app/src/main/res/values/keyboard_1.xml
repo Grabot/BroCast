@@ -2,7 +2,7 @@
 <resources>
     <string name="grinning_face">&#x1F600;</string>
     <string name="smiling_face_with_open_mouth">&#x1F603;</string>
-    <string name="smiling_face_with_open_mouth_and_smilinge_eyes">&#x1F604;</string>
+    <string name="smiling_face_with_open_mouth_and_smiling_eyes">&#x1F604;</string>
     <string name="grinning_face_with_smiling_eyes">&#x1F601;</string>
     <string name="smiling_face_with_open_mouth_and_closed_eyes">&#x1F606;</string>
     <string name="smiling_face_with_open_mouth_and_cold_sweat">&#x1F605;</string>
@@ -19,4 +19,44 @@
     <string name="smiling_face_with_3_hearts">&#x1f970;</string>
     <string name="face_blowing_a_kiss">&#x1F618;</string>
     <string name="kissing_face">&#x1f617;</string>
+
+    <string name="kissing_face_with_smiling_eyes">&#x1f619;</string>
+    <string name="kissing_face_with_closed_eyes">&#x1F61A;</string>
+    <string name="face_savouring_delicious_food">&#x1F60B;</string>
+    <string name="face_with_stuck_out_tongue">&#x1f61b;</string>
+    <string name="face_with_stuck_out_tongue_and_closed_eyes">&#x1F61D;</string>
+    <string name="face_with_stuck_out_tongue_and_winking_eye">&#x1F61C;</string>
+    <string name="crazy_face">&#x1f92a;</string>
+    <string name="face_with_raised_eyebrow">&#x1f928;</string>
+    <string name="face_with_monocle">&#x1f9d0;</string>
+    <string name="nerd_face">&#x1f913;</string>
+    <string name="star_struck">&#x1f929;</string>
+    <string name="smiling_face_with_sunglasses">&#x1f60e;</string>
+    <string name="partying_face">&#x1f973;</string>
+    <string name="smirking_face">&#x1F60F;</string>
+    <string name="unamused_face">&#x1F612;</string>
+    <string name="disappointed_face">&#x1F61E;</string>
+    <string name="pensive_face">&#x1F614;</string>
+    <string name="worried_face">&#x1f61f;</string>
+    <string name="confused_face">&#x1f615;</string>
+
+    <string name="slightly_frowning_face">&#x1f641;</string>
+    <string name="frowning_face">&#x2639;&#xfe0f;</string>
+    <string name="persevering_face">&#x1F623;</string>
+    <string name="confounded_face">&#x1F616;</string>
+    <string name="tired_face">&#x1F62B;</string>
+    <string name="weary_face">&#x1F629;</string>
+    <string name="pleading_face">&#x1f97a;</string>
+    <string name="crying_face">&#x1F622;</string>
+    <string name="loudly_crying_face">&#x1F62D;</string>
+    <string name="face_with_steam_from_nose">&#x1F624;</string>
+    <string name="angry_face">&#x1F620;</string>
+    <string name="pouting_face">&#x1F621;</string>
+    <string name="face_with_symbols_over_mouth">&#x1F92C;</string>
+    <string name="exploding_head">&#x1f92f;</string>
+    <string name="flushed_face">&#x1F633;</string>
+    <string name="hot_face">&#x1f975;</string>
+    <string name="cold_face">&#x1f976;</string>
+    <string name="face_screaming_in_fear">&#x1F631;</string>
+    <string name="fearful_face">&#x1F628;</string>
 </resources>
