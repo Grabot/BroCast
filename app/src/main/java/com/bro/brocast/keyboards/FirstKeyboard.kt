@@ -199,7 +199,26 @@ class FirstKeyboard: LinearLayout {
             R.id.button_woman_red_haired,
             R.id.button_man_red_haired,
             R.id.button_blond_haired_woman,
-            R.id.button_blond_haired_man
+            R.id.button_blond_haired_man,
+            R.id.button_woman_white_haired,
+            R.id.button_man_white_haired,
+            R.id.button_woman_bald,
+            R.id.button_man_bald,
+            R.id.button_bearded_person,
+            R.id.button_old_woman,
+            R.id.button_older_adult,
+            R.id.button_old_man,
+            R.id.button_man_with_chinese_cap,
+            R.id.button_woman_wearing_turban,
+            R.id.button_man_wearing_turban,
+            R.id.button_woman_with_headscarf,
+            R.id.button_woman_police_officer,
+            R.id.button_man_police_officer,
+            R.id.button_woman_construction_worker,
+            R.id.button_man_construction_worker,
+            R.id.button_woman_guard,
+            R.id.button_man_guard,
+            R.id.button_woman_detective
         )
 
         for (b in buttonIds) {
@@ -721,6 +740,63 @@ class FirstKeyboard: LinearLayout {
             }
             R.id.button_blond_haired_man -> {
                 inputConnection!!.commitText(context.getString(R.string.blond_haired_man), 1)
+            }
+            R.id.button_woman_white_haired -> {
+                inputConnection!!.commitText(context.getString(R.string.woman_white_haired), 1)
+            }
+            R.id.button_man_white_haired -> {
+                inputConnection!!.commitText(context.getString(R.string.man_white_haired), 1)
+            }
+            R.id.button_woman_bald -> {
+                inputConnection!!.commitText(context.getString(R.string.woman_bald), 1)
+            }
+            R.id.button_man_bald -> {
+                inputConnection!!.commitText(context.getString(R.string.man_bald), 1)
+            }
+            R.id.button_bearded_person -> {
+                inputConnection!!.commitText(context.getString(R.string.bearded_person), 1)
+            }
+            R.id.button_old_woman -> {
+                inputConnection!!.commitText(context.getString(R.string.old_woman), 1)
+            }
+            R.id.button_older_adult -> {
+                inputConnection!!.commitText(context.getString(R.string.older_adult), 1)
+            }
+            R.id.button_old_man -> {
+                inputConnection!!.commitText(context.getString(R.string.old_man), 1)
+            }
+            R.id.button_man_with_chinese_cap -> {
+                inputConnection!!.commitText(context.getString(R.string.man_with_chinese_cap), 1)
+            }
+            R.id.button_woman_wearing_turban -> {
+                inputConnection!!.commitText(context.getString(R.string.woman_wearing_turban), 1)
+            }
+            R.id.button_man_wearing_turban -> {
+                inputConnection!!.commitText(context.getString(R.string.man_wearing_turban), 1)
+            }
+            R.id.button_woman_with_headscarf -> {
+                inputConnection!!.commitText(context.getString(R.string.woman_with_headscarf), 1)
+            }
+            R.id.button_woman_police_officer -> {
+                inputConnection!!.commitText(context.getString(R.string.woman_police_officer), 1)
+            }
+            R.id.button_man_police_officer -> {
+                inputConnection!!.commitText(context.getString(R.string.man_police_officer), 1)
+            }
+            R.id.button_woman_construction_worker -> {
+                inputConnection!!.commitText(context.getString(R.string.woman_construction_worker), 1)
+            }
+            R.id.button_man_construction_worker -> {
+                inputConnection!!.commitText(context.getString(R.string.man_construction_worker), 1)
+            }
+            R.id.button_woman_guard -> {
+                inputConnection!!.commitText(context.getString(R.string.woman_guard), 1)
+            }
+            R.id.button_man_guard -> {
+                inputConnection!!.commitText(context.getString(R.string.man_guard), 1)
+            }
+            R.id.button_woman_detective -> {
+                inputConnection!!.commitText(context.getString(R.string.woman_detective), 1)
             }
         }
     }

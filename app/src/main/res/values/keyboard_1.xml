@@ -179,4 +179,24 @@
     <string name="man_red_haired">&#x1f468;&#x200d;&#x1f9b0;</string>
     <string name="blond_haired_woman">&#128113;&#8205;&#9792;&#65039;</string>
     <string name="blond_haired_man">&#x1F471;</string>
+
+    <string name="woman_white_haired">&#x1f469;&#x200d;&#x1f9b3;</string>
+    <string name="man_white_haired">&#x1f468;&#x200d;&#x1f9b3;</string>
+    <string name="woman_bald">&#x1f469;&#x200d;&#x1f9b2;</string>
+    <string name="man_bald">&#x1f468;&#x200d;&#x1f9b2;</string>
+    <string name="bearded_person">&#x1f9d4;</string>
+    <string name="old_woman">&#x1F475;</string>
+    <string name="older_adult">&#x1f9d3;</string>
+    <string name="old_man">&#x1F474;</string>
+    <string name="man_with_chinese_cap">&#x1F472;</string>
+    <string name="woman_wearing_turban">&#x1f473;&#x200d;&#x2640;&#xfe0f;</string>
+    <string name="man_wearing_turban">&#x1F473;</string>
+    <string name="woman_with_headscarf">&#x1f9d5;</string>
+    <string name="woman_police_officer">&#x1f46e;&#x200d;&#x2640;&#xfe0f;</string>
+    <string name="man_police_officer">&#x1F46E;</string>
+    <string name="woman_construction_worker">&#x1f477;&#x200d;&#x2640;&#xfe0f;</string>
+    <string name="man_construction_worker">&#x1F477;</string>
+    <string name="woman_guard">&#x1f482;&#x200d;&#x2640;&#xfe0f;</string>
+    <string name="man_guard">&#x1F482;</string>
+    <string name="woman_detective">&#x1f575;&#xfe0f;&#x200d;&#x2640;&#xfe0f;</string>
 </resources>
