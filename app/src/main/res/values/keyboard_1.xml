@@ -359,4 +359,19 @@
     <string name="scarf">&#x1f9e3;</string>
     <string name="top_hat">&#x1F3A9;</string>
     <string name="billed_cap">&#x1f9e2;</string>
+
+    <string name="womans_hat">&#x1F452;</string>
+    <string name="graduation_cap">&#x1F393;</string>
+    <string name="rescue_workers_helmet">&#x26d1;</string>
+    <string name="crown">&#x1F451;</string>
+    <string name="ring">&#x1F48D;</string>
+    <string name="clutch_bag">&#x1F45D;</string>
+    <string name="purse">&#x1F45B;</string>
+    <string name="handbag">&#x1F45C;</string>
+    <string name="school_backpack">&#x1F392;</string>
+    <string name="luggage">&#x1f9f3;</string>
+    <string name="glasses">&#x1F453;</string>
+    <string name="sunglasses">&#x1f576;</string>
+    <string name="goggles">&#x1f97d;</string>
+    <string name="closed_umbrella">&#x1F302;</string>
 </resources>
