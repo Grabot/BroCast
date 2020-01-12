@@ -339,4 +339,24 @@
     <string name="thread">&#x1f9f5;</string>
     <string name="coat">&#x1f9e5;</string>
     <string name="lab_coat">&#x1f97c;</string>
+
+    <string name="womans_clothes">&#x1F45A;</string>
+    <string name="t_shirt">&#x1F455;</string>
+    <string name="jeans">&#x1F456;</string>
+    <string name="necktie">&#x1F454;</string>
+    <string name="dress">&#x1F457;</string>
+    <string name="bikini">&#x1F459;</string>
+    <string name="kimono">&#x1F458;</string>
+    <string name="womans_flat_shoe">&#x1f97f;</string>
+    <string name="high_heeled_shoe">&#x1F460;</string>
+    <string name="womans_sandal">&#x1F461;</string>
+    <string name="womans_boot">&#x1F462;</string>
+    <string name="mans_shoe">&#x1F45E;</string>
+    <string name="running_shoe">&#x1F45F;</string>
+    <string name="hiking_boot">&#x1f97e;</string>
+    <string name="socks">&#x1f9e6;</string>
+    <string name="gloves">&#x1f9e4;</string>
+    <string name="scarf">&#x1f9e3;</string>
+    <string name="top_hat">&#x1F3A9;</string>
+    <string name="billed_cap">&#x1f9e2;</string>
 </resources>

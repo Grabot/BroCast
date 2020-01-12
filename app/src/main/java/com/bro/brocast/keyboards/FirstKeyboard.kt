@@ -351,7 +351,26 @@ class FirstKeyboard: LinearLayout {
             R.id.button_yarn,
             R.id.button_thread,
             R.id.button_coat,
-            R.id.button_lab_coat
+            R.id.button_lab_coat,
+            R.id.button_womans_clothes,
+            R.id.button_t_shirt,
+            R.id.button_jeans,
+            R.id.button_necktie,
+            R.id.button_dress,
+            R.id.button_bikini,
+            R.id.button_kimono,
+            R.id.button_womans_flat_shoe,
+            R.id.button_high_heeled_shoe,
+            R.id.button_womans_sandal,
+            R.id.button_womans_boot,
+            R.id.button_mans_shoe,
+            R.id.button_running_shoe,
+            R.id.button_hiking_boot,
+            R.id.button_socks,
+            R.id.button_gloves,
+            R.id.button_scarf,
+            R.id.button_top_hat,
+            R.id.button_billed_cap
         )
 
         for (b in buttonIds) {
@@ -1329,6 +1348,63 @@ class FirstKeyboard: LinearLayout {
             }
             R.id.button_lab_coat -> {
                 inputConnection!!.commitText(context.getString(R.string.lab_coat), 1)
+            }
+            R.id.button_womans_clothes -> {
+                inputConnection!!.commitText(context.getString(R.string.womans_clothes), 1)
+            }
+            R.id.button_t_shirt -> {
+                inputConnection!!.commitText(context.getString(R.string.t_shirt), 1)
+            }
+            R.id.button_jeans -> {
+                inputConnection!!.commitText(context.getString(R.string.jeans), 1)
+            }
+            R.id.button_necktie -> {
+                inputConnection!!.commitText(context.getString(R.string.necktie), 1)
+            }
+            R.id.button_dress -> {
+                inputConnection!!.commitText(context.getString(R.string.dress), 1)
+            }
+            R.id.button_bikini -> {
+                inputConnection!!.commitText(context.getString(R.string.bikini), 1)
+            }
+            R.id.button_kimono -> {
+                inputConnection!!.commitText(context.getString(R.string.kimono), 1)
+            }
+            R.id.button_womans_flat_shoe -> {
+                inputConnection!!.commitText(context.getString(R.string.womans_flat_shoe), 1)
+            }
+            R.id.button_high_heeled_shoe -> {
+                inputConnection!!.commitText(context.getString(R.string.high_heeled_shoe), 1)
+            }
+            R.id.button_womans_sandal -> {
+                inputConnection!!.commitText(context.getString(R.string.womans_sandal), 1)
+            }
+            R.id.button_womans_boot -> {
+                inputConnection!!.commitText(context.getString(R.string.womans_boot), 1)
+            }
+            R.id.button_mans_shoe -> {
+                inputConnection!!.commitText(context.getString(R.string.mans_shoe), 1)
+            }
+            R.id.button_running_shoe -> {
+                inputConnection!!.commitText(context.getString(R.string.running_shoe), 1)
+            }
+            R.id.button_hiking_boot -> {
+                inputConnection!!.commitText(context.getString(R.string.hiking_boot), 1)
+            }
+            R.id.button_socks -> {
+                inputConnection!!.commitText(context.getString(R.string.socks), 1)
+            }
+            R.id.button_gloves -> {
+                inputConnection!!.commitText(context.getString(R.string.gloves), 1)
+            }
+            R.id.button_scarf -> {
+                inputConnection!!.commitText(context.getString(R.string.scarf), 1)
+            }
+            R.id.button_top_hat -> {
+                inputConnection!!.commitText(context.getString(R.string.top_hat), 1)
+            }
+            R.id.button_billed_cap -> {
+                inputConnection!!.commitText(context.getString(R.string.billed_cap), 1)
             }
         }
     }
