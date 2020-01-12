@@ -294,7 +294,26 @@ class FirstKeyboard: LinearLayout {
             R.id.button_woman_shrugging,
             R.id.button_man_shrugging,
             R.id.button_woman_pouting,
-            R.id.button_man_pouting
+            R.id.button_man_pouting,
+            R.id.button_woman_frowning,
+            R.id.button_man_frowning,
+            R.id.button_woman_getting_haircut,
+            R.id.button_man_getting_haircut,
+            R.id.button_woman_getting_massage,
+            R.id.button_man_getting_massage,
+            R.id.button_woman_in_steamy_room,
+            R.id.button_man_in_steamy_room,
+            R.id.button_nail_polish,
+            R.id.button_selfie,
+            R.id.button_woman_dancing,
+            R.id.button_man_dancing,
+            R.id.button_women_with_bunny_ears_partying,
+            R.id.button_men_with_bunny_ears_partying,
+            R.id.button_man_in_business_suit_levitating,
+            R.id.button_woman_walking,
+            R.id.button_man_walking,
+            R.id.button_woman_running,
+            R.id.button_man_running
         )
 
         for (b in buttonIds) {
@@ -1101,6 +1120,63 @@ class FirstKeyboard: LinearLayout {
             }
             R.id.button_man_pouting -> {
                 inputConnection!!.commitText(context.getString(R.string.man_pouting), 1)
+            }
+            R.id.button_woman_frowning -> {
+                inputConnection!!.commitText(context.getString(R.string.woman_frowning), 1)
+            }
+            R.id.button_man_frowning -> {
+                inputConnection!!.commitText(context.getString(R.string.man_frowning), 1)
+            }
+            R.id.button_woman_getting_haircut -> {
+                inputConnection!!.commitText(context.getString(R.string.woman_getting_haircut), 1)
+            }
+            R.id.button_man_getting_haircut -> {
+                inputConnection!!.commitText(context.getString(R.string.man_getting_haircut), 1)
+            }
+            R.id.button_woman_getting_massage -> {
+                inputConnection!!.commitText(context.getString(R.string.woman_getting_massage), 1)
+            }
+            R.id.button_man_getting_massage -> {
+                inputConnection!!.commitText(context.getString(R.string.man_getting_massage), 1)
+            }
+            R.id.button_woman_in_steamy_room -> {
+                inputConnection!!.commitText(context.getString(R.string.woman_in_steamy_room), 1)
+            }
+            R.id.button_man_in_steamy_room -> {
+                inputConnection!!.commitText(context.getString(R.string.man_in_steamy_room), 1)
+            }
+            R.id.button_nail_polish -> {
+                inputConnection!!.commitText(context.getString(R.string.nail_polish), 1)
+            }
+            R.id.button_selfie -> {
+                inputConnection!!.commitText(context.getString(R.string.selfie), 1)
+            }
+            R.id.button_woman_dancing -> {
+                inputConnection!!.commitText(context.getString(R.string.woman_dancing), 1)
+            }
+            R.id.button_man_dancing -> {
+                inputConnection!!.commitText(context.getString(R.string.man_dancing), 1)
+            }
+            R.id.button_women_with_bunny_ears_partying -> {
+                inputConnection!!.commitText(context.getString(R.string.women_with_bunny_ears_partying), 1)
+            }
+            R.id.button_men_with_bunny_ears_partying -> {
+                inputConnection!!.commitText(context.getString(R.string.men_with_bunny_ears_partying), 1)
+            }
+            R.id.button_man_in_business_suit_levitating -> {
+                inputConnection!!.commitText(context.getString(R.string.man_in_business_suit_levitating), 1)
+            }
+            R.id.button_woman_walking -> {
+                inputConnection!!.commitText(context.getString(R.string.woman_walking), 1)
+            }
+            R.id.button_man_walking -> {
+                inputConnection!!.commitText(context.getString(R.string.man_walking), 1)
+            }
+            R.id.button_woman_running -> {
+                inputConnection!!.commitText(context.getString(R.string.woman_running), 1)
+            }
+            R.id.button_man_running -> {
+                inputConnection!!.commitText(context.getString(R.string.man_running), 1)
             }
         }
     }

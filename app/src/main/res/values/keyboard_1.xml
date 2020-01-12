@@ -279,4 +279,24 @@
     <string name="man_shrugging">&#x1f937;&#x200d;&#x2642;&#xfe0f;</string>
     <string name="woman_pouting">&#x1F64E;</string>
     <string name="man_pouting">&#x1f64e;&#x200d;&#x2642;&#xfe0f;</string>
+
+    <string name="woman_frowning">&#x1F64D;</string>
+    <string name="man_frowning">&#x1f64d;&#x200d;&#x2642;&#xfe0f;</string>
+    <string name="woman_getting_haircut">&#x1F487;</string>
+    <string name="man_getting_haircut">&#x1f487;&#x200d;&#x2642;&#xfe0f;</string>
+    <string name="woman_getting_massage">&#x1F486;</string>
+    <string name="man_getting_massage">&#x1f486;&#x200d;&#x2642;&#xfe0f;</string>
+    <string name="woman_in_steamy_room">&#x1f9d6;&#x200d;&#x2640;&#xfe0f;</string>
+    <string name="man_in_steamy_room">&#x1f9d6;&#x200d;&#x2642;&#xfe0f;</string>
+    <string name="nail_polish">&#x1F485;</string>
+    <string name="selfie">&#x1f933;</string>
+    <string name="woman_dancing">&#x1F483;</string>
+    <string name="man_dancing">&#x1f57a;</string>
+    <string name="women_with_bunny_ears_partying">&#x1F46F;</string>
+    <string name="men_with_bunny_ears_partying">&#x1f46f;&#x200d;&#x2642;&#xfe0f;</string>
+    <string name="man_in_business_suit_levitating">&#x1f574;</string>
+    <string name="woman_walking">&#x1f6b6;&#x200d;&#x2640;&#xfe0f;</string>
+    <string name="man_walking">&#x1F6B6;</string>
+    <string name="woman_running">&#x1f3c3;&#x200d;&#x2640;&#xfe0f;</string>
+    <string name="man_running">&#x1F3C3;</string>
 </resources>
