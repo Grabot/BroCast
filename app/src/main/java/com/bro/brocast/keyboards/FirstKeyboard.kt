@@ -142,7 +142,26 @@ class FirstKeyboard: LinearLayout {
             R.id.button_pouting_cat_face,
             R.id.button_palms_up_together,
             R.id.button_open_hands,
-            R.id.button_raising_hands
+            R.id.button_raising_hands,
+            R.id.button_clapping_hands,
+            R.id.button_handshake,
+            R.id.button_thumbs_up,
+            R.id.button_thumbs_down,
+            R.id.button_oncoming_fist,
+            R.id.button_raised_fist,
+            R.id.button_left_facing_fist,
+            R.id.button_right_facing_fist,
+            R.id.button_crossed_fingers,
+            R.id.button_victory_hand,
+            R.id.button_love_you_gesture,
+            R.id.button_sign_of_the_horns,
+            R.id.button_ok_hand,
+            R.id.button_backhand_index_pointing_left,
+            R.id.button_backhand_index_pointing_right,
+            R.id.button_backhand_index_pointing_up,
+            R.id.button_backhand_index_pointing_down,
+            R.id.button_index_pointing_up,
+            R.id.button_raised_hand
         )
 
         for (b in buttonIds) {
@@ -493,6 +512,63 @@ class FirstKeyboard: LinearLayout {
             }
             R.id.button_raising_hands -> {
                 inputConnection!!.commitText(context.getString(R.string.raising_hands), 1)
+            }
+            R.id.button_clapping_hands -> {
+                inputConnection!!.commitText(context.getString(R.string.clapping_hands), 1)
+            }
+            R.id.button_handshake -> {
+                inputConnection!!.commitText(context.getString(R.string.handshake), 1)
+            }
+            R.id.button_thumbs_up -> {
+                inputConnection!!.commitText(context.getString(R.string.thumbs_up), 1)
+            }
+            R.id.button_thumbs_down -> {
+                inputConnection!!.commitText(context.getString(R.string.thumbs_down), 1)
+            }
+            R.id.button_oncoming_fist -> {
+                inputConnection!!.commitText(context.getString(R.string.oncoming_fist), 1)
+            }
+            R.id.button_raised_fist -> {
+                inputConnection!!.commitText(context.getString(R.string.raised_fist), 1)
+            }
+            R.id.button_left_facing_fist -> {
+                inputConnection!!.commitText(context.getString(R.string.left_facing_fist), 1)
+            }
+            R.id.button_right_facing_fist -> {
+                inputConnection!!.commitText(context.getString(R.string.right_facing_fist), 1)
+            }
+            R.id.button_crossed_fingers -> {
+                inputConnection!!.commitText(context.getString(R.string.crossed_fingers), 1)
+            }
+            R.id.button_victory_hand -> {
+                inputConnection!!.commitText(context.getString(R.string.victory_hand), 1)
+            }
+            R.id.button_love_you_gesture -> {
+                inputConnection!!.commitText(context.getString(R.string.love_you_gesture), 1)
+            }
+            R.id.button_sign_of_the_horns -> {
+                inputConnection!!.commitText(context.getString(R.string.sign_of_the_horns), 1)
+            }
+            R.id.button_ok_hand -> {
+                inputConnection!!.commitText(context.getString(R.string.ok_hand), 1)
+            }
+            R.id.button_backhand_index_pointing_left -> {
+                inputConnection!!.commitText(context.getString(R.string.backhand_index_pointing_left), 1)
+            }
+            R.id.button_backhand_index_pointing_right -> {
+                inputConnection!!.commitText(context.getString(R.string.backhand_index_pointing_right), 1)
+            }
+            R.id.button_backhand_index_pointing_up -> {
+                inputConnection!!.commitText(context.getString(R.string.backhand_index_pointing_up), 1)
+            }
+            R.id.button_backhand_index_pointing_down -> {
+                inputConnection!!.commitText(context.getString(R.string.backhand_index_pointing_down), 1)
+            }
+            R.id.button_index_pointing_up -> {
+                inputConnection!!.commitText(context.getString(R.string.index_pointing_up), 1)
+            }
+            R.id.button_raised_hand -> {
+                inputConnection!!.commitText(context.getString(R.string.raised_hand), 1)
             }
         }
     }

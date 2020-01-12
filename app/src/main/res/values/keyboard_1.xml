@@ -119,4 +119,24 @@
     <string name="palms_up_together">&#x1f932;</string>
     <string name="open_hands">&#x1F450;</string>
     <string name="raising_hands">&#x1F64C;</string>
+
+    <string name="clapping_hands">&#x1F44F;</string>
+    <string name="handshake">&#x1f91d;</string>
+    <string name="thumbs_up">&#x1F44D;</string>
+    <string name="thumbs_down">&#x1F44E;</string>
+    <string name="oncoming_fist">&#x1F44A;</string>
+    <string name="raised_fist">&#x270A;</string>
+    <string name="left_facing_fist">&#x1f91b;</string>
+    <string name="right_facing_fist">&#x1f91c;</string>
+    <string name="crossed_fingers">&#x1f91e;</string>
+    <string name="victory_hand">&#x270C;</string>
+    <string name="love_you_gesture">&#x1f91f;</string>
+    <string name="sign_of_the_horns">&#x1f918;</string>
+    <string name="ok_hand">&#x1F44C;</string>
+    <string name="backhand_index_pointing_left">&#x1F448;</string>
+    <string name="backhand_index_pointing_right">&#x1F449;</string>
+    <string name="backhand_index_pointing_up">&#x1F446;</string>
+    <string name="backhand_index_pointing_down">&#x1F447;</string>
+    <string name="index_pointing_up">&#x261D;</string>
+    <string name="raised_hand">&#x270B;</string>
 </resources>
