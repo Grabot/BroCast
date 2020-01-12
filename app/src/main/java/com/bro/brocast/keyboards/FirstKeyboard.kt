@@ -218,7 +218,26 @@ class FirstKeyboard: LinearLayout {
             R.id.button_man_construction_worker,
             R.id.button_woman_guard,
             R.id.button_man_guard,
-            R.id.button_woman_detective
+            R.id.button_woman_detective,
+            R.id.button_man_detective,
+            R.id.button_woman_health_worker,
+            R.id.button_man_health_worker,
+            R.id.button_woman_farmer,
+            R.id.button_man_farmer,
+            R.id.button_woman_cook,
+            R.id.button_man_cook,
+            R.id.button_woman_student,
+            R.id.button_man_student,
+            R.id.button_woman_singer,
+            R.id.button_man_singer,
+            R.id.button_woman_teacher,
+            R.id.button_man_teacher,
+            R.id.button_woman_factory_worker,
+            R.id.button_man_factory_worker,
+            R.id.button_woman_technologist,
+            R.id.button_man_technologist,
+            R.id.button_woman_office_worker,
+            R.id.button_man_office_worker
         )
 
         for (b in buttonIds) {
@@ -797,6 +816,63 @@ class FirstKeyboard: LinearLayout {
             }
             R.id.button_woman_detective -> {
                 inputConnection!!.commitText(context.getString(R.string.woman_detective), 1)
+            }
+            R.id.button_man_detective -> {
+                inputConnection!!.commitText(context.getString(R.string.man_detective), 1)
+            }
+            R.id.button_woman_health_worker -> {
+                inputConnection!!.commitText(context.getString(R.string.woman_health_worker), 1)
+            }
+            R.id.button_man_health_worker -> {
+                inputConnection!!.commitText(context.getString(R.string.man_health_worker), 1)
+            }
+            R.id.button_woman_farmer -> {
+                inputConnection!!.commitText(context.getString(R.string.woman_farmer), 1)
+            }
+            R.id.button_man_farmer -> {
+                inputConnection!!.commitText(context.getString(R.string.man_farmer), 1)
+            }
+            R.id.button_woman_cook -> {
+                inputConnection!!.commitText(context.getString(R.string.woman_cook), 1)
+            }
+            R.id.button_man_cook -> {
+                inputConnection!!.commitText(context.getString(R.string.man_cook), 1)
+            }
+            R.id.button_woman_student -> {
+                inputConnection!!.commitText(context.getString(R.string.woman_student), 1)
+            }
+            R.id.button_man_student -> {
+                inputConnection!!.commitText(context.getString(R.string.man_student), 1)
+            }
+            R.id.button_woman_singer -> {
+                inputConnection!!.commitText(context.getString(R.string.woman_singer), 1)
+            }
+            R.id.button_man_singer -> {
+                inputConnection!!.commitText(context.getString(R.string.man_singer), 1)
+            }
+            R.id.button_woman_teacher -> {
+                inputConnection!!.commitText(context.getString(R.string.woman_teacher), 1)
+            }
+            R.id.button_man_teacher -> {
+                inputConnection!!.commitText(context.getString(R.string.man_teacher), 1)
+            }
+            R.id.button_woman_factory_worker -> {
+                inputConnection!!.commitText(context.getString(R.string.woman_factory_worker), 1)
+            }
+            R.id.button_man_factory_worker -> {
+                inputConnection!!.commitText(context.getString(R.string.man_factory_worker), 1)
+            }
+            R.id.button_woman_technologist -> {
+                inputConnection!!.commitText(context.getString(R.string.woman_technologist), 1)
+            }
+            R.id.button_man_technologist -> {
+                inputConnection!!.commitText(context.getString(R.string.man_technologist), 1)
+            }
+            R.id.button_woman_office_worker -> {
+                inputConnection!!.commitText(context.getString(R.string.woman_office_worker), 1)
+            }
+            R.id.button_man_office_worker -> {
+                inputConnection!!.commitText(context.getString(R.string.man_office_worker), 1)
             }
         }
     }

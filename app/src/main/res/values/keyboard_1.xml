@@ -199,4 +199,24 @@
     <string name="woman_guard">&#x1f482;&#x200d;&#x2640;&#xfe0f;</string>
     <string name="man_guard">&#x1F482;</string>
     <string name="woman_detective">&#x1f575;&#xfe0f;&#x200d;&#x2640;&#xfe0f;</string>
+
+    <string name="man_detective">&#x1f575;</string>
+    <string name="woman_health_worker">&#x1f469;&#x200d;&#x2695;&#xfe0f;</string>
+    <string name="man_health_worker">&#x1f468;&#x200d;&#x2695;&#xfe0f;</string>
+    <string name="woman_farmer">&#x1f469;&#x200d;&#x1f33e;</string>
+    <string name="man_farmer">&#x1f468;&#x200d;&#x1f33e;</string>
+    <string name="woman_cook">&#x1f469;&#x200d;&#x1f373;</string>
+    <string name="man_cook">&#x1f468;&#x200d;&#x1f373;</string>
+    <string name="woman_student">&#x1f469;&#x200d;&#x1f393;</string>
+    <string name="man_student">&#x1f468;&#x200d;&#x1f393;</string>
+    <string name="woman_singer">&#x1f469;&#x200d;&#x1f3a4;</string>
+    <string name="man_singer">&#x1f468;&#x200d;&#x1f3a4;</string>
+    <string name="woman_teacher">&#x1f469;&#x200d;&#x1f3eb;</string>
+    <string name="man_teacher">&#x1f468;&#x200d;&#x1f3eb;</string>
+    <string name="woman_factory_worker">&#x1f469;&#x200d;&#x1f3ed;</string>
+    <string name="man_factory_worker">&#x1f468;&#x200d;&#x1f3ed;</string>
+    <string name="woman_technologist">&#x1f469;&#x200d;&#x1f4bb;</string>
+    <string name="man_technologist">&#x1f468;&#x200d;&#x1f4bb;</string>
+    <string name="woman_office_worker">&#x1f469;&#x200d;&#x1f4bc;</string>
+    <string name="man_office_worker">&#x1f468;&#x200d;&#x1f4bc;</string>
 </resources>
