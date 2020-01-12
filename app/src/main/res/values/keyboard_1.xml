@@ -139,4 +139,24 @@
     <string name="backhand_index_pointing_down">&#x1F447;</string>
     <string name="index_pointing_up">&#x261D;</string>
     <string name="raised_hand">&#x270B;</string>
+
+    <string name="raised_back_of_hand">&#x1f91a;</string>
+    <string name="raised_hand_with_fingers_splayed">&#x1f590;</string>
+    <string name="vulcan_salute">&#x1f596;</string>
+    <string name="waving_hand">&#x1F44B;</string>
+    <string name="call_me_hand">&#x1f919;</string>
+    <string name="flexed_biceps">&#x1F4AA;</string>
+    <string name="middle_finger">&#x1f595;</string>
+    <string name="writing_hand">&#x270d;</string>
+    <string name="folded_hands">&#x1F64F;</string>
+    <string name="foot">&#x1f9b6;</string>
+    <string name="leg">&#x1f9b5;</string>
+    <string name="lipstick">&#x1F484;</string>
+    <string name="kiss_mark">&#x1F48B;</string>
+    <string name="mouth">&#x1F444;</string>
+    <string name="tooth">&#x1f9b7;</string>
+    <string name="tongue">&#x1F445;</string>
+    <string name="ear">&#x1F442;</string>
+    <string name="nose">&#x1F443;</string>
+    <string name="footprints">&#x1F463;</string>
 </resources>

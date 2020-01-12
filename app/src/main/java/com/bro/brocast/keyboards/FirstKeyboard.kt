@@ -161,7 +161,26 @@ class FirstKeyboard: LinearLayout {
             R.id.button_backhand_index_pointing_up,
             R.id.button_backhand_index_pointing_down,
             R.id.button_index_pointing_up,
-            R.id.button_raised_hand
+            R.id.button_raised_hand,
+            R.id.button_raised_back_of_hand,
+            R.id.button_raised_hand_with_fingers_splayed,
+            R.id.button_vulcan_salute,
+            R.id.button_waving_hand,
+            R.id.button_call_me_hand,
+            R.id.button_flexed_biceps,
+            R.id.button_middle_finger,
+            R.id.button_writing_hand,
+            R.id.button_folded_hands,
+            R.id.button_foot,
+            R.id.button_leg,
+            R.id.button_lipstick,
+            R.id.button_kiss_mark,
+            R.id.button_mouth,
+            R.id.button_tooth,
+            R.id.button_tongue,
+            R.id.button_ear,
+            R.id.button_nose,
+            R.id.button_footprints
         )
 
         for (b in buttonIds) {
@@ -569,6 +588,63 @@ class FirstKeyboard: LinearLayout {
             }
             R.id.button_raised_hand -> {
                 inputConnection!!.commitText(context.getString(R.string.raised_hand), 1)
+            }
+            R.id.button_raised_back_of_hand -> {
+                inputConnection!!.commitText(context.getString(R.string.raised_back_of_hand), 1)
+            }
+            R.id.button_raised_hand_with_fingers_splayed -> {
+                inputConnection!!.commitText(context.getString(R.string.raised_hand_with_fingers_splayed), 1)
+            }
+            R.id.button_vulcan_salute -> {
+                inputConnection!!.commitText(context.getString(R.string.vulcan_salute), 1)
+            }
+            R.id.button_waving_hand -> {
+                inputConnection!!.commitText(context.getString(R.string.waving_hand), 1)
+            }
+            R.id.button_call_me_hand -> {
+                inputConnection!!.commitText(context.getString(R.string.call_me_hand), 1)
+            }
+            R.id.button_flexed_biceps -> {
+                inputConnection!!.commitText(context.getString(R.string.flexed_biceps), 1)
+            }
+            R.id.button_middle_finger -> {
+                inputConnection!!.commitText(context.getString(R.string.middle_finger), 1)
+            }
+            R.id.button_writing_hand -> {
+                inputConnection!!.commitText(context.getString(R.string.writing_hand), 1)
+            }
+            R.id.button_folded_hands -> {
+                inputConnection!!.commitText(context.getString(R.string.folded_hands), 1)
+            }
+            R.id.button_foot -> {
+                inputConnection!!.commitText(context.getString(R.string.foot), 1)
+            }
+            R.id.button_leg -> {
+                inputConnection!!.commitText(context.getString(R.string.leg), 1)
+            }
+            R.id.button_lipstick -> {
+                inputConnection!!.commitText(context.getString(R.string.lipstick), 1)
+            }
+            R.id.button_kiss_mark -> {
+                inputConnection!!.commitText(context.getString(R.string.kiss_mark), 1)
+            }
+            R.id.button_mouth -> {
+                inputConnection!!.commitText(context.getString(R.string.mouth), 1)
+            }
+            R.id.button_tooth -> {
+                inputConnection!!.commitText(context.getString(R.string.tooth), 1)
+            }
+            R.id.button_tongue -> {
+                inputConnection!!.commitText(context.getString(R.string.tongue), 1)
+            }
+            R.id.button_ear -> {
+                inputConnection!!.commitText(context.getString(R.string.ear), 1)
+            }
+            R.id.button_nose -> {
+                inputConnection!!.commitText(context.getString(R.string.nose), 1)
+            }
+            R.id.button_footprints -> {
+                inputConnection!!.commitText(context.getString(R.string.footprints), 1)
             }
         }
     }
