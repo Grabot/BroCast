@@ -65,6 +65,25 @@ import com.bro.brocast.R.id.button_hot_face
 import com.bro.brocast.R.id.button_cold_face
 import com.bro.brocast.R.id.button_face_screaming_in_fear
 import com.bro.brocast.R.id.button_fearful_face
+import com.bro.brocast.R.id.button_face_with_open_mouth_and_cold_sweat
+import com.bro.brocast.R.id.button_disappointed_but_relieved_face
+import com.bro.brocast.R.id.button_face_with_cold_sweat
+import com.bro.brocast.R.id.button_hugging_face
+import com.bro.brocast.R.id.button_thinking_face
+import com.bro.brocast.R.id.button_face_with_hand_over_mouth
+import com.bro.brocast.R.id.button_shushing_face
+import com.bro.brocast.R.id.button_lying_face
+import com.bro.brocast.R.id.button_face_without_mouth
+import com.bro.brocast.R.id.button_neutral_face
+import com.bro.brocast.R.id.button_expressionless_face
+import com.bro.brocast.R.id.button_grimacing_face
+import com.bro.brocast.R.id.button_face_with_rolling_eyes
+import com.bro.brocast.R.id.button_hushed_face
+import com.bro.brocast.R.id.button_frowning_face_with_open_mouth
+import com.bro.brocast.R.id.button_anguished_face
+import com.bro.brocast.R.id.button_face_with_open_mouth
+import com.bro.brocast.R.id.button_astonished_face
+import com.bro.brocast.R.id.button_sleeping_face
 
 class FirstKeyboard: LinearLayout {
 
@@ -142,7 +161,26 @@ class FirstKeyboard: LinearLayout {
             button_hot_face,
             button_cold_face,
             button_face_screaming_in_fear,
-            button_fearful_face
+            button_fearful_face,
+            button_face_with_open_mouth_and_cold_sweat,
+            button_disappointed_but_relieved_face,
+            button_face_with_cold_sweat,
+            button_hugging_face,
+            button_thinking_face,
+            button_face_with_hand_over_mouth,
+            button_shushing_face,
+            button_lying_face,
+            button_face_without_mouth,
+            button_neutral_face,
+            button_expressionless_face,
+            button_grimacing_face,
+            button_face_with_rolling_eyes,
+            button_hushed_face,
+            button_frowning_face_with_open_mouth,
+            button_anguished_face,
+            button_face_with_open_mouth,
+            button_astonished_face,
+            button_sleeping_face
         )
 
         for (b in buttonIds) {
@@ -322,6 +360,63 @@ class FirstKeyboard: LinearLayout {
             }
             button_fearful_face -> {
                 inputConnection!!.commitText(context.getString(R.string.fearful_face), 1)
+            }
+            button_face_with_open_mouth_and_cold_sweat -> {
+                inputConnection!!.commitText(context.getString(R.string.face_with_open_mouth_and_cold_sweat), 1)
+            }
+            button_disappointed_but_relieved_face -> {
+                inputConnection!!.commitText(context.getString(R.string.disappointed_but_relieved_face), 1)
+            }
+            button_face_with_cold_sweat -> {
+                inputConnection!!.commitText(context.getString(R.string.face_with_cold_sweat), 1)
+            }
+            button_hugging_face -> {
+                inputConnection!!.commitText(context.getString(R.string.hugging_face), 1)
+            }
+            button_thinking_face -> {
+                inputConnection!!.commitText(context.getString(R.string.thinking_face), 1)
+            }
+            button_face_with_hand_over_mouth -> {
+                inputConnection!!.commitText(context.getString(R.string.face_with_hand_over_mouth), 1)
+            }
+            button_shushing_face -> {
+                inputConnection!!.commitText(context.getString(R.string.shushing_face), 1)
+            }
+            button_lying_face -> {
+                inputConnection!!.commitText(context.getString(R.string.lying_face), 1)
+            }
+            button_face_without_mouth -> {
+                inputConnection!!.commitText(context.getString(R.string.face_without_mouth), 1)
+            }
+            button_neutral_face -> {
+                inputConnection!!.commitText(context.getString(R.string.neutral_face), 1)
+            }
+            button_expressionless_face -> {
+                inputConnection!!.commitText(context.getString(R.string.expressionless_face), 1)
+            }
+            button_grimacing_face -> {
+                inputConnection!!.commitText(context.getString(R.string.grimacing_face), 1)
+            }
+            button_face_with_rolling_eyes -> {
+                inputConnection!!.commitText(context.getString(R.string.face_with_rolling_eyes), 1)
+            }
+            button_hushed_face -> {
+                inputConnection!!.commitText(context.getString(R.string.hushed_face), 1)
+            }
+            button_frowning_face_with_open_mouth -> {
+                inputConnection!!.commitText(context.getString(R.string.frowning_face_with_open_mouth), 1)
+            }
+            button_anguished_face -> {
+                inputConnection!!.commitText(context.getString(R.string.anguished_face), 1)
+            }
+            button_face_with_open_mouth -> {
+                inputConnection!!.commitText(context.getString(R.string.face_with_open_mouth), 1)
+            }
+            button_astonished_face -> {
+                inputConnection!!.commitText(context.getString(R.string.astonished_face), 1)
+            }
+            button_sleeping_face -> {
+                inputConnection!!.commitText(context.getString(R.string.sleeping_face), 1)
             }
         }
     }

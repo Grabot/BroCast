@@ -59,4 +59,24 @@
     <string name="cold_face">&#x1f976;</string>
     <string name="face_screaming_in_fear">&#x1F631;</string>
     <string name="fearful_face">&#x1F628;</string>
+
+    <string name="face_with_open_mouth_and_cold_sweat">&#x1F630;</string>
+    <string name="disappointed_but_relieved_face">&#x1F625;</string>
+    <string name="face_with_cold_sweat">&#x1F613;</string>
+    <string name="hugging_face">&#x1f917;</string>
+    <string name="thinking_face">&#x1f914;</string>
+    <string name="face_with_hand_over_mouth">&#x1f92d;</string>
+    <string name="shushing_face">&#x1f92b;</string>
+    <string name="lying_face">&#x1f925;</string>
+    <string name="face_without_mouth">&#x1f636;</string>
+    <string name="neutral_face">&#x1f610;</string>
+    <string name="expressionless_face">&#x1f611;</string>
+    <string name="grimacing_face">&#x1f62c;</string>
+    <string name="face_with_rolling_eyes">&#x1f644;</string>
+    <string name="hushed_face">&#x1f62f;</string>
+    <string name="frowning_face_with_open_mouth">&#x1f626;</string>
+    <string name="anguished_face">&#x1f627;</string>
+    <string name="face_with_open_mouth">&#x1f62e;</string>
+    <string name="astonished_face">&#x1F632;</string>
+    <string name="sleeping_face">&#x1f634;</string>
 </resources>
