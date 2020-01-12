@@ -159,4 +159,24 @@
     <string name="ear">&#x1F442;</string>
     <string name="nose">&#x1F443;</string>
     <string name="footprints">&#x1F463;</string>
+
+    <string name="eye">&#x1f441;</string>
+    <string name="eyes">&#x1F440;</string>
+    <string name="brain">&#x1f9e0;</string>
+    <string name="speaking_head">&#x1f5e3;</string>
+    <string name="bust_in_silhouette">&#x1F464;</string>
+    <string name="busts_in_silhouette">&#x1f465;</string>
+    <string name="baby">&#x1F476;</string>
+    <string name="girl">&#x1F467;</string>
+    <string name="child">&#x1f9d2;</string>
+    <string name="boy">&#x1F466;</string>
+    <string name="woman">&#x1F469;</string>
+    <string name="adult">&#x1f9d1;</string>
+    <string name="man">&#x1F468;</string>
+    <string name="woman_curly_haired">&#x1f469;&#x200d;&#x1f9b1;</string>
+    <string name="man_curly_haired">&#x1f468;&#x200d;&#x1f9b1;</string>
+    <string name="woman_red_haired">&#x1f469;&#x200d;&#x1f9b0;</string>
+    <string name="man_red_haired">&#x1f468;&#x200d;&#x1f9b0;</string>
+    <string name="blond_haired_woman">&#128113;&#8205;&#9792;&#65039;</string>
+    <string name="blond_haired_man">&#x1F471;</string>
 </resources>

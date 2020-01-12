@@ -180,7 +180,26 @@ class FirstKeyboard: LinearLayout {
             R.id.button_tongue,
             R.id.button_ear,
             R.id.button_nose,
-            R.id.button_footprints
+            R.id.button_footprints,
+            R.id.button_eye,
+            R.id.button_eyes,
+            R.id.button_brain,
+            R.id.button_speaking_head,
+            R.id.button_bust_in_silhouette,
+            R.id.button_busts_in_silhouette,
+            R.id.button_baby,
+            R.id.button_girl,
+            R.id.button_child,
+            R.id.button_boy,
+            R.id.button_woman,
+            R.id.button_adult,
+            R.id.button_man,
+            R.id.button_woman_curly_haired,
+            R.id.button_man_curly_haired,
+            R.id.button_woman_red_haired,
+            R.id.button_man_red_haired,
+            R.id.button_blond_haired_woman,
+            R.id.button_blond_haired_man
         )
 
         for (b in buttonIds) {
@@ -645,6 +664,63 @@ class FirstKeyboard: LinearLayout {
             }
             R.id.button_footprints -> {
                 inputConnection!!.commitText(context.getString(R.string.footprints), 1)
+            }
+            R.id.button_eye -> {
+                inputConnection!!.commitText(context.getString(R.string.eye), 1)
+            }
+            R.id.button_eyes -> {
+                inputConnection!!.commitText(context.getString(R.string.eyes), 1)
+            }
+            R.id.button_brain -> {
+                inputConnection!!.commitText(context.getString(R.string.brain), 1)
+            }
+            R.id.button_speaking_head -> {
+                inputConnection!!.commitText(context.getString(R.string.speaking_head), 1)
+            }
+            R.id.button_bust_in_silhouette -> {
+                inputConnection!!.commitText(context.getString(R.string.bust_in_silhouette), 1)
+            }
+            R.id.button_busts_in_silhouette -> {
+                inputConnection!!.commitText(context.getString(R.string.busts_in_silhouette), 1)
+            }
+            R.id.button_baby -> {
+                inputConnection!!.commitText(context.getString(R.string.baby), 1)
+            }
+            R.id.button_girl -> {
+                inputConnection!!.commitText(context.getString(R.string.girl), 1)
+            }
+            R.id.button_child -> {
+                inputConnection!!.commitText(context.getString(R.string.child), 1)
+            }
+            R.id.button_boy -> {
+                inputConnection!!.commitText(context.getString(R.string.boy), 1)
+            }
+            R.id.button_woman -> {
+                inputConnection!!.commitText(context.getString(R.string.woman), 1)
+            }
+            R.id.button_adult -> {
+                inputConnection!!.commitText(context.getString(R.string.adult), 1)
+            }
+            R.id.button_man -> {
+                inputConnection!!.commitText(context.getString(R.string.man), 1)
+            }
+            R.id.button_woman_curly_haired -> {
+                inputConnection!!.commitText(context.getString(R.string.woman_curly_haired), 1)
+            }
+            R.id.button_man_curly_haired -> {
+                inputConnection!!.commitText(context.getString(R.string.man_curly_haired), 1)
+            }
+            R.id.button_woman_red_haired -> {
+                inputConnection!!.commitText(context.getString(R.string.woman_red_haired), 1)
+            }
+            R.id.button_man_red_haired -> {
+                inputConnection!!.commitText(context.getString(R.string.man_red_haired), 1)
+            }
+            R.id.button_blond_haired_woman -> {
+                inputConnection!!.commitText(context.getString(R.string.blond_haired_woman), 1)
+            }
+            R.id.button_blond_haired_man -> {
+                inputConnection!!.commitText(context.getString(R.string.blond_haired_man), 1)
             }
         }
     }
