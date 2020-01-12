@@ -319,4 +319,24 @@
     <string name="family_woman_woman_girl_boy">&#x1f469;&#x200d;&#x1f469;&#x200d;&#x1f467;&#x200d;&#x1f466;</string>
     <string name="family_woman_woman_boy_boy">&#x1f469;&#x200d;&#x1f469;&#x200d;&#x1f466;&#x200d;&#x1f466;</string>
     <string name="family_woman_woman_girl_girl">&#x1f469;&#x200d;&#x1f469;&#x200d;&#x1f467;&#x200d;&#x1f467;</string>
+
+    <string name="family_man_man_boy">&#x1f468;&#x200d;&#x1f468;&#x200d;&#x1f466;</string>
+    <string name="family_man_man_girl">&#x1f468;&#x200d;&#x1f468;&#x200d;&#x1f467;</string>
+    <string name="family_man_man_girl_boy">&#x1f468;&#x200d;&#x1f468;&#x200d;&#x1f467;&#x200d;&#x1f466;</string>
+    <string name="family_man_man_boy_boy">&#x1f468;&#x200d;&#x1f468;&#x200d;&#x1f466;&#x200d;&#x1f466;</string>
+    <string name="family_man_man_girl_girl">&#x1f468;&#x200d;&#x1f468;&#x200d;&#x1f467;&#x200d;&#x1f467;</string>
+    <string name="family_woman_boy">&#x1f469;&#x200d;&#x1f466;</string>
+    <string name="family_woman_girl">&#x1f469;&#x200d;&#x1f467;</string>
+    <string name="family_woman_girl_boy">&#x1f469;&#x200d;&#x1f467;&#x200d;&#x1f466;</string>
+    <string name="family_woman_boy_boy">&#x1f469;&#x200d;&#x1f466;&#x200d;&#x1f466;</string>
+    <string name="family_woman_girl_girl">&#x1f469;&#x200d;&#x1f467;&#x200d;&#x1f467;</string>
+    <string name="family_man_boy">&#x1f468;&#x200d;&#x1f466;</string>
+    <string name="family_man_girl">&#x1f468;&#x200d;&#x1f467;</string>
+    <string name="family_man_girl_boy">&#x1f468;&#x200d;&#x1f467;&#x200d;&#x1f466;</string>
+    <string name="family_man_boy_boy">&#x1f468;&#x200d;&#x1f466;&#x200d;&#x1f466;</string>
+    <string name="family_man_girl_girl">&#x1f468;&#x200d;&#x1f467;&#x200d;&#x1f467;</string>
+    <string name="yarn">&#x1f9f6;</string>
+    <string name="thread">&#x1f9f5;</string>
+    <string name="coat">&#x1f9e5;</string>
+    <string name="lab_coat">&#x1f97c;</string>
 </resources>

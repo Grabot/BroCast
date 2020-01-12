@@ -332,7 +332,26 @@ class FirstKeyboard: LinearLayout {
             R.id.button_family_woman_woman_girl,
             R.id.button_family_woman_woman_girl_boy,
             R.id.button_family_woman_woman_boy_boy,
-            R.id.button_family_woman_woman_girl_girl
+            R.id.button_family_woman_woman_girl_girl,
+            R.id.button_family_man_man_boy,
+            R.id.button_family_man_man_girl,
+            R.id.button_family_man_man_girl_boy,
+            R.id.button_family_man_man_boy_boy,
+            R.id.button_family_man_man_girl_girl,
+            R.id.button_family_woman_boy,
+            R.id.button_family_woman_girl,
+            R.id.button_family_woman_girl_boy,
+            R.id.button_family_woman_boy_boy,
+            R.id.button_family_woman_girl_girl,
+            R.id.button_family_man_boy,
+            R.id.button_family_man_girl,
+            R.id.button_family_man_girl_boy,
+            R.id.button_family_man_boy_boy,
+            R.id.button_family_man_girl_girl,
+            R.id.button_yarn,
+            R.id.button_thread,
+            R.id.button_coat,
+            R.id.button_lab_coat
         )
 
         for (b in buttonIds) {
@@ -1253,6 +1272,63 @@ class FirstKeyboard: LinearLayout {
             }
             R.id.button_family_woman_woman_girl_girl -> {
                 inputConnection!!.commitText(context.getString(R.string.family_woman_woman_girl_girl), 1)
+            }
+            R.id.button_family_man_man_boy -> {
+                inputConnection!!.commitText(context.getString(R.string.family_man_man_boy), 1)
+            }
+            R.id.button_family_man_man_girl -> {
+                inputConnection!!.commitText(context.getString(R.string.family_man_man_girl), 1)
+            }
+            R.id.button_family_man_man_girl_boy -> {
+                inputConnection!!.commitText(context.getString(R.string.family_man_man_girl_boy), 1)
+            }
+            R.id.button_family_man_man_boy_boy -> {
+                inputConnection!!.commitText(context.getString(R.string.family_man_man_boy_boy), 1)
+            }
+            R.id.button_family_man_man_girl_girl -> {
+                inputConnection!!.commitText(context.getString(R.string.family_man_man_girl_girl), 1)
+            }
+            R.id.button_family_woman_boy -> {
+                inputConnection!!.commitText(context.getString(R.string.family_woman_boy), 1)
+            }
+            R.id.button_family_woman_girl -> {
+                inputConnection!!.commitText(context.getString(R.string.family_woman_girl), 1)
+            }
+            R.id.button_family_woman_girl_boy -> {
+                inputConnection!!.commitText(context.getString(R.string.family_woman_girl_boy), 1)
+            }
+            R.id.button_family_woman_boy_boy -> {
+                inputConnection!!.commitText(context.getString(R.string.family_woman_boy_boy), 1)
+            }
+            R.id.button_family_woman_girl_girl -> {
+                inputConnection!!.commitText(context.getString(R.string.family_woman_girl_girl), 1)
+            }
+            R.id.button_family_man_boy -> {
+                inputConnection!!.commitText(context.getString(R.string.family_man_boy), 1)
+            }
+            R.id.button_family_man_girl -> {
+                inputConnection!!.commitText(context.getString(R.string.family_man_girl), 1)
+            }
+            R.id.button_family_man_girl_boy -> {
+                inputConnection!!.commitText(context.getString(R.string.family_man_girl_boy), 1)
+            }
+            R.id.button_family_man_boy_boy -> {
+                inputConnection!!.commitText(context.getString(R.string.family_man_boy_boy), 1)
+            }
+            R.id.button_family_man_girl_girl -> {
+                inputConnection!!.commitText(context.getString(R.string.family_man_girl_girl), 1)
+            }
+            R.id.button_yarn -> {
+                inputConnection!!.commitText(context.getString(R.string.yarn), 1)
+            }
+            R.id.button_thread -> {
+                inputConnection!!.commitText(context.getString(R.string.thread), 1)
+            }
+            R.id.button_coat -> {
+                inputConnection!!.commitText(context.getString(R.string.coat), 1)
+            }
+            R.id.button_lab_coat -> {
+                inputConnection!!.commitText(context.getString(R.string.lab_coat), 1)
             }
         }
     }
