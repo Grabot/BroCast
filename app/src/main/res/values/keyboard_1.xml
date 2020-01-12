@@ -99,4 +99,24 @@
     <string name="goblin">&#x1F47A;</string>
     <string name="clown_face">&#x1f921;</string>
     <string name="pile_of_poo">&#x1F4A9;</string>
+
+    <string name="ghost">&#x1F47B;</string>
+    <string name="skull">&#x1F480;</string>
+    <string name="skull_and_crossbones">&#x2620;</string>
+    <string name="alien">&#x1F47D;</string>
+    <string name="alien_monster">&#x1F47E;</string>
+    <string name="robot_face">&#x1f916;</string>
+    <string name="jack_o_lantern">&#x1F383;</string>
+    <string name="smiling_cat_face_with_open_mouth">&#x1F63A;</string>
+    <string name="grinning_cat_face_with_smiling_eyes">&#x1F638;</string>
+    <string name="cat_face_with_tears_of_joy">&#x1F639;</string>
+    <string name="smiling_cat_face_with_heart_eyes">&#x1F63B;</string>
+    <string name="cat_face_with_wry_smile">&#x1F63C;</string>
+    <string name="kissing_cat_face_with_closed_eyes">&#x1F63D;</string>
+    <string name="weary_cat_face">&#x1F640;</string>
+    <string name="crying_cat_face">&#x1F63F;</string>
+    <string name="pouting_cat_face">&#x1F63E;</string>
+    <string name="palms_up_together">&#x1f932;</string>
+    <string name="open_hands">&#x1F450;</string>
+    <string name="raising_hands">&#x1F64C;</string>
 </resources>

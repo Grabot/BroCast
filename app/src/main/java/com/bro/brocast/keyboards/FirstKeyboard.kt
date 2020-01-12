@@ -123,7 +123,26 @@ class FirstKeyboard: LinearLayout {
             R.id.button_ogre,
             R.id.button_goblin,
             R.id.button_clown_face,
-            R.id.button_pile_of_poo
+            R.id.button_pile_of_poo,
+            R.id.button_ghost,
+            R.id.button_skull,
+            R.id.button_skull_and_crossbones,
+            R.id.button_alien,
+            R.id.button_alien_monster,
+            R.id.button_robot_face,
+            R.id.button_jack_o_lantern,
+            R.id.button_smiling_cat_face_with_open_mouth,
+            R.id.button_grinning_cat_face_with_smiling_eyes,
+            R.id.button_cat_face_with_tears_of_joy,
+            R.id.button_smiling_cat_face_with_heart_eyes,
+            R.id.button_cat_face_with_wry_smile,
+            R.id.button_kissing_cat_face_with_closed_eyes,
+            R.id.button_weary_cat_face,
+            R.id.button_crying_cat_face,
+            R.id.button_pouting_cat_face,
+            R.id.button_palms_up_together,
+            R.id.button_open_hands,
+            R.id.button_raising_hands
         )
 
         for (b in buttonIds) {
@@ -417,6 +436,63 @@ class FirstKeyboard: LinearLayout {
             }
             R.id.button_pile_of_poo -> {
                 inputConnection!!.commitText(context.getString(R.string.pile_of_poo), 1)
+            }
+            R.id.button_ghost -> {
+                inputConnection!!.commitText(context.getString(R.string.ghost), 1)
+            }
+            R.id.button_skull -> {
+                inputConnection!!.commitText(context.getString(R.string.skull), 1)
+            }
+            R.id.button_skull_and_crossbones -> {
+                inputConnection!!.commitText(context.getString(R.string.skull_and_crossbones), 1)
+            }
+            R.id.button_alien -> {
+                inputConnection!!.commitText(context.getString(R.string.alien), 1)
+            }
+            R.id.button_alien_monster -> {
+                inputConnection!!.commitText(context.getString(R.string.alien_monster), 1)
+            }
+            R.id.button_robot_face -> {
+                inputConnection!!.commitText(context.getString(R.string.robot_face), 1)
+            }
+            R.id.button_jack_o_lantern -> {
+                inputConnection!!.commitText(context.getString(R.string.jack_o_lantern), 1)
+            }
+            R.id.button_smiling_cat_face_with_open_mouth -> {
+                inputConnection!!.commitText(context.getString(R.string.smiling_cat_face_with_open_mouth), 1)
+            }
+            R.id.button_grinning_cat_face_with_smiling_eyes -> {
+                inputConnection!!.commitText(context.getString(R.string.grinning_cat_face_with_smiling_eyes), 1)
+            }
+            R.id.button_cat_face_with_tears_of_joy -> {
+                inputConnection!!.commitText(context.getString(R.string.cat_face_with_tears_of_joy), 1)
+            }
+            R.id.button_smiling_cat_face_with_heart_eyes -> {
+                inputConnection!!.commitText(context.getString(R.string.smiling_cat_face_with_heart_eyes), 1)
+            }
+            R.id.button_cat_face_with_wry_smile -> {
+                inputConnection!!.commitText(context.getString(R.string.cat_face_with_wry_smile), 1)
+            }
+            R.id.button_kissing_cat_face_with_closed_eyes -> {
+                inputConnection!!.commitText(context.getString(R.string.kissing_cat_face_with_closed_eyes), 1)
+            }
+            R.id.button_weary_cat_face -> {
+                inputConnection!!.commitText(context.getString(R.string.weary_cat_face), 1)
+            }
+            R.id.button_crying_cat_face -> {
+                inputConnection!!.commitText(context.getString(R.string.crying_cat_face), 1)
+            }
+            R.id.button_pouting_cat_face -> {
+                inputConnection!!.commitText(context.getString(R.string.pouting_cat_face), 1)
+            }
+            R.id.button_palms_up_together -> {
+                inputConnection!!.commitText(context.getString(R.string.palms_up_together), 1)
+            }
+            R.id.button_open_hands -> {
+                inputConnection!!.commitText(context.getString(R.string.open_hands), 1)
+            }
+            R.id.button_raising_hands -> {
+                inputConnection!!.commitText(context.getString(R.string.raising_hands), 1)
             }
         }
     }
