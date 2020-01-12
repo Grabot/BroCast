@@ -239,4 +239,24 @@
     <string name="princess">&#x1F478;</string>
     <string name="prince">&#x1f934;</string>
     <string name="woman_superhero">&#x1f9b8;&#x200d;&#x2640;&#xfe0f;</string>
+
+    <string name="man_superhero">&#x1f9b8;&#x200d;&#x2642;&#xfe0f;</string>
+    <string name="woman_supervillain">&#x1f9b9;&#x200d;&#x2640;&#xfe0f;</string>
+    <string name="man_supervillain">&#x1f9b9;&#x200d;&#x2642;&#xfe0f;</string>
+    <string name="mrs_claus">&#x1f936;</string>
+    <string name="santa_claus">&#x1F385;</string>
+    <string name="woman_mage">&#x1f9d9;&#x200d;&#x2640;&#xfe0f;</string>
+    <string name="man_mage">&#x1f9d9;&#x200d;&#x2642;&#xfe0f;</string>
+    <string name="woman_elf">&#x1f9dd;&#x200d;&#x2640;&#xfe0f;</string>
+    <string name="man_elf">&#x1f9dd;&#x200d;&#x2642;&#xfe0f;</string>
+    <string name="woman_vampire">&#x1f9db;&#x200d;&#x2640;&#xfe0f;</string>
+    <string name="man_vampire">&#x1f9db;&#x200d;&#x2642;&#xfe0f;</string>
+    <string name="woman_zombie">&#x1f9df;&#x200d;&#x2640;&#xfe0f;</string>
+    <string name="man_zombie">&#x1f9df;&#x200d;&#x2642;&#xfe0f;</string>
+    <string name="woman_genie">&#x1f9de;&#x200d;&#x2640;&#xfe0f;</string>
+    <string name="man_genie">&#x1f9de;&#x200d;&#x2642;&#xfe0f;</string>
+    <string name="mermaid">&#x1f9dc;&#x200d;&#x2640;&#xfe0f;</string>
+    <string name="merman">&#x1f9dc;&#x200d;&#x2642;&#xfe0f;</string>
+    <string name="woman_fairy">&#x1f9da;&#x200d;&#x2640;&#xfe0f;</string>
+    <string name="man_fairy">&#x1f9da;&#x200d;&#x2642;&#xfe0f;</string>
 </resources>

@@ -256,7 +256,26 @@ class FirstKeyboard: LinearLayout {
             R.id.button_man_in_tuxedo,
             R.id.button_princess,
             R.id.button_prince,
-            R.id.button_woman_superhero
+            R.id.button_woman_superhero,
+            R.id.button_man_superhero,
+            R.id.button_woman_supervillain,
+            R.id.button_man_supervillain,
+            R.id.button_mrs_claus,
+            R.id.button_santa_claus,
+            R.id.button_woman_mage,
+            R.id.button_man_mage,
+            R.id.button_woman_elf,
+            R.id.button_man_elf,
+            R.id.button_woman_vampire,
+            R.id.button_man_vampire,
+            R.id.button_woman_zombie,
+            R.id.button_man_zombie,
+            R.id.button_woman_genie,
+            R.id.button_man_genie,
+            R.id.button_mermaid,
+            R.id.button_merman,
+            R.id.button_woman_fairy,
+            R.id.button_man_fairy
         )
 
         for (b in buttonIds) {
@@ -950,6 +969,64 @@ class FirstKeyboard: LinearLayout {
             R.id.button_woman_superhero -> {
                 inputConnection!!.commitText(context.getString(R.string.woman_superhero), 1)
             }
+            R.id.button_man_superhero -> {
+                inputConnection!!.commitText(context.getString(R.string.man_superhero), 1)
+            }
+            R.id.button_woman_supervillain -> {
+                inputConnection!!.commitText(context.getString(R.string.woman_supervillain), 1)
+            }
+            R.id.button_man_supervillain -> {
+                inputConnection!!.commitText(context.getString(R.string.man_supervillain), 1)
+            }
+            R.id.button_mrs_claus -> {
+                inputConnection!!.commitText(context.getString(R.string.mrs_claus), 1)
+            }
+            R.id.button_santa_claus -> {
+                inputConnection!!.commitText(context.getString(R.string.santa_claus), 1)
+            }
+            R.id.button_woman_mage -> {
+                inputConnection!!.commitText(context.getString(R.string.woman_mage), 1)
+            }
+            R.id.button_man_mage -> {
+                inputConnection!!.commitText(context.getString(R.string.man_mage), 1)
+            }
+            R.id.button_woman_elf -> {
+                inputConnection!!.commitText(context.getString(R.string.woman_elf), 1)
+            }
+            R.id.button_man_elf -> {
+                inputConnection!!.commitText(context.getString(R.string.man_elf), 1)
+            }
+            R.id.button_woman_vampire -> {
+                inputConnection!!.commitText(context.getString(R.string.woman_vampire), 1)
+            }
+            R.id.button_man_vampire -> {
+                inputConnection!!.commitText(context.getString(R.string.man_vampire), 1)
+            }
+            R.id.button_woman_zombie -> {
+                inputConnection!!.commitText(context.getString(R.string.woman_zombie), 1)
+            }
+            R.id.button_man_zombie -> {
+                inputConnection!!.commitText(context.getString(R.string.man_zombie), 1)
+            }
+            R.id.button_woman_genie -> {
+                inputConnection!!.commitText(context.getString(R.string.woman_genie), 1)
+            }
+            R.id.button_man_genie -> {
+                inputConnection!!.commitText(context.getString(R.string.man_genie), 1)
+            }
+            R.id.button_mermaid -> {
+                inputConnection!!.commitText(context.getString(R.string.mermaid), 1)
+            }
+            R.id.button_merman -> {
+                inputConnection!!.commitText(context.getString(R.string.merman), 1)
+            }
+            R.id.button_woman_fairy -> {
+                inputConnection!!.commitText(context.getString(R.string.woman_fairy), 1)
+            }
+            R.id.button_man_fairy -> {
+                inputConnection!!.commitText(context.getString(R.string.man_fairy), 1)
+            }
+
         }
     }
 
