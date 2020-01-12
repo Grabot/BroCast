@@ -275,7 +275,26 @@ class FirstKeyboard: LinearLayout {
             R.id.button_mermaid,
             R.id.button_merman,
             R.id.button_woman_fairy,
-            R.id.button_man_fairy
+            R.id.button_man_fairy,
+            R.id.button_baby_angel,
+            R.id.button_pregnant_woman,
+            R.id.button_breast_feeding,
+            R.id.button_woman_bowing,
+            R.id.button_man_bowing,
+            R.id.button_woman_tipping_hand,
+            R.id.button_man_tipping_hand,
+            R.id.button_woman_gesturing_no,
+            R.id.button_man_gesturing_no,
+            R.id.button_woman_gesturing_ok,
+            R.id.button_man_gesturing_ok,
+            R.id.button_woman_raising_hand,
+            R.id.button_man_raising_hand,
+            R.id.button_woman_facepalming,
+            R.id.button_man_facepalming,
+            R.id.button_woman_shrugging,
+            R.id.button_man_shrugging,
+            R.id.button_woman_pouting,
+            R.id.button_man_pouting
         )
 
         for (b in buttonIds) {
@@ -1026,7 +1045,63 @@ class FirstKeyboard: LinearLayout {
             R.id.button_man_fairy -> {
                 inputConnection!!.commitText(context.getString(R.string.man_fairy), 1)
             }
-
+            R.id.button_baby_angel -> {
+                inputConnection!!.commitText(context.getString(R.string.baby_angel), 1)
+            }
+            R.id.button_pregnant_woman -> {
+                inputConnection!!.commitText(context.getString(R.string.pregnant_woman), 1)
+            }
+            R.id.button_breast_feeding -> {
+                inputConnection!!.commitText(context.getString(R.string.breast_feeding), 1)
+            }
+            R.id.button_woman_bowing -> {
+                inputConnection!!.commitText(context.getString(R.string.woman_bowing), 1)
+            }
+            R.id.button_man_bowing -> {
+                inputConnection!!.commitText(context.getString(R.string.man_bowing), 1)
+            }
+            R.id.button_woman_tipping_hand -> {
+                inputConnection!!.commitText(context.getString(R.string.woman_tipping_hand), 1)
+            }
+            R.id.button_man_tipping_hand -> {
+                inputConnection!!.commitText(context.getString(R.string.man_tipping_hand), 1)
+            }
+            R.id.button_woman_gesturing_no -> {
+                inputConnection!!.commitText(context.getString(R.string.woman_gesturing_no), 1)
+            }
+            R.id.button_man_gesturing_no -> {
+                inputConnection!!.commitText(context.getString(R.string.man_gesturing_no), 1)
+            }
+            R.id.button_woman_gesturing_ok -> {
+                inputConnection!!.commitText(context.getString(R.string.woman_gesturing_ok), 1)
+            }
+            R.id.button_man_gesturing_ok -> {
+                inputConnection!!.commitText(context.getString(R.string.man_gesturing_ok), 1)
+            }
+            R.id.button_woman_raising_hand -> {
+                inputConnection!!.commitText(context.getString(R.string.woman_raising_hand), 1)
+            }
+            R.id.button_man_raising_hand -> {
+                inputConnection!!.commitText(context.getString(R.string.man_raising_hand), 1)
+            }
+            R.id.button_woman_facepalming -> {
+                inputConnection!!.commitText(context.getString(R.string.woman_facepalming), 1)
+            }
+            R.id.button_man_facepalming -> {
+                inputConnection!!.commitText(context.getString(R.string.man_facepalming), 1)
+            }
+            R.id.button_woman_shrugging -> {
+                inputConnection!!.commitText(context.getString(R.string.woman_shrugging), 1)
+            }
+            R.id.button_man_shrugging -> {
+                inputConnection!!.commitText(context.getString(R.string.man_shrugging), 1)
+            }
+            R.id.button_woman_pouting -> {
+                inputConnection!!.commitText(context.getString(R.string.woman_pouting), 1)
+            }
+            R.id.button_man_pouting -> {
+                inputConnection!!.commitText(context.getString(R.string.man_pouting), 1)
+            }
         }
     }
 

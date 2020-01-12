@@ -259,4 +259,24 @@
     <string name="merman">&#x1f9dc;&#x200d;&#x2642;&#xfe0f;</string>
     <string name="woman_fairy">&#x1f9da;&#x200d;&#x2640;&#xfe0f;</string>
     <string name="man_fairy">&#x1f9da;&#x200d;&#x2642;&#xfe0f;</string>
+
+    <string name="baby_angel">&#x1F47C;</string>
+    <string name="pregnant_woman">&#x1f930;</string>
+    <string name="breast_feeding">&#x1f931;</string>
+    <string name="woman_bowing">&#x1f647;&#x200d;&#x2640;&#xfe0f;</string>
+    <string name="man_bowing">&#x1F647;</string>
+    <string name="woman_tipping_hand">&#x1F481;</string>
+    <string name="man_tipping_hand">&#x1f481;&#x200d;&#x2642;&#xfe0f;</string>
+    <string name="woman_gesturing_no">&#x1F645;</string>
+    <string name="man_gesturing_no">&#x1f645;&#x200d;&#x2642;&#xfe0f;</string>
+    <string name="woman_gesturing_ok">&#x1F646;</string>
+    <string name="man_gesturing_ok">&#x1f646;&#x200d;&#x2642;&#xfe0f;</string>
+    <string name="woman_raising_hand">&#x1F64B;</string>
+    <string name="man_raising_hand">&#x1f64b;&#x200d;&#x2642;&#xfe0f;</string>
+    <string name="woman_facepalming">&#x1f926;&#x200d;&#x2640;&#xfe0f;</string>
+    <string name="man_facepalming">&#x1f926;&#x200d;&#x2642;&#xfe0f;</string>
+    <string name="woman_shrugging">&#x1f937;&#x200d;&#x2640;&#xfe0f;</string>
+    <string name="man_shrugging">&#x1f937;&#x200d;&#x2642;&#xfe0f;</string>
+    <string name="woman_pouting">&#x1F64E;</string>
+    <string name="man_pouting">&#x1f64e;&#x200d;&#x2642;&#xfe0f;</string>
 </resources>
