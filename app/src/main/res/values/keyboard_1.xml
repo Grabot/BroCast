@@ -219,4 +219,24 @@
     <string name="man_technologist">&#x1f468;&#x200d;&#x1f4bb;</string>
     <string name="woman_office_worker">&#x1f469;&#x200d;&#x1f4bc;</string>
     <string name="man_office_worker">&#x1f468;&#x200d;&#x1f4bc;</string>
+
+    <string name="woman_mechanic">&#x1f469;&#x200d;&#x1f527;</string>
+    <string name="man_mechanic">&#x1f468;&#x200d;&#x1f527;</string>
+    <string name="woman_scientist">&#x1f469;&#x200d;&#x1f52c;</string>
+    <string name="man_scientist">&#x1f468;&#x200d;&#x1f52c;</string>
+    <string name="woman_artist">&#x1f469;&#x200d;&#x1f3a8;</string>
+    <string name="man_artist">&#x1f468;&#x200d;&#x1f3a8;</string>
+    <string name="woman_firefighter">&#x1f469;&#x200d;&#x1f692;</string>
+    <string name="man_firefighter">&#x1f468;&#x200d;&#x1f692;</string>
+    <string name="woman_pilot">&#x1f469;&#x200d;&#x2708;&#xfe0f;</string>
+    <string name="man_pilot">&#x1f468;&#x200d;&#x2708;&#xfe0f;</string>
+    <string name="woman_astronaut">&#x1f469;&#x200d;&#x1f680;</string>
+    <string name="man_astronaut">&#x1f468;&#x200d;&#x1f680;</string>
+    <string name="woman_judge">&#x1f469;&#x200d;&#x2696;&#xfe0f;</string>
+    <string name="man_judge">&#x1f468;&#x200d;&#x2696;&#xfe0f;</string>
+    <string name="bride_with_veil">&#x1f470;</string>
+    <string name="man_in_tuxedo">&#x1f935;</string>
+    <string name="princess">&#x1F478;</string>
+    <string name="prince">&#x1f934;</string>
+    <string name="woman_superhero">&#x1f9b8;&#x200d;&#x2640;&#xfe0f;</string>
 </resources>

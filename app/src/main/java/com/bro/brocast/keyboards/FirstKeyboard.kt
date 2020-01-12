@@ -237,7 +237,26 @@ class FirstKeyboard: LinearLayout {
             R.id.button_woman_technologist,
             R.id.button_man_technologist,
             R.id.button_woman_office_worker,
-            R.id.button_man_office_worker
+            R.id.button_man_office_worker,
+            R.id.button_woman_mechanic,
+            R.id.button_man_mechanic,
+            R.id.button_woman_scientist,
+            R.id.button_man_scientist,
+            R.id.button_woman_artist,
+            R.id.button_man_artist,
+            R.id.button_woman_firefighter,
+            R.id.button_man_firefighter,
+            R.id.button_woman_pilot,
+            R.id.button_man_pilot,
+            R.id.button_woman_astronaut,
+            R.id.button_man_astronaut,
+            R.id.button_woman_judge,
+            R.id.button_man_judge,
+            R.id.button_bride_with_veil,
+            R.id.button_man_in_tuxedo,
+            R.id.button_princess,
+            R.id.button_prince,
+            R.id.button_woman_superhero
         )
 
         for (b in buttonIds) {
@@ -873,6 +892,63 @@ class FirstKeyboard: LinearLayout {
             }
             R.id.button_man_office_worker -> {
                 inputConnection!!.commitText(context.getString(R.string.man_office_worker), 1)
+            }
+            R.id.button_woman_mechanic -> {
+                inputConnection!!.commitText(context.getString(R.string.woman_mechanic), 1)
+            }
+            R.id.button_man_mechanic -> {
+                inputConnection!!.commitText(context.getString(R.string.man_mechanic), 1)
+            }
+            R.id.button_woman_scientist -> {
+                inputConnection!!.commitText(context.getString(R.string.woman_scientist), 1)
+            }
+            R.id.button_man_scientist -> {
+                inputConnection!!.commitText(context.getString(R.string.man_scientist), 1)
+            }
+            R.id.button_woman_artist -> {
+                inputConnection!!.commitText(context.getString(R.string.woman_artist), 1)
+            }
+            R.id.button_man_artist -> {
+                inputConnection!!.commitText(context.getString(R.string.man_artist), 1)
+            }
+            R.id.button_woman_firefighter -> {
+                inputConnection!!.commitText(context.getString(R.string.woman_firefighter), 1)
+            }
+            R.id.button_man_firefighter -> {
+                inputConnection!!.commitText(context.getString(R.string.man_firefighter), 1)
+            }
+            R.id.button_woman_pilot -> {
+                inputConnection!!.commitText(context.getString(R.string.woman_pilot), 1)
+            }
+            R.id.button_man_pilot -> {
+                inputConnection!!.commitText(context.getString(R.string.man_pilot), 1)
+            }
+            R.id.button_woman_astronaut -> {
+                inputConnection!!.commitText(context.getString(R.string.woman_astronaut), 1)
+            }
+            R.id.button_man_astronaut -> {
+                inputConnection!!.commitText(context.getString(R.string.man_astronaut), 1)
+            }
+            R.id.button_woman_judge -> {
+                inputConnection!!.commitText(context.getString(R.string.woman_judge), 1)
+            }
+            R.id.button_man_judge -> {
+                inputConnection!!.commitText(context.getString(R.string.man_judge), 1)
+            }
+            R.id.button_bride_with_veil -> {
+                inputConnection!!.commitText(context.getString(R.string.bride_with_veil), 1)
+            }
+            R.id.button_man_in_tuxedo -> {
+                inputConnection!!.commitText(context.getString(R.string.man_in_tuxedo), 1)
+            }
+            R.id.button_princess -> {
+                inputConnection!!.commitText(context.getString(R.string.princess), 1)
+            }
+            R.id.button_prince -> {
+                inputConnection!!.commitText(context.getString(R.string.prince), 1)
+            }
+            R.id.button_woman_superhero -> {
+                inputConnection!!.commitText(context.getString(R.string.woman_superhero), 1)
             }
         }
     }
