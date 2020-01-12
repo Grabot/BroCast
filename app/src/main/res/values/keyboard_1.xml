@@ -299,4 +299,24 @@
     <string name="man_walking">&#x1F6B6;</string>
     <string name="woman_running">&#x1f3c3;&#x200d;&#x2640;&#xfe0f;</string>
     <string name="man_running">&#x1F3C3;</string>
+
+    <string name="man_and_woman_holding_hands">&#x1F46B;</string>
+    <string name="two_women_holding_hands">&#x1f46d;</string>
+    <string name="two_men_holding_hands">&#x1f46c;</string>
+    <string name="couple_with_heart">&#x1F491;</string>
+    <string name="couple_with_heart_woman_woman">&#x1f469;&#x200d;&#x2764;&#xfe0f;&#x200d;&#x1f469;</string>
+    <string name="couple_with_heart_man_man">&#x1f468;&#x200d;&#x2764;&#xfe0f;&#x200d;&#x1f468;</string>
+    <string name="kiss">&#x1F48F;</string>
+    <string name="kiss_woman_woman">&#x1f469;&#x200d;&#x2764;&#xfe0f;&#x200d;&#x1f48b;&#x200d;&#x1f469;</string>
+    <string name="kiss_man_man">&#x1f468;&#x200d;&#x2764;&#xfe0f;&#x200d;&#x1f48b;&#x200d;&#x1f468;</string>
+    <string name="family">&#x1F46A;</string>
+    <string name="family_man_woman_girl">&#x1f468;&#x200d;&#x1f469;&#x200d;&#x1f467;</string>
+    <string name="family_man_woman_girl_boy">&#x1f468;&#x200d;&#x1f469;&#x200d;&#x1f467;&#x200d;&#x1f466;</string>
+    <string name="family_man_woman_boy_boy">&#x1f468;&#x200d;&#x1f469;&#x200d;&#x1f466;&#x200d;&#x1f466;</string>
+    <string name="family_man_woman_girl_girl">&#x1f468;&#x200d;&#x1f469;&#x200d;&#x1f467;&#x200d;&#x1f467;</string>
+    <string name="family_woman_woman_boy">&#x1f469;&#x200d;&#x1f469;&#x200d;&#x1f466;</string>
+    <string name="family_woman_woman_girl">&#x1f469;&#x200d;&#x1f469;&#x200d;&#x1f467;</string>
+    <string name="family_woman_woman_girl_boy">&#x1f469;&#x200d;&#x1f469;&#x200d;&#x1f467;&#x200d;&#x1f466;</string>
+    <string name="family_woman_woman_boy_boy">&#x1f469;&#x200d;&#x1f469;&#x200d;&#x1f466;&#x200d;&#x1f466;</string>
+    <string name="family_woman_woman_girl_girl">&#x1f469;&#x200d;&#x1f469;&#x200d;&#x1f467;&#x200d;&#x1f467;</string>
 </resources>
