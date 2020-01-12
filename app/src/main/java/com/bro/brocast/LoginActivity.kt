@@ -117,10 +117,10 @@ class LoginActivity: AppCompatActivity() {
                         // than, whatever! It will not effect the app!
                     }
 
-                    // We want to make the keyboard visible if it isn't yet.
-                    if (keyboard.visibility != View.VISIBLE) {
-                        keyboard.visibility = View.VISIBLE
-                    }
+//                    // We want to make the keyboard visible if it isn't yet.
+//                    if (keyboard.visibility != View.VISIBLE) {
+//                        keyboard.visibility = View.VISIBLE
+//                    }
 
                 }
             }
