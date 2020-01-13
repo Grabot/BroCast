@@ -20,5 +20,23 @@
     <string name="hear_no_evil_monkey">&#x1F649;</string>
     <string name="speak_no_evil_monkey">&#x1F64A;</string>
 
-    
+    <string name="monkey">&#x1F412;</string>
+    <string name="chicken">&#x1F414;</string>
+    <string name="penguin">&#x1F427;</string>
+    <string name="bird">&#x1F426;</string>
+    <string name="baby_chick">&#x1F424;</string>
+    <string name="hatching_chick">&#x1F423;</string>
+    <string name="front_facing_baby_chick">&#x1F425;</string>
+    <string name="duck">&#x1f986;</string>
+    <string name="eagle">&#x1f985;</string>
+    <string name="owl">&#x1f989;</string>
+    <string name="bat">&#x1f987;</string>
+    <string name="wolf_face">&#x1F43A;</string>
+    <string name="boar">&#x1F417;</string>
+    <string name="horse_face">&#x1F434;</string>
+    <string name="unicorn_face">&#x1f984;</string>
+    <string name="honeybee">&#x1F41D;</string>
+    <string name="bug">&#x1F41B;</string>
+    <string name="butterfly">&#x1f98b;</string>
+    <string name="snail">&#x1F40C;</string>
 </resources>
