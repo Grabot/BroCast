@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="soccer_ball">&#x26BD;</string>
+    <string name="basketball">&#x1F3C0;</string>
+    <string name="american_football">&#x1F3C8;</string>
+    <string name="baseball">&#x26BE;</string>
+    <string name="softball">&#x1f94e;</string>
+    <string name="tennis">&#x1F3BE;</string>
+    <string name="volleyball">&#x1f3d0;</string>
+    <string name="rugby_football">&#x1f3c9;</string>
+    <string name="flying_disc">&#x1f94f;</string>
+    <string name="pool_8_ball">&#x1F3B1;</string>
+    <string name="ping_pong">&#x1f3d3;</string>
+    <string name="badminton">&#x1f3f8;</string>
+    <string name="ice_hockey">&#x1f3d2;</string>
+    <string name="field_hockey">&#x1f3d1;</string>
+    <string name="lacrosse">&#x1f94d;</string>
+    <string name="cricket_sport">&#x1f3cf;</string>
+    <string name="goal_net">&#x1f945;</string>
+    <string name="flag_in_hole">&#x26F3;</string>
+    <string name="bow_and_arrow">&#x1f3f9;</string>
+</resources>

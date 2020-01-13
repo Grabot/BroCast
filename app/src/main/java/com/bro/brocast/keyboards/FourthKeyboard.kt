@@ -28,33 +28,99 @@ class FourthKeyboard: LinearLayout {
         init(context)
     }
 
-    var buttonSmile: Button? = null
-
-    val emoji_Smile = 0x1F604
-
     private var inputConnection: InputConnection? = null
 
     fun init(context: Context) {
         LayoutInflater.from(context).inflate(R.layout.keyboard_4, this, true)
 
-        buttonSmile = findViewById(R.id.button_smile_4)
-        buttonSmile!!.setOnClickListener(clickButtonListener)
+        val buttonIds = arrayOf(
+            R.id.button_soccer_ball,
+            R.id.button_basketball,
+            R.id.button_american_football,
+            R.id.button_baseball,
+            R.id.button_softball,
+            R.id.button_tennis,
+            R.id.button_volleyball,
+            R.id.button_rugby_football,
+            R.id.button_flying_disc,
+            R.id.button_pool_8_ball,
+            R.id.button_ping_pong,
+            R.id.button_badminton,
+            R.id.button_ice_hockey,
+            R.id.button_field_hockey,
+            R.id.button_lacrosse,
+            R.id.button_cricket_sport,
+            R.id.button_goal_net,
+            R.id.button_flag_in_hole,
+            R.id.button_bow_and_arrow
+        )
 
-        buttonSmile!!.text = getEmojiByUnicode(emoji_Smile)
+        for (b in buttonIds) {
+            findViewById<Button>(b).setOnClickListener(clickButtonListener)
+        }
     }
 
     private val clickButtonListener = OnClickListener { view ->
         when (view.getId()) {
-            R.id.button_smile_4 -> {
-                inputConnection!!.commitText(getEmojiByUnicode(emoji_Smile), 1)
+            R.id.button_soccer_ball -> {
+                inputConnection!!.commitText(context.getString(R.string.soccer_ball), 1)
+            }
+            R.id.button_basketball -> {
+                inputConnection!!.commitText(context.getString(R.string.basketball), 1)
+            }
+            R.id.button_american_football -> {
+                inputConnection!!.commitText(context.getString(R.string.american_football), 1)
+            }
+            R.id.button_baseball -> {
+                inputConnection!!.commitText(context.getString(R.string.baseball), 1)
+            }
+            R.id.button_softball -> {
+                inputConnection!!.commitText(context.getString(R.string.softball), 1)
+            }
+            R.id.button_tennis -> {
+                inputConnection!!.commitText(context.getString(R.string.tennis), 1)
+            }
+            R.id.button_volleyball -> {
+                inputConnection!!.commitText(context.getString(R.string.volleyball), 1)
+            }
+            R.id.button_rugby_football -> {
+                inputConnection!!.commitText(context.getString(R.string.rugby_football), 1)
+            }
+            R.id.button_flying_disc -> {
+                inputConnection!!.commitText(context.getString(R.string.flying_disc), 1)
+            }
+            R.id.button_pool_8_ball -> {
+                inputConnection!!.commitText(context.getString(R.string.pool_8_ball), 1)
+            }
+            R.id.button_ping_pong -> {
+                inputConnection!!.commitText(context.getString(R.string.ping_pong), 1)
+            }
+            R.id.button_badminton -> {
+                inputConnection!!.commitText(context.getString(R.string.badminton), 1)
+            }
+            R.id.button_ice_hockey -> {
+                inputConnection!!.commitText(context.getString(R.string.ice_hockey), 1)
+            }
+            R.id.button_field_hockey -> {
+                inputConnection!!.commitText(context.getString(R.string.field_hockey), 1)
+            }
+            R.id.button_lacrosse -> {
+                inputConnection!!.commitText(context.getString(R.string.lacrosse), 1)
+            }
+            R.id.button_cricket_sport -> {
+                inputConnection!!.commitText(context.getString(R.string.cricket_sport), 1)
+            }
+            R.id.button_goal_net -> {
+                inputConnection!!.commitText(context.getString(R.string.goal_net), 1)
+            }
+            R.id.button_flag_in_hole -> {
+                inputConnection!!.commitText(context.getString(R.string.flag_in_hole), 1)
+            }
+            R.id.button_bow_and_arrow -> {
+                inputConnection!!.commitText(context.getString(R.string.bow_and_arrow), 1)
             }
         }
     }
-
-    private fun getEmojiByUnicode(unicode: Int): String {
-        return String(Character.toChars(unicode))
-    }
-
 
     fun setInputConnection(ic: InputConnection) {
         inputConnection = ic
