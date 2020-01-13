@@ -79,4 +79,24 @@
     <string name="kangaroo">&#x1f998;</string>
     <string name="water_buffalo">&#x1f403;</string>
     <string name="ox">&#x1f402;</string>
+
+    <string name="cow">&#x1f404;</string>
+    <string name="horse">&#x1F40E;</string>
+    <string name="pig">&#x1f416;</string>
+    <string name="ram">&#x1f40f;</string>
+    <string name="ewe">&#x1F411;</string>
+    <string name="llama">&#x1f999;</string>
+    <string name="goat">&#x1f410;</string>
+    <string name="deer">&#x1f98c;</string>
+    <string name="dog">&#x1f415;</string>
+    <string name="poodle">&#x1F429;</string>
+    <string name="cat">&#x1f408;</string>
+    <string name="rooster">&#x1f413;</string>
+    <string name="turkey">&#x1f983;</string>
+    <string name="peacock">&#x1f99a;</string>
+    <string name="parrot">&#x1f99c;</string>
+    <string name="swan">&#x1f9a2;</string>
+    <string name="dove">&#x1f54a;</string>
+    <string name="rabbit">&#x1f407;</string>
+    <string name="raccoon">&#x1f99d;</string>
 </resources>

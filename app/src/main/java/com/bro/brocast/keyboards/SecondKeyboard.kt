@@ -107,7 +107,26 @@ class SecondKeyboard: LinearLayout {
             R.id.button_giraffe,
             R.id.button_kangaroo,
             R.id.button_water_buffalo,
-            R.id.button_ox
+            R.id.button_ox,
+            R.id.button_cow,
+            R.id.button_horse,
+            R.id.button_pig,
+            R.id.button_ram,
+            R.id.button_ewe,
+            R.id.button_llama,
+            R.id.button_goat,
+            R.id.button_deer,
+            R.id.button_dog,
+            R.id.button_poodle,
+            R.id.button_cat,
+            R.id.button_rooster,
+            R.id.button_turkey,
+            R.id.button_peacock,
+            R.id.button_parrot,
+            R.id.button_swan,
+            R.id.button_dove,
+            R.id.button_rabbit,
+            R.id.button_raccoon
         )
 
         for (b in buttonIds) {
@@ -344,6 +363,63 @@ class SecondKeyboard: LinearLayout {
             }
             R.id.button_ox -> {
                 inputConnection!!.commitText(context.getString(R.string.ox), 1)
+            }
+            R.id.button_cow -> {
+                inputConnection!!.commitText(context.getString(R.string.cow), 1)
+            }
+            R.id.button_horse -> {
+                inputConnection!!.commitText(context.getString(R.string.horse), 1)
+            }
+            R.id.button_pig -> {
+                inputConnection!!.commitText(context.getString(R.string.pig), 1)
+            }
+            R.id.button_ram -> {
+                inputConnection!!.commitText(context.getString(R.string.ram), 1)
+            }
+            R.id.button_ewe -> {
+                inputConnection!!.commitText(context.getString(R.string.ewe), 1)
+            }
+            R.id.button_llama -> {
+                inputConnection!!.commitText(context.getString(R.string.llama), 1)
+            }
+            R.id.button_goat -> {
+                inputConnection!!.commitText(context.getString(R.string.goat), 1)
+            }
+            R.id.button_deer -> {
+                inputConnection!!.commitText(context.getString(R.string.deer), 1)
+            }
+            R.id.button_dog -> {
+                inputConnection!!.commitText(context.getString(R.string.dog), 1)
+            }
+            R.id.button_poodle -> {
+                inputConnection!!.commitText(context.getString(R.string.poodle), 1)
+            }
+            R.id.button_cat -> {
+                inputConnection!!.commitText(context.getString(R.string.cat), 1)
+            }
+            R.id.button_rooster -> {
+                inputConnection!!.commitText(context.getString(R.string.rooster), 1)
+            }
+            R.id.button_turkey -> {
+                inputConnection!!.commitText(context.getString(R.string.turkey), 1)
+            }
+            R.id.button_peacock -> {
+                inputConnection!!.commitText(context.getString(R.string.peacock), 1)
+            }
+            R.id.button_parrot -> {
+                inputConnection!!.commitText(context.getString(R.string.parrot), 1)
+            }
+            R.id.button_swan -> {
+                inputConnection!!.commitText(context.getString(R.string.swan), 1)
+            }
+            R.id.button_dove -> {
+                inputConnection!!.commitText(context.getString(R.string.dove), 1)
+            }
+            R.id.button_rabbit -> {
+                inputConnection!!.commitText(context.getString(R.string.rabbit), 1)
+            }
+            R.id.button_raccoon -> {
+                inputConnection!!.commitText(context.getString(R.string.raccoon), 1)
             }
         }
     }
