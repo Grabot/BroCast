@@ -139,4 +139,24 @@
     <string name="first_quarter_moon_with_face">&#x1F31B;</string>
     <string name="last_quarter_moon_with_face">&#x1f31c;</string>
     <string name="new_moon_face">&#x1f31a;</string>
+
+    <string name="full_moon">&#x1F315;</string>
+    <string name="waning_gibbous_moon">&#x1f316;</string>
+    <string name="last_quarter_moon">&#x1f317;</string>
+    <string name="waning_crescent_moon">&#x1f318;</string>
+    <string name="new_moon">&#x1F311;</string>
+    <string name="waxing_crescent_moon">&#x1f312;</string>
+    <string name="first_quarter_moon">&#x1F313;</string>
+    <string name="waxing_gibbous_moon">&#x1F314;</string>
+    <string name="crescent_moon">&#x1F319;</string>
+    <string name="globe_showing_americas">&#x1f30e;</string>
+    <string name="globe_showing_europe_africa">&#x1f30d;</string>
+    <string name="globe_showing_asia_australia">&#x1F30F;</string>
+    <string name="dizzy">&#x1F4AB;</string>
+    <string name="white_medium_star">&#x2b50;</string>
+    <string name="glowing_star">&#x1F31F;</string>
+    <string name="sparkles">&#x2728;</string>
+    <string name="high_voltage">&#x26A1;</string>
+    <string name="comet">&#x2604;</string>
+    <string name="collision">&#x1F4A5;</string>
 </resources>

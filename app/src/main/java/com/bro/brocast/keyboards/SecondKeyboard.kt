@@ -164,7 +164,26 @@ class SecondKeyboard: LinearLayout {
             R.id.button_full_moon_with_face,
             R.id.button_first_quarter_moon_with_face,
             R.id.button_last_quarter_moon_with_face,
-            R.id.button_new_moon_face
+            R.id.button_new_moon_face,
+            R.id.button_full_moon,
+            R.id.button_waning_gibbous_moon,
+            R.id.button_last_quarter_moon,
+            R.id.button_waning_crescent_moon,
+            R.id.button_new_moon,
+            R.id.button_waxing_crescent_moon,
+            R.id.button_first_quarter_moon,
+            R.id.button_waxing_gibbous_moon,
+            R.id.button_crescent_moon,
+            R.id.button_globe_showing_americas,
+            R.id.button_globe_showing_europe_africa,
+            R.id.button_globe_showing_asia_australia,
+            R.id.button_dizzy,
+            R.id.button_white_medium_star,
+            R.id.button_glowing_star,
+            R.id.button_sparkles,
+            R.id.button_high_voltage,
+            R.id.button_comet,
+            R.id.button_collision
         )
 
         for (b in buttonIds) {
@@ -572,6 +591,63 @@ class SecondKeyboard: LinearLayout {
             }
             R.id.button_new_moon_face -> {
                 inputConnection!!.commitText(context.getString(R.string.new_moon_face), 1)
+            }
+            R.id.button_full_moon -> {
+                inputConnection!!.commitText(context.getString(R.string.full_moon), 1)
+            }
+            R.id.button_waning_gibbous_moon -> {
+                inputConnection!!.commitText(context.getString(R.string.waning_gibbous_moon), 1)
+            }
+            R.id.button_last_quarter_moon -> {
+                inputConnection!!.commitText(context.getString(R.string.last_quarter_moon), 1)
+            }
+            R.id.button_waning_crescent_moon -> {
+                inputConnection!!.commitText(context.getString(R.string.waning_crescent_moon), 1)
+            }
+            R.id.button_new_moon -> {
+                inputConnection!!.commitText(context.getString(R.string.new_moon), 1)
+            }
+            R.id.button_waxing_crescent_moon -> {
+                inputConnection!!.commitText(context.getString(R.string.waxing_crescent_moon), 1)
+            }
+            R.id.button_first_quarter_moon -> {
+                inputConnection!!.commitText(context.getString(R.string.first_quarter_moon), 1)
+            }
+            R.id.button_waxing_gibbous_moon -> {
+                inputConnection!!.commitText(context.getString(R.string.waxing_gibbous_moon), 1)
+            }
+            R.id.button_crescent_moon -> {
+                inputConnection!!.commitText(context.getString(R.string.crescent_moon), 1)
+            }
+            R.id.button_globe_showing_americas -> {
+                inputConnection!!.commitText(context.getString(R.string.globe_showing_americas), 1)
+            }
+            R.id.button_globe_showing_europe_africa -> {
+                inputConnection!!.commitText(context.getString(R.string.globe_showing_europe_africa), 1)
+            }
+            R.id.button_globe_showing_asia_australia -> {
+                inputConnection!!.commitText(context.getString(R.string.globe_showing_asia_australia), 1)
+            }
+            R.id.button_dizzy -> {
+                inputConnection!!.commitText(context.getString(R.string.dizzy), 1)
+            }
+            R.id.button_white_medium_star -> {
+                inputConnection!!.commitText(context.getString(R.string.white_medium_star), 1)
+            }
+            R.id.button_glowing_star -> {
+                inputConnection!!.commitText(context.getString(R.string.glowing_star), 1)
+            }
+            R.id.button_sparkles -> {
+                inputConnection!!.commitText(context.getString(R.string.sparkles), 1)
+            }
+            R.id.button_high_voltage -> {
+                inputConnection!!.commitText(context.getString(R.string.high_voltage), 1)
+            }
+            R.id.button_comet -> {
+                inputConnection!!.commitText(context.getString(R.string.comet), 1)
+            }
+            R.id.button_collision -> {
+                inputConnection!!.commitText(context.getString(R.string.collision), 1)
             }
         }
     }
