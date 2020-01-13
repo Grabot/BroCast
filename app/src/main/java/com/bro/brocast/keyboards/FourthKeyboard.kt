@@ -109,7 +109,23 @@ class FourthKeyboard: LinearLayout {
             R.id.button_man_juggling,
             R.id.button_performing_arts,
             R.id.button_artist_palette,
-            R.id.button_clapper_board
+            R.id.button_clapper_board,
+            R.id.button_microphone,
+            R.id.button_headphone,
+            R.id.button_musical_score,
+            R.id.button_musical_keyboard,
+            R.id.button_drum,
+            R.id.button_saxophone,
+            R.id.button_trumpet,
+            R.id.button_guitar,
+            R.id.button_violin,
+            R.id.button_game_die,
+            R.id.button_chess_pawn,
+            R.id.button_direct_hit,
+            R.id.button_bowling,
+            R.id.button_video_game,
+            R.id.button_slot_machine,
+            R.id.button_jigsaw
         )
 
         for (b in buttonIds) {
@@ -346,6 +362,54 @@ class FourthKeyboard: LinearLayout {
             }
             R.id.button_clapper_board -> {
                 inputConnection!!.commitText(context.getString(R.string.clapper_board), 1)
+            }
+            R.id.button_microphone -> {
+                inputConnection!!.commitText(context.getString(R.string.microphone), 1)
+            }
+            R.id.button_headphone -> {
+                inputConnection!!.commitText(context.getString(R.string.headphone), 1)
+            }
+            R.id.button_musical_score -> {
+                inputConnection!!.commitText(context.getString(R.string.musical_score), 1)
+            }
+            R.id.button_musical_keyboard -> {
+                inputConnection!!.commitText(context.getString(R.string.musical_keyboard), 1)
+            }
+            R.id.button_drum -> {
+                inputConnection!!.commitText(context.getString(R.string.drum), 1)
+            }
+            R.id.button_saxophone -> {
+                inputConnection!!.commitText(context.getString(R.string.saxophone), 1)
+            }
+            R.id.button_trumpet -> {
+                inputConnection!!.commitText(context.getString(R.string.trumpet), 1)
+            }
+            R.id.button_guitar -> {
+                inputConnection!!.commitText(context.getString(R.string.guitar), 1)
+            }
+            R.id.button_violin -> {
+                inputConnection!!.commitText(context.getString(R.string.violin), 1)
+            }
+            R.id.button_game_die -> {
+                inputConnection!!.commitText(context.getString(R.string.game_die), 1)
+            }
+            R.id.button_chess_pawn -> {
+                inputConnection!!.commitText(context.getString(R.string.chess_pawn), 1)
+            }
+            R.id.button_direct_hit -> {
+                inputConnection!!.commitText(context.getString(R.string.direct_hit), 1)
+            }
+            R.id.button_bowling -> {
+                inputConnection!!.commitText(context.getString(R.string.bowling), 1)
+            }
+            R.id.button_video_game -> {
+                inputConnection!!.commitText(context.getString(R.string.video_game), 1)
+            }
+            R.id.button_slot_machine -> {
+                inputConnection!!.commitText(context.getString(R.string.slot_machine), 1)
+            }
+            R.id.button_jigsaw -> {
+                inputConnection!!.commitText(context.getString(R.string.jigsaw), 1)
             }
         }
     }

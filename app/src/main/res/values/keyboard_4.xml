@@ -79,4 +79,21 @@
     <string name="performing_arts">&#x1F3AD;</string>
     <string name="artist_palette">&#x1F3A8;</string>
     <string name="clapper_board">&#x1F3AC;</string>
+
+    <string name="microphone">&#x1F3A4;</string>
+    <string name="headphone">&#x1F3A7;</string>
+    <string name="musical_score">&#x1F3BC;</string>
+    <string name="musical_keyboard">&#x1F3B9;</string>
+    <string name="drum">&#x1f941;</string>
+    <string name="saxophone">&#x1F3B7;</string>
+    <string name="trumpet">&#x1F3BA;</string>
+    <string name="guitar">&#x1F3B8;</string>
+    <string name="violin">&#x1F3BB;</string>
+    <string name="game_die">&#x1F3B2;</string>
+    <string name="chess_pawn">&#x265f;</string>
+    <string name="direct_hit">&#x1F3AF;</string>
+    <string name="bowling">&#x1F3B3;</string>
+    <string name="video_game">&#x1F3AE;</string>
+    <string name="slot_machine">&#x1F3B0;</string>
+    <string name="jigsaw">&#x1f9e9;</string>
 </resources>
