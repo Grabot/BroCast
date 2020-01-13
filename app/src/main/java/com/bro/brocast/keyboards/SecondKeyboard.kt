@@ -183,7 +183,26 @@ class SecondKeyboard: LinearLayout {
             R.id.button_sparkles,
             R.id.button_high_voltage,
             R.id.button_comet,
-            R.id.button_collision
+            R.id.button_collision,
+            R.id.button_fire,
+            R.id.button_tornado,
+            R.id.button_rainbow,
+            R.id.button_sun,
+            R.id.button_sun_behind_small_cloud,
+            R.id.button_sun_behind_cloud,
+            R.id.button_sun_behind_large_cloud,
+            R.id.button_cloud,
+            R.id.button_sun_behind_rain_cloud,
+            R.id.button_cloud_with_rain,
+            R.id.button_cloud_with_lightning_and_rain,
+            R.id.button_cloud_with_lightning,
+            R.id.button_cloud_with_snow,
+            R.id.button_snowflake,
+            R.id.button_snowman,
+            R.id.button_snowman_without_snow,
+            R.id.button_wind_face,
+            R.id.button_dashing_away,
+            R.id.button_droplet
         )
 
         for (b in buttonIds) {
@@ -648,6 +667,63 @@ class SecondKeyboard: LinearLayout {
             }
             R.id.button_collision -> {
                 inputConnection!!.commitText(context.getString(R.string.collision), 1)
+            }
+            R.id.button_fire -> {
+                inputConnection!!.commitText(context.getString(R.string.fire), 1)
+            }
+            R.id.button_tornado -> {
+                inputConnection!!.commitText(context.getString(R.string.tornado), 1)
+            }
+            R.id.button_rainbow -> {
+                inputConnection!!.commitText(context.getString(R.string.rainbow), 1)
+            }
+            R.id.button_sun -> {
+                inputConnection!!.commitText(context.getString(R.string.sun), 1)
+            }
+            R.id.button_sun_behind_small_cloud -> {
+                inputConnection!!.commitText(context.getString(R.string.sun_behind_small_cloud), 1)
+            }
+            R.id.button_sun_behind_cloud -> {
+                inputConnection!!.commitText(context.getString(R.string.sun_behind_cloud), 1)
+            }
+            R.id.button_sun_behind_large_cloud -> {
+                inputConnection!!.commitText(context.getString(R.string.sun_behind_large_cloud), 1)
+            }
+            R.id.button_cloud -> {
+                inputConnection!!.commitText(context.getString(R.string.cloud), 1)
+            }
+            R.id.button_sun_behind_rain_cloud -> {
+                inputConnection!!.commitText(context.getString(R.string.sun_behind_rain_cloud), 1)
+            }
+            R.id.button_cloud_with_rain -> {
+                inputConnection!!.commitText(context.getString(R.string.cloud_with_rain), 1)
+            }
+            R.id.button_cloud_with_lightning_and_rain -> {
+                inputConnection!!.commitText(context.getString(R.string.cloud_with_lightning_and_rain), 1)
+            }
+            R.id.button_cloud_with_lightning -> {
+                inputConnection!!.commitText(context.getString(R.string.cloud_with_lightning), 1)
+            }
+            R.id.button_cloud_with_snow -> {
+                inputConnection!!.commitText(context.getString(R.string.cloud_with_snow), 1)
+            }
+            R.id.button_snowflake -> {
+                inputConnection!!.commitText(context.getString(R.string.snowflake), 1)
+            }
+            R.id.button_snowman -> {
+                inputConnection!!.commitText(context.getString(R.string.snowman), 1)
+            }
+            R.id.button_snowman_without_snow -> {
+                inputConnection!!.commitText(context.getString(R.string.snowman_without_snow), 1)
+            }
+            R.id.button_wind_face -> {
+                inputConnection!!.commitText(context.getString(R.string.wind_face), 1)
+            }
+            R.id.button_dashing_away -> {
+                inputConnection!!.commitText(context.getString(R.string.dashing_away), 1)
+            }
+            R.id.button_droplet -> {
+                inputConnection!!.commitText(context.getString(R.string.droplet), 1)
             }
         }
     }
