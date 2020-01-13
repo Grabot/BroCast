@@ -113,7 +113,26 @@ class ThirdKeyboard: LinearLayout {
             R.id.button_cupcake,
             R.id.button_shortcake,
             R.id.button_birthday_cake,
-            R.id.button_custard
+            R.id.button_custard,
+            R.id.button_lollipop,
+            R.id.button_candy,
+            R.id.button_chocolate_bar,
+            R.id.button_popcorn,
+            R.id.button_doughnut,
+            R.id.button_cookie,
+            R.id.button_chestnut,
+            R.id.button_peanuts,
+            R.id.button_honey_pot,
+            R.id.button_glass_of_milk,
+            R.id.button_baby_bottle,
+            R.id.button_hot_beverage,
+            R.id.button_teacup_without_handle,
+            R.id.button_cup_with_straw,
+            R.id.button_sake,
+            R.id.button_beer_mug,
+            R.id.button_clinking_beer_mugs,
+            R.id.button_clinking_glasses,
+            R.id.button_wine_glass
         )
 
         for (b in buttonIds) {
@@ -350,6 +369,63 @@ class ThirdKeyboard: LinearLayout {
             }
             R.id.button_custard -> {
                 inputConnection!!.commitText(context.getString(R.string.custard), 1)
+            }
+            R.id.button_lollipop -> {
+                inputConnection!!.commitText(context.getString(R.string.lollipop), 1)
+            }
+            R.id.button_candy -> {
+                inputConnection!!.commitText(context.getString(R.string.candy), 1)
+            }
+            R.id.button_chocolate_bar -> {
+                inputConnection!!.commitText(context.getString(R.string.chocolate_bar), 1)
+            }
+            R.id.button_popcorn -> {
+                inputConnection!!.commitText(context.getString(R.string.popcorn), 1)
+            }
+            R.id.button_doughnut -> {
+                inputConnection!!.commitText(context.getString(R.string.doughnut), 1)
+            }
+            R.id.button_cookie -> {
+                inputConnection!!.commitText(context.getString(R.string.cookie), 1)
+            }
+            R.id.button_chestnut -> {
+                inputConnection!!.commitText(context.getString(R.string.chestnut), 1)
+            }
+            R.id.button_peanuts -> {
+                inputConnection!!.commitText(context.getString(R.string.peanuts), 1)
+            }
+            R.id.button_honey_pot -> {
+                inputConnection!!.commitText(context.getString(R.string.honey_pot), 1)
+            }
+            R.id.button_glass_of_milk -> {
+                inputConnection!!.commitText(context.getString(R.string.glass_of_milk), 1)
+            }
+            R.id.button_baby_bottle -> {
+                inputConnection!!.commitText(context.getString(R.string.baby_bottle), 1)
+            }
+            R.id.button_hot_beverage -> {
+                inputConnection!!.commitText(context.getString(R.string.hot_beverage), 1)
+            }
+            R.id.button_teacup_without_handle -> {
+                inputConnection!!.commitText(context.getString(R.string.teacup_without_handle), 1)
+            }
+            R.id.button_cup_with_straw -> {
+                inputConnection!!.commitText(context.getString(R.string.cup_with_straw), 1)
+            }
+            R.id.button_sake -> {
+                inputConnection!!.commitText(context.getString(R.string.sake), 1)
+            }
+            R.id.button_beer_mug -> {
+                inputConnection!!.commitText(context.getString(R.string.beer_mug), 1)
+            }
+            R.id.button_clinking_beer_mugs -> {
+                inputConnection!!.commitText(context.getString(R.string.clinking_beer_mugs), 1)
+            }
+            R.id.button_clinking_glasses -> {
+                inputConnection!!.commitText(context.getString(R.string.clinking_glasses), 1)
+            }
+            R.id.button_wine_glass -> {
+                inputConnection!!.commitText(context.getString(R.string.wine_glass), 1)
             }
         }
     }

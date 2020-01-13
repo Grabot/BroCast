@@ -79,4 +79,24 @@
     <string name="shortcake">&#x1F370;</string>
     <string name="birthday_cake">&#x1F382;</string>
     <string name="custard">&#x1F36E;</string>
+
+    <string name="lollipop">&#x1F36D;</string>
+    <string name="candy">&#x1F36C;</string>
+    <string name="chocolate_bar">&#x1F36B;</string>
+    <string name="popcorn">&#x1f37f;</string>
+    <string name="doughnut">&#x1F369;</string>
+    <string name="cookie">&#x1F36A;</string>
+    <string name="chestnut">&#x1F330;</string>
+    <string name="peanuts">&#x1f95c;</string>
+    <string name="honey_pot">&#x1F36F;</string>
+    <string name="glass_of_milk">&#x1f95b;</string>
+    <string name="baby_bottle">&#x1f37c;</string>
+    <string name="hot_beverage">&#x2615;</string>
+    <string name="teacup_without_handle">&#x1F375;</string>
+    <string name="cup_with_straw">&#x1f964;</string>
+    <string name="sake">&#x1F376;</string>
+    <string name="beer_mug">&#x1F37A;</string>
+    <string name="clinking_beer_mugs">&#x1F37B;</string>
+    <string name="clinking_glasses">&#x1f942;</string>
+    <string name="wine_glass">&#x1F377;</string>
 </resources>
