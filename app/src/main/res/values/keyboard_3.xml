@@ -59,4 +59,24 @@
     <string name="pot_of_food">&#x1F372;</string>
     <string name="curry_rice">&#x1F35B;</string>
     <string name="sushi">&#x1F363;</string>
+
+    <string name="bento_box">&#x1F371;</string>
+    <string name="dumpling">&#x1f95f;</string>
+    <string name="fried_shrimp">&#x1F364;</string>
+    <string name="rice_ball">&#x1F359;</string>
+    <string name="cooked_rice">&#x1F35A;</string>
+    <string name="rice_cracker">&#x1F358;</string>
+    <string name="fish_cake_with_swirl">&#x1F365;</string>
+    <string name="fortune_cookie">&#x1f960;</string>
+    <string name="moon_cake">&#x1f96e;</string>
+    <string name="oden">&#x1F362;</string>
+    <string name="dango">&#x1F361;</string>
+    <string name="shaved_ice">&#x1F367;</string>
+    <string name="ice_cream">&#x1F368;</string>
+    <string name="soft_ice_cream">&#x1F366;</string>
+    <string name="pie">&#x1f967;</string>
+    <string name="cupcake">&#x1f9c1;</string>
+    <string name="shortcake">&#x1F370;</string>
+    <string name="birthday_cake">&#x1F382;</string>
+    <string name="custard">&#x1F36E;</string>
 </resources>
