@@ -39,4 +39,24 @@
     <string name="man_cartwheeling">&#x1f938;&#x200d;&#x2642;&#xfe0f;</string>
     <string name="woman_bouncing_ball">&#x26f9;&#xfe0f;&#x200d;&#x2640;&#xfe0f;</string>
     <string name="man_bouncing_ball">&#x26f9;</string>
+
+    <string name="person_fencing">&#x1f93a;</string>
+    <string name="woman_playing_handball">&#x1f93e;&#x200d;&#x2640;&#xfe0f;</string>
+    <string name="man_playing_handball">&#x1f93e;&#x200d;&#x2642;&#xfe0f;</string>
+    <string name="woman_golfing">&#x1f3cc;&#xfe0f;&#x200d;&#x2640;&#xfe0f;</string>
+    <string name="man_golfing">&#x1f3cc;</string>
+    <string name="horse_racing">&#x1f3c7;</string>
+    <string name="woman_in_lotus_position">&#x1f9d8;&#x200d;&#x2640;&#xfe0f;</string>
+    <string name="man_in_lotus_position">&#x1f9d8;&#x200d;&#x2642;&#xfe0f;</string>
+    <string name="woman_surfing">&#x1f3c4;&#x200d;&#x2640;&#xfe0f;</string>
+    <string name="man_surfing">&#x1F3C4;</string>
+    <string name="woman_swimming">&#x1f3ca;&#x200d;&#x2640;&#xfe0f;</string>
+    <string name="man_swimming">&#x1F3CA;</string>
+    <string name="woman_playing_water_polo">&#x1f93d;&#x200d;&#x2640;&#xfe0f;</string>
+    <string name="man_playing_water_polo">&#x1f93d;&#x200d;&#x2642;&#xfe0f;</string>
+    <string name="woman_rowing_boat">&#x1f6a3;&#x200d;&#x2640;&#xfe0f;</string>
+    <string name="man_rowing_boat">&#x1f6a3;</string>
+    <string name="woman_climbing">&#x1f9d7;&#x200d;&#x2640;&#xfe0f;</string>
+    <string name="man_climbing">&#x1f9d7;&#x200d;&#x2642;&#xfe0f;</string>
+    <string name="woman_mountain_biking">&#x1f6b5;&#x200d;&#x2640;&#xfe0f;</string>
 </resources>

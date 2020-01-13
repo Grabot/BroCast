@@ -71,7 +71,26 @@ class FourthKeyboard: LinearLayout {
             R.id.button_woman_cartwheeling,
             R.id.button_man_cartwheeling,
             R.id.button_woman_bouncing_ball,
-            R.id.button_man_bouncing_ball
+            R.id.button_man_bouncing_ball,
+            R.id.button_person_fencing,
+            R.id.button_woman_playing_handball,
+            R.id.button_man_playing_handball,
+            R.id.button_woman_golfing,
+            R.id.button_man_golfing,
+            R.id.button_horse_racing,
+            R.id.button_woman_in_lotus_position,
+            R.id.button_man_in_lotus_position,
+            R.id.button_woman_surfing,
+            R.id.button_man_surfing,
+            R.id.button_woman_swimming,
+            R.id.button_man_swimming,
+            R.id.button_woman_playing_water_polo,
+            R.id.button_man_playing_water_polo,
+            R.id.button_woman_rowing_boat,
+            R.id.button_man_rowing_boat,
+            R.id.button_woman_climbing,
+            R.id.button_man_climbing,
+            R.id.button_woman_mountain_biking
         )
 
         for (b in buttonIds) {
@@ -194,6 +213,63 @@ class FourthKeyboard: LinearLayout {
             }
             R.id.button_man_bouncing_ball -> {
                 inputConnection!!.commitText(context.getString(R.string.man_bouncing_ball), 1)
+            }
+            R.id.button_person_fencing -> {
+                inputConnection!!.commitText(context.getString(R.string.person_fencing), 1)
+            }
+            R.id.button_woman_playing_handball -> {
+                inputConnection!!.commitText(context.getString(R.string.woman_playing_handball), 1)
+            }
+            R.id.button_man_playing_handball -> {
+                inputConnection!!.commitText(context.getString(R.string.man_playing_handball), 1)
+            }
+            R.id.button_woman_golfing -> {
+                inputConnection!!.commitText(context.getString(R.string.woman_golfing), 1)
+            }
+            R.id.button_man_golfing -> {
+                inputConnection!!.commitText(context.getString(R.string.man_golfing), 1)
+            }
+            R.id.button_horse_racing -> {
+                inputConnection!!.commitText(context.getString(R.string.horse_racing), 1)
+            }
+            R.id.button_woman_in_lotus_position -> {
+                inputConnection!!.commitText(context.getString(R.string.woman_in_lotus_position), 1)
+            }
+            R.id.button_man_in_lotus_position -> {
+                inputConnection!!.commitText(context.getString(R.string.man_in_lotus_position), 1)
+            }
+            R.id.button_woman_surfing -> {
+                inputConnection!!.commitText(context.getString(R.string.woman_surfing), 1)
+            }
+            R.id.button_man_surfing -> {
+                inputConnection!!.commitText(context.getString(R.string.man_surfing), 1)
+            }
+            R.id.button_woman_swimming -> {
+                inputConnection!!.commitText(context.getString(R.string.woman_swimming), 1)
+            }
+            R.id.button_man_swimming -> {
+                inputConnection!!.commitText(context.getString(R.string.man_swimming), 1)
+            }
+            R.id.button_woman_playing_water_polo -> {
+                inputConnection!!.commitText(context.getString(R.string.woman_playing_water_polo), 1)
+            }
+            R.id.button_man_playing_water_polo -> {
+                inputConnection!!.commitText(context.getString(R.string.man_playing_water_polo), 1)
+            }
+            R.id.button_woman_rowing_boat -> {
+                inputConnection!!.commitText(context.getString(R.string.woman_rowing_boat), 1)
+            }
+            R.id.button_man_rowing_boat -> {
+                inputConnection!!.commitText(context.getString(R.string.man_rowing_boat), 1)
+            }
+            R.id.button_woman_climbing -> {
+                inputConnection!!.commitText(context.getString(R.string.woman_climbing), 1)
+            }
+            R.id.button_man_climbing -> {
+                inputConnection!!.commitText(context.getString(R.string.man_climbing), 1)
+            }
+            R.id.button_woman_mountain_biking -> {
+                inputConnection!!.commitText(context.getString(R.string.woman_mountain_biking), 1)
             }
         }
     }
