@@ -19,4 +19,24 @@
     <string name="tomato">&#x1F345;</string>
     <string name="eggplant">&#x1F346;</string>
     <string name="avocado">&#x1f951;</string>
+
+    <string name="broccoli">&#x1f966;</string>
+    <string name="leafy_green">&#x1f96c;</string>
+    <string name="cucumber">&#x1f952;</string>
+    <string name="hot_pepper">&#x1f336;</string>
+    <string name="ear_of_corn">&#x1F33D;</string>
+    <string name="carrot">&#x1f955;</string>
+    <string name="potato">&#x1f954;</string>
+    <string name="roasted_sweet_potato">&#x1F360;</string>
+    <string name="croissant">&#x1f950;</string>
+    <string name="bagel">&#x1f96f;</string>
+    <string name="bread">&#x1F35E;</string>
+    <string name="baguette_bread">&#x1f956;</string>
+    <string name="pretzel">&#x1f968;</string>
+    <string name="cheese_wedge">&#x1f9c0;</string>
+    <string name="egg">&#x1f95a;</string>
+    <string name="cooking">&#x1F373;</string>
+    <string name="pancakes">&#x1f95e;</string>
+    <string name="bacon">&#x1f953;</string>
+    <string name="cut_of_meat">&#x1f969;</string>
 </resources>

@@ -56,7 +56,26 @@ class ThirdKeyboard: LinearLayout {
             R.id.button_kiwi_fruit,
             R.id.button_tomato,
             R.id.button_eggplant,
-            R.id.button_avocado
+            R.id.button_avocado,
+            R.id.button_broccoli,
+            R.id.button_leafy_green,
+            R.id.button_cucumber,
+            R.id.button_hot_pepper,
+            R.id.button_ear_of_corn,
+            R.id.button_carrot,
+            R.id.button_potato,
+            R.id.button_roasted_sweet_potato,
+            R.id.button_croissant,
+            R.id.button_bagel,
+            R.id.button_bread,
+            R.id.button_baguette_bread,
+            R.id.button_pretzel,
+            R.id.button_cheese_wedge,
+            R.id.button_egg,
+            R.id.button_cooking,
+            R.id.button_pancakes,
+            R.id.button_bacon,
+            R.id.button_cut_of_meat
         )
 
         for (b in buttonIds) {
@@ -122,6 +141,63 @@ class ThirdKeyboard: LinearLayout {
             }
             R.id.button_avocado -> {
                 inputConnection!!.commitText(context.getString(R.string.avocado), 1)
+            }
+            R.id.button_broccoli -> {
+                inputConnection!!.commitText(context.getString(R.string.broccoli), 1)
+            }
+            R.id.button_leafy_green -> {
+                inputConnection!!.commitText(context.getString(R.string.leafy_green), 1)
+            }
+            R.id.button_cucumber -> {
+                inputConnection!!.commitText(context.getString(R.string.cucumber), 1)
+            }
+            R.id.button_hot_pepper -> {
+                inputConnection!!.commitText(context.getString(R.string.hot_pepper), 1)
+            }
+            R.id.button_ear_of_corn -> {
+                inputConnection!!.commitText(context.getString(R.string.ear_of_corn), 1)
+            }
+            R.id.button_carrot -> {
+                inputConnection!!.commitText(context.getString(R.string.carrot), 1)
+            }
+            R.id.button_potato -> {
+                inputConnection!!.commitText(context.getString(R.string.potato), 1)
+            }
+            R.id.button_roasted_sweet_potato -> {
+                inputConnection!!.commitText(context.getString(R.string.roasted_sweet_potato), 1)
+            }
+            R.id.button_croissant -> {
+                inputConnection!!.commitText(context.getString(R.string.croissant), 1)
+            }
+            R.id.button_bagel -> {
+                inputConnection!!.commitText(context.getString(R.string.bagel), 1)
+            }
+            R.id.button_bread -> {
+                inputConnection!!.commitText(context.getString(R.string.bread), 1)
+            }
+            R.id.button_baguette_bread -> {
+                inputConnection!!.commitText(context.getString(R.string.baguette_bread), 1)
+            }
+            R.id.button_pretzel -> {
+                inputConnection!!.commitText(context.getString(R.string.pretzel), 1)
+            }
+            R.id.button_cheese_wedge -> {
+                inputConnection!!.commitText(context.getString(R.string.cheese_wedge), 1)
+            }
+            R.id.button_egg -> {
+                inputConnection!!.commitText(context.getString(R.string.egg), 1)
+            }
+            R.id.button_cooking -> {
+                inputConnection!!.commitText(context.getString(R.string.cooking), 1)
+            }
+            R.id.button_pancakes -> {
+                inputConnection!!.commitText(context.getString(R.string.pancakes), 1)
+            }
+            R.id.button_bacon -> {
+                inputConnection!!.commitText(context.getString(R.string.bacon), 1)
+            }
+            R.id.button_cut_of_meat -> {
+                inputConnection!!.commitText(context.getString(R.string.cut_of_meat), 1)
             }
         }
     }
