@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="green_apple">&#x1F34F;</string>
+    <string name="red_apple">&#x1F34E;</string>
+    <string name="pear">&#x1f350;</string>
+    <string name="tangerine">&#x1F34A;</string>
+    <string name="lemon">&#x1f34b;</string>
+    <string name="banana">&#x1F34C;</string>
+    <string name="watermelon">&#x1F349;</string>
+    <string name="grapes">&#x1F347;</string>
+    <string name="strawberry">&#x1F353;</string>
+    <string name="melon">&#x1F348;</string>
+    <string name="cherries">&#x1F352;</string>
+    <string name="peach">&#x1F351;</string>
+    <string name="mango">&#x1f96d;</string>
+    <string name="pineapple">&#x1F34D;</string>
+    <string name="coconut">&#x1f965;</string>
+    <string name="kiwi_fruit">&#x1f95d;</string>
+    <string name="tomato">&#x1F345;</string>
+    <string name="eggplant">&#x1F346;</string>
+    <string name="avocado">&#x1f951;</string>
+</resources>
