@@ -90,7 +90,26 @@ class FourthKeyboard: LinearLayout {
             R.id.button_man_rowing_boat,
             R.id.button_woman_climbing,
             R.id.button_man_climbing,
-            R.id.button_woman_mountain_biking
+            R.id.button_woman_mountain_biking,
+            R.id.button_man_mountain_biking,
+            R.id.button_woman_biking,
+            R.id.button_man_biking,
+            R.id.button_trophy,
+            R.id.button_first_place_medal,
+            R.id.button_second_place_medal,
+            R.id.button_third_place_medal,
+            R.id.button_sports_medal,
+            R.id.button_military_medal,
+            R.id.button_rosette,
+            R.id.button_reminder_ribbon,
+            R.id.button_ticket,
+            R.id.button_admission_tickets,
+            R.id.button_circus_tent,
+            R.id.button_woman_juggling,
+            R.id.button_man_juggling,
+            R.id.button_performing_arts,
+            R.id.button_artist_palette,
+            R.id.button_clapper_board
         )
 
         for (b in buttonIds) {
@@ -270,6 +289,63 @@ class FourthKeyboard: LinearLayout {
             }
             R.id.button_woman_mountain_biking -> {
                 inputConnection!!.commitText(context.getString(R.string.woman_mountain_biking), 1)
+            }
+            R.id.button_man_mountain_biking -> {
+                inputConnection!!.commitText(context.getString(R.string.man_mountain_biking), 1)
+            }
+            R.id.button_woman_biking -> {
+                inputConnection!!.commitText(context.getString(R.string.woman_biking), 1)
+            }
+            R.id.button_man_biking -> {
+                inputConnection!!.commitText(context.getString(R.string.man_biking), 1)
+            }
+            R.id.button_trophy -> {
+                inputConnection!!.commitText(context.getString(R.string.trophy), 1)
+            }
+            R.id.button_first_place_medal -> {
+                inputConnection!!.commitText(context.getString(R.string.first_place_medal), 1)
+            }
+            R.id.button_second_place_medal -> {
+                inputConnection!!.commitText(context.getString(R.string.second_place_medal), 1)
+            }
+            R.id.button_third_place_medal -> {
+                inputConnection!!.commitText(context.getString(R.string.third_place_medal), 1)
+            }
+            R.id.button_sports_medal -> {
+                inputConnection!!.commitText(context.getString(R.string.sports_medal), 1)
+            }
+            R.id.button_military_medal -> {
+                inputConnection!!.commitText(context.getString(R.string.military_medal), 1)
+            }
+            R.id.button_rosette -> {
+                inputConnection!!.commitText(context.getString(R.string.rosette), 1)
+            }
+            R.id.button_reminder_ribbon -> {
+                inputConnection!!.commitText(context.getString(R.string.reminder_ribbon), 1)
+            }
+            R.id.button_ticket -> {
+                inputConnection!!.commitText(context.getString(R.string.ticket), 1)
+            }
+            R.id.button_admission_tickets -> {
+                inputConnection!!.commitText(context.getString(R.string.admission_tickets), 1)
+            }
+            R.id.button_circus_tent -> {
+                inputConnection!!.commitText(context.getString(R.string.circus_tent), 1)
+            }
+            R.id.button_woman_juggling -> {
+                inputConnection!!.commitText(context.getString(R.string.woman_juggling), 1)
+            }
+            R.id.button_man_juggling -> {
+                inputConnection!!.commitText(context.getString(R.string.man_juggling), 1)
+            }
+            R.id.button_performing_arts -> {
+                inputConnection!!.commitText(context.getString(R.string.performing_arts), 1)
+            }
+            R.id.button_artist_palette -> {
+                inputConnection!!.commitText(context.getString(R.string.artist_palette), 1)
+            }
+            R.id.button_clapper_board -> {
+                inputConnection!!.commitText(context.getString(R.string.clapper_board), 1)
             }
         }
     }

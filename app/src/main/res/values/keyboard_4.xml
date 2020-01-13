@@ -59,4 +59,24 @@
     <string name="woman_climbing">&#x1f9d7;&#x200d;&#x2640;&#xfe0f;</string>
     <string name="man_climbing">&#x1f9d7;&#x200d;&#x2642;&#xfe0f;</string>
     <string name="woman_mountain_biking">&#x1f6b5;&#x200d;&#x2640;&#xfe0f;</string>
+
+    <string name="man_mountain_biking">&#x1f6b5;</string>
+    <string name="woman_biking">&#x1f6b4;&#x200d;&#x2640;&#xfe0f;</string>
+    <string name="man_biking">&#x1f6b4;</string>
+    <string name="trophy">&#x1F3C6;</string>
+    <string name="first_place_medal">&#x1f947;</string>
+    <string name="second_place_medal">&#x1f948;</string>
+    <string name="third_place_medal">&#x1f949;</string>
+    <string name="sports_medal">&#x1f3c5;</string>
+    <string name="military_medal">&#x1f396;</string>
+    <string name="rosette">&#x1f3f5;</string>
+    <string name="reminder_ribbon">&#x1f397;</string>
+    <string name="ticket">&#x1F3AB;</string>
+    <string name="admission_tickets">&#x1f39f;</string>
+    <string name="circus_tent">&#x1F3AA;</string>
+    <string name="woman_juggling">&#x1f939;&#x200d;&#x2640;&#xfe0f;</string>
+    <string name="man_juggling">&#x1f939;&#x200d;&#x2642;&#xfe0f;</string>
+    <string name="performing_arts">&#x1F3AD;</string>
+    <string name="artist_palette">&#x1F3A8;</string>
+    <string name="clapper_board">&#x1F3AC;</string>
 </resources>
