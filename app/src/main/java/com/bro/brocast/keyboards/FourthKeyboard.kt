@@ -52,7 +52,26 @@ class FourthKeyboard: LinearLayout {
             R.id.button_cricket_sport,
             R.id.button_goal_net,
             R.id.button_flag_in_hole,
-            R.id.button_bow_and_arrow
+            R.id.button_bow_and_arrow,
+            R.id.button_fishing_pole,
+            R.id.button_boxing_glove,
+            R.id.button_martial_arts_uniform,
+            R.id.button_running_shirt,
+            R.id.button_skateboard,
+            R.id.button_sled,
+            R.id.button_ice_skate,
+            R.id.button_curling_stone,
+            R.id.button_skis,
+            R.id.button_skier,
+            R.id.button_snowboarder,
+            R.id.button_woman_lifting_weights,
+            R.id.button_man_lifting_weights,
+            R.id.button_women_wrestling,
+            R.id.button_men_wrestling,
+            R.id.button_woman_cartwheeling,
+            R.id.button_man_cartwheeling,
+            R.id.button_woman_bouncing_ball,
+            R.id.button_man_bouncing_ball
         )
 
         for (b in buttonIds) {
@@ -118,6 +137,63 @@ class FourthKeyboard: LinearLayout {
             }
             R.id.button_bow_and_arrow -> {
                 inputConnection!!.commitText(context.getString(R.string.bow_and_arrow), 1)
+            }
+            R.id.button_fishing_pole -> {
+                inputConnection!!.commitText(context.getString(R.string.fishing_pole), 1)
+            }
+            R.id.button_boxing_glove -> {
+                inputConnection!!.commitText(context.getString(R.string.boxing_glove), 1)
+            }
+            R.id.button_martial_arts_uniform -> {
+                inputConnection!!.commitText(context.getString(R.string.martial_arts_uniform), 1)
+            }
+            R.id.button_running_shirt -> {
+                inputConnection!!.commitText(context.getString(R.string.running_shirt), 1)
+            }
+            R.id.button_skateboard -> {
+                inputConnection!!.commitText(context.getString(R.string.skateboard), 1)
+            }
+            R.id.button_sled -> {
+                inputConnection!!.commitText(context.getString(R.string.sled), 1)
+            }
+            R.id.button_ice_skate -> {
+                inputConnection!!.commitText(context.getString(R.string.ice_skate), 1)
+            }
+            R.id.button_curling_stone -> {
+                inputConnection!!.commitText(context.getString(R.string.curling_stone), 1)
+            }
+            R.id.button_skis -> {
+                inputConnection!!.commitText(context.getString(R.string.skis), 1)
+            }
+            R.id.button_skier -> {
+                inputConnection!!.commitText(context.getString(R.string.skier), 1)
+            }
+            R.id.button_snowboarder -> {
+                inputConnection!!.commitText(context.getString(R.string.snowboarder), 1)
+            }
+            R.id.button_woman_lifting_weights -> {
+                inputConnection!!.commitText(context.getString(R.string.woman_lifting_weights), 1)
+            }
+            R.id.button_man_lifting_weights -> {
+                inputConnection!!.commitText(context.getString(R.string.man_lifting_weights), 1)
+            }
+            R.id.button_women_wrestling -> {
+                inputConnection!!.commitText(context.getString(R.string.women_wrestling), 1)
+            }
+            R.id.button_men_wrestling -> {
+                inputConnection!!.commitText(context.getString(R.string.men_wrestling), 1)
+            }
+            R.id.button_woman_cartwheeling -> {
+                inputConnection!!.commitText(context.getString(R.string.woman_cartwheeling), 1)
+            }
+            R.id.button_man_cartwheeling -> {
+                inputConnection!!.commitText(context.getString(R.string.man_cartwheeling), 1)
+            }
+            R.id.button_woman_bouncing_ball -> {
+                inputConnection!!.commitText(context.getString(R.string.woman_bouncing_ball), 1)
+            }
+            R.id.button_man_bouncing_ball -> {
+                inputConnection!!.commitText(context.getString(R.string.man_bouncing_ball), 1)
             }
         }
     }
