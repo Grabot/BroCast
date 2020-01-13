@@ -126,7 +126,26 @@ class SecondKeyboard: LinearLayout {
             R.id.button_swan,
             R.id.button_dove,
             R.id.button_rabbit,
-            R.id.button_raccoon
+            R.id.button_raccoon,
+            R.id.button_badger,
+            R.id.button_mouse,
+            R.id.button_rat,
+            R.id.button_chipmunk,
+            R.id.button_hedgehog,
+            R.id.button_paw_prints,
+            R.id.button_dragon,
+            R.id.button_dragon_face,
+            R.id.button_cactus,
+            R.id.button_christmas_tree,
+            R.id.button_evergreen_tree,
+            R.id.button_deciduous_tree,
+            R.id.button_palm_tree,
+            R.id.button_seedling,
+            R.id.button_herb,
+            R.id.button_shamrock,
+            R.id.button_four_leaf_clover,
+            R.id.button_pine_decoration,
+            R.id.button_tanabata_tree
         )
 
         for (b in buttonIds) {
@@ -420,6 +439,63 @@ class SecondKeyboard: LinearLayout {
             }
             R.id.button_raccoon -> {
                 inputConnection!!.commitText(context.getString(R.string.raccoon), 1)
+            }
+            R.id.button_badger -> {
+                inputConnection!!.commitText(context.getString(R.string.badger), 1)
+            }
+            R.id.button_mouse -> {
+                inputConnection!!.commitText(context.getString(R.string.mouse), 1)
+            }
+            R.id.button_rat -> {
+                inputConnection!!.commitText(context.getString(R.string.rat), 1)
+            }
+            R.id.button_chipmunk -> {
+                inputConnection!!.commitText(context.getString(R.string.chipmunk), 1)
+            }
+            R.id.button_hedgehog -> {
+                inputConnection!!.commitText(context.getString(R.string.hedgehog), 1)
+            }
+            R.id.button_paw_prints -> {
+                inputConnection!!.commitText(context.getString(R.string.paw_prints), 1)
+            }
+            R.id.button_dragon -> {
+                inputConnection!!.commitText(context.getString(R.string.dragon), 1)
+            }
+            R.id.button_dragon_face -> {
+                inputConnection!!.commitText(context.getString(R.string.dragon_face), 1)
+            }
+            R.id.button_cactus -> {
+                inputConnection!!.commitText(context.getString(R.string.cactus), 1)
+            }
+            R.id.button_christmas_tree -> {
+                inputConnection!!.commitText(context.getString(R.string.christmas_tree), 1)
+            }
+            R.id.button_evergreen_tree -> {
+                inputConnection!!.commitText(context.getString(R.string.evergreen_tree), 1)
+            }
+            R.id.button_deciduous_tree -> {
+                inputConnection!!.commitText(context.getString(R.string.deciduous_tree), 1)
+            }
+            R.id.button_palm_tree -> {
+                inputConnection!!.commitText(context.getString(R.string.palm_tree), 1)
+            }
+            R.id.button_seedling -> {
+                inputConnection!!.commitText(context.getString(R.string.seedling), 1)
+            }
+            R.id.button_herb -> {
+                inputConnection!!.commitText(context.getString(R.string.herb), 1)
+            }
+            R.id.button_shamrock -> {
+                inputConnection!!.commitText(context.getString(R.string.shamrock), 1)
+            }
+            R.id.button_four_leaf_clover -> {
+                inputConnection!!.commitText(context.getString(R.string.four_leaf_clover), 1)
+            }
+            R.id.button_pine_decoration -> {
+                inputConnection!!.commitText(context.getString(R.string.pine_decoration), 1)
+            }
+            R.id.button_tanabata_tree -> {
+                inputConnection!!.commitText(context.getString(R.string.tanabata_tree), 1)
             }
         }
     }

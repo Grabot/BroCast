@@ -99,4 +99,24 @@
     <string name="dove">&#x1f54a;</string>
     <string name="rabbit">&#x1f407;</string>
     <string name="raccoon">&#x1f99d;</string>
+
+    <string name="badger">&#x1f9a1;</string>
+    <string name="mouse">&#x1f401;</string>
+    <string name="rat">&#x1f400;</string>
+    <string name="chipmunk">&#x1f43f;</string>
+    <string name="hedgehog">&#x1f994;</string>
+    <string name="paw_prints">&#x1F43E;</string>
+    <string name="dragon">&#x1f409;</string>
+    <string name="dragon_face">&#x1F432;</string>
+    <string name="cactus">&#x1F335;</string>
+    <string name="christmas_tree">&#x1F384;</string>
+    <string name="evergreen_tree">&#x1f332;</string>
+    <string name="deciduous_tree">&#x1f333;</string>
+    <string name="palm_tree">&#x1F334;</string>
+    <string name="seedling">&#x1F331;</string>
+    <string name="herb">&#x1F33F;</string>
+    <string name="shamrock">&#x2618;</string>
+    <string name="four_leaf_clover">&#x1F340;</string>
+    <string name="pine_decoration">&#x1F38D;</string>
+    <string name="tanabata_tree">&#x1F38B;</string>
 </resources>
