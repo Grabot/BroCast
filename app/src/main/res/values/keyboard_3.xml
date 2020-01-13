@@ -39,4 +39,24 @@
     <string name="pancakes">&#x1f95e;</string>
     <string name="bacon">&#x1f953;</string>
     <string name="cut_of_meat">&#x1f969;</string>
+
+    <string name="poultry_leg">&#x1F357;</string>
+    <string name="meat_on_bone">&#x1F356;</string>
+    <string name="bone">&#x1f9b4;</string>
+    <string name="hot_dog">&#x1f32d;</string>
+    <string name="hamburger">&#x1F354;</string>
+    <string name="french_fries">&#x1F35F;</string>
+    <string name="pizza">&#x1F355;</string>
+    <string name="sandwich">&#x1f96a;</string>
+    <string name="stuffed_flatbread">&#x1f959;</string>
+    <string name="taco">&#x1f32e;</string>
+    <string name="burrito">&#x1f32f;</string>
+    <string name="green_salad">&#x1f957;</string>
+    <string name="shallow_pan_of_food">&#x1f958;</string>
+    <string name="canned_food">&#x1f96b;</string>
+    <string name="spaghetti">&#x1F35D;</string>
+    <string name="steaming_bowl">&#x1F35C;</string>
+    <string name="pot_of_food">&#x1F372;</string>
+    <string name="curry_rice">&#x1F35B;</string>
+    <string name="sushi">&#x1F363;</string>
 </resources>
