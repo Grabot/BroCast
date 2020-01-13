@@ -145,7 +145,26 @@ class SecondKeyboard: LinearLayout {
             R.id.button_shamrock,
             R.id.button_four_leaf_clover,
             R.id.button_pine_decoration,
-            R.id.button_tanabata_tree
+            R.id.button_tanabata_tree,
+            R.id.button_leaf_fluttering_in_wind,
+            R.id.button_fallen_leaf,
+            R.id.button_maple_leaf,
+            R.id.button_mushroom,
+            R.id.button_spiral_shell,
+            R.id.button_sheaf_of_rice,
+            R.id.button_bouquet,
+            R.id.button_tulip,
+            R.id.button_rose,
+            R.id.button_wilted_flower,
+            R.id.button_hibiscus,
+            R.id.button_cherry_blossom,
+            R.id.button_blossom,
+            R.id.button_sunflower,
+            R.id.button_sun_with_face,
+            R.id.button_full_moon_with_face,
+            R.id.button_first_quarter_moon_with_face,
+            R.id.button_last_quarter_moon_with_face,
+            R.id.button_new_moon_face
         )
 
         for (b in buttonIds) {
@@ -496,6 +515,63 @@ class SecondKeyboard: LinearLayout {
             }
             R.id.button_tanabata_tree -> {
                 inputConnection!!.commitText(context.getString(R.string.tanabata_tree), 1)
+            }
+            R.id.button_leaf_fluttering_in_wind -> {
+                inputConnection!!.commitText(context.getString(R.string.leaf_fluttering_in_wind), 1)
+            }
+            R.id.button_fallen_leaf -> {
+                inputConnection!!.commitText(context.getString(R.string.fallen_leaf), 1)
+            }
+            R.id.button_maple_leaf -> {
+                inputConnection!!.commitText(context.getString(R.string.maple_leaf), 1)
+            }
+            R.id.button_mushroom -> {
+                inputConnection!!.commitText(context.getString(R.string.mushroom), 1)
+            }
+            R.id.button_spiral_shell -> {
+                inputConnection!!.commitText(context.getString(R.string.spiral_shell), 1)
+            }
+            R.id.button_sheaf_of_rice -> {
+                inputConnection!!.commitText(context.getString(R.string.sheaf_of_rice), 1)
+            }
+            R.id.button_bouquet -> {
+                inputConnection!!.commitText(context.getString(R.string.bouquet), 1)
+            }
+            R.id.button_tulip -> {
+                inputConnection!!.commitText(context.getString(R.string.tulip), 1)
+            }
+            R.id.button_rose -> {
+                inputConnection!!.commitText(context.getString(R.string.rose), 1)
+            }
+            R.id.button_wilted_flower -> {
+                inputConnection!!.commitText(context.getString(R.string.wilted_flower), 1)
+            }
+            R.id.button_hibiscus -> {
+                inputConnection!!.commitText(context.getString(R.string.hibiscus), 1)
+            }
+            R.id.button_cherry_blossom -> {
+                inputConnection!!.commitText(context.getString(R.string.cherry_blossom), 1)
+            }
+            R.id.button_blossom -> {
+                inputConnection!!.commitText(context.getString(R.string.blossom), 1)
+            }
+            R.id.button_sunflower -> {
+                inputConnection!!.commitText(context.getString(R.string.sunflower), 1)
+            }
+            R.id.button_sun_with_face -> {
+                inputConnection!!.commitText(context.getString(R.string.sun_with_face), 1)
+            }
+            R.id.button_full_moon_with_face -> {
+                inputConnection!!.commitText(context.getString(R.string.full_moon_with_face), 1)
+            }
+            R.id.button_first_quarter_moon_with_face -> {
+                inputConnection!!.commitText(context.getString(R.string.first_quarter_moon_with_face), 1)
+            }
+            R.id.button_last_quarter_moon_with_face -> {
+                inputConnection!!.commitText(context.getString(R.string.last_quarter_moon_with_face), 1)
+            }
+            R.id.button_new_moon_face -> {
+                inputConnection!!.commitText(context.getString(R.string.new_moon_face), 1)
             }
         }
     }

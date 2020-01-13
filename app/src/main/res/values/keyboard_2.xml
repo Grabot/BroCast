@@ -119,4 +119,24 @@
     <string name="four_leaf_clover">&#x1F340;</string>
     <string name="pine_decoration">&#x1F38D;</string>
     <string name="tanabata_tree">&#x1F38B;</string>
+
+    <string name="leaf_fluttering_in_wind">&#x1F343;</string>
+    <string name="fallen_leaf">&#x1F342;</string>
+    <string name="maple_leaf">&#x1F341;</string>
+    <string name="mushroom">&#x1F344;</string>
+    <string name="spiral_shell">&#x1F41A;</string>
+    <string name="sheaf_of_rice">&#x1F33E;</string>
+    <string name="bouquet">&#x1F490;</string>
+    <string name="tulip">&#x1F337;</string>
+    <string name="rose">&#x1F339;</string>
+    <string name="wilted_flower">&#x1f940;</string>
+    <string name="hibiscus">&#x1F33A;</string>
+    <string name="cherry_blossom">&#x1F338;</string>
+    <string name="blossom">&#x1F33C;</string>
+    <string name="sunflower">&#x1F33B;</string>
+    <string name="sun_with_face">&#x1f31e;</string>
+    <string name="full_moon_with_face">&#x1f31d;</string>
+    <string name="first_quarter_moon_with_face">&#x1F31B;</string>
+    <string name="last_quarter_moon_with_face">&#x1f31c;</string>
+    <string name="new_moon_face">&#x1f31a;</string>
 </resources>
