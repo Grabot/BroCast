@@ -88,7 +88,27 @@ class SecondKeyboard: LinearLayout {
             R.id.button_lobster,
             R.id.button_crab,
             R.id.button_blowfish,
-            R.id.button_tropical_fish)
+            R.id.button_tropical_fish,
+            R.id.button_fish,
+            R.id.button_dolphin,
+            R.id.button_spouting_whale,
+            R.id.button_whale,
+            R.id.button_shark,
+            R.id.button_crocodile,
+            R.id.button_tiger,
+            R.id.button_leopard,
+            R.id.button_zebra,
+            R.id.button_gorilla,
+            R.id.button_elephant,
+            R.id.button_hippopotamus,
+            R.id.button_rhinoceros,
+            R.id.button_camel,
+            R.id.button_two_hump_camel,
+            R.id.button_giraffe,
+            R.id.button_kangaroo,
+            R.id.button_water_buffalo,
+            R.id.button_ox
+        )
 
         for (b in buttonIds) {
             findViewById<Button>(b).setOnClickListener(clickButtonListener)
@@ -267,6 +287,63 @@ class SecondKeyboard: LinearLayout {
             }
             R.id.button_tropical_fish -> {
                 inputConnection!!.commitText(context.getString(R.string.tropical_fish), 1)
+            }
+            R.id.button_fish -> {
+                inputConnection!!.commitText(context.getString(R.string.fish), 1)
+            }
+            R.id.button_dolphin -> {
+                inputConnection!!.commitText(context.getString(R.string.dolphin), 1)
+            }
+            R.id.button_spouting_whale -> {
+                inputConnection!!.commitText(context.getString(R.string.spouting_whale), 1)
+            }
+            R.id.button_whale -> {
+                inputConnection!!.commitText(context.getString(R.string.whale), 1)
+            }
+            R.id.button_shark -> {
+                inputConnection!!.commitText(context.getString(R.string.shark), 1)
+            }
+            R.id.button_crocodile -> {
+                inputConnection!!.commitText(context.getString(R.string.crocodile), 1)
+            }
+            R.id.button_tiger -> {
+                inputConnection!!.commitText(context.getString(R.string.tiger), 1)
+            }
+            R.id.button_leopard -> {
+                inputConnection!!.commitText(context.getString(R.string.leopard), 1)
+            }
+            R.id.button_zebra -> {
+                inputConnection!!.commitText(context.getString(R.string.zebra), 1)
+            }
+            R.id.button_gorilla -> {
+                inputConnection!!.commitText(context.getString(R.string.gorilla), 1)
+            }
+            R.id.button_elephant -> {
+                inputConnection!!.commitText(context.getString(R.string.elephant), 1)
+            }
+            R.id.button_hippopotamus -> {
+                inputConnection!!.commitText(context.getString(R.string.hippopotamus), 1)
+            }
+            R.id.button_rhinoceros -> {
+                inputConnection!!.commitText(context.getString(R.string.rhinoceros), 1)
+            }
+            R.id.button_camel -> {
+                inputConnection!!.commitText(context.getString(R.string.camel), 1)
+            }
+            R.id.button_two_hump_camel -> {
+                inputConnection!!.commitText(context.getString(R.string.two_hump_camel), 1)
+            }
+            R.id.button_giraffe -> {
+                inputConnection!!.commitText(context.getString(R.string.giraffe), 1)
+            }
+            R.id.button_kangaroo -> {
+                inputConnection!!.commitText(context.getString(R.string.kangaroo), 1)
+            }
+            R.id.button_water_buffalo -> {
+                inputConnection!!.commitText(context.getString(R.string.water_buffalo), 1)
+            }
+            R.id.button_ox -> {
+                inputConnection!!.commitText(context.getString(R.string.ox), 1)
             }
         }
     }

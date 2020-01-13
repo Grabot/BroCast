@@ -59,4 +59,24 @@
     <string name="crab">&#x1f980;</string>
     <string name="blowfish">&#x1F421;</string>
     <string name="tropical_fish">&#x1F420;</string>
+
+    <string name="fish">&#x1F41F;</string>
+    <string name="dolphin">&#x1F42C;</string>
+    <string name="spouting_whale">&#x1F433;</string>
+    <string name="whale">&#x1f40b;</string>
+    <string name="shark">&#x1f988;</string>
+    <string name="crocodile">&#x1f40a;</string>
+    <string name="tiger">&#x1f405;</string>
+    <string name="leopard">&#x1f406;</string>
+    <string name="zebra">&#x1f993;</string>
+    <string name="gorilla">&#x1f98d;</string>
+    <string name="elephant">&#x1F418;</string>
+    <string name="hippopotamus">&#x1f99b;</string>
+    <string name="rhinoceros">&#x1f98f;</string>
+    <string name="camel">&#x1f42a;</string>
+    <string name="two_hump_camel">&#x1F42B;</string>
+    <string name="giraffe">&#x1f992;</string>
+    <string name="kangaroo">&#x1f998;</string>
+    <string name="water_buffalo">&#x1f403;</string>
+    <string name="ox">&#x1f402;</string>
 </resources>
