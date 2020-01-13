@@ -1701,6 +1701,51 @@
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
+                <Button
+                    android:id="@+id/button_sweat_droplets"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/sweat_droplets"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_umbrella_with_rain_drops"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/umbrella_with_rain_drops"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_umbrella"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/umbrella"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_water_wave"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/water_wave"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_fog"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/fog"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

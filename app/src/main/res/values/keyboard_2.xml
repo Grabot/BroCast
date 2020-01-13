@@ -179,4 +179,10 @@
     <string name="wind_face">&#x1f32c;</string>
     <string name="dashing_away">&#x1F4A8;</string>
     <string name="droplet">&#x1F4A7;</string>
+
+    <string name="sweat_droplets">&#x1F4A6;</string>
+    <string name="umbrella_with_rain_drops">&#x2614;</string>
+    <string name="umbrella">&#x2602;</string>
+    <string name="water_wave">&#x1F30A;</string>
+    <string name="fog">&#x1f32b;</string>
 </resources>

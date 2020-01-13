@@ -202,7 +202,12 @@ class SecondKeyboard: LinearLayout {
             R.id.button_snowman_without_snow,
             R.id.button_wind_face,
             R.id.button_dashing_away,
-            R.id.button_droplet
+            R.id.button_droplet,
+            R.id.button_sweat_droplets,
+            R.id.button_umbrella_with_rain_drops,
+            R.id.button_umbrella,
+            R.id.button_water_wave,
+            R.id.button_fog
         )
 
         for (b in buttonIds) {
@@ -724,6 +729,21 @@ class SecondKeyboard: LinearLayout {
             }
             R.id.button_droplet -> {
                 inputConnection!!.commitText(context.getString(R.string.droplet), 1)
+            }
+            R.id.button_sweat_droplets -> {
+                inputConnection!!.commitText(context.getString(R.string.sweat_droplets), 1)
+            }
+            R.id.button_umbrella_with_rain_drops -> {
+                inputConnection!!.commitText(context.getString(R.string.umbrella_with_rain_drops), 1)
+            }
+            R.id.button_umbrella -> {
+                inputConnection!!.commitText(context.getString(R.string.umbrella), 1)
+            }
+            R.id.button_water_wave -> {
+                inputConnection!!.commitText(context.getString(R.string.water_wave), 1)
+            }
+            R.id.button_fog -> {
+                inputConnection!!.commitText(context.getString(R.string.fog), 1)
             }
         }
     }
