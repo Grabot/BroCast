@@ -39,4 +39,24 @@
     <string name="bug">&#x1F41B;</string>
     <string name="butterfly">&#x1f98b;</string>
     <string name="snail">&#x1F40C;</string>
+
+    <string name="lady_beetle">&#x1F41E;</string>
+    <string name="ant">&#x1F41C;</string>
+    <string name="mosquito">&#x1f99f;</string>
+    <string name="cricket">&#x1f997;</string>
+    <string name="spider">&#x1f577;</string>
+    <string name="spider_web">&#x1f578;</string>
+    <string name="scorpion">&#x1f982;</string>
+    <string name="turtle">&#x1F422;</string>
+    <string name="snake">&#x1F40D;</string>
+    <string name="lizard">&#x1f98e;</string>
+    <string name="t_rex">&#x1f996;</string>
+    <string name="sauropod">&#x1f995;</string>
+    <string name="octopus">&#x1F419;</string>
+    <string name="squid">&#x1f991;</string>
+    <string name="shrimp">&#x1f990;</string>
+    <string name="lobster">&#x1f99e;</string>
+    <string name="crab">&#x1f980;</string>
+    <string name="blowfish">&#x1F421;</string>
+    <string name="tropical_fish">&#x1F420;</string>
 </resources>
