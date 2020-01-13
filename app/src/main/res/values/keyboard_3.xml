@@ -99,4 +99,16 @@
     <string name="clinking_beer_mugs">&#x1F37B;</string>
     <string name="clinking_glasses">&#x1f942;</string>
     <string name="wine_glass">&#x1F377;</string>
+
+    <string name="tumbler_glass">&#x1f943;</string>
+    <string name="cocktail_glass">&#x1F378;</string>
+    <string name="tropical_drink">&#x1F379;</string>
+    <string name="bottle_with_popping_cork">&#x1f37e;</string>
+    <string name="spoon">&#x1f944;</string>
+    <string name="fork_and_knife">&#x1F374;</string>
+    <string name="fork_and_knife_with_plate">&#x1f37d;</string>
+    <string name="bowl_with_spoon">&#x1f963;</string>
+    <string name="takeout_box">&#x1f961;</string>
+    <string name="chopsticks">&#x1f962;</string>
+    <string name="salt">&#x1f9c2;</string>
 </resources>
