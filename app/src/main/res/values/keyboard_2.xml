@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="dog_face">&#x1F436;</string>
+    <string name="cat_face">&#x1F431;</string>
+    <string name="mouse_face">&#x1F42D;</string>
+    <string name="hamster_face">&#x1F439;</string>
+    <string name="rabbit_face">&#x1F430;</string>
+    <string name="fox_face">&#x1f98a;</string>
+    <string name="bear_face">&#x1F43B;</string>
+    <string name="panda_face">&#x1F43C;</string>
+    <string name="koala">&#x1F428;</string>
+    <string name="tiger_face">&#x1F42F;</string>
+    <string name="lion_face">&#x1f981;</string>
+    <string name="cow_face">&#x1F42E;</string>
+    <string name="pig_face">&#x1F437;</string>
+    <string name="pig_nose">&#x1F43D;</string>
+    <string name="frog_face">&#x1F438;</string>
+    <string name="monkey_face">&#x1F435;</string>
+    <string name="see_no_evil_monkey">&#x1F648;</string>
+    <string name="hear_no_evil_monkey">&#x1F649;</string>
+    <string name="speak_no_evil_monkey">&#x1F64A;</string>
+
+    
+</resources>
