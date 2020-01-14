@@ -147,7 +147,26 @@ class SeventhKeyboard: LinearLayout {
             R.id.button_zzz,
             R.id.button_atm_sign,
             R.id.button_water_closet,
-            R.id.button_wheelchair_symbol
+            R.id.button_wheelchair_symbol,
+            R.id.button_p_button,
+            R.id.button_japanese_vacancy_button,
+            R.id.button_japanese_service_charge_button,
+            R.id.button_passport_control,
+            R.id.button_customs,
+            R.id.button_baggage_claim,
+            R.id.button_left_luggage,
+            R.id.button_mens_room,
+            R.id.button_womens_room,
+            R.id.button_baby_symbol,
+            R.id.button_restroom,
+            R.id.button_litter_in_bin_sign,
+            R.id.button_cinema,
+            R.id.button_antenna_bars,
+            R.id.button_japanese_here_button,
+            R.id.button_input_symbols,
+            R.id.button_information,
+            R.id.button_input_latin_letters,
+            R.id.button_input_latin_lowercase
         )
 
         for (b in buttonIds) {
@@ -498,6 +517,63 @@ class SeventhKeyboard: LinearLayout {
             }
             R.id.button_wheelchair_symbol -> {
                 inputConnection!!.commitText(context.getString(R.string.wheelchair_symbol), 1)
+            }
+            R.id.button_p_button -> {
+                inputConnection!!.commitText(context.getString(R.string.p_button), 1)
+            }
+            R.id.button_japanese_vacancy_button -> {
+                inputConnection!!.commitText(context.getString(R.string.japanese_vacancy_button), 1)
+            }
+            R.id.button_japanese_service_charge_button -> {
+                inputConnection!!.commitText(context.getString(R.string.japanese_service_charge_button), 1)
+            }
+            R.id.button_passport_control -> {
+                inputConnection!!.commitText(context.getString(R.string.passport_control), 1)
+            }
+            R.id.button_customs -> {
+                inputConnection!!.commitText(context.getString(R.string.customs), 1)
+            }
+            R.id.button_baggage_claim -> {
+                inputConnection!!.commitText(context.getString(R.string.baggage_claim), 1)
+            }
+            R.id.button_left_luggage -> {
+                inputConnection!!.commitText(context.getString(R.string.left_luggage), 1)
+            }
+            R.id.button_mens_room -> {
+                inputConnection!!.commitText(context.getString(R.string.mens_room), 1)
+            }
+            R.id.button_womens_room -> {
+                inputConnection!!.commitText(context.getString(R.string.womens_room), 1)
+            }
+            R.id.button_baby_symbol -> {
+                inputConnection!!.commitText(context.getString(R.string.baby_symbol), 1)
+            }
+            R.id.button_restroom -> {
+                inputConnection!!.commitText(context.getString(R.string.restroom), 1)
+            }
+            R.id.button_litter_in_bin_sign -> {
+                inputConnection!!.commitText(context.getString(R.string.litter_in_bin_sign), 1)
+            }
+            R.id.button_cinema -> {
+                inputConnection!!.commitText(context.getString(R.string.cinema), 1)
+            }
+            R.id.button_antenna_bars -> {
+                inputConnection!!.commitText(context.getString(R.string.antenna_bars), 1)
+            }
+            R.id.button_japanese_here_button -> {
+                inputConnection!!.commitText(context.getString(R.string.japanese_here_button), 1)
+            }
+            R.id.button_input_symbols -> {
+                inputConnection!!.commitText(context.getString(R.string.input_symbols), 1)
+            }
+            R.id.button_information -> {
+                inputConnection!!.commitText(context.getString(R.string.information), 1)
+            }
+            R.id.button_input_latin_letters -> {
+                inputConnection!!.commitText(context.getString(R.string.input_latin_letters), 1)
+            }
+            R.id.button_input_latin_lowercase -> {
+                inputConnection!!.commitText(context.getString(R.string.input_latin_lowercase), 1)
             }
         }
     }

@@ -119,4 +119,24 @@
     <string name="atm_sign">&#x1F3E7;</string>
     <string name="water_closet">&#x1F6BE;</string>
     <string name="wheelchair_symbol">&#x267F;</string>
+
+    <string name="p_button">&#x1F17F;</string>
+    <string name="japanese_vacancy_button">&#x1F233;</string>
+    <string name="japanese_service_charge_button">&#x1F202;</string>
+    <string name="passport_control">&#x1f6c2;</string>
+    <string name="customs">&#x1f6c3;</string>
+    <string name="baggage_claim">&#x1f6c4;</string>
+    <string name="left_luggage">&#x1f6c5;</string>
+    <string name="mens_room">&#x1F6B9;</string>
+    <string name="womens_room">&#x1F6BA;</string>
+    <string name="baby_symbol">&#x1F6BC;</string>
+    <string name="restroom">&#x1F6BB;</string>
+    <string name="litter_in_bin_sign">&#x1f6ae;</string>
+    <string name="cinema">&#x1F3A6;</string>
+    <string name="antenna_bars">&#x1F4F6;</string>
+    <string name="japanese_here_button">&#x1F201;</string>
+    <string name="input_symbols">&#x1F523;</string>
+    <string name="information">&#x2139;</string>
+    <string name="input_latin_letters">&#x1F524;</string>
+    <string name="input_latin_lowercase">&#x1F521;</string>
 </resources>
