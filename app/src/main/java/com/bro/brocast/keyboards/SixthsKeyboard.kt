@@ -113,7 +113,26 @@ class SixthsKeyboard: LinearLayout {
             R.id.button_shield,
             R.id.button_cigarette,
             R.id.button_coffin,
-            R.id.button_funeral_urn
+            R.id.button_funeral_urn,
+            R.id.button_amphora,
+            R.id.button_crystal_ball,
+            R.id.button_prayer_beads,
+            R.id.button_nazar_amulet,
+            R.id.button_barber_pole,
+            R.id.button_alembic,
+            R.id.button_telescope,
+            R.id.button_microscope,
+            R.id.button_hole,
+            R.id.button_pill,
+            R.id.button_syringe,
+            R.id.button_dna,
+            R.id.button_microbe,
+            R.id.button_petri_dish,
+            R.id.button_test_tube,
+            R.id.button_thermometer,
+            R.id.button_broom,
+            R.id.button_basket,
+            R.id.button_roll_of_paper
         )
 
         for (b in buttonIds) {
@@ -350,6 +369,63 @@ class SixthsKeyboard: LinearLayout {
             }
             R.id.button_funeral_urn -> {
                 inputConnection!!.commitText(context.getString(R.string.funeral_urn), 1)
+            }
+            R.id.button_amphora -> {
+                inputConnection!!.commitText(context.getString(R.string.amphora), 1)
+            }
+            R.id.button_crystal_ball -> {
+                inputConnection!!.commitText(context.getString(R.string.crystal_ball), 1)
+            }
+            R.id.button_prayer_beads -> {
+                inputConnection!!.commitText(context.getString(R.string.prayer_beads), 1)
+            }
+            R.id.button_nazar_amulet -> {
+                inputConnection!!.commitText(context.getString(R.string.nazar_amulet), 1)
+            }
+            R.id.button_barber_pole -> {
+                inputConnection!!.commitText(context.getString(R.string.barber_pole), 1)
+            }
+            R.id.button_alembic -> {
+                inputConnection!!.commitText(context.getString(R.string.alembic), 1)
+            }
+            R.id.button_telescope -> {
+                inputConnection!!.commitText(context.getString(R.string.telescope), 1)
+            }
+            R.id.button_microscope -> {
+                inputConnection!!.commitText(context.getString(R.string.microscope), 1)
+            }
+            R.id.button_hole -> {
+                inputConnection!!.commitText(context.getString(R.string.hole), 1)
+            }
+            R.id.button_pill -> {
+                inputConnection!!.commitText(context.getString(R.string.pill), 1)
+            }
+            R.id.button_syringe -> {
+                inputConnection!!.commitText(context.getString(R.string.syringe), 1)
+            }
+            R.id.button_dna -> {
+                inputConnection!!.commitText(context.getString(R.string.dna), 1)
+            }
+            R.id.button_microbe -> {
+                inputConnection!!.commitText(context.getString(R.string.microbe), 1)
+            }
+            R.id.button_petri_dish -> {
+                inputConnection!!.commitText(context.getString(R.string.petri_dish), 1)
+            }
+            R.id.button_test_tube -> {
+                inputConnection!!.commitText(context.getString(R.string.test_tube), 1)
+            }
+            R.id.button_thermometer -> {
+                inputConnection!!.commitText(context.getString(R.string.thermometer), 1)
+            }
+            R.id.button_broom -> {
+                inputConnection!!.commitText(context.getString(R.string.broom), 1)
+            }
+            R.id.button_basket -> {
+                inputConnection!!.commitText(context.getString(R.string.basket), 1)
+            }
+            R.id.button_roll_of_paper -> {
+                inputConnection!!.commitText(context.getString(R.string.roll_of_paper), 1)
             }
         }
     }

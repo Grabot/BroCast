@@ -79,4 +79,24 @@
     <string name="cigarette">&#x1F6AC;</string>
     <string name="coffin">&#x26b0;</string>
     <string name="funeral_urn">&#x26b1;</string>
+
+    <string name="amphora">&#x1f3fa;</string>
+    <string name="crystal_ball">&#x1F52E;</string>
+    <string name="prayer_beads">&#x1f4ff;</string>
+    <string name="nazar_amulet">&#x1f9ff;</string>
+    <string name="barber_pole">&#x1F488;</string>
+    <string name="alembic">&#x2697;</string>
+    <string name="telescope">&#x1f52d;</string>
+    <string name="microscope">&#x1f52c;</string>
+    <string name="hole">&#x1f573;</string>
+    <string name="pill">&#x1F48A;</string>
+    <string name="syringe">&#x1F489;</string>
+    <string name="dna">&#x1f9ec;</string>
+    <string name="microbe">&#x1f9a0;</string>
+    <string name="petri_dish">&#x1f9eb;</string>
+    <string name="test_tube">&#x1f9ea;</string>
+    <string name="thermometer">&#x1f321;</string>
+    <string name="broom">&#x1f9f9;</string>
+    <string name="basket">&#x1f9fa;</string>
+    <string name="roll_of_paper">&#x1f9fb;</string>
 </resources>
