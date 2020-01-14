@@ -28,33 +28,99 @@ class SeventhKeyboard: LinearLayout {
         init(context)
     }
 
-    var buttonSmile: Button? = null
-
-    val emoji_Smile = 0x1F604
-
     private var inputConnection: InputConnection? = null
 
     fun init(context: Context) {
         LayoutInflater.from(context).inflate(R.layout.keyboard_7, this, true)
 
-        buttonSmile = findViewById(R.id.button_smile_7)
-        buttonSmile!!.setOnClickListener(clickButtonListener)
+        val buttonIds = arrayOf(
+            R.id.button_red_heart,
+            R.id.button_orange_heart,
+            R.id.button_yellow_heart,
+            R.id.button_green_heart,
+            R.id.button_blue_heart,
+            R.id.button_purple_heart,
+            R.id.button_black_heart,
+            R.id.button_broken_heart,
+            R.id.button_heavy_heart_exclamation,
+            R.id.button_two_hearts,
+            R.id.button_revolving_hearts,
+            R.id.button_beating_heart,
+            R.id.button_growing_heart,
+            R.id.button_sparkling_heart,
+            R.id.button_heart_with_arrow,
+            R.id.button_heart_with_ribbon,
+            R.id.button_heart_decoration,
+            R.id.button_peace_symbol,
+            R.id.button_latin_cross
+        )
 
-        buttonSmile!!.text = getEmojiByUnicode(emoji_Smile)
+        for (b in buttonIds) {
+            findViewById<Button>(b).setOnClickListener(clickButtonListener)
+        }
     }
 
     private val clickButtonListener = OnClickListener { view ->
         when (view.getId()) {
-            R.id.button_smile_7 -> {
-                inputConnection!!.commitText(getEmojiByUnicode(emoji_Smile), 1)
+            R.id.button_red_heart -> {
+                inputConnection!!.commitText(context.getString(R.string.red_heart), 1)
+            }
+            R.id.button_orange_heart -> {
+                inputConnection!!.commitText(context.getString(R.string.orange_heart), 1)
+            }
+            R.id.button_yellow_heart -> {
+                inputConnection!!.commitText(context.getString(R.string.yellow_heart), 1)
+            }
+            R.id.button_green_heart -> {
+                inputConnection!!.commitText(context.getString(R.string.green_heart), 1)
+            }
+            R.id.button_blue_heart -> {
+                inputConnection!!.commitText(context.getString(R.string.blue_heart), 1)
+            }
+            R.id.button_purple_heart -> {
+                inputConnection!!.commitText(context.getString(R.string.purple_heart), 1)
+            }
+            R.id.button_black_heart -> {
+                inputConnection!!.commitText(context.getString(R.string.black_heart), 1)
+            }
+            R.id.button_broken_heart -> {
+                inputConnection!!.commitText(context.getString(R.string.broken_heart), 1)
+            }
+            R.id.button_heavy_heart_exclamation -> {
+                inputConnection!!.commitText(context.getString(R.string.heavy_heart_exclamation), 1)
+            }
+            R.id.button_two_hearts -> {
+                inputConnection!!.commitText(context.getString(R.string.two_hearts), 1)
+            }
+            R.id.button_revolving_hearts -> {
+                inputConnection!!.commitText(context.getString(R.string.revolving_hearts), 1)
+            }
+            R.id.button_beating_heart -> {
+                inputConnection!!.commitText(context.getString(R.string.beating_heart), 1)
+            }
+            R.id.button_growing_heart -> {
+                inputConnection!!.commitText(context.getString(R.string.growing_heart), 1)
+            }
+            R.id.button_sparkling_heart -> {
+                inputConnection!!.commitText(context.getString(R.string.sparkling_heart), 1)
+            }
+            R.id.button_heart_with_arrow -> {
+                inputConnection!!.commitText(context.getString(R.string.heart_with_arrow), 1)
+            }
+            R.id.button_heart_with_ribbon -> {
+                inputConnection!!.commitText(context.getString(R.string.heart_with_ribbon), 1)
+            }
+            R.id.button_heart_decoration -> {
+                inputConnection!!.commitText(context.getString(R.string.heart_decoration), 1)
+            }
+            R.id.button_peace_symbol -> {
+                inputConnection!!.commitText(context.getString(R.string.peace_symbol), 1)
+            }
+            R.id.button_latin_cross -> {
+                inputConnection!!.commitText(context.getString(R.string.latin_cross), 1)
             }
         }
     }
-
-    private fun getEmojiByUnicode(unicode: Int): String {
-        return String(Character.toChars(unicode))
-    }
-
 
     fun setInputConnection(ic: InputConnection) {
         inputConnection = ic

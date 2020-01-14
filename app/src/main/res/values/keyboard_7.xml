@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="red_heart">&#x2764;</string>
+    <string name="orange_heart">&#x1f9e1;</string>
+    <string name="yellow_heart">&#x1F49B;</string>
+    <string name="green_heart">&#x1F49A;</string>
+    <string name="blue_heart">&#x1F499;</string>
+    <string name="purple_heart">&#x1F49C;</string>
+    <string name="black_heart">&#x1f5a4;</string>
+    <string name="broken_heart">&#x1F494;</string>
+    <string name="heavy_heart_exclamation">&#x2763;</string>
+    <string name="two_hearts">&#x1F495;</string>
+    <string name="revolving_hearts">&#x1F49E;</string>
+    <string name="beating_heart">&#x1F493;</string>
+    <string name="growing_heart">&#x1F497;</string>
+    <string name="sparkling_heart">&#x1F496;</string>
+    <string name="heart_with_arrow">&#x1F498;</string>
+    <string name="heart_with_ribbon">&#x1F49D;</string>
+    <string name="heart_decoration">&#x1F49F;</string>
+    <string name="peace_symbol">&#x262e;</string>
+    <string name="latin_cross">&#x271d;</string>
+</resources>
