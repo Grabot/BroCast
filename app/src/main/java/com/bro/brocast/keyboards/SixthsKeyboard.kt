@@ -208,7 +208,26 @@ class SixthsKeyboard: LinearLayout {
             R.id.button_blue_book,
             R.id.button_orange_book,
             R.id.button_books,
-            R.id.button_open_book
+            R.id.button_open_book,
+            R.id.button_bookmark,
+            R.id.button_safety_pin,
+            R.id.button_link,
+            R.id.button_paperclip,
+            R.id.button_linked_paperclips,
+            R.id.button_triangular_ruler,
+            R.id.button_straight_ruler,
+            R.id.button_abacus,
+            R.id.button_pushpin,
+            R.id.button_round_pushpin,
+            R.id.button_scissors,
+            R.id.button_pen,
+            R.id.button_fountain_pen,
+            R.id.button_black_nib,
+            R.id.button_paintbrush,
+            R.id.button_crayon,
+            R.id.button_memo,
+            R.id.button_pencil,
+            R.id.button_left_pointing_magnifying_glass
         )
 
         for (b in buttonIds) {
@@ -730,6 +749,63 @@ class SixthsKeyboard: LinearLayout {
             }
             R.id.button_open_book -> {
                 inputConnection!!.commitText(context.getString(R.string.open_book), 1)
+            }
+            R.id.button_bookmark -> {
+                inputConnection!!.commitText(context.getString(R.string.bookmark), 1)
+            }
+            R.id.button_safety_pin -> {
+                inputConnection!!.commitText(context.getString(R.string.safety_pin), 1)
+            }
+            R.id.button_link -> {
+                inputConnection!!.commitText(context.getString(R.string.link), 1)
+            }
+            R.id.button_paperclip -> {
+                inputConnection!!.commitText(context.getString(R.string.paperclip), 1)
+            }
+            R.id.button_linked_paperclips -> {
+                inputConnection!!.commitText(context.getString(R.string.linked_paperclips), 1)
+            }
+            R.id.button_triangular_ruler -> {
+                inputConnection!!.commitText(context.getString(R.string.triangular_ruler), 1)
+            }
+            R.id.button_straight_ruler -> {
+                inputConnection!!.commitText(context.getString(R.string.straight_ruler), 1)
+            }
+            R.id.button_abacus -> {
+                inputConnection!!.commitText(context.getString(R.string.abacus), 1)
+            }
+            R.id.button_pushpin -> {
+                inputConnection!!.commitText(context.getString(R.string.pushpin), 1)
+            }
+            R.id.button_round_pushpin -> {
+                inputConnection!!.commitText(context.getString(R.string.round_pushpin), 1)
+            }
+            R.id.button_scissors -> {
+                inputConnection!!.commitText(context.getString(R.string.scissors), 1)
+            }
+            R.id.button_pen -> {
+                inputConnection!!.commitText(context.getString(R.string.pen), 1)
+            }
+            R.id.button_fountain_pen -> {
+                inputConnection!!.commitText(context.getString(R.string.fountain_pen), 1)
+            }
+            R.id.button_black_nib -> {
+                inputConnection!!.commitText(context.getString(R.string.black_nib), 1)
+            }
+            R.id.button_paintbrush -> {
+                inputConnection!!.commitText(context.getString(R.string.paintbrush), 1)
+            }
+            R.id.button_crayon -> {
+                inputConnection!!.commitText(context.getString(R.string.crayon), 1)
+            }
+            R.id.button_memo -> {
+                inputConnection!!.commitText(context.getString(R.string.memo), 1)
+            }
+            R.id.button_pencil -> {
+                inputConnection!!.commitText(context.getString(R.string.pencil), 1)
+            }
+            R.id.button_left_pointing_magnifying_glass -> {
+                inputConnection!!.commitText(context.getString(R.string.left_pointing_magnifying_glass), 1)
             }
         }
     }

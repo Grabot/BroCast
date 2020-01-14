@@ -179,4 +179,24 @@
     <string name="orange_book">&#x1F4D9;</string>
     <string name="books">&#x1F4DA;</string>
     <string name="open_book">&#x1F4D6;</string>
+
+    <string name="bookmark">&#x1F516;</string>
+    <string name="safety_pin">&#x1f9f7;</string>
+    <string name="link">&#x1F517;</string>
+    <string name="paperclip">&#x1F4CE;</string>
+    <string name="linked_paperclips">&#x1f587;</string>
+    <string name="triangular_ruler">&#x1F4D0;</string>
+    <string name="straight_ruler">&#x1F4CF;</string>
+    <string name="abacus">&#x1f9ee;</string>
+    <string name="pushpin">&#x1F4CC;</string>
+    <string name="round_pushpin">&#x1F4CD;</string>
+    <string name="scissors">&#x2702;</string>
+    <string name="pen">&#x1f58a;</string>
+    <string name="fountain_pen">&#x1f58b;</string>
+    <string name="black_nib">&#x2712;</string>
+    <string name="paintbrush">&#x1f58c;</string>
+    <string name="crayon">&#x1f58d;</string>
+    <string name="memo">&#x1F4DD;</string>
+    <string name="pencil">&#x270F;</string>
+    <string name="left_pointing_magnifying_glass">&#x1F50D;</string>
 </resources>
