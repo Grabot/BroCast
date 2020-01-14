@@ -151,7 +151,26 @@ class SixthsKeyboard: LinearLayout {
             R.id.button_teddy_bear,
             R.id.button_framed_picture,
             R.id.button_shopping_bags,
-            R.id.button_shopping_cart
+            R.id.button_shopping_cart,
+            R.id.button_wrapped_gift,
+            R.id.button_balloon,
+            R.id.button_carp_streamer,
+            R.id.button_ribbon,
+            R.id.button_confetti_ball,
+            R.id.button_party_popper,
+            R.id.button_japanese_dolls,
+            R.id.button_red_paper_lantern,
+            R.id.button_wind_chime,
+            R.id.button_red_envelope,
+            R.id.button_envelope,
+            R.id.button_envelope_with_arrow,
+            R.id.button_incoming_envelope,
+            R.id.button_e_mail,
+            R.id.button_love_letter,
+            R.id.button_inbox_tray,
+            R.id.button_outbox_tray,
+            R.id.button_package_emoji,
+            R.id.button_label
         )
 
         for (b in buttonIds) {
@@ -502,6 +521,63 @@ class SixthsKeyboard: LinearLayout {
             }
             R.id.button_shopping_cart -> {
                 inputConnection!!.commitText(context.getString(R.string.shopping_cart), 1)
+            }
+            R.id.button_wrapped_gift -> {
+                inputConnection!!.commitText(context.getString(R.string.wrapped_gift), 1)
+            }
+            R.id.button_balloon -> {
+                inputConnection!!.commitText(context.getString(R.string.balloon), 1)
+            }
+            R.id.button_carp_streamer -> {
+                inputConnection!!.commitText(context.getString(R.string.carp_streamer), 1)
+            }
+            R.id.button_ribbon -> {
+                inputConnection!!.commitText(context.getString(R.string.ribbon), 1)
+            }
+            R.id.button_confetti_ball -> {
+                inputConnection!!.commitText(context.getString(R.string.confetti_ball), 1)
+            }
+            R.id.button_party_popper -> {
+                inputConnection!!.commitText(context.getString(R.string.party_popper), 1)
+            }
+            R.id.button_japanese_dolls -> {
+                inputConnection!!.commitText(context.getString(R.string.japanese_dolls), 1)
+            }
+            R.id.button_red_paper_lantern -> {
+                inputConnection!!.commitText(context.getString(R.string.red_paper_lantern), 1)
+            }
+            R.id.button_wind_chime -> {
+                inputConnection!!.commitText(context.getString(R.string.wind_chime), 1)
+            }
+            R.id.button_red_envelope -> {
+                inputConnection!!.commitText(context.getString(R.string.red_envelope), 1)
+            }
+            R.id.button_envelope -> {
+                inputConnection!!.commitText(context.getString(R.string.envelope), 1)
+            }
+            R.id.button_envelope_with_arrow -> {
+                inputConnection!!.commitText(context.getString(R.string.envelope_with_arrow), 1)
+            }
+            R.id.button_incoming_envelope -> {
+                inputConnection!!.commitText(context.getString(R.string.incoming_envelope), 1)
+            }
+            R.id.button_e_mail -> {
+                inputConnection!!.commitText(context.getString(R.string.e_mail), 1)
+            }
+            R.id.button_love_letter -> {
+                inputConnection!!.commitText(context.getString(R.string.love_letter), 1)
+            }
+            R.id.button_inbox_tray -> {
+                inputConnection!!.commitText(context.getString(R.string.inbox_tray), 1)
+            }
+            R.id.button_outbox_tray -> {
+                inputConnection!!.commitText(context.getString(R.string.outbox_tray), 1)
+            }
+            R.id.button_package_emoji -> {
+                inputConnection!!.commitText(context.getString(R.string.package_emoji), 1)
+            }
+            R.id.button_label -> {
+                inputConnection!!.commitText(context.getString(R.string.label), 1)
             }
         }
     }

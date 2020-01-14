@@ -119,4 +119,24 @@
     <string name="framed_picture">&#x1f5bc;</string>
     <string name="shopping_bags">&#x1f6cd;</string>
     <string name="shopping_cart">&#x1f6d2;</string>
+
+    <string name="wrapped_gift">&#x1F381;</string>
+    <string name="balloon">&#x1F388;</string>
+    <string name="carp_streamer">&#x1F38F;</string>
+    <string name="ribbon">&#x1F380;</string>
+    <string name="confetti_ball">&#x1F38A;</string>
+    <string name="party_popper">&#x1F389;</string>
+    <string name="japanese_dolls">&#x1F38E;</string>
+    <string name="red_paper_lantern">&#x1F3EE;</string>
+    <string name="wind_chime">&#x1F390;</string>
+    <string name="red_envelope">&#x1f9e7;</string>
+    <string name="envelope">&#x2709;</string>
+    <string name="envelope_with_arrow">&#x1F4E9;</string>
+    <string name="incoming_envelope">&#x1F4E8;</string>
+    <string name="e_mail">&#x1F4E7;</string>
+    <string name="love_letter">&#x1F48C;</string>
+    <string name="inbox_tray">&#x1F4E5;</string>
+    <string name="outbox_tray">&#x1F4E4;</string>
+    <string name="package_emoji">&#x1F4E6;</string>
+    <string name="label">&#x1f3f7;</string>
 </resources>
