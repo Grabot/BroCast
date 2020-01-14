@@ -60,7 +60,6 @@ class FifthKeyboard: LinearLayout {
             R.id.button_mountain_cableway,
             R.id.button_suspension_railway,
             R.id.button_railway_car,
-            R.id.button_tram_car,
             R.id.button_mountain_railway,
             R.id.button_monorail,
             R.id.button_high_speed_train,
@@ -177,9 +176,6 @@ class FifthKeyboard: LinearLayout {
             }
             R.id.button_railway_car -> {
                 inputConnection!!.commitText(context.getString(R.string.railway_car), 1)
-            }
-            R.id.button_tram_car -> {
-                inputConnection!!.commitText(context.getString(R.string.tram_car), 1)
             }
             R.id.button_mountain_railway -> {
                 inputConnection!!.commitText(context.getString(R.string.mountain_railway), 1)

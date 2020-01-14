@@ -271,15 +271,6 @@
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_tram_car"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/tram_car"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
                     android:id="@+id/button_mountain_railway"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -315,12 +306,21 @@
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
-                <Button
+            <Button
                     android:id="@+id/button_light_rail"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/light_rail"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_locomotive"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/locomotive"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
@@ -331,15 +331,6 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-                <Button
-                    android:id="@+id/button_locomotive"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/locomotive"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
                 <Button
                     android:id="@+id/button_train"
                     android:layout_width="0dp"
@@ -403,13 +394,6 @@
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
                 <Button
                     android:id="@+id/button_small_airplane"
                     android:layout_width="0dp"
@@ -419,6 +403,13 @@
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
                 <Button
                     android:id="@+id/button_seat"
                     android:layout_width="0dp"
@@ -482,13 +473,6 @@
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
                 <Button
                     android:id="@+id/button_speedboat"
                     android:layout_width="0dp"
@@ -498,6 +482,14 @@
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
                 <Button
                     android:id="@+id/button_motor_boat"
                     android:layout_width="0dp"
@@ -561,13 +553,6 @@
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
                 <Button
                     android:id="@+id/button_vertical_traffic_light"
                     android:layout_width="0dp"
