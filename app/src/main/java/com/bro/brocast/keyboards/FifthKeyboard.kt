@@ -52,7 +52,26 @@ class FifthKeyboard: LinearLayout {
             R.id.button_motor_scooter,
             R.id.button_motorcycle,
             R.id.button_police_car_light,
-            R.id.button_oncoming_police_car
+            R.id.button_oncoming_police_car,
+            R.id.button_oncoming_bus,
+            R.id.button_oncoming_automobile,
+            R.id.button_oncoming_taxi,
+            R.id.button_aerial_tramway,
+            R.id.button_mountain_cableway,
+            R.id.button_suspension_railway,
+            R.id.button_railway_car,
+            R.id.button_tram_car,
+            R.id.button_mountain_railway,
+            R.id.button_monorail,
+            R.id.button_high_speed_train,
+            R.id.button_high_speed_train_with_bullet_nose,
+            R.id.button_light_rail,
+            R.id.button_locomotive,
+            R.id.button_train,
+            R.id.button_metro,
+            R.id.button_tram,
+            R.id.button_station,
+            R.id.button_airplane
         )
 
         for (b in buttonIds) {
@@ -118,6 +137,63 @@ class FifthKeyboard: LinearLayout {
             }
             R.id.button_oncoming_police_car -> {
                 inputConnection!!.commitText(context.getString(R.string.oncoming_police_car), 1)
+            }
+            R.id.button_oncoming_bus -> {
+                inputConnection!!.commitText(context.getString(R.string.oncoming_bus), 1)
+            }
+            R.id.button_oncoming_automobile -> {
+                inputConnection!!.commitText(context.getString(R.string.oncoming_automobile), 1)
+            }
+            R.id.button_oncoming_taxi -> {
+                inputConnection!!.commitText(context.getString(R.string.oncoming_taxi), 1)
+            }
+            R.id.button_aerial_tramway -> {
+                inputConnection!!.commitText(context.getString(R.string.aerial_tramway), 1)
+            }
+            R.id.button_mountain_cableway -> {
+                inputConnection!!.commitText(context.getString(R.string.mountain_cableway), 1)
+            }
+            R.id.button_suspension_railway -> {
+                inputConnection!!.commitText(context.getString(R.string.suspension_railway), 1)
+            }
+            R.id.button_railway_car -> {
+                inputConnection!!.commitText(context.getString(R.string.railway_car), 1)
+            }
+            R.id.button_tram_car -> {
+                inputConnection!!.commitText(context.getString(R.string.tram_car), 1)
+            }
+            R.id.button_mountain_railway -> {
+                inputConnection!!.commitText(context.getString(R.string.mountain_railway), 1)
+            }
+            R.id.button_monorail -> {
+                inputConnection!!.commitText(context.getString(R.string.monorail), 1)
+            }
+            R.id.button_high_speed_train -> {
+                inputConnection!!.commitText(context.getString(R.string.high_speed_train), 1)
+            }
+            R.id.button_high_speed_train_with_bullet_nose -> {
+                inputConnection!!.commitText(context.getString(R.string.high_speed_train_with_bullet_nose), 1)
+            }
+            R.id.button_light_rail -> {
+                inputConnection!!.commitText(context.getString(R.string.light_rail), 1)
+            }
+            R.id.button_locomotive -> {
+                inputConnection!!.commitText(context.getString(R.string.locomotive), 1)
+            }
+            R.id.button_train -> {
+                inputConnection!!.commitText(context.getString(R.string.train), 1)
+            }
+            R.id.button_metro -> {
+                inputConnection!!.commitText(context.getString(R.string.metro), 1)
+            }
+            R.id.button_tram -> {
+                inputConnection!!.commitText(context.getString(R.string.tram), 1)
+            }
+            R.id.button_station -> {
+                inputConnection!!.commitText(context.getString(R.string.station), 1)
+            }
+            R.id.button_airplane -> {
+                inputConnection!!.commitText(context.getString(R.string.airplane), 1)
             }
         }
     }

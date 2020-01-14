@@ -19,4 +19,24 @@
     <string name="motorcycle">&#x1f3cd;</string>
     <string name="police_car_light">&#x1F6A8;</string>
     <string name="oncoming_police_car">&#x1f694;</string>
+
+    <string name="oncoming_bus">&#x1f68d;</string>
+    <string name="oncoming_automobile">&#x1f698;</string>
+    <string name="oncoming_taxi">&#x1f696;</string>
+    <string name="aerial_tramway">&#x1f6a1;</string>
+    <string name="mountain_cableway">&#x1f6a0;</string>
+    <string name="suspension_railway">&#x1f69f;</string>
+    <string name="railway_car">&#x1F683;</string>
+    <string name="tram_car">&#57374;</string>
+    <string name="mountain_railway">&#x1f69e;</string>
+    <string name="monorail">&#x1f69d;</string>
+    <string name="high_speed_train">&#x1F684;</string>
+    <string name="high_speed_train_with_bullet_nose">&#x1F685;</string>
+    <string name="light_rail">&#x1f688;</string>
+    <string name="locomotive">&#x1f682;</string>
+    <string name="train">&#x1f686;</string>
+    <string name="metro">&#x1F687;</string>
+    <string name="tram">&#x1f68a;</string>
+    <string name="station">&#x1F689;</string>
+    <string name="airplane">&#x2708;</string>
 </resources>
