@@ -189,7 +189,26 @@ class SixthsKeyboard: LinearLayout {
             R.id.button_spiral_calendar,
             R.id.button_tear_off_calendar,
             R.id.button_calendar,
-            R.id.button_wastebasket
+            R.id.button_wastebasket,
+            R.id.button_card_index,
+            R.id.button_card_file_box,
+            R.id.button_ballot_box_with_ballot,
+            R.id.button_file_cabinet,
+            R.id.button_clipboard,
+            R.id.button_file_folder,
+            R.id.button_open_file_folder,
+            R.id.button_card_index_dividers,
+            R.id.button_rolled_up_newspaper,
+            R.id.button_newspaper,
+            R.id.button_notebook,
+            R.id.button_notebook_with_decorative_cover,
+            R.id.button_ledger,
+            R.id.button_closed_book,
+            R.id.button_green_book,
+            R.id.button_blue_book,
+            R.id.button_orange_book,
+            R.id.button_books,
+            R.id.button_open_book
         )
 
         for (b in buttonIds) {
@@ -654,6 +673,63 @@ class SixthsKeyboard: LinearLayout {
             }
             R.id.button_wastebasket -> {
                 inputConnection!!.commitText(context.getString(R.string.wastebasket), 1)
+            }
+            R.id.button_card_index -> {
+                inputConnection!!.commitText(context.getString(R.string.card_index), 1)
+            }
+            R.id.button_card_file_box -> {
+                inputConnection!!.commitText(context.getString(R.string.card_file_box), 1)
+            }
+            R.id.button_ballot_box_with_ballot -> {
+                inputConnection!!.commitText(context.getString(R.string.ballot_box_with_ballot), 1)
+            }
+            R.id.button_file_cabinet -> {
+                inputConnection!!.commitText(context.getString(R.string.file_cabinet), 1)
+            }
+            R.id.button_clipboard -> {
+                inputConnection!!.commitText(context.getString(R.string.clipboard), 1)
+            }
+            R.id.button_file_folder -> {
+                inputConnection!!.commitText(context.getString(R.string.file_folder), 1)
+            }
+            R.id.button_open_file_folder -> {
+                inputConnection!!.commitText(context.getString(R.string.open_file_folder), 1)
+            }
+            R.id.button_card_index_dividers -> {
+                inputConnection!!.commitText(context.getString(R.string.card_index_dividers), 1)
+            }
+            R.id.button_rolled_up_newspaper -> {
+                inputConnection!!.commitText(context.getString(R.string.rolled_up_newspaper), 1)
+            }
+            R.id.button_newspaper -> {
+                inputConnection!!.commitText(context.getString(R.string.newspaper), 1)
+            }
+            R.id.button_notebook -> {
+                inputConnection!!.commitText(context.getString(R.string.notebook), 1)
+            }
+            R.id.button_notebook_with_decorative_cover -> {
+                inputConnection!!.commitText(context.getString(R.string.notebook_with_decorative_cover), 1)
+            }
+            R.id.button_ledger -> {
+                inputConnection!!.commitText(context.getString(R.string.ledger), 1)
+            }
+            R.id.button_closed_book -> {
+                inputConnection!!.commitText(context.getString(R.string.closed_book), 1)
+            }
+            R.id.button_green_book -> {
+                inputConnection!!.commitText(context.getString(R.string.green_book), 1)
+            }
+            R.id.button_blue_book -> {
+                inputConnection!!.commitText(context.getString(R.string.blue_book), 1)
+            }
+            R.id.button_orange_book -> {
+                inputConnection!!.commitText(context.getString(R.string.orange_book), 1)
+            }
+            R.id.button_books -> {
+                inputConnection!!.commitText(context.getString(R.string.books), 1)
+            }
+            R.id.button_open_book -> {
+                inputConnection!!.commitText(context.getString(R.string.open_book), 1)
             }
         }
     }

@@ -159,4 +159,24 @@
     <string name="tear_off_calendar">&#x1F4C6;</string>
     <string name="calendar">&#x1F4C5;</string>
     <string name="wastebasket">&#x1f5d1;</string>
+
+    <string name="card_index">&#x1F4C7;</string>
+    <string name="card_file_box">&#x1f5c3;</string>
+    <string name="ballot_box_with_ballot">&#x1f5f3;</string>
+    <string name="file_cabinet">&#x1f5c4;</string>
+    <string name="clipboard">&#x1F4CB;</string>
+    <string name="file_folder">&#x1F4C1;</string>
+    <string name="open_file_folder">&#x1F4C2;</string>
+    <string name="card_index_dividers">&#x1f5c2;</string>
+    <string name="rolled_up_newspaper">&#x1f5de;</string>
+    <string name="newspaper">&#x1F4F0;</string>
+    <string name="notebook">&#x1F4D3;</string>
+    <string name="notebook_with_decorative_cover">&#x1F4D4;</string>
+    <string name="ledger">&#x1F4D2;</string>
+    <string name="closed_book">&#x1F4D5;</string>
+    <string name="green_book">&#x1F4D7;</string>
+    <string name="blue_book">&#x1F4D8;</string>
+    <string name="orange_book">&#x1F4D9;</string>
+    <string name="books">&#x1F4DA;</string>
+    <string name="open_book">&#x1F4D6;</string>
 </resources>
