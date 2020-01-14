@@ -146,7 +146,13 @@ class FifthKeyboard: LinearLayout {
             R.id.button_shooting_star,
             R.id.button_sparkler,
             R.id.button_fireworks,
-            R.id.button_sunset
+            R.id.button_sunset,
+            R.id.button_cityscape_at_dusk,
+            R.id.button_cityscape,
+            R.id.button_night_with_stars,
+            R.id.button_milky_way,
+            R.id.button_bridge_at_night,
+            R.id.button_foggy
         )
 
         for (b in buttonIds) {
@@ -494,6 +500,24 @@ class FifthKeyboard: LinearLayout {
             }
             R.id.button_sunset -> {
                 inputConnection!!.commitText(context.getString(R.string.sunset), 1)
+            }
+            R.id.button_cityscape_at_dusk -> {
+                inputConnection!!.commitText(context.getString(R.string.cityscape_at_dusk), 1)
+            }
+            R.id.button_cityscape -> {
+                inputConnection!!.commitText(context.getString(R.string.cityscape), 1)
+            }
+            R.id.button_night_with_stars -> {
+                inputConnection!!.commitText(context.getString(R.string.night_with_stars), 1)
+            }
+            R.id.button_milky_way -> {
+                inputConnection!!.commitText(context.getString(R.string.milky_way), 1)
+            }
+            R.id.button_bridge_at_night -> {
+                inputConnection!!.commitText(context.getString(R.string.bridge_at_night), 1)
+            }
+            R.id.button_foggy -> {
+                inputConnection!!.commitText(context.getString(R.string.foggy), 1)
             }
         }
     }

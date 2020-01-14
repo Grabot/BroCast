@@ -118,4 +118,11 @@
     <string name="sparkler">&#x1F387;</string>
     <string name="fireworks">&#x1F386;</string>
     <string name="sunset">&#x1F307;</string>
+
+    <string name="cityscape_at_dusk">&#x1F306;</string>
+    <string name="cityscape">&#x1f3d9;</string>
+    <string name="night_with_stars">&#x1F303;</string>
+    <string name="milky_way">&#x1F30C;</string>
+    <string name="bridge_at_night">&#x1F309;</string>
+    <string name="foggy">&#x1F301;</string>
 </resources>
