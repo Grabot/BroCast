@@ -39,4 +39,24 @@
     <string name="mantelpiece_clock">&#x1f570;</string>
     <string name="hourglass">&#x231B;</string>
     <string name="hourglass_with_flowing_sand">&#x23F3;</string>
+
+    <string name="satellite_antenna">&#x1F4E1;</string>
+    <string name="battery">&#x1F50B;</string>
+    <string name="electric_plug">&#x1F50C;</string>
+    <string name="light_bulb">&#x1F4A1;</string>
+    <string name="flashlight">&#x1F526;</string>
+    <string name="candle">&#x1f56f;</string>
+    <string name="fire_extinguisher">&#x1f9ef;</string>
+    <string name="oil_drum">&#x1f6e2;</string>
+    <string name="money_with_wings">&#x1F4B8;</string>
+    <string name="dollar_banknote">&#x1F4B5;</string>
+    <string name="yen_banknote">&#x1F4B4;</string>
+    <string name="euro_banknote">&#x1f4b6;</string>
+    <string name="pound_banknote">&#x1f4b7;</string>
+    <string name="money_bag">&#x1F4B0;</string>
+    <string name="credit_card">&#x1F4B3;</string>
+    <string name="gem_stone">&#x1F48E;</string>
+    <string name="balance_scale">&#x2696;</string>
+    <string name="toolbox">&#x1f9f0;</string>
+    <string name="wrench">&#x1F527;</string>
 </resources>

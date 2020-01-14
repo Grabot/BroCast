@@ -75,7 +75,26 @@ class SixthsKeyboard: LinearLayout {
             R.id.button_alarm_clock,
             R.id.button_mantelpiece_clock,
             R.id.button_hourglass,
-            R.id.button_hourglass_with_flowing_sand
+            R.id.button_hourglass_with_flowing_sand,
+            R.id.button_satellite_antenna,
+            R.id.button_battery,
+            R.id.button_electric_plug,
+            R.id.button_light_bulb,
+            R.id.button_flashlight,
+            R.id.button_candle,
+            R.id.button_fire_extinguisher,
+            R.id.button_oil_drum,
+            R.id.button_money_with_wings,
+            R.id.button_dollar_banknote,
+            R.id.button_yen_banknote,
+            R.id.button_euro_banknote,
+            R.id.button_pound_banknote,
+            R.id.button_money_bag,
+            R.id.button_credit_card,
+            R.id.button_gem_stone,
+            R.id.button_balance_scale,
+            R.id.button_toolbox,
+            R.id.button_wrench
         )
 
         for (b in buttonIds) {
@@ -198,6 +217,63 @@ class SixthsKeyboard: LinearLayout {
             }
             R.id.button_hourglass_with_flowing_sand -> {
                 inputConnection!!.commitText(context.getString(R.string.hourglass_with_flowing_sand), 1)
+            }
+            R.id.button_satellite_antenna -> {
+                inputConnection!!.commitText(context.getString(R.string.satellite_antenna), 1)
+            }
+            R.id.button_battery -> {
+                inputConnection!!.commitText(context.getString(R.string.battery), 1)
+            }
+            R.id.button_electric_plug -> {
+                inputConnection!!.commitText(context.getString(R.string.electric_plug), 1)
+            }
+            R.id.button_light_bulb -> {
+                inputConnection!!.commitText(context.getString(R.string.light_bulb), 1)
+            }
+            R.id.button_flashlight -> {
+                inputConnection!!.commitText(context.getString(R.string.flashlight), 1)
+            }
+            R.id.button_candle -> {
+                inputConnection!!.commitText(context.getString(R.string.candle), 1)
+            }
+            R.id.button_fire_extinguisher -> {
+                inputConnection!!.commitText(context.getString(R.string.fire_extinguisher), 1)
+            }
+            R.id.button_oil_drum -> {
+                inputConnection!!.commitText(context.getString(R.string.oil_drum), 1)
+            }
+            R.id.button_money_with_wings -> {
+                inputConnection!!.commitText(context.getString(R.string.money_with_wings), 1)
+            }
+            R.id.button_dollar_banknote -> {
+                inputConnection!!.commitText(context.getString(R.string.dollar_banknote), 1)
+            }
+            R.id.button_yen_banknote -> {
+                inputConnection!!.commitText(context.getString(R.string.yen_banknote), 1)
+            }
+            R.id.button_euro_banknote -> {
+                inputConnection!!.commitText(context.getString(R.string.euro_banknote), 1)
+            }
+            R.id.button_pound_banknote -> {
+                inputConnection!!.commitText(context.getString(R.string.pound_banknote), 1)
+            }
+            R.id.button_money_bag -> {
+                inputConnection!!.commitText(context.getString(R.string.money_bag), 1)
+            }
+            R.id.button_credit_card -> {
+                inputConnection!!.commitText(context.getString(R.string.credit_card), 1)
+            }
+            R.id.button_gem_stone -> {
+                inputConnection!!.commitText(context.getString(R.string.gem_stone), 1)
+            }
+            R.id.button_balance_scale -> {
+                inputConnection!!.commitText(context.getString(R.string.balance_scale), 1)
+            }
+            R.id.button_toolbox -> {
+                inputConnection!!.commitText(context.getString(R.string.toolbox), 1)
+            }
+            R.id.button_wrench -> {
+                inputConnection!!.commitText(context.getString(R.string.wrench), 1)
             }
         }
     }
