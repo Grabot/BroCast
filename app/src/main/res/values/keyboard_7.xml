@@ -19,4 +19,24 @@
     <string name="heart_decoration">&#x1F49F;</string>
     <string name="peace_symbol">&#x262e;</string>
     <string name="latin_cross">&#x271d;</string>
+
+    <string name="star_and_crescent">&#x262a;</string>
+    <string name="om">&#x1f549;</string>
+    <string name="wheel_of_dharma">&#x2638;</string>
+    <string name="star_of_david">&#x2721;</string>
+    <string name="dotted_six_pointed_star">&#x1F52F;</string>
+    <string name="menorah">&#x1f54e;</string>
+    <string name="yin_yang">&#x262f;</string>
+    <string name="orthodox_cross">&#x2626;</string>
+    <string name="place_of_worship">&#x1f6d0;</string>
+    <string name="ophiuchus">&#x26CE;</string>
+    <string name="aries">&#x2648;</string>
+    <string name="taurus">&#x2649;</string>
+    <string name="gemini">&#x264A;</string>
+    <string name="cancer">&#x264B;</string>
+    <string name="leo">&#x264C;</string>
+    <string name="virgo">&#x264D;</string>
+    <string name="libra">&#x264E;</string>
+    <string name="scorpius">&#x264F;</string>
+    <string name="sagittarius">&#x2650;</string>
 </resources>

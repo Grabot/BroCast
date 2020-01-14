@@ -52,7 +52,26 @@ class SeventhKeyboard: LinearLayout {
             R.id.button_heart_with_ribbon,
             R.id.button_heart_decoration,
             R.id.button_peace_symbol,
-            R.id.button_latin_cross
+            R.id.button_latin_cross,
+            R.id.button_star_and_crescent,
+            R.id.button_om,
+            R.id.button_wheel_of_dharma,
+            R.id.button_star_of_david,
+            R.id.button_dotted_six_pointed_star,
+            R.id.button_menorah,
+            R.id.button_yin_yang,
+            R.id.button_orthodox_cross,
+            R.id.button_place_of_worship,
+            R.id.button_ophiuchus,
+            R.id.button_aries,
+            R.id.button_taurus,
+            R.id.button_gemini,
+            R.id.button_cancer,
+            R.id.button_leo,
+            R.id.button_virgo,
+            R.id.button_libra,
+            R.id.button_scorpius,
+            R.id.button_sagittarius
         )
 
         for (b in buttonIds) {
@@ -118,6 +137,63 @@ class SeventhKeyboard: LinearLayout {
             }
             R.id.button_latin_cross -> {
                 inputConnection!!.commitText(context.getString(R.string.latin_cross), 1)
+            }
+            R.id.button_star_and_crescent -> {
+                inputConnection!!.commitText(context.getString(R.string.star_and_crescent), 1)
+            }
+            R.id.button_om -> {
+                inputConnection!!.commitText(context.getString(R.string.om), 1)
+            }
+            R.id.button_wheel_of_dharma -> {
+                inputConnection!!.commitText(context.getString(R.string.wheel_of_dharma), 1)
+            }
+            R.id.button_star_of_david -> {
+                inputConnection!!.commitText(context.getString(R.string.star_of_david), 1)
+            }
+            R.id.button_dotted_six_pointed_star -> {
+                inputConnection!!.commitText(context.getString(R.string.dotted_six_pointed_star), 1)
+            }
+            R.id.button_menorah -> {
+                inputConnection!!.commitText(context.getString(R.string.menorah), 1)
+            }
+            R.id.button_yin_yang -> {
+                inputConnection!!.commitText(context.getString(R.string.yin_yang), 1)
+            }
+            R.id.button_orthodox_cross -> {
+                inputConnection!!.commitText(context.getString(R.string.orthodox_cross), 1)
+            }
+            R.id.button_place_of_worship -> {
+                inputConnection!!.commitText(context.getString(R.string.place_of_worship), 1)
+            }
+            R.id.button_ophiuchus -> {
+                inputConnection!!.commitText(context.getString(R.string.ophiuchus), 1)
+            }
+            R.id.button_aries -> {
+                inputConnection!!.commitText(context.getString(R.string.aries), 1)
+            }
+            R.id.button_taurus -> {
+                inputConnection!!.commitText(context.getString(R.string.taurus), 1)
+            }
+            R.id.button_gemini -> {
+                inputConnection!!.commitText(context.getString(R.string.gemini), 1)
+            }
+            R.id.button_cancer -> {
+                inputConnection!!.commitText(context.getString(R.string.cancer), 1)
+            }
+            R.id.button_leo -> {
+                inputConnection!!.commitText(context.getString(R.string.leo), 1)
+            }
+            R.id.button_virgo -> {
+                inputConnection!!.commitText(context.getString(R.string.virgo), 1)
+            }
+            R.id.button_libra -> {
+                inputConnection!!.commitText(context.getString(R.string.libra), 1)
+            }
+            R.id.button_scorpius -> {
+                inputConnection!!.commitText(context.getString(R.string.scorpius), 1)
+            }
+            R.id.button_sagittarius -> {
+                inputConnection!!.commitText(context.getString(R.string.sagittarius), 1)
             }
         }
     }
