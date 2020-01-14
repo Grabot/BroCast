@@ -58,4 +58,24 @@
     <string name="fuel_pump">&#x26FD;</string>
     <string name="construction">&#x1F6A7;</string>
     <string name="vertical_traffic_light">&#x1f6a6;</string>
+
+    <string name="horizontal_traffic_light">&#x1F6A5;</string>
+    <string name="bus_stop">&#x1F68F;</string>
+    <string name="world_map">&#x1f5fa;</string>
+    <string name="moai">&#x1F5FF;</string>
+    <string name="statue_of_liberty">&#x1F5FD;</string>
+    <string name="tokyo_tower">&#x1F5FC;</string>
+    <string name="castle">&#x1F3F0;</string>
+    <string name="japanese_castle">&#x1F3EF;</string>
+    <string name="stadium">&#x1f3df;</string>
+    <string name="ferris_wheel">&#x1F3A1;</string>
+    <string name="roller_coaster">&#x1F3A2;</string>
+    <string name="carousel_horse">&#x1f3a0;</string>
+    <string name="fountain">&#x26F2;</string>
+    <string name="umbrella_on_ground">&#x26f1;</string>
+    <string name="beach_with_umbrella">&#x1f3d6;</string>
+    <string name="desert_island">&#x1f3dd;</string>
+    <string name="desert">&#x1f3dc;</string>
+    <string name="volcano">&#x1F30B;</string>
+    <string name="mountain">&#x26f0;</string>
 </resources>

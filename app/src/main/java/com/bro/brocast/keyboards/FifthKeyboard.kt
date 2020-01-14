@@ -89,7 +89,26 @@ class FifthKeyboard: LinearLayout {
             R.id.button_anchor,
             R.id.button_fuel_pump,
             R.id.button_construction,
-            R.id.button_vertical_traffic_light
+            R.id.button_vertical_traffic_light,
+            R.id.button_horizontal_traffic_light,
+            R.id.button_bus_stop,
+            R.id.button_world_map,
+            R.id.button_moai,
+            R.id.button_statue_of_liberty,
+            R.id.button_tokyo_tower,
+            R.id.button_castle,
+            R.id.button_japanese_castle,
+            R.id.button_stadium,
+            R.id.button_ferris_wheel,
+            R.id.button_roller_coaster,
+            R.id.button_carousel_horse,
+            R.id.button_fountain,
+            R.id.button_umbrella_on_ground,
+            R.id.button_beach_with_umbrella,
+            R.id.button_desert_island,
+            R.id.button_desert,
+            R.id.button_volcano,
+            R.id.button_mountain
         )
 
         for (b in buttonIds) {
@@ -266,6 +285,63 @@ class FifthKeyboard: LinearLayout {
             }
             R.id.button_vertical_traffic_light -> {
                 inputConnection!!.commitText(context.getString(R.string.vertical_traffic_light), 1)
+            }
+            R.id.button_horizontal_traffic_light -> {
+                inputConnection!!.commitText(context.getString(R.string.horizontal_traffic_light), 1)
+            }
+            R.id.button_bus_stop -> {
+                inputConnection!!.commitText(context.getString(R.string.bus_stop), 1)
+            }
+            R.id.button_world_map -> {
+                inputConnection!!.commitText(context.getString(R.string.world_map), 1)
+            }
+            R.id.button_moai -> {
+                inputConnection!!.commitText(context.getString(R.string.moai), 1)
+            }
+            R.id.button_statue_of_liberty -> {
+                inputConnection!!.commitText(context.getString(R.string.statue_of_liberty), 1)
+            }
+            R.id.button_tokyo_tower -> {
+                inputConnection!!.commitText(context.getString(R.string.tokyo_tower), 1)
+            }
+            R.id.button_castle -> {
+                inputConnection!!.commitText(context.getString(R.string.castle), 1)
+            }
+            R.id.button_japanese_castle -> {
+                inputConnection!!.commitText(context.getString(R.string.japanese_castle), 1)
+            }
+            R.id.button_stadium -> {
+                inputConnection!!.commitText(context.getString(R.string.stadium), 1)
+            }
+            R.id.button_ferris_wheel -> {
+                inputConnection!!.commitText(context.getString(R.string.ferris_wheel), 1)
+            }
+            R.id.button_roller_coaster -> {
+                inputConnection!!.commitText(context.getString(R.string.roller_coaster), 1)
+            }
+            R.id.button_carousel_horse -> {
+                inputConnection!!.commitText(context.getString(R.string.carousel_horse), 1)
+            }
+            R.id.button_fountain -> {
+                inputConnection!!.commitText(context.getString(R.string.fountain), 1)
+            }
+            R.id.button_umbrella_on_ground -> {
+                inputConnection!!.commitText(context.getString(R.string.umbrella_on_ground), 1)
+            }
+            R.id.button_beach_with_umbrella -> {
+                inputConnection!!.commitText(context.getString(R.string.beach_with_umbrella), 1)
+            }
+            R.id.button_desert_island -> {
+                inputConnection!!.commitText(context.getString(R.string.desert_island), 1)
+            }
+            R.id.button_desert -> {
+                inputConnection!!.commitText(context.getString(R.string.desert), 1)
+            }
+            R.id.button_volcano -> {
+                inputConnection!!.commitText(context.getString(R.string.volcano), 1)
+            }
+            R.id.button_mountain -> {
+                inputConnection!!.commitText(context.getString(R.string.mountain), 1)
             }
         }
     }
