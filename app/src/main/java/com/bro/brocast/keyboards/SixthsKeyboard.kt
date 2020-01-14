@@ -132,7 +132,26 @@ class SixthsKeyboard: LinearLayout {
             R.id.button_thermometer,
             R.id.button_broom,
             R.id.button_basket,
-            R.id.button_roll_of_paper
+            R.id.button_roll_of_paper,
+            R.id.button_toilet,
+            R.id.button_faucet,
+            R.id.button_shower,
+            R.id.button_bathtub,
+            R.id.button_person_taking_bath,
+            R.id.button_soap,
+            R.id.button_sponge,
+            R.id.button_lotion_bottle,
+            R.id.button_bellhop_bell,
+            R.id.button_key,
+            R.id.button_old_key,
+            R.id.button_door,
+            R.id.button_couch_and_lamp,
+            R.id.button_bed,
+            R.id.button_person_in_bed,
+            R.id.button_teddy_bear,
+            R.id.button_framed_picture,
+            R.id.button_shopping_bags,
+            R.id.button_shopping_cart
         )
 
         for (b in buttonIds) {
@@ -426,6 +445,63 @@ class SixthsKeyboard: LinearLayout {
             }
             R.id.button_roll_of_paper -> {
                 inputConnection!!.commitText(context.getString(R.string.roll_of_paper), 1)
+            }
+            R.id.button_toilet -> {
+                inputConnection!!.commitText(context.getString(R.string.toilet), 1)
+            }
+            R.id.button_faucet -> {
+                inputConnection!!.commitText(context.getString(R.string.faucet), 1)
+            }
+            R.id.button_shower -> {
+                inputConnection!!.commitText(context.getString(R.string.shower), 1)
+            }
+            R.id.button_bathtub -> {
+                inputConnection!!.commitText(context.getString(R.string.bathtub), 1)
+            }
+            R.id.button_person_taking_bath -> {
+                inputConnection!!.commitText(context.getString(R.string.person_taking_bath), 1)
+            }
+            R.id.button_soap -> {
+                inputConnection!!.commitText(context.getString(R.string.soap), 1)
+            }
+            R.id.button_sponge -> {
+                inputConnection!!.commitText(context.getString(R.string.sponge), 1)
+            }
+            R.id.button_lotion_bottle -> {
+                inputConnection!!.commitText(context.getString(R.string.lotion_bottle), 1)
+            }
+            R.id.button_bellhop_bell -> {
+                inputConnection!!.commitText(context.getString(R.string.bellhop_bell), 1)
+            }
+            R.id.button_key -> {
+                inputConnection!!.commitText(context.getString(R.string.key), 1)
+            }
+            R.id.button_old_key -> {
+                inputConnection!!.commitText(context.getString(R.string.old_key), 1)
+            }
+            R.id.button_door -> {
+                inputConnection!!.commitText(context.getString(R.string.door), 1)
+            }
+            R.id.button_couch_and_lamp -> {
+                inputConnection!!.commitText(context.getString(R.string.couch_and_lamp), 1)
+            }
+            R.id.button_bed -> {
+                inputConnection!!.commitText(context.getString(R.string.bed), 1)
+            }
+            R.id.button_person_in_bed -> {
+                inputConnection!!.commitText(context.getString(R.string.person_in_bed), 1)
+            }
+            R.id.button_teddy_bear -> {
+                inputConnection!!.commitText(context.getString(R.string.teddy_bear), 1)
+            }
+            R.id.button_framed_picture -> {
+                inputConnection!!.commitText(context.getString(R.string.framed_picture), 1)
+            }
+            R.id.button_shopping_bags -> {
+                inputConnection!!.commitText(context.getString(R.string.shopping_bags), 1)
+            }
+            R.id.button_shopping_cart -> {
+                inputConnection!!.commitText(context.getString(R.string.shopping_cart), 1)
             }
         }
     }

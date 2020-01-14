@@ -99,4 +99,24 @@
     <string name="broom">&#x1f9f9;</string>
     <string name="basket">&#x1f9fa;</string>
     <string name="roll_of_paper">&#x1f9fb;</string>
+
+    <string name="toilet">&#x1F6BD;</string>
+    <string name="faucet">&#x1f6b0;</string>
+    <string name="shower">&#x1f6bf;</string>
+    <string name="bathtub">&#x1f6c1;</string>
+    <string name="person_taking_bath">&#x1F6C0;</string>
+    <string name="soap">&#x1f9fc;</string>
+    <string name="sponge">&#x1f9fd;</string>
+    <string name="lotion_bottle">&#x1f9f4;</string>
+    <string name="bellhop_bell">&#x1f6ce;</string>
+    <string name="key">&#x1F511;</string>
+    <string name="old_key">&#x1f5dd;</string>
+    <string name="door">&#x1F6AA;</string>
+    <string name="couch_and_lamp">&#x1f6cb;</string>
+    <string name="bed">&#x1f6cf;</string>
+    <string name="person_in_bed">&#x1f6cc;</string>
+    <string name="teddy_bear">&#x1f9f8;</string>
+    <string name="framed_picture">&#x1f5bc;</string>
+    <string name="shopping_bags">&#x1f6cd;</string>
+    <string name="shopping_cart">&#x1f6d2;</string>
 </resources>
