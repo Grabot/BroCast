@@ -128,7 +128,26 @@ class SeventhKeyboard: LinearLayout {
             R.id.button_dim_button,
             R.id.button_bright_button,
             R.id.button_part_alternation_mark,
-            R.id.button_warning
+            R.id.button_warning,
+            R.id.button_children_crossing,
+            R.id.button_trident_emblem,
+            R.id.button_fleur_de_lis,
+            R.id.button_japanese_symbol_for_beginner,
+            R.id.button_recycling_symbol,
+            R.id.button_white_heavy_check_mark,
+            R.id.button_japanese_reserved_button,
+            R.id.button_chart_increasing_with_yen,
+            R.id.button_sparkle,
+            R.id.button_eight_spoked_asterisk,
+            R.id.button_cross_mark_button,
+            R.id.button_globe_with_meridians,
+            R.id.button_diamond_with_a_dot,
+            R.id.button_circled_m,
+            R.id.button_cyclone,
+            R.id.button_zzz,
+            R.id.button_atm_sign,
+            R.id.button_water_closet,
+            R.id.button_wheelchair_symbol
         )
 
         for (b in buttonIds) {
@@ -422,6 +441,63 @@ class SeventhKeyboard: LinearLayout {
             }
             R.id.button_warning -> {
                 inputConnection!!.commitText(context.getString(R.string.warning), 1)
+            }
+            R.id.button_children_crossing -> {
+                inputConnection!!.commitText(context.getString(R.string.children_crossing), 1)
+            }
+            R.id.button_trident_emblem -> {
+                inputConnection!!.commitText(context.getString(R.string.trident_emblem), 1)
+            }
+            R.id.button_fleur_de_lis -> {
+                inputConnection!!.commitText(context.getString(R.string.fleur_de_lis), 1)
+            }
+            R.id.button_japanese_symbol_for_beginner -> {
+                inputConnection!!.commitText(context.getString(R.string.japanese_symbol_for_beginner), 1)
+            }
+            R.id.button_recycling_symbol -> {
+                inputConnection!!.commitText(context.getString(R.string.recycling_symbol), 1)
+            }
+            R.id.button_white_heavy_check_mark -> {
+                inputConnection!!.commitText(context.getString(R.string.white_heavy_check_mark), 1)
+            }
+            R.id.button_japanese_reserved_button -> {
+                inputConnection!!.commitText(context.getString(R.string.japanese_reserved_button), 1)
+            }
+            R.id.button_chart_increasing_with_yen -> {
+                inputConnection!!.commitText(context.getString(R.string.chart_increasing_with_yen), 1)
+            }
+            R.id.button_sparkle -> {
+                inputConnection!!.commitText(context.getString(R.string.sparkle), 1)
+            }
+            R.id.button_eight_spoked_asterisk -> {
+                inputConnection!!.commitText(context.getString(R.string.eight_spoked_asterisk), 1)
+            }
+            R.id.button_cross_mark_button -> {
+                inputConnection!!.commitText(context.getString(R.string.cross_mark_button), 1)
+            }
+            R.id.button_globe_with_meridians -> {
+                inputConnection!!.commitText(context.getString(R.string.globe_with_meridians), 1)
+            }
+            R.id.button_diamond_with_a_dot -> {
+                inputConnection!!.commitText(context.getString(R.string.diamond_with_a_dot), 1)
+            }
+            R.id.button_circled_m -> {
+                inputConnection!!.commitText(context.getString(R.string.circled_m), 1)
+            }
+            R.id.button_cyclone -> {
+                inputConnection!!.commitText(context.getString(R.string.cyclone), 1)
+            }
+            R.id.button_zzz -> {
+                inputConnection!!.commitText(context.getString(R.string.zzz), 1)
+            }
+            R.id.button_atm_sign -> {
+                inputConnection!!.commitText(context.getString(R.string.atm_sign), 1)
+            }
+            R.id.button_water_closet -> {
+                inputConnection!!.commitText(context.getString(R.string.water_closet), 1)
+            }
+            R.id.button_wheelchair_symbol -> {
+                inputConnection!!.commitText(context.getString(R.string.wheelchair_symbol), 1)
             }
         }
     }

@@ -99,4 +99,24 @@
     <string name="bright_button">&#x1f506;</string>
     <string name="part_alternation_mark">&#x303D;</string>
     <string name="warning">&#x26A0;</string>
+
+    <string name="children_crossing">&#x1f6b8;</string>
+    <string name="trident_emblem">&#x1F531;</string>
+    <string name="fleur_de_lis">&#x269c;</string>
+    <string name="japanese_symbol_for_beginner">&#x1F530;</string>
+    <string name="recycling_symbol">&#x267B;</string>
+    <string name="white_heavy_check_mark">&#x2705;</string>
+    <string name="japanese_reserved_button">&#x1F22F;</string>
+    <string name="chart_increasing_with_yen">&#x1F4B9;</string>
+    <string name="sparkle">&#x2747;</string>
+    <string name="eight_spoked_asterisk">&#x2733;</string>
+    <string name="cross_mark_button">&#x274E;</string>
+    <string name="globe_with_meridians">&#x1f310;</string>
+    <string name="diamond_with_a_dot">&#x1F4A0;</string>
+    <string name="circled_m">&#x24C2;</string>
+    <string name="cyclone">&#x1F300;</string>
+    <string name="zzz">&#x1F4A4;</string>
+    <string name="atm_sign">&#x1F3E7;</string>
+    <string name="water_closet">&#x1F6BE;</string>
+    <string name="wheelchair_symbol">&#x267F;</string>
 </resources>
