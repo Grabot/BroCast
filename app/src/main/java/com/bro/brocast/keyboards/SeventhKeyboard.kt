@@ -166,7 +166,26 @@ class SeventhKeyboard: LinearLayout {
             R.id.button_input_symbols,
             R.id.button_information,
             R.id.button_input_latin_letters,
-            R.id.button_input_latin_lowercase
+            R.id.button_input_latin_lowercase,
+            R.id.button_input_latin_uppercase,
+            R.id.button_ng_button,
+            R.id.button_ok_button,
+            R.id.button_up_button,
+            R.id.button_cool_button,
+            R.id.button_new_button,
+            R.id.button_free_button,
+            R.id.button_keycap_0,
+            R.id.button_keycap_1,
+            R.id.button_keycap_2,
+            R.id.button_keycap_3,
+            R.id.button_keycap_4,
+            R.id.button_keycap_5,
+            R.id.button_keycap_6,
+            R.id.button_keycap_7,
+            R.id.button_keycap_8,
+            R.id.button_keycap_9,
+            R.id.button_keycap_10,
+            R.id.button_input_numbers
         )
 
         for (b in buttonIds) {
@@ -574,6 +593,63 @@ class SeventhKeyboard: LinearLayout {
             }
             R.id.button_input_latin_lowercase -> {
                 inputConnection!!.commitText(context.getString(R.string.input_latin_lowercase), 1)
+            }
+            R.id.button_input_latin_uppercase -> {
+                inputConnection!!.commitText(context.getString(R.string.input_latin_uppercase), 1)
+            }
+            R.id.button_ng_button -> {
+                inputConnection!!.commitText(context.getString(R.string.ng_button), 1)
+            }
+            R.id.button_ok_button -> {
+                inputConnection!!.commitText(context.getString(R.string.ok_button), 1)
+            }
+            R.id.button_up_button -> {
+                inputConnection!!.commitText(context.getString(R.string.up_button), 1)
+            }
+            R.id.button_cool_button -> {
+                inputConnection!!.commitText(context.getString(R.string.cool_button), 1)
+            }
+            R.id.button_new_button -> {
+                inputConnection!!.commitText(context.getString(R.string.new_button), 1)
+            }
+            R.id.button_free_button -> {
+                inputConnection!!.commitText(context.getString(R.string.free_button), 1)
+            }
+            R.id.button_keycap_0 -> {
+                inputConnection!!.commitText(context.getString(R.string.keycap_0), 1)
+            }
+            R.id.button_keycap_1 -> {
+                inputConnection!!.commitText(context.getString(R.string.keycap_1), 1)
+            }
+            R.id.button_keycap_2 -> {
+                inputConnection!!.commitText(context.getString(R.string.keycap_2), 1)
+            }
+            R.id.button_keycap_3 -> {
+                inputConnection!!.commitText(context.getString(R.string.keycap_3), 1)
+            }
+            R.id.button_keycap_4 -> {
+                inputConnection!!.commitText(context.getString(R.string.keycap_4), 1)
+            }
+            R.id.button_keycap_5 -> {
+                inputConnection!!.commitText(context.getString(R.string.keycap_5), 1)
+            }
+            R.id.button_keycap_6 -> {
+                inputConnection!!.commitText(context.getString(R.string.keycap_6), 1)
+            }
+            R.id.button_keycap_7 -> {
+                inputConnection!!.commitText(context.getString(R.string.keycap_7), 1)
+            }
+            R.id.button_keycap_8 -> {
+                inputConnection!!.commitText(context.getString(R.string.keycap_8), 1)
+            }
+            R.id.button_keycap_9 -> {
+                inputConnection!!.commitText(context.getString(R.string.keycap_9), 1)
+            }
+            R.id.button_keycap_10 -> {
+                inputConnection!!.commitText(context.getString(R.string.keycap_10), 1)
+            }
+            R.id.button_input_numbers -> {
+                inputConnection!!.commitText(context.getString(R.string.input_numbers), 1)
             }
         }
     }

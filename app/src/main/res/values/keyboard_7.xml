@@ -139,4 +139,24 @@
     <string name="information">&#x2139;</string>
     <string name="input_latin_letters">&#x1F524;</string>
     <string name="input_latin_lowercase">&#x1F521;</string>
+
+    <string name="input_latin_uppercase">&#x1F520;</string>
+    <string name="ng_button">&#x1F196;</string>
+    <string name="ok_button">&#x1F197;</string>
+    <string name="up_button">&#x1F199;</string>
+    <string name="cool_button">&#x1F192;</string>
+    <string name="new_button">&#x1F195;</string>
+    <string name="free_button">&#x1F193;</string>
+    <string name="keycap_0">&#x0030;&#x20E3;</string>
+    <string name="keycap_1">&#x0031;&#x20E3;</string>
+    <string name="keycap_2">&#x0032;&#x20E3;</string>
+    <string name="keycap_3">&#x0033;&#x20E3;</string>
+    <string name="keycap_4">&#x0034;&#x20E3;</string>
+    <string name="keycap_5">&#x0035;&#x20E3;</string>
+    <string name="keycap_6">&#x0036;&#x20E3;</string>
+    <string name="keycap_7">&#x0037;&#x20E3;</string>
+    <string name="keycap_8">&#x0038;&#x20E3;</string>
+    <string name="keycap_9">&#x0039;&#x20E3;</string>
+    <string name="keycap_10">&#x1f51f;</string>
+    <string name="input_numbers">&#x1F522;</string>
 </resources>
