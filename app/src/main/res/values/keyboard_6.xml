@@ -199,4 +199,10 @@
     <string name="memo">&#x1F4DD;</string>
     <string name="pencil">&#x270F;</string>
     <string name="left_pointing_magnifying_glass">&#x1F50D;</string>
+
+    <string name="right_pointing_magnifying_glass">&#x1F50E;</string>
+    <string name="locked_with_pen">&#x1F50F;</string>
+    <string name="locked_with_key">&#x1F510;</string>
+    <string name="locked">&#x1F512;</string>
+    <string name="unlocked">&#x1F513;</string>
 </resources>

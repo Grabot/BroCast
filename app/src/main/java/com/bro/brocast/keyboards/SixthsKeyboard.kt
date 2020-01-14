@@ -227,7 +227,12 @@ class SixthsKeyboard: LinearLayout {
             R.id.button_crayon,
             R.id.button_memo,
             R.id.button_pencil,
-            R.id.button_left_pointing_magnifying_glass
+            R.id.button_left_pointing_magnifying_glass,
+            R.id.button_right_pointing_magnifying_glass,
+            R.id.button_locked_with_pen,
+            R.id.button_locked_with_key,
+            R.id.button_locked,
+            R.id.button_unlocked
         )
 
         for (b in buttonIds) {
@@ -806,6 +811,21 @@ class SixthsKeyboard: LinearLayout {
             }
             R.id.button_left_pointing_magnifying_glass -> {
                 inputConnection!!.commitText(context.getString(R.string.left_pointing_magnifying_glass), 1)
+            }
+            R.id.button_right_pointing_magnifying_glass -> {
+                inputConnection!!.commitText(context.getString(R.string.right_pointing_magnifying_glass), 1)
+            }
+            R.id.button_locked_with_pen -> {
+                inputConnection!!.commitText(context.getString(R.string.locked_with_pen), 1)
+            }
+            R.id.button_locked_with_key -> {
+                inputConnection!!.commitText(context.getString(R.string.locked_with_key), 1)
+            }
+            R.id.button_locked -> {
+                inputConnection!!.commitText(context.getString(R.string.locked), 1)
+            }
+            R.id.button_unlocked -> {
+                inputConnection!!.commitText(context.getString(R.string.unlocked), 1)
             }
         }
     }

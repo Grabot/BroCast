@@ -1886,6 +1886,58 @@
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
+                <Button
+                    android:id="@+id/button_right_pointing_magnifying_glass"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/right_pointing_magnifying_glass"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_locked_with_pen"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/locked_with_pen"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/button_locked_with_key"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/locked_with_key"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_locked"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/locked"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_unlocked"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/unlocked"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
