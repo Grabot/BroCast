@@ -59,4 +59,24 @@
     <string name="vs_button">&#x1F19A;</string>
     <string name="white_flower">&#x1F4AE;</string>
     <string name="japanese_bargain_button">&#x1F250;</string>
+
+    <string name="japanese_secret_button">&#x3299;</string>
+    <string name="japanese_congratulations_button">&#x3297;</string>
+    <string name="japanese_passing_grade_button">&#x1F234;</string>
+    <string name="japanese_no_vacancy_button">&#x1F235;</string>
+    <string name="japanese_discount_button">&#x1F239;</string>
+    <string name="japanese_prohibited_button">&#x1F232;</string>
+    <string name="a_button_blood_type">&#x1F170;</string>
+    <string name="b_button_blood_type">&#x1F171;</string>
+    <string name="ab_button_blood_type">&#x1F18E;</string>
+    <string name="cl_button">&#x1F191;</string>
+    <string name="o_button_blood_type">&#x1F17E;</string>
+    <string name="sos_button">&#x1F198;</string>
+    <string name="cross_mark">&#x274C;</string>
+    <string name="heavy_large_circle">&#x2B55;</string>
+    <string name="stop_sign">&#x1f6d1;</string>
+    <string name="no_entry">&#x26D4;</string>
+    <string name="name_badge">&#x1F4DB;</string>
+    <string name="prohibited">&#x1F6AB;</string>
+    <string name="hundred_points">&#x1F4AF;</string>
 </resources>

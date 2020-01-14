@@ -90,7 +90,26 @@ class SeventhKeyboard: LinearLayout {
             R.id.button_eight_pointed_star,
             R.id.button_vs_button,
             R.id.button_white_flower,
-            R.id.button_japanese_bargain_button
+            R.id.button_japanese_bargain_button,
+            R.id.button_japanese_secret_button,
+            R.id.button_japanese_congratulations_button,
+            R.id.button_japanese_passing_grade_button,
+            R.id.button_japanese_no_vacancy_button,
+            R.id.button_japanese_discount_button,
+            R.id.button_japanese_prohibited_button,
+            R.id.button_a_button_blood_type,
+            R.id.button_b_button_blood_type,
+            R.id.button_ab_button_blood_type,
+            R.id.button_cl_button,
+            R.id.button_o_button_blood_type,
+            R.id.button_sos_button,
+            R.id.button_cross_mark,
+            R.id.button_heavy_large_circle,
+            R.id.button_stop_sign,
+            R.id.button_no_entry,
+            R.id.button_name_badge,
+            R.id.button_prohibited,
+            R.id.button_hundred_points
         )
 
         for (b in buttonIds) {
@@ -270,6 +289,63 @@ class SeventhKeyboard: LinearLayout {
             }
             R.id.button_japanese_bargain_button -> {
                 inputConnection!!.commitText(context.getString(R.string.japanese_bargain_button), 1)
+            }
+            R.id.button_japanese_secret_button -> {
+                inputConnection!!.commitText(context.getString(R.string.japanese_secret_button), 1)
+            }
+            R.id.button_japanese_congratulations_button -> {
+                inputConnection!!.commitText(context.getString(R.string.japanese_congratulations_button), 1)
+            }
+            R.id.button_japanese_passing_grade_button -> {
+                inputConnection!!.commitText(context.getString(R.string.japanese_passing_grade_button), 1)
+            }
+            R.id.button_japanese_no_vacancy_button -> {
+                inputConnection!!.commitText(context.getString(R.string.japanese_no_vacancy_button), 1)
+            }
+            R.id.button_japanese_discount_button -> {
+                inputConnection!!.commitText(context.getString(R.string.japanese_discount_button), 1)
+            }
+            R.id.button_japanese_prohibited_button -> {
+                inputConnection!!.commitText(context.getString(R.string.japanese_prohibited_button), 1)
+            }
+            R.id.button_a_button_blood_type -> {
+                inputConnection!!.commitText(context.getString(R.string.a_button_blood_type), 1)
+            }
+            R.id.button_b_button_blood_type -> {
+                inputConnection!!.commitText(context.getString(R.string.b_button_blood_type), 1)
+            }
+            R.id.button_ab_button_blood_type -> {
+                inputConnection!!.commitText(context.getString(R.string.ab_button_blood_type), 1)
+            }
+            R.id.button_cl_button -> {
+                inputConnection!!.commitText(context.getString(R.string.cl_button), 1)
+            }
+            R.id.button_o_button_blood_type -> {
+                inputConnection!!.commitText(context.getString(R.string.o_button_blood_type), 1)
+            }
+            R.id.button_sos_button -> {
+                inputConnection!!.commitText(context.getString(R.string.sos_button), 1)
+            }
+            R.id.button_cross_mark -> {
+                inputConnection!!.commitText(context.getString(R.string.cross_mark), 1)
+            }
+            R.id.button_heavy_large_circle -> {
+                inputConnection!!.commitText(context.getString(R.string.heavy_large_circle), 1)
+            }
+            R.id.button_stop_sign -> {
+                inputConnection!!.commitText(context.getString(R.string.stop_sign), 1)
+            }
+            R.id.button_no_entry -> {
+                inputConnection!!.commitText(context.getString(R.string.no_entry), 1)
+            }
+            R.id.button_name_badge -> {
+                inputConnection!!.commitText(context.getString(R.string.name_badge), 1)
+            }
+            R.id.button_prohibited -> {
+                inputConnection!!.commitText(context.getString(R.string.prohibited), 1)
+            }
+            R.id.button_hundred_points -> {
+                inputConnection!!.commitText(context.getString(R.string.hundred_points), 1)
             }
         }
     }
