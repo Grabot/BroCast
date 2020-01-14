@@ -56,7 +56,26 @@ class SixthsKeyboard: LinearLayout {
             R.id.button_videocassette,
             R.id.button_camera,
             R.id.button_camera_with_flash,
-            R.id.button_video_camera
+            R.id.button_video_camera,
+            R.id.button_movie_camera,
+            R.id.button_film_projector,
+            R.id.button_film_frames,
+            R.id.button_telephone_receiver,
+            R.id.button_telephone,
+            R.id.button_pager,
+            R.id.button_fax_machine,
+            R.id.button_television,
+            R.id.button_radio,
+            R.id.button_studio_microphone,
+            R.id.button_level_slider,
+            R.id.button_control_knobs,
+            R.id.button_compass,
+            R.id.button_stopwatch,
+            R.id.button_timer_clock,
+            R.id.button_alarm_clock,
+            R.id.button_mantelpiece_clock,
+            R.id.button_hourglass,
+            R.id.button_hourglass_with_flowing_sand
         )
 
         for (b in buttonIds) {
@@ -123,13 +142,65 @@ class SixthsKeyboard: LinearLayout {
             R.id.button_video_camera -> {
                 inputConnection!!.commitText(context.getString(R.string.video_camera), 1)
             }
+            R.id.button_movie_camera -> {
+                inputConnection!!.commitText(context.getString(R.string.movie_camera), 1)
+            }
+            R.id.button_film_projector -> {
+                inputConnection!!.commitText(context.getString(R.string.film_projector), 1)
+            }
+            R.id.button_film_frames -> {
+                inputConnection!!.commitText(context.getString(R.string.film_frames), 1)
+            }
+            R.id.button_telephone_receiver -> {
+                inputConnection!!.commitText(context.getString(R.string.telephone_receiver), 1)
+            }
+            R.id.button_telephone -> {
+                inputConnection!!.commitText(context.getString(R.string.telephone), 1)
+            }
+            R.id.button_pager -> {
+                inputConnection!!.commitText(context.getString(R.string.pager), 1)
+            }
+            R.id.button_fax_machine -> {
+                inputConnection!!.commitText(context.getString(R.string.fax_machine), 1)
+            }
+            R.id.button_television -> {
+                inputConnection!!.commitText(context.getString(R.string.television), 1)
+            }
+            R.id.button_radio -> {
+                inputConnection!!.commitText(context.getString(R.string.radio), 1)
+            }
+            R.id.button_studio_microphone -> {
+                inputConnection!!.commitText(context.getString(R.string.studio_microphone), 1)
+            }
+            R.id.button_level_slider -> {
+                inputConnection!!.commitText(context.getString(R.string.level_slider), 1)
+            }
+            R.id.button_control_knobs -> {
+                inputConnection!!.commitText(context.getString(R.string.control_knobs), 1)
+            }
+            R.id.button_compass -> {
+                inputConnection!!.commitText(context.getString(R.string.compass), 1)
+            }
+            R.id.button_stopwatch -> {
+                inputConnection!!.commitText(context.getString(R.string.stopwatch), 1)
+            }
+            R.id.button_timer_clock -> {
+                inputConnection!!.commitText(context.getString(R.string.timer_clock), 1)
+            }
+            R.id.button_alarm_clock -> {
+                inputConnection!!.commitText(context.getString(R.string.alarm_clock), 1)
+            }
+            R.id.button_mantelpiece_clock -> {
+                inputConnection!!.commitText(context.getString(R.string.mantelpiece_clock), 1)
+            }
+            R.id.button_hourglass -> {
+                inputConnection!!.commitText(context.getString(R.string.hourglass), 1)
+            }
+            R.id.button_hourglass_with_flowing_sand -> {
+                inputConnection!!.commitText(context.getString(R.string.hourglass_with_flowing_sand), 1)
+            }
         }
     }
-
-    private fun getEmojiByUnicode(unicode: Int): String {
-        return String(Character.toChars(unicode))
-    }
-
 
     fun setInputConnection(ic: InputConnection) {
         inputConnection = ic

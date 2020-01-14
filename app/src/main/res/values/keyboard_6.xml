@@ -19,4 +19,24 @@
     <string name="camera">&#x1F4F7;</string>
     <string name="camera_with_flash">&#x1f4f8;</string>
     <string name="video_camera">&#x1F4F9;</string>
+
+    <string name="movie_camera">&#x1F3A5;</string>
+    <string name="film_projector">&#x1f4fd;</string>
+    <string name="film_frames">&#x1f39e;</string>
+    <string name="telephone_receiver">&#x1F4DE;</string>
+    <string name="telephone">&#x260E;</string>
+    <string name="pager">&#x1F4DF;</string>
+    <string name="fax_machine">&#x1F4E0;</string>
+    <string name="television">&#x1F4FA;</string>
+    <string name="radio">&#x1F4FB;</string>
+    <string name="studio_microphone">&#x1f399;</string>
+    <string name="level_slider">&#x1f39a;</string>
+    <string name="control_knobs">&#x1f39b;</string>
+    <string name="compass">&#x1f9ed;</string>
+    <string name="stopwatch">&#x23f1;</string>
+    <string name="timer_clock">&#x23f2;</string>
+    <string name="alarm_clock">&#x23F0;</string>
+    <string name="mantelpiece_clock">&#x1f570;</string>
+    <string name="hourglass">&#x231B;</string>
+    <string name="hourglass_with_flowing_sand">&#x23F3;</string>
 </resources>
