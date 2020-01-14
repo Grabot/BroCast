@@ -109,7 +109,26 @@ class SeventhKeyboard: LinearLayout {
             R.id.button_no_entry,
             R.id.button_name_badge,
             R.id.button_prohibited,
-            R.id.button_hundred_points
+            R.id.button_hundred_points,
+            R.id.button_anger_symbol,
+            R.id.button_hot_springs,
+            R.id.button_no_pedestrians,
+            R.id.button_no_littering,
+            R.id.button_no_bicycles,
+            R.id.button_non_potable_water,
+            R.id.button_no_one_under_eighteen,
+            R.id.button_no_mobile_phones,
+            R.id.button_no_smoking,
+            R.id.button_exclamation_mark,
+            R.id.button_white_exclamation_mark,
+            R.id.button_question_mark,
+            R.id.button_white_question_mark,
+            R.id.button_double_exclamation_mark,
+            R.id.button_exclamation_question_mark,
+            R.id.button_dim_button,
+            R.id.button_bright_button,
+            R.id.button_part_alternation_mark,
+            R.id.button_warning
         )
 
         for (b in buttonIds) {
@@ -346,6 +365,63 @@ class SeventhKeyboard: LinearLayout {
             }
             R.id.button_hundred_points -> {
                 inputConnection!!.commitText(context.getString(R.string.hundred_points), 1)
+            }
+            R.id.button_anger_symbol -> {
+                inputConnection!!.commitText(context.getString(R.string.anger_symbol), 1)
+            }
+            R.id.button_hot_springs -> {
+                inputConnection!!.commitText(context.getString(R.string.hot_springs), 1)
+            }
+            R.id.button_no_pedestrians -> {
+                inputConnection!!.commitText(context.getString(R.string.no_pedestrians), 1)
+            }
+            R.id.button_no_littering -> {
+                inputConnection!!.commitText(context.getString(R.string.no_littering), 1)
+            }
+            R.id.button_no_bicycles -> {
+                inputConnection!!.commitText(context.getString(R.string.no_bicycles), 1)
+            }
+            R.id.button_non_potable_water -> {
+                inputConnection!!.commitText(context.getString(R.string.non_potable_water), 1)
+            }
+            R.id.button_no_one_under_eighteen -> {
+                inputConnection!!.commitText(context.getString(R.string.no_one_under_eighteen), 1)
+            }
+            R.id.button_no_mobile_phones -> {
+                inputConnection!!.commitText(context.getString(R.string.no_mobile_phones), 1)
+            }
+            R.id.button_no_smoking -> {
+                inputConnection!!.commitText(context.getString(R.string.no_smoking), 1)
+            }
+            R.id.button_exclamation_mark -> {
+                inputConnection!!.commitText(context.getString(R.string.exclamation_mark), 1)
+            }
+            R.id.button_white_exclamation_mark -> {
+                inputConnection!!.commitText(context.getString(R.string.white_exclamation_mark), 1)
+            }
+            R.id.button_question_mark -> {
+                inputConnection!!.commitText(context.getString(R.string.question_mark), 1)
+            }
+            R.id.button_white_question_mark -> {
+                inputConnection!!.commitText(context.getString(R.string.white_question_mark), 1)
+            }
+            R.id.button_double_exclamation_mark -> {
+                inputConnection!!.commitText(context.getString(R.string.double_exclamation_mark), 1)
+            }
+            R.id.button_exclamation_question_mark -> {
+                inputConnection!!.commitText(context.getString(R.string.exclamation_question_mark), 1)
+            }
+            R.id.button_dim_button -> {
+                inputConnection!!.commitText(context.getString(R.string.dim_button), 1)
+            }
+            R.id.button_bright_button -> {
+                inputConnection!!.commitText(context.getString(R.string.bright_button), 1)
+            }
+            R.id.button_part_alternation_mark -> {
+                inputConnection!!.commitText(context.getString(R.string.part_alternation_mark), 1)
+            }
+            R.id.button_warning -> {
+                inputConnection!!.commitText(context.getString(R.string.warning), 1)
             }
         }
     }

@@ -79,4 +79,24 @@
     <string name="name_badge">&#x1F4DB;</string>
     <string name="prohibited">&#x1F6AB;</string>
     <string name="hundred_points">&#x1F4AF;</string>
+
+    <string name="anger_symbol">&#x1F4A2;</string>
+    <string name="hot_springs">&#x2668;</string>
+    <string name="no_pedestrians">&#x1f6b7;</string>
+    <string name="no_littering">&#x1f6af;</string>
+    <string name="no_bicycles">&#x1f6b3;</string>
+    <string name="non_potable_water">&#x1f6b1;</string>
+    <string name="no_one_under_eighteen">&#x1F51E;</string>
+    <string name="no_mobile_phones">&#x1f4f5;</string>
+    <string name="no_smoking">&#x1F6AD;</string>
+    <string name="exclamation_mark">&#x2757;</string>
+    <string name="white_exclamation_mark">&#x2755;</string>
+    <string name="question_mark">&#x2753;</string>
+    <string name="white_question_mark">&#x2754;</string>
+    <string name="double_exclamation_mark">&#x203C;</string>
+    <string name="exclamation_question_mark">&#x2049;</string>
+    <string name="dim_button">&#x1f505;</string>
+    <string name="bright_button">&#x1f506;</string>
+    <string name="part_alternation_mark">&#x303D;</string>
+    <string name="warning">&#x26A0;</string>
 </resources>
