@@ -16,197 +16,77 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/button_wink_6"
+                    android:id="@+id/button_watch"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="😉"/>
-
+                    android:text="@string/watch"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
                 <Button
-                    android:id="@+id/button_smile_6"
+                    android:id="@+id/button_mobile_phone"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="😄"/>
-
+                    android:text="@string/mobile_phone"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
                 <Button
-                    android:id="@+id/button_kissing_face_closed_eyes_6"
+                    android:id="@+id/button_mobile_phone_with_arrow"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="😚"/>
-
+                    android:text="@string/mobile_phone_with_arrow"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
                 <Button
-                    android:id="@+id/button_stuck_out_tongue_6"
+                    android:id="@+id/button_laptop_computer"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="😛"/>
-
+                    android:text="@string/laptop_computer"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
                 <Button
-                    android:id="@+id/button_cold_sweat_6"
+                    android:id="@+id/button_keyboard"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="😓"/>
-
+                    android:text="@string/keyboard"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
                 <Button
-                    android:id="@+id/button_pensive_6"
+                    android:id="@+id/button_desktop_computer"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="😔"/>
-
+                    android:text="@string/desktop_computer"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
                 <Button
-                    android:id="@+id/button_back_6"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="2"
-                    android:text="Back"/>
-
-
-            </LinearLayout>
-
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/button_tears_of_joy_6"
+                    android:id="@+id/button_printer"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="😂"/>
-
+                    android:text="@string/printer"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
                 <Button
-                    android:id="@+id/button_heart_shaped_eyes_6"
+                    android:id="@+id/button_computer_mouse"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="😍"/>
-
-                <Button
-                    android:id="@+id/button_heart_6"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="❤"/>
-
-                <Button
-                    android:id="@+id/button_rolling_on_the_floor_6"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="🤣"/>
-
-                <Button
-                    android:id="@+id/button_face_with_hearts_6"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="🥰"/>
-
-                <Button
-                    android:id="@+id/button_folded_hands_6"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="🙏"/>
-
-                <Button
-                    android:id="@+id/button_loudly_crying_6"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="😭"/>
-
-                <Button
-                    android:id="@+id/button_right_facing_fist_6"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="🤜"/>
-
-                <Button
-                    android:id="@+id/button_left_facing_fist_6"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="🤛"/>
-
-            </LinearLayout>
-
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/button_eggplant_6"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="🍆"/>
-
-                <Button
-                    android:id="@+id/button_sweat_droplets_6"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="💦"/>
-
-                <Button
-                    android:id="@+id/button_banana_6"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="🍌"/>
-
-                <Button
-                    android:id="@+id/button_thumbs_up_6"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="👍"/>
-
-                <Button
-                    android:id="@+id/button_fire_6"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="🔥"/>
-
-                <Button
-                    android:id="@+id/button_rainbow_6"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="🌈"/>
-
-                <Button
-                    android:id="@+id/button_clinking_beer_mugs_6"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="🍻"/>
-
-                <Button
-                    android:id="@+id/button_wine_glass_6"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="🍷"/>
-
-                <Button
-                    android:id="@+id/button_thinking_face_6"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="🤔"/>
-
+                    android:text="@string/computer_mouse"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
             </LinearLayout>
 
             <LinearLayout
@@ -215,67 +95,77 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/button_mushroom_6"
+                    android:id="@+id/button_trackball"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="🍄"/>
-
+                    android:text="@string/trackball"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
                 <Button
-                    android:id="@+id/button_peach_6"
+                    android:id="@+id/button_joystick"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="🍑"/>
-
+                    android:text="@string/joystick"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
                 <Button
-                    android:id="@+id/button_pile_of_poo_6"
+                    android:id="@+id/button_clamp"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="💩"/>
-
+                    android:text="@string/clamp"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
                 <Button
-                    android:id="@+id/button_person_facepalming_6"
+                    android:id="@+id/button_computer_disk"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="🤦"/>
-
+                    android:text="@string/computer_disk"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
                 <Button
-                    android:id="@+id/button_fireworks_6"
+                    android:id="@+id/button_floppy_disk"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="🎆"/>
-
+                    android:text="@string/floppy_disk"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
                 <Button
-                    android:id="@+id/button_party_poppers_6"
+                    android:id="@+id/button_optical_disk"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="🎉"/>
-
+                    android:text="@string/optical_disk"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
                 <Button
-                    android:id="@+id/button_confetti_ball_6"
+                    android:id="@+id/button_dvd"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="🎊"/>
+                    android:text="@string/dvd"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
                 <Button
-                    android:id="@+id/button_exlamation_mark_6"
+                    android:id="@+id/button_videocassette"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="!"/>
-
-                <Button
-                    android:id="@+id/button_question_mark_6"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="\?"/>
-
+                    android:text="@string/videocassette"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
             </LinearLayout>
 
             <LinearLayout
@@ -284,265 +174,32 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/button_wink_6_2"
+                    android:id="@+id/button_camera"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="😉"/>
-
+                    android:text="@string/camera"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
                 <Button
-                    android:id="@+id/button_smile_6_2"
+                    android:id="@+id/button_camera_with_flash"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="😄"/>
-
+                    android:text="@string/camera_with_flash"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
                 <Button
-                    android:id="@+id/button_kissing_face_closed_eyes_6_2"
+                    android:id="@+id/button_video_camera"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="😚"/>
-
-                <Button
-                    android:id="@+id/button_stuck_out_tongue_6_2"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="😛"/>
-
-                <Button
-                    android:id="@+id/button_cold_sweat_6_2"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="😓"/>
-
-                <Button
-                    android:id="@+id/button_pensive_6_2"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="😔"/>
-
-                <Button
-                    android:id="@+id/button_back_6_2"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="2"
-                    android:text="Back"/>
-
-
-            </LinearLayout>
-
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/button_tears_of_joy_6_2"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="😂"/>
-
-                <Button
-                    android:id="@+id/button_heart_shaped_eyes_6_2"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="😍"/>
-
-                <Button
-                    android:id="@+id/button_heart_6_2"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="❤"/>
-
-                <Button
-                    android:id="@+id/button_rolling_on_the_floor_6_2"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="🤣"/>
-
-                <Button
-                    android:id="@+id/button_face_with_hearts_6_2"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="🥰"/>
-
-                <Button
-                    android:id="@+id/button_folded_hands_6_2"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="🙏"/>
-
-                <Button
-                    android:id="@+id/button_loudly_crying_6_2"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="😭"/>
-
-                <Button
-                    android:id="@+id/button_right_facing_fist_6_2"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="🤜"/>
-
-                <Button
-                    android:id="@+id/button_left_facing_fist_6_2"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="🤛"/>
-
-            </LinearLayout>
-
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/button_eggplant_6_2"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="🍆"/>
-
-                <Button
-                    android:id="@+id/button_sweat_droplets_6_2"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="💦"/>
-
-                <Button
-                    android:id="@+id/button_banana_6_2"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="🍌"/>
-
-                <Button
-                    android:id="@+id/button_thumbs_up_6_2"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="👍"/>
-
-                <Button
-                    android:id="@+id/button_fire_6_2"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="🔥"/>
-
-                <Button
-                    android:id="@+id/button_rainbow_6_2"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="🌈"/>
-
-                <Button
-                    android:id="@+id/button_clinking_beer_mugs_6_2"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="🍻"/>
-
-                <Button
-                    android:id="@+id/button_wine_glass_6_2"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="🍷"/>
-
-                <Button
-                    android:id="@+id/button_thinking_face_6_2"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="🤔"/>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/button_mushroom_6_2"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="🍄"/>
-
-                <Button
-                    android:id="@+id/button_peach_6_2"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="🍑"/>
-
-                <Button
-                    android:id="@+id/button_pile_of_poo_6_2"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="💩"/>
-
-                <Button
-                    android:id="@+id/button_person_facepalming_6_2"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="🤦"/>
-
-                <Button
-                    android:id="@+id/button_fireworks_6_2"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="🎆"/>
-
-                <Button
-                    android:id="@+id/button_party_poppers_6_2"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="🎉"/>
-
-                <Button
-                    android:id="@+id/button_confetti_ball_6_2"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="🎊"/>
-                <Button
-                    android:id="@+id/button_exlamation_mark_6_2"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="!"/>
-
-                <Button
-                    android:id="@+id/button_question_mark_6_2"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="\?"/>
+                    android:text="@string/video_camera"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
 
             </LinearLayout>
         </LinearLayout>

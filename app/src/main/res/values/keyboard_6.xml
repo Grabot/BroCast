@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="watch">&#x231A;</string>
+    <string name="mobile_phone">&#x1F4F1;</string>
+    <string name="mobile_phone_with_arrow">&#x1F4F2;</string>
+    <string name="laptop_computer">&#x1F4BB;</string>
+    <string name="keyboard">&#x2328;</string>
+    <string name="desktop_computer">&#x1f5a5;</string>
+    <string name="printer">&#x1f5a8;</string>
+    <string name="computer_mouse">&#x1f5b1;</string>
+    <string name="trackball">&#x1f5b2;</string>
+    <string name="joystick">&#x1f579;</string>
+    <string name="clamp">&#x1f5dc;</string>
+    <string name="computer_disk">&#x1F4BD;</string>
+    <string name="floppy_disk">&#x1F4BE;</string>
+    <string name="optical_disk">&#x1F4BF;</string>
+    <string name="dvd">&#x1F4C0;</string>
+    <string name="videocassette">&#x1F4FC;</string>
+    <string name="camera">&#x1F4F7;</string>
+    <string name="camera_with_flash">&#x1f4f8;</string>
+    <string name="video_camera">&#x1F4F9;</string>
+</resources>
