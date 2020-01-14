@@ -170,7 +170,26 @@ class SixthsKeyboard: LinearLayout {
             R.id.button_inbox_tray,
             R.id.button_outbox_tray,
             R.id.button_package_emoji,
-            R.id.button_label
+            R.id.button_label,
+            R.id.button_closed_mailbox_with_lowered_flag,
+            R.id.button_closed_mailbox_with_raised_flag,
+            R.id.button_open_mailbox_with_raised_flag,
+            R.id.button_open_mailbox_with_lowered_flag,
+            R.id.button_postbox,
+            R.id.button_postal_horn,
+            R.id.button_scroll,
+            R.id.button_page_with_curl,
+            R.id.button_page_facing_up,
+            R.id.button_bookmark_tabs,
+            R.id.button_receipt,
+            R.id.button_bar_chart,
+            R.id.button_chart_increasing,
+            R.id.button_chart_decreasing,
+            R.id.button_spiral_notepad,
+            R.id.button_spiral_calendar,
+            R.id.button_tear_off_calendar,
+            R.id.button_calendar,
+            R.id.button_wastebasket
         )
 
         for (b in buttonIds) {
@@ -578,6 +597,63 @@ class SixthsKeyboard: LinearLayout {
             }
             R.id.button_label -> {
                 inputConnection!!.commitText(context.getString(R.string.label), 1)
+            }
+            R.id.button_closed_mailbox_with_lowered_flag -> {
+                inputConnection!!.commitText(context.getString(R.string.closed_mailbox_with_lowered_flag), 1)
+            }
+            R.id.button_closed_mailbox_with_raised_flag -> {
+                inputConnection!!.commitText(context.getString(R.string.closed_mailbox_with_raised_flag), 1)
+            }
+            R.id.button_open_mailbox_with_raised_flag -> {
+                inputConnection!!.commitText(context.getString(R.string.open_mailbox_with_raised_flag), 1)
+            }
+            R.id.button_open_mailbox_with_lowered_flag -> {
+                inputConnection!!.commitText(context.getString(R.string.open_mailbox_with_lowered_flag), 1)
+            }
+            R.id.button_postbox -> {
+                inputConnection!!.commitText(context.getString(R.string.postbox), 1)
+            }
+            R.id.button_postal_horn -> {
+                inputConnection!!.commitText(context.getString(R.string.postal_horn), 1)
+            }
+            R.id.button_scroll -> {
+                inputConnection!!.commitText(context.getString(R.string.scroll), 1)
+            }
+            R.id.button_page_with_curl -> {
+                inputConnection!!.commitText(context.getString(R.string.page_with_curl), 1)
+            }
+            R.id.button_page_facing_up -> {
+                inputConnection!!.commitText(context.getString(R.string.page_facing_up), 1)
+            }
+            R.id.button_bookmark_tabs -> {
+                inputConnection!!.commitText(context.getString(R.string.bookmark_tabs), 1)
+            }
+            R.id.button_receipt -> {
+                inputConnection!!.commitText(context.getString(R.string.receipt), 1)
+            }
+            R.id.button_bar_chart -> {
+                inputConnection!!.commitText(context.getString(R.string.bar_chart), 1)
+            }
+            R.id.button_chart_increasing -> {
+                inputConnection!!.commitText(context.getString(R.string.chart_increasing), 1)
+            }
+            R.id.button_chart_decreasing -> {
+                inputConnection!!.commitText(context.getString(R.string.chart_decreasing), 1)
+            }
+            R.id.button_spiral_notepad -> {
+                inputConnection!!.commitText(context.getString(R.string.spiral_notepad), 1)
+            }
+            R.id.button_spiral_calendar -> {
+                inputConnection!!.commitText(context.getString(R.string.spiral_calendar), 1)
+            }
+            R.id.button_tear_off_calendar -> {
+                inputConnection!!.commitText(context.getString(R.string.tear_off_calendar), 1)
+            }
+            R.id.button_calendar -> {
+                inputConnection!!.commitText(context.getString(R.string.calendar), 1)
+            }
+            R.id.button_wastebasket -> {
+                inputConnection!!.commitText(context.getString(R.string.wastebasket), 1)
             }
         }
     }

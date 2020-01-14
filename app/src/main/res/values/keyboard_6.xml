@@ -139,4 +139,24 @@
     <string name="outbox_tray">&#x1F4E4;</string>
     <string name="package_emoji">&#x1F4E6;</string>
     <string name="label">&#x1f3f7;</string>
+
+    <string name="closed_mailbox_with_lowered_flag">&#x1F4EA;</string>
+    <string name="closed_mailbox_with_raised_flag">&#x1F4EB;</string>
+    <string name="open_mailbox_with_raised_flag">&#x1f4ec;</string>
+    <string name="open_mailbox_with_lowered_flag">&#x1f4ed;</string>
+    <string name="postbox">&#x1F4EE;</string>
+    <string name="postal_horn">&#x1f4ef;</string>
+    <string name="scroll">&#x1F4DC;</string>
+    <string name="page_with_curl">&#x1F4C3;</string>
+    <string name="page_facing_up">&#x1F4C4;</string>
+    <string name="bookmark_tabs">&#x1F4D1;</string>
+    <string name="receipt">&#x1f9fe;</string>
+    <string name="bar_chart">&#x1F4CA;</string>
+    <string name="chart_increasing">&#x1F4C8;</string>
+    <string name="chart_decreasing">&#x1F4C9;</string>
+    <string name="spiral_notepad">&#x1f5d2;</string>
+    <string name="spiral_calendar">&#x1f5d3;</string>
+    <string name="tear_off_calendar">&#x1F4C6;</string>
+    <string name="calendar">&#x1F4C5;</string>
+    <string name="wastebasket">&#x1f5d1;</string>
 </resources>
