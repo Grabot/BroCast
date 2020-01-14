@@ -78,4 +78,24 @@
     <string name="desert">&#x1f3dc;</string>
     <string name="volcano">&#x1F30B;</string>
     <string name="mountain">&#x26f0;</string>
+
+    <string name="snow_capped_mountain">&#x1f3d4;</string>
+    <string name="mount_fuji">&#x1F5FB;</string>
+    <string name="camping">&#x1f3d5;</string>
+    <string name="tent">&#x26FA;</string>
+    <string name="house">&#x1F3E0;</string>
+    <string name="house_with_garden">&#x1F3E1;</string>
+    <string name="house_buildings">&#x1f3d8;</string>
+    <string name="derelict_house">&#x1f3da;</string>
+    <string name="building_construction">&#x1f3d7;</string>
+    <string name="factory">&#x1F3ED;</string>
+    <string name="office_building">&#x1F3E2;</string>
+    <string name="department_store">&#x1F3EC;</string>
+    <string name="japanese_post_office">&#x1F3E3;</string>
+    <string name="post_office">&#x1f3e4;</string>
+    <string name="hospital">&#x1F3E5;</string>
+    <string name="bank">&#x1F3E6;</string>
+    <string name="hotel">&#x1F3E8;</string>
+    <string name="convenience_store">&#x1F3EA;</string>
+    <string name="school">&#x1F3EB;</string>
 </resources>
