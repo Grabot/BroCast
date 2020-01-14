@@ -98,4 +98,24 @@
     <string name="hotel">&#x1F3E8;</string>
     <string name="convenience_store">&#x1F3EA;</string>
     <string name="school">&#x1F3EB;</string>
+
+    <string name="love_hotel">&#x1F3E9;</string>
+    <string name="wedding">&#x1F492;</string>
+    <string name="classical_building">&#x1f3db;</string>
+    <string name="church">&#x26EA;</string>
+    <string name="mosque">&#x1f54c;</string>
+    <string name="synagogue">&#x1f54d;</string>
+    <string name="kaaba">&#x1f54b;</string>
+    <string name="shinto_shrine">&#x26e9;</string>
+    <string name="railway_track">&#x1f6e4;</string>
+    <string name="motorway">&#x1f6e3;</string>
+    <string name="map_of_japan">&#x1F5FE;</string>
+    <string name="moon_viewing_ceremony">&#x1F391;</string>
+    <string name="national_park">&#x1f3de;</string>
+    <string name="sunrise">&#x1F305;</string>
+    <string name="sunrise_over_mountains">&#x1F304;</string>
+    <string name="shooting_star">&#x1F320;</string>
+    <string name="sparkler">&#x1F387;</string>
+    <string name="fireworks">&#x1F386;</string>
+    <string name="sunset">&#x1F307;</string>
 </resources>

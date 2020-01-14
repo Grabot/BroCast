@@ -127,7 +127,26 @@ class FifthKeyboard: LinearLayout {
             R.id.button_bank,
             R.id.button_hotel,
             R.id.button_convenience_store,
-            R.id.button_school
+            R.id.button_school,
+            R.id.button_love_hotel,
+            R.id.button_wedding,
+            R.id.button_classical_building,
+            R.id.button_church,
+            R.id.button_mosque,
+            R.id.button_synagogue,
+            R.id.button_kaaba,
+            R.id.button_shinto_shrine,
+            R.id.button_railway_track,
+            R.id.button_motorway,
+            R.id.button_map_of_japan,
+            R.id.button_moon_viewing_ceremony,
+            R.id.button_national_park,
+            R.id.button_sunrise,
+            R.id.button_sunrise_over_mountains,
+            R.id.button_shooting_star,
+            R.id.button_sparkler,
+            R.id.button_fireworks,
+            R.id.button_sunset
         )
 
         for (b in buttonIds) {
@@ -418,6 +437,63 @@ class FifthKeyboard: LinearLayout {
             }
             R.id.button_school -> {
                 inputConnection!!.commitText(context.getString(R.string.school), 1)
+            }
+            R.id.button_love_hotel -> {
+                inputConnection!!.commitText(context.getString(R.string.love_hotel), 1)
+            }
+            R.id.button_wedding -> {
+                inputConnection!!.commitText(context.getString(R.string.wedding), 1)
+            }
+            R.id.button_classical_building -> {
+                inputConnection!!.commitText(context.getString(R.string.classical_building), 1)
+            }
+            R.id.button_church -> {
+                inputConnection!!.commitText(context.getString(R.string.church), 1)
+            }
+            R.id.button_mosque -> {
+                inputConnection!!.commitText(context.getString(R.string.mosque), 1)
+            }
+            R.id.button_synagogue -> {
+                inputConnection!!.commitText(context.getString(R.string.synagogue), 1)
+            }
+            R.id.button_kaaba -> {
+                inputConnection!!.commitText(context.getString(R.string.kaaba), 1)
+            }
+            R.id.button_shinto_shrine -> {
+                inputConnection!!.commitText(context.getString(R.string.shinto_shrine), 1)
+            }
+            R.id.button_railway_track -> {
+                inputConnection!!.commitText(context.getString(R.string.railway_track), 1)
+            }
+            R.id.button_motorway -> {
+                inputConnection!!.commitText(context.getString(R.string.motorway), 1)
+            }
+            R.id.button_map_of_japan -> {
+                inputConnection!!.commitText(context.getString(R.string.map_of_japan), 1)
+            }
+            R.id.button_moon_viewing_ceremony -> {
+                inputConnection!!.commitText(context.getString(R.string.moon_viewing_ceremony), 1)
+            }
+            R.id.button_national_park -> {
+                inputConnection!!.commitText(context.getString(R.string.national_park), 1)
+            }
+            R.id.button_sunrise -> {
+                inputConnection!!.commitText(context.getString(R.string.sunrise), 1)
+            }
+            R.id.button_sunrise_over_mountains -> {
+                inputConnection!!.commitText(context.getString(R.string.sunrise_over_mountains), 1)
+            }
+            R.id.button_shooting_star -> {
+                inputConnection!!.commitText(context.getString(R.string.shooting_star), 1)
+            }
+            R.id.button_sparkler -> {
+                inputConnection!!.commitText(context.getString(R.string.sparkler), 1)
+            }
+            R.id.button_fireworks -> {
+                inputConnection!!.commitText(context.getString(R.string.fireworks), 1)
+            }
+            R.id.button_sunset -> {
+                inputConnection!!.commitText(context.getString(R.string.sunset), 1)
             }
         }
     }
