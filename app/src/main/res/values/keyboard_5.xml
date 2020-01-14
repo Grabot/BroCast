@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="automobile">&#x1F697;</string>
+    <string name="taxi">&#x1F695;</string>
+    <string name="sport_utility_vehicle">&#x1F699;</string>
+    <string name="bus">&#x1F68C;</string>
+    <string name="trolleybus">&#x1f68e;</string>
+    <string name="racing_car">&#x1f3ce;</string>
+    <string name="police_car">&#x1F693;</string>
+    <string name="ambulance">&#x1F691;</string>
+    <string name="fire_engine">&#x1F692;</string>
+    <string name="minibus">&#x1f690;</string>
+    <string name="delivery_truck">&#x1F69A;</string>
+    <string name="articulated_lorry">&#x1f69b;</string>
+    <string name="tractor">&#x1f69c;</string>
+    <string name="kick_scooter">&#x1f6f4;</string>
+    <string name="bicycle">&#x1F6B2;</string>
+    <string name="motor_scooter">&#x1f6f5;</string>
+    <string name="motorcycle">&#x1f3cd;</string>
+    <string name="police_car_light">&#x1F6A8;</string>
+    <string name="oncoming_police_car">&#x1f694;</string>
+</resources>
