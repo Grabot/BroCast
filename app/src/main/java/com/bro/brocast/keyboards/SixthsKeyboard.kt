@@ -94,7 +94,26 @@ class SixthsKeyboard: LinearLayout {
             R.id.button_gem_stone,
             R.id.button_balance_scale,
             R.id.button_toolbox,
-            R.id.button_wrench
+            R.id.button_wrench,
+            R.id.button_hammer,
+            R.id.button_hammer_and_pick,
+            R.id.button_hammer_and_wrench,
+            R.id.button_pick,
+            R.id.button_nut_and_bolt,
+            R.id.button_gear,
+            R.id.button_bricks,
+            R.id.button_chains,
+            R.id.button_magnet,
+            R.id.button_pistol,
+            R.id.button_bomb,
+            R.id.button_firecracker,
+            R.id.button_kitchen_knife,
+            R.id.button_dagger,
+            R.id.button_crossed_swords,
+            R.id.button_shield,
+            R.id.button_cigarette,
+            R.id.button_coffin,
+            R.id.button_funeral_urn
         )
 
         for (b in buttonIds) {
@@ -274,6 +293,63 @@ class SixthsKeyboard: LinearLayout {
             }
             R.id.button_wrench -> {
                 inputConnection!!.commitText(context.getString(R.string.wrench), 1)
+            }
+            R.id.button_hammer -> {
+                inputConnection!!.commitText(context.getString(R.string.hammer), 1)
+            }
+            R.id.button_hammer_and_pick -> {
+                inputConnection!!.commitText(context.getString(R.string.hammer_and_pick), 1)
+            }
+            R.id.button_hammer_and_wrench -> {
+                inputConnection!!.commitText(context.getString(R.string.hammer_and_wrench), 1)
+            }
+            R.id.button_pick -> {
+                inputConnection!!.commitText(context.getString(R.string.pick), 1)
+            }
+            R.id.button_nut_and_bolt -> {
+                inputConnection!!.commitText(context.getString(R.string.nut_and_bolt), 1)
+            }
+            R.id.button_gear -> {
+                inputConnection!!.commitText(context.getString(R.string.gear), 1)
+            }
+            R.id.button_bricks -> {
+                inputConnection!!.commitText(context.getString(R.string.bricks), 1)
+            }
+            R.id.button_chains -> {
+                inputConnection!!.commitText(context.getString(R.string.chains), 1)
+            }
+            R.id.button_magnet -> {
+                inputConnection!!.commitText(context.getString(R.string.magnet), 1)
+            }
+            R.id.button_pistol -> {
+                inputConnection!!.commitText(context.getString(R.string.pistol), 1)
+            }
+            R.id.button_bomb -> {
+                inputConnection!!.commitText(context.getString(R.string.bomb), 1)
+            }
+            R.id.button_firecracker -> {
+                inputConnection!!.commitText(context.getString(R.string.firecracker), 1)
+            }
+            R.id.button_kitchen_knife -> {
+                inputConnection!!.commitText(context.getString(R.string.kitchen_knife), 1)
+            }
+            R.id.button_dagger -> {
+                inputConnection!!.commitText(context.getString(R.string.dagger), 1)
+            }
+            R.id.button_crossed_swords -> {
+                inputConnection!!.commitText(context.getString(R.string.crossed_swords), 1)
+            }
+            R.id.button_shield -> {
+                inputConnection!!.commitText(context.getString(R.string.shield), 1)
+            }
+            R.id.button_cigarette -> {
+                inputConnection!!.commitText(context.getString(R.string.cigarette), 1)
+            }
+            R.id.button_coffin -> {
+                inputConnection!!.commitText(context.getString(R.string.coffin), 1)
+            }
+            R.id.button_funeral_urn -> {
+                inputConnection!!.commitText(context.getString(R.string.funeral_urn), 1)
             }
         }
     }

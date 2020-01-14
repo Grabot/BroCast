@@ -59,4 +59,24 @@
     <string name="balance_scale">&#x2696;</string>
     <string name="toolbox">&#x1f9f0;</string>
     <string name="wrench">&#x1F527;</string>
+
+    <string name="hammer">&#x1F528;</string>
+    <string name="hammer_and_pick">&#x2692;</string>
+    <string name="hammer_and_wrench">&#x1f6e0;</string>
+    <string name="pick">&#x26cf;</string>
+    <string name="nut_and_bolt">&#x1F529;</string>
+    <string name="gear">&#x2699;</string>
+    <string name="bricks">&#x1f9f1;</string>
+    <string name="chains">&#x26d3;</string>
+    <string name="magnet">&#x1f9f2;</string>
+    <string name="pistol">&#x1F52B;</string>
+    <string name="bomb">&#x1F4A3;</string>
+    <string name="firecracker">&#x1f9e8;</string>
+    <string name="kitchen_knife">&#x1F52A;</string>
+    <string name="dagger">&#x1f5e1;</string>
+    <string name="crossed_swords">&#x2694;</string>
+    <string name="shield">&#x1f6e1;</string>
+    <string name="cigarette">&#x1F6AC;</string>
+    <string name="coffin">&#x26b0;</string>
+    <string name="funeral_urn">&#x26b1;</string>
 </resources>
