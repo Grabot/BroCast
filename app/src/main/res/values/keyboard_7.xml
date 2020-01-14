@@ -39,4 +39,24 @@
     <string name="libra">&#x264E;</string>
     <string name="scorpius">&#x264F;</string>
     <string name="sagittarius">&#x2650;</string>
+
+    <string name="capricorn">&#x2651;</string>
+    <string name="aquarius">&#x2652;</string>
+    <string name="pisces">&#x2653;</string>
+    <string name="id_button">&#x1F194;</string>
+    <string name="atom_symbol">&#x269b;</string>
+    <string name="japanese_acceptable_button">&#x1F251;</string>
+    <string name="radioactive">&#x2622;</string>
+    <string name="biohazard">&#x2623;</string>
+    <string name="mobile_phone_off">&#x1F4F4;</string>
+    <string name="vibration_mode">&#x1F4F3;</string>
+    <string name="japanese_not_free_of_charge_button">&#x1F236;</string>
+    <string name="japanese_free_of_charge_button">&#x1F21A;</string>
+    <string name="japanese_application_button">&#x1F238;</string>
+    <string name="japanese_open_for_business_button">&#x1F23A;</string>
+    <string name="japanese_monthly_amount_button">&#x1F237;</string>
+    <string name="eight_pointed_star">&#x2734;</string>
+    <string name="vs_button">&#x1F19A;</string>
+    <string name="white_flower">&#x1F4AE;</string>
+    <string name="japanese_bargain_button">&#x1F250;</string>
 </resources>

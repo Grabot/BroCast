@@ -71,7 +71,26 @@ class SeventhKeyboard: LinearLayout {
             R.id.button_virgo,
             R.id.button_libra,
             R.id.button_scorpius,
-            R.id.button_sagittarius
+            R.id.button_sagittarius,
+            R.id.button_capricorn,
+            R.id.button_aquarius,
+            R.id.button_pisces,
+            R.id.button_id_button,
+            R.id.button_atom_symbol,
+            R.id.button_japanese_acceptable_button,
+            R.id.button_radioactive,
+            R.id.button_biohazard,
+            R.id.button_mobile_phone_off,
+            R.id.button_vibration_mode,
+            R.id.button_japanese_not_free_of_charge_button,
+            R.id.button_japanese_free_of_charge_button,
+            R.id.button_japanese_application_button,
+            R.id.button_japanese_open_for_business_button,
+            R.id.button_japanese_monthly_amount_button,
+            R.id.button_eight_pointed_star,
+            R.id.button_vs_button,
+            R.id.button_white_flower,
+            R.id.button_japanese_bargain_button
         )
 
         for (b in buttonIds) {
@@ -194,6 +213,63 @@ class SeventhKeyboard: LinearLayout {
             }
             R.id.button_sagittarius -> {
                 inputConnection!!.commitText(context.getString(R.string.sagittarius), 1)
+            }
+            R.id.button_capricorn -> {
+                inputConnection!!.commitText(context.getString(R.string.capricorn), 1)
+            }
+            R.id.button_aquarius -> {
+                inputConnection!!.commitText(context.getString(R.string.aquarius), 1)
+            }
+            R.id.button_pisces -> {
+                inputConnection!!.commitText(context.getString(R.string.pisces), 1)
+            }
+            R.id.button_id_button -> {
+                inputConnection!!.commitText(context.getString(R.string.id_button), 1)
+            }
+            R.id.button_atom_symbol -> {
+                inputConnection!!.commitText(context.getString(R.string.atom_symbol), 1)
+            }
+            R.id.button_japanese_acceptable_button -> {
+                inputConnection!!.commitText(context.getString(R.string.japanese_acceptable_button), 1)
+            }
+            R.id.button_radioactive -> {
+                inputConnection!!.commitText(context.getString(R.string.radioactive), 1)
+            }
+            R.id.button_biohazard -> {
+                inputConnection!!.commitText(context.getString(R.string.biohazard), 1)
+            }
+            R.id.button_mobile_phone_off -> {
+                inputConnection!!.commitText(context.getString(R.string.mobile_phone_off), 1)
+            }
+            R.id.button_vibration_mode -> {
+                inputConnection!!.commitText(context.getString(R.string.vibration_mode), 1)
+            }
+            R.id.button_japanese_not_free_of_charge_button -> {
+                inputConnection!!.commitText(context.getString(R.string.japanese_not_free_of_charge_button), 1)
+            }
+            R.id.button_japanese_free_of_charge_button -> {
+                inputConnection!!.commitText(context.getString(R.string.japanese_free_of_charge_button), 1)
+            }
+            R.id.button_japanese_application_button -> {
+                inputConnection!!.commitText(context.getString(R.string.japanese_application_button), 1)
+            }
+            R.id.button_japanese_open_for_business_button -> {
+                inputConnection!!.commitText(context.getString(R.string.japanese_open_for_business_button), 1)
+            }
+            R.id.button_japanese_monthly_amount_button -> {
+                inputConnection!!.commitText(context.getString(R.string.japanese_monthly_amount_button), 1)
+            }
+            R.id.button_eight_pointed_star -> {
+                inputConnection!!.commitText(context.getString(R.string.eight_pointed_star), 1)
+            }
+            R.id.button_vs_button -> {
+                inputConnection!!.commitText(context.getString(R.string.vs_button), 1)
+            }
+            R.id.button_white_flower -> {
+                inputConnection!!.commitText(context.getString(R.string.white_flower), 1)
+            }
+            R.id.button_japanese_bargain_button -> {
+                inputConnection!!.commitText(context.getString(R.string.japanese_bargain_button), 1)
             }
         }
     }
