@@ -39,4 +39,24 @@
     <string name="tram">&#x1f68a;</string>
     <string name="station">&#x1F689;</string>
     <string name="airplane">&#x2708;</string>
+
+    <string name="airplane_departure">&#x1f6eb;</string>
+    <string name="airplane_arrival">&#x1f6ec;</string>
+    <string name="small_airplane">&#x1f6e9;</string>
+    <string name="seat">&#x1F4BA;</string>
+    <string name="satellite">&#x1f6f0;</string>
+    <string name="rocket">&#x1F680;</string>
+    <string name="flying_saucer">&#x1f6f8;</string>
+    <string name="helicopter">&#x1f681;</string>
+    <string name="canoe">&#x1f6f6;</string>
+    <string name="sailboat">&#x26F5;</string>
+    <string name="speedboat">&#x1F6A4;</string>
+    <string name="motor_boat">&#x1f6e5;</string>
+    <string name="passenger_ship">&#x1f6f3;</string>
+    <string name="ferry">&#x26f4;</string>
+    <string name="ship">&#x1F6A2;</string>
+    <string name="anchor">&#x2693;</string>
+    <string name="fuel_pump">&#x26FD;</string>
+    <string name="construction">&#x1F6A7;</string>
+    <string name="vertical_traffic_light">&#x1f6a6;</string>
 </resources>

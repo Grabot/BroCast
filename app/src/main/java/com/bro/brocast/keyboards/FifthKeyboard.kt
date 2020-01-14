@@ -71,7 +71,26 @@ class FifthKeyboard: LinearLayout {
             R.id.button_metro,
             R.id.button_tram,
             R.id.button_station,
-            R.id.button_airplane
+            R.id.button_airplane,
+            R.id.button_airplane_departure,
+            R.id.button_airplane_arrival,
+            R.id.button_small_airplane,
+            R.id.button_seat,
+            R.id.button_satellite,
+            R.id.button_rocket,
+            R.id.button_flying_saucer,
+            R.id.button_helicopter,
+            R.id.button_canoe,
+            R.id.button_sailboat,
+            R.id.button_speedboat,
+            R.id.button_motor_boat,
+            R.id.button_passenger_ship,
+            R.id.button_ferry,
+            R.id.button_ship,
+            R.id.button_anchor,
+            R.id.button_fuel_pump,
+            R.id.button_construction,
+            R.id.button_vertical_traffic_light
         )
 
         for (b in buttonIds) {
@@ -194,6 +213,63 @@ class FifthKeyboard: LinearLayout {
             }
             R.id.button_airplane -> {
                 inputConnection!!.commitText(context.getString(R.string.airplane), 1)
+            }
+            R.id.button_airplane_departure -> {
+                inputConnection!!.commitText(context.getString(R.string.airplane_departure), 1)
+            }
+            R.id.button_airplane_arrival -> {
+                inputConnection!!.commitText(context.getString(R.string.airplane_arrival), 1)
+            }
+            R.id.button_small_airplane -> {
+                inputConnection!!.commitText(context.getString(R.string.small_airplane), 1)
+            }
+            R.id.button_seat -> {
+                inputConnection!!.commitText(context.getString(R.string.seat), 1)
+            }
+            R.id.button_satellite -> {
+                inputConnection!!.commitText(context.getString(R.string.satellite), 1)
+            }
+            R.id.button_rocket -> {
+                inputConnection!!.commitText(context.getString(R.string.rocket), 1)
+            }
+            R.id.button_flying_saucer -> {
+                inputConnection!!.commitText(context.getString(R.string.flying_saucer), 1)
+            }
+            R.id.button_helicopter -> {
+                inputConnection!!.commitText(context.getString(R.string.helicopter), 1)
+            }
+            R.id.button_canoe -> {
+                inputConnection!!.commitText(context.getString(R.string.canoe), 1)
+            }
+            R.id.button_sailboat -> {
+                inputConnection!!.commitText(context.getString(R.string.sailboat), 1)
+            }
+            R.id.button_speedboat -> {
+                inputConnection!!.commitText(context.getString(R.string.speedboat), 1)
+            }
+            R.id.button_motor_boat -> {
+                inputConnection!!.commitText(context.getString(R.string.motor_boat), 1)
+            }
+            R.id.button_passenger_ship -> {
+                inputConnection!!.commitText(context.getString(R.string.passenger_ship), 1)
+            }
+            R.id.button_ferry -> {
+                inputConnection!!.commitText(context.getString(R.string.ferry), 1)
+            }
+            R.id.button_ship -> {
+                inputConnection!!.commitText(context.getString(R.string.ship), 1)
+            }
+            R.id.button_anchor -> {
+                inputConnection!!.commitText(context.getString(R.string.anchor), 1)
+            }
+            R.id.button_fuel_pump -> {
+                inputConnection!!.commitText(context.getString(R.string.fuel_pump), 1)
+            }
+            R.id.button_construction -> {
+                inputConnection!!.commitText(context.getString(R.string.construction), 1)
+            }
+            R.id.button_vertical_traffic_light -> {
+                inputConnection!!.commitText(context.getString(R.string.vertical_traffic_light), 1)
             }
         }
     }
