@@ -199,4 +199,24 @@
     <string name="clockwise_vertical_arrows">&#x1F503;</string>
     <string name="musical_note">&#x1F3B5;</string>
     <string name="musical_notes">&#x1F3B6;</string>
+
+    <string name="heavy_plus_sign">&#x2795;</string>
+    <string name="heavy_minus_sign">&#x2796;</string>
+    <string name="heavy_division_sign">&#x2797;</string>
+    <string name="heavy_multiplication_x">&#x2716;</string>
+    <string name="infinity">&#x267e;</string>
+    <string name="heavy_dollar_sign">&#x1F4B2;</string>
+    <string name="currency_exchange">&#x1F4B1;</string>
+    <string name="trade_mark">&#x2122;</string>
+    <string name="copyright">&#x00A9;</string>
+    <string name="registered">&#x00AE;</string>
+    <string name="eye_in_speech_bubble">&#x1f441;&#x200d;&#x1f5e8;</string>
+    <string name="end_arrow">&#x1F51A;</string>
+    <string name="back_arrow">&#x1F519;</string>
+    <string name="on_arrow">&#x1F51B;</string>
+    <string name="top_arrow">&#x1F51D;</string>
+    <string name="soon_arrow">&#x1F51C;</string>
+    <string name="wavy_dash">&#x3030;</string>
+    <string name="curly_loop">&#x27B0;</string>
+    <string name="double_curly_loop">&#x27BF;</string>
 </resources>

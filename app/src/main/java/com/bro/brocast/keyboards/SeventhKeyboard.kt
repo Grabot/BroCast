@@ -223,7 +223,26 @@ class SeventhKeyboard: LinearLayout {
             R.id.button_anticlockwise_arrows_button,
             R.id.button_clockwise_vertical_arrows,
             R.id.button_musical_note,
-            R.id.button_musical_notes
+            R.id.button_musical_notes,
+            R.id.button_heavy_plus_sign,
+            R.id.button_heavy_minus_sign,
+            R.id.button_heavy_division_sign,
+            R.id.button_heavy_multiplication_x,
+            R.id.button_infinity,
+            R.id.button_heavy_dollar_sign,
+            R.id.button_currency_exchange,
+            R.id.button_trade_mark,
+            R.id.button_copyright,
+            R.id.button_registered,
+            R.id.button_eye_in_speech_bubble,
+            R.id.button_end_arrow,
+            R.id.button_back_arrow,
+            R.id.button_on_arrow,
+            R.id.button_top_arrow,
+            R.id.button_soon_arrow,
+            R.id.button_wavy_dash,
+            R.id.button_curly_loop,
+            R.id.button_double_curly_loop
         )
 
         for (b in buttonIds) {
@@ -802,6 +821,63 @@ class SeventhKeyboard: LinearLayout {
             }
             R.id.button_musical_notes -> {
                 inputConnection!!.commitText(context.getString(R.string.musical_notes), 1)
+            }
+            R.id.button_heavy_plus_sign -> {
+                inputConnection!!.commitText(context.getString(R.string.heavy_plus_sign), 1)
+            }
+            R.id.button_heavy_minus_sign -> {
+                inputConnection!!.commitText(context.getString(R.string.heavy_minus_sign), 1)
+            }
+            R.id.button_heavy_division_sign -> {
+                inputConnection!!.commitText(context.getString(R.string.heavy_division_sign), 1)
+            }
+            R.id.button_heavy_multiplication_x -> {
+                inputConnection!!.commitText(context.getString(R.string.heavy_multiplication_x), 1)
+            }
+            R.id.button_infinity -> {
+                inputConnection!!.commitText(context.getString(R.string.infinity), 1)
+            }
+            R.id.button_heavy_dollar_sign -> {
+                inputConnection!!.commitText(context.getString(R.string.heavy_dollar_sign), 1)
+            }
+            R.id.button_currency_exchange -> {
+                inputConnection!!.commitText(context.getString(R.string.currency_exchange), 1)
+            }
+            R.id.button_trade_mark -> {
+                inputConnection!!.commitText(context.getString(R.string.trade_mark), 1)
+            }
+            R.id.button_copyright -> {
+                inputConnection!!.commitText(context.getString(R.string.copyright), 1)
+            }
+            R.id.button_registered -> {
+                inputConnection!!.commitText(context.getString(R.string.registered), 1)
+            }
+            R.id.button_eye_in_speech_bubble -> {
+                inputConnection!!.commitText(context.getString(R.string.eye_in_speech_bubble), 1)
+            }
+            R.id.button_end_arrow -> {
+                inputConnection!!.commitText(context.getString(R.string.end_arrow), 1)
+            }
+            R.id.button_back_arrow -> {
+                inputConnection!!.commitText(context.getString(R.string.back_arrow), 1)
+            }
+            R.id.button_on_arrow -> {
+                inputConnection!!.commitText(context.getString(R.string.on_arrow), 1)
+            }
+            R.id.button_top_arrow -> {
+                inputConnection!!.commitText(context.getString(R.string.top_arrow), 1)
+            }
+            R.id.button_soon_arrow -> {
+                inputConnection!!.commitText(context.getString(R.string.soon_arrow), 1)
+            }
+            R.id.button_wavy_dash -> {
+                inputConnection!!.commitText(context.getString(R.string.wavy_dash), 1)
+            }
+            R.id.button_curly_loop -> {
+                inputConnection!!.commitText(context.getString(R.string.curly_loop), 1)
+            }
+            R.id.button_double_curly_loop -> {
+                inputConnection!!.commitText(context.getString(R.string.double_curly_loop), 1)
             }
         }
     }
