@@ -119,4 +119,24 @@
     <string name="iran">&#x1f1ee;&#x1f1f7;</string>
     <string name="iraq">&#x1f1ee;&#x1f1f6;</string>
     <string name="ireland">&#x1f1ee;&#x1f1ea;</string>
+
+    <string name="isle_of_man">&#x1f1ee;&#x1f1f2;</string>
+    <string name="israel">&#x1f1ee;&#x1f1f1;</string>
+    <string name="italy">&#x1F1EE;&#x1F1F9;</string>
+    <string name="jamaica">&#x1f1ef;&#x1f1f2;</string>
+    <string name="japan">&#x1F1EF;&#x1F1F5;</string>
+    <string name="crossed_flags">&#x1F38C;</string>
+    <string name="jersey">&#x1f1ef;&#x1f1ea;</string>
+    <string name="jordan">&#x1f1ef;&#x1f1f4;</string>
+    <string name="kazakhstan">&#x1f1f0;&#x1f1ff;</string>
+    <string name="kenya">&#x1f1f0;&#x1f1ea;</string>
+    <string name="kiribati">&#x1f1f0;&#x1f1ee;</string>
+    <string name="kosovo">&#x1f1fd;&#x1f1f0;</string>
+    <string name="kuwait">&#x1f1f0;&#x1f1fc;</string>
+    <string name="kyrgyzstan">&#x1f1f0;&#x1f1ec;</string>
+    <string name="laos">&#x1f1f1;&#x1f1e6;</string>
+    <string name="latvia">&#x1f1f1;&#x1f1fb;</string>
+    <string name="lebanon">&#x1f1f1;&#x1f1e7;</string>
+    <string name="lesotho">&#x1f1f1;&#x1f1f8;</string>
+    <string name="liberia">&#x1f1f1;&#x1f1f7;</string>
 </resources>

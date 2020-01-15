@@ -147,7 +147,26 @@ class EighthKeyboard: LinearLayout {
             R.id.button_indonesia,
             R.id.button_iran,
             R.id.button_iraq,
-            R.id.button_ireland
+            R.id.button_ireland,
+            R.id.button_isle_of_man,
+            R.id.button_israel,
+            R.id.button_italy,
+            R.id.button_jamaica,
+            R.id.button_japan,
+            R.id.button_crossed_flags,
+            R.id.button_jersey,
+            R.id.button_jordan,
+            R.id.button_kazakhstan,
+            R.id.button_kenya,
+            R.id.button_kiribati,
+            R.id.button_kosovo,
+            R.id.button_kuwait,
+            R.id.button_kyrgyzstan,
+            R.id.button_laos,
+            R.id.button_latvia,
+            R.id.button_lebanon,
+            R.id.button_lesotho,
+            R.id.button_liberia
         )
 
         for (b in buttonIds) {
@@ -498,6 +517,63 @@ class EighthKeyboard: LinearLayout {
             }
             R.id.button_ireland -> {
                 inputConnection!!.commitText(context.getString(R.string.ireland), 1)
+            }
+            R.id.button_isle_of_man -> {
+                inputConnection!!.commitText(context.getString(R.string.isle_of_man), 1)
+            }
+            R.id.button_israel -> {
+                inputConnection!!.commitText(context.getString(R.string.israel), 1)
+            }
+            R.id.button_italy -> {
+                inputConnection!!.commitText(context.getString(R.string.italy), 1)
+            }
+            R.id.button_jamaica -> {
+                inputConnection!!.commitText(context.getString(R.string.jamaica), 1)
+            }
+            R.id.button_japan -> {
+                inputConnection!!.commitText(context.getString(R.string.japan), 1)
+            }
+            R.id.button_crossed_flags -> {
+                inputConnection!!.commitText(context.getString(R.string.crossed_flags), 1)
+            }
+            R.id.button_jersey -> {
+                inputConnection!!.commitText(context.getString(R.string.jersey), 1)
+            }
+            R.id.button_jordan -> {
+                inputConnection!!.commitText(context.getString(R.string.jordan), 1)
+            }
+            R.id.button_kazakhstan -> {
+                inputConnection!!.commitText(context.getString(R.string.kazakhstan), 1)
+            }
+            R.id.button_kenya -> {
+                inputConnection!!.commitText(context.getString(R.string.kenya), 1)
+            }
+            R.id.button_kiribati -> {
+                inputConnection!!.commitText(context.getString(R.string.kiribati), 1)
+            }
+            R.id.button_kosovo -> {
+                inputConnection!!.commitText(context.getString(R.string.kosovo), 1)
+            }
+            R.id.button_kuwait -> {
+                inputConnection!!.commitText(context.getString(R.string.kuwait), 1)
+            }
+            R.id.button_kyrgyzstan -> {
+                inputConnection!!.commitText(context.getString(R.string.kyrgyzstan), 1)
+            }
+            R.id.button_laos -> {
+                inputConnection!!.commitText(context.getString(R.string.laos), 1)
+            }
+            R.id.button_latvia -> {
+                inputConnection!!.commitText(context.getString(R.string.latvia), 1)
+            }
+            R.id.button_lebanon -> {
+                inputConnection!!.commitText(context.getString(R.string.lebanon), 1)
+            }
+            R.id.button_lesotho -> {
+                inputConnection!!.commitText(context.getString(R.string.lesotho), 1)
+            }
+            R.id.button_liberia -> {
+                inputConnection!!.commitText(context.getString(R.string.liberia), 1)
             }
         }
     }
