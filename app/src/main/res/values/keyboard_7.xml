@@ -239,4 +239,24 @@
     <string name="white_small_square">&#x25AB;</string>
     <string name="black_medium_small_square">&#x25FE;</string>
     <string name="white_medium_small_square">&#x25FD;</string>
+
+    <string name="black_medium_square">&#x25FC;</string>
+    <string name="white_medium_square">&#x25FB;</string>
+    <string name="black_large_square">&#x2B1B;</string>
+    <string name="white_large_square">&#x2B1C;</string>
+    <string name="speaker_low_volume">&#xe141;</string>
+    <string name="muted_speaker">&#x1f507;</string>
+    <string name="speaker_medium_volume">&#x1f509;</string>
+    <string name="speaker_high_volume">&#x1F50A;</string>
+    <string name="bell">&#x1F514;</string>
+    <string name="bell_with_slash">&#x1f515;</string>
+    <string name="megaphone">&#x1F4E3;</string>
+    <string name="loudspeaker">&#x1F4E2;</string>
+    <string name="speech_balloon">&#x1F4AC;</string>
+    <string name="thought_balloon">&#x1f4ad;</string>
+    <string name="right_anger_bubble">&#x1f5ef;</string>
+    <string name="spade_suit">&#x2660;</string>
+    <string name="club_suit">&#x2663;</string>
+    <string name="heart_suit">&#x2665;</string>
+    <string name="diamond_suit">&#x2666;</string>
 </resources>

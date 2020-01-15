@@ -261,7 +261,26 @@ class SeventhKeyboard: LinearLayout {
             R.id.button_black_small_square,
             R.id.button_white_small_square,
             R.id.button_black_medium_small_square,
-            R.id.button_white_medium_small_square
+            R.id.button_white_medium_small_square,
+            R.id.button_black_medium_square,
+            R.id.button_white_medium_square,
+            R.id.button_black_large_square,
+            R.id.button_white_large_square,
+            R.id.button_speaker_low_volume,
+            R.id.button_muted_speaker,
+            R.id.button_speaker_medium_volume,
+            R.id.button_speaker_high_volume,
+            R.id.button_bell,
+            R.id.button_bell_with_slash,
+            R.id.button_megaphone,
+            R.id.button_loudspeaker,
+            R.id.button_speech_balloon,
+            R.id.button_thought_balloon,
+            R.id.button_right_anger_bubble,
+            R.id.button_spade_suit,
+            R.id.button_club_suit,
+            R.id.button_heart_suit,
+            R.id.button_diamond_suit
         )
 
         for (b in buttonIds) {
@@ -954,6 +973,63 @@ class SeventhKeyboard: LinearLayout {
             }
             R.id.button_white_medium_small_square -> {
                 inputConnection!!.commitText(context.getString(R.string.white_medium_small_square), 1)
+            }
+            R.id.button_black_medium_square -> {
+                inputConnection!!.commitText(context.getString(R.string.black_medium_square), 1)
+            }
+            R.id.button_white_medium_square -> {
+                inputConnection!!.commitText(context.getString(R.string.white_medium_square), 1)
+            }
+            R.id.button_black_large_square -> {
+                inputConnection!!.commitText(context.getString(R.string.black_large_square), 1)
+            }
+            R.id.button_white_large_square -> {
+                inputConnection!!.commitText(context.getString(R.string.white_large_square), 1)
+            }
+            R.id.button_speaker_low_volume -> {
+                inputConnection!!.commitText(context.getString(R.string.speaker_low_volume), 1)
+            }
+            R.id.button_muted_speaker -> {
+                inputConnection!!.commitText(context.getString(R.string.muted_speaker), 1)
+            }
+            R.id.button_speaker_medium_volume -> {
+                inputConnection!!.commitText(context.getString(R.string.speaker_medium_volume), 1)
+            }
+            R.id.button_speaker_high_volume -> {
+                inputConnection!!.commitText(context.getString(R.string.speaker_high_volume), 1)
+            }
+            R.id.button_bell -> {
+                inputConnection!!.commitText(context.getString(R.string.bell), 1)
+            }
+            R.id.button_bell_with_slash -> {
+                inputConnection!!.commitText(context.getString(R.string.bell_with_slash), 1)
+            }
+            R.id.button_megaphone -> {
+                inputConnection!!.commitText(context.getString(R.string.megaphone), 1)
+            }
+            R.id.button_loudspeaker -> {
+                inputConnection!!.commitText(context.getString(R.string.loudspeaker), 1)
+            }
+            R.id.button_speech_balloon -> {
+                inputConnection!!.commitText(context.getString(R.string.speech_balloon), 1)
+            }
+            R.id.button_thought_balloon -> {
+                inputConnection!!.commitText(context.getString(R.string.thought_balloon), 1)
+            }
+            R.id.button_right_anger_bubble -> {
+                inputConnection!!.commitText(context.getString(R.string.right_anger_bubble), 1)
+            }
+            R.id.button_spade_suit -> {
+                inputConnection!!.commitText(context.getString(R.string.spade_suit), 1)
+            }
+            R.id.button_club_suit -> {
+                inputConnection!!.commitText(context.getString(R.string.club_suit), 1)
+            }
+            R.id.button_heart_suit -> {
+                inputConnection!!.commitText(context.getString(R.string.heart_suit), 1)
+            }
+            R.id.button_diamond_suit -> {
+                inputConnection!!.commitText(context.getString(R.string.diamond_suit), 1)
             }
         }
     }
