@@ -79,4 +79,24 @@
     <string name="egypt">&#x1f1ea;&#x1f1ec;</string>
     <string name="el_salvador">&#x1f1f8;&#x1f1fb;</string>
     <string name="equatorial_guinea">&#x1f1ec;&#x1f1f6;</string>
+
+    <string name="eritrea">&#x1f1ea;&#x1f1f7;</string>
+    <string name="estonia">&#x1f1ea;&#x1f1ea;</string>
+    <string name="ethiopia">&#x1f1ea;&#x1f1f9;</string>
+    <string name="european_union">&#x1f1ea;&#x1f1fa;</string>
+    <string name="falkland_islands">&#x1f1eb;&#x1f1f0;</string>
+    <string name="faroe_islands">&#x1f1eb;&#x1f1f4;</string>
+    <string name="fiji">&#x1f1eb;&#x1f1ef;</string>
+    <string name="finland">&#x1f1eb;&#x1f1ee;</string>
+    <string name="france">&#x1F1EB;&#x1F1F7;</string>
+    <string name="french_guiana">&#x1f1ec;&#x1f1eb;</string>
+    <string name="french_polynesia">&#x1f1f5;&#x1f1eb;</string>
+    <string name="french_southern_territories">&#x1f1f9;&#x1f1eb;</string>
+    <string name="gabon">&#x1f1ec;&#x1f1e6;</string>
+    <string name="gambia">&#x1f1ec;&#x1f1f2;</string>
+    <string name="georgia">&#x1f1ec;&#x1f1ea;</string>
+    <string name="germany">&#x1F1E9;&#x1F1EA;</string>
+    <string name="ghana">&#x1f1ec;&#x1f1ed;</string>
+    <string name="gibraltar">&#x1f1ec;&#x1f1ee;</string>
+    <string name="greece">&#x1f1ec;&#x1f1f7;</string>
 </resources>
