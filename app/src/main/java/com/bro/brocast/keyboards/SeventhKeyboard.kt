@@ -170,7 +170,7 @@ class SeventhKeyboard: LinearLayout {
             R.id.button_input_latin_uppercase,
             R.id.button_ng_button,
             R.id.button_ok_button,
-            R.id.button_up_button,
+            R.id.button_up_button_text,
             R.id.button_cool_button,
             R.id.button_new_button,
             R.id.button_free_button,
@@ -185,7 +185,26 @@ class SeventhKeyboard: LinearLayout {
             R.id.button_keycap_8,
             R.id.button_keycap_9,
             R.id.button_keycap_10,
-            R.id.button_input_numbers
+            R.id.button_input_numbers,
+            R.id.button_hash_key,
+            R.id.button_keycap_star,
+            R.id.button_eject_button,
+            R.id.button_play_button,
+            R.id.button_pause_button,
+            R.id.button_play_or_pause_button,
+            R.id.button_stop_button,
+            R.id.button_record_button,
+            R.id.button_next_track_button,
+            R.id.button_last_track_button,
+            R.id.button_fast_forward_button,
+            R.id.button_fast_reverse_button,
+            R.id.button_fast_up_button,
+            R.id.button_fast_down_button,
+            R.id.button_reverse_button,
+            R.id.button_up_button,
+            R.id.button_down_button,
+            R.id.button_right_arrow,
+            R.id.button_left_arrow
         )
 
         for (b in buttonIds) {
@@ -603,8 +622,8 @@ class SeventhKeyboard: LinearLayout {
             R.id.button_ok_button -> {
                 inputConnection!!.commitText(context.getString(R.string.ok_button), 1)
             }
-            R.id.button_up_button -> {
-                inputConnection!!.commitText(context.getString(R.string.up_button), 1)
+            R.id.button_up_button_text -> {
+                inputConnection!!.commitText(context.getString(R.string.up_button_text), 1)
             }
             R.id.button_cool_button -> {
                 inputConnection!!.commitText(context.getString(R.string.cool_button), 1)
@@ -650,6 +669,63 @@ class SeventhKeyboard: LinearLayout {
             }
             R.id.button_input_numbers -> {
                 inputConnection!!.commitText(context.getString(R.string.input_numbers), 1)
+            }
+            R.id.button_hash_key -> {
+                inputConnection!!.commitText(context.getString(R.string.hash_key), 1)
+            }
+            R.id.button_keycap_star -> {
+                inputConnection!!.commitText(context.getString(R.string.keycap_star), 1)
+            }
+            R.id.button_eject_button -> {
+                inputConnection!!.commitText(context.getString(R.string.eject_button), 1)
+            }
+            R.id.button_play_button -> {
+                inputConnection!!.commitText(context.getString(R.string.play_button), 1)
+            }
+            R.id.button_pause_button -> {
+                inputConnection!!.commitText(context.getString(R.string.pause_button), 1)
+            }
+            R.id.button_play_or_pause_button -> {
+                inputConnection!!.commitText(context.getString(R.string.play_or_pause_button), 1)
+            }
+            R.id.button_stop_button -> {
+                inputConnection!!.commitText(context.getString(R.string.stop_button), 1)
+            }
+            R.id.button_record_button -> {
+                inputConnection!!.commitText(context.getString(R.string.record_button), 1)
+            }
+            R.id.button_next_track_button -> {
+                inputConnection!!.commitText(context.getString(R.string.next_track_button), 1)
+            }
+            R.id.button_last_track_button -> {
+                inputConnection!!.commitText(context.getString(R.string.last_track_button), 1)
+            }
+            R.id.button_fast_forward_button -> {
+                inputConnection!!.commitText(context.getString(R.string.fast_forward_button), 1)
+            }
+            R.id.button_fast_reverse_button -> {
+                inputConnection!!.commitText(context.getString(R.string.fast_reverse_button), 1)
+            }
+            R.id.button_fast_up_button -> {
+                inputConnection!!.commitText(context.getString(R.string.fast_up_button), 1)
+            }
+            R.id.button_fast_down_button -> {
+                inputConnection!!.commitText(context.getString(R.string.fast_down_button), 1)
+            }
+            R.id.button_reverse_button -> {
+                inputConnection!!.commitText(context.getString(R.string.reverse_button), 1)
+            }
+            R.id.button_up_button -> {
+                inputConnection!!.commitText(context.getString(R.string.up_button), 1)
+            }
+            R.id.button_down_button -> {
+                inputConnection!!.commitText(context.getString(R.string.down_button), 1)
+            }
+            R.id.button_right_arrow -> {
+                inputConnection!!.commitText(context.getString(R.string.right_arrow), 1)
+            }
+            R.id.button_left_arrow -> {
+                inputConnection!!.commitText(context.getString(R.string.left_arrow), 1)
             }
         }
     }
