@@ -275,7 +275,18 @@ class EighthKeyboard: LinearLayout {
             R.id.button_england,
             R.id.button_scotland,
             R.id.button_wales,
-            R.id.button_united_states
+            R.id.button_united_states,
+            R.id.button_uruguay,
+            R.id.button_uzbekistan,
+            R.id.button_vanuatu,
+            R.id.button_vatican_city,
+            R.id.button_venezuela,
+            R.id.button_vietnam,
+            R.id.button_wallis_and_futuna,
+            R.id.button_western_sahara,
+            R.id.button_yemen,
+            R.id.button_zambia,
+            R.id.button_zimbabwe
         )
 
         for (b in buttonIds) {
@@ -1010,6 +1021,39 @@ class EighthKeyboard: LinearLayout {
             }
             R.id.button_united_states -> {
                 inputConnection!!.commitText(context.getString(R.string.united_states), 1)
+            }
+            R.id.button_uruguay -> {
+                inputConnection!!.commitText(context.getString(R.string.uruguay), 1)
+            }
+            R.id.button_uzbekistan -> {
+                inputConnection!!.commitText(context.getString(R.string.uzbekistan), 1)
+            }
+            R.id.button_vanuatu -> {
+                inputConnection!!.commitText(context.getString(R.string.vanuatu), 1)
+            }
+            R.id.button_vatican_city -> {
+                inputConnection!!.commitText(context.getString(R.string.vatican_city), 1)
+            }
+            R.id.button_venezuela -> {
+                inputConnection!!.commitText(context.getString(R.string.venezuela), 1)
+            }
+            R.id.button_vietnam -> {
+                inputConnection!!.commitText(context.getString(R.string.vietnam), 1)
+            }
+            R.id.button_wallis_and_futuna -> {
+                inputConnection!!.commitText(context.getString(R.string.wallis_and_futuna), 1)
+            }
+            R.id.button_western_sahara -> {
+                inputConnection!!.commitText(context.getString(R.string.western_sahara), 1)
+            }
+            R.id.button_yemen -> {
+                inputConnection!!.commitText(context.getString(R.string.yemen), 1)
+            }
+            R.id.button_zambia -> {
+                inputConnection!!.commitText(context.getString(R.string.zambia), 1)
+            }
+            R.id.button_zimbabwe -> {
+                inputConnection!!.commitText(context.getString(R.string.zimbabwe), 1)
             }
         }
     }

@@ -254,4 +254,16 @@
     <string name="scotland">&#x1f3f4;&#xe0067;&#xe0062;&#xe0073;&#xe0063;&#xe0074;&#xe007f;</string>
     <string name="wales">&#x1f3f4;&#xe0067;&#xe0062;&#xe0077;&#xe006c;&#xe0073;&#xe007f;</string>
     <string name="united_states">&#x1F1FA;&#x1F1F8;</string>
+
+    <string name="uruguay">&#x1f1fa;&#x1f1fe;</string>
+    <string name="uzbekistan">&#x1f1fa;&#x1f1ff;</string>
+    <string name="vanuatu">&#x1f1fb;&#x1f1fa;</string>
+    <string name="vatican_city">&#x1f1fb;&#x1f1e6;</string>
+    <string name="venezuela">&#x1f1fb;&#x1f1ea;</string>
+    <string name="vietnam">&#x1f1fb;&#x1f1f3;</string>
+    <string name="wallis_and_futuna">&#x1f1fc;&#x1f1eb;</string>
+    <string name="western_sahara">&#x1f1ea;&#x1f1ed;</string>
+    <string name="yemen">&#x1f1fe;&#x1f1ea;</string>
+    <string name="zambia">&#x1f1ff;&#x1f1f2;</string>
+    <string name="zimbabwe">&#x1f1ff;&#x1f1fc;</string>
 </resources>
