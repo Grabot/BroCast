@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="white_flag">&#x1f3f3;</string>
+    <string name="black_flag">&#x1f3f4;</string>
+    <string name="pirate_flag">&#x1f3f4;&#x200d;&#x2620;&#xfe0f;</string>
+    <string name="chequered_flag">&#x1F3C1;</string>
+    <string name="triangular_flag">&#x1F6A9;</string>
+    <string name="rainbow_flag">&#x1f3f3;&#xfe0f;&#x200d;&#x1f308;</string>
+    <string name="united_nations">&#x1f1fa;&#x1f1f3;</string>
+    <string name="afghanistan">&#x1f1e6;&#x1f1eb;</string>
+    <string name="aland_islands">&#x1f1e6;&#x1f1fd;</string>
+    <string name="albania">&#x1f1e6;&#x1f1f1;</string>
+    <string name="algeria">&#x1f1e9;&#x1f1ff;</string>
+    <string name="american_samoa">&#x1f1e6;&#x1f1f8;</string>
+    <string name="andorra">&#x1f1e6;&#x1f1e9;</string>
+    <string name="angola">&#x1f1e6;&#x1f1f4;</string>
+    <string name="anguilla">&#x1f1e6;&#x1f1ee;</string>
+    <string name="antarctica">&#x1f1e6;&#x1f1f6;</string>
+    <string name="antigua_and_barbuda">&#x1f1e6;&#x1f1ec;</string>
+    <string name="argentina">&#x1f1e6;&#x1f1f7;</string>
+    <string name="armenia">&#x1f1e6;&#x1f1f2;</string>
+</resources>
