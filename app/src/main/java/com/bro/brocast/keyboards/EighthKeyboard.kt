@@ -256,7 +256,26 @@ class EighthKeyboard: LinearLayout {
             R.id.button_taiwan,
             R.id.button_tajikistan,
             R.id.button_tanzania,
-            R.id.button_thailand
+            R.id.button_thailand,
+            R.id.button_timor_leste,
+            R.id.button_togo,
+            R.id.button_tokelau,
+            R.id.button_tonga,
+            R.id.button_trinidad_and_tobago,
+            R.id.button_tunisia,
+            R.id.button_flag_of_turkey,
+            R.id.button_turkmenistan,
+            R.id.button_turks_and_caicos_islands,
+            R.id.button_tuvalu,
+            R.id.button_us_virgin_islands,
+            R.id.button_uganda,
+            R.id.button_ukraine,
+            R.id.button_united_arab_emirates,
+            R.id.button_united_kingdom,
+            R.id.button_england,
+            R.id.button_scotland,
+            R.id.button_wales,
+            R.id.button_united_states
         )
 
         for (b in buttonIds) {
@@ -934,6 +953,63 @@ class EighthKeyboard: LinearLayout {
             }
             R.id.button_thailand -> {
                 inputConnection!!.commitText(context.getString(R.string.thailand), 1)
+            }
+            R.id.button_timor_leste -> {
+                inputConnection!!.commitText(context.getString(R.string.timor_leste), 1)
+            }
+            R.id.button_togo -> {
+                inputConnection!!.commitText(context.getString(R.string.togo), 1)
+            }
+            R.id.button_tokelau -> {
+                inputConnection!!.commitText(context.getString(R.string.tokelau), 1)
+            }
+            R.id.button_tonga -> {
+                inputConnection!!.commitText(context.getString(R.string.tonga), 1)
+            }
+            R.id.button_trinidad_and_tobago -> {
+                inputConnection!!.commitText(context.getString(R.string.trinidad_and_tobago), 1)
+            }
+            R.id.button_tunisia -> {
+                inputConnection!!.commitText(context.getString(R.string.tunisia), 1)
+            }
+            R.id.button_flag_of_turkey -> {
+                inputConnection!!.commitText(context.getString(R.string.flag_of_turkey), 1)
+            }
+            R.id.button_turkmenistan -> {
+                inputConnection!!.commitText(context.getString(R.string.turkmenistan), 1)
+            }
+            R.id.button_turks_and_caicos_islands -> {
+                inputConnection!!.commitText(context.getString(R.string.turks_and_caicos_islands), 1)
+            }
+            R.id.button_tuvalu -> {
+                inputConnection!!.commitText(context.getString(R.string.tuvalu), 1)
+            }
+            R.id.button_us_virgin_islands -> {
+                inputConnection!!.commitText(context.getString(R.string.us_virgin_islands), 1)
+            }
+            R.id.button_uganda -> {
+                inputConnection!!.commitText(context.getString(R.string.uganda), 1)
+            }
+            R.id.button_ukraine -> {
+                inputConnection!!.commitText(context.getString(R.string.ukraine), 1)
+            }
+            R.id.button_united_arab_emirates -> {
+                inputConnection!!.commitText(context.getString(R.string.united_arab_emirates), 1)
+            }
+            R.id.button_united_kingdom -> {
+                inputConnection!!.commitText(context.getString(R.string.united_kingdom), 1)
+            }
+            R.id.button_england -> {
+                inputConnection!!.commitText(context.getString(R.string.england), 1)
+            }
+            R.id.button_scotland -> {
+                inputConnection!!.commitText(context.getString(R.string.scotland), 1)
+            }
+            R.id.button_wales -> {
+                inputConnection!!.commitText(context.getString(R.string.wales), 1)
+            }
+            R.id.button_united_states -> {
+                inputConnection!!.commitText(context.getString(R.string.united_states), 1)
             }
         }
     }

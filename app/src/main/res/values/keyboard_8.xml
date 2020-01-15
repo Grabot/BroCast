@@ -234,4 +234,24 @@
     <string name="tajikistan">&#x1f1f9;&#x1f1ef;</string>
     <string name="tanzania">&#x1f1f9;&#x1f1ff;</string>
     <string name="thailand">&#x1f1f9;&#x1f1ed;</string>
+
+    <string name="timor_leste">&#x1f1f9;&#x1f1f1;</string>
+    <string name="togo">&#x1f1f9;&#x1f1ec;</string>
+    <string name="tokelau">&#x1f1f9;&#x1f1f0;</string>
+    <string name="tonga">&#x1f1f9;&#x1f1f4;</string>
+    <string name="trinidad_and_tobago">&#x1f1f9;&#x1f1f9;</string>
+    <string name="tunisia">&#x1f1f9;&#x1f1f3;</string>
+    <string name="flag_of_turkey">&#x1f1f9;&#x1f1f7;</string>
+    <string name="turkmenistan">&#x1f1f9;&#x1f1f2;</string>
+    <string name="turks_and_caicos_islands">&#x1f1f9;&#x1f1e8;</string>
+    <string name="tuvalu">&#x1f1f9;&#x1f1fb;</string>
+    <string name="us_virgin_islands">&#x1f1fb;&#x1f1ee;</string>
+    <string name="uganda">&#x1f1fa;&#x1f1ec;</string>
+    <string name="ukraine">&#x1f1fa;&#x1f1e6;</string>
+    <string name="united_arab_emirates">&#x1f1e6;&#x1f1ea;</string>
+    <string name="united_kingdom">&#x1F1EC;&#x1F1E7;</string>
+    <string name="england">&#x1f3f4;&#xe0067;&#xe0062;&#xe0065;&#xe006e;&#xe0067;&#xe007f;</string>
+    <string name="scotland">&#x1f3f4;&#xe0067;&#xe0062;&#xe0073;&#xe0063;&#xe0074;&#xe007f;</string>
+    <string name="wales">&#x1f3f4;&#xe0067;&#xe0062;&#xe0077;&#xe006c;&#xe0073;&#xe007f;</string>
+    <string name="united_states">&#x1F1FA;&#x1F1F8;</string>
 </resources>
