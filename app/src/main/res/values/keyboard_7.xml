@@ -219,4 +219,24 @@
     <string name="wavy_dash">&#x3030;</string>
     <string name="curly_loop">&#x27B0;</string>
     <string name="double_curly_loop">&#x27BF;</string>
+
+    <string name="heavy_check_mark">&#x2714;</string>
+    <string name="ballot_box_with_check">&#x2611;</string>
+    <string name="radio_button">&#x1F518;</string>
+    <string name="white_circle">&#x26AA;</string>
+    <string name="black_circle">&#x26AB;</string>
+    <string name="red_circle">&#x1F534;</string>
+    <string name="blue_circle">&#x1F535;</string>
+    <string name="red_triangle_pointed_up">&#x1F53A;</string>
+    <string name="red_triangle_pointed_down">&#x1F53B;</string>
+    <string name="small_orange_diamond">&#x1F538;</string>
+    <string name="small_blue_diamond">&#x1F539;</string>
+    <string name="large_orange_diamond">&#x1F536;</string>
+    <string name="large_blue_diamond">&#x1F537;</string>
+    <string name="white_square_button">&#x1F533;</string>
+    <string name="black_square_button">&#x1F532;</string>
+    <string name="black_small_square">&#x25AA;</string>
+    <string name="white_small_square">&#x25AB;</string>
+    <string name="black_medium_small_square">&#x25FE;</string>
+    <string name="white_medium_small_square">&#x25FD;</string>
 </resources>

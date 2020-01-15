@@ -242,7 +242,26 @@ class SeventhKeyboard: LinearLayout {
             R.id.button_soon_arrow,
             R.id.button_wavy_dash,
             R.id.button_curly_loop,
-            R.id.button_double_curly_loop
+            R.id.button_double_curly_loop,
+            R.id.button_heavy_check_mark,
+            R.id.button_ballot_box_with_check,
+            R.id.button_radio_button,
+            R.id.button_white_circle,
+            R.id.button_black_circle,
+            R.id.button_red_circle,
+            R.id.button_blue_circle,
+            R.id.button_red_triangle_pointed_up,
+            R.id.button_red_triangle_pointed_down,
+            R.id.button_small_orange_diamond,
+            R.id.button_small_blue_diamond,
+            R.id.button_large_orange_diamond,
+            R.id.button_large_blue_diamond,
+            R.id.button_white_square_button,
+            R.id.button_black_square_button,
+            R.id.button_black_small_square,
+            R.id.button_white_small_square,
+            R.id.button_black_medium_small_square,
+            R.id.button_white_medium_small_square
         )
 
         for (b in buttonIds) {
@@ -878,6 +897,63 @@ class SeventhKeyboard: LinearLayout {
             }
             R.id.button_double_curly_loop -> {
                 inputConnection!!.commitText(context.getString(R.string.double_curly_loop), 1)
+            }
+            R.id.button_heavy_check_mark -> {
+                inputConnection!!.commitText(context.getString(R.string.heavy_check_mark), 1)
+            }
+            R.id.button_ballot_box_with_check -> {
+                inputConnection!!.commitText(context.getString(R.string.ballot_box_with_check), 1)
+            }
+            R.id.button_radio_button -> {
+                inputConnection!!.commitText(context.getString(R.string.radio_button), 1)
+            }
+            R.id.button_white_circle -> {
+                inputConnection!!.commitText(context.getString(R.string.white_circle), 1)
+            }
+            R.id.button_black_circle -> {
+                inputConnection!!.commitText(context.getString(R.string.black_circle), 1)
+            }
+            R.id.button_red_circle -> {
+                inputConnection!!.commitText(context.getString(R.string.red_circle), 1)
+            }
+            R.id.button_blue_circle -> {
+                inputConnection!!.commitText(context.getString(R.string.blue_circle), 1)
+            }
+            R.id.button_red_triangle_pointed_up -> {
+                inputConnection!!.commitText(context.getString(R.string.red_triangle_pointed_up), 1)
+            }
+            R.id.button_red_triangle_pointed_down -> {
+                inputConnection!!.commitText(context.getString(R.string.red_triangle_pointed_down), 1)
+            }
+            R.id.button_small_orange_diamond -> {
+                inputConnection!!.commitText(context.getString(R.string.small_orange_diamond), 1)
+            }
+            R.id.button_small_blue_diamond -> {
+                inputConnection!!.commitText(context.getString(R.string.small_blue_diamond), 1)
+            }
+            R.id.button_large_orange_diamond -> {
+                inputConnection!!.commitText(context.getString(R.string.large_orange_diamond), 1)
+            }
+            R.id.button_large_blue_diamond -> {
+                inputConnection!!.commitText(context.getString(R.string.large_blue_diamond), 1)
+            }
+            R.id.button_white_square_button -> {
+                inputConnection!!.commitText(context.getString(R.string.white_square_button), 1)
+            }
+            R.id.button_black_square_button -> {
+                inputConnection!!.commitText(context.getString(R.string.black_square_button), 1)
+            }
+            R.id.button_black_small_square -> {
+                inputConnection!!.commitText(context.getString(R.string.black_small_square), 1)
+            }
+            R.id.button_white_small_square -> {
+                inputConnection!!.commitText(context.getString(R.string.white_small_square), 1)
+            }
+            R.id.button_black_medium_small_square -> {
+                inputConnection!!.commitText(context.getString(R.string.black_medium_small_square), 1)
+            }
+            R.id.button_white_medium_small_square -> {
+                inputConnection!!.commitText(context.getString(R.string.white_medium_small_square), 1)
             }
         }
     }
