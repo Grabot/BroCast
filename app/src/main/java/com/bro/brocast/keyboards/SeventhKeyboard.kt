@@ -204,7 +204,26 @@ class SeventhKeyboard: LinearLayout {
             R.id.button_up_button,
             R.id.button_down_button,
             R.id.button_right_arrow,
-            R.id.button_left_arrow
+            R.id.button_left_arrow,
+            R.id.button_up_arrow,
+            R.id.button_down_arrow,
+            R.id.button_up_right_arrow,
+            R.id.button_down_right_arrow,
+            R.id.button_down_left_arrow,
+            R.id.button_up_left_arrow,
+            R.id.button_up_down_arrow,
+            R.id.button_left_right_arrow,
+            R.id.button_left_arrow_curving_right,
+            R.id.button_right_arrow_curving_left,
+            R.id.button_right_arrow_curving_up,
+            R.id.button_right_arrow_curving_down,
+            R.id.button_shuffle_tracks_button,
+            R.id.button_repeat_button,
+            R.id.button_repeat_single_button,
+            R.id.button_anticlockwise_arrows_button,
+            R.id.button_clockwise_vertical_arrows,
+            R.id.button_musical_note,
+            R.id.button_musical_notes
         )
 
         for (b in buttonIds) {
@@ -726,6 +745,63 @@ class SeventhKeyboard: LinearLayout {
             }
             R.id.button_left_arrow -> {
                 inputConnection!!.commitText(context.getString(R.string.left_arrow), 1)
+            }
+            R.id.button_up_arrow -> {
+                inputConnection!!.commitText(context.getString(R.string.up_arrow), 1)
+            }
+            R.id.button_down_arrow -> {
+                inputConnection!!.commitText(context.getString(R.string.down_arrow), 1)
+            }
+            R.id.button_up_right_arrow -> {
+                inputConnection!!.commitText(context.getString(R.string.up_right_arrow), 1)
+            }
+            R.id.button_down_right_arrow -> {
+                inputConnection!!.commitText(context.getString(R.string.down_right_arrow), 1)
+            }
+            R.id.button_down_left_arrow -> {
+                inputConnection!!.commitText(context.getString(R.string.down_left_arrow), 1)
+            }
+            R.id.button_up_left_arrow -> {
+                inputConnection!!.commitText(context.getString(R.string.up_left_arrow), 1)
+            }
+            R.id.button_up_down_arrow -> {
+                inputConnection!!.commitText(context.getString(R.string.up_down_arrow), 1)
+            }
+            R.id.button_left_right_arrow -> {
+                inputConnection!!.commitText(context.getString(R.string.left_right_arrow), 1)
+            }
+            R.id.button_left_arrow_curving_right -> {
+                inputConnection!!.commitText(context.getString(R.string.left_arrow_curving_right), 1)
+            }
+            R.id.button_right_arrow_curving_left -> {
+                inputConnection!!.commitText(context.getString(R.string.right_arrow_curving_left), 1)
+            }
+            R.id.button_right_arrow_curving_up -> {
+                inputConnection!!.commitText(context.getString(R.string.right_arrow_curving_up), 1)
+            }
+            R.id.button_right_arrow_curving_down -> {
+                inputConnection!!.commitText(context.getString(R.string.right_arrow_curving_down), 1)
+            }
+            R.id.button_shuffle_tracks_button -> {
+                inputConnection!!.commitText(context.getString(R.string.shuffle_tracks_button), 1)
+            }
+            R.id.button_repeat_button -> {
+                inputConnection!!.commitText(context.getString(R.string.repeat_button), 1)
+            }
+            R.id.button_repeat_single_button -> {
+                inputConnection!!.commitText(context.getString(R.string.repeat_single_button), 1)
+            }
+            R.id.button_anticlockwise_arrows_button -> {
+                inputConnection!!.commitText(context.getString(R.string.anticlockwise_arrows_button), 1)
+            }
+            R.id.button_clockwise_vertical_arrows -> {
+                inputConnection!!.commitText(context.getString(R.string.clockwise_vertical_arrows), 1)
+            }
+            R.id.button_musical_note -> {
+                inputConnection!!.commitText(context.getString(R.string.musical_note), 1)
+            }
+            R.id.button_musical_notes -> {
+                inputConnection!!.commitText(context.getString(R.string.musical_notes), 1)
             }
         }
     }

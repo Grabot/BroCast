@@ -177,6 +177,26 @@
     <string name="reverse_button">&#x25C0;</string>
     <string name="up_button">&#x1F53C;</string>
     <string name="down_button">&#x1F53D;</string>
-    <string name="right_arrow">&#xe234;</string>
-    <string name="left_arrow">&#xe235;</string>
+    <string name="right_arrow">&#x27A1;</string>
+    <string name="left_arrow">&#x2B05;</string>
+
+    <string name="up_arrow">&#x2B06;</string>
+    <string name="down_arrow">&#x2B07;</string>
+    <string name="up_right_arrow">&#x2197;</string>
+    <string name="down_right_arrow">&#x2198;</string>
+    <string name="down_left_arrow">&#x2199;</string>
+    <string name="up_left_arrow">&#x2196;</string>
+    <string name="up_down_arrow">&#x2195;</string>
+    <string name="left_right_arrow">&#x2194;</string>
+    <string name="left_arrow_curving_right">&#x21AA;</string>
+    <string name="right_arrow_curving_left">&#x21A9;</string>
+    <string name="right_arrow_curving_up">&#x2934;</string>
+    <string name="right_arrow_curving_down">&#x2935;</string>
+    <string name="shuffle_tracks_button">&#x1f500;</string>
+    <string name="repeat_button">&#x1f501;</string>
+    <string name="repeat_single_button">&#x1f502;</string>
+    <string name="anticlockwise_arrows_button">&#x1f504;</string>
+    <string name="clockwise_vertical_arrows">&#x1F503;</string>
+    <string name="musical_note">&#x1F3B5;</string>
+    <string name="musical_notes">&#x1F3B6;</string>
 </resources>
