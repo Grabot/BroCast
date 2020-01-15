@@ -71,7 +71,26 @@ class EighthKeyboard: LinearLayout {
             R.id.button_bosnia_and_herzegovina,
             R.id.button_botswana,
             R.id.button_brazil,
-            R.id.button_british_indian_ocean_territory
+            R.id.button_british_indian_ocean_territory,
+            R.id.button_british_virgin_islands,
+            R.id.button_brunei,
+            R.id.button_bulgaria,
+            R.id.button_burkina_faso,
+            R.id.button_burundi,
+            R.id.button_cambodia,
+            R.id.button_cameroon,
+            R.id.button_canada,
+            R.id.button_canary_islands,
+            R.id.button_cape_verde,
+            R.id.button_caribbean_netherlands,
+            R.id.button_cayman_islands,
+            R.id.button_central_african_republic,
+            R.id.button_chad,
+            R.id.button_chile,
+            R.id.button_china,
+            R.id.button_christmas_island,
+            R.id.button_cocos_keeling_islands,
+            R.id.button_colombia
         )
 
         for (b in buttonIds) {
@@ -194,6 +213,63 @@ class EighthKeyboard: LinearLayout {
             }
             R.id.button_british_indian_ocean_territory -> {
                 inputConnection!!.commitText(context.getString(R.string.british_indian_ocean_territory), 1)
+            }
+            R.id.button_british_virgin_islands -> {
+                inputConnection!!.commitText(context.getString(R.string.british_virgin_islands), 1)
+            }
+            R.id.button_brunei -> {
+                inputConnection!!.commitText(context.getString(R.string.brunei), 1)
+            }
+            R.id.button_bulgaria -> {
+                inputConnection!!.commitText(context.getString(R.string.bulgaria), 1)
+            }
+            R.id.button_burkina_faso -> {
+                inputConnection!!.commitText(context.getString(R.string.burkina_faso), 1)
+            }
+            R.id.button_burundi -> {
+                inputConnection!!.commitText(context.getString(R.string.burundi), 1)
+            }
+            R.id.button_cambodia -> {
+                inputConnection!!.commitText(context.getString(R.string.cambodia), 1)
+            }
+            R.id.button_cameroon -> {
+                inputConnection!!.commitText(context.getString(R.string.cameroon), 1)
+            }
+            R.id.button_canada -> {
+                inputConnection!!.commitText(context.getString(R.string.canada), 1)
+            }
+            R.id.button_canary_islands -> {
+                inputConnection!!.commitText(context.getString(R.string.canary_islands), 1)
+            }
+            R.id.button_cape_verde -> {
+                inputConnection!!.commitText(context.getString(R.string.cape_verde), 1)
+            }
+            R.id.button_caribbean_netherlands -> {
+                inputConnection!!.commitText(context.getString(R.string.caribbean_netherlands), 1)
+            }
+            R.id.button_cayman_islands -> {
+                inputConnection!!.commitText(context.getString(R.string.cayman_islands), 1)
+            }
+            R.id.button_central_african_republic -> {
+                inputConnection!!.commitText(context.getString(R.string.central_african_republic), 1)
+            }
+            R.id.button_chad -> {
+                inputConnection!!.commitText(context.getString(R.string.chad), 1)
+            }
+            R.id.button_chile -> {
+                inputConnection!!.commitText(context.getString(R.string.chile), 1)
+            }
+            R.id.button_china -> {
+                inputConnection!!.commitText(context.getString(R.string.china), 1)
+            }
+            R.id.button_christmas_island -> {
+                inputConnection!!.commitText(context.getString(R.string.christmas_island), 1)
+            }
+            R.id.button_cocos_keeling_islands -> {
+                inputConnection!!.commitText(context.getString(R.string.cocos_keeling_islands), 1)
+            }
+            R.id.button_colombia -> {
+                inputConnection!!.commitText(context.getString(R.string.colombia), 1)
             }
         }
     }

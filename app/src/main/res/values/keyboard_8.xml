@@ -39,4 +39,24 @@
     <string name="botswana">&#x1f1e7;&#x1f1fc;</string>
     <string name="brazil">&#x1f1e7;&#x1f1f7;</string>
     <string name="british_indian_ocean_territory">&#x1f1ee;&#x1f1f4;</string>
+
+    <string name="british_virgin_islands">&#x1f1fb;&#x1f1ec;</string>
+    <string name="brunei">&#x1f1e7;&#x1f1f3;</string>
+    <string name="bulgaria">&#x1f1e7;&#x1f1ec;</string>
+    <string name="burkina_faso">&#x1f1e7;&#x1f1eb;</string>
+    <string name="burundi">&#x1f1e7;&#x1f1ee;</string>
+    <string name="cambodia">&#x1f1f0;&#x1f1ed;</string>
+    <string name="cameroon">&#x1f1e8;&#x1f1f2;</string>
+    <string name="canada">&#x1f1e8;&#x1f1e6;</string>
+    <string name="canary_islands">&#x1f1ee;&#x1f1e8;</string>
+    <string name="cape_verde">&#x1f1e8;&#x1f1fb;</string>
+    <string name="caribbean_netherlands">&#127463;&#127478;</string>
+    <string name="cayman_islands">&#x1f1f0;&#x1f1fe;</string>
+    <string name="central_african_republic">&#x1f1e8;&#x1f1eb;</string>
+    <string name="chad">&#x1f1f9;&#x1f1e9;</string>
+    <string name="chile">&#x1f1e8;&#x1f1f1;</string>
+    <string name="china">&#x1F1E8;&#x1F1F3;</string>
+    <string name="christmas_island">&#x1f1e8;&#x1f1fd;</string>
+    <string name="cocos_keeling_islands">&#x1f1e8;&#x1f1e8;</string>
+    <string name="colombia">&#x1f1e8;&#x1f1f4;</string>
 </resources>
