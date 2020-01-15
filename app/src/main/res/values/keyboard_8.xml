@@ -215,4 +215,23 @@
     <string name="somalia">&#x1f1f8;&#x1f1f4;</string>
     <string name="south_africa">&#x1f1ff;&#x1f1e6;</string>
     <string name="south_korea">&#x1F1F0;&#x1F1F7;</string>
+
+    <string name="south_sudan">&#x1f1f8;&#x1f1f8;</string>
+    <string name="spain">&#x1F1EA;&#x1F1F8;</string>
+    <string name="sri_lanka">&#x1f1f1;&#x1f1f0;</string>
+    <string name="st_helena">&#x1f1f8;&#x1f1ed;</string>
+    <string name="st_kitts_and_nevis">&#x1f1f0;&#x1f1f3;</string>
+    <string name="st_lucia">&#x1f1f1;&#x1f1e8;</string>
+    <string name="st_pierre_and_miquelon">&#x1f1f5;&#x1f1f2;</string>
+    <string name="st_vincent_and_grenadines">&#x1f1fb;&#x1f1e8;</string>
+    <string name="sudan">&#x1f1f8;&#x1f1e9;</string>
+    <string name="suriname">&#x1f1f8;&#x1f1f7;</string>
+    <string name="swaziland">&#x1f1f8;&#x1f1ff;</string>
+    <string name="sweden">&#x1f1f8;&#x1f1ea;</string>
+    <string name="switzerland">&#x1f1e8;&#x1f1ed;</string>
+    <string name="syria">&#x1f1f8;&#x1f1fe;</string>
+    <string name="taiwan">&#x1f1f9;&#x1f1fc;</string>
+    <string name="tajikistan">&#x1f1f9;&#x1f1ef;</string>
+    <string name="tanzania">&#x1f1f9;&#x1f1ff;</string>
+    <string name="thailand">&#x1f1f9;&#x1f1ed;</string>
 </resources>
