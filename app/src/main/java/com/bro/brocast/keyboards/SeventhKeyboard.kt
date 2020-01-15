@@ -280,7 +280,26 @@ class SeventhKeyboard: LinearLayout {
             R.id.button_spade_suit,
             R.id.button_club_suit,
             R.id.button_heart_suit,
-            R.id.button_diamond_suit
+            R.id.button_diamond_suit,
+            R.id.button_joker,
+            R.id.button_flower_playing_cards,
+            R.id.button_mahjong_red_dragon,
+            R.id.button_one_o_clock,
+            R.id.button_two_o_clock,
+            R.id.button_three_o_clock,
+            R.id.button_four_o_clock,
+            R.id.button_five_o_clock,
+            R.id.button_six_o_clock,
+            R.id.button_seven_o_clock,
+            R.id.button_eight_o_clock,
+            R.id.button_nine_o_clock,
+            R.id.button_ten_o_clock,
+            R.id.button_eleven_o_clock,
+            R.id.button_twelve_o_clock,
+            R.id.button_one_thirty,
+            R.id.button_two_thirty,
+            R.id.button_three_thirty,
+            R.id.button_four_thirty
         )
 
         for (b in buttonIds) {
@@ -1030,6 +1049,63 @@ class SeventhKeyboard: LinearLayout {
             }
             R.id.button_diamond_suit -> {
                 inputConnection!!.commitText(context.getString(R.string.diamond_suit), 1)
+            }
+            R.id.button_joker -> {
+                inputConnection!!.commitText(context.getString(R.string.joker), 1)
+            }
+            R.id.button_flower_playing_cards -> {
+                inputConnection!!.commitText(context.getString(R.string.flower_playing_cards), 1)
+            }
+            R.id.button_mahjong_red_dragon -> {
+                inputConnection!!.commitText(context.getString(R.string.mahjong_red_dragon), 1)
+            }
+            R.id.button_one_o_clock -> {
+                inputConnection!!.commitText(context.getString(R.string.one_o_clock), 1)
+            }
+            R.id.button_two_o_clock -> {
+                inputConnection!!.commitText(context.getString(R.string.two_o_clock), 1)
+            }
+            R.id.button_three_o_clock -> {
+                inputConnection!!.commitText(context.getString(R.string.three_o_clock), 1)
+            }
+            R.id.button_four_o_clock -> {
+                inputConnection!!.commitText(context.getString(R.string.four_o_clock), 1)
+            }
+            R.id.button_five_o_clock -> {
+                inputConnection!!.commitText(context.getString(R.string.five_o_clock), 1)
+            }
+            R.id.button_six_o_clock -> {
+                inputConnection!!.commitText(context.getString(R.string.six_o_clock), 1)
+            }
+            R.id.button_seven_o_clock -> {
+                inputConnection!!.commitText(context.getString(R.string.seven_o_clock), 1)
+            }
+            R.id.button_eight_o_clock -> {
+                inputConnection!!.commitText(context.getString(R.string.eight_o_clock), 1)
+            }
+            R.id.button_nine_o_clock -> {
+                inputConnection!!.commitText(context.getString(R.string.nine_o_clock), 1)
+            }
+            R.id.button_ten_o_clock -> {
+                inputConnection!!.commitText(context.getString(R.string.ten_o_clock), 1)
+            }
+            R.id.button_eleven_o_clock -> {
+                inputConnection!!.commitText(context.getString(R.string.eleven_o_clock), 1)
+            }
+            R.id.button_twelve_o_clock -> {
+                inputConnection!!.commitText(context.getString(R.string.twelve_o_clock), 1)
+            }
+            R.id.button_one_thirty -> {
+                inputConnection!!.commitText(context.getString(R.string.one_thirty), 1)
+            }
+            R.id.button_two_thirty -> {
+                inputConnection!!.commitText(context.getString(R.string.two_thirty), 1)
+            }
+            R.id.button_three_thirty -> {
+                inputConnection!!.commitText(context.getString(R.string.three_thirty), 1)
+            }
+            R.id.button_four_thirty -> {
+                inputConnection!!.commitText(context.getString(R.string.four_thirty), 1)
             }
         }
     }

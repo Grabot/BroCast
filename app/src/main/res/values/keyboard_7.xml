@@ -259,4 +259,24 @@
     <string name="club_suit">&#x2663;</string>
     <string name="heart_suit">&#x2665;</string>
     <string name="diamond_suit">&#x2666;</string>
+
+    <string name="joker">&#x1F0CF;</string>
+    <string name="flower_playing_cards">&#x1F3B4;</string>
+    <string name="mahjong_red_dragon">&#x1F004;</string>
+    <string name="one_o_clock">&#x1F550;</string>
+    <string name="two_o_clock">&#x1F551;</string>
+    <string name="three_o_clock">&#x1F552;</string>
+    <string name="four_o_clock">&#x1F553;</string>
+    <string name="five_o_clock">&#x1F554;</string>
+    <string name="six_o_clock">&#x1F555;</string>
+    <string name="seven_o_clock">&#x1F556;</string>
+    <string name="eight_o_clock">&#x1F557;</string>
+    <string name="nine_o_clock">&#x1F558;</string>
+    <string name="ten_o_clock">&#x1F559;</string>
+    <string name="eleven_o_clock">&#x1F55A;</string>
+    <string name="twelve_o_clock">&#x1F55B;</string>
+    <string name="one_thirty">&#x1f55c;</string>
+    <string name="two_thirty">&#x1f55d;</string>
+    <string name="three_thirty">&#x1f55e;</string>
+    <string name="four_thirty">&#x1f55f;</string>
 </resources>
