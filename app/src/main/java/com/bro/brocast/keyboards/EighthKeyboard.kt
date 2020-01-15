@@ -90,7 +90,26 @@ class EighthKeyboard: LinearLayout {
             R.id.button_china,
             R.id.button_christmas_island,
             R.id.button_cocos_keeling_islands,
-            R.id.button_colombia
+            R.id.button_colombia,
+            R.id.button_comoros,
+            R.id.button_congo_brazzaville,
+            R.id.button_congo_kinshasa,
+            R.id.button_cook_islands,
+            R.id.button_costa_rica,
+            R.id.button_cote_d_ivoire,
+            R.id.button_croatia,
+            R.id.button_cuba,
+            R.id.button_curacao,
+            R.id.button_cyprus,
+            R.id.button_czechia,
+            R.id.button_denmark,
+            R.id.button_djibouti,
+            R.id.button_dominica,
+            R.id.button_dominican_republic,
+            R.id.button_ecuador,
+            R.id.button_egypt,
+            R.id.button_el_salvador,
+            R.id.button_equatorial_guinea
         )
 
         for (b in buttonIds) {
@@ -270,6 +289,63 @@ class EighthKeyboard: LinearLayout {
             }
             R.id.button_colombia -> {
                 inputConnection!!.commitText(context.getString(R.string.colombia), 1)
+            }
+            R.id.button_comoros -> {
+                inputConnection!!.commitText(context.getString(R.string.comoros), 1)
+            }
+            R.id.button_congo_brazzaville -> {
+                inputConnection!!.commitText(context.getString(R.string.congo_brazzaville), 1)
+            }
+            R.id.button_congo_kinshasa -> {
+                inputConnection!!.commitText(context.getString(R.string.congo_kinshasa), 1)
+            }
+            R.id.button_cook_islands -> {
+                inputConnection!!.commitText(context.getString(R.string.cook_islands), 1)
+            }
+            R.id.button_costa_rica -> {
+                inputConnection!!.commitText(context.getString(R.string.costa_rica), 1)
+            }
+            R.id.button_cote_d_ivoire -> {
+                inputConnection!!.commitText(context.getString(R.string.cote_d_ivoire), 1)
+            }
+            R.id.button_croatia -> {
+                inputConnection!!.commitText(context.getString(R.string.croatia), 1)
+            }
+            R.id.button_cuba -> {
+                inputConnection!!.commitText(context.getString(R.string.cuba), 1)
+            }
+            R.id.button_curacao -> {
+                inputConnection!!.commitText(context.getString(R.string.curacao), 1)
+            }
+            R.id.button_cyprus -> {
+                inputConnection!!.commitText(context.getString(R.string.cyprus), 1)
+            }
+            R.id.button_czechia -> {
+                inputConnection!!.commitText(context.getString(R.string.czechia), 1)
+            }
+            R.id.button_denmark -> {
+                inputConnection!!.commitText(context.getString(R.string.denmark), 1)
+            }
+            R.id.button_djibouti -> {
+                inputConnection!!.commitText(context.getString(R.string.djibouti), 1)
+            }
+            R.id.button_dominica -> {
+                inputConnection!!.commitText(context.getString(R.string.dominica), 1)
+            }
+            R.id.button_dominican_republic -> {
+                inputConnection!!.commitText(context.getString(R.string.dominican_republic), 1)
+            }
+            R.id.button_ecuador -> {
+                inputConnection!!.commitText(context.getString(R.string.ecuador), 1)
+            }
+            R.id.button_egypt -> {
+                inputConnection!!.commitText(context.getString(R.string.egypt), 1)
+            }
+            R.id.button_el_salvador -> {
+                inputConnection!!.commitText(context.getString(R.string.el_salvador), 1)
+            }
+            R.id.button_equatorial_guinea -> {
+                inputConnection!!.commitText(context.getString(R.string.equatorial_guinea), 1)
             }
         }
     }
