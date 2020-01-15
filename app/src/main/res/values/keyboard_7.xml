@@ -279,4 +279,13 @@
     <string name="two_thirty">&#x1f55d;</string>
     <string name="three_thirty">&#x1f55e;</string>
     <string name="four_thirty">&#x1f55f;</string>
+
+    <string name="five_thirty">&#x1f560;</string>
+    <string name="six_thirty">&#x1f561;</string>
+    <string name="seven_thirty">&#x1f562;</string>
+    <string name="eight_thirty">&#x1f563;</string>
+    <string name="nine_thirty">&#x1f564;</string>
+    <string name="ten_thirty">&#x1f565;</string>
+    <string name="eleven_thirty">&#x1f566;</string>
+    <string name="twelve_thirty">&#x1f567;</string>
 </resources>

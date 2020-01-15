@@ -299,7 +299,15 @@ class SeventhKeyboard: LinearLayout {
             R.id.button_one_thirty,
             R.id.button_two_thirty,
             R.id.button_three_thirty,
-            R.id.button_four_thirty
+            R.id.button_four_thirty,
+            R.id.button_five_thirty,
+            R.id.button_six_thirty,
+            R.id.button_seven_thirty,
+            R.id.button_eight_thirty,
+            R.id.button_nine_thirty,
+            R.id.button_ten_thirty,
+            R.id.button_eleven_thirty,
+            R.id.button_twelve_thirty
         )
 
         for (b in buttonIds) {
@@ -1106,6 +1114,30 @@ class SeventhKeyboard: LinearLayout {
             }
             R.id.button_four_thirty -> {
                 inputConnection!!.commitText(context.getString(R.string.four_thirty), 1)
+            }
+            R.id.button_five_thirty -> {
+                inputConnection!!.commitText(context.getString(R.string.five_thirty), 1)
+            }
+            R.id.button_six_thirty -> {
+                inputConnection!!.commitText(context.getString(R.string.six_thirty), 1)
+            }
+            R.id.button_seven_thirty -> {
+                inputConnection!!.commitText(context.getString(R.string.seven_thirty), 1)
+            }
+            R.id.button_eight_thirty -> {
+                inputConnection!!.commitText(context.getString(R.string.eight_thirty), 1)
+            }
+            R.id.button_nine_thirty -> {
+                inputConnection!!.commitText(context.getString(R.string.nine_thirty), 1)
+            }
+            R.id.button_ten_thirty -> {
+                inputConnection!!.commitText(context.getString(R.string.ten_thirty), 1)
+            }
+            R.id.button_eleven_thirty -> {
+                inputConnection!!.commitText(context.getString(R.string.eleven_thirty), 1)
+            }
+            R.id.button_twelve_thirty -> {
+                inputConnection!!.commitText(context.getString(R.string.twelve_thirty), 1)
             }
         }
     }
