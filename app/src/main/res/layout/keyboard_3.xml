@@ -16,153 +16,74 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/button_green_apple"
+                    android:id="@+id/button_dog_face"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/green_apple"
+                    android:text="@string/dog_face"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_red_apple"
+                    android:id="@+id/button_cat_face"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/red_apple"
+                    android:text="@string/cat_face"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_pear"
+                    android:id="@+id/button_mouse_face"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/pear"
+                    android:text="@string/mouse_face"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_tangerine"
+                    android:id="@+id/button_hamster_face"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/tangerine"
+                    android:text="@string/hamster_face"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_lemon"
+                    android:id="@+id/button_rabbit_face"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/lemon"
+                    android:text="@string/rabbit_face"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_banana"
+                    android:id="@+id/button_fox_face"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/banana"
+                    android:text="@string/fox_face"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_watermelon"
+                    android:id="@+id/button_bear_face"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/watermelon"
+                    android:text="@string/bear_face"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_grapes"
+                    android:id="@+id/button_panda_face"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/grapes"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/button_strawberry"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/strawberry"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_melon"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/melon"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_cherries"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/cherries"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_peach"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/peach"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_mango"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/mango"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_pineapple"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/pineapple"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_coconut"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/coconut"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_kiwi_fruit"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/kiwi_fruit"
+                    android:text="@string/panda_face"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
@@ -174,153 +95,74 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/button_tomato"
+                    android:id="@+id/button_koala"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/tomato"
+                    android:text="@string/koala"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_eggplant"
+                    android:id="@+id/button_tiger_face"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/eggplant"
+                    android:text="@string/tiger_face"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_avocado"
+                    android:id="@+id/button_lion_face"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/avocado"
+                    android:text="@string/lion_face"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_broccoli"
+                    android:id="@+id/button_cow_face"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/broccoli"
+                    android:text="@string/cow_face"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_leafy_green"
+                    android:id="@+id/button_pig_face"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/leafy_green"
+                    android:text="@string/pig_face"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_cucumber"
+                    android:id="@+id/button_pig_nose"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/cucumber"
+                    android:text="@string/pig_nose"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_hot_pepper"
+                    android:id="@+id/button_frog_face"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/hot_pepper"
+                    android:text="@string/frog_face"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_ear_of_corn"
+                    android:id="@+id/button_monkey_face"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/ear_of_corn"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/button_carrot"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/carrot"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_potato"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/potato"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_roasted_sweet_potato"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/roasted_sweet_potato"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_croissant"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/croissant"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_bagel"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/bagel"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_bread"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/bread"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_baguette_bread"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/baguette_bread"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_pretzel"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/pretzel"
+                    android:text="@string/monkey_face"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
@@ -332,153 +174,74 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/button_cheese_wedge"
+                    android:id="@+id/button_see_no_evil_monkey"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/cheese_wedge"
+                    android:text="@string/see_no_evil_monkey"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_egg"
+                    android:id="@+id/button_hear_no_evil_monkey"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/egg"
+                    android:text="@string/hear_no_evil_monkey"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_cooking"
+                    android:id="@+id/button_speak_no_evil_monkey"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/cooking"
+                    android:text="@string/speak_no_evil_monkey"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_pancakes"
+                    android:id="@+id/button_monkey"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/pancakes"
+                    android:text="@string/monkey"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_bacon"
+                    android:id="@+id/button_chicken"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/bacon"
+                    android:text="@string/chicken"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_cut_of_meat"
+                    android:id="@+id/button_penguin"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/cut_of_meat"
+                    android:text="@string/penguin"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_poultry_leg"
+                    android:id="@+id/button_bird"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/poultry_leg"
+                    android:text="@string/bird"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_meat_on_bone"
+                    android:id="@+id/button_baby_chick"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/meat_on_bone"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/button_bone"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/bone"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_hot_dog"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/hot_dog"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_hamburger"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/hamburger"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_french_fries"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/french_fries"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_pizza"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/pizza"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_sandwich"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/sandwich"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_stuffed_flatbread"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/stuffed_flatbread"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_taco"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/taco"
+                    android:text="@string/baby_chick"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
@@ -490,153 +253,74 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/button_burrito"
+                    android:id="@+id/button_hatching_chick"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/burrito"
+                    android:text="@string/hatching_chick"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_green_salad"
+                    android:id="@+id/button_front_facing_baby_chick"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/green_salad"
+                    android:text="@string/front_facing_baby_chick"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_shallow_pan_of_food"
+                    android:id="@+id/button_duck"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/shallow_pan_of_food"
+                    android:text="@string/duck"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_canned_food"
+                    android:id="@+id/button_eagle"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/canned_food"
+                    android:text="@string/eagle"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_spaghetti"
+                    android:id="@+id/button_owl"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/spaghetti"
+                    android:text="@string/owl"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_steaming_bowl"
+                    android:id="@+id/button_bat"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/steaming_bowl"
+                    android:text="@string/bat"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_pot_of_food"
+                    android:id="@+id/button_wolf_face"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/pot_of_food"
+                    android:text="@string/wolf_face"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_curry_rice"
+                    android:id="@+id/button_boar"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/curry_rice"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/button_sushi"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/sushi"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_bento_box"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/bento_box"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_dumpling"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/dumpling"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_fried_shrimp"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/fried_shrimp"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_rice_ball"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/rice_ball"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_cooked_rice"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/cooked_rice"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_rice_cracker"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/rice_cracker"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_fish_cake_with_swirl"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/fish_cake_with_swirl"
+                    android:text="@string/boar"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
@@ -648,153 +332,74 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/button_fortune_cookie"
+                    android:id="@+id/button_horse_face"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/fortune_cookie"
+                    android:text="@string/horse_face"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_moon_cake"
+                    android:id="@+id/button_unicorn_face"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/moon_cake"
+                    android:text="@string/unicorn_face"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_oden"
+                    android:id="@+id/button_honeybee"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/oden"
+                    android:text="@string/honeybee"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_dango"
+                    android:id="@+id/button_bug"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/dango"
+                    android:text="@string/bug"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_shaved_ice"
+                    android:id="@+id/button_butterfly"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/shaved_ice"
+                    android:text="@string/butterfly"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_ice_cream"
+                    android:id="@+id/button_snail"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/ice_cream"
+                    android:text="@string/snail"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_soft_ice_cream"
+                    android:id="@+id/button_lady_beetle"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/soft_ice_cream"
+                    android:text="@string/lady_beetle"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_pie"
+                    android:id="@+id/button_ant"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/pie"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/button_cupcake"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/cupcake"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_shortcake"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/shortcake"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_birthday_cake"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/birthday_cake"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_custard"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/custard"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_lollipop"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/lollipop"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_candy"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/candy"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_chocolate_bar"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/chocolate_bar"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_popcorn"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/popcorn"
+                    android:text="@string/ant"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
@@ -806,153 +411,74 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/button_doughnut"
+                    android:id="@+id/button_mosquito"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/doughnut"
+                    android:text="@string/mosquito"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_cookie"
+                    android:id="@+id/button_cricket"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/cookie"
+                    android:text="@string/cricket"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_chestnut"
+                    android:id="@+id/button_spider"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/chestnut"
+                    android:text="@string/spider"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_peanuts"
+                    android:id="@+id/button_spider_web"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/peanuts"
+                    android:text="@string/spider_web"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_honey_pot"
+                    android:id="@+id/button_scorpion"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/honey_pot"
+                    android:text="@string/scorpion"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_glass_of_milk"
+                    android:id="@+id/button_turtle"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/glass_of_milk"
+                    android:text="@string/turtle"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_baby_bottle"
+                    android:id="@+id/button_snake"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/baby_bottle"
+                    android:text="@string/snake"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_hot_beverage"
+                    android:id="@+id/button_lizard"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/hot_beverage"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/button_teacup_without_handle"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/teacup_without_handle"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_cup_with_straw"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/cup_with_straw"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_sake"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/sake"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_beer_mug"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/beer_mug"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_clinking_beer_mugs"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/clinking_beer_mugs"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_clinking_glasses"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/clinking_glasses"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_wine_glass"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/wine_glass"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_tumbler_glass"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/tumbler_glass"
+                    android:text="@string/lizard"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
@@ -964,74 +490,74 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/button_cocktail_glass"
+                    android:id="@+id/button_t_rex"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/cocktail_glass"
+                    android:text="@string/t_rex"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_tropical_drink"
+                    android:id="@+id/button_sauropod"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/tropical_drink"
+                    android:text="@string/sauropod"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_bottle_with_popping_cork"
+                    android:id="@+id/button_octopus"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/bottle_with_popping_cork"
+                    android:text="@string/octopus"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_spoon"
+                    android:id="@+id/button_squid"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/spoon"
+                    android:text="@string/squid"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_fork_and_knife"
+                    android:id="@+id/button_shrimp"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/fork_and_knife"
+                    android:text="@string/shrimp"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_fork_and_knife_with_plate"
+                    android:id="@+id/button_lobster"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/fork_and_knife_with_plate"
+                    android:text="@string/lobster"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_bowl_with_spoon"
+                    android:id="@+id/button_crab"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/bowl_with_spoon"
+                    android:text="@string/crab"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_takeout_box"
+                    android:id="@+id/button_blowfish"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/takeout_box"
+                    android:text="@string/blowfish"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
@@ -1043,20 +569,1180 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/button_chopsticks"
+                    android:id="@+id/button_tropical_fish"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/chopsticks"
+                    android:text="@string/tropical_fish"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_salt"
+                    android:id="@+id/button_fish"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/salt"
+                    android:text="@string/fish"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_dolphin"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/dolphin"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_spouting_whale"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/spouting_whale"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_whale"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/whale"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_shark"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/shark"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_crocodile"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/crocodile"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_tiger"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/tiger"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/button_leopard"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/leopard"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_zebra"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/zebra"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_gorilla"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/gorilla"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_elephant"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/elephant"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_hippopotamus"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/hippopotamus"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_rhinoceros"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/rhinoceros"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_camel"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/camel"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_two_hump_camel"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/two_hump_camel"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/button_giraffe"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/giraffe"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_kangaroo"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/kangaroo"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_water_buffalo"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/water_buffalo"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_ox"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/ox"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_cow"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/cow"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_horse"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/horse"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_pig"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/pig"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_ram"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/ram"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/button_ewe"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/ewe"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_llama"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/llama"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_goat"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/goat"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_deer"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/deer"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_dog"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/dog"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_poodle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/poodle"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_cat"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/cat"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_rooster"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/rooster"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/button_turkey"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/turkey"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_peacock"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/peacock"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_parrot"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/parrot"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_swan"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/swan"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_dove"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/dove"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_rabbit"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/rabbit"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_raccoon"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/raccoon"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_badger"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/badger"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/button_mouse"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/mouse"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_rat"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/rat"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_chipmunk"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/chipmunk"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_hedgehog"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/hedgehog"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_paw_prints"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/paw_prints"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_dragon"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/dragon"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_dragon_face"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/dragon_face"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_cactus"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/cactus"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/button_christmas_tree"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/christmas_tree"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_evergreen_tree"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/evergreen_tree"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_deciduous_tree"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/deciduous_tree"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_palm_tree"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/palm_tree"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_seedling"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/seedling"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_herb"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/herb"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_shamrock"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/shamrock"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_four_leaf_clover"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/four_leaf_clover"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/button_pine_decoration"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/pine_decoration"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_tanabata_tree"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/tanabata_tree"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_leaf_fluttering_in_wind"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/leaf_fluttering_in_wind"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_fallen_leaf"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/fallen_leaf"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_maple_leaf"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/maple_leaf"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_mushroom"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/mushroom"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_spiral_shell"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/spiral_shell"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_sheaf_of_rice"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/sheaf_of_rice"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/button_bouquet"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/bouquet"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_tulip"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/tulip"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_rose"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/rose"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_wilted_flower"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/wilted_flower"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_hibiscus"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/hibiscus"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_cherry_blossom"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/cherry_blossom"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_blossom"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/blossom"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_sunflower"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/sunflower"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/button_sun_with_face"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/sun_with_face"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_full_moon_with_face"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/full_moon_with_face"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_first_quarter_moon_with_face"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/first_quarter_moon_with_face"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_last_quarter_moon_with_face"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/last_quarter_moon_with_face"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_new_moon_face"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/new_moon_face"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_full_moon"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/full_moon"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_waning_gibbous_moon"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/waning_gibbous_moon"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_last_quarter_moon"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/last_quarter_moon"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/button_waning_crescent_moon"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/waning_crescent_moon"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_new_moon"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/new_moon"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_waxing_crescent_moon"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/waxing_crescent_moon"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_first_quarter_moon"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/first_quarter_moon"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_waxing_gibbous_moon"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/waxing_gibbous_moon"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_crescent_moon"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/crescent_moon"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_globe_showing_americas"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/globe_showing_americas"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_globe_showing_europe_africa"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/globe_showing_europe_africa"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/button_globe_showing_asia_australia"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/globe_showing_asia_australia"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_dizzy"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/dizzy"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_white_medium_star"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/white_medium_star"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_glowing_star"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/glowing_star"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_sparkles"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/sparkles"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_high_voltage"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/high_voltage"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_comet"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/comet"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_collision"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/collision"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/button_fire"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/fire"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_tornado"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/tornado"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_rainbow"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/rainbow"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_sun"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/sun"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_sun_behind_small_cloud"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/sun_behind_small_cloud"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_sun_behind_cloud"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/sun_behind_cloud"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_sun_behind_large_cloud"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/sun_behind_large_cloud"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_cloud"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/cloud"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/button_sun_behind_rain_cloud"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/sun_behind_rain_cloud"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_cloud_with_rain"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/cloud_with_rain"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_cloud_with_lightning_and_rain"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/cloud_with_lightning_and_rain"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_cloud_with_lightning"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/cloud_with_lightning"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_cloud_with_snow"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/cloud_with_snow"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_snowflake"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/snowflake"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_snowman"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/snowman"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_snowman_without_snow"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/snowman_without_snow"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/button_wind_face"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/wind_face"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_dashing_away"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/dashing_away"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_droplet"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/droplet"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_sweat_droplets"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/sweat_droplets"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_umbrella_with_rain_drops"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/umbrella_with_rain_drops"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_umbrella"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/umbrella"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_water_wave"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/water_wave"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_fog"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/fog"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />

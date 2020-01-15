@@ -16,153 +16,74 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/button_soccer_ball"
+                    android:id="@+id/button_green_apple"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/soccer_ball"
+                    android:text="@string/green_apple"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_basketball"
+                    android:id="@+id/button_red_apple"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/basketball"
+                    android:text="@string/red_apple"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_american_football"
+                    android:id="@+id/button_pear"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/american_football"
+                    android:text="@string/pear"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_baseball"
+                    android:id="@+id/button_tangerine"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/baseball"
+                    android:text="@string/tangerine"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_softball"
+                    android:id="@+id/button_lemon"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/softball"
+                    android:text="@string/lemon"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_tennis"
+                    android:id="@+id/button_banana"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/tennis"
+                    android:text="@string/banana"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_volleyball"
+                    android:id="@+id/button_watermelon"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/volleyball"
+                    android:text="@string/watermelon"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_rugby_football"
+                    android:id="@+id/button_grapes"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/rugby_football"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/button_flying_disc"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/flying_disc"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_pool_8_ball"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/pool_8_ball"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_ping_pong"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/ping_pong"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_badminton"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/badminton"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_ice_hockey"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/ice_hockey"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_field_hockey"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/field_hockey"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_lacrosse"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/lacrosse"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_cricket_sport"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/cricket_sport"
+                    android:text="@string/grapes"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
@@ -174,153 +95,74 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/button_goal_net"
+                    android:id="@+id/button_strawberry"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/goal_net"
+                    android:text="@string/strawberry"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_flag_in_hole"
+                    android:id="@+id/button_melon"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/flag_in_hole"
+                    android:text="@string/melon"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_bow_and_arrow"
+                    android:id="@+id/button_cherries"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/bow_and_arrow"
+                    android:text="@string/cherries"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_fishing_pole"
+                    android:id="@+id/button_peach"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/fishing_pole"
+                    android:text="@string/peach"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_boxing_glove"
+                    android:id="@+id/button_mango"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/boxing_glove"
+                    android:text="@string/mango"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_martial_arts_uniform"
+                    android:id="@+id/button_pineapple"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/martial_arts_uniform"
+                    android:text="@string/pineapple"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_running_shirt"
+                    android:id="@+id/button_coconut"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/running_shirt"
+                    android:text="@string/coconut"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_skateboard"
+                    android:id="@+id/button_kiwi_fruit"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/skateboard"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/button_sled"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/sled"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_ice_skate"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/ice_skate"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_curling_stone"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/curling_stone"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_skis"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/skis"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_skier"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/skier"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_snowboarder"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/snowboarder"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_woman_lifting_weights"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/woman_lifting_weights"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_man_lifting_weights"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/man_lifting_weights"
+                    android:text="@string/kiwi_fruit"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
@@ -332,74 +174,74 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/button_women_wrestling"
+                    android:id="@+id/button_tomato"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/women_wrestling"
+                    android:text="@string/tomato"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_men_wrestling"
+                    android:id="@+id/button_eggplant"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/men_wrestling"
+                    android:text="@string/eggplant"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_woman_cartwheeling"
+                    android:id="@+id/button_avocado"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/woman_cartwheeling"
+                    android:text="@string/avocado"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_man_cartwheeling"
+                    android:id="@+id/button_broccoli"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/man_cartwheeling"
+                    android:text="@string/broccoli"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_woman_bouncing_ball"
+                    android:id="@+id/button_leafy_green"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/woman_bouncing_ball"
+                    android:text="@string/leafy_green"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_man_bouncing_ball"
+                    android:id="@+id/button_cucumber"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/man_bouncing_ball"
+                    android:text="@string/cucumber"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_person_fencing"
+                    android:id="@+id/button_hot_pepper"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/person_fencing"
+                    android:text="@string/hot_pepper"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_woman_playing_handball"
+                    android:id="@+id/button_ear_of_corn"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/woman_playing_handball"
+                    android:text="@string/ear_of_corn"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
@@ -411,74 +253,74 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/button_man_playing_handball"
+                    android:id="@+id/button_carrot"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/man_playing_handball"
+                    android:text="@string/carrot"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_woman_golfing"
+                    android:id="@+id/button_potato"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/woman_golfing"
+                    android:text="@string/potato"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_man_golfing"
+                    android:id="@+id/button_roasted_sweet_potato"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/man_golfing"
+                    android:text="@string/roasted_sweet_potato"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_horse_racing"
+                    android:id="@+id/button_croissant"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/horse_racing"
+                    android:text="@string/croissant"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_woman_in_lotus_position"
+                    android:id="@+id/button_bagel"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/woman_in_lotus_position"
+                    android:text="@string/bagel"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_man_in_lotus_position"
+                    android:id="@+id/button_bread"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/man_in_lotus_position"
+                    android:text="@string/bread"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_woman_surfing"
+                    android:id="@+id/button_baguette_bread"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/woman_surfing"
+                    android:text="@string/baguette_bread"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_man_surfing"
+                    android:id="@+id/button_pretzel"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/man_surfing"
+                    android:text="@string/pretzel"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
@@ -490,74 +332,74 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/button_woman_swimming"
+                    android:id="@+id/button_cheese_wedge"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/woman_swimming"
+                    android:text="@string/cheese_wedge"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_man_swimming"
+                    android:id="@+id/button_egg"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/man_swimming"
+                    android:text="@string/egg"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_woman_playing_water_polo"
+                    android:id="@+id/button_cooking"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/woman_playing_water_polo"
+                    android:text="@string/cooking"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_man_playing_water_polo"
+                    android:id="@+id/button_pancakes"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/man_playing_water_polo"
+                    android:text="@string/pancakes"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_woman_rowing_boat"
+                    android:id="@+id/button_bacon"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/woman_rowing_boat"
+                    android:text="@string/bacon"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_man_rowing_boat"
+                    android:id="@+id/button_cut_of_meat"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/man_rowing_boat"
+                    android:text="@string/cut_of_meat"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_woman_climbing"
+                    android:id="@+id/button_poultry_leg"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/woman_climbing"
+                    android:text="@string/poultry_leg"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_man_climbing"
+                    android:id="@+id/button_meat_on_bone"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/man_climbing"
+                    android:text="@string/meat_on_bone"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
@@ -569,74 +411,74 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/button_woman_mountain_biking"
+                    android:id="@+id/button_bone"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/woman_mountain_biking"
+                    android:text="@string/bone"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_man_mountain_biking"
+                    android:id="@+id/button_hot_dog"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/man_mountain_biking"
+                    android:text="@string/hot_dog"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_woman_biking"
+                    android:id="@+id/button_hamburger"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/woman_biking"
+                    android:text="@string/hamburger"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_man_biking"
+                    android:id="@+id/button_french_fries"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/man_biking"
+                    android:text="@string/french_fries"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_trophy"
+                    android:id="@+id/button_pizza"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/trophy"
+                    android:text="@string/pizza"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_first_place_medal"
+                    android:id="@+id/button_sandwich"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/first_place_medal"
+                    android:text="@string/sandwich"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_second_place_medal"
+                    android:id="@+id/button_stuffed_flatbread"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/second_place_medal"
+                    android:text="@string/stuffed_flatbread"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_third_place_medal"
+                    android:id="@+id/button_taco"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/third_place_medal"
+                    android:text="@string/taco"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
@@ -648,74 +490,74 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/button_sports_medal"
+                    android:id="@+id/button_burrito"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/sports_medal"
+                    android:text="@string/burrito"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_military_medal"
+                    android:id="@+id/button_green_salad"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/military_medal"
+                    android:text="@string/green_salad"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_rosette"
+                    android:id="@+id/button_shallow_pan_of_food"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/rosette"
+                    android:text="@string/shallow_pan_of_food"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_reminder_ribbon"
+                    android:id="@+id/button_canned_food"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/reminder_ribbon"
+                    android:text="@string/canned_food"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_ticket"
+                    android:id="@+id/button_spaghetti"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/ticket"
+                    android:text="@string/spaghetti"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_admission_tickets"
+                    android:id="@+id/button_steaming_bowl"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/admission_tickets"
+                    android:text="@string/steaming_bowl"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_circus_tent"
+                    android:id="@+id/button_pot_of_food"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/circus_tent"
+                    android:text="@string/pot_of_food"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_woman_juggling"
+                    android:id="@+id/button_curry_rice"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/woman_juggling"
+                    android:text="@string/curry_rice"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
@@ -727,74 +569,74 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/button_man_juggling"
+                    android:id="@+id/button_sushi"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/man_juggling"
+                    android:text="@string/sushi"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_performing_arts"
+                    android:id="@+id/button_bento_box"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/performing_arts"
+                    android:text="@string/bento_box"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_artist_palette"
+                    android:id="@+id/button_dumpling"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/artist_palette"
+                    android:text="@string/dumpling"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_clapper_board"
+                    android:id="@+id/button_fried_shrimp"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/clapper_board"
+                    android:text="@string/fried_shrimp"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_microphone"
+                    android:id="@+id/button_rice_ball"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/microphone"
+                    android:text="@string/rice_ball"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_headphone"
+                    android:id="@+id/button_cooked_rice"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/headphone"
+                    android:text="@string/cooked_rice"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_musical_score"
+                    android:id="@+id/button_rice_cracker"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/musical_score"
+                    android:text="@string/rice_cracker"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_musical_keyboard"
+                    android:id="@+id/button_fish_cake_with_swirl"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/musical_keyboard"
+                    android:text="@string/fish_cake_with_swirl"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
@@ -806,74 +648,74 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/button_drum"
+                    android:id="@+id/button_fortune_cookie"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/drum"
+                    android:text="@string/fortune_cookie"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_saxophone"
+                    android:id="@+id/button_moon_cake"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/saxophone"
+                    android:text="@string/moon_cake"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_trumpet"
+                    android:id="@+id/button_oden"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/trumpet"
+                    android:text="@string/oden"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_guitar"
+                    android:id="@+id/button_dango"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/guitar"
+                    android:text="@string/dango"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_violin"
+                    android:id="@+id/button_shaved_ice"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/violin"
+                    android:text="@string/shaved_ice"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_game_die"
+                    android:id="@+id/button_ice_cream"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/game_die"
+                    android:text="@string/ice_cream"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_chess_pawn"
+                    android:id="@+id/button_soft_ice_cream"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/chess_pawn"
+                    android:text="@string/soft_ice_cream"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_direct_hit"
+                    android:id="@+id/button_pie"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/direct_hit"
+                    android:text="@string/pie"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
@@ -885,42 +727,339 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/button_bowling"
+                    android:id="@+id/button_cupcake"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/bowling"
+                    android:text="@string/cupcake"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_video_game"
+                    android:id="@+id/button_shortcake"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/video_game"
+                    android:text="@string/shortcake"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_slot_machine"
+                    android:id="@+id/button_birthday_cake"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/slot_machine"
+                    android:text="@string/birthday_cake"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_jigsaw"
+                    android:id="@+id/button_custard"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/jigsaw"
+                    android:text="@string/custard"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
+                <Button
+                    android:id="@+id/button_lollipop"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/lollipop"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_candy"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/candy"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_chocolate_bar"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/chocolate_bar"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_popcorn"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/popcorn"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+            </LinearLayout>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/button_doughnut"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/doughnut"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_cookie"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/cookie"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_chestnut"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/chestnut"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_peanuts"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/peanuts"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_honey_pot"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/honey_pot"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_glass_of_milk"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/glass_of_milk"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_baby_bottle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/baby_bottle"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_hot_beverage"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/hot_beverage"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/button_teacup_without_handle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/teacup_without_handle"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_cup_with_straw"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/cup_with_straw"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_sake"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/sake"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_beer_mug"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/beer_mug"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_clinking_beer_mugs"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/clinking_beer_mugs"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_clinking_glasses"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/clinking_glasses"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_wine_glass"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/wine_glass"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_tumbler_glass"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/tumbler_glass"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/button_cocktail_glass"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/cocktail_glass"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_tropical_drink"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/tropical_drink"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_bottle_with_popping_cork"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/bottle_with_popping_cork"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_spoon"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/spoon"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_fork_and_knife"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/fork_and_knife"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_fork_and_knife_with_plate"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/fork_and_knife_with_plate"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_bowl_with_spoon"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/bowl_with_spoon"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_takeout_box"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/takeout_box"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/button_chopsticks"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/chopsticks"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_salt"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/salt"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

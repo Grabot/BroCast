@@ -14,75 +14,76 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
+
                 <Button
-                    android:id="@+id/button_white_flag"
+                    android:id="@+id/button_red_heart"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/white_flag"
+                    android:text="@string/red_heart"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_black_flag"
+                    android:id="@+id/button_orange_heart"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/black_flag"
+                    android:text="@string/orange_heart"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_pirate_flag"
+                    android:id="@+id/button_yellow_heart"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/pirate_flag"
+                    android:text="@string/yellow_heart"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_chequered_flag"
+                    android:id="@+id/button_green_heart"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/chequered_flag"
+                    android:text="@string/green_heart"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_triangular_flag"
+                    android:id="@+id/button_blue_heart"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/triangular_flag"
+                    android:text="@string/blue_heart"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_rainbow_flag"
+                    android:id="@+id/button_purple_heart"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/rainbow_flag"
+                    android:text="@string/purple_heart"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_united_nations"
+                    android:id="@+id/button_black_heart"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/united_nations"
+                    android:text="@string/black_heart"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_afghanistan"
+                    android:id="@+id/button_broken_heart"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/afghanistan"
+                    android:text="@string/broken_heart"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
@@ -94,153 +95,74 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/button_aland_islands"
+                    android:id="@+id/button_heavy_heart_exclamation"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/aland_islands"
+                    android:text="@string/heavy_heart_exclamation"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_albania"
+                    android:id="@+id/button_two_hearts"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/albania"
+                    android:text="@string/two_hearts"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_algeria"
+                    android:id="@+id/button_revolving_hearts"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/algeria"
+                    android:text="@string/revolving_hearts"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_american_samoa"
+                    android:id="@+id/button_beating_heart"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/american_samoa"
+                    android:text="@string/beating_heart"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_andorra"
+                    android:id="@+id/button_growing_heart"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/andorra"
+                    android:text="@string/growing_heart"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_angola"
+                    android:id="@+id/button_sparkling_heart"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/angola"
+                    android:text="@string/sparkling_heart"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_anguilla"
+                    android:id="@+id/button_heart_with_arrow"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/anguilla"
+                    android:text="@string/heart_with_arrow"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_antarctica"
+                    android:id="@+id/button_heart_with_ribbon"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/antarctica"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/button_antigua_and_barbuda"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/antigua_and_barbuda"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_argentina"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/argentina"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_armenia"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/armenia"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_aruba"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/aruba"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_australia"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/australia"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_austria"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/austria"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_azerbaijan"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/azerbaijan"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_bahamas"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/bahamas"
+                    android:text="@string/heart_with_ribbon"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
@@ -252,153 +174,74 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/button_bahrain"
+                    android:id="@+id/button_heart_decoration"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/bahrain"
+                    android:text="@string/heart_decoration"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_bangladesh"
+                    android:id="@+id/button_peace_symbol"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/bangladesh"
+                    android:text="@string/peace_symbol"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_barbados"
+                    android:id="@+id/button_latin_cross"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/barbados"
+                    android:text="@string/latin_cross"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_belarus"
+                    android:id="@+id/button_star_and_crescent"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/belarus"
+                    android:text="@string/star_and_crescent"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_belgium"
+                    android:id="@+id/button_om"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/belgium"
+                    android:text="@string/om"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_belize"
+                    android:id="@+id/button_wheel_of_dharma"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/belize"
+                    android:text="@string/wheel_of_dharma"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_benin"
+                    android:id="@+id/button_star_of_david"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/benin"
+                    android:text="@string/star_of_david"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_bermuda"
+                    android:id="@+id/button_dotted_six_pointed_star"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/bermuda"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/button_bhutan"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/bhutan"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_bolivia"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/bolivia"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_bosnia_and_herzegovina"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/bosnia_and_herzegovina"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_botswana"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/botswana"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_brazil"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/brazil"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_british_indian_ocean_territory"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/british_indian_ocean_territory"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_british_virgin_islands"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/british_virgin_islands"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_brunei"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/brunei"
+                    android:text="@string/dotted_six_pointed_star"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
@@ -410,153 +253,74 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/button_bulgaria"
+                    android:id="@+id/button_menorah"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/bulgaria"
+                    android:text="@string/menorah"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_burkina_faso"
+                    android:id="@+id/button_yin_yang"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/burkina_faso"
+                    android:text="@string/yin_yang"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_burundi"
+                    android:id="@+id/button_orthodox_cross"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/burundi"
+                    android:text="@string/orthodox_cross"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_cambodia"
+                    android:id="@+id/button_place_of_worship"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/cambodia"
+                    android:text="@string/place_of_worship"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_cameroon"
+                    android:id="@+id/button_ophiuchus"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/cameroon"
+                    android:text="@string/ophiuchus"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_canada"
+                    android:id="@+id/button_aries"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/canada"
+                    android:text="@string/aries"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_canary_islands"
+                    android:id="@+id/button_taurus"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/canary_islands"
+                    android:text="@string/taurus"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_cape_verde"
+                    android:id="@+id/button_gemini"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/cape_verde"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/button_cayman_islands"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/cayman_islands"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_central_african_republic"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/central_african_republic"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_chad"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/chad"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_chile"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/chile"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_china"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/china"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_christmas_island"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/christmas_island"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_cocos_keeling_islands"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/cocos_keeling_islands"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_colombia"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/colombia"
+                    android:text="@string/gemini"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
@@ -568,153 +332,74 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/button_comoros"
+                    android:id="@+id/button_cancer"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/comoros"
+                    android:text="@string/cancer"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_congo_brazzaville"
+                    android:id="@+id/button_leo"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/congo_brazzaville"
+                    android:text="@string/leo"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_congo_kinshasa"
+                    android:id="@+id/button_virgo"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/congo_kinshasa"
+                    android:text="@string/virgo"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_cook_islands"
+                    android:id="@+id/button_libra"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/cook_islands"
+                    android:text="@string/libra"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_costa_rica"
+                    android:id="@+id/button_scorpius"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/costa_rica"
+                    android:text="@string/scorpius"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_cote_d_ivoire"
+                    android:id="@+id/button_sagittarius"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/cote_d_ivoire"
+                    android:text="@string/sagittarius"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_croatia"
+                    android:id="@+id/button_capricorn"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/croatia"
+                    android:text="@string/capricorn"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_cuba"
+                    android:id="@+id/button_aquarius"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/cuba"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/button_curacao"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/curacao"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_cyprus"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/cyprus"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_czechia"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/czechia"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_denmark"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/denmark"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_djibouti"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/djibouti"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_dominica"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/dominica"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_dominican_republic"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/dominican_republic"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_ecuador"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/ecuador"
+                    android:text="@string/aquarius"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
@@ -726,153 +411,74 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/button_egypt"
+                    android:id="@+id/button_pisces"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/egypt"
+                    android:text="@string/pisces"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_el_salvador"
+                    android:id="@+id/button_id_button"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/el_salvador"
+                    android:text="@string/id_button"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_equatorial_guinea"
+                    android:id="@+id/button_atom_symbol"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/equatorial_guinea"
+                    android:text="@string/atom_symbol"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_eritrea"
+                    android:id="@+id/button_japanese_acceptable_button"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/eritrea"
+                    android:text="@string/japanese_acceptable_button"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_estonia"
+                    android:id="@+id/button_radioactive"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/estonia"
+                    android:text="@string/radioactive"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_ethiopia"
+                    android:id="@+id/button_biohazard"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/ethiopia"
+                    android:text="@string/biohazard"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_european_union"
+                    android:id="@+id/button_mobile_phone_off"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/european_union"
+                    android:text="@string/mobile_phone_off"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_falkland_islands"
+                    android:id="@+id/button_vibration_mode"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/falkland_islands"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/button_faroe_islands"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/faroe_islands"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_fiji"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/fiji"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_finland"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/finland"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_france"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/france"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_french_guiana"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/french_guiana"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_french_polynesia"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/french_polynesia"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_gabon"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/gabon"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_gambia"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/gambia"
+                    android:text="@string/vibration_mode"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
@@ -884,153 +490,74 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/button_georgia"
+                    android:id="@+id/button_japanese_not_free_of_charge_button"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/georgia"
+                    android:text="@string/japanese_not_free_of_charge_button"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_germany"
+                    android:id="@+id/button_japanese_free_of_charge_button"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/germany"
+                    android:text="@string/japanese_free_of_charge_button"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_ghana"
+                    android:id="@+id/button_japanese_application_button"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/ghana"
+                    android:text="@string/japanese_application_button"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_gibraltar"
+                    android:id="@+id/button_japanese_open_for_business_button"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/gibraltar"
+                    android:text="@string/japanese_open_for_business_button"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_greece"
+                    android:id="@+id/button_japanese_monthly_amount_button"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/greece"
+                    android:text="@string/japanese_monthly_amount_button"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_greenland"
+                    android:id="@+id/button_eight_pointed_star"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/greenland"
+                    android:text="@string/eight_pointed_star"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_grenada"
+                    android:id="@+id/button_vs_button"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/grenada"
+                    android:text="@string/vs_button"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_guadeloupe"
+                    android:id="@+id/button_white_flower"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/guadeloupe"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/button_guam"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/guam"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_guatemala"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/guatemala"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_guernsey"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/guernsey"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_guinea"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/guinea"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_guinea_bissau"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/guinea_bissau"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_guyana"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/guyana"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_haiti"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/haiti"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_honduras"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/honduras"
+                    android:text="@string/white_flower"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
@@ -1042,153 +569,74 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/button_hong_kong"
+                    android:id="@+id/button_japanese_bargain_button"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/hong_kong"
+                    android:text="@string/japanese_bargain_button"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_hungary"
+                    android:id="@+id/button_japanese_secret_button"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/hungary"
+                    android:text="@string/japanese_secret_button"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_iceland"
+                    android:id="@+id/button_japanese_congratulations_button"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/iceland"
+                    android:text="@string/japanese_congratulations_button"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_india"
+                    android:id="@+id/button_japanese_passing_grade_button"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/india"
+                    android:text="@string/japanese_passing_grade_button"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_indonesia"
+                    android:id="@+id/button_japanese_no_vacancy_button"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/indonesia"
+                    android:text="@string/japanese_no_vacancy_button"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_iran"
+                    android:id="@+id/button_japanese_discount_button"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/iran"
+                    android:text="@string/japanese_discount_button"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_iraq"
+                    android:id="@+id/button_japanese_prohibited_button"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/iraq"
+                    android:text="@string/japanese_prohibited_button"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_ireland"
+                    android:id="@+id/button_a_button_blood_type"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/ireland"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/button_isle_of_man"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/isle_of_man"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_israel"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/israel"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_italy"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/italy"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_jamaica"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/jamaica"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_japan"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/japan"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_crossed_flags"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/crossed_flags"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_jersey"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/jersey"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_jordan"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/jordan"
+                    android:text="@string/a_button_blood_type"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
@@ -1200,153 +648,74 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/button_kazakhstan"
+                    android:id="@+id/button_b_button_blood_type"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/kazakhstan"
+                    android:text="@string/b_button_blood_type"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_kenya"
+                    android:id="@+id/button_ab_button_blood_type"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/kenya"
+                    android:text="@string/ab_button_blood_type"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_kiribati"
+                    android:id="@+id/button_cl_button"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/kiribati"
+                    android:text="@string/cl_button"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_kosovo"
+                    android:id="@+id/button_o_button_blood_type"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/kosovo"
+                    android:text="@string/o_button_blood_type"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_kuwait"
+                    android:id="@+id/button_sos_button"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/kuwait"
+                    android:text="@string/sos_button"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_kyrgyzstan"
+                    android:id="@+id/button_cross_mark"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/kyrgyzstan"
+                    android:text="@string/cross_mark"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_laos"
+                    android:id="@+id/button_heavy_large_circle"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/laos"
+                    android:text="@string/heavy_large_circle"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_latvia"
+                    android:id="@+id/button_stop_sign"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/latvia"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/button_lebanon"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/lebanon"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_lesotho"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/lesotho"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_liberia"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/liberia"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_libya"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/libya"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_liechtenstein"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/liechtenstein"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_lithuania"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/lithuania"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_luxembourg"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/luxembourg"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_macau_sar_china"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/macau_sar_china"
+                    android:text="@string/stop_sign"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
@@ -1358,153 +727,74 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/button_macedonia"
+                    android:id="@+id/button_no_entry"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/macedonia"
+                    android:text="@string/no_entry"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_madagascar"
+                    android:id="@+id/button_name_badge"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/madagascar"
+                    android:text="@string/name_badge"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_malawi"
+                    android:id="@+id/button_prohibited"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/malawi"
+                    android:text="@string/prohibited"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_malaysia"
+                    android:id="@+id/button_hundred_points"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/malaysia"
+                    android:text="@string/hundred_points"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_maldives"
+                    android:id="@+id/button_anger_symbol"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/maldives"
+                    android:text="@string/anger_symbol"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_mali"
+                    android:id="@+id/button_hot_springs"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/mali"
+                    android:text="@string/hot_springs"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_malta"
+                    android:id="@+id/button_no_pedestrians"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/malta"
+                    android:text="@string/no_pedestrians"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_marshall_islands"
+                    android:id="@+id/button_no_littering"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/marshall_islands"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/button_mauritania"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/mauritania"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_mauritius"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/mauritius"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_mayotte"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/mayotte"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_mexico"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/mexico"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_micronesia"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/micronesia"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_moldova"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/moldova"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_monaco"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/monaco"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_mongolia"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/mongolia"
+                    android:text="@string/no_littering"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
@@ -1516,153 +806,74 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/button_montenegro"
+                    android:id="@+id/button_no_bicycles"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/montenegro"
+                    android:text="@string/no_bicycles"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_montserrat"
+                    android:id="@+id/button_non_potable_water"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/montserrat"
+                    android:text="@string/non_potable_water"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_morocco"
+                    android:id="@+id/button_no_one_under_eighteen"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/morocco"
+                    android:text="@string/no_one_under_eighteen"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_mozambique"
+                    android:id="@+id/button_no_mobile_phones"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/mozambique"
+                    android:text="@string/no_mobile_phones"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_myanmar_burma"
+                    android:id="@+id/button_no_smoking"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/myanmar_burma"
+                    android:text="@string/no_smoking"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_namibia"
+                    android:id="@+id/button_exclamation_mark"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/namibia"
+                    android:text="@string/exclamation_mark"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_nauru"
+                    android:id="@+id/button_white_exclamation_mark"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/nauru"
+                    android:text="@string/white_exclamation_mark"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_nepal"
+                    android:id="@+id/button_question_mark"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/nepal"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/button_netherlands"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/netherlands"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_new_caledonia"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/new_caledonia"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_new_zealand"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/new_zealand"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_nicaragua"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/nicaragua"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_niger"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/niger"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_nigeria"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/nigeria"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_niue"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/niue"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_norfolk_island"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/norfolk_island"
+                    android:text="@string/question_mark"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
@@ -1674,153 +885,74 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/button_north_korea"
+                    android:id="@+id/button_white_question_mark"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/north_korea"
+                    android:text="@string/white_question_mark"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_northern_mariana_islands"
+                    android:id="@+id/button_double_exclamation_mark"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/northern_mariana_islands"
+                    android:text="@string/double_exclamation_mark"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_norway"
+                    android:id="@+id/button_exclamation_question_mark"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/norway"
+                    android:text="@string/exclamation_question_mark"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_oman"
+                    android:id="@+id/button_dim_button"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/oman"
+                    android:text="@string/dim_button"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_pakistan"
+                    android:id="@+id/button_bright_button"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/pakistan"
+                    android:text="@string/bright_button"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_palau"
+                    android:id="@+id/button_part_alternation_mark"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/palau"
+                    android:text="@string/part_alternation_mark"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_palestinian_territories"
+                    android:id="@+id/button_warning"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/palestinian_territories"
+                    android:text="@string/warning"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_panama"
+                    android:id="@+id/button_children_crossing"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/panama"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/button_papua_new_guinea"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/papua_new_guinea"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_paraguay"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/paraguay"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_peru"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/peru"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_philippines"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/philippines"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_pitcairn_islands"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/pitcairn_islands"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_poland"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/poland"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_portugal"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/portugal"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_puerto_rico"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/puerto_rico"
+                    android:text="@string/children_crossing"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
@@ -1832,153 +964,74 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/button_qatar"
+                    android:id="@+id/button_trident_emblem"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/qatar"
+                    android:text="@string/trident_emblem"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_romania"
+                    android:id="@+id/button_fleur_de_lis"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/romania"
+                    android:text="@string/fleur_de_lis"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_russia"
+                    android:id="@+id/button_japanese_symbol_for_beginner"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/russia"
+                    android:text="@string/japanese_symbol_for_beginner"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_rwanda"
+                    android:id="@+id/button_recycling_symbol"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/rwanda"
+                    android:text="@string/recycling_symbol"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_samoa"
+                    android:id="@+id/button_white_heavy_check_mark"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/samoa"
+                    android:text="@string/white_heavy_check_mark"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_san_marino"
+                    android:id="@+id/button_japanese_reserved_button"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/san_marino"
+                    android:text="@string/japanese_reserved_button"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_sao_tome_and_principe"
+                    android:id="@+id/button_chart_increasing_with_yen"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/sao_tome_and_principe"
+                    android:text="@string/chart_increasing_with_yen"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_saudi_arabia"
+                    android:id="@+id/button_sparkle"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/saudi_arabia"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/button_senegal"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/senegal"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_seychelles"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/seychelles"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_serbia"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/serbia"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_sierra_leone"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/sierra_leone"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_singapore"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/singapore"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_sint_maarten"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/sint_maarten"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_slovakia"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/slovakia"
-                    android:textSize="25sp"
-                    style="?android:attr/borderlessButtonStyle"
-                    />
-                <Button
-                    android:id="@+id/button_slovenia"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/slovenia"
+                    android:text="@string/sparkle"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
@@ -1990,74 +1043,74 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/button_south_georgia_and_south_sandwich_islands"
+                    android:id="@+id/button_eight_spoked_asterisk"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/south_georgia_and_south_sandwich_islands"
+                    android:text="@string/eight_spoked_asterisk"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_solomon_islands"
+                    android:id="@+id/button_cross_mark_button"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/solomon_islands"
+                    android:text="@string/cross_mark_button"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_somalia"
+                    android:id="@+id/button_globe_with_meridians"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/somalia"
+                    android:text="@string/globe_with_meridians"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_south_africa"
+                    android:id="@+id/button_diamond_with_a_dot"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/south_africa"
+                    android:text="@string/diamond_with_a_dot"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_south_korea"
+                    android:id="@+id/button_circled_m"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/south_korea"
+                    android:text="@string/circled_m"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_south_sudan"
+                    android:id="@+id/button_cyclone"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/south_sudan"
+                    android:text="@string/cyclone"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_spain"
+                    android:id="@+id/button_zzz"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/spain"
+                    android:text="@string/zzz"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_sri_lanka"
+                    android:id="@+id/button_atm_sign"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/sri_lanka"
+                    android:text="@string/atm_sign"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
@@ -2069,74 +1122,74 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/button_st_helena"
+                    android:id="@+id/button_water_closet"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/st_helena"
+                    android:text="@string/water_closet"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_st_kitts_and_nevis"
+                    android:id="@+id/button_wheelchair_symbol"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/st_kitts_and_nevis"
+                    android:text="@string/wheelchair_symbol"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_st_lucia"
+                    android:id="@+id/button_p_button"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/st_lucia"
+                    android:text="@string/p_button"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_st_pierre_and_miquelon"
+                    android:id="@+id/button_japanese_vacancy_button"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/st_pierre_and_miquelon"
+                    android:text="@string/japanese_vacancy_button"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_st_vincent_and_grenadines"
+                    android:id="@+id/button_japanese_service_charge_button"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/st_vincent_and_grenadines"
+                    android:text="@string/japanese_service_charge_button"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_sudan"
+                    android:id="@+id/button_passport_control"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/sudan"
+                    android:text="@string/passport_control"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_suriname"
+                    android:id="@+id/button_customs"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/suriname"
+                    android:text="@string/customs"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_swaziland"
+                    android:id="@+id/button_baggage_claim"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/swaziland"
+                    android:text="@string/baggage_claim"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
@@ -2148,74 +1201,74 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/button_sweden"
+                    android:id="@+id/button_left_luggage"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/sweden"
+                    android:text="@string/left_luggage"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_switzerland"
+                    android:id="@+id/button_mens_room"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/switzerland"
+                    android:text="@string/mens_room"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_syria"
+                    android:id="@+id/button_womens_room"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/syria"
+                    android:text="@string/womens_room"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_taiwan"
+                    android:id="@+id/button_baby_symbol"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/taiwan"
+                    android:text="@string/baby_symbol"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_tajikistan"
+                    android:id="@+id/button_restroom"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/tajikistan"
+                    android:text="@string/restroom"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_tanzania"
+                    android:id="@+id/button_litter_in_bin_sign"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/tanzania"
+                    android:text="@string/litter_in_bin_sign"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_thailand"
+                    android:id="@+id/button_cinema"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/thailand"
+                    android:text="@string/cinema"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_timor_leste"
+                    android:id="@+id/button_antenna_bars"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/timor_leste"
+                    android:text="@string/antenna_bars"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
@@ -2227,74 +1280,74 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/button_togo"
+                    android:id="@+id/button_japanese_here_button"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/togo"
+                    android:text="@string/japanese_here_button"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_tokelau"
+                    android:id="@+id/button_input_symbols"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/tokelau"
+                    android:text="@string/input_symbols"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_tonga"
+                    android:id="@+id/button_information"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/tonga"
+                    android:text="@string/information"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_trinidad_and_tobago"
+                    android:id="@+id/button_input_latin_letters"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/trinidad_and_tobago"
+                    android:text="@string/input_latin_letters"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_tunisia"
+                    android:id="@+id/button_input_latin_lowercase"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/tunisia"
+                    android:text="@string/input_latin_lowercase"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_flag_of_turkey"
+                    android:id="@+id/button_input_latin_uppercase"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/flag_of_turkey"
+                    android:text="@string/input_latin_uppercase"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_turkmenistan"
+                    android:id="@+id/button_ng_button"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/turkmenistan"
+                    android:text="@string/ng_button"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_turks_and_caicos_islands"
+                    android:id="@+id/button_ok_button"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/turks_and_caicos_islands"
+                    android:text="@string/ok_button"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
@@ -2306,74 +1359,74 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/button_tuvalu"
+                    android:id="@+id/button_up_button_text"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/tuvalu"
+                    android:text="@string/up_button_text"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_us_virgin_islands"
+                    android:id="@+id/button_cool_button"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/us_virgin_islands"
+                    android:text="@string/cool_button"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_uganda"
+                    android:id="@+id/button_new_button"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/uganda"
+                    android:text="@string/new_button"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_ukraine"
+                    android:id="@+id/button_free_button"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/ukraine"
+                    android:text="@string/free_button"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_united_arab_emirates"
+                    android:id="@+id/button_keycap_0"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/united_arab_emirates"
+                    android:text="@string/keycap_0"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_united_kingdom"
+                    android:id="@+id/button_keycap_1"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/united_kingdom"
+                    android:text="@string/keycap_1"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_england"
+                    android:id="@+id/button_keycap_2"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/england"
+                    android:text="@string/keycap_2"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_scotland"
+                    android:id="@+id/button_keycap_3"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/scotland"
+                    android:text="@string/keycap_3"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
@@ -2385,74 +1438,74 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/button_wales"
+                    android:id="@+id/button_keycap_4"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/wales"
+                    android:text="@string/keycap_4"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_united_states"
+                    android:id="@+id/button_keycap_5"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/united_states"
+                    android:text="@string/keycap_5"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_uruguay"
+                    android:id="@+id/button_keycap_6"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/uruguay"
+                    android:text="@string/keycap_6"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_uzbekistan"
+                    android:id="@+id/button_keycap_7"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/uzbekistan"
+                    android:text="@string/keycap_7"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_vanuatu"
+                    android:id="@+id/button_keycap_8"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/vanuatu"
+                    android:text="@string/keycap_8"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_vatican_city"
+                    android:id="@+id/button_keycap_9"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/vatican_city"
+                    android:text="@string/keycap_9"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_venezuela"
+                    android:id="@+id/button_keycap_10"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/venezuela"
+                    android:text="@string/keycap_10"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_vietnam"
+                    android:id="@+id/button_input_numbers"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/vietnam"
+                    android:text="@string/input_numbers"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
@@ -2464,52 +1517,1209 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/button_wallis_and_futuna"
+                    android:id="@+id/button_hash_key"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/wallis_and_futuna"
+                    android:text="@string/hash_key"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_western_sahara"
+                    android:id="@+id/button_keycap_star"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/western_sahara"
+                    android:text="@string/keycap_star"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_yemen"
+                    android:id="@+id/button_eject_button"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/yemen"
+                    android:text="@string/eject_button"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_zambia"
+                    android:id="@+id/button_play_button"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/zambia"
+                    android:text="@string/play_button"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
-                    android:id="@+id/button_zimbabwe"
+                    android:id="@+id/button_pause_button"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/zimbabwe"
+                    android:text="@string/pause_button"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_play_or_pause_button"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/play_or_pause_button"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_stop_button"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/stop_button"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_record_button"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/record_button"
                     android:textSize="25sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/button_next_track_button"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/next_track_button"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_last_track_button"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/last_track_button"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_fast_forward_button"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/fast_forward_button"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_fast_reverse_button"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/fast_reverse_button"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_fast_up_button"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/fast_up_button"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_fast_down_button"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/fast_down_button"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_reverse_button"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/reverse_button"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_up_button"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/up_button"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/button_down_button"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/down_button"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_right_arrow"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/right_arrow"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_left_arrow"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/left_arrow"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_up_arrow"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/up_arrow"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_down_arrow"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/down_arrow"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_up_right_arrow"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/up_right_arrow"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_down_right_arrow"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/down_right_arrow"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_down_left_arrow"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/down_left_arrow"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/button_up_left_arrow"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/up_left_arrow"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_up_down_arrow"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/up_down_arrow"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_left_right_arrow"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/left_right_arrow"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_left_arrow_curving_right"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/left_arrow_curving_right"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_right_arrow_curving_left"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/right_arrow_curving_left"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_right_arrow_curving_up"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/right_arrow_curving_up"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_right_arrow_curving_down"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/right_arrow_curving_down"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_shuffle_tracks_button"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/shuffle_tracks_button"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/button_repeat_button"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/repeat_button"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_repeat_single_button"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/repeat_single_button"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_anticlockwise_arrows_button"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/anticlockwise_arrows_button"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_clockwise_vertical_arrows"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/clockwise_vertical_arrows"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_musical_note"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/musical_note"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_musical_notes"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/musical_notes"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_heavy_plus_sign"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/heavy_plus_sign"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_heavy_minus_sign"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/heavy_minus_sign"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/button_heavy_division_sign"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/heavy_division_sign"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_heavy_multiplication_x"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/heavy_multiplication_x"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_infinity"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/infinity"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_heavy_dollar_sign"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/heavy_dollar_sign"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_currency_exchange"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/currency_exchange"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_trade_mark"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/trade_mark"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_copyright"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/copyright"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_registered"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/registered"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/button_eye_in_speech_bubble"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/eye_in_speech_bubble"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_end_arrow"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/end_arrow"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_back_arrow"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/back_arrow"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_on_arrow"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/on_arrow"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_top_arrow"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/top_arrow"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_soon_arrow"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/soon_arrow"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_wavy_dash"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/wavy_dash"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_curly_loop"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/curly_loop"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/button_double_curly_loop"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/double_curly_loop"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_heavy_check_mark"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/heavy_check_mark"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_ballot_box_with_check"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/ballot_box_with_check"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_radio_button"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/radio_button"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_white_circle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/white_circle"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_black_circle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/black_circle"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_red_circle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/red_circle"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_blue_circle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/blue_circle"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/button_red_triangle_pointed_up"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/red_triangle_pointed_up"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_red_triangle_pointed_down"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/red_triangle_pointed_down"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_small_orange_diamond"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/small_orange_diamond"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_small_blue_diamond"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/small_blue_diamond"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_large_orange_diamond"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/large_orange_diamond"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_large_blue_diamond"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/large_blue_diamond"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_white_square_button"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/white_square_button"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_black_square_button"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/black_square_button"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/button_black_small_square"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/black_small_square"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_white_small_square"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/white_small_square"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_black_medium_small_square"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/black_medium_small_square"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_white_medium_small_square"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/white_medium_small_square"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_black_medium_square"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/black_medium_square"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_white_medium_square"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/white_medium_square"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_black_large_square"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/black_large_square"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_white_large_square"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/white_large_square"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/button_speaker_low_volume"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/speaker_low_volume"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_muted_speaker"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/muted_speaker"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_speaker_medium_volume"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/speaker_medium_volume"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_speaker_high_volume"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/speaker_high_volume"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_bell"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/bell"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_bell_with_slash"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/bell_with_slash"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_megaphone"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/megaphone"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_loudspeaker"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/loudspeaker"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/button_speech_balloon"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/speech_balloon"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_thought_balloon"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/thought_balloon"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_right_anger_bubble"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/right_anger_bubble"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_spade_suit"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/spade_suit"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_club_suit"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/club_suit"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_heart_suit"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/heart_suit"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_diamond_suit"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/diamond_suit"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_joker"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/joker"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/button_flower_playing_cards"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/flower_playing_cards"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_mahjong_red_dragon"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/mahjong_red_dragon"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_one_o_clock"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/one_o_clock"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_two_o_clock"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/two_o_clock"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_three_o_clock"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/three_o_clock"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_four_o_clock"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/four_o_clock"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_five_o_clock"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/five_o_clock"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_six_o_clock"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/six_o_clock"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/button_seven_o_clock"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/seven_o_clock"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_eight_o_clock"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/eight_o_clock"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_nine_o_clock"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/nine_o_clock"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_ten_o_clock"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/ten_o_clock"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_eleven_o_clock"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/eleven_o_clock"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_twelve_o_clock"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/twelve_o_clock"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_one_thirty"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/one_thirty"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_two_thirty"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/two_thirty"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/button_three_thirty"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/three_thirty"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_four_thirty"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/four_thirty"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_five_thirty"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/five_thirty"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_six_thirty"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/six_thirty"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_seven_thirty"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/seven_thirty"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_eight_thirty"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/eight_thirty"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_nine_thirty"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/nine_thirty"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_ten_thirty"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/ten_thirty"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/button_eleven_thirty"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/eleven_thirty"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+                <Button
+                    android:id="@+id/button_twelve_thirty"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/twelve_thirty"
+                    android:textSize="25sp"
+                    style="?android:attr/borderlessButtonStyle"
+                    />
+            </LinearLayout>
         </LinearLayout>
     </ScrollView>
 </merge>

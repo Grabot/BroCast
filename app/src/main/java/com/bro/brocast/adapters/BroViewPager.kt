@@ -28,7 +28,7 @@ class BroViewPager : ViewPager {
         }
 
         // TODO @Sander: find a way to set a decent height!
-        height = 400
+        height = 550
 
         val heightSpec = MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY)
 
