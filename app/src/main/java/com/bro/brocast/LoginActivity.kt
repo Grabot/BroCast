@@ -31,6 +31,8 @@ class LoginActivity: AppCompatActivity() {
     var vpPager: BroViewPager? = null
     var mSlidingTabLayout: SlidingTabLayout? = null
 
+    var bromotion_length: Int = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
@@ -43,7 +45,6 @@ class LoginActivity: AppCompatActivity() {
             Encryption.getDefault(secretBroCastKey, saltyBroCastSalt, ByteArray(16))
 
         buttonLoginBro.setOnClickListener(clickLoginListener)
-        buttonForgotPass.setOnClickListener(clickLoginListener)
         LoginAPI.pressedLogin = false
 
         bromotion = findViewById(R.id.broNameLoginEmotion) as EditText
@@ -62,29 +63,11 @@ class LoginActivity: AppCompatActivity() {
             // We assume the emoji length is always 2
             override fun afterTextChanged(s: Editable) {
                 // TODO @Skools: Code reuse in the Login, Register en FindBro application with the bromotion input
-                if (s.length > 1 ) {
-                    if (s.toString().endsWith("❤")
-                        || s.toString().endsWith("!")
-                        || s.toString().endsWith("?")
-                    ) {
-                        // An emoji was entered and the last was a heart (or ?/!)
-                        // It is too long, so we remove only 1
-                        s.delete(0, 1)
-                    }
-                }
-                if (s.length > 2) {
-                    if (s.toString().startsWith("❤")
-                        || s.toString().startsWith("!")
-                        || s.toString().startsWith("?")
-                    ) {
-                        s.delete(0, 1)
-                    } else {
-                        s.delete(0, 2)
-                    }
-                }
+                s.delete(0, bromotion_length)
             }
 
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int ) {
+                bromotion_length = start
             }
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
@@ -219,9 +202,6 @@ class LoginActivity: AppCompatActivity() {
                         LoginAPI.pressedLogin = false
                     }
                 }
-            }
-            R.id.buttonForgotPass -> {
-                // TODO @Sander: implement the 'forgot pass' screen
             }
         }
     }

@@ -21,7 +21,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/green_apple"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -30,7 +30,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/red_apple"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -39,7 +39,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/pear"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -48,7 +48,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/tangerine"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -57,7 +57,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/lemon"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -66,7 +66,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/banana"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -75,7 +75,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/watermelon"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -84,7 +84,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/grapes"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -100,7 +100,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/strawberry"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -109,7 +109,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/melon"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -118,7 +118,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/cherries"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -127,7 +127,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/peach"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -136,7 +136,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/mango"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -145,7 +145,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/pineapple"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -154,7 +154,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/coconut"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -163,7 +163,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/kiwi_fruit"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -179,7 +179,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/tomato"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -188,7 +188,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/eggplant"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -197,7 +197,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/avocado"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -206,7 +206,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/broccoli"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -215,7 +215,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/leafy_green"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -224,7 +224,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/cucumber"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -233,7 +233,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/hot_pepper"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -242,7 +242,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/ear_of_corn"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -258,7 +258,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/carrot"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -267,7 +267,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/potato"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -276,7 +276,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/roasted_sweet_potato"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -285,7 +285,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/croissant"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -294,7 +294,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/bagel"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -303,7 +303,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/bread"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -312,7 +312,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/baguette_bread"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -321,7 +321,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/pretzel"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -337,7 +337,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/cheese_wedge"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -346,7 +346,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/egg"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -355,7 +355,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/cooking"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -364,7 +364,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/pancakes"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -373,7 +373,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/bacon"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -382,7 +382,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/cut_of_meat"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -391,7 +391,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/poultry_leg"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -400,7 +400,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/meat_on_bone"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -416,7 +416,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/bone"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -425,7 +425,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/hot_dog"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -434,7 +434,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/hamburger"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -443,7 +443,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/french_fries"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -452,7 +452,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/pizza"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -461,7 +461,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/sandwich"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -470,7 +470,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/stuffed_flatbread"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -479,7 +479,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/taco"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -495,7 +495,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/burrito"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -504,7 +504,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/green_salad"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -513,7 +513,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/shallow_pan_of_food"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -522,7 +522,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/canned_food"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -531,7 +531,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/spaghetti"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -540,7 +540,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/steaming_bowl"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -549,7 +549,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/pot_of_food"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -558,7 +558,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/curry_rice"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -574,7 +574,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/sushi"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -583,7 +583,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/bento_box"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -592,7 +592,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/dumpling"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -601,7 +601,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/fried_shrimp"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -610,7 +610,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/rice_ball"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -619,7 +619,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/cooked_rice"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -628,7 +628,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/rice_cracker"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -637,7 +637,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/fish_cake_with_swirl"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -653,7 +653,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/fortune_cookie"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -662,7 +662,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/moon_cake"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -671,7 +671,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/oden"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -680,7 +680,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/dango"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -689,7 +689,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/shaved_ice"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -698,7 +698,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/ice_cream"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -707,7 +707,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/soft_ice_cream"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -716,7 +716,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/pie"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -732,7 +732,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/cupcake"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -741,7 +741,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/shortcake"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -750,7 +750,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/birthday_cake"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -759,7 +759,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/custard"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -768,7 +768,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/lollipop"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -777,7 +777,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/candy"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -786,7 +786,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/chocolate_bar"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -795,7 +795,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/popcorn"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -811,7 +811,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/doughnut"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -820,7 +820,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/cookie"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -829,7 +829,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/chestnut"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -838,7 +838,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/peanuts"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -847,7 +847,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/honey_pot"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -856,7 +856,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/glass_of_milk"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -865,7 +865,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/baby_bottle"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -874,7 +874,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/hot_beverage"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -890,7 +890,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/teacup_without_handle"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -899,7 +899,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/cup_with_straw"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -908,7 +908,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/sake"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -917,7 +917,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/beer_mug"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -926,7 +926,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/clinking_beer_mugs"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -935,7 +935,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/clinking_glasses"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -944,7 +944,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/wine_glass"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -953,7 +953,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/tumbler_glass"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -969,7 +969,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/cocktail_glass"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -978,7 +978,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/tropical_drink"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -987,7 +987,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/bottle_with_popping_cork"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -996,7 +996,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/spoon"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1005,7 +1005,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/fork_and_knife"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1014,7 +1014,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/fork_and_knife_with_plate"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1023,7 +1023,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/bowl_with_spoon"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1032,7 +1032,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/takeout_box"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -1048,7 +1048,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/chopsticks"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1057,7 +1057,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/salt"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>

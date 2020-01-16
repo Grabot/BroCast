@@ -21,7 +21,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/watch"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -30,7 +30,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/mobile_phone"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -39,7 +39,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/mobile_phone_with_arrow"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -48,7 +48,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/laptop_computer"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -57,7 +57,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/keyboard"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -66,7 +66,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/desktop_computer"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -75,7 +75,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/printer"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -84,7 +84,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/computer_mouse"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -100,7 +100,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/trackball"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -109,7 +109,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/joystick"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -118,7 +118,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/clamp"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -127,7 +127,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/computer_disk"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -136,7 +136,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/floppy_disk"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -145,7 +145,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/optical_disk"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -154,7 +154,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/dvd"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -163,7 +163,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/videocassette"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -179,7 +179,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/camera"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -188,7 +188,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/camera_with_flash"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -197,7 +197,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/video_camera"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -206,7 +206,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/movie_camera"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -215,7 +215,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/film_projector"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -224,7 +224,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/film_frames"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -233,7 +233,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/telephone_receiver"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -242,7 +242,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/telephone"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -258,7 +258,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/pager"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -267,7 +267,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/fax_machine"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -276,7 +276,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/television"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -285,7 +285,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/radio"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -294,7 +294,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/studio_microphone"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -303,7 +303,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/level_slider"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -312,7 +312,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/control_knobs"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -321,7 +321,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/compass"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -337,7 +337,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/stopwatch"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -346,7 +346,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/timer_clock"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -355,7 +355,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/alarm_clock"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -364,7 +364,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/mantelpiece_clock"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -373,7 +373,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/hourglass"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -382,7 +382,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/hourglass_with_flowing_sand"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -391,7 +391,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/satellite_antenna"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -400,7 +400,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/battery"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -416,7 +416,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/electric_plug"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -425,7 +425,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/light_bulb"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -434,7 +434,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/flashlight"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -443,7 +443,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/candle"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -452,7 +452,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/fire_extinguisher"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -461,7 +461,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/oil_drum"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -470,7 +470,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/money_with_wings"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -479,7 +479,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/dollar_banknote"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -495,7 +495,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/yen_banknote"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -504,7 +504,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/euro_banknote"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -513,7 +513,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/pound_banknote"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -522,7 +522,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/money_bag"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -531,7 +531,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/credit_card"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -540,7 +540,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/gem_stone"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -549,7 +549,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/balance_scale"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -558,7 +558,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/toolbox"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -574,7 +574,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/wrench"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -583,7 +583,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/hammer"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -592,7 +592,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/hammer_and_pick"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -601,7 +601,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/hammer_and_wrench"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -610,7 +610,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/pick"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -619,7 +619,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/nut_and_bolt"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -628,7 +628,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/gear"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -637,7 +637,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/bricks"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -653,7 +653,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/chains"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -662,7 +662,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/magnet"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -671,7 +671,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/pistol"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -680,7 +680,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/bomb"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -689,7 +689,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/firecracker"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -698,7 +698,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/kitchen_knife"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -707,7 +707,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/dagger"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -716,7 +716,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/crossed_swords"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -732,7 +732,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/shield"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -741,7 +741,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/cigarette"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -750,7 +750,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/coffin"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -759,7 +759,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/funeral_urn"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -768,7 +768,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/amphora"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -777,7 +777,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/crystal_ball"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -786,7 +786,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/prayer_beads"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -795,7 +795,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/nazar_amulet"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -811,7 +811,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/barber_pole"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -820,7 +820,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/alembic"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -829,7 +829,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/telescope"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -838,7 +838,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/microscope"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -847,7 +847,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/hole"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -856,7 +856,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/pill"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -865,7 +865,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/syringe"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -874,7 +874,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/dna"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -890,7 +890,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/microbe"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -899,7 +899,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/petri_dish"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -908,7 +908,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/test_tube"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -917,7 +917,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/thermometer"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -926,7 +926,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/broom"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -935,7 +935,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/basket"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -944,7 +944,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/roll_of_paper"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -953,7 +953,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/toilet"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -969,7 +969,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/faucet"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -978,7 +978,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/shower"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -987,7 +987,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/bathtub"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -996,7 +996,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/person_taking_bath"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1005,7 +1005,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/soap"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1014,7 +1014,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/sponge"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1023,7 +1023,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/lotion_bottle"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1032,7 +1032,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/bellhop_bell"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -1048,7 +1048,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/key"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1057,7 +1057,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/old_key"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1066,7 +1066,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/door"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1075,7 +1075,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/couch_and_lamp"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1084,7 +1084,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/bed"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1093,7 +1093,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/person_in_bed"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1102,7 +1102,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/teddy_bear"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1111,7 +1111,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/framed_picture"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -1127,7 +1127,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/shopping_bags"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1136,7 +1136,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/shopping_cart"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1145,7 +1145,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/wrapped_gift"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1154,7 +1154,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/balloon"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1163,7 +1163,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/carp_streamer"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1172,7 +1172,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/ribbon"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1181,7 +1181,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/confetti_ball"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1190,7 +1190,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/party_popper"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -1206,7 +1206,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/japanese_dolls"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1215,7 +1215,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/red_paper_lantern"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1224,7 +1224,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/wind_chime"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1233,7 +1233,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/red_envelope"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1242,7 +1242,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/envelope"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1251,7 +1251,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/envelope_with_arrow"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1260,7 +1260,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/incoming_envelope"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1269,7 +1269,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/e_mail"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -1285,7 +1285,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/love_letter"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1294,7 +1294,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/inbox_tray"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1303,7 +1303,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/outbox_tray"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1312,7 +1312,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/package_emoji"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1321,7 +1321,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/label"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1330,7 +1330,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/closed_mailbox_with_lowered_flag"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1339,7 +1339,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/closed_mailbox_with_raised_flag"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1348,7 +1348,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/open_mailbox_with_raised_flag"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -1364,7 +1364,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/open_mailbox_with_lowered_flag"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1373,7 +1373,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/postbox"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1382,7 +1382,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/postal_horn"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1391,7 +1391,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/scroll"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1400,7 +1400,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/page_with_curl"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1409,7 +1409,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/page_facing_up"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1418,7 +1418,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/bookmark_tabs"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1427,7 +1427,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/receipt"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -1443,7 +1443,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/bar_chart"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1452,7 +1452,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/chart_increasing"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1461,7 +1461,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/chart_decreasing"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1470,7 +1470,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/spiral_notepad"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1479,7 +1479,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/spiral_calendar"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1488,7 +1488,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/tear_off_calendar"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1497,7 +1497,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/calendar"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1506,7 +1506,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/wastebasket"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -1522,7 +1522,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/card_index"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1531,7 +1531,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/card_file_box"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1540,7 +1540,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/ballot_box_with_ballot"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1549,7 +1549,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/file_cabinet"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1558,7 +1558,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/clipboard"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1567,7 +1567,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/file_folder"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1576,7 +1576,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/open_file_folder"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1585,7 +1585,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/card_index_dividers"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -1601,7 +1601,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/rolled_up_newspaper"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1610,7 +1610,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/newspaper"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1619,7 +1619,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/notebook"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1628,7 +1628,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/notebook_with_decorative_cover"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1637,7 +1637,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/ledger"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1646,7 +1646,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/closed_book"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1655,7 +1655,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/green_book"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1664,7 +1664,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/blue_book"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -1680,7 +1680,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/orange_book"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1689,7 +1689,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/books"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1698,7 +1698,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/open_book"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1707,7 +1707,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/bookmark"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1716,7 +1716,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/safety_pin"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1725,7 +1725,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/link"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1734,7 +1734,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/paperclip"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1743,7 +1743,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/linked_paperclips"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -1759,7 +1759,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/triangular_ruler"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1768,7 +1768,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/straight_ruler"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1777,7 +1777,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/abacus"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1786,7 +1786,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/pushpin"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1795,7 +1795,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/round_pushpin"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1804,7 +1804,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/scissors"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1813,7 +1813,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/pen"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1822,7 +1822,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/fountain_pen"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -1838,7 +1838,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/black_nib"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1847,7 +1847,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/paintbrush"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1856,7 +1856,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/crayon"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1865,7 +1865,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/memo"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1874,7 +1874,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/pencil"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1883,7 +1883,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/left_pointing_magnifying_glass"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1892,7 +1892,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/right_pointing_magnifying_glass"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1901,7 +1901,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/locked_with_pen"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -1917,7 +1917,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/locked_with_key"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1926,7 +1926,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/locked"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1935,7 +1935,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/unlocked"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>

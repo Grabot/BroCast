@@ -20,7 +20,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/white_flag"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -29,7 +29,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/black_flag"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -38,7 +38,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/pirate_flag"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -47,7 +47,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/chequered_flag"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -56,7 +56,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/triangular_flag"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -65,7 +65,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/rainbow_flag"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -74,7 +74,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/united_nations"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -83,7 +83,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/afghanistan"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -99,7 +99,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/aland_islands"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -108,7 +108,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/albania"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -117,7 +117,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/algeria"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -126,7 +126,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/american_samoa"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -135,7 +135,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/andorra"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -144,7 +144,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/angola"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -153,7 +153,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/anguilla"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -162,7 +162,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/antarctica"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -178,7 +178,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/antigua_and_barbuda"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -187,7 +187,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/argentina"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -196,7 +196,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/armenia"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -205,7 +205,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/aruba"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -214,7 +214,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/australia"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -223,7 +223,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/austria"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -232,7 +232,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/azerbaijan"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -241,7 +241,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/bahamas"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -257,7 +257,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/bahrain"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -266,7 +266,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/bangladesh"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -275,7 +275,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/barbados"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -284,7 +284,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/belarus"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -293,7 +293,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/belgium"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -302,7 +302,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/belize"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -311,7 +311,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/benin"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -320,7 +320,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/bermuda"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -336,7 +336,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/bhutan"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -345,7 +345,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/bolivia"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -354,7 +354,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/bosnia_and_herzegovina"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -363,7 +363,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/botswana"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -372,7 +372,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/brazil"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -381,7 +381,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/british_indian_ocean_territory"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -390,7 +390,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/british_virgin_islands"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -399,7 +399,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/brunei"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -415,7 +415,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/bulgaria"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -424,7 +424,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/burkina_faso"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -433,7 +433,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/burundi"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -442,7 +442,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/cambodia"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -451,7 +451,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/cameroon"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -460,7 +460,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/canada"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -469,7 +469,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/canary_islands"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -478,7 +478,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/cape_verde"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -494,7 +494,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/cayman_islands"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -503,7 +503,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/central_african_republic"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -512,7 +512,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/chad"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -521,7 +521,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/chile"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -530,7 +530,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/china"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -539,7 +539,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/christmas_island"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -548,7 +548,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/cocos_keeling_islands"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -557,7 +557,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/colombia"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -573,7 +573,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/comoros"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -582,7 +582,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/congo_brazzaville"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -591,7 +591,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/congo_kinshasa"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -600,7 +600,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/cook_islands"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -609,7 +609,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/costa_rica"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -618,7 +618,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/cote_d_ivoire"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -627,7 +627,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/croatia"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -636,7 +636,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/cuba"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -652,7 +652,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/curacao"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -661,7 +661,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/cyprus"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -670,7 +670,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/czechia"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -679,7 +679,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/denmark"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -688,7 +688,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/djibouti"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -697,7 +697,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/dominica"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -706,7 +706,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/dominican_republic"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -715,7 +715,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/ecuador"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -731,7 +731,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/egypt"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -740,7 +740,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/el_salvador"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -749,7 +749,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/equatorial_guinea"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -758,7 +758,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/eritrea"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -767,7 +767,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/estonia"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -776,7 +776,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/ethiopia"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -785,7 +785,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/european_union"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -794,7 +794,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/falkland_islands"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -810,7 +810,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/faroe_islands"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -819,7 +819,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/fiji"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -828,7 +828,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/finland"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -837,7 +837,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/france"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -846,7 +846,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/french_guiana"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -855,7 +855,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/french_polynesia"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -864,7 +864,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/gabon"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -873,7 +873,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/gambia"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -889,7 +889,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/georgia"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -898,7 +898,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/germany"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -907,7 +907,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/ghana"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -916,7 +916,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/gibraltar"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -925,7 +925,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/greece"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -934,7 +934,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/greenland"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -943,7 +943,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/grenada"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -952,7 +952,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/guadeloupe"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -968,7 +968,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/guam"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -977,7 +977,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/guatemala"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -986,7 +986,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/guernsey"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -995,7 +995,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/guinea"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1004,7 +1004,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/guinea_bissau"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1013,7 +1013,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/guyana"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1022,7 +1022,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/haiti"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1031,7 +1031,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/honduras"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -1047,7 +1047,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/hong_kong"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1056,7 +1056,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/hungary"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1065,7 +1065,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/iceland"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1074,7 +1074,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/india"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1083,7 +1083,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/indonesia"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1092,7 +1092,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/iran"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1101,7 +1101,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/iraq"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1110,7 +1110,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/ireland"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -1126,7 +1126,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/isle_of_man"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1135,7 +1135,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/israel"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1144,7 +1144,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/italy"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1153,7 +1153,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/jamaica"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1162,7 +1162,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/japan"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1171,7 +1171,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/crossed_flags"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1180,7 +1180,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/jersey"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1189,7 +1189,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/jordan"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -1205,7 +1205,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/kazakhstan"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1214,7 +1214,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/kenya"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1223,7 +1223,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/kiribati"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1232,7 +1232,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/kosovo"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1241,7 +1241,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/kuwait"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1250,7 +1250,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/kyrgyzstan"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1259,7 +1259,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/laos"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1268,7 +1268,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/latvia"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -1284,7 +1284,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/lebanon"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1293,7 +1293,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/lesotho"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1302,7 +1302,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/liberia"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1311,7 +1311,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/libya"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1320,7 +1320,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/liechtenstein"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1329,7 +1329,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/lithuania"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1338,7 +1338,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/luxembourg"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1347,7 +1347,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/macau_sar_china"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -1363,7 +1363,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/macedonia"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1372,7 +1372,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/madagascar"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1381,7 +1381,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/malawi"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1390,7 +1390,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/malaysia"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1399,7 +1399,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/maldives"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1408,7 +1408,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/mali"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1417,7 +1417,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/malta"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1426,7 +1426,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/marshall_islands"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -1442,7 +1442,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/mauritania"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1451,7 +1451,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/mauritius"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1460,7 +1460,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/mayotte"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1469,7 +1469,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/mexico"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1478,7 +1478,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/micronesia"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1487,7 +1487,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/moldova"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1496,7 +1496,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/monaco"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1505,7 +1505,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/mongolia"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -1521,7 +1521,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/montenegro"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1530,7 +1530,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/montserrat"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1539,7 +1539,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/morocco"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1548,7 +1548,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/mozambique"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1557,7 +1557,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/myanmar_burma"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1566,7 +1566,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/namibia"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1575,7 +1575,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/nauru"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1584,7 +1584,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/nepal"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -1600,7 +1600,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/netherlands"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1609,7 +1609,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/new_caledonia"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1618,7 +1618,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/new_zealand"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1627,7 +1627,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/nicaragua"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1636,7 +1636,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/niger"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1645,7 +1645,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/nigeria"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1654,7 +1654,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/niue"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1663,7 +1663,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/norfolk_island"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -1679,7 +1679,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/north_korea"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1688,7 +1688,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/northern_mariana_islands"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1697,7 +1697,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/norway"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1706,7 +1706,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/oman"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1715,7 +1715,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/pakistan"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1724,7 +1724,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/palau"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1733,7 +1733,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/palestinian_territories"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1742,7 +1742,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/panama"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -1758,7 +1758,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/papua_new_guinea"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1767,7 +1767,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/paraguay"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1776,7 +1776,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/peru"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1785,7 +1785,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/philippines"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1794,7 +1794,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/pitcairn_islands"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1803,7 +1803,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/poland"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1812,7 +1812,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/portugal"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1821,7 +1821,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/puerto_rico"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -1837,7 +1837,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/qatar"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1846,7 +1846,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/romania"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1855,7 +1855,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/russia"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1864,7 +1864,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/rwanda"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1873,7 +1873,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/samoa"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1882,7 +1882,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/san_marino"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1891,7 +1891,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/sao_tome_and_principe"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1900,7 +1900,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/saudi_arabia"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -1916,7 +1916,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/senegal"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1925,7 +1925,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/seychelles"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1934,7 +1934,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/serbia"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1943,7 +1943,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/sierra_leone"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1952,7 +1952,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/singapore"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1961,7 +1961,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/sint_maarten"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1970,7 +1970,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/slovakia"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1979,7 +1979,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/slovenia"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -1995,7 +1995,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/south_georgia_and_south_sandwich_islands"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -2004,7 +2004,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/solomon_islands"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -2013,7 +2013,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/somalia"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -2022,7 +2022,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/south_africa"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -2031,7 +2031,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/south_korea"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -2040,7 +2040,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/south_sudan"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -2049,7 +2049,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/spain"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -2058,7 +2058,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/sri_lanka"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -2074,7 +2074,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/st_helena"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -2083,7 +2083,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/st_kitts_and_nevis"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -2092,7 +2092,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/st_lucia"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -2101,7 +2101,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/st_pierre_and_miquelon"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -2110,7 +2110,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/st_vincent_and_grenadines"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -2119,7 +2119,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/sudan"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -2128,7 +2128,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/suriname"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -2137,7 +2137,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/swaziland"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -2153,7 +2153,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/sweden"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -2162,7 +2162,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/switzerland"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -2171,7 +2171,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/syria"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -2180,7 +2180,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/taiwan"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -2189,7 +2189,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/tajikistan"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -2198,7 +2198,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/tanzania"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -2207,7 +2207,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/thailand"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -2216,7 +2216,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/timor_leste"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -2232,7 +2232,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/togo"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -2241,7 +2241,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/tokelau"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -2250,7 +2250,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/tonga"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -2259,7 +2259,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/trinidad_and_tobago"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -2268,7 +2268,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/tunisia"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -2277,7 +2277,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/flag_of_turkey"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -2286,7 +2286,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/turkmenistan"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -2295,7 +2295,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/turks_and_caicos_islands"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -2311,7 +2311,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/tuvalu"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -2320,7 +2320,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/us_virgin_islands"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -2329,7 +2329,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/uganda"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -2338,7 +2338,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/ukraine"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -2347,7 +2347,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/united_arab_emirates"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -2356,7 +2356,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/united_kingdom"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -2365,7 +2365,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/england"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -2374,7 +2374,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/scotland"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -2390,7 +2390,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/wales"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -2399,7 +2399,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/united_states"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -2408,7 +2408,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/uruguay"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -2417,7 +2417,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/uzbekistan"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -2426,7 +2426,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/vanuatu"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -2435,7 +2435,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/vatican_city"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -2444,7 +2444,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/venezuela"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -2453,7 +2453,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/vietnam"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -2469,7 +2469,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/wallis_and_futuna"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -2478,7 +2478,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/western_sahara"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -2487,7 +2487,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/yemen"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -2496,7 +2496,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/zambia"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -2505,7 +2505,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/zimbabwe"
-                    android:textSize="22sp"
+                    android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>

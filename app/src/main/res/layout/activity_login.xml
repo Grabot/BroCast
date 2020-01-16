@@ -67,17 +67,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/passwordLogin" />
 
-    <Button
-        android:id="@+id/buttonForgotPass"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="200dp"
-        android:text="@string/brocast_forgot_pass"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buttonLoginBro" />
-
     <com.bro.brocast.adapters.SlidingTabLayout
         android:id="@+id/sliding_tabs_login"
         android:layout_width="match_parent"
