@@ -92,7 +92,7 @@ class MessagingActivity: AppCompatActivity() {
         vpPager!!.adapter = adapterViewPager
         vpPager!!.pagerBrodapter = adapterViewPager
 
-        mSlidingTabLayout = findViewById(R.id.sliding_tabs) as SlidingTabLayout
+        mSlidingTabLayout = findViewById(R.id.sliding_tabs)
 
         val iconArray = arrayOf(
             R.drawable.tab_most_used,
