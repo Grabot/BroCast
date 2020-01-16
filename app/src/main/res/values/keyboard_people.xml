@@ -102,7 +102,7 @@
 
     <string name="ghost">&#x1F47B;</string>
     <string name="skull">&#x1F480;</string>
-    <string name="skull_and_crossbones">&#x2620;</string>
+    <string name="skull_and_crossbones">&#x2620;&#xfe0f;</string>
     <string name="alien">&#x1F47D;</string>
     <string name="alien_monster">&#x1F47E;</string>
     <string name="robot_face">&#x1f916;</string>
@@ -147,7 +147,7 @@
     <string name="call_me_hand">&#x1f919;</string>
     <string name="flexed_biceps">&#x1F4AA;</string>
     <string name="middle_finger">&#x1f595;</string>
-    <string name="writing_hand">&#x270d;</string>
+    <string name="writing_hand">&#x270d;&#xfe0f;</string>
     <string name="folded_hands">&#x1F64F;</string>
     <string name="foot">&#x1f9b6;</string>
     <string name="leg">&#x1f9b5;</string>
@@ -362,7 +362,7 @@
 
     <string name="womans_hat">&#x1F452;</string>
     <string name="graduation_cap">&#x1F393;</string>
-    <string name="rescue_workers_helmet">&#x26d1;</string>
+    <string name="rescue_workers_helmet">&#x26d1;&#xfe0f;</string>
     <string name="crown">&#x1F451;</string>
     <string name="ring">&#x1F48D;</string>
     <string name="clutch_bag">&#x1F45D;</string>

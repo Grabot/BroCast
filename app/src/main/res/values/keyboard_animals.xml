@@ -157,7 +157,7 @@
     <string name="glowing_star">&#x1F31F;</string>
     <string name="sparkles">&#x2728;</string>
     <string name="high_voltage">&#x26A1;</string>
-    <string name="comet">&#x2604;</string>
+    <string name="comet">&#x2604;&#xfe0f;</string>
     <string name="collision">&#x1F4A5;</string>
 
     <string name="fire">&#x1F525;</string>
@@ -170,11 +170,11 @@
     <string name="cloud">&#x2601;</string>
     <string name="sun_behind_rain_cloud">&#x1f326;</string>
     <string name="cloud_with_rain">&#x1f327;</string>
-    <string name="cloud_with_lightning_and_rain">&#x26c8;</string>
+    <string name="cloud_with_lightning_and_rain">&#x26c8;&#xfe0f;</string>
     <string name="cloud_with_lightning">&#x1f329;</string>
     <string name="cloud_with_snow">&#x1f328;</string>
     <string name="snowflake">&#x2744;</string>
-    <string name="snowman">&#x2603;</string>
+    <string name="snowman">&#x2603;&#xfe0f;</string>
     <string name="snowman_without_snow">&#x26C4;</string>
     <string name="wind_face">&#x1f32c;</string>
     <string name="dashing_away">&#x1F4A8;</string>
@@ -182,7 +182,7 @@
 
     <string name="sweat_droplets">&#x1F4A6;</string>
     <string name="umbrella_with_rain_drops">&#x2614;</string>
-    <string name="umbrella">&#x2602;</string>
+    <string name="umbrella">&#x2602;&#xfe0f;</string>
     <string name="water_wave">&#x1F30A;</string>
     <string name="fog">&#x1f32b;</string>
 </resources>

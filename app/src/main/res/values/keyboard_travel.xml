@@ -37,7 +37,7 @@
     <string name="metro">&#x1F687;</string>
     <string name="tram">&#x1f68a;</string>
     <string name="station">&#x1F689;</string>
-    <string name="airplane">&#x2708;</string>
+    <string name="airplane">&#x2708;&#xfe0f;</string>
 
     <string name="airplane_departure">&#x1f6eb;</string>
     <string name="airplane_arrival">&#x1f6ec;</string>
@@ -52,7 +52,7 @@
     <string name="speedboat">&#x1F6A4;</string>
     <string name="motor_boat">&#x1f6e5;</string>
     <string name="passenger_ship">&#x1f6f3;</string>
-    <string name="ferry">&#x26f4;</string>
+    <string name="ferry">&#x26f4;&#xfe0f;</string>
     <string name="ship">&#x1F6A2;</string>
     <string name="anchor">&#x2693;</string>
     <string name="fuel_pump">&#x26FD;</string>
@@ -72,12 +72,12 @@
     <string name="roller_coaster">&#x1F3A2;</string>
     <string name="carousel_horse">&#x1f3a0;</string>
     <string name="fountain">&#x26F2;</string>
-    <string name="umbrella_on_ground">&#x26f1;</string>
+    <string name="umbrella_on_ground">&#x26f1;&#xfe0f;</string>
     <string name="beach_with_umbrella">&#x1f3d6;</string>
     <string name="desert_island">&#x1f3dd;</string>
     <string name="desert">&#x1f3dc;</string>
     <string name="volcano">&#x1F30B;</string>
-    <string name="mountain">&#x26f0;</string>
+    <string name="mountain">&#x26f0;&#xfe0f;</string>
 
     <string name="snow_capped_mountain">&#x1f3d4;</string>
     <string name="mount_fuji">&#x1F5FB;</string>
@@ -106,7 +106,7 @@
     <string name="mosque">&#x1f54c;</string>
     <string name="synagogue">&#x1f54d;</string>
     <string name="kaaba">&#x1f54b;</string>
-    <string name="shinto_shrine">&#x26e9;</string>
+    <string name="shinto_shrine">&#x26e9;&#xfe0f;</string>
     <string name="railway_track">&#x1f6e4;</string>
     <string name="motorway">&#x1f6e3;</string>
     <string name="map_of_japan">&#x1F5FE;</string>

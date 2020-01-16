@@ -26,10 +26,10 @@
     <string name="running_shirt">&#x1F3BD;</string>
     <string name="skateboard">&#x1f6f9;</string>
     <string name="sled">&#x1f6f7;</string>
-    <string name="ice_skate">&#x26f8;</string>
+    <string name="ice_skate">&#x26f8;&#xfe0f;</string>
     <string name="curling_stone">&#x1f94c;</string>
     <string name="skis">&#x1F3BF;</string>
-    <string name="skier">&#x26f7;</string>
+    <string name="skier">&#x26f7;&#xfe0f;</string>
     <string name="snowboarder">&#x1F3C2;</string>
     <string name="woman_lifting_weights">&#x1f3cb;&#xfe0f;&#x200d;&#x2640;&#xfe0f;</string>
     <string name="man_lifting_weights">&#x1f3cb;</string>
@@ -38,7 +38,7 @@
     <string name="woman_cartwheeling">&#x1f938;&#x200d;&#x2640;&#xfe0f;</string>
     <string name="man_cartwheeling">&#x1f938;&#x200d;&#x2642;&#xfe0f;</string>
     <string name="woman_bouncing_ball">&#x26f9;&#xfe0f;&#x200d;&#x2640;&#xfe0f;</string>
-    <string name="man_bouncing_ball">&#x26f9;</string>
+    <string name="man_bouncing_ball">&#x26f9;&#xfe0f;</string>
 
     <string name="person_fencing">&#x1f93a;</string>
     <string name="woman_playing_handball">&#x1f93e;&#x200d;&#x2640;&#xfe0f;</string>

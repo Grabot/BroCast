@@ -21,7 +21,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/soccer_ball"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -30,7 +30,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/basketball"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -39,7 +39,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/american_football"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -48,7 +48,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/baseball"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -57,7 +57,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/softball"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -66,7 +66,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/tennis"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -75,7 +75,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/volleyball"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -84,7 +84,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/rugby_football"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -100,7 +100,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/flying_disc"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -109,7 +109,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/pool_8_ball"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -118,7 +118,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/ping_pong"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -127,7 +127,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/badminton"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -136,7 +136,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/ice_hockey"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -145,7 +145,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/field_hockey"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -154,7 +154,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/lacrosse"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -163,7 +163,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/cricket_sport"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -179,7 +179,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/goal_net"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -188,7 +188,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/flag_in_hole"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -197,7 +197,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/bow_and_arrow"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -206,7 +206,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/fishing_pole"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -215,7 +215,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/boxing_glove"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -224,7 +224,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/martial_arts_uniform"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -233,7 +233,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/running_shirt"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -242,7 +242,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/skateboard"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -258,7 +258,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/sled"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -267,7 +267,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/ice_skate"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -276,7 +276,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/curling_stone"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -285,7 +285,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/skis"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -294,7 +294,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/skier"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -303,7 +303,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/snowboarder"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -312,7 +312,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/woman_lifting_weights"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -321,7 +321,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/man_lifting_weights"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -337,7 +337,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/women_wrestling"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -346,7 +346,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/men_wrestling"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -355,7 +355,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/woman_cartwheeling"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -364,7 +364,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/man_cartwheeling"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -373,7 +373,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/woman_bouncing_ball"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -382,7 +382,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/man_bouncing_ball"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -391,7 +391,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/person_fencing"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -400,7 +400,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/woman_playing_handball"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -416,7 +416,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/man_playing_handball"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -425,7 +425,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/woman_golfing"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -434,7 +434,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/man_golfing"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -443,7 +443,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/horse_racing"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -452,7 +452,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/woman_in_lotus_position"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -461,7 +461,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/man_in_lotus_position"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -470,7 +470,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/woman_surfing"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -479,7 +479,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/man_surfing"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -495,7 +495,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/woman_swimming"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -504,7 +504,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/man_swimming"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -513,7 +513,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/woman_playing_water_polo"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -522,7 +522,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/man_playing_water_polo"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -531,7 +531,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/woman_rowing_boat"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -540,7 +540,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/man_rowing_boat"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -549,7 +549,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/woman_climbing"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -558,7 +558,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/man_climbing"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -574,7 +574,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/woman_mountain_biking"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -583,7 +583,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/man_mountain_biking"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -592,7 +592,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/woman_biking"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -601,7 +601,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/man_biking"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -610,7 +610,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/trophy"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -619,7 +619,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/first_place_medal"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -628,7 +628,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/second_place_medal"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -637,7 +637,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/third_place_medal"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -653,7 +653,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/sports_medal"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -662,7 +662,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/military_medal"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -671,7 +671,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/rosette"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -680,7 +680,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/reminder_ribbon"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -689,7 +689,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/ticket"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -698,7 +698,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/admission_tickets"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -707,7 +707,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/circus_tent"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -716,7 +716,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/woman_juggling"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -732,7 +732,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/man_juggling"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -741,7 +741,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/performing_arts"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -750,7 +750,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/artist_palette"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -759,7 +759,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/clapper_board"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -768,7 +768,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/microphone"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -777,7 +777,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/headphone"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -786,7 +786,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/musical_score"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -795,7 +795,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/musical_keyboard"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -811,7 +811,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/drum"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -820,7 +820,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/saxophone"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -829,7 +829,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/trumpet"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -838,7 +838,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/guitar"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -847,7 +847,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/violin"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -856,7 +856,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/game_die"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -865,7 +865,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/chess_pawn"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -874,7 +874,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/direct_hit"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -890,7 +890,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/bowling"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -899,7 +899,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/video_game"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -908,7 +908,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/slot_machine"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -917,7 +917,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/jigsaw"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
 

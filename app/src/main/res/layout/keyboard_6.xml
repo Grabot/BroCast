@@ -21,7 +21,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/automobile"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -30,7 +30,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/taxi"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -39,7 +39,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/sport_utility_vehicle"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -48,7 +48,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/bus"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -57,7 +57,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/trolleybus"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -66,7 +66,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/racing_car"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -75,7 +75,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/police_car"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -84,7 +84,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/ambulance"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -100,7 +100,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/fire_engine"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -109,7 +109,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/minibus"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -118,7 +118,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/delivery_truck"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -127,7 +127,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/articulated_lorry"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -136,7 +136,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/tractor"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -145,7 +145,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/kick_scooter"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -154,7 +154,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/bicycle"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -163,7 +163,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/motor_scooter"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -179,7 +179,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/motorcycle"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -188,7 +188,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/police_car_light"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -197,7 +197,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/oncoming_police_car"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -206,7 +206,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/oncoming_bus"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -215,7 +215,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/oncoming_automobile"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -224,7 +224,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/oncoming_taxi"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -233,7 +233,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/aerial_tramway"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -242,7 +242,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/mountain_cableway"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -258,7 +258,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/suspension_railway"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -267,7 +267,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/railway_car"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -276,7 +276,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/mountain_railway"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -285,7 +285,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/monorail"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -294,7 +294,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/high_speed_train"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -303,7 +303,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/high_speed_train_with_bullet_nose"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -312,7 +312,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/light_rail"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -321,7 +321,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/locomotive"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -337,7 +337,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/train"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -346,7 +346,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/metro"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -355,7 +355,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/tram"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -364,7 +364,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/station"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -373,7 +373,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/airplane"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -382,7 +382,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/airplane_departure"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -391,7 +391,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/airplane_arrival"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -400,7 +400,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/small_airplane"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -416,7 +416,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/seat"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -425,7 +425,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/satellite"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -434,7 +434,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/rocket"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -443,7 +443,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/flying_saucer"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -452,7 +452,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/helicopter"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -461,7 +461,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/canoe"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -470,7 +470,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/sailboat"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -479,7 +479,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/speedboat"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
 
@@ -496,7 +496,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/motor_boat"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -505,7 +505,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/passenger_ship"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -514,7 +514,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/ferry"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -523,7 +523,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/ship"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -532,7 +532,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/anchor"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -541,7 +541,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/fuel_pump"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -550,7 +550,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/construction"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -559,7 +559,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/vertical_traffic_light"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -575,7 +575,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/horizontal_traffic_light"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -584,7 +584,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/bus_stop"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -593,7 +593,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/world_map"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -602,7 +602,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/moai"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -611,7 +611,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/statue_of_liberty"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -620,7 +620,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/tokyo_tower"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -629,7 +629,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/castle"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -638,7 +638,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/japanese_castle"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -654,7 +654,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/stadium"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -663,7 +663,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/ferris_wheel"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -672,7 +672,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/roller_coaster"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -681,7 +681,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/carousel_horse"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -690,7 +690,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/fountain"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -699,7 +699,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/umbrella_on_ground"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -708,7 +708,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/beach_with_umbrella"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -717,7 +717,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/desert_island"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -733,7 +733,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/desert"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -742,7 +742,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/volcano"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -751,7 +751,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/mountain"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -760,7 +760,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/snow_capped_mountain"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -769,7 +769,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/mount_fuji"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -778,7 +778,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/camping"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -787,7 +787,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/tent"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -796,7 +796,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/house"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -812,7 +812,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/house_with_garden"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -821,7 +821,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/house_buildings"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -830,7 +830,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/derelict_house"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -839,7 +839,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/building_construction"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -848,7 +848,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/factory"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -857,7 +857,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/office_building"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -866,7 +866,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/department_store"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -875,7 +875,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/japanese_post_office"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -891,7 +891,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/post_office"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -900,7 +900,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/hospital"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -909,7 +909,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/bank"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -918,7 +918,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/hotel"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -927,7 +927,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/convenience_store"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -936,7 +936,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/school"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -945,7 +945,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/love_hotel"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -954,7 +954,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/wedding"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -970,7 +970,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/classical_building"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -979,7 +979,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/church"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -988,7 +988,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/mosque"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -997,7 +997,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/synagogue"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1006,7 +1006,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/kaaba"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1015,7 +1015,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/shinto_shrine"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1024,7 +1024,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/railway_track"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1033,7 +1033,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/motorway"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -1049,7 +1049,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/map_of_japan"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1058,7 +1058,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/moon_viewing_ceremony"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1067,7 +1067,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/national_park"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1076,7 +1076,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/sunrise"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1085,7 +1085,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/sunrise_over_mountains"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1094,7 +1094,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/shooting_star"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1103,7 +1103,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/sparkler"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1112,7 +1112,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/fireworks"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
@@ -1128,7 +1128,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/sunset"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1137,7 +1137,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/cityscape_at_dusk"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1146,7 +1146,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/cityscape"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1155,7 +1155,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/night_with_stars"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1164,7 +1164,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/milky_way"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1173,7 +1173,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/bridge_at_night"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
                 <Button
@@ -1182,7 +1182,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/foggy"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
             </LinearLayout>
