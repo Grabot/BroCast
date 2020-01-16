@@ -3,6 +3,7 @@ package com.bro.brocast
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
@@ -13,6 +14,10 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.viewpager.widget.ViewPager
+import com.bro.brocast.adapters.BroViewPager
+import com.bro.brocast.adapters.PagerBrodapter
+import com.bro.brocast.adapters.SlidingTabLayout
 import com.bro.brocast.api.RegisterAPI
 import com.bro.brocast.keyboards.FirstKeyboard
 import kotlinx.android.synthetic.main.activity_register.*
@@ -27,6 +32,8 @@ class RegisterActivity : AppCompatActivity() {
     var broName: EditText? = null
     var broPassword: EditText? = null
 
+    var vpPager: BroViewPager? = null
+    var mSlidingTabLayout: SlidingTabLayout? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,7 +56,6 @@ class RegisterActivity : AppCompatActivity() {
 
         bromotion = findViewById(R.id.broNameRegisterEmotion) as EditText
         broName = findViewById(R.id.broNameRegister) as EditText
-        val keyboard = findViewById(R.id.keyboard) as FirstKeyboard
         broPassword = findViewById(R.id.passwordRegister) as EditText
 
         bromotion!!.setOnFocusChangeListener(focusChangeListener)
@@ -59,15 +65,6 @@ class RegisterActivity : AppCompatActivity() {
         bromotion!!.setRawInputType(InputType.TYPE_CLASS_TEXT)
         bromotion!!.setTextIsSelectable(true)
         bromotion!!.setTextSize(20f)
-        // TODO @Skools: set the minimum SDK to this version (LOLLIPOP).
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            bromotion!!.requestFocus()
-            bromotion!!.showSoftInputOnFocus = false
-        }
-
-        // TODO @Skools: update it to the new keyboard
-        val ic = bromotion!!.onCreateInputConnection(EditorInfo())
-        keyboard.setInputConnection(ic)
 
         bromotion!!.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable) {
@@ -100,7 +97,66 @@ class RegisterActivity : AppCompatActivity() {
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
             }
         })
+        vpPager = findViewById(R.id.vpPager_register) as BroViewPager
+        val adapterViewPager = PagerBrodapter(supportFragmentManager)
+        adapterViewPager.broTextField = bromotion
+
+        // TODO @Skools: We set the pagerBrodapter twice. See if you can fix this.
+        vpPager!!.adapter = adapterViewPager
+        vpPager!!.pagerBrodapter = adapterViewPager
+
+        mSlidingTabLayout = findViewById(R.id.sliding_tabs_register)
+
+        val iconArray = arrayOf(
+            R.drawable.tab_most_used,
+            R.drawable.tab_smile,
+            R.drawable.tab_animals,
+            R.drawable.tab_food,
+            R.drawable.tab_sports,
+            R.drawable.tab_travel,
+            R.drawable.tab_objects,
+            R.drawable.tab_symbol,
+            R.drawable.tab_flags
+        )
+        mSlidingTabLayout!!.setTabIcons(iconArray)
+
+        mSlidingTabLayout!!.setDistributeEvenly(true)
+        mSlidingTabLayout!!.setViewPager(vpPager)
+
+
+        vpPager!!.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+
+            // This method will be invoked when a new page becomes selected.
+            override fun onPageSelected(position: Int) {
+                // The page which is currently active
+            }
+
+            // This method will be invoked when the current page is scrolled
+            override fun onPageScrolled(
+                position: Int,
+                positionOffset: Float,
+                positionOffsetPixels: Int
+            ) {
+                // Code goes here
+            }
+
+            // Called when the scroll state changes:
+            // SCROLL_STATE_IDLE, SCROLL_STATE_DRAGGING, SCROLL_STATE_SETTLING
+            override fun onPageScrollStateChanged(state: Int) {
+                // Code goes here
+            }
+        })
+
+        // TODO @Sander: If the user has logged in before autofill the fields.
+        // TODO @Skools: set the minimum SDK to this version (LOLLIPOP).
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            bromotion!!.showSoftInputOnFocus = false
+        }
+
         broName!!.requestFocus()
+
+        vpPager!!.visibility = View.GONE
+        mSlidingTabLayout!!.visibility = View.GONE
     }
 
     private val focusChangeListener = OnFocusChangeListener { view, b ->
@@ -122,29 +178,29 @@ class RegisterActivity : AppCompatActivity() {
                         // than, whatever! It will not effect the app!
                     }
 
-                    // We want to make the keyboard visible if it isn't yet.
-                    if (keyboard.visibility != View.VISIBLE) {
-                        keyboard.visibility = View.VISIBLE
-                    }
-
+                    // Incredibly ugly hack to ensure that the keyboard and the
+                    // bromotionboard are not visible at the same time.
+                    Handler().postDelayed({
+                        // We want to make the keyboard visible if it isn't yet.
+                        vpPager!!.visibility = View.VISIBLE
+                        mSlidingTabLayout!!.visibility = View.VISIBLE
+                    }, 100)
                 }
             }
             R.id.broNameRegister -> {
                 if (b) {
                     println("focus on the broname field")
                     // The user clicked on the other field so we make the emotion keyboard invisible
-                    if (keyboard.visibility == View.VISIBLE) {
-                        keyboard.visibility = View.INVISIBLE
-                    }
+                    vpPager!!.visibility = View.INVISIBLE
+                    mSlidingTabLayout!!.visibility = View.INVISIBLE
                 }
             }
             R.id.passwordRegister -> {
                 if (b) {
                     println("password field touched")
                     // We don't want the user to see the emotion keyboard when this field is active
-                    if (keyboard.visibility == View.VISIBLE) {
-                        keyboard.visibility = View.INVISIBLE
-                    }
+                    vpPager!!.visibility = View.INVISIBLE
+                    mSlidingTabLayout!!.visibility = View.INVISIBLE
                 }
             }
         }
@@ -183,18 +239,20 @@ class RegisterActivity : AppCompatActivity() {
                     // than, whatever! It will not effect the app!
                 }
 
-                // We want to make the keyboard visible if it isn't yet.
-                if (keyboard.visibility != View.VISIBLE) {
-                    keyboard.visibility = View.VISIBLE
-                }
+                // Incredibly ugly hack to ensure that the keyboard and the
+                // bromotionboard are not visible at the same time.
+                Handler().postDelayed({
+                    // We want to make the keyboard visible if it isn't yet.
+                    vpPager!!.visibility = View.VISIBLE
+                    mSlidingTabLayout!!.visibility = View.VISIBLE
+                }, 100)
 
             }
             R.id.broNameRegister -> {
                 println("broname field touched")
                 // The user clicked on the other field so we make the emotion keyboard invisible
-                if (keyboard.visibility == View.VISIBLE) {
-                    keyboard.visibility = View.INVISIBLE
-                }
+                vpPager!!.visibility = View.INVISIBLE
+                mSlidingTabLayout!!.visibility = View.INVISIBLE
             }
         }
     }
