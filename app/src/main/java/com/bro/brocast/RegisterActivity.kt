@@ -35,8 +35,6 @@ class RegisterActivity : AppCompatActivity() {
     var vpPager: BroViewPager? = null
     var mSlidingTabLayout: SlidingTabLayout? = null
 
-    var bromotion_length: Int = 0
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
@@ -68,6 +66,7 @@ class RegisterActivity : AppCompatActivity() {
         bromotion!!.setTextIsSelectable(true)
         bromotion!!.setTextSize(20f)
 
+        var bromotion_length: Int = 0
         bromotion!!.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable) {
                 // TODO @Skools: Code reuse in the Login, Register en FindBro application with the bromotion input

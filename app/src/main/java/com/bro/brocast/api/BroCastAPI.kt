@@ -77,12 +77,12 @@ class BroCastAPI {
 
         // This allows us to set a timeout. We don't want to wait a long time for a server response.
         val okHttpClient = OkHttpClient.Builder()
-            .readTimeout(10, TimeUnit.SECONDS)
-            .connectTimeout(10, TimeUnit.SECONDS)
+            .readTimeout(20, TimeUnit.SECONDS)
+            .connectTimeout(20, TimeUnit.SECONDS)
             .build()
 
         private val retrofit = Retrofit.Builder()
-            .baseUrl(brocastURLHome)
+            .baseUrl(brocastURL)
             .addConverterFactory(GsonConverterFactory.create(GsonBuilder().create()))
             .client(okHttpClient)
             .build()

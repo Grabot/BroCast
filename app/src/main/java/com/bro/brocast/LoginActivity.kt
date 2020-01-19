@@ -31,8 +31,6 @@ class LoginActivity: AppCompatActivity() {
     var vpPager: BroViewPager? = null
     var mSlidingTabLayout: SlidingTabLayout? = null
 
-    var bromotion_length: Int = 0
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
@@ -59,6 +57,7 @@ class LoginActivity: AppCompatActivity() {
         bromotion!!.setTextIsSelectable(true)
         bromotion!!.setTextSize(20f)
 
+        var bromotion_length: Int = 0
         bromotion!!.addTextChangedListener(object : TextWatcher {
             // We assume the emoji length is always 2
             override fun afterTextChanged(s: Editable) {

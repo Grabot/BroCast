@@ -8,7 +8,6 @@ import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
 import android.view.View
-import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ExpandableListView
@@ -21,9 +20,7 @@ import com.bro.brocast.adapters.PagerBrodapter
 import com.bro.brocast.adapters.SlidingTabLayout
 import com.bro.brocast.api.AddBroAPI
 import com.bro.brocast.api.FindBroAPI
-import com.bro.brocast.keyboards.FirstKeyboard
 import kotlinx.android.synthetic.main.activity_find_bros.*
-import kotlinx.android.synthetic.main.activity_find_bros.keyboard
 
 
 class FindBroActivity: AppCompatActivity() {
@@ -37,9 +34,6 @@ class FindBroActivity: AppCompatActivity() {
 
     var vpPager: BroViewPager? = null
     var mSlidingTabLayout: SlidingTabLayout? = null
-
-    var bromotion_length: Int = 0
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,7 +67,7 @@ class FindBroActivity: AppCompatActivity() {
         bromotionField!!.setOnFocusChangeListener(focusChangeListener)
         broNameField!!.setOnFocusChangeListener(focusChangeListener)
 
-        vpPager = findViewById(R.id.vpPager_login) as BroViewPager
+        vpPager = findViewById(R.id.vpPager_find) as BroViewPager
         val adapterViewPager = PagerBrodapter(supportFragmentManager)
         adapterViewPager.broTextField = bromotionField
 
@@ -81,7 +75,7 @@ class FindBroActivity: AppCompatActivity() {
         vpPager!!.adapter = adapterViewPager
         vpPager!!.pagerBrodapter = adapterViewPager
 
-        mSlidingTabLayout = findViewById(R.id.sliding_tabs_login)
+        mSlidingTabLayout = findViewById(R.id.sliding_tabs_find)
 
         val iconArray = arrayOf(
             R.drawable.tab_most_used,
@@ -99,7 +93,20 @@ class FindBroActivity: AppCompatActivity() {
         mSlidingTabLayout!!.setDistributeEvenly(true)
         mSlidingTabLayout!!.setViewPager(vpPager)
 
+        var bromotion_length: Int = 0
+        bromotionField!!.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable) {
+                // TODO @Skools: Code reuse in the Login, Register en FindBro application with the bromotion input
+                s.delete(0, bromotion_length)
+            }
 
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int ) {
+                bromotion_length = start
+            }
+
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+            }
+        })
         vpPager!!.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
 
             // This method will be invoked when a new page becomes selected.
