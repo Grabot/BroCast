@@ -167,16 +167,16 @@ class LoginActivity: AppCompatActivity() {
                 if (b) {
                     println("focus on the broname field")
                     // The user clicked on the other field so we make the emotion keyboard invisible
-                    vpPager!!.visibility = View.INVISIBLE
-                    mSlidingTabLayout!!.visibility = View.INVISIBLE
+                    vpPager!!.visibility = View.GONE
+                    mSlidingTabLayout!!.visibility = View.GONE
                 }
             }
             R.id.passwordLogin -> {
                 if (b) {
                     println("password field touched")
                     // We don't want the user to see the emotion keyboard when this field is active
-                    vpPager!!.visibility = View.INVISIBLE
-                    mSlidingTabLayout!!.visibility = View.INVISIBLE
+                    vpPager!!.visibility = View.GONE
+                    mSlidingTabLayout!!.visibility = View.GONE
                 }
             }
         }

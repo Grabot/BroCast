@@ -12,23 +12,8 @@ class BroViewPager : ViewPager {
     constructor(context: Context, attributes: AttributeSet) : super(context, attributes)
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        var height = 0
-
-        /*
-         * Determine the height of the largest child and
-         * use that height as the height of the ViewPager
-         */
-        for (i in 0..childCount - 1) {
-            val child = getChildAt(i)
-            child.measure(widthMeasureSpec, MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED))
-            val h = child.measuredHeight
-            if (h > height) {
-                height = h
-            }
-        }
-
         // TODO @Sander: find a way to set a decent height!
-        height = 550
+        val height = 550
 
         val heightSpec = MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY)
 
