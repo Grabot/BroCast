@@ -77,16 +77,16 @@ class FirstKeyboard: ScrollView {
     }
 
     private val onScrollchangedListener = OnScrollChangedListener {
-        extraInputField!!.visibility = View.GONE
-        if (scrollY == 0) {
-            if (extraInputField!!.visibility != View.VISIBLE) {
-                extraInputField!!.visibility = View.VISIBLE
-            }
-        } else {
-            if (extraInputField!!.visibility != View.GONE) {
-                extraInputField!!.visibility = View.GONE
-            }
-        }
+//        extraInputField!!.visibility = View.GONE
+//        if (scrollY == 0) {
+//            if (extraInputField!!.visibility != View.VISIBLE) {
+//                extraInputField!!.visibility = View.VISIBLE
+//            }
+//        } else {
+//            if (extraInputField!!.visibility != View.GONE) {
+//                extraInputField!!.visibility = View.GONE
+//            }
+//        }
     }
 
     private val clickButtonListener = OnClickListener { view ->

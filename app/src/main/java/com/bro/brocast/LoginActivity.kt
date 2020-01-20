@@ -16,6 +16,7 @@ import com.bro.brocast.adapters.BroViewPager
 import com.bro.brocast.adapters.PagerBrodapter
 import com.bro.brocast.adapters.SlidingTabLayout
 import com.bro.brocast.api.LoginAPI
+import com.bro.brocast.keyboards.BroBoard
 import kotlinx.android.synthetic.main.activity_login.*
 import se.simbio.encryption.Encryption
 
@@ -27,9 +28,7 @@ class LoginActivity: AppCompatActivity() {
     var broName: EditText? = null
     var broPassword: EditText? = null
 
-    var vpPager: BroViewPager? = null
-    var mSlidingTabLayout: SlidingTabLayout? = null
-    var extraInputField: RelativeLayout? = null
+    var broBoard: BroBoard? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,58 +72,7 @@ class LoginActivity: AppCompatActivity() {
             }
         })
 
-        vpPager = findViewById(R.id.vpPager) as BroViewPager
-        val adapterViewPager = PagerBrodapter(supportFragmentManager)
-        adapterViewPager.broTextField = bromotion
-
-        // TODO @Skools: We set the pagerBrodapter twice. See if you can fix this.
-        vpPager!!.adapter = adapterViewPager
-        vpPager!!.pagerBrodapter = adapterViewPager
-
-        mSlidingTabLayout = findViewById(R.id.sliding_tabs)
-        extraInputField = findViewById(R.id.extra_input_field)
-        adapterViewPager.broTextField = bromotion
-        adapterViewPager.extraInputField = extraInputField
-
-        val iconArray = arrayOf(
-            R.drawable.tab_most_used,
-            R.drawable.tab_smile,
-            R.drawable.tab_animals,
-            R.drawable.tab_food,
-            R.drawable.tab_sports,
-            R.drawable.tab_travel,
-            R.drawable.tab_objects,
-            R.drawable.tab_symbol,
-            R.drawable.tab_flags
-        )
-        mSlidingTabLayout!!.setTabIcons(iconArray)
-
-        mSlidingTabLayout!!.setDistributeEvenly(true)
-        mSlidingTabLayout!!.setViewPager(vpPager)
-
-
-        vpPager!!.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-
-            // This method will be invoked when a new page becomes selected.
-            override fun onPageSelected(position: Int) {
-                // The page which is currently active
-            }
-
-            // This method will be invoked when the current page is scrolled
-            override fun onPageScrolled(
-                position: Int,
-                positionOffset: Float,
-                positionOffsetPixels: Int
-            ) {
-                // Code goes here
-            }
-
-            // Called when the scroll state changes:
-            // SCROLL_STATE_IDLE, SCROLL_STATE_DRAGGING, SCROLL_STATE_SETTLING
-            override fun onPageScrollStateChanged(state: Int) {
-                // Code goes here
-            }
-        })
+        broBoard = BroBoard(this, supportFragmentManager, bromotion!!)
 
         // TODO @Sander: If the user has logged in before autofill the fields.
         // TODO @Skools: set the minimum SDK to this version (LOLLIPOP).
@@ -133,10 +81,6 @@ class LoginActivity: AppCompatActivity() {
         }
 
         broName!!.requestFocus()
-
-        vpPager!!.visibility = View.GONE
-        mSlidingTabLayout!!.visibility = View.GONE
-        extraInputField!!.visibility = View.GONE
     }
 
     private val focusChangeListener = View.OnFocusChangeListener { view, b ->
@@ -162,9 +106,9 @@ class LoginActivity: AppCompatActivity() {
                     // bromotionboard are not visible at the same time.
                     Handler().postDelayed({
                         // We want to make the keyboard visible if it isn't yet.
-                        vpPager!!.visibility = View.VISIBLE
-                        mSlidingTabLayout!!.visibility = View.VISIBLE
-                        extraInputField!!.visibility = View.VISIBLE
+                        if (!broBoard!!.visible) {
+                            broBoard!!.makeVisible()
+                        }
                     }, 100)
                 }
             }
@@ -172,18 +116,18 @@ class LoginActivity: AppCompatActivity() {
                 if (b) {
                     println("focus on the broname field")
                     // The user clicked on the other field so we make the emotion keyboard invisible
-                    vpPager!!.visibility = View.GONE
-                    mSlidingTabLayout!!.visibility = View.GONE
-                    extraInputField!!.visibility = View.GONE
+                    if (broBoard!!.visible) {
+                        broBoard!!.makeInvisible()
+                    }
                 }
             }
             R.id.passwordLogin -> {
                 if (b) {
                     println("password field touched")
                     // We don't want the user to see the emotion keyboard when this field is active
-                    vpPager!!.visibility = View.GONE
-                    mSlidingTabLayout!!.visibility = View.GONE
-                    extraInputField!!.visibility = View.GONE
+                    if (broBoard!!.visible) {
+                        broBoard!!.makeInvisible()
+                    }
                 }
             }
         }

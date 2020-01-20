@@ -17,6 +17,7 @@ import com.bro.brocast.adapters.PagerBrodapter
 import com.bro.brocast.adapters.SlidingTabLayout
 import com.bro.brocast.api.GetMessagesAPI
 import com.bro.brocast.api.SendMessagesAPI
+import com.bro.brocast.keyboards.BroBoard
 import com.bro.brocast.objects.Message
 import kotlinx.android.synthetic.main.activity_messaging.*
 
@@ -33,9 +34,7 @@ class MessagingActivity: AppCompatActivity() {
 
     var broTextField: EditText? = null
 
-    var vpPager: BroViewPager? = null
-    var mSlidingTabLayout: SlidingTabLayout? = null
-    var extraInputField: RelativeLayout? = null
+    var broBoard: BroBoard? = null
 
     // A simple solution to determine how many message should be loaded.
     var page: Int = 1
@@ -85,58 +84,7 @@ class MessagingActivity: AppCompatActivity() {
             }
         })
 
-        vpPager = findViewById(R.id.vpPager)
-        val adapterViewPager = PagerBrodapter(supportFragmentManager)
-
-        // TODO @Skools: We set the pagerBrodapter twice. See if you can fix this.
-        vpPager!!.adapter = adapterViewPager
-        vpPager!!.pagerBrodapter = adapterViewPager
-
-        mSlidingTabLayout = findViewById(R.id.sliding_tabs)
-        extraInputField = findViewById(R.id.extra_input_field)
-        adapterViewPager.broTextField = broTextField
-        adapterViewPager.extraInputField = extraInputField
-
-        val iconArray = arrayOf(
-            R.drawable.tab_most_used,
-            R.drawable.tab_smile,
-            R.drawable.tab_animals,
-            R.drawable.tab_food,
-            R.drawable.tab_sports,
-            R.drawable.tab_travel,
-            R.drawable.tab_objects,
-            R.drawable.tab_symbol,
-            R.drawable.tab_flags
-        )
-        mSlidingTabLayout!!.setTabIcons(iconArray)
-
-        mSlidingTabLayout!!.setDistributeEvenly(true)
-        mSlidingTabLayout!!.setViewPager(vpPager)
-
-
-        vpPager!!.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-
-            // This method will be invoked when a new page becomes selected.
-            override fun onPageSelected(position: Int) {
-            }
-
-            // This method will be invoked when the current page is scrolled
-            override fun onPageScrolled(
-                position: Int,
-                positionOffset: Float,
-                positionOffsetPixels: Int
-            ) {
-            }
-
-            // Called when the scroll state changes:
-            // SCROLL_STATE_IDLE, SCROLL_STATE_DRAGGING, SCROLL_STATE_SETTLING
-            override fun onPageScrollStateChanged(state: Int) {
-            }
-        })
-
-        vpPager!!.visibility = View.GONE
-        mSlidingTabLayout!!.visibility = View.GONE
-        extraInputField!!.visibility = View.GONE
+        broBoard = BroBoard(this, supportFragmentManager, broTextField!!)
     }
 
     private val clickButtonListener = View.OnClickListener { view ->
@@ -167,10 +115,8 @@ class MessagingActivity: AppCompatActivity() {
             }
             R.id.broMessageField -> {
                 // We want to make the keyboard visible if it isn't yet.
-                if (vpPager!!.visibility != View.VISIBLE) {
-                    vpPager!!.visibility = View.VISIBLE
-                    mSlidingTabLayout!!.visibility = View.VISIBLE
-                    extraInputField!!.visibility = View.VISIBLE
+                if (!broBoard!!.visible) {
+                    broBoard!!.makeVisible()
                 }
             }
         }
@@ -182,10 +128,8 @@ class MessagingActivity: AppCompatActivity() {
 
     override fun onBackPressed() {
         // We want to make the keyboard invisible if it isn't yet.
-        if (vpPager!!.visibility == View.VISIBLE) {
-            vpPager!!.visibility = View.GONE
-            mSlidingTabLayout!!.visibility = View.GONE
-            extraInputField!!.visibility = View.GONE
+        if (broBoard!!.visible) {
+            broBoard!!.makeInvisible()
         } else {
             super.onBackPressed()
         }
