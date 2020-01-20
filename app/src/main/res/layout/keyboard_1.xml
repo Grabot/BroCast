@@ -18,8 +18,8 @@
                 <Button
                     android:id="@+id/button_grinning_face"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:layout_height="wrap_content"
                     android:text="@string/grinning_face"
                     android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
@@ -324,6 +324,12 @@
                     android:textSize="19sp"
                     style="?android:attr/borderlessButtonStyle"
                     />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:orientation="horizontal">
             </LinearLayout>
 
         </LinearLayout>

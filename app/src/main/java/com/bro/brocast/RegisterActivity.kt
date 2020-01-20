@@ -12,6 +12,7 @@ import android.view.View.OnFocusChangeListener
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager.widget.ViewPager
@@ -34,6 +35,7 @@ class RegisterActivity : AppCompatActivity() {
 
     var vpPager: BroViewPager? = null
     var mSlidingTabLayout: SlidingTabLayout? = null
+    var extraInputField: RelativeLayout? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -80,15 +82,17 @@ class RegisterActivity : AppCompatActivity() {
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
             }
         })
-        vpPager = findViewById(R.id.vpPager_register) as BroViewPager
+        vpPager = findViewById(R.id.vpPager) as BroViewPager
         val adapterViewPager = PagerBrodapter(supportFragmentManager)
-        adapterViewPager.broTextField = bromotion
 
         // TODO @Skools: We set the pagerBrodapter twice. See if you can fix this.
         vpPager!!.adapter = adapterViewPager
         vpPager!!.pagerBrodapter = adapterViewPager
 
-        mSlidingTabLayout = findViewById(R.id.sliding_tabs_register)
+        mSlidingTabLayout = findViewById(R.id.sliding_tabs)
+        extraInputField = findViewById(R.id.extra_input_field)
+        adapterViewPager.broTextField = bromotion
+        adapterViewPager.extraInputField = extraInputField
 
         val iconArray = arrayOf(
             R.drawable.tab_most_used,
@@ -140,6 +144,7 @@ class RegisterActivity : AppCompatActivity() {
 
         vpPager!!.visibility = View.GONE
         mSlidingTabLayout!!.visibility = View.GONE
+        extraInputField!!.visibility = View.GONE
     }
 
     private val focusChangeListener = OnFocusChangeListener { view, b ->
@@ -167,6 +172,7 @@ class RegisterActivity : AppCompatActivity() {
                         // We want to make the keyboard visible if it isn't yet.
                         vpPager!!.visibility = View.VISIBLE
                         mSlidingTabLayout!!.visibility = View.VISIBLE
+                        extraInputField!!.visibility = View.VISIBLE
                     }, 100)
                 }
             }
@@ -174,16 +180,18 @@ class RegisterActivity : AppCompatActivity() {
                 if (b) {
                     println("focus on the broname field")
                     // The user clicked on the other field so we make the emotion keyboard invisible
-                    vpPager!!.visibility = View.INVISIBLE
-                    mSlidingTabLayout!!.visibility = View.INVISIBLE
+                    vpPager!!.visibility = View.GONE
+                    mSlidingTabLayout!!.visibility = View.GONE
+                    extraInputField!!.visibility = View.GONE
                 }
             }
             R.id.passwordRegister -> {
                 if (b) {
                     println("password field touched")
                     // We don't want the user to see the emotion keyboard when this field is active
-                    vpPager!!.visibility = View.INVISIBLE
-                    mSlidingTabLayout!!.visibility = View.INVISIBLE
+                    vpPager!!.visibility = View.GONE
+                    mSlidingTabLayout!!.visibility = View.GONE
+                    extraInputField!!.visibility = View.GONE
                 }
             }
         }
@@ -228,14 +236,16 @@ class RegisterActivity : AppCompatActivity() {
                     // We want to make the keyboard visible if it isn't yet.
                     vpPager!!.visibility = View.VISIBLE
                     mSlidingTabLayout!!.visibility = View.VISIBLE
+                    extraInputField!!.visibility = View.VISIBLE
                 }, 100)
 
             }
             R.id.broNameRegister -> {
                 println("broname field touched")
                 // The user clicked on the other field so we make the emotion keyboard invisible
-                vpPager!!.visibility = View.INVISIBLE
-                mSlidingTabLayout!!.visibility = View.INVISIBLE
+                vpPager!!.visibility = View.GONE
+                mSlidingTabLayout!!.visibility = View.GONE
+                extraInputField!!.visibility = View.GONE
             }
         }
     }

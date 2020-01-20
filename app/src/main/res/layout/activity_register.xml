@@ -78,20 +78,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.bro.brocast.adapters.SlidingTabLayout
-        android:id="@+id/sliding_tabs_register"
+    <include
+        android:id="@+id/keyboard"
+        layout="@layout/keyboard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@+id/vpPager_register" />
-
-    <com.bro.brocast.adapters.BroViewPager
-        android:id="@+id/vpPager_register"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:orientation="vertical"
-        android:layout_gravity="bottom"
         app:layout_constraintBottom_toBottomOf="parent"
-        tools:layout_editor_absoluteX="0dp">
-    </com.bro.brocast.adapters.BroViewPager>
+        android:orientation="horizontal"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.text.InputType
 import android.view.View
 import android.widget.EditText
-import android.widget.Toast
+import android.widget.RelativeLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -35,6 +35,7 @@ class MessagingActivity: AppCompatActivity() {
 
     var vpPager: BroViewPager? = null
     var mSlidingTabLayout: SlidingTabLayout? = null
+    var extraInputField: RelativeLayout? = null
 
     // A simple solution to determine how many message should be loaded.
     var page: Int = 1
@@ -84,15 +85,17 @@ class MessagingActivity: AppCompatActivity() {
             }
         })
 
-        vpPager = findViewById(R.id.vpPager) as BroViewPager
+        vpPager = findViewById(R.id.vpPager)
         val adapterViewPager = PagerBrodapter(supportFragmentManager)
-        adapterViewPager.broTextField = broTextField
 
         // TODO @Skools: We set the pagerBrodapter twice. See if you can fix this.
         vpPager!!.adapter = adapterViewPager
         vpPager!!.pagerBrodapter = adapterViewPager
 
         mSlidingTabLayout = findViewById(R.id.sliding_tabs)
+        extraInputField = findViewById(R.id.extra_input_field)
+        adapterViewPager.broTextField = broTextField
+        adapterViewPager.extraInputField = extraInputField
 
         val iconArray = arrayOf(
             R.drawable.tab_most_used,
@@ -115,7 +118,6 @@ class MessagingActivity: AppCompatActivity() {
 
             // This method will be invoked when a new page becomes selected.
             override fun onPageSelected(position: Int) {
-                // The page which is currently active
             }
 
             // This method will be invoked when the current page is scrolled
@@ -124,18 +126,17 @@ class MessagingActivity: AppCompatActivity() {
                 positionOffset: Float,
                 positionOffsetPixels: Int
             ) {
-                // Code goes here
             }
 
             // Called when the scroll state changes:
             // SCROLL_STATE_IDLE, SCROLL_STATE_DRAGGING, SCROLL_STATE_SETTLING
             override fun onPageScrollStateChanged(state: Int) {
-                // Code goes here
             }
         })
 
         vpPager!!.visibility = View.GONE
         mSlidingTabLayout!!.visibility = View.GONE
+        extraInputField!!.visibility = View.GONE
     }
 
     private val clickButtonListener = View.OnClickListener { view ->
@@ -169,6 +170,7 @@ class MessagingActivity: AppCompatActivity() {
                 if (vpPager!!.visibility != View.VISIBLE) {
                     vpPager!!.visibility = View.VISIBLE
                     mSlidingTabLayout!!.visibility = View.VISIBLE
+                    extraInputField!!.visibility = View.VISIBLE
                 }
             }
         }
@@ -183,6 +185,7 @@ class MessagingActivity: AppCompatActivity() {
         if (vpPager!!.visibility == View.VISIBLE) {
             vpPager!!.visibility = View.GONE
             mSlidingTabLayout!!.visibility = View.GONE
+            extraInputField!!.visibility = View.GONE
         } else {
             super.onBackPressed()
         }

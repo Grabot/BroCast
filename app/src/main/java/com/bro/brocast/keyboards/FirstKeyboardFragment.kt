@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
+import android.widget.RelativeLayout
 import androidx.fragment.app.Fragment
 import com.bro.brocast.R
 
@@ -16,6 +17,7 @@ class FirstKeyboardFragment : Fragment() {
     private var page: Int = 0
 
     var broTextField: EditText? = null
+    var extraInputField: RelativeLayout? = null
 
     // Store instance variables based on arguments passed
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,6 +31,7 @@ class FirstKeyboardFragment : Fragment() {
         val view = inflater.inflate(R.layout.keyboard_1_fragment, container, false)
 
         val keyboard = view.findViewById(R.id.keyboard) as FirstKeyboard
+        keyboard.extraInputField = extraInputField
 
         val ic = broTextField!!.onCreateInputConnection(EditorInfo())
         keyboard.setInputConnection(ic)
@@ -40,9 +43,10 @@ class FirstKeyboardFragment : Fragment() {
 
         // newInstance constructor for creating fragment with arguments
         // We added the editText here that the focus of the keyboard should be on.
-        fun newInstance(page: Int, title: String, broTextField: EditText): FirstKeyboardFragment {
+        fun newInstance(page: Int, title: String, broTextField: EditText, extraInputField: RelativeLayout): FirstKeyboardFragment {
             val fragment = FirstKeyboardFragment()
             fragment.broTextField = broTextField
+            fragment.extraInputField = extraInputField
             val args = Bundle()
             args.putInt("someInt", page)
             args.putString("someTitle", title)

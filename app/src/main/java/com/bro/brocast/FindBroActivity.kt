@@ -11,6 +11,7 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ExpandableListView
+import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager.widget.ViewPager
@@ -34,6 +35,7 @@ class FindBroActivity: AppCompatActivity() {
 
     var vpPager: BroViewPager? = null
     var mSlidingTabLayout: SlidingTabLayout? = null
+    var extraInputField: RelativeLayout? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,15 +69,17 @@ class FindBroActivity: AppCompatActivity() {
         bromotionField!!.setOnFocusChangeListener(focusChangeListener)
         broNameField!!.setOnFocusChangeListener(focusChangeListener)
 
-        vpPager = findViewById(R.id.vpPager_find) as BroViewPager
+        vpPager = findViewById(R.id.vpPager) as BroViewPager
         val adapterViewPager = PagerBrodapter(supportFragmentManager)
-        adapterViewPager.broTextField = bromotionField
 
         // TODO @Skools: We set the pagerBrodapter twice. See if you can fix this.
         vpPager!!.adapter = adapterViewPager
         vpPager!!.pagerBrodapter = adapterViewPager
 
-        mSlidingTabLayout = findViewById(R.id.sliding_tabs_find)
+        mSlidingTabLayout = findViewById(R.id.sliding_tabs)
+        extraInputField = findViewById(R.id.extra_input_field)
+        adapterViewPager.broTextField = bromotionField
+        adapterViewPager.extraInputField = extraInputField
 
         val iconArray = arrayOf(
             R.drawable.tab_most_used,
@@ -140,6 +144,7 @@ class FindBroActivity: AppCompatActivity() {
 
         vpPager!!.visibility = View.GONE
         mSlidingTabLayout!!.visibility = View.GONE
+        extraInputField!!.visibility = View.GONE
     }
 
     private val focusChangeListener = View.OnFocusChangeListener { view, b ->
@@ -167,6 +172,7 @@ class FindBroActivity: AppCompatActivity() {
                         // We want to make the keyboard visible if it isn't yet.
                         vpPager!!.visibility = View.VISIBLE
                         mSlidingTabLayout!!.visibility = View.VISIBLE
+                        extraInputField!!.visibility = View.VISIBLE
                     }, 100)
                 }
             }
@@ -177,6 +183,7 @@ class FindBroActivity: AppCompatActivity() {
                     if (vpPager!!.visibility == View.VISIBLE) {
                         vpPager!!.visibility = View.GONE
                         mSlidingTabLayout!!.visibility = View.GONE
+                        extraInputField!!.visibility = View.GONE
                     }
                 }
             }
@@ -221,6 +228,7 @@ class FindBroActivity: AppCompatActivity() {
         if (vpPager!!.visibility == View.VISIBLE) {
             vpPager!!.visibility = View.GONE
             mSlidingTabLayout!!.visibility = View.GONE
+            extraInputField!!.visibility = View.GONE
         } else {
             super.onBackPressed()
         }

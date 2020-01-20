@@ -24,4 +24,6 @@
     <string name="bro_register_text">Please give your bro name with a bromotion to register</string>
     <string name="brocast_search">Search for your Bro using their Bro name \nor use a Bro name/bromotion combination</string>
     <string name="bro_message_count">0</string>
+    <string name="keyboard_exlamation_mark">!</string>
+    <string name="keyboard_question_mark">\?</string>
 </resources>
