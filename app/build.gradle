@@ -10,7 +10,7 @@ android {
     buildToolsVersion "29.0.2"
     defaultConfig {
         applicationId "com.bro.brocast"
-        minSdkVersion 16
+        minSdkVersion 21
         targetSdkVersion 29
         versionCode 3
         versionName "1.0"

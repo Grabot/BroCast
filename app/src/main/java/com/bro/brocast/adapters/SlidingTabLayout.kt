@@ -2,6 +2,7 @@ package com.bro.brocast.adapters
 
 import android.content.Context
 import android.graphics.Typeface
+import android.os.Build
 import android.util.AttributeSet
 import android.util.SparseArray
 import android.util.TypedValue
@@ -24,7 +25,6 @@ class SlidingTabLayout: HorizontalScrollView {
          * @return return the color of the indicator used when `position` is selected.
          */
         fun getIndicatorColor(position: Int): Int
-
     }
 
     private val TITLE_OFFSET_DIPS = 24
@@ -69,17 +69,6 @@ class SlidingTabLayout: HorizontalScrollView {
             LayoutParams.MATCH_PARENT,
             LayoutParams.WRAP_CONTENT
         )
-    }
-
-    /**
-     * Set the [ViewPager.OnPageChangeListener]. When using [SlidingTabLayout] you are
-     * required to set any [ViewPager.OnPageChangeListener] through this method. This is so
-     * that the layout can update it's scroll position correctly.
-     *
-     * @see ViewPager.setOnPageChangeListener
-     */
-    fun setOnPageChangeListener(listener: ViewPager.OnPageChangeListener) {
-        mViewPagerPageChangeListener = listener
     }
 
     fun setDistributeEvenly(distributeEvenly: Boolean) {
@@ -132,7 +121,7 @@ class SlidingTabLayout: HorizontalScrollView {
             )
 
             val iconImageView = tabView!!.findViewById<ImageView>(R.id.keyboard_custom_tab_image)
-            iconImageView.setImageDrawable(context.resources.getDrawable(tabIcon!![i]))
+            iconImageView.setImageDrawable(context.resources.getDrawable(tabIcon!![i], null))
 
             if (mDistributeEvenly) {
                 val lp = tabView.layoutParams as LinearLayout.LayoutParams
@@ -140,7 +129,7 @@ class SlidingTabLayout: HorizontalScrollView {
                 lp.weight = 1f
             }
 
-            tabTitleView!!.setText(adapter!!.getPageTitle(i))
+            tabTitleView!!.text = adapter.getPageTitle(i)
             tabView.setOnClickListener(tabClickListener)
             val desc = mContentDescriptions.get(i, null)
             if (desc != null) {
@@ -155,7 +144,7 @@ class SlidingTabLayout: HorizontalScrollView {
     }
 
     private fun scrollToTab(tabIndex: Int, positionOffset: Int) {
-        val tabStripChildCount = mTabStrip!!.getChildCount()
+        val tabStripChildCount = mTabStrip!!.childCount
         if (tabStripChildCount == 0 || tabIndex < 0 || tabIndex >= tabStripChildCount) {
             return
         }
@@ -181,7 +170,7 @@ class SlidingTabLayout: HorizontalScrollView {
             positionOffset: Float,
             positionOffsetPixels: Int
         ) {
-            val tabStripChildCount = mTabStrip!!.getChildCount()
+            val tabStripChildCount = mTabStrip!!.childCount
             if (tabStripChildCount == 0 || position < 0 || position >= tabStripChildCount) {
                 return
             }
@@ -216,7 +205,7 @@ class SlidingTabLayout: HorizontalScrollView {
                 mTabStrip!!.onViewPagerPageChanged(position, 0f)
                 scrollToTab(position, 0)
             }
-            for (i in 0 until mTabStrip!!.getChildCount()) {
+            for (i in 0 until mTabStrip!!.childCount) {
                 mTabStrip!!.getChildAt(i).isSelected = position == i
             }
             if (mViewPagerPageChangeListener != null) {
@@ -230,7 +219,7 @@ class SlidingTabLayout: HorizontalScrollView {
      * Create a default view to be used for tabs. This is called if a custom tab view is not set via
      * [.setCustomTabView].
      */
-    protected fun createDefaultTabView(context: Context): TextView {
+    private fun createDefaultTabView(context: Context): TextView {
         val textView = TextView(context)
         textView.gravity = Gravity.CENTER
         textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, TAB_VIEW_TEXT_SIZE_SP.toFloat())

@@ -71,12 +71,7 @@ class LoginActivity: AppCompatActivity() {
 
         broBoard = BroBoard(this, supportFragmentManager, bromotion!!)
 
-        // TODO @Sander: If the user has logged in before autofill the fields.
-        // TODO @Skools: set the minimum SDK to this version (LOLLIPOP).
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            bromotion!!.showSoftInputOnFocus = false
-        }
-
+        bromotion!!.showSoftInputOnFocus = false
         broName!!.requestFocus()
     }
 

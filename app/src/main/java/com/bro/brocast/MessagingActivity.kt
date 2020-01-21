@@ -53,11 +53,9 @@ class MessagingActivity: AppCompatActivity() {
         broTextField!!.setRawInputType(InputType.TYPE_CLASS_TEXT)
         broTextField!!.setTextIsSelectable(true)
         broTextField!!.setTextSize(20f)
-        // TODO @Skools: set the minimum SDK to this version (LOLLIPOP).
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            broTextField!!.requestFocus()
-            broTextField!!.showSoftInputOnFocus = false
-        }
+
+        broTextField!!.requestFocus()
+        broTextField!!.showSoftInputOnFocus = false
 
         val layoutMgr = LinearLayoutManager(this)
         broMessageList.layoutManager = layoutMgr
