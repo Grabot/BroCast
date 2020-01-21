@@ -11,14 +11,9 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ExpandableListView
-import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.viewpager.widget.ViewPager
-import com.bro.brocast.adapters.BroViewPager
 import com.bro.brocast.adapters.ExpandableBrodapter
-import com.bro.brocast.adapters.PagerBrodapter
-import com.bro.brocast.adapters.SlidingTabLayout
 import com.bro.brocast.api.AddBroAPI
 import com.bro.brocast.api.FindBroAPI
 import com.bro.brocast.keyboards.BroBoard

@@ -5,7 +5,6 @@ import android.view.View
 import android.widget.EditText
 import android.widget.RelativeLayout
 import androidx.fragment.app.FragmentManager
-import androidx.viewpager.widget.ViewPager
 import com.bro.brocast.R
 import com.bro.brocast.adapters.BroViewPager
 import com.bro.brocast.adapters.PagerBrodapter

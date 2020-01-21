@@ -5,16 +5,11 @@ import android.os.Bundle
 import android.text.InputType
 import android.view.View
 import android.widget.EditText
-import android.widget.RelativeLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.viewpager.widget.ViewPager
 import com.beust.klaxon.JsonObject
-import com.bro.brocast.adapters.BroViewPager
 import com.bro.brocast.adapters.MessagesAdapter
-import com.bro.brocast.adapters.PagerBrodapter
-import com.bro.brocast.adapters.SlidingTabLayout
 import com.bro.brocast.api.GetMessagesAPI
 import com.bro.brocast.api.SendMessagesAPI
 import com.bro.brocast.keyboards.BroBoard

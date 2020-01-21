@@ -9,12 +9,9 @@ import android.text.InputType
 import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import android.widget.*
+import android.widget.EditText
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.viewpager.widget.ViewPager
-import com.bro.brocast.adapters.BroViewPager
-import com.bro.brocast.adapters.PagerBrodapter
-import com.bro.brocast.adapters.SlidingTabLayout
 import com.bro.brocast.api.LoginAPI
 import com.bro.brocast.keyboards.BroBoard
 import kotlinx.android.synthetic.main.activity_login.*

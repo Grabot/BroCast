@@ -9,19 +9,12 @@ import android.text.InputType
 import android.text.TextWatcher
 import android.view.View
 import android.view.View.OnFocusChangeListener
-import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
-import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.viewpager.widget.ViewPager
-import com.bro.brocast.adapters.BroViewPager
-import com.bro.brocast.adapters.PagerBrodapter
-import com.bro.brocast.adapters.SlidingTabLayout
 import com.bro.brocast.api.RegisterAPI
 import com.bro.brocast.keyboards.BroBoard
-import com.bro.brocast.keyboards.FirstKeyboard
 import kotlinx.android.synthetic.main.activity_register.*
 import se.simbio.encryption.Encryption
 
@@ -34,9 +27,6 @@ class RegisterActivity : AppCompatActivity() {
     var broName: EditText? = null
     var broPassword: EditText? = null
 
-//    var vpPager: BroViewPager? = null
-//    var mSlidingTabLayout: SlidingTabLayout? = null
-//    var extraInputField: RelativeLayout? = null
     var broBoard: BroBoard? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
