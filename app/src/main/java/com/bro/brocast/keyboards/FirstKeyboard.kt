@@ -8,6 +8,7 @@ import android.view.View.OnClickListener
 import android.view.ViewTreeObserver.OnScrollChangedListener
 import android.view.inputmethod.InputConnection
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.RelativeLayout
 import android.widget.ScrollView
 import com.bro.brocast.R
@@ -30,6 +31,10 @@ class FirstKeyboard: ScrollView {
     private var inputConnection: InputConnection? = null
 
     var extraInputField: RelativeLayout? = null
+
+    var questionButton: Button? = null
+    var exclamationButton: Button? = null
+    var backButton: ImageButton? = null
 
     private fun init(context: Context) {
         LayoutInflater.from(context).inflate(R.layout.keyboard_1, this, true)
@@ -76,21 +81,36 @@ class FirstKeyboard: ScrollView {
         this.viewTreeObserver.addOnScrollChangedListener(onScrollchangedListener)
     }
 
+    fun setClickListenerExtraFields() {
+        questionButton!!.setOnClickListener(clickButtonListener)
+        exclamationButton!!.setOnClickListener(clickButtonListener)
+        backButton!!.setOnClickListener(clickButtonListener)
+    }
+
     private val onScrollchangedListener = OnScrollChangedListener {
-//        extraInputField!!.visibility = View.GONE
-//        if (scrollY == 0) {
-//            if (extraInputField!!.visibility != View.VISIBLE) {
-//                extraInputField!!.visibility = View.VISIBLE
-//            }
-//        } else {
-//            if (extraInputField!!.visibility != View.GONE) {
-//                extraInputField!!.visibility = View.GONE
-//            }
-//        }
+        extraInputField!!.visibility = View.GONE
+        if (scrollY == 0) {
+            if (extraInputField!!.visibility != View.VISIBLE) {
+                extraInputField!!.visibility = View.VISIBLE
+            }
+        } else {
+            if (extraInputField!!.visibility != View.GONE) {
+                extraInputField!!.visibility = View.GONE
+            }
+        }
     }
 
     private val clickButtonListener = OnClickListener { view ->
         when (view.id) {
+            R.id.button_back -> {
+                inputConnection!!.commitText(context.getString(R.string.grinning_face), 1)
+            }
+            R.id.button_question -> {
+                inputConnection!!.commitText("?", 1)
+            }
+            R.id.button_exclamation -> {
+                inputConnection!!.commitText("!", 1)
+            }
             R.id.button_grinning_face -> {
                 inputConnection!!.commitText(context.getString(R.string.grinning_face), 1)
                 if (extraInputField!!.visibility != View.VISIBLE) {

@@ -1,10 +1,11 @@
 package com.bro.brocast
 
-import android.os.Build
 import android.os.Bundle
 import android.text.InputType
 import android.view.View
+import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -77,7 +78,12 @@ class MessagingActivity: AppCompatActivity() {
             }
         })
 
-        broBoard = BroBoard(this, supportFragmentManager, broTextField!!)
+        val questionButton = findViewById<Button>(R.id.button_question)
+        val exclamationButton = findViewById<Button>(R.id.button_exclamation)
+        val backButton = findViewById<ImageButton>(R.id.button_back)
+        val searchEmojiButton = findViewById<ImageButton>(R.id.button_search_emoji)
+
+        broBoard = BroBoard(this, supportFragmentManager, broTextField!!, questionButton, exclamationButton, backButton)
     }
 
     private val clickButtonListener = View.OnClickListener { view ->

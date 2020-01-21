@@ -10,7 +10,9 @@ import android.text.TextWatcher
 import android.view.View
 import android.view.View.OnFocusChangeListener
 import android.view.inputmethod.InputMethodManager
+import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.bro.brocast.api.RegisterAPI
@@ -75,7 +77,12 @@ class RegisterActivity : AppCompatActivity() {
             }
         })
 
-        broBoard = BroBoard(this, supportFragmentManager, bromotion!!)
+        val questionButton = findViewById<Button>(R.id.button_question)
+        val exclamationButton = findViewById<Button>(R.id.button_exclamation)
+        val backButton = findViewById<ImageButton>(R.id.button_back)
+        val searchEmojiButton = findViewById<ImageButton>(R.id.button_search_emoji)
+
+        broBoard = BroBoard(this, supportFragmentManager, bromotion!!, questionButton, exclamationButton, backButton)
 
         bromotion!!.showSoftInputOnFocus = false
         broName!!.requestFocus()

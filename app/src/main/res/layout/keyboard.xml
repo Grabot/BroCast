@@ -32,40 +32,37 @@
         android:orientation="horizontal">
 
         <ImageButton
-            android:id="@+id/button_search"
+            android:id="@+id/button_search_emoji"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:layout_gravity="start"
             android:src="@drawable/keyboard_search"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentLeft="true" />
+            android:layout_alignParentStart="true" />
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true" >
+            android:layout_alignParentEnd="true" >
 
             <Button
-                android:id="@+id/button_exclamation_mark"
+                android:id="@+id/button_exclamation"
                 android:layout_width="50dp"
                 android:layout_height="match_parent"
-                android:text="@string/keyboard_exlamation_mark">
-            </Button>
+                android:text="@string/keyboard_exlamation_mark" />
 
             <Button
-                android:id="@+id/button_question_mark"
+                android:id="@+id/button_question"
                 android:layout_width="50dp"
                 android:layout_height="match_parent"
-                android:text="@string/keyboard_question_mark">
-            </Button>
+                android:text="@string/keyboard_question_mark" />
 
             <ImageButton
                 android:id="@+id/button_back"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/keyboard_backspace"/>
+                android:src="@drawable/keyboard_backspace" />
+
         </LinearLayout>
     </RelativeLayout>
 

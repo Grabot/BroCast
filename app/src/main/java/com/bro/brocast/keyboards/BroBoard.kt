@@ -2,7 +2,9 @@ package com.bro.brocast.keyboards
 
 import android.app.Activity
 import android.view.View
+import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.RelativeLayout
 import androidx.fragment.app.FragmentManager
 import com.bro.brocast.R
@@ -10,7 +12,7 @@ import com.bro.brocast.adapters.BroViewPager
 import com.bro.brocast.adapters.PagerBrodapter
 import com.bro.brocast.adapters.SlidingTabLayout
 
-class BroBoard(activity: Activity, supportFragmentManager: FragmentManager, broTextField: EditText) {
+class BroBoard(activity: Activity, supportFragmentManager: FragmentManager, broTextField: EditText, questionButton: Button, exclamationButton: Button, backButton: ImageButton) {
 
     var vpPager: BroViewPager? = null
     var mSlidingTabLayout: SlidingTabLayout? = null
@@ -30,6 +32,10 @@ class BroBoard(activity: Activity, supportFragmentManager: FragmentManager, broT
         vpPager!!.pagerBrodapter = adapterViewPager
         adapterViewPager.broTextField = broTextField
         adapterViewPager.extraInputField = extraInputField
+
+        adapterViewPager.questionButton = questionButton
+        adapterViewPager.exclamationButton = exclamationButton
+        adapterViewPager.backButton = backButton
 
         val iconArray = arrayOf(
             R.drawable.tab_most_used,

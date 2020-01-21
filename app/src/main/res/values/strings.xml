@@ -26,4 +26,5 @@
     <string name="bro_message_count">0</string>
     <string name="keyboard_exlamation_mark">!</string>
     <string name="keyboard_question_mark">\?</string>
+    <string name="keyboard_backspace">backspace</string>
 </resources>
