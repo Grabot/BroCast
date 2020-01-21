@@ -63,18 +63,6 @@ class SlidingTabStrip: LinearLayout {
         mSelectedIndicatorPaint = Paint()
     }
 
-    fun setCustomTabColorizer(customTabColorizer: SlidingTabLayout.TabColorizer) {
-        mCustomTabColorizer = customTabColorizer
-        invalidate()
-    }
-
-    fun setSelectedIndicatorColors(vararg colors: Int) {
-        // Make sure that the custom colorizer is removed
-        mCustomTabColorizer = null
-        mDefaultTabColorizer!!.setIndicatorColors(*colors)
-        invalidate()
-    }
-
     fun onViewPagerPageChanged(position: Int, positionOffset: Float) {
         mSelectedPosition = position
         mSelectionOffset = positionOffset
@@ -97,7 +85,7 @@ class SlidingTabStrip: LinearLayout {
             var color = tabColorizer!!.getIndicatorColor(mSelectedPosition)
 
             if (mSelectionOffset > 0f && mSelectedPosition < getChildCount() - 1) {
-                val nextColor = tabColorizer!!.getIndicatorColor(mSelectedPosition + 1)
+                val nextColor = tabColorizer.getIndicatorColor(mSelectedPosition + 1)
                 if (color != nextColor) {
                     color = blendColors(nextColor, color, mSelectionOffset)
                 }

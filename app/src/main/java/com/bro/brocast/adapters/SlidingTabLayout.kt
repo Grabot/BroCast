@@ -84,7 +84,7 @@ class SlidingTabLayout: HorizontalScrollView {
 
         mViewPager = viewPager
         if (viewPager != null) {
-            viewPager.setOnPageChangeListener(InternalViewPagerListener())
+            viewPager.addOnPageChangeListener(InternalViewPagerListener())
             populateTabStrip()
         }
     }
@@ -93,8 +93,7 @@ class SlidingTabLayout: HorizontalScrollView {
         val adapter = mViewPager!!.pagerBrodapter
         val tabClickListener = TabClickListener()
 
-        // TODO @Skools: Here you set a count for the adapter. this could be fixed if it doesn't work
-        for (i in 0 until adapter!!.getCount()) {
+        for (i in 0 until adapter!!.count) {
             var tabView: View? = null
             var tabTitleView: TextView? = null
 
@@ -104,7 +103,7 @@ class SlidingTabLayout: HorizontalScrollView {
                     mTabViewLayoutId, mTabStrip,
                     false
                 )
-                tabTitleView = tabView!!.findViewById<View>(mTabViewTextViewId) as TextView
+                tabTitleView = tabView.findViewById<View>(mTabViewTextViewId) as TextView
             }
 
             if (tabView == null) {
@@ -120,7 +119,7 @@ class SlidingTabLayout: HorizontalScrollView {
                 mTabStrip, false
             )
 
-            val iconImageView = tabView!!.findViewById<ImageView>(R.id.keyboard_custom_tab_image)
+            val iconImageView = tabView.findViewById<ImageView>(R.id.keyboard_custom_tab_image)
             iconImageView.setImageDrawable(context.resources.getDrawable(tabIcon!![i], null))
 
             if (mDistributeEvenly) {
@@ -137,7 +136,7 @@ class SlidingTabLayout: HorizontalScrollView {
             }
 
             mTabStrip!!.addView(tabView)
-            if (i == mViewPager!!.getCurrentItem()) {
+            if (i == mViewPager!!.currentItem) {
                 tabView.isSelected = true
             }
         }
@@ -178,10 +177,10 @@ class SlidingTabLayout: HorizontalScrollView {
             mTabStrip!!.onViewPagerPageChanged(position, positionOffset)
 
             val selectedTitle = mTabStrip!!.getChildAt(position)
-            val extraOffset = if (selectedTitle != null)
-                (positionOffset * selectedTitle.width).toInt()
-            else
-                0
+            var extraOffset = 0
+            if (selectedTitle != null) {
+                extraOffset = (positionOffset * selectedTitle.width).toInt()
+            }
             scrollToTab(position, extraOffset)
 
             if (mViewPagerPageChangeListener != null) {
@@ -223,7 +222,7 @@ class SlidingTabLayout: HorizontalScrollView {
         val textView = TextView(context)
         textView.gravity = Gravity.CENTER
         textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, TAB_VIEW_TEXT_SIZE_SP.toFloat())
-        textView.setTypeface(Typeface.DEFAULT_BOLD)
+        textView.typeface = Typeface.DEFAULT_BOLD
         textView.layoutParams = LinearLayout.LayoutParams(
             ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT
         )
@@ -242,11 +241,11 @@ class SlidingTabLayout: HorizontalScrollView {
         return textView
     }
 
-    private inner class TabClickListener : View.OnClickListener {
+    private inner class TabClickListener : OnClickListener {
         override fun onClick(v: View) {
-            for (i in 0 until mTabStrip!!.getChildCount()) {
+            for (i in 0 until mTabStrip!!.childCount) {
                 if (v === mTabStrip!!.getChildAt(i)) {
-                    mViewPager!!.setCurrentItem(i)
+                    mViewPager!!.currentItem = i
                     return
                 }
             }
