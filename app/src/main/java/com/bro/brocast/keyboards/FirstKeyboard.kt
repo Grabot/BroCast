@@ -11,6 +11,10 @@ import android.widget.Button
 import android.widget.ImageButton
 import android.widget.RelativeLayout
 import android.widget.ScrollView
+import android.text.TextUtils
+import com.beust.klaxon.JsonArray
+import com.beust.klaxon.JsonObject
+import com.beust.klaxon.Parser
 import com.bro.brocast.R
 
 
@@ -37,6 +41,16 @@ class FirstKeyboard: ScrollView {
     var backButton: ImageButton? = null
 
     private fun init(context: Context) {
+
+        val emojis = resources.openRawResource(R.raw.emojis)
+            .bufferedReader().use {
+                it.readText()
+            }
+
+        val parser: Parser = Parser.default()
+        val stringBuilder: StringBuilder = StringBuilder(emojis)
+        val json = parser.parse(stringBuilder) as JsonArray<*>
+
         LayoutInflater.from(context).inflate(R.layout.keyboard_1, this, true)
 
         val buttonIds = arrayOf(
@@ -103,7 +117,14 @@ class FirstKeyboard: ScrollView {
     private val clickButtonListener = OnClickListener { view ->
         when (view.id) {
             R.id.button_back -> {
-                inputConnection!!.commitText(context.getString(R.string.grinning_face), 1)
+                val selectedText = inputConnection!!.getSelectedText(0)
+                var test = inputConnection!!.getTextBeforeCursor(1, 0)
+
+                if (TextUtils.isEmpty(selectedText)) {
+                    inputConnection!!.deleteSurroundingText(1, 0)
+                } else {
+                    inputConnection!!.commitText("", 1)
+                }
             }
             R.id.button_question -> {
                 inputConnection!!.commitText("?", 1)
