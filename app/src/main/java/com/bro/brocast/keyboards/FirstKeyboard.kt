@@ -7,13 +7,10 @@ import android.view.View
 import android.view.View.OnClickListener
 import android.view.ViewTreeObserver.OnScrollChangedListener
 import android.view.inputmethod.InputConnection
-import android.widget.Button
-import android.widget.ImageButton
-import android.widget.RelativeLayout
-import android.widget.ScrollView
 import android.text.TextUtils
+import android.view.ViewGroup
+import android.widget.*
 import com.beust.klaxon.JsonArray
-import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Parser
 import com.bro.brocast.R
 
@@ -53,46 +50,101 @@ class FirstKeyboard: ScrollView {
 
         LayoutInflater.from(context).inflate(R.layout.keyboard_1, this, true)
 
-        val buttonIds = arrayOf(
-            R.id.button_grinning_face,
-            R.id.button_winking_face,
-            R.id.button_face_blowing_a_kiss,
-            R.id.button_kissing_face_with_closed_eyes,
-            R.id.button_face_with_stuck_out_tongue,
-            R.id.button_face_with_cold_sweat,
-            R.id.button_pensive_face,
-            R.id.button_face_with_tears_of_joy,
-            R.id.button_smiling_face_with_heart_eyes,
-            R.id.button_red_heart,
-            R.id.button_rolling_on_the_floor_laughing,
-            R.id.button_smiling_face_with_3_hearts,
-            R.id.button_folded_hands,
-            R.id.button_loudly_crying_face,
-            R.id.button_right_facing_fist,
-            R.id.button_left_facing_fist,
-            R.id.button_eggplant,
-            R.id.button_sweat_droplets,
-            R.id.button_banana,
-            R.id.button_thumbs_up,
-            R.id.button_fire,
-            R.id.button_rainbow,
-            R.id.button_clinking_beer_mugs,
-            R.id.button_wine_glass,
-            R.id.button_thinking_face,
-            R.id.button_mushroom,
-            R.id.button_peach,
-            R.id.button_pile_of_poo,
-            R.id.button_woman_facepalming,
-            R.id.button_fireworks,
-            R.id.button_confetti_ball,
-            R.id.button_party_popper
+        val stringIds = arrayOf(
+            R.string.grinning_face,
+            R.string.winking_face,
+            R.string.face_blowing_a_kiss,
+            R.string.kissing_face_with_closed_eyes,
+            R.string.face_with_stuck_out_tongue,
+            R.string.face_with_cold_sweat,
+            R.string.pensive_face,
+            R.string.face_with_tears_of_joy,
+            R.string.smiling_face_with_heart_eyes,
+            R.string.red_heart,
+            R.string.rolling_on_the_floor_laughing,
+            R.string.smiling_face_with_3_hearts,
+            R.string.folded_hands,
+            R.string.loudly_crying_face,
+            R.string.right_facing_fist,
+            R.string.left_facing_fist,
+            R.string.eggplant,
+            R.string.sweat_droplets,
+            R.string.banana,
+            R.string.thumbs_up,
+            R.string.fire,
+            R.string.rainbow,
+            R.string.clinking_beer_mugs,
+            R.string.wine_glass,
+            R.string.thinking_face,
+            R.string.mushroom,
+            R.string.peach,
+            R.string.pile_of_poo,
+            R.string.woman_facepalming,
+            R.string.fireworks,
+            R.string.confetti_ball,
+            R.string.party_popper
         )
 
-        for (b in buttonIds) {
-            findViewById<Button>(b).setOnClickListener(clickButtonListener)
+        // The outer and main layer of the keyboard
+        val mainLayout = findViewById<LinearLayout>(R.id.main_keyboard_layout)
+
+        // creating the button
+        val layers = createLayers(context, stringIds)
+        for (layer in layers) {
+            mainLayout.addView(layer)
         }
 
+        // Create another layer, which is empty. This is to give some space at the bottom
+        val spaceLayer = LinearLayout(context)
+        val layout = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, 80)
+        layout.weight = 1f
+        spaceLayer.layoutParams = layout
+        mainLayout.addView(spaceLayer)
+
         this.viewTreeObserver.addOnScrollChangedListener(onScrollchangedListener)
+    }
+
+    private fun createLayers(context: Context, stringIdArray: Array<Int>): ArrayList<LinearLayout> {
+        var layers: ArrayList<LinearLayout> = ArrayList()
+        for(n in stringIdArray.indices step 8) {
+            val layer = arrayOf(
+                stringIdArray[n],
+                stringIdArray[n+1],
+                stringIdArray[n+2],
+                stringIdArray[n+3],
+                stringIdArray[n+4],
+                stringIdArray[n+5],
+                stringIdArray[n+6],
+                stringIdArray[n+7]
+            )
+            val layoutLayer = createLayoutLayer(context, layer)
+            layers.add(layoutLayer)
+        }
+        return layers
+    }
+
+    private fun createLayoutLayer(
+        context: Context,
+        stringIdArray: Array<Int>
+    ): LinearLayout {
+        val newLayer = LinearLayout(context)
+        for (stringId in stringIdArray) {
+            val button = createButton(context, stringId)
+            newLayer.addView(button)
+        }
+        return newLayer
+    }
+
+    private fun createButton(context: Context, buttonId: Int): Button {
+        val button = Button(context, null, android.R.attr.borderlessButtonStyle)
+        val layout = LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT)
+        layout.weight = 1f
+        button.layoutParams = layout
+        button.text = context.getString(buttonId)
+        button.textSize = 19f
+        button.id = View.generateViewId()
+        button.setOnClickListener(clickButtonListener)
+        return button
     }
 
     fun setClickListenerExtraFields() {
@@ -138,191 +190,9 @@ class FirstKeyboard: ScrollView {
                     extraInputField!!.visibility = View.VISIBLE
                 }
             }
-            R.id.button_winking_face -> {
-                inputConnection!!.commitText(context.getString(R.string.winking_face), 1)
-                if (extraInputField!!.visibility != View.VISIBLE) {
-                    extraInputField!!.visibility = View.VISIBLE
-                }
-            }
-            R.id.button_face_blowing_a_kiss -> {
-                inputConnection!!.commitText(context.getString(R.string.face_blowing_a_kiss), 1)
-                if (extraInputField!!.visibility != View.VISIBLE) {
-                    extraInputField!!.visibility = View.VISIBLE
-                }
-            }
-            R.id.button_kissing_face_with_closed_eyes -> {
-                inputConnection!!.commitText(context.getString(R.string.kissing_face_with_closed_eyes), 1)
-                if (extraInputField!!.visibility != View.VISIBLE) {
-                    extraInputField!!.visibility = View.VISIBLE
-                }
-            }
-            R.id.button_face_with_stuck_out_tongue -> {
-                inputConnection!!.commitText(context.getString(R.string.face_with_stuck_out_tongue), 1)
-                if (extraInputField!!.visibility != View.VISIBLE) {
-                    extraInputField!!.visibility = View.VISIBLE
-                }
-            }
-            R.id.button_face_with_cold_sweat -> {
-                inputConnection!!.commitText(context.getString(R.string.face_with_cold_sweat), 1)
-                if (extraInputField!!.visibility != View.VISIBLE) {
-                    extraInputField!!.visibility = View.VISIBLE
-                }
-            }
-            R.id.button_pensive_face -> {
-                inputConnection!!.commitText(context.getString(R.string.pensive_face), 1)
-                if (extraInputField!!.visibility != View.VISIBLE) {
-                    extraInputField!!.visibility = View.VISIBLE
-                }
-            }
-            R.id.button_face_with_tears_of_joy -> {
-                inputConnection!!.commitText(context.getString(R.string.face_with_tears_of_joy), 1)
-                if (extraInputField!!.visibility != View.VISIBLE) {
-                    extraInputField!!.visibility = View.VISIBLE
-                }
-            }
-            R.id.button_smiling_face_with_heart_eyes -> {
-                inputConnection!!.commitText(context.getString(R.string.smiling_face_with_heart_eyes), 1)
-                if (extraInputField!!.visibility != View.VISIBLE) {
-                    extraInputField!!.visibility = View.VISIBLE
-                }
-            }
-            R.id.button_red_heart -> {
-                inputConnection!!.commitText(context.getString(R.string.red_heart), 1)
-                if (extraInputField!!.visibility != View.VISIBLE) {
-                    extraInputField!!.visibility = View.VISIBLE
-                }
-            }
-            R.id.button_rolling_on_the_floor_laughing -> {
-                inputConnection!!.commitText(context.getString(R.string.rolling_on_the_floor_laughing), 1)
-                if (extraInputField!!.visibility != View.VISIBLE) {
-                    extraInputField!!.visibility = View.VISIBLE
-                }
-            }
-            R.id.button_smiling_face_with_3_hearts -> {
-                inputConnection!!.commitText(context.getString(R.string.smiling_face_with_3_hearts), 1)
-                if (extraInputField!!.visibility != View.VISIBLE) {
-                    extraInputField!!.visibility = View.VISIBLE
-                }
-            }
-            R.id.button_folded_hands -> {
-                inputConnection!!.commitText(context.getString(R.string.folded_hands), 1)
-                if (extraInputField!!.visibility != View.VISIBLE) {
-                    extraInputField!!.visibility = View.VISIBLE
-                }
-            }
-            R.id.button_loudly_crying_face -> {
-                inputConnection!!.commitText(context.getString(R.string.loudly_crying_face), 1)
-                if (extraInputField!!.visibility != View.VISIBLE) {
-                    extraInputField!!.visibility = View.VISIBLE
-                }
-            }
-            R.id.button_right_facing_fist -> {
-                inputConnection!!.commitText(context.getString(R.string.right_facing_fist), 1)
-                if (extraInputField!!.visibility != View.VISIBLE) {
-                    extraInputField!!.visibility = View.VISIBLE
-                }
-            }
-            R.id.button_left_facing_fist -> {
-                inputConnection!!.commitText(context.getString(R.string.left_facing_fist), 1)
-                if (extraInputField!!.visibility != View.VISIBLE) {
-                    extraInputField!!.visibility = View.VISIBLE
-                }
-            }
-            R.id.button_eggplant -> {
-                inputConnection!!.commitText(context.getString(R.string.eggplant), 1)
-                if (extraInputField!!.visibility != View.VISIBLE) {
-                    extraInputField!!.visibility = View.VISIBLE
-                }
-            }
-            R.id.button_sweat_droplets -> {
-                inputConnection!!.commitText(context.getString(R.string.sweat_droplets), 1)
-                if (extraInputField!!.visibility != View.VISIBLE) {
-                    extraInputField!!.visibility = View.VISIBLE
-                }
-            }
-            R.id.button_banana -> {
-                inputConnection!!.commitText(context.getString(R.string.banana), 1)
-                if (extraInputField!!.visibility != View.VISIBLE) {
-                    extraInputField!!.visibility = View.VISIBLE
-                }
-            }
-            R.id.button_thumbs_up -> {
-                inputConnection!!.commitText(context.getString(R.string.thumbs_up), 1)
-                if (extraInputField!!.visibility != View.VISIBLE) {
-                    extraInputField!!.visibility = View.VISIBLE
-                }
-            }
-            R.id.button_fire -> {
-                inputConnection!!.commitText(context.getString(R.string.fire), 1)
-                if (extraInputField!!.visibility != View.VISIBLE) {
-                    extraInputField!!.visibility = View.VISIBLE
-                }
-            }
-            R.id.button_rainbow -> {
-                inputConnection!!.commitText(context.getString(R.string.rainbow), 1)
-                if (extraInputField!!.visibility != View.VISIBLE) {
-                    extraInputField!!.visibility = View.VISIBLE
-                }
-            }
-            R.id.button_clinking_beer_mugs -> {
-                inputConnection!!.commitText(context.getString(R.string.clinking_beer_mugs), 1)
-                if (extraInputField!!.visibility != View.VISIBLE) {
-                    extraInputField!!.visibility = View.VISIBLE
-                }
-            }
-            R.id.button_wine_glass -> {
-                inputConnection!!.commitText(context.getString(R.string.wine_glass), 1)
-                if (extraInputField!!.visibility != View.VISIBLE) {
-                    extraInputField!!.visibility = View.VISIBLE
-                }
-            }
-            R.id.button_thinking_face -> {
-                inputConnection!!.commitText(context.getString(R.string.thinking_face), 1)
-                if (extraInputField!!.visibility != View.VISIBLE) {
-                    extraInputField!!.visibility = View.VISIBLE
-                }
-            }
-            R.id.button_mushroom -> {
-                inputConnection!!.commitText(context.getString(R.string.mushroom), 1)
-                if (extraInputField!!.visibility != View.VISIBLE) {
-                    extraInputField!!.visibility = View.VISIBLE
-                }
-            }
-            R.id.button_peach -> {
-                inputConnection!!.commitText(context.getString(R.string.peach), 1)
-                if (extraInputField!!.visibility != View.VISIBLE) {
-                    extraInputField!!.visibility = View.VISIBLE
-                }
-            }
-            R.id.button_pile_of_poo -> {
-                inputConnection!!.commitText(context.getString(R.string.pile_of_poo), 1)
-                if (extraInputField!!.visibility != View.VISIBLE) {
-                    extraInputField!!.visibility = View.VISIBLE
-                }
-            }
-            R.id.button_woman_facepalming -> {
-                inputConnection!!.commitText(context.getString(R.string.woman_facepalming), 1)
-                if (extraInputField!!.visibility != View.VISIBLE) {
-                    extraInputField!!.visibility = View.VISIBLE
-                }
-            }
-            R.id.button_fireworks -> {
-                inputConnection!!.commitText(context.getString(R.string.fireworks), 1)
-                if (extraInputField!!.visibility != View.VISIBLE) {
-                    extraInputField!!.visibility = View.VISIBLE
-                }
-            }
-            R.id.button_confetti_ball -> {
-                inputConnection!!.commitText(context.getString(R.string.confetti_ball), 1)
-                if (extraInputField!!.visibility != View.VISIBLE) {
-                    extraInputField!!.visibility = View.VISIBLE
-                }
-            }
-            R.id.button_party_popper -> {
-                inputConnection!!.commitText(context.getString(R.string.party_popper), 1)
-                if (extraInputField!!.visibility != View.VISIBLE) {
-                    extraInputField!!.visibility = View.VISIBLE
-                }
+            else -> {
+                val button = findViewById<Button>(view.id)
+                inputConnection!!.commitText(button.text, 1)
             }
         }
     }

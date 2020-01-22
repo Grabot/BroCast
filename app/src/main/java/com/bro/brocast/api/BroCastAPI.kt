@@ -82,7 +82,7 @@ class BroCastAPI {
             .build()
 
         private val retrofit = Retrofit.Builder()
-            .baseUrl(brocastURLHome)
+            .baseUrl(brocastURL)
             .addConverterFactory(GsonConverterFactory.create(GsonBuilder().create()))
             .client(okHttpClient)
             .build()
