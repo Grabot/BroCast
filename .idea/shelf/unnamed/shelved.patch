@@ -1,0 +1,35 @@
+Index: app/src/main/res/layout/activity_find_bros.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<androidx.constraintlayout.widget.ConstraintLayout xmlns:android=\"http://schemas.android.com/apk/res/android\"\r\n    xmlns:app=\"http://schemas.android.com/apk/res-auto\"\r\n    android:id=\"@+id/linearLayout5\"\r\n    android:background=\"@color/background\"\r\n    android:layout_width=\"match_parent\"\r\n    android:layout_height=\"match_parent\">\r\n\r\n    <TextView\r\n        android:id=\"@+id/textViewSearch\"\r\n        android:layout_width=\"wrap_content\"\r\n        android:layout_height=\"wrap_content\"\r\n        android:text=\"@string/brocast_search\"\r\n        app:layout_constraintBottom_toTopOf=\"@id/broNameBroSearch\"\r\n        app:layout_constraintTop_toTopOf=\"parent\"\r\n        app:layout_constraintEnd_toEndOf=\"parent\"\r\n        app:layout_constraintStart_toStartOf=\"parent\" />\r\n\r\n\r\n    <EditText\r\n        android:id=\"@+id/broNameBroSearch\"\r\n        android:layout_width=\"0dp\"\r\n        android:layout_height=\"wrap_content\"\r\n        android:autofillHints=\"TODO\"\r\n        android:hint=\"@string/broname_hint\"\r\n        android:inputType=\"text\"\r\n        android:textAlignment=\"center\"\r\n        app:layout_constraintBottom_toTopOf=\"@+id/buttonSearchBros\"\r\n        app:layout_constraintEnd_toEndOf=\"parent\"\r\n        app:layout_constraintStart_toStartOf=\"parent\"\r\n        app:layout_constraintTop_toTopOf=\"parent\"\r\n        android:layout_marginRight=\"150dp\"\r\n        android:layout_marginEnd=\"150dp\"\r\n        android:layout_marginStart=\"50dp\"\r\n        android:layout_marginLeft=\"50dp\" />\r\n\r\n    <EditText\r\n        android:id=\"@+id/broNameSearchEmotion\"\r\n        android:layout_width=\"0dp\"\r\n        android:layout_height=\"wrap_content\"\r\n        android:layout_marginStart=\"50dp\"\r\n        android:layout_marginLeft=\"50dp\"\r\n        android:layout_marginRight=\"50dp\"\r\n        android:layout_marginEnd=\"50dp\"\r\n        android:autofillHints=\"TODO\"\r\n        android:hint=\"@string/broname_emotion\"\r\n        android:inputType=\"text\"\r\n        android:textAlignment=\"center\"\r\n        app:layout_constraintBottom_toBottomOf=\"@+id/broNameBroSearch\"\r\n        app:layout_constraintEnd_toEndOf=\"parent\"\r\n        app:layout_constraintHorizontal_bias=\"0.5\"\r\n        app:layout_constraintStart_toEndOf=\"@+id/broNameBroSearch\"\r\n        app:layout_constraintTop_toTopOf=\"@+id/broNameBroSearch\" />\r\n\r\n    <Button\r\n        android:id=\"@+id/buttonSearchBros\"\r\n        android:layout_width=\"wrap_content\"\r\n        android:layout_height=\"wrap_content\"\r\n        android:layout_marginBottom=\"100dp\"\r\n        android:text=\"Search your Bro\"\r\n        app:layout_constraintBottom_toBottomOf=\"parent\"\r\n        app:layout_constraintEnd_toEndOf=\"parent\"\r\n        app:layout_constraintStart_toStartOf=\"parent\"\r\n        app:layout_constraintTop_toTopOf=\"parent\" />\r\n\r\n    <ExpandableListView\r\n        android:id=\"@+id/bro_list_view\"\r\n        android:layout_width=\"match_parent\"\r\n        android:layout_height=\"300dp\"\r\n        app:layout_constraintBottom_toBottomOf=\"parent\"/>\r\n\r\n\r\n    <com.bro.brocast.keyboards.FirstKeyboard\r\n        android:id=\"@+id/keyboard\"\r\n        android:layout_width=\"match_parent\"\r\n        android:layout_height=\"wrap_content\"\r\n        android:layout_alignParentBottom=\"true\"\r\n        android:orientation=\"vertical\"\r\n        app:layout_constraintBottom_toBottomOf=\"parent\" />\r\n\r\n</androidx.constraintlayout.widget.ConstraintLayout>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/layout/activity_find_bros.xml	(revision 6d6981d66c7c3047daa3d1446481abdac7884aca)
++++ app/src/main/res/layout/activity_find_bros.xml	(date 1579451468562)
+@@ -69,13 +69,19 @@
+         android:layout_height="300dp"
+         app:layout_constraintBottom_toBottomOf="parent"/>
+ 
+-
+-    <com.bro.brocast.keyboards.FirstKeyboard
+-        android:id="@+id/keyboard"
++    <com.bro.brocast.adapters.SlidingTabLayout
++        android:id="@+id/sliding_tabs_find"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+-        android:layout_alignParentBottom="true"
++        app:layout_constraintBottom_toTopOf="@+id/vpPager_find" />
++
++    <com.bro.brocast.adapters.BroViewPager
++        android:id="@+id/vpPager_find"
++        android:layout_width="match_parent"
++        android:layout_height="0dp"
+         android:orientation="vertical"
+-        app:layout_constraintBottom_toBottomOf="parent" />
++        android:layout_gravity="bottom"
++        app:layout_constraintBottom_toBottomOf="parent">
++    </com.bro.brocast.adapters.BroViewPager>
+ 
+ </androidx.constraintlayout.widget.ConstraintLayout>
+\ No newline at end of file
