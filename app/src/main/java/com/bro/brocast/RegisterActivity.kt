@@ -9,17 +9,14 @@ import android.text.InputType
 import android.text.TextWatcher
 import android.view.View
 import android.view.View.OnFocusChangeListener
-import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.viewpager.widget.ViewPager
-import com.bro.brocast.adapters.BroViewPager
-import com.bro.brocast.adapters.PagerBrodapter
-import com.bro.brocast.adapters.SlidingTabLayout
 import com.bro.brocast.api.RegisterAPI
-import com.bro.brocast.keyboards.FirstKeyboard
+import com.bro.brocast.keyboards.BroBoard
 import kotlinx.android.synthetic.main.activity_register.*
 import se.simbio.encryption.Encryption
 
@@ -32,8 +29,7 @@ class RegisterActivity : AppCompatActivity() {
     var broName: EditText? = null
     var broPassword: EditText? = null
 
-    var vpPager: BroViewPager? = null
-    var mSlidingTabLayout: SlidingTabLayout? = null
+    var broBoard: BroBoard? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -80,66 +76,16 @@ class RegisterActivity : AppCompatActivity() {
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
             }
         })
-        vpPager = findViewById(R.id.vpPager_register) as BroViewPager
-        val adapterViewPager = PagerBrodapter(supportFragmentManager)
-        adapterViewPager.broTextField = bromotion
 
-        // TODO @Skools: We set the pagerBrodapter twice. See if you can fix this.
-        vpPager!!.adapter = adapterViewPager
-        vpPager!!.pagerBrodapter = adapterViewPager
+        val questionButton = findViewById<Button>(R.id.button_question)
+        val exclamationButton = findViewById<Button>(R.id.button_exclamation)
+        val backButton = findViewById<ImageButton>(R.id.button_back)
+        val searchEmojiButton = findViewById<ImageButton>(R.id.button_search_emoji)
 
-        mSlidingTabLayout = findViewById(R.id.sliding_tabs_register)
+        broBoard = BroBoard(this, supportFragmentManager, bromotion!!, questionButton, exclamationButton, backButton)
 
-        val iconArray = arrayOf(
-            R.drawable.tab_most_used,
-            R.drawable.tab_smile,
-            R.drawable.tab_animals,
-            R.drawable.tab_food,
-            R.drawable.tab_sports,
-            R.drawable.tab_travel,
-            R.drawable.tab_objects,
-            R.drawable.tab_symbol,
-            R.drawable.tab_flags
-        )
-        mSlidingTabLayout!!.setTabIcons(iconArray)
-
-        mSlidingTabLayout!!.setDistributeEvenly(true)
-        mSlidingTabLayout!!.setViewPager(vpPager)
-
-
-        vpPager!!.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-
-            // This method will be invoked when a new page becomes selected.
-            override fun onPageSelected(position: Int) {
-                // The page which is currently active
-            }
-
-            // This method will be invoked when the current page is scrolled
-            override fun onPageScrolled(
-                position: Int,
-                positionOffset: Float,
-                positionOffsetPixels: Int
-            ) {
-                // Code goes here
-            }
-
-            // Called when the scroll state changes:
-            // SCROLL_STATE_IDLE, SCROLL_STATE_DRAGGING, SCROLL_STATE_SETTLING
-            override fun onPageScrollStateChanged(state: Int) {
-                // Code goes here
-            }
-        })
-
-        // TODO @Sander: If the user has logged in before autofill the fields.
-        // TODO @Skools: set the minimum SDK to this version (LOLLIPOP).
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            bromotion!!.showSoftInputOnFocus = false
-        }
-
+        bromotion!!.showSoftInputOnFocus = false
         broName!!.requestFocus()
-
-        vpPager!!.visibility = View.GONE
-        mSlidingTabLayout!!.visibility = View.GONE
     }
 
     private val focusChangeListener = OnFocusChangeListener { view, b ->
@@ -165,8 +111,9 @@ class RegisterActivity : AppCompatActivity() {
                     // bromotionboard are not visible at the same time.
                     Handler().postDelayed({
                         // We want to make the keyboard visible if it isn't yet.
-                        vpPager!!.visibility = View.VISIBLE
-                        mSlidingTabLayout!!.visibility = View.VISIBLE
+                        if (!broBoard!!.visible) {
+                            broBoard!!.makeVisible()
+                        }
                     }, 100)
                 }
             }
@@ -174,16 +121,18 @@ class RegisterActivity : AppCompatActivity() {
                 if (b) {
                     println("focus on the broname field")
                     // The user clicked on the other field so we make the emotion keyboard invisible
-                    vpPager!!.visibility = View.INVISIBLE
-                    mSlidingTabLayout!!.visibility = View.INVISIBLE
+                    if (broBoard!!.visible) {
+                        broBoard!!.makeInvisible()
+                    }
                 }
             }
             R.id.passwordRegister -> {
                 if (b) {
                     println("password field touched")
                     // We don't want the user to see the emotion keyboard when this field is active
-                    vpPager!!.visibility = View.INVISIBLE
-                    mSlidingTabLayout!!.visibility = View.INVISIBLE
+                    if (broBoard!!.visible) {
+                        broBoard!!.makeInvisible()
+                    }
                 }
             }
         }
@@ -226,16 +175,18 @@ class RegisterActivity : AppCompatActivity() {
                 // bromotionboard are not visible at the same time.
                 Handler().postDelayed({
                     // We want to make the keyboard visible if it isn't yet.
-                    vpPager!!.visibility = View.VISIBLE
-                    mSlidingTabLayout!!.visibility = View.VISIBLE
+                    if (!broBoard!!.visible) {
+                        broBoard!!.makeVisible()
+                    }
                 }, 100)
 
             }
             R.id.broNameRegister -> {
                 println("broname field touched")
                 // The user clicked on the other field so we make the emotion keyboard invisible
-                vpPager!!.visibility = View.INVISIBLE
-                mSlidingTabLayout!!.visibility = View.INVISIBLE
+                if (broBoard!!.visible) {
+                    broBoard!!.makeInvisible()
+                }
             }
         }
     }
