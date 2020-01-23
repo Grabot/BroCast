@@ -50,7 +50,7 @@ class FirstKeyboard: ScrollView {
 
         LayoutInflater.from(context).inflate(R.layout.keyboard_1, this, true)
 
-        val stringIds = arrayOf(
+        var stringIds = arrayOf(
             R.string.grinning_face,
             R.string.winking_face,
             R.string.face_blowing_a_kiss,
@@ -84,6 +84,10 @@ class FirstKeyboard: ScrollView {
             R.string.confetti_ball,
             R.string.party_popper
         )
+
+        while ((stringIds.size % 8) != 0) {
+            stringIds += 0
+        }
 
         // The outer and main layer of the keyboard
         val mainLayout = findViewById<LinearLayout>(R.id.main_keyboard_layout)
@@ -140,10 +144,15 @@ class FirstKeyboard: ScrollView {
         val layout = LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT)
         layout.weight = 1f
         button.layoutParams = layout
-        button.text = context.getString(buttonId)
         button.textSize = 19f
-        button.id = View.generateViewId()
-        button.setOnClickListener(clickButtonListener)
+        if (buttonId != 0) {
+            button.id = View.generateViewId()
+            button.text = context.getString(buttonId)
+            button.setOnClickListener(clickButtonListener)
+        } else {
+            button.text = ""
+            button.isClickable = false
+        }
         return button
     }
 
@@ -184,15 +193,13 @@ class FirstKeyboard: ScrollView {
             R.id.button_exclamation -> {
                 inputConnection!!.commitText("!", 1)
             }
-            R.id.button_grinning_face -> {
-                inputConnection!!.commitText(context.getString(R.string.grinning_face), 1)
-                if (extraInputField!!.visibility != View.VISIBLE) {
-                    extraInputField!!.visibility = View.VISIBLE
-                }
-            }
             else -> {
                 val button = findViewById<Button>(view.id)
                 inputConnection!!.commitText(button.text, 1)
+
+                if (extraInputField!!.visibility != View.VISIBLE) {
+                    extraInputField!!.visibility = View.VISIBLE
+                }
             }
         }
     }
