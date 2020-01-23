@@ -31,7 +31,7 @@ class PagerBrodapter(fragmentManager: FragmentManager) : FragmentPagerAdapter(fr
                 return FirstKeyboardFragment.newInstance(0, "Page # 1", broTextField!!, extraInputField!!, questionButton!!, exclamationButton!!, backButton!!)
             }
             1 -> {
-                return SecondKeyboardFragment.newInstance(1, "Page # 2", broTextField!!)
+                return SecondKeyboardFragment.newInstance(1, "Page # 2", broTextField!!, extraInputField!!, questionButton!!, exclamationButton!!, backButton!!)
             }
             2 -> {
                 return ThirdKeyboardFragment.newInstance(2, "Page # 3", broTextField!!)

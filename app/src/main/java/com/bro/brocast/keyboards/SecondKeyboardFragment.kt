@@ -5,7 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
+import android.widget.RelativeLayout
 import androidx.fragment.app.Fragment
 import com.bro.brocast.R
 
@@ -16,6 +19,11 @@ class SecondKeyboardFragment : Fragment() {
     private var page: Int = 0
 
     var broTextField: EditText? = null
+
+    var extraInputField: RelativeLayout? = null
+    var questionButton: Button? = null
+    var exclamationButton: Button? = null
+    var backButton: ImageButton? = null
 
     // Store instance variables based on arguments passed
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,6 +37,11 @@ class SecondKeyboardFragment : Fragment() {
         val view = inflater.inflate(R.layout.keyboard_2_fragment, container, false)
 
         val keyboard = view.findViewById(R.id.keyboard) as SecondKeyboard
+        keyboard.extraInputField = extraInputField
+        keyboard.questionButton = questionButton
+        keyboard.exclamationButton = exclamationButton
+        keyboard.backButton = backButton
+        keyboard.setClickListenerExtraFields()
 
         val ic = broTextField!!.onCreateInputConnection(EditorInfo())
         keyboard.setInputConnection(ic)
@@ -40,9 +53,13 @@ class SecondKeyboardFragment : Fragment() {
 
         // newInstance constructor for creating fragment with arguments
         // We added the editText here that the focus of the keyboard should be on.
-        fun newInstance(page: Int, title: String, broTextField: EditText): SecondKeyboardFragment {
+        fun newInstance(page: Int, title: String, broTextField: EditText, extraInputField: RelativeLayout, questionButton: Button, exclamationButton: Button, backButton: ImageButton): SecondKeyboardFragment {
             val fragment = SecondKeyboardFragment()
             fragment.broTextField = broTextField
+            fragment.extraInputField = extraInputField
+            fragment.questionButton = questionButton
+            fragment.exclamationButton = exclamationButton
+            fragment.backButton = backButton
             val args = Bundle()
             args.putInt("someInt", page)
             args.putString("someTitle", title)

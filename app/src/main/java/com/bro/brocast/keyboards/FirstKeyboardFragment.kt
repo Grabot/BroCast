@@ -19,8 +19,8 @@ class FirstKeyboardFragment : Fragment() {
     private var page: Int = 0
 
     var broTextField: EditText? = null
-    var extraInputField: RelativeLayout? = null
 
+    var extraInputField: RelativeLayout? = null
     var questionButton: Button? = null
     var exclamationButton: Button? = null
     var backButton: ImageButton? = null
