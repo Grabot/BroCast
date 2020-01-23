@@ -110,6 +110,9 @@ class MessagingActivity: AppCompatActivity() {
 
                     // clear the input field
                     broTextField!!.text.clear()
+
+                    println("fast test")
+                    broBoard!!.goToTabPosition(4)
                 }
             }
             R.id.broMessageField -> {

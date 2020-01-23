@@ -59,6 +59,10 @@ class BroBoard(activity: Activity, supportFragmentManager: FragmentManager, broT
         visible = false
     }
 
+    fun goToTabPosition(position: Int) {
+        mSlidingTabLayout!!.goToTab()
+    }
+
     fun makeVisible() {
         vpPager!!.visibility = View.VISIBLE
         mSlidingTabLayout!!.visibility = View.VISIBLE

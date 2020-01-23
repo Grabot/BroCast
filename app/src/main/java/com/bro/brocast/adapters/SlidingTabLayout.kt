@@ -47,6 +47,7 @@ class SlidingTabLayout: HorizontalScrollView {
     // This is used to store the tab icons
     private var tabIcon: Array<Int>? = null
 
+    lateinit var tabMotion: ViewPager.OnPageChangeListener
 
     constructor(context: Context) : super(context) {
         init(context)
@@ -84,7 +85,9 @@ class SlidingTabLayout: HorizontalScrollView {
 
         mViewPager = viewPager
         if (viewPager != null) {
-            viewPager.addOnPageChangeListener(InternalViewPagerListener())
+            // We don't set the viewPageistener on the viewAdapter
+            // because we want to override the tab position indicators
+            tabMotion = InternalViewPagerListener()
             populateTabStrip()
         }
     }
@@ -169,6 +172,7 @@ class SlidingTabLayout: HorizontalScrollView {
             positionOffset: Float,
             positionOffsetPixels: Int
         ) {
+            println("This is the 'onPageScrolled' function. position $position positionOffset $positionOffset positionOffsetPixels $positionOffsetPixels")
             val tabStripChildCount = mTabStrip!!.childCount
             if (tabStripChildCount == 0 || position < 0 || position >= tabStripChildCount) {
                 return
@@ -192,6 +196,7 @@ class SlidingTabLayout: HorizontalScrollView {
         }
 
         override fun onPageScrollStateChanged(state: Int) {
+            println("This is the 'onPageScrollStateChanged' function. state $state")
             mScrollState = state
 
             if (mViewPagerPageChangeListener != null) {
@@ -200,6 +205,7 @@ class SlidingTabLayout: HorizontalScrollView {
         }
 
         override fun onPageSelected(position: Int) {
+            println("This is the 'onPageSelected' function. position $position")
             if (mScrollState == ViewPager.SCROLL_STATE_IDLE) {
                 mTabStrip!!.onViewPagerPageChanged(position, 0f)
                 scrollToTab(position, 0)
@@ -211,7 +217,12 @@ class SlidingTabLayout: HorizontalScrollView {
                 mViewPagerPageChangeListener!!.onPageSelected(position)
             }
         }
+    }
 
+    fun goToTab(position: Int, positionOffset: Float) {
+        // copy paste of tab 0 to tab 4
+        tabMotion.onPageSelected(4)
+        tabMotion.onPageScrolled(position, positionOffset, 0)
     }
 
     /**
