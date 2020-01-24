@@ -15,11 +15,11 @@ import com.beust.klaxon.Parser
 import com.bro.brocast.R
 
 
-class FirstKeyboard: ScrollView {
+class Keyboard: ScrollView {
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         // TODO @Sander: find a way to set a decent height!
-        val height = 550
+        val height = 650
 
         val heightSpec = MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY)
 

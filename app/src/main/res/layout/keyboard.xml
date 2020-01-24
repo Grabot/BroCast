@@ -13,16 +13,16 @@
         android:id="@+id/sliding_tabs"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@+id/keyboard_test" />
+        app:layout_constraintBottom_toTopOf="@+id/bro_board" />
 
-    <com.bro.brocast.keyboards.FirstKeyboard
-        android:id="@+id/keyboard_test"
+    <com.bro.brocast.keyboards.Keyboard
+        android:id="@+id/bro_board"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         tools:layout_editor_absoluteX="0dp">
-    </com.bro.brocast.keyboards.FirstKeyboard>
+    </com.bro.brocast.keyboards.Keyboard>
 
     <RelativeLayout
         android:id="@+id/extra_input_field"
