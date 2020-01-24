@@ -67,12 +67,40 @@ class FirstKeyboard: ScrollView {
             bromojisPeople += 0
         }
 
+        while ((bromojisAnimals.size % 8) != 0) {
+            bromojisAnimals += 0
+        }
+
+        while ((bromojisFood.size % 8) != 0) {
+            bromojisFood += 0
+        }
+
+        while ((bromojisSports.size % 8) != 0) {
+            bromojisSports += 0
+        }
+
+        while ((bromojisTravel.size % 8) != 0) {
+            bromojisTravel += 0
+        }
+
+        while ((bromojisObjects.size % 8) != 0) {
+            bromojisObjects += 0
+        }
+
+        while ((bromojisSymbols.size % 8) != 0) {
+            bromojisSymbols += 0
+        }
+
+        while ((bromojisFlags.size % 8) != 0) {
+            bromojisFlags += 0
+        }
+
         // The outer and main layer of the keyboard
         val mainLayout = findViewById<LinearLayout>(R.id.main_keyboard_layout)
 
         // creating the first category
-        val layers = createLayers(context, firstKeyboardBromojis)
-        for (layer in layers) {
+        val layers1 = createLayers(context, firstKeyboardBromojis)
+        for (layer in layers1) {
             mainLayout.addView(layer)
         }
 
@@ -80,6 +108,41 @@ class FirstKeyboard: ScrollView {
         // creating the second category
         val layers2 = createLayers(context, bromojisPeople)
         for (layer in layers2) {
+            mainLayout.addView(layer)
+        }
+
+        val layers3 = createLayers(context, bromojisAnimals)
+        for (layer in layers3) {
+            mainLayout.addView(layer)
+        }
+
+        val layers4 = createLayers(context, bromojisFood)
+        for (layer in layers4) {
+            mainLayout.addView(layer)
+        }
+
+        val layers5 = createLayers(context, bromojisSports)
+        for (layer in layers5) {
+            mainLayout.addView(layer)
+        }
+
+        val layers6 = createLayers(context, bromojisTravel)
+        for (layer in layers6) {
+            mainLayout.addView(layer)
+        }
+
+        val layers7 = createLayers(context, bromojisObjects)
+        for (layer in layers7) {
+            mainLayout.addView(layer)
+        }
+
+        val layers8 = createLayers(context, bromojisSymbols)
+        for (layer in layers8) {
+            mainLayout.addView(layer)
+        }
+
+        val layers9 = createLayers(context, bromojisFlags)
+        for (layer in layers9) {
             mainLayout.addView(layer)
         }
 
