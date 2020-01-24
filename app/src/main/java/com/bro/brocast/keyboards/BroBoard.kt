@@ -11,11 +11,12 @@ import com.bro.brocast.R
 import com.bro.brocast.adapters.BroViewPager
 import com.bro.brocast.adapters.PagerBrodapter
 import com.bro.brocast.adapters.SlidingTabLayout
+import com.bro.brocast.adapters.SlidingTabLayoutNew
 
 class BroBoard(activity: Activity, supportFragmentManager: FragmentManager, broTextField: EditText, questionButton: Button, exclamationButton: Button, backButton: ImageButton) {
 
     var vpPager: BroViewPager? = null
-    var mSlidingTabLayout: SlidingTabLayout? = null
+    var mSlidingTabLayout: SlidingTabLayoutNew? = null
     var extraInputField: RelativeLayout? = null
 
     var visible: Boolean = true
@@ -28,8 +29,8 @@ class BroBoard(activity: Activity, supportFragmentManager: FragmentManager, broT
         val adapterViewPager = PagerBrodapter(supportFragmentManager)
 
         // TODO @Skools: We set the pagerBrodapter twice. See if you can fix this.
-        vpPager!!.adapter = adapterViewPager
-        vpPager!!.pagerBrodapter = adapterViewPager
+//        vpPager!!.adapter = adapterViewPager
+//        vpPager!!.pagerBrodapter = adapterViewPager
         adapterViewPager.broTextField = broTextField
         adapterViewPager.extraInputField = extraInputField
 
@@ -51,7 +52,7 @@ class BroBoard(activity: Activity, supportFragmentManager: FragmentManager, broT
         mSlidingTabLayout!!.setTabIcons(iconArray)
 
         mSlidingTabLayout!!.setDistributeEvenly(true)
-        mSlidingTabLayout!!.setViewPager(vpPager)
+        mSlidingTabLayout!!.populateTabStrip()
 
         vpPager!!.visibility = View.GONE
         mSlidingTabLayout!!.visibility = View.GONE
@@ -60,7 +61,7 @@ class BroBoard(activity: Activity, supportFragmentManager: FragmentManager, broT
     }
 
     fun goToTabPosition(position: Int) {
-//        mSlidingTabLayout!!.goToTab(position, 0f)
+        mSlidingTabLayout!!.goToTab(position, 0f)
     }
 
     fun makeVisible() {

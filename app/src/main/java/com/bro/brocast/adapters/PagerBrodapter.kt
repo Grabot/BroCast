@@ -26,36 +26,17 @@ class PagerBrodapter(fragmentManager: FragmentManager) : FragmentPagerAdapter(fr
     // Returns the fragment to display for that page
     override fun getItem(position: Int): Fragment {
         when (position) {
-            0  -> {
-                // TODO @Sander: add a most used keyboard? placeholder for now
-                return FirstKeyboardFragment.newInstance(0, "Page # 1", broTextField!!, extraInputField!!, questionButton!!, exclamationButton!!, backButton!!)
-            }
-            1 -> {
-                return SecondKeyboardFragment.newInstance(1, "Page # 2", broTextField!!, extraInputField!!, questionButton!!, exclamationButton!!, backButton!!)
-            }
-            2 -> {
-                return ThirdKeyboardFragment.newInstance(2, "Page # 3", broTextField!!)
-            }
-            3 -> {
-                return FourthKeyboardFragment.newInstance(3, "Page # 4", broTextField!!)
-            }
-            4 -> {
-                return FifthKeyboardFragment.newInstance(4, "Page # 5", broTextField!!)
-            }
-            5 -> {
-                return SixthsKeyboardFragment.newInstance(5, "Page # 6", broTextField!!)
-            }
-            6 -> {
-                return SeventhKeyboardFragment.newInstance(6, "Page # 7", broTextField!!)
-            }
-            7 -> {
-                return EighthKeyboardFragment.newInstance(7, "Page # 8", broTextField!!)
-            }
-            8 -> {
-                return NinthKeyboardFragment.newInstance(8, "Page # 9", broTextField!!)
-            }
             else -> {
-                return FirstKeyboardFragment.newInstance(0, "Page # 1", broTextField!!, extraInputField!!, questionButton!!, exclamationButton!!, backButton!!)
+                // TODO @Skools: Change this to be a normal scrollview
+                return FirstKeyboardFragment.newInstance(
+                    0,
+                    "Page # 1",
+                    broTextField!!,
+                    extraInputField!!,
+                    questionButton!!,
+                    exclamationButton!!,
+                    backButton!!
+                )
             }
         }
     }

@@ -47,9 +47,7 @@ class SlidingTabLayoutNew: HorizontalScrollView {
     // This is used to store the tab icons
     private var tabIcon: Array<Int>? = null
 
-    lateinit var tabMotion: ViewPager.OnPageChangeListener
-
-    var NUM_ITEMS = 9
+    var NUM_ITEMS = 0
 
     constructor(context: Context) : super(context) {
         init(context)
@@ -60,6 +58,8 @@ class SlidingTabLayoutNew: HorizontalScrollView {
     }
 
     fun init(context: Context) {
+        // Initialize the NUM_ITEMS. This is the amount of tabs that the user can click on
+        NUM_ITEMS = 0
         // Disable the Scroll Bar
         isHorizontalScrollBarEnabled = false
         // Make sure that the Tab Strips fills this View
@@ -87,16 +87,11 @@ class SlidingTabLayoutNew: HorizontalScrollView {
 
         mViewPager = viewPager
         if (viewPager != null) {
-            // We don't set the viewPageistener on the viewAdapter
-            // because we want to override the tab position indicators
-            tabMotion = InternalViewPagerListener()
-            mViewPager!!.addOnPageChangeListener(tabMotion)
             populateTabStrip()
         }
     }
 
-    private fun populateTabStrip() {
-        val adapter = mViewPager!!.pagerBrodapter
+    fun populateTabStrip() {
         val tabClickListener = TabClickListener()
 
         for (i in 0 until NUM_ITEMS) {
@@ -134,7 +129,8 @@ class SlidingTabLayoutNew: HorizontalScrollView {
                 lp.weight = 1f
             }
 
-            tabTitleView!!.text = adapter!!.getPageTitle(i)
+            // TODO @Skools: find out if this has any use
+            tabTitleView!!.text = "text?"
             tabView.setOnClickListener(tabClickListener)
             val desc = mContentDescriptions.get(i, null)
             if (desc != null) {
@@ -142,7 +138,8 @@ class SlidingTabLayoutNew: HorizontalScrollView {
             }
 
             mTabStrip!!.addView(tabView)
-            if (i == mViewPager!!.currentItem) {
+            // TODO @Skools: find out if this has any use
+            if (i == 0) {
                 tabView.isSelected = true
             }
         }
@@ -164,24 +161,6 @@ class SlidingTabLayoutNew: HorizontalScrollView {
             }
 
             scrollTo(targetScrollX, 0)
-        }
-    }
-
-    private inner class InternalViewPagerListener : ViewPager.OnPageChangeListener {
-        override fun onPageScrolled(
-            position: Int,
-            positionOffset: Float,
-            positionOffsetPixels: Int
-        ) {
-
-        }
-
-        override fun onPageScrollStateChanged(state: Int) {
-
-        }
-
-        override fun onPageSelected(position: Int) {
-
         }
     }
 
@@ -257,7 +236,7 @@ class SlidingTabLayoutNew: HorizontalScrollView {
         override fun onClick(v: View) {
             for (i in 0 until mTabStrip!!.childCount) {
                 if (v === mTabStrip!!.getChildAt(i)) {
-                    mViewPager!!.currentItem = i
+                    goToTab(i, 0f)
                     return
                 }
             }
@@ -265,6 +244,7 @@ class SlidingTabLayoutNew: HorizontalScrollView {
     }
 
     fun setTabIcons(tabIcon: Array<Int>) {
+        NUM_ITEMS = tabIcon.size
         this.tabIcon = tabIcon
     }
 }
