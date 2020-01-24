@@ -17,7 +17,7 @@ import android.widget.TextView
 import androidx.viewpager.widget.ViewPager
 import com.bro.brocast.R
 
-class SlidingTabLayout: HorizontalScrollView {
+class SlidingTabLayoutNew: HorizontalScrollView {
 
     interface TabColorizer {
 
@@ -47,6 +47,9 @@ class SlidingTabLayout: HorizontalScrollView {
     // This is used to store the tab icons
     private var tabIcon: Array<Int>? = null
 
+    lateinit var tabMotion: ViewPager.OnPageChangeListener
+
+    var NUM_ITEMS = 9
 
     constructor(context: Context) : super(context) {
         init(context)
@@ -84,7 +87,10 @@ class SlidingTabLayout: HorizontalScrollView {
 
         mViewPager = viewPager
         if (viewPager != null) {
-            viewPager.addOnPageChangeListener(InternalViewPagerListener())
+            // We don't set the viewPageistener on the viewAdapter
+            // because we want to override the tab position indicators
+            tabMotion = InternalViewPagerListener()
+            mViewPager!!.addOnPageChangeListener(tabMotion)
             populateTabStrip()
         }
     }
@@ -93,7 +99,7 @@ class SlidingTabLayout: HorizontalScrollView {
         val adapter = mViewPager!!.pagerBrodapter
         val tabClickListener = TabClickListener()
 
-        for (i in 0 until adapter!!.count) {
+        for (i in 0 until NUM_ITEMS) {
             var tabView: View? = null
             var tabTitleView: TextView? = null
 
@@ -128,7 +134,7 @@ class SlidingTabLayout: HorizontalScrollView {
                 lp.weight = 1f
             }
 
-            tabTitleView!!.text = adapter.getPageTitle(i)
+            tabTitleView!!.text = adapter!!.getPageTitle(i)
             tabView.setOnClickListener(tabClickListener)
             val desc = mContentDescriptions.get(i, null)
             if (desc != null) {
@@ -162,55 +168,62 @@ class SlidingTabLayout: HorizontalScrollView {
     }
 
     private inner class InternalViewPagerListener : ViewPager.OnPageChangeListener {
-        private var mScrollState: Int = 0
-
         override fun onPageScrolled(
             position: Int,
             positionOffset: Float,
             positionOffsetPixels: Int
         ) {
-            val tabStripChildCount = mTabStrip!!.childCount
-            if (tabStripChildCount == 0 || position < 0 || position >= tabStripChildCount) {
-                return
-            }
 
-            mTabStrip!!.onViewPagerPageChanged(position, positionOffset)
-
-            val selectedTitle = mTabStrip!!.getChildAt(position)
-            var extraOffset = 0
-            if (selectedTitle != null) {
-                extraOffset = (positionOffset * selectedTitle.width).toInt()
-            }
-            scrollToTab(position, extraOffset)
-
-            if (mViewPagerPageChangeListener != null) {
-                mViewPagerPageChangeListener!!.onPageScrolled(
-                    position, positionOffset,
-                    positionOffsetPixels
-                )
-            }
         }
 
         override fun onPageScrollStateChanged(state: Int) {
-            mScrollState = state
 
-            if (mViewPagerPageChangeListener != null) {
-                mViewPagerPageChangeListener!!.onPageScrollStateChanged(state)
-            }
         }
 
         override fun onPageSelected(position: Int) {
-            if (mScrollState == ViewPager.SCROLL_STATE_IDLE) {
-                mTabStrip!!.onViewPagerPageChanged(position, 0f)
-                scrollToTab(position, 0)
-            }
-            for (i in 0 until mTabStrip!!.childCount) {
-                mTabStrip!!.getChildAt(i).isSelected = position == i
-            }
-            if (mViewPagerPageChangeListener != null) {
-                mViewPagerPageChangeListener!!.onPageSelected(position)
-            }
+
         }
+    }
+
+    fun pageSelected(position: Int) {
+        println("This is the 'onPageSelected' function. position $position")
+        for (i in 0 until mTabStrip!!.childCount) {
+            mTabStrip!!.getChildAt(i).isSelected = position == i
+        }
+        if (mViewPagerPageChangeListener != null) {
+            mViewPagerPageChangeListener!!.onPageSelected(position)
+        }
+    }
+
+    fun pageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+
+        println("This is the 'onPageScrolled' function. position $position positionOffset $positionOffset positionOffsetPixels $positionOffsetPixels")
+        val tabStripChildCount = mTabStrip!!.childCount
+        if (tabStripChildCount == 0 || position < 0 || position >= tabStripChildCount) {
+            return
+        }
+
+        mTabStrip!!.onViewPagerPageChanged(position, positionOffset)
+
+        val selectedTitle = mTabStrip!!.getChildAt(position)
+        var extraOffset = 0
+        if (selectedTitle != null) {
+            extraOffset = (positionOffset * selectedTitle.width).toInt()
+        }
+        scrollToTab(position, extraOffset)
+
+        if (mViewPagerPageChangeListener != null) {
+            mViewPagerPageChangeListener!!.onPageScrolled(
+                position, positionOffset,
+                positionOffsetPixels
+            )
+        }
+    }
+
+    fun goToTab(position: Int, positionOffset: Float) {
+        // copy paste of tab 0 to tab 4
+        pageSelected(position)
+        pageScrolled(position, positionOffset, 0)
     }
 
     /**

@@ -110,6 +110,8 @@ class MessagingActivity: AppCompatActivity() {
 
                     // clear the input field
                     broTextField!!.text.clear()
+
+                    broBoard!!.goToTabPosition(4)
                 }
             }
             R.id.broMessageField -> {

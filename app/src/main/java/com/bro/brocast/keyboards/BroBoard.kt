@@ -60,7 +60,7 @@ class BroBoard(activity: Activity, supportFragmentManager: FragmentManager, broT
     }
 
     fun goToTabPosition(position: Int) {
-        mSlidingTabLayout!!.goToTab(position, 0f)
+//        mSlidingTabLayout!!.goToTab(position, 0f)
     }
 
     fun makeVisible() {
