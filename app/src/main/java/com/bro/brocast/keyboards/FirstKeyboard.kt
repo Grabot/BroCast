@@ -17,6 +17,15 @@ import com.bro.brocast.R
 
 class FirstKeyboard: ScrollView {
 
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        // TODO @Sander: find a way to set a decent height!
+        val height = 550
+
+        val heightSpec = MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY)
+
+        super.onMeasure(widthMeasureSpec, heightSpec)
+    }
+
     constructor(context: Context) : super(context){
         init(context)
     }
@@ -532,14 +541,16 @@ class FirstKeyboard: ScrollView {
     }
 
     private val onScrollchangedListener = OnScrollChangedListener {
-        extraInputField!!.visibility = View.GONE
-        if (scrollY == 0) {
-            if (extraInputField!!.visibility != View.VISIBLE) {
-                extraInputField!!.visibility = View.VISIBLE
-            }
-        } else {
-            if (extraInputField!!.visibility != View.GONE) {
-                extraInputField!!.visibility = View.GONE
+        if (this.visibility != View.GONE) {
+            extraInputField!!.visibility = View.GONE
+            if (scrollY == 0) {
+                if (extraInputField!!.visibility != View.VISIBLE) {
+                    extraInputField!!.visibility = View.VISIBLE
+                }
+            } else {
+                if (extraInputField!!.visibility != View.GONE) {
+                    extraInputField!!.visibility = View.GONE
+                }
             }
         }
     }

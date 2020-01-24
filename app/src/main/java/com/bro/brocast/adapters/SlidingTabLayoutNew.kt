@@ -37,7 +37,6 @@ class SlidingTabLayoutNew: HorizontalScrollView {
 
     private var mDistributeEvenly: Boolean = false
 
-    private var mViewPager: BroViewPager? = null
     private var mTabViewLayoutId: Int = 0
     private var mTabViewTextViewId: Int = 0
 
@@ -76,19 +75,6 @@ class SlidingTabLayoutNew: HorizontalScrollView {
 
     fun setDistributeEvenly(distributeEvenly: Boolean) {
         mDistributeEvenly = distributeEvenly
-    }
-
-    /**
-     * Sets the associated view pager. Note that the assumption here is that the pager content
-     * (number of tabs and tab titles) does not change after this call has been made.
-     */
-    fun setViewPager(viewPager: BroViewPager?) {
-        mTabStrip!!.removeAllViews()
-
-        mViewPager = viewPager
-        if (viewPager != null) {
-            populateTabStrip()
-        }
     }
 
     fun populateTabStrip() {

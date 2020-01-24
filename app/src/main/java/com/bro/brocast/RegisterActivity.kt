@@ -82,7 +82,7 @@ class RegisterActivity : AppCompatActivity() {
         val backButton = findViewById<ImageButton>(R.id.button_back)
         val searchEmojiButton = findViewById<ImageButton>(R.id.button_search_emoji)
 
-        broBoard = BroBoard(this, supportFragmentManager, bromotion!!, questionButton, exclamationButton, backButton)
+        broBoard = BroBoard(this, bromotion!!, questionButton, exclamationButton, backButton)
 
         bromotion!!.showSoftInputOnFocus = false
         broName!!.requestFocus()

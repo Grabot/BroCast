@@ -83,7 +83,7 @@ class MessagingActivity: AppCompatActivity() {
         val backButton = findViewById<ImageButton>(R.id.button_back)
         val searchEmojiButton = findViewById<ImageButton>(R.id.button_search_emoji)
 
-        broBoard = BroBoard(this, supportFragmentManager, broTextField!!, questionButton, exclamationButton, backButton)
+        broBoard = BroBoard(this, broTextField!!, questionButton, exclamationButton, backButton)
     }
 
     private val clickButtonListener = View.OnClickListener { view ->
