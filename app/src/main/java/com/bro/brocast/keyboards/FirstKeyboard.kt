@@ -104,6 +104,13 @@ class FirstKeyboard: ScrollView {
             mainLayout.addView(layer)
         }
 
+        // Create another layer, which is empty. This is to give some space at the bottom
+        val spaceLayerFirst = LinearLayout(context)
+        val layoutFirst = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, 80)
+        layoutFirst.weight = 1f
+        spaceLayerFirst.layoutParams = layoutFirst
+        mainLayout.addView(spaceLayerFirst)
+
         // TODO @Skools: place a category change indicator here.
         // creating the second category
         val layers2 = createLayers(context, bromojisPeople)
@@ -111,47 +118,95 @@ class FirstKeyboard: ScrollView {
             mainLayout.addView(layer)
         }
 
+        // Create another layer, which is empty. This is to give some space at the bottom
+        val spaceLayerPeople = LinearLayout(context)
+        val layoutPeople = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, 80)
+        layoutPeople.weight = 1f
+        spaceLayerPeople.layoutParams = layoutPeople
+        mainLayout.addView(spaceLayerPeople)
+
         val layers3 = createLayers(context, bromojisAnimals)
         for (layer in layers3) {
             mainLayout.addView(layer)
         }
+
+        // Create another layer, which is empty. This is to give some space at the bottom
+        val spaceLayerAnimals = LinearLayout(context)
+        val layoutAnimals = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, 80)
+        layoutAnimals.weight = 1f
+        spaceLayerAnimals.layoutParams = layoutAnimals
+        mainLayout.addView(spaceLayerAnimals)
 
         val layers4 = createLayers(context, bromojisFood)
         for (layer in layers4) {
             mainLayout.addView(layer)
         }
 
+        // Create another layer, which is empty. This is to give some space at the bottom
+        val spaceLayerFood = LinearLayout(context)
+        val layoutFood = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, 80)
+        layoutFood.weight = 1f
+        spaceLayerFood.layoutParams = layoutFood
+        mainLayout.addView(spaceLayerFood)
+
         val layers5 = createLayers(context, bromojisSports)
         for (layer in layers5) {
             mainLayout.addView(layer)
         }
+
+        // Create another layer, which is empty. This is to give some space at the bottom
+        val spaceLayerSports = LinearLayout(context)
+        val layoutSports = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, 80)
+        layoutSports.weight = 1f
+        spaceLayerSports.layoutParams = layoutSports
+        mainLayout.addView(spaceLayerSports)
 
         val layers6 = createLayers(context, bromojisTravel)
         for (layer in layers6) {
             mainLayout.addView(layer)
         }
 
+        // Create another layer, which is empty. This is to give some space at the bottom
+        val spaceLayerTravel = LinearLayout(context)
+        val layoutTravel = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, 80)
+        layoutTravel.weight = 1f
+        spaceLayerTravel.layoutParams = layoutTravel
+        mainLayout.addView(spaceLayerTravel)
+
         val layers7 = createLayers(context, bromojisObjects)
         for (layer in layers7) {
             mainLayout.addView(layer)
         }
+
+        // Create another layer, which is empty. This is to give some space at the bottom
+        val spaceLayerObjects = LinearLayout(context)
+        val layoutObjects = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, 80)
+        layoutObjects.weight = 1f
+        spaceLayerObjects.layoutParams = layoutObjects
+        mainLayout.addView(spaceLayerObjects)
 
         val layers8 = createLayers(context, bromojisSymbols)
         for (layer in layers8) {
             mainLayout.addView(layer)
         }
 
+        // Create another layer, which is empty. This is to give some space at the bottom
+        val spaceLayerSymbols = LinearLayout(context)
+        val layoutSymbols = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, 80)
+        layoutSymbols.weight = 1f
+        spaceLayerSymbols.layoutParams = layoutSymbols
+        mainLayout.addView(spaceLayerSymbols)
+
         val layers9 = createLayers(context, bromojisFlags)
         for (layer in layers9) {
             mainLayout.addView(layer)
         }
 
-        // Create another layer, which is empty. This is to give some space at the bottom
-        val spaceLayer = LinearLayout(context)
-        val layout = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, 80)
-        layout.weight = 1f
-        spaceLayer.layoutParams = layout
-        mainLayout.addView(spaceLayer)
+        val spaceLayerFlags = LinearLayout(context)
+        val layoutFlag = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, 80)
+        layoutFlag.weight = 1f
+        spaceLayerFlags.layoutParams = layoutFlag
+        mainLayout.addView(spaceLayerFlags)
 
         this.viewTreeObserver.addOnScrollChangedListener(onScrollchangedListener)
     }
