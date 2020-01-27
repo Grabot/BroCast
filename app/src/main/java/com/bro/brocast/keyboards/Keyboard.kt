@@ -8,6 +8,7 @@ import android.view.View.OnClickListener
 import android.view.ViewTreeObserver.OnScrollChangedListener
 import android.view.inputmethod.InputConnection
 import android.text.TextUtils
+import android.view.Gravity
 import android.view.ViewGroup
 import android.widget.*
 import com.beust.klaxon.JsonArray
@@ -106,9 +107,16 @@ class Keyboard: ScrollView {
 
         // Create another layer, which is empty. This is to give some space at the bottom
         val spaceLayerFirst = LinearLayout(context)
-        val layoutFirst = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, 80)
+        val layoutFirst = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 80)
         layoutFirst.weight = 1f
         spaceLayerFirst.layoutParams = layoutFirst
+
+        val textViewSmileys = TextView(context)
+        textViewSmileys.layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        textViewSmileys.gravity = Gravity.CENTER
+        textViewSmileys.setText("Smileys and people")
+        spaceLayerFirst.addView(textViewSmileys)
+
         mainLayout.addView(spaceLayerFirst)
 
         // TODO @Skools: place a category change indicator here.
@@ -120,9 +128,16 @@ class Keyboard: ScrollView {
 
         // Create another layer, which is empty. This is to give some space at the bottom
         val spaceLayerPeople = LinearLayout(context)
-        val layoutPeople = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, 80)
+        val layoutPeople = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 80)
         layoutPeople.weight = 1f
         spaceLayerPeople.layoutParams = layoutPeople
+
+        val textViewAnimals = TextView(context)
+        textViewAnimals.layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        textViewAnimals.gravity = Gravity.CENTER
+        textViewAnimals.setText("Animals and nature")
+        spaceLayerPeople.addView(textViewAnimals)
+
         mainLayout.addView(spaceLayerPeople)
 
         val layers3 = createLayers(context, bromojisAnimals)
@@ -132,9 +147,16 @@ class Keyboard: ScrollView {
 
         // Create another layer, which is empty. This is to give some space at the bottom
         val spaceLayerAnimals = LinearLayout(context)
-        val layoutAnimals = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, 80)
+        val layoutAnimals = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 80)
         layoutAnimals.weight = 1f
         spaceLayerAnimals.layoutParams = layoutAnimals
+
+        val textViewFood = TextView(context)
+        textViewFood.layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        textViewFood.gravity = Gravity.CENTER
+        textViewFood.setText("Food and drinks")
+        spaceLayerAnimals.addView(textViewFood)
+
         mainLayout.addView(spaceLayerAnimals)
 
         val layers4 = createLayers(context, bromojisFood)
@@ -144,9 +166,16 @@ class Keyboard: ScrollView {
 
         // Create another layer, which is empty. This is to give some space at the bottom
         val spaceLayerFood = LinearLayout(context)
-        val layoutFood = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, 80)
+        val layoutFood = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 80)
         layoutFood.weight = 1f
         spaceLayerFood.layoutParams = layoutFood
+
+        val textViewSports = TextView(context)
+        textViewSports.layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        textViewSports.gravity = Gravity.CENTER
+        textViewSports.setText("Sports and activities")
+        spaceLayerFood.addView(textViewSports)
+
         mainLayout.addView(spaceLayerFood)
 
         val layers5 = createLayers(context, bromojisSports)
@@ -156,9 +185,16 @@ class Keyboard: ScrollView {
 
         // Create another layer, which is empty. This is to give some space at the bottom
         val spaceLayerSports = LinearLayout(context)
-        val layoutSports = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, 80)
+        val layoutSports = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 80)
         layoutSports.weight = 1f
         spaceLayerSports.layoutParams = layoutSports
+
+        val textViewTravel = TextView(context)
+        textViewTravel.layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        textViewTravel.gravity = Gravity.CENTER
+        textViewTravel.setText("Travel and places")
+        spaceLayerSports.addView(textViewTravel)
+
         mainLayout.addView(spaceLayerSports)
 
         val layers6 = createLayers(context, bromojisTravel)
@@ -168,9 +204,16 @@ class Keyboard: ScrollView {
 
         // Create another layer, which is empty. This is to give some space at the bottom
         val spaceLayerTravel = LinearLayout(context)
-        val layoutTravel = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, 80)
+        val layoutTravel = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 80)
         layoutTravel.weight = 1f
         spaceLayerTravel.layoutParams = layoutTravel
+
+        val textViewObjects = TextView(context)
+        textViewObjects.layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        textViewObjects.gravity = Gravity.CENTER
+        textViewObjects.setText("Objects")
+        spaceLayerTravel.addView(textViewObjects)
+
         mainLayout.addView(spaceLayerTravel)
 
         val layers7 = createLayers(context, bromojisObjects)
@@ -180,9 +223,16 @@ class Keyboard: ScrollView {
 
         // Create another layer, which is empty. This is to give some space at the bottom
         val spaceLayerObjects = LinearLayout(context)
-        val layoutObjects = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, 80)
+        val layoutObjects = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 80)
         layoutObjects.weight = 1f
         spaceLayerObjects.layoutParams = layoutObjects
+
+        val textViewSymbols = TextView(context)
+        textViewSymbols.layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        textViewSymbols.gravity = Gravity.CENTER
+        textViewSymbols.setText("Symbols")
+        spaceLayerObjects.addView(textViewSymbols)
+
         mainLayout.addView(spaceLayerObjects)
 
         val layers8 = createLayers(context, bromojisSymbols)
@@ -192,9 +242,16 @@ class Keyboard: ScrollView {
 
         // Create another layer, which is empty. This is to give some space at the bottom
         val spaceLayerSymbols = LinearLayout(context)
-        val layoutSymbols = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, 80)
+        val layoutSymbols = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 80)
         layoutSymbols.weight = 1f
         spaceLayerSymbols.layoutParams = layoutSymbols
+
+        val textViewFlags = TextView(context)
+        textViewFlags.layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        textViewFlags.gravity = Gravity.CENTER
+        textViewFlags.setText("Flags")
+        spaceLayerSymbols.addView(textViewFlags)
+
         mainLayout.addView(spaceLayerSymbols)
 
         val layers9 = createLayers(context, bromojisFlags)
@@ -203,7 +260,7 @@ class Keyboard: ScrollView {
         }
 
         val spaceLayerFlags = LinearLayout(context)
-        val layoutFlag = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, 80)
+        val layoutFlag = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 80)
         layoutFlag.weight = 1f
         spaceLayerFlags.layoutParams = layoutFlag
         mainLayout.addView(spaceLayerFlags)
