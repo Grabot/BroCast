@@ -54,7 +54,7 @@ class BroBoard(activity: Activity, broTextField: EditText, questionButton: Butto
     }
 
     fun goToTabPosition(position: Int, positionOffset: Float) {
-        if (position >= 0 && positionOffset > 0) {
+        if (position >= 0 && positionOffset >= 0) {
             mSlidingTabLayout.goToTab(position, positionOffset)
         }
     }
