@@ -28,7 +28,7 @@ class SlidingTabStrip: LinearLayout {
     private var mSelectedPosition: Int = 0
     private var mSelectionOffset: Float = 0.toFloat()
 
-    private var mCustomTabColorizer: SlidingTabLayoutNew.TabColorizer? = null
+    private var mCustomTabColorizer: SlidingTabLayout.TabColorizer? = null
 
     constructor(context: Context) : super(context) {
         init(context)
@@ -131,7 +131,7 @@ class SlidingTabStrip: LinearLayout {
         return Color.rgb(r.toInt(), g.toInt(), b.toInt())
     }
 
-    private class SimpleTabColorizer : SlidingTabLayoutNew.TabColorizer {
+    private class SimpleTabColorizer : SlidingTabLayout.TabColorizer {
         private var mIndicatorColors: IntArray? = null
 
         override fun getIndicatorColor(position: Int): Int {

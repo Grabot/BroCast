@@ -14,9 +14,30 @@ import android.widget.*
 import com.beust.klaxon.JsonArray
 import com.beust.klaxon.Parser
 import com.bro.brocast.R
+import java.text.FieldPosition
 
 
 class Keyboard: ScrollView {
+
+    private var broBoard: BroBoard? = null
+
+    private var inputConnection: InputConnection? = null
+
+    var extraInputField: RelativeLayout? = null
+
+    var questionButton: Button? = null
+    var exclamationButton: Button? = null
+    var backButton: ImageButton? = null
+
+    private lateinit var layers1: ArrayList<LinearLayout>
+    private lateinit var layers2: ArrayList<LinearLayout>
+    private lateinit var layers3: ArrayList<LinearLayout>
+    private lateinit var layers4: ArrayList<LinearLayout>
+    private lateinit var layers5: ArrayList<LinearLayout>
+    private lateinit var layers6: ArrayList<LinearLayout>
+    private lateinit var layers7: ArrayList<LinearLayout>
+    private lateinit var layers8: ArrayList<LinearLayout>
+    private lateinit var layers9: ArrayList<LinearLayout>
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         // TODO @Sander: find a way to set a decent height!
@@ -39,23 +60,16 @@ class Keyboard: ScrollView {
         init(context)
     }
 
-    private var inputConnection: InputConnection? = null
+    fun goToEmojiCategory(position: Int) {
+        val lengthLayers = determineLengthOfTabLayers()
 
-    var extraInputField: RelativeLayout? = null
-
-    var questionButton: Button? = null
-    var exclamationButton: Button? = null
-    var backButton: ImageButton? = null
-
-    private lateinit var layers1: ArrayList<LinearLayout>
-    private lateinit var layers2: ArrayList<LinearLayout>
-    private lateinit var layers3: ArrayList<LinearLayout>
-    private lateinit var layers4: ArrayList<LinearLayout>
-    private lateinit var layers5: ArrayList<LinearLayout>
-    private lateinit var layers6: ArrayList<LinearLayout>
-    private lateinit var layers7: ArrayList<LinearLayout>
-    private lateinit var layers8: ArrayList<LinearLayout>
-    private lateinit var layers9: ArrayList<LinearLayout>
+        var totalHeight = 0
+        for (i in 0 until position) {
+            totalHeight += lengthLayers[i]
+        }
+        scrollY = totalHeight
+        goToCorrectTabPosition(lengthLayers)
+    }
 
     private fun init(context: Context) {
 
@@ -333,77 +347,74 @@ class Keyboard: ScrollView {
         backButton!!.setOnClickListener(clickButtonListener)
     }
 
-    fun determineLengthOfTabLayers() {
-        var layerLength1 = 0
-        for (layer in layers1) {
-            layerLength1 += layer.height
-        }
-        println("height 1 layer! $layerLength1")
-        var layerLength2 = 0
-        for (layer in layers2) {
-            layerLength2 += layer.height
-        }
-        println("height 2 layer! $layerLength2")
-        var layerLength3 = 0
-        for (layer in layers3) {
-            layerLength3 += layer.height
-        }
-        println("height 3 layer! $layerLength3")
-        var layerLength4 = 0
-        for (layer in layers4) {
-            layerLength4 += layer.height
-        }
-        println("height 4 layer! $layerLength4")
-        var layerLength5 = 0
-        for (layer in layers5) {
-            layerLength5 += layer.height
-        }
-        println("height 5 layer! $layerLength5")
-        var layerLength6 = 0
-        for (layer in layers6) {
-            layerLength6 += layer.height
-        }
-        println("height 6 layer! $layerLength6")
-        var layerLength7 = 0
-        for (layer in layers7) {
-            layerLength7 += layer.height
-        }
-        println("height 7 layer! $layerLength7")
-        var layerLength8 = 0
-        for (layer in layers8) {
-            layerLength8 += layer.height
-        }
-        println("height 8 layer! $layerLength8")
-        var layerLength9 = 0
-        for (layer in layers9) {
-            layerLength9 += layer.height
-        }
-        println("height 9 layer! $layerLength9")
-
+    private fun determineLengthOfTabLayers(): Array<Int> {
         val layerLengths = arrayOf(
-            layerLength1,
-            layerLength2,
-            layerLength3,
-            layerLength4,
-            layerLength5,
-            layerLength6,
-            layerLength7,
-            layerLength8,
-            layerLength9
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
         )
-        var lengthBoard = 0
-        var distanceLengths: Array<Double> = arrayOf()
-        for (layerLength in layerLengths) {
-            val distanceTab = (scrollY.toDouble() - lengthBoard) / layerLength
-            distanceLengths += distanceTab
-            println("length of layer $distanceTab")
-            lengthBoard += layerLength
+        layerLengths[0] = 0
+        for (layer in layers1) {
+            layerLengths[0] += layer.height
         }
-        println("scrolly $scrollY")
+        layerLengths[1] = 0
+        for (layer in layers2) {
+            layerLengths[1] += layer.height
+        }
+        layerLengths[2] = 0
+        for (layer in layers3) {
+            layerLengths[2] += layer.height
+        }
+        layerLengths[3] = 0
+        for (layer in layers4) {
+            layerLengths[3] += layer.height
+        }
+        layerLengths[4] = 0
+        for (layer in layers5) {
+            layerLengths[4] += layer.height
+        }
+        layerLengths[5] = 0
+        for (layer in layers6) {
+            layerLengths[5] += layer.height
+        }
+        layerLengths[6] = 0
+        for (layer in layers7) {
+            layerLengths[6] += layer.height
+        }
+        layerLengths[7] = 0
+        for (layer in layers8) {
+            layerLengths[7] += layer.height
+        }
+        layerLengths[8] = 0
+        for (layer in layers9) {
+            layerLengths[8] += layer.height
+        }
+
+        return layerLengths
+    }
+
+    private fun goToCorrectTabPosition(layerLengths: Array<Int>) {
+        var lengthBoard = 0
+        var distanceLengths: Array<Float> = arrayOf()
+        for (i in 0 until layerLengths.size) {
+            val distanceTab = (scrollY.toFloat() - lengthBoard) / layerLengths[i]
+            distanceLengths += distanceTab
+            if ((distanceTab >= 0 && distanceTab < 1)) {
+                broBoard!!.goToTabPosition(i, distanceTab)
+            }
+            lengthBoard += layerLengths[i]
+        }
     }
 
     private val onScrollchangedListener = OnScrollChangedListener {
-        determineLengthOfTabLayers()
+        val layerLengths = determineLengthOfTabLayers()
+        goToCorrectTabPosition(layerLengths)
 
         if (this.visibility != View.GONE) {
             extraInputField!!.visibility = View.GONE
@@ -450,5 +461,9 @@ class Keyboard: ScrollView {
 
     fun setInputConnection(ic: InputConnection) {
         inputConnection = ic
+    }
+
+    fun setBroBoard(broBoard: BroBoard) {
+        this.broBoard = broBoard
     }
 }

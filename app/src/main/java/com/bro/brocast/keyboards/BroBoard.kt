@@ -8,12 +8,12 @@ import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.RelativeLayout
 import com.bro.brocast.R
-import com.bro.brocast.adapters.SlidingTabLayoutNew
+import com.bro.brocast.adapters.SlidingTabLayout
 
 class BroBoard(activity: Activity, broTextField: EditText, questionButton: Button, exclamationButton: Button, backButton: ImageButton) {
 
     var keyboard: Keyboard = activity.findViewById(R.id.bro_board)
-    var mSlidingTabLayout: SlidingTabLayoutNew = activity.findViewById(R.id.sliding_tabs)
+    var mSlidingTabLayout: SlidingTabLayout = activity.findViewById(R.id.sliding_tabs)
     var extraInputField: RelativeLayout = activity.findViewById(R.id.extra_input_field)
 
     var visible: Boolean = true
@@ -24,6 +24,7 @@ class BroBoard(activity: Activity, broTextField: EditText, questionButton: Butto
         keyboard.backButton = backButton
         keyboard.extraInputField = extraInputField
         keyboard.setClickListenerExtraFields()
+        keyboard.setBroBoard(this)
 
         val iconArray = arrayOf(
             R.drawable.tab_most_used,
@@ -40,6 +41,7 @@ class BroBoard(activity: Activity, broTextField: EditText, questionButton: Butto
 
         mSlidingTabLayout.setDistributeEvenly(true)
         mSlidingTabLayout.populateTabStrip()
+        mSlidingTabLayout.setBroBoard(this)
 
         keyboard.visibility = View.GONE
         mSlidingTabLayout.visibility = View.GONE
@@ -51,8 +53,16 @@ class BroBoard(activity: Activity, broTextField: EditText, questionButton: Butto
 
     }
 
-    fun goToTabPosition(position: Int) {
-        mSlidingTabLayout.goToTab(position, 0f)
+    fun goToTabPosition(position: Int, positionOffset: Float) {
+        if (position >= 0 && positionOffset > 0) {
+            mSlidingTabLayout.goToTab(position, positionOffset)
+        }
+    }
+
+    fun goToEmojiCategory(position: Int) {
+        // We call this function istead of the tab function because we want to move the scrollview
+        // in the scrollview we will move the tab once the position is determined.
+        keyboard.goToEmojiCategory(position)
     }
 
     fun makeVisible() {

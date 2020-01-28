@@ -9,7 +9,7 @@
     android:layout_height="wrap_content">
 
 
-    <com.bro.brocast.adapters.SlidingTabLayoutNew
+    <com.bro.brocast.adapters.SlidingTabLayout
         android:id="@+id/sliding_tabs"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -14,10 +14,12 @@ import android.widget.HorizontalScrollView
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.view.size
 import androidx.viewpager.widget.ViewPager
 import com.bro.brocast.R
+import com.bro.brocast.keyboards.BroBoard
 
-class SlidingTabLayoutNew: HorizontalScrollView {
+class SlidingTabLayout: HorizontalScrollView {
 
     interface TabColorizer {
 
@@ -26,6 +28,8 @@ class SlidingTabLayoutNew: HorizontalScrollView {
          */
         fun getIndicatorColor(position: Int): Int
     }
+
+    private var broBoard: BroBoard? = null
 
     private val TITLE_OFFSET_DIPS = 24
     private val TAB_VIEW_PADDING_DIPS = 16
@@ -151,7 +155,6 @@ class SlidingTabLayoutNew: HorizontalScrollView {
     }
 
     fun pageSelected(position: Int) {
-        println("This is the 'onPageSelected' function. position $position")
         for (i in 0 until mTabStrip!!.childCount) {
             mTabStrip!!.getChildAt(i).isSelected = position == i
         }
@@ -161,8 +164,6 @@ class SlidingTabLayoutNew: HorizontalScrollView {
     }
 
     fun pageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-
-        println("This is the 'onPageScrolled' function. position $position positionOffset $positionOffset positionOffsetPixels $positionOffsetPixels")
         val tabStripChildCount = mTabStrip!!.childCount
         if (tabStripChildCount == 0 || position < 0 || position >= tabStripChildCount) {
             return
@@ -186,9 +187,13 @@ class SlidingTabLayoutNew: HorizontalScrollView {
     }
 
     fun goToTab(position: Int, positionOffset: Float) {
-        // copy paste of tab 0 to tab 4
+        var posOffset = positionOffset
+        if (position == mTabStrip!!.size-1) {
+            // Not necessary, but for neatness we determine when the indicator is at the end.
+            posOffset = 0f
+        }
         pageSelected(position)
-        pageScrolled(position, positionOffset, 0)
+        pageScrolled(position, posOffset, 0)
     }
 
     /**
@@ -222,7 +227,8 @@ class SlidingTabLayoutNew: HorizontalScrollView {
         override fun onClick(v: View) {
             for (i in 0 until mTabStrip!!.childCount) {
                 if (v === mTabStrip!!.getChildAt(i)) {
-                    goToTab(i, 0f)
+//                    goToTab(i, 0f)
+                    broBoard!!.goToEmojiCategory(i)
                     return
                 }
             }
@@ -232,5 +238,9 @@ class SlidingTabLayoutNew: HorizontalScrollView {
     fun setTabIcons(tabIcon: Array<Int>) {
         NUM_ITEMS = tabIcon.size
         this.tabIcon = tabIcon
+    }
+
+    fun setBroBoard(broBoard: BroBoard) {
+        this.broBoard = broBoard
     }
 }
