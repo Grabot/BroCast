@@ -227,7 +227,6 @@ class SlidingTabLayout: HorizontalScrollView {
         override fun onClick(v: View) {
             for (i in 0 until mTabStrip!!.childCount) {
                 if (v === mTabStrip!!.getChildAt(i)) {
-//                    goToTab(i, 0f)
                     broBoard!!.goToEmojiCategory(i)
                     return
                 }

@@ -60,9 +60,7 @@ class BroBoard(activity: Activity, broTextField: EditText, questionButton: Butto
     }
 
     fun goToEmojiCategory(position: Int) {
-        // We call this function istead of the tab function because we want to move the scrollview
-        // in the scrollview we will move the tab once the position is determined.
-        keyboard.goToEmojiCategory(position)
+        keyboard.determineLengthOfTabLayers(position)
     }
 
     fun makeVisible() {
