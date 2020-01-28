@@ -107,171 +107,48 @@ class Keyboard: ScrollView {
         layers = arrayOf(
             ArrayList(), ArrayList(), ArrayList(), ArrayList(), ArrayList(), ArrayList(), ArrayList(), ArrayList(), ArrayList()
         )
+        val bromojis = arrayOf(
+            firstKeyboardBromojis,
+            bromojisPeople,
+            bromojisAnimals,
+            bromojisFood,
+            bromojisSports,
+            bromojisTravel,
+            bromojisObjects,
+            bromojisSymbols,
+            bromojisFlags
+        )
+        val spaceLayerText = arrayOf(
+            "Smileys and people",
+            "Animals and nature",
+            "Food and drinks",
+            "Sports and activities",
+            "Travel and places",
+            "Objects",
+            "Symbols",
+            "Flags",
+            ""
+        )
+        for (i in 0 until bromojis.size) {
         // creating the first category
-        layers[0] = createLayers(context, firstKeyboardBromojis)
+            layers[i] = createLayers(context, bromojis[i])
 
-        // Create another layer, which is empty. This is to give some space at the bottom
-        val spaceLayerFirst = LinearLayout(context)
-        val layoutFirst = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 80)
-        layoutFirst.weight = 1f
-        spaceLayerFirst.layoutParams = layoutFirst
+            // Create another layer, which is empty. This is to give some space at the bottom
+            val spaceLayerFirst = LinearLayout(context)
+            val layoutFirst = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 80)
+            layoutFirst.weight = 1f
+            spaceLayerFirst.layoutParams = layoutFirst
 
-        val textViewSmileys = TextView(context)
-        textViewSmileys.layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        textViewSmileys.gravity = Gravity.CENTER
-        textViewSmileys.setText("Smileys and people")
-        spaceLayerFirst.addView(textViewSmileys)
+            val textViewSmileys = TextView(context)
+            textViewSmileys.layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            textViewSmileys.gravity = Gravity.CENTER
+            textViewSmileys.setText(spaceLayerText[i])
+            spaceLayerFirst.addView(textViewSmileys)
 
-        layers[0].add(spaceLayerFirst)
-        for (layer in layers[0]) {
-            mainLayout.addView(layer)
-        }
-
-        // TODO @Skools: place a category change indicator here.
-        // creating the second category
-        layers[1] = createLayers(context, bromojisPeople)
-
-        // Create another layer, which is empty. This is to give some space at the bottom
-        val spaceLayerPeople = LinearLayout(context)
-        val layoutPeople = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 80)
-        layoutPeople.weight = 1f
-        spaceLayerPeople.layoutParams = layoutPeople
-
-        val textViewAnimals = TextView(context)
-        textViewAnimals.layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        textViewAnimals.gravity = Gravity.CENTER
-        textViewAnimals.setText("Animals and nature")
-        spaceLayerPeople.addView(textViewAnimals)
-
-        layers[1].add(spaceLayerPeople)
-        for (layer in layers[1]) {
-            mainLayout.addView(layer)
-        }
-
-        layers[2] = createLayers(context, bromojisAnimals)
-
-        // Create another layer, which is empty. This is to give some space at the bottom
-        val spaceLayerAnimals = LinearLayout(context)
-        val layoutAnimals = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 80)
-        layoutAnimals.weight = 1f
-        spaceLayerAnimals.layoutParams = layoutAnimals
-
-        val textViewFood = TextView(context)
-        textViewFood.layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        textViewFood.gravity = Gravity.CENTER
-        textViewFood.setText("Food and drinks")
-        spaceLayerAnimals.addView(textViewFood)
-
-        layers[2].add(spaceLayerAnimals)
-        for (layer in layers[2]) {
-            mainLayout.addView(layer)
-        }
-
-        layers[3] = createLayers(context, bromojisFood)
-
-        // Create another layer, which is empty. This is to give some space at the bottom
-        val spaceLayerFood = LinearLayout(context)
-        val layoutFood = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 80)
-        layoutFood.weight = 1f
-        spaceLayerFood.layoutParams = layoutFood
-
-        val textViewSports = TextView(context)
-        textViewSports.layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        textViewSports.gravity = Gravity.CENTER
-        textViewSports.setText("Sports and activities")
-        spaceLayerFood.addView(textViewSports)
-
-        layers[3].add(spaceLayerFood)
-        for (layer in layers[3]) {
-            mainLayout.addView(layer)
-        }
-
-        layers[4] = createLayers(context, bromojisSports)
-
-        // Create another layer, which is empty. This is to give some space at the bottom
-        val spaceLayerSports = LinearLayout(context)
-        val layoutSports = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 80)
-        layoutSports.weight = 1f
-        spaceLayerSports.layoutParams = layoutSports
-
-        val textViewTravel = TextView(context)
-        textViewTravel.layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        textViewTravel.gravity = Gravity.CENTER
-        textViewTravel.setText("Travel and places")
-        spaceLayerSports.addView(textViewTravel)
-
-        layers[4].add(spaceLayerSports)
-        for (layer in layers[4]) {
-            mainLayout.addView(layer)
-        }
-
-        layers[5] = createLayers(context, bromojisTravel)
-
-        // Create another layer, which is empty. This is to give some space at the bottom
-        val spaceLayerTravel = LinearLayout(context)
-        val layoutTravel = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 80)
-        layoutTravel.weight = 1f
-        spaceLayerTravel.layoutParams = layoutTravel
-
-        val textViewObjects = TextView(context)
-        textViewObjects.layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        textViewObjects.gravity = Gravity.CENTER
-        textViewObjects.setText("Objects")
-        spaceLayerTravel.addView(textViewObjects)
-
-        layers[5].add(spaceLayerTravel)
-        for (layer in layers[5]) {
-            mainLayout.addView(layer)
-        }
-
-        layers[6] = createLayers(context, bromojisObjects)
-
-        // Create another layer, which is empty. This is to give some space at the bottom
-        val spaceLayerObjects = LinearLayout(context)
-        val layoutObjects = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 80)
-        layoutObjects.weight = 1f
-        spaceLayerObjects.layoutParams = layoutObjects
-
-        val textViewSymbols = TextView(context)
-        textViewSymbols.layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        textViewSymbols.gravity = Gravity.CENTER
-        textViewSymbols.setText("Symbols")
-        spaceLayerObjects.addView(textViewSymbols)
-
-        layers[6].add(spaceLayerObjects)
-        for (layer in layers[6]) {
-            mainLayout.addView(layer)
-        }
-
-        layers[7] = createLayers(context, bromojisSymbols)
-
-        // Create another layer, which is empty. This is to give some space at the bottom
-        val spaceLayerSymbols = LinearLayout(context)
-        val layoutSymbols = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 80)
-        layoutSymbols.weight = 1f
-        spaceLayerSymbols.layoutParams = layoutSymbols
-
-        val textViewFlags = TextView(context)
-        textViewFlags.layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        textViewFlags.gravity = Gravity.CENTER
-        textViewFlags.setText("Flags")
-        spaceLayerSymbols.addView(textViewFlags)
-
-        layers[7].add(spaceLayerSymbols)
-        for (layer in layers[7]) {
-            mainLayout.addView(layer)
-        }
-
-        layers[8] = createLayers(context, bromojisFlags)
-
-        val spaceLayerFlags = LinearLayout(context)
-        val layoutFlag = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 80)
-        layoutFlag.weight = 1f
-        spaceLayerFlags.layoutParams = layoutFlag
-
-        layers[8].add(spaceLayerFlags)
-        for (layer in layers[8]) {
-            mainLayout.addView(layer)
+            layers[i].add(spaceLayerFirst)
+            for (layer in layers[i]) {
+                mainLayout.addView(layer)
+            }
         }
 
         this.viewTreeObserver.addOnScrollChangedListener(onScrollchangedListener)
