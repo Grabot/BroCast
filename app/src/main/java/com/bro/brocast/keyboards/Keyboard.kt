@@ -47,6 +47,16 @@ class Keyboard: ScrollView {
     var exclamationButton: Button? = null
     var backButton: ImageButton? = null
 
+    private lateinit var layers1: ArrayList<LinearLayout>
+    private lateinit var layers2: ArrayList<LinearLayout>
+    private lateinit var layers3: ArrayList<LinearLayout>
+    private lateinit var layers4: ArrayList<LinearLayout>
+    private lateinit var layers5: ArrayList<LinearLayout>
+    private lateinit var layers6: ArrayList<LinearLayout>
+    private lateinit var layers7: ArrayList<LinearLayout>
+    private lateinit var layers8: ArrayList<LinearLayout>
+    private lateinit var layers9: ArrayList<LinearLayout>
+
     private fun init(context: Context) {
 
 //        val emojis = resources.openRawResource(R.raw.emojis)
@@ -100,10 +110,7 @@ class Keyboard: ScrollView {
         val mainLayout = findViewById<LinearLayout>(R.id.main_keyboard_layout)
 
         // creating the first category
-        val layers1 = createLayers(context, firstKeyboardBromojis)
-        for (layer in layers1) {
-            mainLayout.addView(layer)
-        }
+        layers1 = createLayers(context, firstKeyboardBromojis)
 
         // Create another layer, which is empty. This is to give some space at the bottom
         val spaceLayerFirst = LinearLayout(context)
@@ -117,14 +124,14 @@ class Keyboard: ScrollView {
         textViewSmileys.setText("Smileys and people")
         spaceLayerFirst.addView(textViewSmileys)
 
-        mainLayout.addView(spaceLayerFirst)
+        layers1.add(spaceLayerFirst)
+        for (layer in layers1) {
+            mainLayout.addView(layer)
+        }
 
         // TODO @Skools: place a category change indicator here.
         // creating the second category
-        val layers2 = createLayers(context, bromojisPeople)
-        for (layer in layers2) {
-            mainLayout.addView(layer)
-        }
+        layers2 = createLayers(context, bromojisPeople)
 
         // Create another layer, which is empty. This is to give some space at the bottom
         val spaceLayerPeople = LinearLayout(context)
@@ -138,12 +145,12 @@ class Keyboard: ScrollView {
         textViewAnimals.setText("Animals and nature")
         spaceLayerPeople.addView(textViewAnimals)
 
-        mainLayout.addView(spaceLayerPeople)
-
-        val layers3 = createLayers(context, bromojisAnimals)
-        for (layer in layers3) {
+        layers2.add(spaceLayerPeople)
+        for (layer in layers2) {
             mainLayout.addView(layer)
         }
+
+        layers3 = createLayers(context, bromojisAnimals)
 
         // Create another layer, which is empty. This is to give some space at the bottom
         val spaceLayerAnimals = LinearLayout(context)
@@ -157,12 +164,12 @@ class Keyboard: ScrollView {
         textViewFood.setText("Food and drinks")
         spaceLayerAnimals.addView(textViewFood)
 
-        mainLayout.addView(spaceLayerAnimals)
-
-        val layers4 = createLayers(context, bromojisFood)
-        for (layer in layers4) {
+        layers3.add(spaceLayerAnimals)
+        for (layer in layers3) {
             mainLayout.addView(layer)
         }
+
+        layers4 = createLayers(context, bromojisFood)
 
         // Create another layer, which is empty. This is to give some space at the bottom
         val spaceLayerFood = LinearLayout(context)
@@ -176,12 +183,12 @@ class Keyboard: ScrollView {
         textViewSports.setText("Sports and activities")
         spaceLayerFood.addView(textViewSports)
 
-        mainLayout.addView(spaceLayerFood)
-
-        val layers5 = createLayers(context, bromojisSports)
-        for (layer in layers5) {
+        layers4.add(spaceLayerFood)
+        for (layer in layers4) {
             mainLayout.addView(layer)
         }
+
+        layers5 = createLayers(context, bromojisSports)
 
         // Create another layer, which is empty. This is to give some space at the bottom
         val spaceLayerSports = LinearLayout(context)
@@ -195,12 +202,12 @@ class Keyboard: ScrollView {
         textViewTravel.setText("Travel and places")
         spaceLayerSports.addView(textViewTravel)
 
-        mainLayout.addView(spaceLayerSports)
-
-        val layers6 = createLayers(context, bromojisTravel)
-        for (layer in layers6) {
+        layers5.add(spaceLayerSports)
+        for (layer in layers5) {
             mainLayout.addView(layer)
         }
+
+        layers6 = createLayers(context, bromojisTravel)
 
         // Create another layer, which is empty. This is to give some space at the bottom
         val spaceLayerTravel = LinearLayout(context)
@@ -214,12 +221,12 @@ class Keyboard: ScrollView {
         textViewObjects.setText("Objects")
         spaceLayerTravel.addView(textViewObjects)
 
-        mainLayout.addView(spaceLayerTravel)
-
-        val layers7 = createLayers(context, bromojisObjects)
-        for (layer in layers7) {
+        layers6.add(spaceLayerTravel)
+        for (layer in layers6) {
             mainLayout.addView(layer)
         }
+
+        layers7 = createLayers(context, bromojisObjects)
 
         // Create another layer, which is empty. This is to give some space at the bottom
         val spaceLayerObjects = LinearLayout(context)
@@ -233,12 +240,12 @@ class Keyboard: ScrollView {
         textViewSymbols.setText("Symbols")
         spaceLayerObjects.addView(textViewSymbols)
 
-        mainLayout.addView(spaceLayerObjects)
-
-        val layers8 = createLayers(context, bromojisSymbols)
-        for (layer in layers8) {
+        layers7.add(spaceLayerObjects)
+        for (layer in layers7) {
             mainLayout.addView(layer)
         }
+
+        layers8 = createLayers(context, bromojisSymbols)
 
         // Create another layer, which is empty. This is to give some space at the bottom
         val spaceLayerSymbols = LinearLayout(context)
@@ -252,18 +259,22 @@ class Keyboard: ScrollView {
         textViewFlags.setText("Flags")
         spaceLayerSymbols.addView(textViewFlags)
 
-        mainLayout.addView(spaceLayerSymbols)
-
-        val layers9 = createLayers(context, bromojisFlags)
-        for (layer in layers9) {
+        layers8.add(spaceLayerSymbols)
+        for (layer in layers8) {
             mainLayout.addView(layer)
         }
+
+        layers9 = createLayers(context, bromojisFlags)
 
         val spaceLayerFlags = LinearLayout(context)
         val layoutFlag = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 80)
         layoutFlag.weight = 1f
         spaceLayerFlags.layoutParams = layoutFlag
-        mainLayout.addView(spaceLayerFlags)
+
+        layers9.add(spaceLayerFlags)
+        for (layer in layers9) {
+            mainLayout.addView(layer)
+        }
 
         this.viewTreeObserver.addOnScrollChangedListener(onScrollchangedListener)
     }
@@ -322,7 +333,78 @@ class Keyboard: ScrollView {
         backButton!!.setOnClickListener(clickButtonListener)
     }
 
+    fun determineLengthOfTabLayers() {
+        var layerLength1 = 0
+        for (layer in layers1) {
+            layerLength1 += layer.height
+        }
+        println("height 1 layer! $layerLength1")
+        var layerLength2 = 0
+        for (layer in layers2) {
+            layerLength2 += layer.height
+        }
+        println("height 2 layer! $layerLength2")
+        var layerLength3 = 0
+        for (layer in layers3) {
+            layerLength3 += layer.height
+        }
+        println("height 3 layer! $layerLength3")
+        var layerLength4 = 0
+        for (layer in layers4) {
+            layerLength4 += layer.height
+        }
+        println("height 4 layer! $layerLength4")
+        var layerLength5 = 0
+        for (layer in layers5) {
+            layerLength5 += layer.height
+        }
+        println("height 5 layer! $layerLength5")
+        var layerLength6 = 0
+        for (layer in layers6) {
+            layerLength6 += layer.height
+        }
+        println("height 6 layer! $layerLength6")
+        var layerLength7 = 0
+        for (layer in layers7) {
+            layerLength7 += layer.height
+        }
+        println("height 7 layer! $layerLength7")
+        var layerLength8 = 0
+        for (layer in layers8) {
+            layerLength8 += layer.height
+        }
+        println("height 8 layer! $layerLength8")
+        var layerLength9 = 0
+        for (layer in layers9) {
+            layerLength9 += layer.height
+        }
+        println("height 9 layer! $layerLength9")
+
+        val layerLengths = arrayOf(
+            layerLength1,
+            layerLength2,
+            layerLength3,
+            layerLength4,
+            layerLength5,
+            layerLength6,
+            layerLength7,
+            layerLength8,
+            layerLength9
+        )
+        var lengthBoard = 0
+        var distanceLengths: Array<Double> = arrayOf()
+        for (layerLength in layerLengths) {
+            val distanceTab = (scrollY.toDouble() - lengthBoard) / layerLength
+            distanceLengths += distanceTab
+            println("length of layer $distanceTab")
+            lengthBoard += layerLength
+        }
+        println("scrolly $scrollY")
+    }
+
     private val onScrollchangedListener = OnScrollChangedListener {
+        determineLengthOfTabLayers()
+
         if (this.visibility != View.GONE) {
             extraInputField!!.visibility = View.GONE
             if (scrollY == 0) {
