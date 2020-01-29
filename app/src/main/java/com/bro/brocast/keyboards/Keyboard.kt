@@ -12,6 +12,7 @@ import android.view.Gravity
 import android.view.ViewGroup
 import android.widget.*
 import com.beust.klaxon.JsonArray
+import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Parser
 import com.bro.brocast.R
 import java.text.FieldPosition
@@ -62,6 +63,11 @@ class Keyboard: ScrollView {
         val parser: Parser = Parser.default()
         val stringBuilder: StringBuilder = StringBuilder(emojis)
         val json = parser.parse(stringBuilder) as JsonArray<*>
+
+        for(i in 0 until json.size) {
+            val emoji = json.get(i) as JsonObject
+            val category = emoji.get("category") as String
+        }
 
         LayoutInflater.from(context).inflate(R.layout.keyboard_1, this, true)
 
@@ -129,23 +135,21 @@ class Keyboard: ScrollView {
             "Flags",
             ""
         )
-        for (i in 0 until bromojis.size) {
-        // creating the first category
+        for (i in layers.indices) {
             layers[i] = createLayers(context, bromojis[i])
 
-            // Create another layer, which is empty. This is to give some space at the bottom
-            val spaceLayerFirst = LinearLayout(context)
-            val layoutFirst = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 80)
-            layoutFirst.weight = 1f
-            spaceLayerFirst.layoutParams = layoutFirst
+            val spaceLayer = LinearLayout(context)
+            val layout = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 80)
+            layout.weight = 1f
+            spaceLayer.layoutParams = layout
 
-            val textViewSmileys = TextView(context)
-            textViewSmileys.layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-            textViewSmileys.gravity = Gravity.CENTER
-            textViewSmileys.setText(spaceLayerText[i])
-            spaceLayerFirst.addView(textViewSmileys)
+            val textViewCategory = TextView(context)
+            textViewCategory.layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            textViewCategory.gravity = Gravity.CENTER
+            textViewCategory.setText(spaceLayerText[i])
+            spaceLayer.addView(textViewCategory)
 
-            layers[i].add(spaceLayerFirst)
+            layers[i].add(spaceLayer)
             for (layer in layers[i]) {
                 mainLayout.addView(layer)
             }
