@@ -570,12 +570,6 @@
     "category": "Smileys & Emotion (face-negative)"
   },
   {
-    "codes": "2620",
-    "char": "☠",
-    "name": "skull and crossbones",
-    "category": "Smileys & Emotion (face-negative)"
-  },
-  {
     "codes": "1F4A9",
     "char": "💩",
     "name": "pile of poo",
@@ -762,12 +756,6 @@
     "category": "Smileys & Emotion (emotion)"
   },
   {
-    "codes": "2763",
-    "char": "❣",
-    "name": "heart exclamation",
-    "category": "Smileys & Emotion (emotion)"
-  },
-  {
     "codes": "1F494",
     "char": "💔",
     "name": "broken heart",
@@ -876,12 +864,6 @@
     "category": "Smileys & Emotion (emotion)"
   },
   {
-    "codes": "1F573",
-    "char": "🕳",
-    "name": "hole",
-    "category": "Smileys & Emotion (emotion)"
-  },
-  {
     "codes": "1F4A3",
     "char": "💣",
     "name": "bomb",
@@ -900,44 +882,14 @@
     "category": "Smileys & Emotion (emotion)"
   },
   {
-    "codes": "1F441 200D 1F5E8 FE0F",
-    "char": "👁‍🗨️",
-    "name": "eye in speech bubble",
-    "category": "Smileys & Emotion (emotion)"
-  },
-  {
-    "codes": "1F441 FE0F 200D 1F5E8",
-    "char": "👁️‍🗨",
-    "name": "eye in speech bubble",
-    "category": "Smileys & Emotion (emotion)"
-  },
-  {
-    "codes": "1F441 200D 1F5E8",
-    "char": "👁‍🗨",
-    "name": "eye in speech bubble",
-    "category": "Smileys & Emotion (emotion)"
-  },
-  {
     "codes": "1F5E8 FE0F",
     "char": "🗨️",
     "name": "left speech bubble",
     "category": "Smileys & Emotion (emotion)"
   },
   {
-    "codes": "1F5E8",
-    "char": "🗨",
-    "name": "left speech bubble",
-    "category": "Smileys & Emotion (emotion)"
-  },
-  {
     "codes": "1F5EF FE0F",
     "char": "🗯️",
-    "name": "right anger bubble",
-    "category": "Smileys & Emotion (emotion)"
-  },
-  {
-    "codes": "1F5EF",
-    "char": "🗯",
     "name": "right anger bubble",
     "category": "Smileys & Emotion (emotion)"
   },

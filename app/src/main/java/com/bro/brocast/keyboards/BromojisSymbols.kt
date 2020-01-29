@@ -277,4 +277,4 @@ var bromojisSymbols = arrayOf(
     R.string.ten_thirty,
     R.string.eleven_thirty,
     R.string.twelve_thirty
-)
+) as ArrayList<String>

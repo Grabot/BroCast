@@ -95,4 +95,4 @@ var bromojisSports = arrayOf(
     R.string.video_game,
     R.string.slot_machine,
     R.string.jigsaw
-)
+) as ArrayList<String>

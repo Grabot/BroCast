@@ -35,4 +35,4 @@ var firstKeyboardBromojis= arrayOf(
     R.string.fireworks,
     R.string.confetti_ball,
     R.string.party_popper
-)
+) as ArrayList<String>

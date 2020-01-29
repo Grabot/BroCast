@@ -359,4 +359,4 @@ var bromojisPeople = arrayOf(
     R.string.sunglasses,
     R.string.goggles,
     R.string.closed_umbrella
-)
+) as ArrayList<String>

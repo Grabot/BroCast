@@ -109,4 +109,4 @@ var bromojisFood= arrayOf(
     R.string.takeout_box,
     R.string.chopsticks,
     R.string.salt
-)
+) as ArrayList<String>
