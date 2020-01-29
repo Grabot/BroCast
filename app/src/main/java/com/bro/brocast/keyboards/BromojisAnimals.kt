@@ -179,4 +179,4 @@ var bromojisAnimals = arrayOf(
     R.string.umbrella,
     R.string.water_wave,
     R.string.fog
-)
+) as ArrayList<String>

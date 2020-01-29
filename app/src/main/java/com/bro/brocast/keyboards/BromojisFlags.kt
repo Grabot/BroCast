@@ -256,4 +256,4 @@ var bromojisFlags = arrayOf(
     R.string.yemen,
     R.string.zambia,
     R.string.zimbabwe
-)
+) as ArrayList<String>

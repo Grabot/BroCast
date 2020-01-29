@@ -12,9 +12,9 @@ import android.view.Gravity
 import android.view.ViewGroup
 import android.widget.*
 import com.beust.klaxon.JsonArray
+import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Parser
 import com.bro.brocast.R
-import java.text.FieldPosition
 
 
 class Keyboard: ScrollView {
@@ -54,7 +54,8 @@ class Keyboard: ScrollView {
 
     private fun init(context: Context) {
 
-        val emojis = resources.openRawResource(R.raw.emojis)
+        val bromoji = BromojiList()
+        val emojis = resources.openRawResource(R.raw.emojis_bro)
             .bufferedReader().use {
                 it.readText()
             }
@@ -63,42 +64,72 @@ class Keyboard: ScrollView {
         val stringBuilder: StringBuilder = StringBuilder(emojis)
         val json = parser.parse(stringBuilder) as JsonArray<*>
 
+        println("processing all emojis")
+        for (i in 0 until json.size) {
+            val emoji = json.get(i) as JsonObject
+            val codes = emoji.get("codes") as String
+            val char = emoji.get("char") as String
+            val name = emoji.get("name") as String
+            val category = emoji.get("category") as String
+            if (category.contains("Smileys & Emotion") || category.contains("People & Body")) {
+                // For now we will exclude the skin tone emojis, we will add them later
+                // TODO @Skools: add skin tone features!
+                if (!name.contains("skin tone")) {
+                    bromoji.addPeopleCategory(codes, char, name, category)
+                }
+            } else if (category.contains("Animals & Nature")) {
+                bromoji.addAnimalsCategory(char)
+            } else if (category.contains("Food & Drink")) {
+                bromoji.addFoodCategory(char)
+            } else if (category.contains("Activities")) {
+                bromoji.addSportsCategory(char)
+            } else if (category.contains("Travel & Places")) {
+                bromoji.addTravelCategory(char)
+            } else if (category.contains("Objects")) {
+                bromoji.addObjectsCategory(char)
+            } else if (category.contains("Symbols")) {
+                bromoji.addSymbolsCategory(char)
+            } else if (category.contains("Flags")) {
+                bromoji.addFlagsCategory(char)
+            }
+        }
+
         LayoutInflater.from(context).inflate(R.layout.keyboard_1, this, true)
 
-        while ((firstKeyboardBromojis.size % 8) != 0) {
-            firstKeyboardBromojis += 0
+        while ((bromoji.bromojiFirstKeyboard.size % 8) != 0) {
+            bromoji.bromojiFirstKeyboard.add("")
         }
 
-        while ((bromojisPeople.size % 8) != 0) {
-            bromojisPeople += 0
+        while ((bromoji.bromojiPeople2.size % 8) != 0) {
+            bromoji.addPeopleCategory("", "", "", "")
         }
 
-        while ((bromojisAnimals.size % 8) != 0) {
-            bromojisAnimals += 0
+        while ((bromoji.bromojiAnimals.size % 8) != 0) {
+            bromoji.bromojiAnimals.add("")
         }
 
-        while ((bromojisFood.size % 8) != 0) {
-            bromojisFood += 0
+        while ((bromoji.bromojiFood.size % 8) != 0) {
+            bromoji.bromojiFood.add("")
         }
 
-        while ((bromojisSports.size % 8) != 0) {
-            bromojisSports += 0
+        while ((bromoji.bromojiSports.size % 8) != 0) {
+            bromoji.bromojiSports.add("")
         }
 
-        while ((bromojisTravel.size % 8) != 0) {
-            bromojisTravel += 0
+        while ((bromoji.bromojiTravel.size % 8) != 0) {
+            bromoji.bromojiTravel.add("")
         }
 
-        while ((bromojisObjects.size % 8) != 0) {
-            bromojisObjects += 0
+        while ((bromoji.bromojiObjects.size % 8) != 0) {
+            bromoji.bromojiObjects.add("")
         }
 
-        while ((bromojisSymbols.size % 8) != 0) {
-            bromojisSymbols += 0
+        while ((bromoji.bromojiSymbols.size % 8) != 0) {
+            bromoji.bromojiSymbols.add("")
         }
 
-        while ((bromojisFlags.size % 8) != 0) {
-            bromojisFlags += 0
+        while ((bromoji.bromojiFlags.size % 8) != 0) {
+            bromoji.bromojiFlags.add("")
         }
 
         // The outer and main layer of the keyboard
@@ -108,15 +139,15 @@ class Keyboard: ScrollView {
             ArrayList(), ArrayList(), ArrayList(), ArrayList(), ArrayList(), ArrayList(), ArrayList(), ArrayList(), ArrayList()
         )
         val bromojis = arrayOf(
-            firstKeyboardBromojis,
-            bromojisPeople,
-            bromojisAnimals,
-            bromojisFood,
-            bromojisSports,
-            bromojisTravel,
-            bromojisObjects,
-            bromojisSymbols,
-            bromojisFlags
+            bromoji.bromojiFirstKeyboard,
+            bromoji.bromojiPeople,
+            bromoji.bromojiAnimals,
+            bromoji.bromojiFood,
+            bromoji.bromojiSports,
+            bromoji.bromojiTravel,
+            bromoji.bromojiObjects,
+            bromoji.bromojiSymbols,
+            bromoji.bromojiFlags
         )
         val spaceLayerText = arrayOf(
             "Smileys and people",
@@ -154,18 +185,18 @@ class Keyboard: ScrollView {
         this.viewTreeObserver.addOnScrollChangedListener(onScrollchangedListener)
     }
 
-    private fun createLayers(context: Context, stringIdArray: Array<Int>): ArrayList<LinearLayout> {
+    private fun createLayers(context: Context, emojiArray: ArrayList<String>): ArrayList<LinearLayout> {
         var layers: ArrayList<LinearLayout> = ArrayList()
-        for(n in stringIdArray.indices step 8) {
+        for(n in emojiArray.indices step 8) {
             val layer = arrayOf(
-                stringIdArray[n],
-                stringIdArray[n+1],
-                stringIdArray[n+2],
-                stringIdArray[n+3],
-                stringIdArray[n+4],
-                stringIdArray[n+5],
-                stringIdArray[n+6],
-                stringIdArray[n+7]
+                emojiArray.get(n),
+                emojiArray.get(n+1),
+                emojiArray.get(n+2),
+                emojiArray.get(n+3),
+                emojiArray.get(n+4),
+                emojiArray.get(n+5),
+                emojiArray.get(n+6),
+                emojiArray.get(n+7)
             )
             val layoutLayer = createLayoutLayer(context, layer)
             layers.add(layoutLayer)
@@ -175,25 +206,25 @@ class Keyboard: ScrollView {
 
     private fun createLayoutLayer(
         context: Context,
-        stringIdArray: Array<Int>
+        emojiCharArray: Array<String>
     ): LinearLayout {
         val newLayer = LinearLayout(context)
-        for (stringId in stringIdArray) {
-            val button = createButton(context, stringId)
+        for (emojiChar in emojiCharArray) {
+            val button = createButton(context, emojiChar)
             newLayer.addView(button)
         }
         return newLayer
     }
 
-    private fun createButton(context: Context, buttonId: Int): Button {
+    private fun createButton(context: Context, emojiChar: String): Button {
         val button = Button(context, null, android.R.attr.borderlessButtonStyle)
         val layout = LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT)
         layout.weight = 1f
         button.layoutParams = layout
         button.textSize = 19f
-        if (buttonId != 0) {
+        if (emojiChar != "") {
             button.id = View.generateViewId()
-            button.text = context.getString(buttonId)
+            button.text = emojiChar
             button.setOnClickListener(clickButtonListener)
         } else {
             button.text = ""
@@ -263,6 +294,7 @@ class Keyboard: ScrollView {
             }
             else -> {
                 val button = findViewById<Button>(view.id)
+                println("button pressed " + button.text)
                 inputConnection!!.commitText(button.text, 1)
 
                 if (extraInputField!!.visibility != View.VISIBLE) {

@@ -198,4 +198,4 @@ var bromojisObjects = arrayOf(
     R.string.locked_with_key,
     R.string.locked,
     R.string.unlocked
-)
+) as ArrayList<String>

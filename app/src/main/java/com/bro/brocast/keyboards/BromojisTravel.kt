@@ -122,4 +122,4 @@ var bromojisTravel = arrayOf(
     R.string.milky_way,
     R.string.bridge_at_night,
     R.string.foggy
-)
+) as ArrayList<String>
