@@ -1,3 +1,3 @@
 package com.bro.brocast.keyboards
 
-class Bromoji(codes: String, char: String, name: String, category: String)
+class Bromoji(codes: Array<String>, char: String, name: String, category: String)
