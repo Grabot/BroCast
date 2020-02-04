@@ -14,8 +14,8 @@ class BromojiList {
     var bromojiSymbols: ArrayList<String> = ArrayList()
     var bromojiFlags: ArrayList<String> = ArrayList()
 
-    fun addPeopleCategory(codes: Array<String>, char: String, name: String) {
-        val b = Bromoji(codes, char, name, "")
+    fun addPeopleCategory(codes: Array<String>, char: String, name: String, category: String) {
+        val b = Bromoji(codes, char, name, category)
         bromojiPeople.add(char)
         bromojiPeople2.add(b)
     }

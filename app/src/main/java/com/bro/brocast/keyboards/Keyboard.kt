@@ -56,7 +56,7 @@ class Keyboard: ScrollView {
 
         // emoji versions found so far; 12.1.1, 12.1.0, 12.0.0, 11.0.1, 11.0.0, 5.0.0, 1.2.0, 1.1.1, 1.1.0, 1.0.0
         val bromoji = BromojiList()
-        val emojis = resources.openRawResource(R.raw.emoji_1_0)
+        val emojis = resources.openRawResource(R.raw.emoji_api)
             .bufferedReader().use {
                 it.readText()
             }
@@ -69,24 +69,49 @@ class Keyboard: ScrollView {
         for (i in 0 until json.size) {
             val emoji = json.get(i) as JsonObject
 
-            var codes: Array<String> = arrayOf()
-            for (x in emoji.get("codes") as JsonArray<*>) {
-                codes += x as String
-            }
-
+            val codes_full = emoji.get("codes") as String
             val char = emoji.get("char") as String
             val name = emoji.get("name") as String
 
-            // The API level of the phone has to be higher than supported by the emoji
-            var include = false
-            for (x in emoji.get("apis") as JsonArray<*>) {
-                if (android.os.Build.VERSION.SDK_INT >= x as Int) {
-                    include = true
+            var codes: Array<String> = arrayOf()
+            if (codes_full.contains(" ")) {
+                for (c in codes_full.split(" ")) {
+                    codes += c
                 }
+            } else {
+                codes += codes_full
             }
 
-            if (include) {
-                bromoji.addPeopleCategory(codes, char, name)
+            val apis = emoji.get("apis") as JsonArray<*>
+            for (api in apis) {
+                if (android.os.Build.VERSION.SDK_INT == api as Int) {
+                    val category = emoji.get("category") as String
+
+                    if (category == "Smileys") {
+                        bromoji.addPeopleCategory(codes, char, name, category)
+                    }
+                    if (category == "Animals") {
+                        bromoji.addAnimalsCategory(char)
+                    }
+                    if (category == "Food") {
+                        bromoji.addFoodCategory(char)
+                    }
+                    if (category == "Travel") {
+                        bromoji.addTravelCategory(char)
+                    }
+                    if (category == "Activities") {
+                        bromoji.addSportsCategory(char)
+                    }
+                    if (category == "Objects") {
+                        bromoji.addObjectsCategory(char)
+                    }
+                    if (category == "Symbols") {
+                        bromoji.addSymbolsCategory(char)
+                    }
+                    if (category == "Flags") {
+                        bromoji.addFlagsCategory(char)
+                    }
+                }
             }
         }
 
@@ -97,7 +122,7 @@ class Keyboard: ScrollView {
         }
 
         while ((bromoji.bromojiPeople2.size % 8) != 0) {
-            bromoji.addPeopleCategory(arrayOf(), "", "")
+            bromoji.addPeopleCategory(arrayOf(), "", "", "")
         }
 
         while ((bromoji.bromojiAnimals.size % 8) != 0) {
