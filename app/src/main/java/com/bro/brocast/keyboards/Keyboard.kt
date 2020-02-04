@@ -117,39 +117,39 @@ class Keyboard: ScrollView {
 
         LayoutInflater.from(context).inflate(R.layout.keyboard_1, this, true)
 
-        while ((bromoji.bromojiFirstKeyboard2.size % 8) != 0) {
+        while ((bromoji.bromojiFirstKeyboard.size % 8) != 0) {
             bromoji.addMostUsed(arrayOf(), "", "", "")
         }
 
-        while ((bromoji.bromojiPeople2.size % 8) != 0) {
+        while ((bromoji.bromojiPeople.size % 8) != 0) {
             bromoji.addPeopleCategory(arrayOf(), "", "", "")
         }
 
-        while ((bromoji.bromojiAnimals2.size % 8) != 0) {
+        while ((bromoji.bromojiAnimals.size % 8) != 0) {
             bromoji.addAnimalsCategory(arrayOf(), "", "", "")
         }
 
-        while ((bromoji.bromojiFood2.size % 8) != 0) {
+        while ((bromoji.bromojiFood.size % 8) != 0) {
             bromoji.addFoodCategory(arrayOf(), "", "", "")
         }
 
-        while ((bromoji.bromojiSports2.size % 8) != 0) {
+        while ((bromoji.bromojiSports.size % 8) != 0) {
             bromoji.addSportsCategory(arrayOf(), "", "", "")
         }
 
-        while ((bromoji.bromojiTravel2.size % 8) != 0) {
+        while ((bromoji.bromojiTravel.size % 8) != 0) {
             bromoji.addTravelCategory(arrayOf(), "", "", "")
         }
 
-        while ((bromoji.bromojiObjects2.size % 8) != 0) {
+        while ((bromoji.bromojiObjects.size % 8) != 0) {
             bromoji.addObjectsCategory(arrayOf(), "", "", "")
         }
 
-        while ((bromoji.bromojiSymbols2.size % 8) != 0) {
+        while ((bromoji.bromojiSymbols.size % 8) != 0) {
             bromoji.addSymbolsCategory(arrayOf(), "", "", "")
         }
 
-        while ((bromoji.bromojiFlags2.size % 8) != 0) {
+        while ((bromoji.bromojiFlags.size % 8) != 0) {
             bromoji.addFlagsCategory(arrayOf(), "", "", "")
         }
 
@@ -160,15 +160,15 @@ class Keyboard: ScrollView {
             ArrayList(), ArrayList(), ArrayList(), ArrayList(), ArrayList(), ArrayList(), ArrayList(), ArrayList(), ArrayList()
         )
         val bromojis = arrayOf(
-            bromoji.bromojiFirstKeyboard2,
-            bromoji.bromojiPeople2,
-            bromoji.bromojiAnimals2,
-            bromoji.bromojiFood2,
-            bromoji.bromojiSports2,
-            bromoji.bromojiTravel2,
-            bromoji.bromojiObjects2,
-            bromoji.bromojiSymbols2,
-            bromoji.bromojiFlags2
+            bromoji.bromojiFirstKeyboard,
+            bromoji.bromojiPeople,
+            bromoji.bromojiAnimals,
+            bromoji.bromojiFood,
+            bromoji.bromojiSports,
+            bromoji.bromojiTravel,
+            bromoji.bromojiObjects,
+            bromoji.bromojiSymbols,
+            bromoji.bromojiFlags
         )
         val spaceLayerText = arrayOf(
             "Smileys and people",
