@@ -13,48 +13,70 @@ class BromojiList {
     var bromojiSymbols: ArrayList<Bromoji> = ArrayList()
     var bromojiFlags: ArrayList<Bromoji> = ArrayList()
 
-    fun addMostUsed(codes: Array<String>, char: String, name: String, category: String) {
-        val b = Bromoji(codes, char, name, category)
+    fun addMostUsed(b: Bromoji) {
         bromojiFirstKeyboard.add(b)
     }
 
-    fun addPeopleCategory(codes: Array<String>, char: String, name: String, category: String) {
-        val b = Bromoji(codes, char, name, category)
+    fun addPeopleCategory(b: Bromoji) {
         bromojiPeople.add(b)
     }
 
-    fun addAnimalsCategory(codes: Array<String>, char: String, name: String, category: String) {
-        val b = Bromoji(codes, char, name, category)
+    fun addAnimalsCategory(b: Bromoji) {
         bromojiAnimals.add(b)
     }
 
-    fun addFoodCategory(codes: Array<String>, char: String, name: String, category: String) {
-        val b = Bromoji(codes, char, name, category)
+    fun addFoodCategory(b: Bromoji) {
         bromojiFood.add(b)
     }
 
-    fun addSportsCategory(codes: Array<String>, char: String, name: String, category: String) {
-        val b = Bromoji(codes, char, name, category)
+    fun addSportsCategory(b: Bromoji) {
         bromojiSports.add(b)
     }
 
-    fun addTravelCategory(codes: Array<String>, char: String, name: String, category: String) {
-        val b = Bromoji(codes, char, name, category)
+    fun addTravelCategory(b: Bromoji) {
         bromojiTravel.add(b)
     }
 
-    fun addObjectsCategory(codes: Array<String>, char: String, name: String, category: String) {
-        val b = Bromoji(codes, char, name, category)
+    fun addObjectsCategory(b: Bromoji) {
         bromojiObjects.add(b)
     }
 
-    fun addSymbolsCategory(codes: Array<String>, char: String, name: String, category: String) {
-        val b = Bromoji(codes, char, name, category)
+    fun addSymbolsCategory(b: Bromoji) {
         bromojiSymbols.add(b)
     }
 
-    fun addFlagsCategory(codes: Array<String>, char: String, name: String, category: String) {
-        val b = Bromoji(codes, char, name, category)
+    fun addFlagsCategory(b: Bromoji) {
         bromojiFlags.add(b)
+    }
+
+    fun fillRemainingSpaces() {
+        val b = Bromoji(arrayOf(), "", "", "")
+        while ((bromojiFirstKeyboard.size % 8) != 0) {
+            addMostUsed(b)
+        }
+        while ((bromojiPeople.size % 8) != 0) {
+            addPeopleCategory(b)
+        }
+        while ((bromojiAnimals.size % 8) != 0) {
+            addAnimalsCategory(b)
+        }
+        while ((bromojiFood.size % 8) != 0) {
+            addFoodCategory(b)
+        }
+        while ((bromojiSports.size % 8) != 0) {
+            addSportsCategory(b)
+        }
+        while ((bromojiTravel.size % 8) != 0) {
+            addTravelCategory(b)
+        }
+        while ((bromojiObjects.size % 8) != 0) {
+            addObjectsCategory(b)
+        }
+        while ((bromojiSymbols.size % 8) != 0) {
+            addSymbolsCategory(b)
+        }
+        while ((bromojiFlags.size % 8) != 0) {
+            addFlagsCategory(b)
+        }
     }
 }

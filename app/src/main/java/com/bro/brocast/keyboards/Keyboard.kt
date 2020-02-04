@@ -87,72 +87,37 @@ class Keyboard: ScrollView {
                 if (android.os.Build.VERSION.SDK_INT == api as Int) {
                     val category = emoji.get("category") as String
 
-                    if (category == "Smileys") {
-                        bromoji.addPeopleCategory(codes, char, name, category)
+                    val b = Bromoji(codes, char, name, category)
+                    if (category == "Smileys and people") {
+                        bromoji.addPeopleCategory(b)
                     }
-                    if (category == "Animals") {
-                        bromoji.addAnimalsCategory(codes, char, name, category)
+                    if (category == "Animals and nature") {
+                        bromoji.addAnimalsCategory(b)
                     }
-                    if (category == "Food") {
-                        bromoji.addFoodCategory(codes, char, name, category)
+                    if (category == "Food and drinks") {
+                        bromoji.addFoodCategory(b)
                     }
-                    if (category == "Travel") {
-                        bromoji.addTravelCategory(codes, char, name, category)
+                    if (category == "Travel and places") {
+                        bromoji.addTravelCategory(b)
                     }
                     if (category == "Activities") {
-                        bromoji.addSportsCategory(codes, char, name, category)
+                        bromoji.addSportsCategory(b)
                     }
                     if (category == "Objects") {
-                        bromoji.addObjectsCategory(codes, char, name, category)
+                        bromoji.addObjectsCategory(b)
                     }
                     if (category == "Symbols") {
-                        bromoji.addSymbolsCategory(codes, char, name, category)
+                        bromoji.addSymbolsCategory(b)
                     }
                     if (category == "Flags") {
-                        bromoji.addFlagsCategory(codes, char, name, category)
+                        bromoji.addFlagsCategory(b)
                     }
                 }
             }
         }
+        bromoji.fillRemainingSpaces()
 
         LayoutInflater.from(context).inflate(R.layout.keyboard_1, this, true)
-
-        while ((bromoji.bromojiFirstKeyboard.size % 8) != 0) {
-            bromoji.addMostUsed(arrayOf(), "", "", "")
-        }
-
-        while ((bromoji.bromojiPeople.size % 8) != 0) {
-            bromoji.addPeopleCategory(arrayOf(), "", "", "")
-        }
-
-        while ((bromoji.bromojiAnimals.size % 8) != 0) {
-            bromoji.addAnimalsCategory(arrayOf(), "", "", "")
-        }
-
-        while ((bromoji.bromojiFood.size % 8) != 0) {
-            bromoji.addFoodCategory(arrayOf(), "", "", "")
-        }
-
-        while ((bromoji.bromojiSports.size % 8) != 0) {
-            bromoji.addSportsCategory(arrayOf(), "", "", "")
-        }
-
-        while ((bromoji.bromojiTravel.size % 8) != 0) {
-            bromoji.addTravelCategory(arrayOf(), "", "", "")
-        }
-
-        while ((bromoji.bromojiObjects.size % 8) != 0) {
-            bromoji.addObjectsCategory(arrayOf(), "", "", "")
-        }
-
-        while ((bromoji.bromojiSymbols.size % 8) != 0) {
-            bromoji.addSymbolsCategory(arrayOf(), "", "", "")
-        }
-
-        while ((bromoji.bromojiFlags.size % 8) != 0) {
-            bromoji.addFlagsCategory(arrayOf(), "", "", "")
-        }
-
         // The outer and main layer of the keyboard
         val mainLayout = findViewById<LinearLayout>(R.id.main_keyboard_layout)
 
