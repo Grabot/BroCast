@@ -22,7 +22,7 @@ class _SignInState extends State<SignIn> {
               children: [
                 TextField(
                   style: simpleTextStyle(),
-                  decoration: textFieldInputDecoration("email"),
+                  decoration: textFieldInputDecoration("username"),
                 ),
                 TextField(
                   style: simpleTextStyle(),
