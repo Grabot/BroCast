@@ -1,10 +1,24 @@
 import 'package:brocast/services/auth.dart';
 import 'package:brocast/utils/utils.dart';
+import 'package:brocast/views/broCastHome.dart';
+import 'package:brocast/views/signin.dart';
 import 'package:flutter/material.dart';
+import 'package:toast/toast.dart';
 
 class SignUp extends StatefulWidget {
   @override
   _SignUpState createState() => _SignUpState();
+}
+
+class ShowToastComponent {
+  static showDialog(String msg, context) {
+    Toast.show(
+      msg,
+      context,
+      duration: Toast.LENGTH_SHORT,
+      gravity: Toast.BOTTOM,
+    );
+  }
 }
 
 class _SignUpState extends State<SignUp> {
@@ -14,7 +28,8 @@ class _SignUpState extends State<SignUp> {
   Auth auth = new Auth();
 
   final formKey = GlobalKey<FormState>();
-  TextEditingController userNameController = new TextEditingController();
+  TextEditingController broNameController = new TextEditingController();
+  TextEditingController bromotionController = new TextEditingController();
   TextEditingController passwordController = new TextEditingController();
 
   signUp() {
@@ -23,8 +38,16 @@ class _SignUpState extends State<SignUp> {
         isLoading = true;
       });
 
-      auth.signUp(userNameController.text, passwordController.text).then((val) {
+      auth.signUp(broNameController.text, bromotionController.text, passwordController.text).then((val) {
         print("$val");
+        if (val.toString() == "") {
+          print("it was successfull");
+          Navigator.pushReplacement(context, MaterialPageRoute(
+              builder: (context) => BroCastHome()
+          ));
+        } else {
+          ShowToastComponent.showDialog(val.toString(), context);
+        }
         setState(() {
           isLoading = false;
         });
@@ -58,11 +81,19 @@ class _SignUpState extends State<SignUp> {
                           children: [
                             TextFormField(
                               validator: (val) {
-                                return val.isEmpty ? "Please provide UserName": null;
+                                return val.isEmpty ? "Please provide a bro name": null;
                               },
-                              controller: userNameController,
+                              controller: broNameController,
                               style: simpleTextStyle(),
-                              decoration: textFieldInputDecoration("username"),
+                              decoration: textFieldInputDecoration("Bro name"),
+                            ),
+                            TextFormField(
+                              validator: (val) {
+                                return val.isEmpty ? "Please provide bromotion": null;
+                              },
+                              controller: bromotionController,
+                              style: simpleTextStyle(),
+                              decoration: textFieldInputDecoration("Bromotion"),
                             ),
                             TextFormField(
                               obscureText: true,
@@ -71,7 +102,7 @@ class _SignUpState extends State<SignUp> {
                               },
                               controller: passwordController,
                               style: simpleTextStyle(),
-                              decoration: textFieldInputDecoration("password"),
+                              decoration: textFieldInputDecoration("Password"),
                             ),
                           ],
                         )
@@ -100,20 +131,6 @@ class _SignUpState extends State<SignUp> {
                         child: Text("Sign Up", style: simpleTextStyle()),
                       ),
                     ),
-                    SizedBox(height: 8),
-                    Container(
-                      alignment: Alignment.center,
-                      width: MediaQuery.of(context).size.width,
-                      padding: EdgeInsets.symmetric(vertical: 16),
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(30)
-                      ),
-                      child: Text("Sign Up with Google", style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 16
-                      )),
-                    ),
                     SizedBox(height: 16),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -123,11 +140,20 @@ class _SignUpState extends State<SignUp> {
                             fontSize: 16
                         ),
                         ),
-                        Text("Login now!", style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                            decoration: TextDecoration.underline
-                        ),
+                        GestureDetector(
+                          onTap: () {
+                            if (!isLoading) {
+                              Navigator.pushReplacement(context, MaterialPageRoute(
+                                  builder: (context) => SignIn()
+                              ));
+                            }
+                          },
+                          child: Text("Login now!", style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              decoration: TextDecoration.underline
+                          ),
+                          ),
                         )
                       ],
                     )

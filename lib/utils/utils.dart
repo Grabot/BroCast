@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 
 Widget appBarMain(BuildContext context) {
   return AppBar(
-      title: Container(
-        alignment: Alignment.center,
-        child: Image.asset("assets/images/brocast_transparent.png", height: 60)
-      )
+  title: Container(
+  alignment: Alignment.center,
+      child: Image.asset("assets/images/brocast_transparent.png", height: 60)
+  )
   );
 }
 

@@ -1,5 +1,5 @@
+import 'package:brocast/views/signin.dart';
 import 'package:flutter/material.dart';
-import 'package:brocast/views/signup.dart';
 
 void main() {
   runApp(MyApp());
@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: SignUp(),
+      home: SignIn(),
     );
   }
 }
