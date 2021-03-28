@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:toast/toast.dart';
 
 Widget appBarMain(BuildContext context) {
   return AppBar(
@@ -29,4 +30,16 @@ TextStyle simpleTextStyle() {
       color: Colors.white,
       fontSize: 16
   );
+}
+
+
+class ShowToastComponent {
+  static showDialog(String msg, context) {
+    Toast.show(
+      msg,
+      context,
+      duration: Toast.LENGTH_SHORT,
+      gravity: Toast.BOTTOM,
+    );
+  }
 }

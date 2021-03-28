@@ -32,10 +32,6 @@ class Auth {
     return "an unknown error has occurred";
   }
 
-  Future signOff() {
-
-  }
-
   Future signIn(String broName, String bromotion, String password) async {
     // TODO: @SKools automatic login with token
     String urlLogin ='http://10.0.2.2:5000/api/v1.0/login';
@@ -65,4 +61,9 @@ class Auth {
     }
     return "an unknown error has occurred";
   }
+
+  Future signOff() {
+    // TODO: @SKools remove token when logged off
+  }
+
 }

@@ -3,22 +3,10 @@ import 'package:brocast/utils/utils.dart';
 import 'package:brocast/views/broCastHome.dart';
 import 'package:brocast/views/signin.dart';
 import 'package:flutter/material.dart';
-import 'package:toast/toast.dart';
 
 class SignUp extends StatefulWidget {
   @override
   _SignUpState createState() => _SignUpState();
-}
-
-class ShowToastComponent {
-  static showDialog(String msg, context) {
-    Toast.show(
-      msg,
-      context,
-      duration: Toast.LENGTH_SHORT,
-      gravity: Toast.BOTTOM,
-    );
-  }
 }
 
 class _SignUpState extends State<SignUp> {
