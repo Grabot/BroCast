@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toast/toast.dart';
 
 Widget appBarMain(BuildContext context) {
@@ -41,5 +42,30 @@ class ShowToastComponent {
       duration: Toast.LENGTH_SHORT,
       gravity: Toast.BOTTOM,
     );
+  }
+}
+
+class HelperFunction {
+  static String broTokenKey = "userToken";
+  static String broNameKey = "broName";
+
+  static Future<bool> setBroToken(String broToken) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    return await preferences.setString(broTokenKey, broToken);
+  }
+
+  static Future<bool> setBroName(String broName) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    return await preferences.setString(broNameKey, broName);
+  }
+
+  static Future<String> getBroToken() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    return await preferences.getString(broTokenKey);
+  }
+
+  static Future<String> getBroName() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    return await preferences.getString(broNameKey);
   }
 }

@@ -46,18 +46,13 @@ class _FindBrosState extends State<FindBros> {
   Widget broList() {
     return bros.isNotEmpty ?
       ListView.builder(
+      shrinkWrap: true,
       itemCount: bros.length,
-        shrinkWrap: true,
         itemBuilder: (context, index) {
           return BroTile(
               bros[index]
           );
         }) : Container();
-  }
-
-  @override
-  void initState() {
-    super.initState();
   }
 
   @override
@@ -110,7 +105,9 @@ class _FindBrosState extends State<FindBros> {
                 ],
               ),
             ),
-            broList(),
+            Expanded(
+                child: broList()
+            )
           ],
         )
       )
@@ -123,6 +120,11 @@ class BroTile extends StatelessWidget {
 
   BroTile(this.bro);
 
+  addBro() {
+    // TODO: @Skools add bro
+    print("adding bro: " + bro.getFullBroName());
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -133,7 +135,7 @@ class BroTile extends StatelessWidget {
           Spacer(),
           GestureDetector(
             onTap: () {
-              print("pressed the add Bro Button!");
+              addBro();
             },
             child: Container(
               decoration: BoxDecoration(

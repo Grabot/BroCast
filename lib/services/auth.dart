@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:brocast/utils/utils.dart';
 import 'package:http/http.dart' as http;
 
 class Auth {
@@ -23,7 +24,9 @@ class Auth {
     if (registerResponse.containsKey("result") && registerResponse.containsKey("message")) {
       bool result = registerResponse["result"];
       String message = registerResponse["message"];
+      String token = registerResponse["token"];
       if (result) {
+        HelperFunction.setBroToken(token);
         return "";
       } else {
         return message;
@@ -32,8 +35,7 @@ class Auth {
     return "an unknown error has occurred";
   }
 
-  Future signIn(String broName, String bromotion, String password) async {
-    // TODO: @SKools automatic login with token
+  Future signIn(String broName, String bromotion, String password, String token) async {
     String urlLogin ='http://10.0.2.2:5000/api/v1.0/login';
     Uri uriLogin = Uri.parse(urlLogin);
 
@@ -45,7 +47,7 @@ class Auth {
         'bro_name': broName,
         'bromotion': bromotion,
         'password': password,
-        'token': ''
+        'token': token
       }),
     );
     Map<String, dynamic> registerResponse = jsonDecode(responsePost.body);
@@ -53,7 +55,9 @@ class Auth {
     if (registerResponse.containsKey("result") && registerResponse.containsKey("message")) {
       bool result = registerResponse["result"];
       String message = registerResponse["message"];
+      String token = registerResponse["token"];
       if (result) {
+        HelperFunction.setBroToken(token);
         return "";
       } else {
         return message;

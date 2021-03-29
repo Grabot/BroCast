@@ -20,28 +20,45 @@ class _SignInState extends State<SignIn> {
   TextEditingController bromotionController = new TextEditingController();
   TextEditingController passwordController = new TextEditingController();
 
+  @override
+  void initState() {
+    HelperFunction.getBroToken().then((val) {
+      print("this is the token NOW!");
+      print("$val");
+      if (val == null) {
+        print("no token yet, wait untill a token is saved");
+      } else {
+        signIn(val.toString());
+      }
+    });
+    super.initState();
+  }
 
-  signIn() {
+  signInForm() {
     if (formKey.currentState.validate()) {
-      setState(() {
-        isLoading = true;
-      });
-
-      auth.signIn(broNameController.text, bromotionController.text, passwordController.text).then((val) {
-        print("$val");
-        if (val.toString() == "") {
-          print("it was successfull");
-          Navigator.pushReplacement(context, MaterialPageRoute(
-              builder: (context) => BroCastHome()
-          ));
-        } else {
-          ShowToastComponent.showDialog(val.toString(), context);
-        }
-        setState(() {
-          isLoading = false;
-        });
-      });
+      signIn("");
     }
+  }
+
+  signIn(String token) {
+    setState(() {
+      isLoading = true;
+    });
+
+    auth.signIn(broNameController.text, bromotionController.text, passwordController.text, token).then((val) {
+      print("$val");
+      if (val.toString() == "") {
+        print("it was successfull");
+        Navigator.pushReplacement(context, MaterialPageRoute(
+            builder: (context) => BroCastHome()
+        ));
+      } else {
+        ShowToastComponent.showDialog(val.toString(), context);
+      }
+      setState(() {
+        isLoading = false;
+      });
+    });
   }
 
 
@@ -101,7 +118,7 @@ class _SignInState extends State<SignIn> {
                 GestureDetector(
                   onTap: () {
                     if (!isLoading) {
-                      signIn();
+                      signInForm();
                     }
                   },
                   child: Container(
