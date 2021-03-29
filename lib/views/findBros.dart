@@ -1,6 +1,7 @@
 import 'package:brocast/objects/bro.dart';
 import 'package:brocast/services/search.dart';
 import 'package:brocast/utils/utils.dart';
+import 'package:brocast/views/broMessaging.dart';
 import 'package:flutter/material.dart';
 
 class FindBros extends StatefulWidget {
@@ -120,9 +121,12 @@ class BroTile extends StatelessWidget {
 
   BroTile(this.bro);
 
-  addBro() {
+  addBro(BuildContext context) {
     // TODO: @Skools add bro
     print("adding bro: " + bro.getFullBroName());
+    Navigator.pushReplacement(context, MaterialPageRoute(
+        builder: (context) => BroMessaging()
+    ));
   }
 
   @override
@@ -135,7 +139,7 @@ class BroTile extends StatelessWidget {
           Spacer(),
           GestureDetector(
             onTap: () {
-              addBro();
+              addBro(context);
             },
             child: Container(
               decoration: BoxDecoration(
