@@ -1,4 +1,5 @@
 import 'package:brocast/objects/bro.dart';
+import 'package:brocast/services/addBro.dart';
 import 'package:brocast/services/search.dart';
 import 'package:brocast/utils/utils.dart';
 import 'package:brocast/views/broMessaging.dart';
@@ -118,12 +119,17 @@ class BroTileSearch extends StatelessWidget {
 
   BroTileSearch(this.bro);
 
+  AddBro add = new AddBro();
+
   addBro(BuildContext context) {
-    // TODO: @Skools add bro
-    print("adding bro: " + bro.getFullBroName());
-    Navigator.pushReplacement(context, MaterialPageRoute(
-        builder: (context) => BroMessaging()
-    ));
+    HelperFunction.getBroToken().then((val) {
+
+      add.addBro(val.toString(), bro.id);
+
+      Navigator.pushReplacement(context, MaterialPageRoute(
+          builder: (context) => BroMessaging(bro: bro)
+      ));
+    });
   }
 
   @override

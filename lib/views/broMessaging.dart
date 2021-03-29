@@ -1,8 +1,16 @@
+import 'package:back_button_interceptor/back_button_interceptor.dart';
+import 'package:brocast/objects/bro.dart';
 import 'package:brocast/utils/utils.dart';
+import 'package:brocast/views/broHome.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class BroMessaging extends StatefulWidget {
+
+  final Bro bro; // receives the value
+
+  BroMessaging({ Key key, this.bro }): super(key: key);
+
   @override
   _BroMessagingState createState() => _BroMessagingState();
 }
@@ -10,6 +18,26 @@ class BroMessaging extends StatefulWidget {
 class _BroMessagingState extends State<BroMessaging> {
 
   TextEditingController broMessageController = new TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    print("started a chat with " + widget.bro.getFullBroName());
+    BackButtonInterceptor.add(myInterceptor);
+  }
+
+  @override
+  void dispose() {
+    BackButtonInterceptor.remove(myInterceptor);
+    super.dispose();
+  }
+
+  bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
+    Navigator.pushReplacement(context, MaterialPageRoute(
+        builder: (context) => BroCastHome()
+    ));
+    return true;
+  }
 
   @override
   Widget build(BuildContext context) {

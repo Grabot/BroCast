@@ -76,14 +76,10 @@ class _BroCastHomeState extends State<BroCastHome> {
             child: Column(
                 children: [
                 Container(
-                  child: Row(
-                      children: [
-                        Expanded(
+                  child: Expanded(
                             child: broList()
-                        )
-                      ]
+                        ),
                   ),
-        ),
       ])),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.search),
@@ -105,9 +101,9 @@ class BroTile extends StatelessWidget {
 
   selectBro(BuildContext context) {
     print("clicked bro " + bro.getFullBroName());
-    // Navigator.pushReplacement(context, MaterialPageRoute(
-    //     builder: (context) => BroMessaging()
-    // ));
+    Navigator.pushReplacement(context, MaterialPageRoute(
+        builder: (context) => BroMessaging(bro: bro)
+    ));
   }
 
   @override
