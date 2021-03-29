@@ -20,7 +20,6 @@ class Auth {
       }),
     );
     Map<String, dynamic> registerResponse = jsonDecode(responsePost.body);
-    print(registerResponse);
     if (registerResponse.containsKey("result") && registerResponse.containsKey("message")) {
       bool result = registerResponse["result"];
       String message = registerResponse["message"];
@@ -51,7 +50,6 @@ class Auth {
       }),
     );
     Map<String, dynamic> registerResponse = jsonDecode(responsePost.body);
-    print(registerResponse);
     if (registerResponse.containsKey("result") && registerResponse.containsKey("message")) {
       bool result = registerResponse["result"];
       String message = registerResponse["message"];

@@ -27,9 +27,7 @@ class _FindBrosState extends State<FindBros> {
 
       // TODO: @SKools bromotion functionality
       search.searchBro(broNameController.text, "").then((val) {
-        print("$val");
         if (!(val is String)) {
-          print("it was successful");
           setState(() {
             bros = val;
           });

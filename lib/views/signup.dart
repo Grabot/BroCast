@@ -27,9 +27,7 @@ class _SignUpState extends State<SignUp> {
       });
 
       auth.signUp(broNameController.text, bromotionController.text, passwordController.text).then((val) {
-        print("$val");
         if (val.toString() == "") {
-          print("it was successfull");
           Navigator.pushReplacement(context, MaterialPageRoute(
               builder: (context) => BroCastHome()
           ));

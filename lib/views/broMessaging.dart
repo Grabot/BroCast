@@ -22,7 +22,6 @@ class _BroMessagingState extends State<BroMessaging> {
   @override
   void initState() {
     super.initState();
-    print("started a chat with " + widget.bro.getFullBroName());
     BackButtonInterceptor.add(myInterceptor);
   }
 

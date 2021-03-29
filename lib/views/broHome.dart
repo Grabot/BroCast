@@ -37,12 +37,9 @@ class _BroCastHomeState extends State<BroCastHome> {
     });
 
     getBros.getBros(token).then((val) {
-      print("$val");
       if (!(val is String)) {
-        print("it was successful");
         setState(() {
           bros = val;
-          print(bros);
         });
       } else {
         ShowToastComponent.showDialog(val.toString(), context);
@@ -57,10 +54,8 @@ class _BroCastHomeState extends State<BroCastHome> {
   @override
   void initState() {
     HelperFunction.getBroToken().then((val) {
-      print("this is the token NOW!");
-      print("$val");
       if (val == null) {
-        print("no token yet, wait untill a token is saved");
+        print("no token yet, wait until a token is saved");
       } else {
         searchBros(val.toString());
       }

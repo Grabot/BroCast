@@ -23,10 +23,8 @@ class _SignInState extends State<SignIn> {
   @override
   void initState() {
     HelperFunction.getBroToken().then((val) {
-      print("this is the token NOW!");
-      print("$val");
       if (val == null) {
-        print("no token yet, wait untill a token is saved");
+        print("no token yet, wait until a token is saved");
       } else {
         signIn(val.toString());
       }
@@ -48,7 +46,6 @@ class _SignInState extends State<SignIn> {
     auth.signIn(broNameController.text, bromotionController.text, passwordController.text, token).then((val) {
       print("$val");
       if (val.toString() == "") {
-        print("it was successfull");
         Navigator.pushReplacement(context, MaterialPageRoute(
             builder: (context) => BroCastHome()
         ));

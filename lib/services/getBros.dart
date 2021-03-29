@@ -18,7 +18,6 @@ class GetBros {
       }),
     );
     Map<String, dynamic> registerResponse = jsonDecode(responsePost.body);
-    print(registerResponse);
     if (registerResponse.containsKey("result")) {
       bool result = registerResponse["result"];
       if (result) {
