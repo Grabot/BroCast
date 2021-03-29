@@ -1,5 +1,6 @@
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:brocast/objects/bro.dart';
+import 'package:brocast/services/sendMessage.dart';
 import 'package:brocast/utils/utils.dart';
 import 'package:brocast/views/broHome.dart';
 import 'package:flutter/cupertino.dart';
@@ -17,7 +18,9 @@ class BroMessaging extends StatefulWidget {
 
 class _BroMessagingState extends State<BroMessaging> {
 
+  SendMessage send = new SendMessage();
   TextEditingController broMessageController = new TextEditingController();
+  final formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -38,6 +41,19 @@ class _BroMessagingState extends State<BroMessaging> {
     return true;
   }
 
+  sendMessage() {
+    if (formKey.currentState.validate()) {
+      String message = broMessageController.text;
+      HelperFunction.getBroToken().then((val) {
+        if (val == null) {
+          print("no token yet, this is not really possible");
+        } else {
+          send.sendMessage(val, widget.bro.id, message);
+        }
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,7 +69,15 @@ class _BroMessagingState extends State<BroMessaging> {
                 child: Row(
                   children: [
                     Expanded(
-                        child: TextField(
+                      child:
+                      Form(
+                        key: formKey,
+                        child: TextFormField(
+                          validator: (val) {
+                            return val.isEmpty
+                                ? "Can't send an empty message"
+                                : null;
+                          },
                           controller: broMessageController,
                           style: TextStyle(
                               color: Colors.white
@@ -65,11 +89,12 @@ class _BroMessagingState extends State<BroMessaging> {
                               ),
                               border: InputBorder.none
                           ),
-                        )
+                        ),
+                      ),
                     ),
                     GestureDetector(
                       onTap: () {
-                        print("tapped the send message button");
+                        sendMessage();
                       },
                       child: Container(
                           height: 40,
@@ -89,7 +114,7 @@ class _BroMessagingState extends State<BroMessaging> {
                     )
                   ],
                 ),
-            ),
+              ),
             )
           ],
         ),
