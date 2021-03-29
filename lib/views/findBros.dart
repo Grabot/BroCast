@@ -24,16 +24,13 @@ class _FindBrosState extends State<FindBros> {
         isSearching = true;
       });
 
+      // TODO: @SKools bromotion functionality
       search.searchBro(broNameController.text, "").then((val) {
         print("$val");
         if (!(val is String)) {
           print("it was successful");
           setState(() {
             bros = val;
-            print(bros);
-            for (Bro bro in bros) {
-              print(bro.getFullBroName());
-            }
           });
         } else {
           ShowToastComponent.showDialog(val.toString(), context);
@@ -50,7 +47,7 @@ class _FindBrosState extends State<FindBros> {
       shrinkWrap: true,
       itemCount: bros.length,
         itemBuilder: (context, index) {
-          return BroTile(
+          return BroTileSearch(
               bros[index]
           );
         }) : Container();
@@ -116,10 +113,10 @@ class _FindBrosState extends State<FindBros> {
   }
 }
 
-class BroTile extends StatelessWidget {
+class BroTileSearch extends StatelessWidget {
   final Bro bro;
 
-  BroTile(this.bro);
+  BroTileSearch(this.bro);
 
   addBro(BuildContext context) {
     // TODO: @Skools add bro

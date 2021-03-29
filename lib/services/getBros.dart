@@ -3,19 +3,18 @@ import 'dart:convert';
 import 'package:brocast/objects/bro.dart';
 import 'package:http/http.dart' as http;
 
-class Search {
+class GetBros {
 
-  Future searchBro(String broName, String bromotion) async {
-    String urlSearch ='http://10.0.2.2:5000/api/v1.0/search';
-    Uri uriRegister = Uri.parse(urlSearch);
+  Future getBros(String token) async {
+    String urlGetBros ='http://10.0.2.2:5000/api/v1.0/get/bros';
+    Uri uriGetBros = Uri.parse(urlGetBros);
 
-    http.Response responsePost = await http.post(uriRegister,
+    http.Response responsePost = await http.post(uriGetBros,
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode(<String, String> {
-        'bro_name': broName,
-        'bromotion': bromotion
+        'token': token
       }),
     );
     Map<String, dynamic> registerResponse = jsonDecode(responsePost.body);
