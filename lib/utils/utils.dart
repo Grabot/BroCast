@@ -61,11 +61,11 @@ class HelperFunction {
 
   static Future<String> getBroToken() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    return await preferences.getString(broTokenKey);
+    return preferences.getString(broTokenKey);
   }
 
   static Future<String> getBroName() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    return await preferences.getString(broNameKey);
+    return preferences.getString(broNameKey);
   }
 }

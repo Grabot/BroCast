@@ -117,7 +117,7 @@ class BroTileSearch extends StatelessWidget {
 
   BroTileSearch(this.bro);
 
-  AddBro add = new AddBro();
+  final AddBro add = new AddBro();
 
   addBro(BuildContext context) {
     HelperFunction.getBroToken().then((val) {

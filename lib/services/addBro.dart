@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:brocast/objects/bro.dart';
 import 'package:http/http.dart' as http;
 
 class AddBro {
