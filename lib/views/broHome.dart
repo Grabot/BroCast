@@ -101,6 +101,27 @@ class BroTile extends StatelessWidget {
     ));
   }
 
+  // @override
+  // Widget build(BuildContext context) {
+  //   return Container(
+  //       child: new Material(
+  //         child: new InkWell(
+  //           onTap: (){
+  //             selectBro(context);
+  //           },
+  //           child: new Container(
+  //           padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+  //             child: Row(
+  //               children: [
+  //                 Text(bro.getFullBroName(), style: simpleTextStyle()),
+  //             ],
+  //           ),
+  //         ),
+  //       ),
+  //       color: Colors.transparent,
+  //     )
+  //   );
+  // }
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -110,16 +131,27 @@ class BroTile extends StatelessWidget {
               selectBro(context);
             },
             child: new Container(
-            padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+              padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
               child: Row(
                 children: [
-                  Text(bro.getFullBroName(), style: simpleTextStyle()),
-              ],
-            ),
+                  Container(
+                    height: 40,
+                    width: 40,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: bro.broColor,
+                      borderRadius: BorderRadius.circular(40)
+                    ),
+                    child: Text("${bro.bromotion}", style: simpleTextStyle())
+                  ),
+                  SizedBox(width: 8),
+                  Text(bro.getFullBroName(), style: simpleTextStyle())
+                ],
+            )
           ),
         ),
         color: Colors.transparent,
-      )
+      ),
     );
   }
 }

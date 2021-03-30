@@ -99,9 +99,13 @@ class _BroMessagingState extends State<BroMessaging> {
     return Scaffold(
       appBar: appBarMain(context),
       body: Container(
-        child: Stack(
+        child: Column(
           children: [
-            messageList(),
+            Expanded(
+              child: Container(
+                child: messageList()
+              ),
+            ),
             Container(
               alignment: Alignment.bottomCenter,
               child: Container(
