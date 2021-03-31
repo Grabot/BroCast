@@ -1,11 +1,12 @@
 import 'dart:convert';
 
+import 'package:brocast/constants/api_path.dart';
 import 'package:http/http.dart' as http;
 
 class AddBro {
 
   Future addBro(String token, int broId) async {
-    String urlAdd ='http://10.0.2.2:5000/api/v1.0/add';
+    String urlAdd = baseUrl + 'add';
     Uri uriAdd = Uri.parse(urlAdd);
 
     http.Response responsePost = await http.post(uriAdd,

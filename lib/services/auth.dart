@@ -1,12 +1,13 @@
 import 'dart:convert';
 
+import 'package:brocast/constants/api_path.dart';
 import 'package:brocast/utils/utils.dart';
 import 'package:http/http.dart' as http;
 
 class Auth {
 
   Future signUp(String broName, String bromotion, String password) async {
-    String urlRegister ='http://10.0.2.2:5000/api/v1.0/register';
+    String urlRegister = baseUrl + 'register';
     Uri uriRegister = Uri.parse(urlRegister);
 
     http.Response responsePost = await http.post(uriRegister,
@@ -35,7 +36,7 @@ class Auth {
   }
 
   Future signIn(String broName, String bromotion, String password, String token) async {
-    String urlLogin ='http://10.0.2.2:5000/api/v1.0/login';
+    String urlLogin = baseUrl + 'login';
     Uri uriLogin = Uri.parse(urlLogin);
 
     http.Response responsePost = await http.post(uriLogin,
