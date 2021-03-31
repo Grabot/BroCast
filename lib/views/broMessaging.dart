@@ -3,10 +3,12 @@ import 'package:brocast/objects/bro.dart';
 import 'package:brocast/objects/message.dart';
 import 'package:brocast/services/getMessages.dart';
 import 'package:brocast/services/sendMessage.dart';
+import 'package:brocast/services/socket_service.dart';
 import 'package:brocast/utils/utils.dart';
 import 'package:brocast/views/broHome.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 class BroMessaging extends StatefulWidget {
 
@@ -27,10 +29,13 @@ class _BroMessagingState extends State<BroMessaging> {
 
   List<Message> messages = [];
 
+  SocketService socketService = new SocketService();
+
   @override
   void initState() {
     super.initState();
     getMessages();
+    socketService.createSocketConnection();
     BackButtonInterceptor.add(myInterceptor);
   }
 
@@ -54,6 +59,8 @@ class _BroMessagingState extends State<BroMessaging> {
       } else {
         get.getMessages(val, widget.bro.id).then((val) {
           if (!(val is String)) {
+            print("Going to send the message! :D");
+            socketService.sendMessage("werkt wel! :O");
             setState(() {
               messages = val;
             });
