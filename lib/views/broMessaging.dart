@@ -1,9 +1,10 @@
 import 'package:back_button_interceptor/back_button_interceptor.dart';
+import 'package:brocast/constants/api_path.dart';
 import 'package:brocast/objects/bro.dart';
 import 'package:brocast/objects/message.dart';
 import 'package:brocast/services/getMessages.dart';
 import 'package:brocast/services/sendMessage.dart';
-import 'package:brocast/services/socket_service.dart';
+import 'package:brocast/services/socket_services.dart';
 import 'package:brocast/utils/shared.dart';
 import 'package:brocast/utils/utils.dart';
 import 'package:brocast/views/broHome.dart';
@@ -29,10 +30,9 @@ class _BroMessagingState extends State<BroMessaging> {
   TextEditingController broMessageController = new TextEditingController();
   final formKey = GlobalKey<FormState>();
 
+  SocketServices socketServices = new SocketServices();
   List<Message> messages = [];
   int broId;
-
-  SocketService socketService = new SocketService();
 
   @override
   void initState() {
@@ -43,7 +43,7 @@ class _BroMessagingState extends State<BroMessaging> {
         print("no token yet, this is not really possible");
       } else {
         broId = val;
-        socketService.createConnection(broId, widget.bro.id);
+        socketServices.createSockConnection(broId, widget.bro.id, this);
       }
     });
     BackButtonInterceptor.add(myInterceptor);
@@ -52,7 +52,7 @@ class _BroMessagingState extends State<BroMessaging> {
   @override
   void dispose() {
     BackButtonInterceptor.remove(myInterceptor);
-    socketService.closeConnection();
+    socketServices.closeSockConnection();
     super.dispose();
   }
 
@@ -84,8 +84,14 @@ class _BroMessagingState extends State<BroMessaging> {
   sendMessage() {
     if (formKey.currentState.validate()) {
       String message = broMessageController.text;
-      socketService.sendMessage(broId, widget.bro.id, message);
+      socketServices.sendMessageSocket(broId, widget.bro.id, message);
     }
+  }
+
+  updateMessages(Message message) {
+    setState(() {
+      this.messages.insert(0, message);
+    });
   }
 
   Widget messageList() {
@@ -93,6 +99,7 @@ class _BroMessagingState extends State<BroMessaging> {
     ListView.builder(
         itemCount: messages.length,
         shrinkWrap: true,
+        reverse: true,
         itemBuilder: (context, index) {
           return MessageTile(messages[index], messages[index].recipientId == widget.bro.id);
         }
@@ -182,9 +189,6 @@ class MessageTile extends StatelessWidget {
 
   selectMessage(BuildContext context) {
     print("message " + message.body + " is it send by me? " + myMessage.toString());
-    // Navigator.pushReplacement(context, MaterialPageRoute(
-    //     builder: (context) => BroMessaging(bro: bro)
-    // ));
   }
 
   @override

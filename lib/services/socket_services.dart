@@ -1,10 +1,15 @@
 import 'package:brocast/constants/api_path.dart';
+import 'package:brocast/objects/message.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
-class SocketService {
+
+class SocketServices {
+
+  var messaging;
   IO.Socket socket;
 
-  createConnection(int broId, int brosBroId) {
+  createSockConnection(int broId, int brosBroId, var messaging) {
+    this.messaging = messaging;
     String namespace = "sock/message";
     String socketUrl = baseUrl + namespace;
     print(socketUrl);
@@ -24,12 +29,12 @@ class SocketService {
     });
 
     this.socket.on('message_event', (data) => print(data));
-    this.socket.on('message_sent_event', (data) => print(data));
+    this.socket.on('message_event_send', (data) => messageReceived(data));
 
     this.socket.open();
   }
 
-  closeConnection() {
+  closeSockConnection() {
     if (this.socket.connected) {
       this.socket.close();
     }
@@ -48,7 +53,8 @@ class SocketService {
       print("DONE!");
     }
   }
-  sendMessage(int broId, int brosBroId, String message) {
+
+  sendMessageSocket(int broId, int brosBroId, String message) {
     if (this.socket.connected) {
       this.socket.emit("message",
         {
@@ -60,4 +66,8 @@ class SocketService {
     }
   }
 
+  messageReceived(var data) {
+    Message mes = new Message(data["id"], data["bro_bros_id"], data["sender_id"], data["recipient_id"], data["body"], data["timestamp"]);
+    messaging.updateMessages(mes);
+  }
 }
