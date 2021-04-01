@@ -1,6 +1,7 @@
 import 'package:brocast/objects/bro.dart';
 import 'package:brocast/services/auth.dart';
 import 'package:brocast/services/getBros.dart';
+import 'package:brocast/utils/shared.dart';
 import 'package:brocast/utils/utils.dart';
 import 'package:brocast/views/broMessaging.dart';
 import 'package:brocast/views/findBros.dart';
@@ -101,27 +102,6 @@ class BroTile extends StatelessWidget {
     ));
   }
 
-  // @override
-  // Widget build(BuildContext context) {
-  //   return Container(
-  //       child: new Material(
-  //         child: new InkWell(
-  //           onTap: (){
-  //             selectBro(context);
-  //           },
-  //           child: new Container(
-  //           padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-  //             child: Row(
-  //               children: [
-  //                 Text(bro.getFullBroName(), style: simpleTextStyle()),
-  //             ],
-  //           ),
-  //         ),
-  //       ),
-  //       color: Colors.transparent,
-  //     )
-  //   );
-  // }
   @override
   Widget build(BuildContext context) {
     return Container(

@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:brocast/constants/api_path.dart';
-import 'package:brocast/utils/utils.dart';
+import 'package:brocast/utils/shared.dart';
 import 'package:http/http.dart' as http;
 
 class Auth {
@@ -24,9 +24,12 @@ class Auth {
     if (registerResponse.containsKey("result") && registerResponse.containsKey("message")) {
       bool result = registerResponse["result"];
       String message = registerResponse["message"];
-      String token = registerResponse["token"];
       if (result) {
-        HelperFunction.setBroToken(token);
+        String token = registerResponse["token"];
+        int broId = registerResponse["bro"]["id"];
+        String broName = registerResponse["bro"]["bro_name"];
+        String bromotion = registerResponse["bro"]["bromotion"];
+        setInformation(token, broId, broName, bromotion, password);
         return "";
       } else {
         return message;
@@ -54,9 +57,12 @@ class Auth {
     if (registerResponse.containsKey("result") && registerResponse.containsKey("message")) {
       bool result = registerResponse["result"];
       String message = registerResponse["message"];
-      String token = registerResponse["token"];
       if (result) {
-        HelperFunction.setBroToken(token);
+        String token = registerResponse["token"];
+        int broId = registerResponse["bro"]["id"];
+        String broName = registerResponse["bro"]["bro_name"];
+        String bromotion = registerResponse["bro"]["bromotion"];
+        setInformation(token, broId, broName, bromotion, password);
         return "";
       } else {
         return message;
@@ -65,8 +71,20 @@ class Auth {
     return "an unknown error has occurred";
   }
 
-  Future signOff() {
-    // TODO: @SKools remove token when logged off
+  signOff() {
+    setInformation("", 0, "", "", "");
   }
 
+  setInformation(String token, int broId, String broName, String bromotion, String password) {
+    HelperFunction.setBroToken(token);
+    HelperFunction.setBroId(broId);
+    HelperFunction.setBroName(broName);
+    HelperFunction.setBromotion(bromotion);
+    HelperFunction.setBroPassword(password);
+    print(token);
+    print(broId);
+    print(broName);
+    print(bromotion);
+    print(password);
+  }
 }

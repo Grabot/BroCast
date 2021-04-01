@@ -4,6 +4,7 @@ import 'package:brocast/objects/message.dart';
 import 'package:brocast/services/getMessages.dart';
 import 'package:brocast/services/sendMessage.dart';
 import 'package:brocast/services/socket_service.dart';
+import 'package:brocast/utils/shared.dart';
 import 'package:brocast/utils/utils.dart';
 import 'package:brocast/views/broHome.dart';
 import 'package:flutter/cupertino.dart';
@@ -24,10 +25,12 @@ class _BroMessagingState extends State<BroMessaging> {
 
   SendMessage send = new SendMessage();
   GetMessages get = new GetMessages();
+
   TextEditingController broMessageController = new TextEditingController();
   final formKey = GlobalKey<FormState>();
 
   List<Message> messages = [];
+  int broId;
 
   SocketService socketService = new SocketService();
 
@@ -35,13 +38,21 @@ class _BroMessagingState extends State<BroMessaging> {
   void initState() {
     super.initState();
     getMessages();
-    socketService.createSocketConnection();
+    HelperFunction.getBroId().then((val) {
+      if (val == null) {
+        print("no token yet, this is not really possible");
+      } else {
+        broId = val;
+        socketService.createConnection(broId, widget.bro.id);
+      }
+    });
     BackButtonInterceptor.add(myInterceptor);
   }
 
   @override
   void dispose() {
     BackButtonInterceptor.remove(myInterceptor);
+    socketService.closeConnection();
     super.dispose();
   }
 
@@ -59,8 +70,6 @@ class _BroMessagingState extends State<BroMessaging> {
       } else {
         get.getMessages(val, widget.bro.id).then((val) {
           if (!(val is String)) {
-            print("Going to send the message! :D");
-            socketService.sendMessage("werkt wel! :O");
             setState(() {
               messages = val;
             });
@@ -75,18 +84,7 @@ class _BroMessagingState extends State<BroMessaging> {
   sendMessage() {
     if (formKey.currentState.validate()) {
       String message = broMessageController.text;
-      HelperFunction.getBroToken().then((val) {
-        if (val == null) {
-          print("no token yet, this is not really possible");
-        } else {
-          send.sendMessage(val, widget.bro.id, message).then((val) {
-            if (val.toString() != "an unknown error has occurred") {
-              // When the message is send, then we retrieve all the messages again.
-              getMessages();
-            }
-          });
-        }
-      });
+      socketService.sendMessage(broId, widget.bro.id, message);
     }
   }
 

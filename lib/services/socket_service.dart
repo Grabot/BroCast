@@ -1,34 +1,63 @@
+import 'package:brocast/constants/api_path.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 class SocketService {
   IO.Socket socket;
 
-  createSocketConnection() {
-    String socketUrl = "http://10.0.2.2:5000/test";
-    socket = IO.io(socketUrl, <String, dynamic>{
+  createConnection(int broId, int brosBroId) {
+    String namespace = "sock/message";
+    String socketUrl = baseUrl + namespace;
+    print(socketUrl);
+    this.socket = IO.io(socketUrl, <String, dynamic>{
       'transports': ['websocket'],
     });
 
-    // this.socket.on("connect", (_) => print('Connected'));
     this.socket.onConnect((_) {
       print('connect');
-      socket.emit('my_event', 'Connected, mr server!');
+      socket.emit('message_event', 'Connected, ms server!');
+      joinRoom(broId, brosBroId);
     });
-    this.socket.on("disconnect", (_) => print('Disconnected'));
+
+    this.socket.onDisconnect((_) {
+      print('disconnect');
+      socket.emit('message_event', 'sorry ms server, disconnected!');
+    });
+
+    this.socket.on('message_event', (data) => print(data));
+    this.socket.on('message_sent_event', (data) => print(data));
+
+    this.socket.open();
   }
 
-  // Send a Message to the server
-  sendMessage(String message) {
-    socket.emit("message",
-      {
-        "id": socket.id,
-        "message": message, // Message to be sent
-        "timestamp": DateTime.now().millisecondsSinceEpoch,
-      },
-    );
+  closeConnection() {
+    if (this.socket.connected) {
+      this.socket.close();
+    }
   }
 
-  sendTestNamespaceTest() {
-    socket.on('event', (data) => print(data));
+  joinRoom(int broId, int brosBroId) {
+    print("creating room!");
+    if (this.socket.connected) {
+      print("socket connected");
+      this.socket.emit("join",
+        {
+          "bro_id": broId,
+          "bros_bro_id": brosBroId
+        },
+      );
+      print("DONE!");
+    }
   }
+  sendMessage(int broId, int brosBroId, String message) {
+    if (this.socket.connected) {
+      this.socket.emit("message",
+        {
+          "bro_id": broId,
+          "bros_bro_id": brosBroId,
+          "message": message
+        },
+      );
+    }
+  }
+
 }
