@@ -1,3 +1,5 @@
+import 'package:back_button_interceptor/back_button_interceptor.dart';
+import 'package:brocast/emoji/keyboard/custom_keyboard.dart';
 import 'package:brocast/services/auth.dart';
 import 'package:brocast/utils/shared.dart';
 import 'package:brocast/utils/utils.dart';
@@ -13,6 +15,7 @@ class SignIn extends StatefulWidget {
 class _SignInState extends State<SignIn> {
 
   bool isLoading = false;
+  bool showEmojiKeyboard = false;
 
   Auth auth = new Auth();
 
@@ -30,7 +33,43 @@ class _SignInState extends State<SignIn> {
         signIn(val.toString());
       }
     });
+    BackButtonInterceptor.add(myInterceptor);
     super.initState();
+  }
+
+  void onTapTextField() {
+    print("Tapped the text field");
+    if (showEmojiKeyboard) {
+      setState(() {
+        showEmojiKeyboard = false;
+      });
+    }
+  }
+
+  void onTapEmojiField() {
+    print("Tapped the emoji field");
+    if (!showEmojiKeyboard) {
+      setState(() {
+        showEmojiKeyboard = true;
+      });
+    }
+  }
+
+  bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
+    if (showEmojiKeyboard) {
+      setState(() {
+        showEmojiKeyboard = false;
+      });
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  @override
+  void dispose() {
+    BackButtonInterceptor.remove(myInterceptor);
+    super.dispose();
   }
 
   signInForm() {
@@ -59,14 +98,69 @@ class _SignInState extends State<SignIn> {
     });
   }
 
+  void _insertText(String myText) {
+    final text = bromotionController.text;
+    final textSelection = bromotionController.selection;
+    final newText = text.replaceRange(
+      textSelection.start,
+      textSelection.end,
+      myText,
+    );
+    final myTextLength = myText.length;
+    bromotionController.text = newText;
+    bromotionController.selection = textSelection.copyWith(
+      baseOffset: textSelection.start + myTextLength,
+      extentOffset: textSelection.start + myTextLength,
+    );
+  }
+
+  void _backspace() {
+    final text = bromotionController.text;
+    final textSelection = bromotionController.selection;
+    final selectionLength = textSelection.end - textSelection.start;  // There is a selection.
+    if (selectionLength > 0) {
+      final newText = text.replaceRange(
+        textSelection.start,
+        textSelection.end,
+        '',
+      );
+      bromotionController.text = newText;
+      bromotionController.selection = textSelection.copyWith(
+        baseOffset: textSelection.start,
+        extentOffset: textSelection.start,
+      );
+      return;
+    }  // The cursor is at the beginning.
+    if (textSelection.start == 0) {
+      return;
+    }  // Delete the previous character
+    final previousCodeUnit = text.codeUnitAt(textSelection.start - 1);
+    final offset = _isUtf16Surrogate(previousCodeUnit) ? 2 : 1;
+    final newStart = textSelection.start - offset;
+    final newEnd = textSelection.start;
+    final newText = text.replaceRange(
+      newStart,
+      newEnd,
+      '',
+    );
+    bromotionController.text = newText;
+    bromotionController.selection = textSelection.copyWith(
+      baseOffset: newStart,
+      extentOffset: newStart,
+    );
+  }bool _isUtf16Surrogate(int value) {
+    return value & 0xF800 == 0xD800;
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: appBarMain(context),
-      body: SingleChildScrollView(
-        child: Container(
-          height: MediaQuery.of(context).size.height - 150,
+      resizeToAvoidBottomInset: false,
+      body: Column(
+        children: [
+          Container(
+          height: MediaQuery.of(context).size.height - 360,
           alignment: Alignment.bottomCenter,
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 24),
@@ -78,6 +172,9 @@ class _SignInState extends State<SignIn> {
               child: Column(
                 children: [
                   TextFormField(
+                    onTap: () {
+                      onTapTextField();
+                    },
                     validator: (val) {
                       return val.isEmpty ? "Please provide a bro name": null;
                     },
@@ -86,14 +183,22 @@ class _SignInState extends State<SignIn> {
                     decoration: textFieldInputDecoration("Bro name"),
                   ),
                   TextFormField(
+                    onTap: () {
+                      onTapEmojiField();
+                    },
                     validator: (val) {
                       return val.isEmpty ? "Please provide bromotion": null;
                     },
                     controller: bromotionController,
                     style: simpleTextStyle(),
                     decoration: textFieldInputDecoration("Bromotion"),
+                    readOnly: true,
+                    showCursor: true,
                   ),
                   TextFormField(
+                    onTap: () {
+                      onTapTextField();
+                    },
                     obscureText: true,
                     validator: (val) {
                       return val.isEmpty ? "Please provide a password": null;
@@ -161,12 +266,28 @@ class _SignInState extends State<SignIn> {
                     ),
                     )
                   ],
-                )
+                ),
               ],
             ),
           ),
         ),
-      ),
+        showEmojiKeyboard ?
+          Container(
+            child: Expanded(
+              child: Align(
+                alignment: FractionalOffset.bottomCenter,
+                child: CustomKeyboard(
+                  onTextInput: (myText) {
+                    _insertText(myText);
+                  },
+                  onBackspace: () {
+                    _backspace();
+                  },
+                ),
+              ),
+            ),
+          ) : Container()
+      ]),
     );
   }
 }

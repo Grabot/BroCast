@@ -85,6 +85,7 @@ class _BroMessagingState extends State<BroMessaging> {
     if (formKey.currentState.validate()) {
       String message = broMessageController.text;
       socketServices.sendMessageSocket(broId, widget.bro.id, message);
+      broMessageController.clear(); 
     }
   }
 
