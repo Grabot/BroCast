@@ -192,7 +192,9 @@ class _SignInState extends State<SignIn> {
                             SizedBox(height: 100),
                             TextFormField(
                               onTap: () {
-                                onTapTextField();
+                                if (!isLoading) {
+                                  onTapTextField();
+                                }
                               },
                               validator: (val) {
                                 return val.isEmpty ? "Please provide a bro name": null;
@@ -203,7 +205,9 @@ class _SignInState extends State<SignIn> {
                             ),
                             TextFormField(
                               onTap: () {
-                                onTapEmojiField();
+                                if (!isLoading) {
+                                  onTapEmojiField();
+                                }
                               },
                               validator: (val) {
                                 return val.isEmpty ? "Please provide bromotion": null;
@@ -216,7 +220,9 @@ class _SignInState extends State<SignIn> {
                             ),
                             TextFormField(
                               onTap: () {
-                                onTapTextField();
+                                if (!isLoading) {
+                                  onTapTextField();
+                                }
                               },
                               obscureText: true,
                               validator: (val) {

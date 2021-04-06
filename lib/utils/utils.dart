@@ -4,8 +4,8 @@ import 'package:toast/toast.dart';
 Widget appBarMain(BuildContext context) {
   return AppBar(
   title: Container(
-  alignment: Alignment.center,
-      child: Image.asset("assets/images/brocast_transparent.png", height: 60)
+  alignment: Alignment.centerLeft,
+      child: Text("BroCast")
   )
   );
 }
