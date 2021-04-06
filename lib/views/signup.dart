@@ -46,7 +46,7 @@ class _SignUpState extends State<SignUp> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: appBarMain(context),
-      body: Stack(
+      body: Column(
         children: [
           isLoading ? Container(
                 child: Center(

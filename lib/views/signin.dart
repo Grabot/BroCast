@@ -156,138 +156,132 @@ class _SignInState extends State<SignIn> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: appBarMain(context),
-      resizeToAvoidBottomInset: false,
-      body: Column(
+      // TODO: @Skools check if this is really needed (without it the emoji keyboard jumps on top of the other for a split second)
+      // resizeToAvoidBottomInset: false,
+      body: Stack(
         children: [
+          isLoading ? Container(
+              child: Center(
+                  child: CircularProgressIndicator())
+          ) : Container(),
           Container(
-          height: MediaQuery.of(context).size.height - 360,
-          alignment: Alignment.bottomCenter,
-          child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 24),
             child: Column(
-              mainAxisSize: MainAxisSize.min,
               children: [
-              Form(
-              key: formKey,
-              child: Column(
-                children: [
-                  TextFormField(
-                    onTap: () {
-                      onTapTextField();
-                    },
-                    validator: (val) {
-                      return val.isEmpty ? "Please provide a bro name": null;
-                    },
-                    controller: broNameController,
-                    style: simpleTextStyle(),
-                    decoration: textFieldInputDecoration("Bro name"),
-                  ),
-                  TextFormField(
-                    onTap: () {
-                      onTapEmojiField();
-                    },
-                    validator: (val) {
-                      return val.isEmpty ? "Please provide bromotion": null;
-                    },
-                    controller: bromotionController,
-                    style: simpleTextStyle(),
-                    decoration: textFieldInputDecoration("Bromotion"),
-                    readOnly: true,
-                    showCursor: true,
-                  ),
-                  TextFormField(
-                    onTap: () {
-                      onTapTextField();
-                    },
-                    obscureText: true,
-                    validator: (val) {
-                      return val.isEmpty ? "Please provide a password": null;
-                    },
-                    controller: passwordController,
-                    style: simpleTextStyle(),
-                    decoration: textFieldInputDecoration("Password"),
-                  ),
-                ]),
-                ),
-                SizedBox(height: 8),
-                Container(
-                  alignment: Alignment.centerRight,
-                  child: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                      child: Text("Forgot Password?", style: simpleTextStyle())
-                  ),
-                ),
-                SizedBox(height: 8),
-                GestureDetector(
-                  onTap: () {
-                    if (!isLoading) {
-                      signInForm();
-                    }
-                  },
-                  child: Container(
-                    alignment: Alignment.center,
-                    width: MediaQuery.of(context).size.width,
-                    padding: EdgeInsets.symmetric(vertical: 16),
-                    decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                            colors: [
-                              const Color(0xff007EF4),
-                              const Color(0xff2A75BC)
-                            ]
-                        ),
-                        borderRadius: BorderRadius.circular(30)
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 24),
+                      child: Form(
+                        key: formKey,
+                        child: Column(
+                          children: [
+                            SizedBox(height: 400),
+                            TextFormField(
+                              onTap: () {
+                                onTapTextField();
+                              },
+                              validator: (val) {
+                                return val.isEmpty ? "Please provide a bro name": null;
+                              },
+                              controller: broNameController,
+                              style: simpleTextStyle(),
+                              decoration: textFieldInputDecoration("Bro name"),
+                            ),
+                            TextFormField(
+                              onTap: () {
+                                onTapEmojiField();
+                              },
+                              validator: (val) {
+                                return val.isEmpty ? "Please provide bromotion": null;
+                              },
+                              controller: bromotionController,
+                              style: simpleTextStyle(),
+                              decoration: textFieldInputDecoration("Bromotion"),
+                              readOnly: true,
+                              showCursor: true,
+                            ),
+                            TextFormField(
+                              onTap: () {
+                                onTapTextField();
+                              },
+                              obscureText: true,
+                              validator: (val) {
+                                return val.isEmpty ? "Please provide a password": null;
+                              },
+                              controller: passwordController,
+                              style: simpleTextStyle(),
+                              decoration: textFieldInputDecoration("Password"),
+                            ),
+                            SizedBox(height: 20),
+                            GestureDetector(
+                              onTap: () {
+                                if (!isLoading) {
+                                  signIn("");
+                                }
+                              },
+                              child: Container(
+                                alignment: Alignment.center,
+                                width: MediaQuery.of(context).size.width,
+                                padding: EdgeInsets.symmetric(vertical: 16),
+                                decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                        colors: [
+                                          const Color(0xBf007EF4),
+                                          const Color(0xff2A75BC)
+                                        ]
+                                    ),
+                                    borderRadius: BorderRadius.circular(30)
+                                ),
+                                child: Text("Sign In", style: simpleTextStyle()),
+                              ),
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text("Don't have an account? ", style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16
+                                ),
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    if (!isLoading) {
+                                      Navigator.pushReplacement(context, MaterialPageRoute(
+                                          builder: (context) => SignUp()
+                                      ));
+                                    }
+                                  },
+                                  child: Text("Register now!", style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 16,
+                                      decoration: TextDecoration.underline
+                                  ),
+                                  ),
+                                )
+                              ],
+                            )
+                          ],
+                        )
                     ),
-
-                    child: Text("Sign In", style: simpleTextStyle()),
                   ),
-                ),
-                SizedBox(height: 8),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text("Don't have an account? ", style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16
-                    ),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        if (!isLoading) {
-                          Navigator.pushReplacement(context, MaterialPageRoute(
-                              builder: (context) => SignUp()
-                          ));
-                        }
-                      },
-                      child: Text("Register now!", style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        decoration: TextDecoration.underline
-                    ),
-                    ),
-                    )
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ),
-        showEmojiKeyboard ?
-          Container(
-            child: Expanded(
-              child: Align(
-                alignment: FractionalOffset.bottomCenter,
-                child: CustomKeyboard(
-                  onTextInput: (myText) {
-                    _insertText(myText);
-                  },
-                  onBackspace: () {
-                    _backspace();
-                  },
                 ),
               ),
-            ),
-          ) : Container()
-      ]),
+              showEmojiKeyboard ?
+                Container(
+                  alignment: Alignment.bottomCenter,
+                  child: CustomKeyboard(
+                    onTextInput: (myText) {
+                      _insertText(myText);
+                    },
+                    onBackspace: () {
+                      _backspace();
+                    },
+                  ),
+                ) : Container()
+            ]),
+          ),
+        ]
+      )
     );
   }
 }

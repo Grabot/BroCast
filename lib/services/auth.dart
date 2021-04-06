@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:brocast/constants/api_path.dart';
@@ -52,20 +53,32 @@ class Auth {
         'password': password,
         'token': token
       }),
+    ).timeout(
+        Duration(seconds: 5),
+        onTimeout: () {
+          // time has run out, do what you wanted to do
+          return null;
+        },
     );
-    Map<String, dynamic> registerResponse = jsonDecode(responsePost.body);
-    if (registerResponse.containsKey("result") && registerResponse.containsKey("message")) {
-      bool result = registerResponse["result"];
-      String message = registerResponse["message"];
-      if (result) {
-        String token = registerResponse["token"];
-        int broId = registerResponse["bro"]["id"];
-        String broName = registerResponse["bro"]["bro_name"];
-        String bromotion = registerResponse["bro"]["bromotion"];
-        setInformation(token, broId, broName, bromotion, password);
-        return "";
-      } else {
-        return message;
+
+    if (responsePost == null) {
+      return "Could not connect to the server";
+    } else {
+      Map<String, dynamic> registerResponse = jsonDecode(responsePost.body);
+      if (registerResponse.containsKey("result") &&
+          registerResponse.containsKey("message")) {
+        bool result = registerResponse["result"];
+        String message = registerResponse["message"];
+        if (result) {
+          String token = registerResponse["token"];
+          int broId = registerResponse["bro"]["id"];
+          String broName = registerResponse["bro"]["bro_name"];
+          String bromotion = registerResponse["bro"]["bromotion"];
+          setInformation(token, broId, broName, bromotion, password);
+          return "";
+        } else {
+          return message;
+        }
       }
     }
     return "an unknown error has occurred";
