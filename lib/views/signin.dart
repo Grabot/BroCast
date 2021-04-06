@@ -169,13 +169,27 @@ class _SignInState extends State<SignIn> {
               children: [
                 Expanded(
                   child: SingleChildScrollView(
+                    reverse: true,
                     child: Container(
                       padding: EdgeInsets.symmetric(horizontal: 24),
                       child: Form(
                         key: formKey,
                         child: Column(
                           children: [
-                            SizedBox(height: 400),
+                            SizedBox(height: 50),
+                            Container(
+                              height: 120.0,
+                              width: 120.0,
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                  image: AssetImage(
+                                      'assets/images/brocast_transparent.png'),
+                                  fit: BoxFit.fill,
+                                ),
+                                shape: BoxShape.circle,
+                              ),
+                            ),
+                            SizedBox(height: 100),
                             TextFormField(
                               onTap: () {
                                 onTapTextField();
@@ -259,7 +273,8 @@ class _SignInState extends State<SignIn> {
                                   ),
                                 )
                               ],
-                            )
+                            ),
+                            SizedBox(height: 100),
                           ],
                         )
                     ),
