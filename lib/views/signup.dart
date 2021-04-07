@@ -1,3 +1,4 @@
+import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:brocast/emoji/keyboard/custom_keyboard.dart';
 import 'package:brocast/services/auth.dart';
 import 'package:brocast/utils/utils.dart';
@@ -62,6 +63,22 @@ class _SignUpState extends State<SignUp> {
     }
   }
 
+  @override
+  void initState() {
+    BackButtonInterceptor.add(myInterceptor);
+    super.initState();
+  }
+
+  bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
+    if (showEmojiKeyboard) {
+      setState(() {
+        showEmojiKeyboard = false;
+      });
+      return true;
+    } else {
+      return false;
+    }
+  }
 
   void _insertText(String myText) {
     final text = bromotionController.text;
@@ -239,6 +256,7 @@ class _SignUpState extends State<SignUp> {
                                         child: Text("Sign up", style: simpleTextStyle()),
                                       ),
                                     ),
+                                    SizedBox(height: 10),
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: [

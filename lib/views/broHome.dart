@@ -51,7 +51,6 @@ class _BroCastHomeState extends State<BroCastHome> {
     });
   }
 
-
   @override
   void initState() {
     HelperFunction.getBroToken().then((val) {
@@ -80,7 +79,7 @@ class _BroCastHomeState extends State<BroCastHome> {
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.search),
         onPressed: () {
-          Navigator.push(context, MaterialPageRoute(
+          Navigator.pushReplacement(context, MaterialPageRoute(
               builder: (context) => FindBros()
           ));
         },

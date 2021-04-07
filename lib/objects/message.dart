@@ -1,6 +1,5 @@
 
 
-
 class Message {
 
   int id;
@@ -23,7 +22,11 @@ class Message {
     this.senderId = senderId;
     this.recipientId = recipientId;
     this.body = body;
-    this.timestamp = DateTime.parse(timestamp + 'Z');
+    if (timestamp != null) {
+      this.timestamp = DateTime.parse(timestamp + 'Z');
+    } else {
+      this.timestamp = null;
+    }
   }
 
 }

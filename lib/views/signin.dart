@@ -37,6 +37,17 @@ class _SignInState extends State<SignIn> {
     super.initState();
   }
 
+  bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
+    if (showEmojiKeyboard) {
+      setState(() {
+        showEmojiKeyboard = false;
+      });
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   void onTapTextField() {
     print("Tapped the text field");
     if (showEmojiKeyboard) {
@@ -52,17 +63,6 @@ class _SignInState extends State<SignIn> {
       setState(() {
         showEmojiKeyboard = true;
       });
-    }
-  }
-
-  bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
-    if (showEmojiKeyboard) {
-      setState(() {
-        showEmojiKeyboard = false;
-      });
-      return true;
-    } else {
-      return false;
     }
   }
 
@@ -273,6 +273,7 @@ class _SignInState extends State<SignIn> {
                                 child: Text("Sign in", style: simpleTextStyle()),
                               ),
                             ),
+                            SizedBox(height: 10),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [

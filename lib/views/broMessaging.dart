@@ -1,5 +1,4 @@
 import 'package:back_button_interceptor/back_button_interceptor.dart';
-import 'package:brocast/constants/api_path.dart';
 import 'package:brocast/objects/bro.dart';
 import 'package:brocast/objects/message.dart';
 import 'package:brocast/services/getMessages.dart';
@@ -10,7 +9,7 @@ import 'package:brocast/utils/utils.dart';
 import 'package:brocast/views/broHome.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:socket_io_client/socket_io_client.dart' as IO;
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class BroMessaging extends StatefulWidget {
 
@@ -84,6 +83,12 @@ class _BroMessagingState extends State<BroMessaging> {
   sendMessage() {
     if (formKey.currentState.validate()) {
       String message = broMessageController.text;
+      // We add the message already as being send.
+      // If it is received we remove this message and show 'received'
+      Message mes = new Message(0, 0, 0, widget.bro.id, message, null);
+      setState(() {
+        this.messages.insert(0, mes);
+      });
       socketServices.sendMessageSocket(broId, widget.bro.id, message);
       broMessageController.clear(); 
     }
@@ -91,6 +96,7 @@ class _BroMessagingState extends State<BroMessaging> {
 
   updateMessages(Message message) {
     setState(() {
+      this.messages.removeAt(0);
       this.messages.insert(0, message);
     });
   }
@@ -168,6 +174,12 @@ class _BroMessagingState extends State<BroMessaging> {
                           ),
                           padding: EdgeInsets.all(10),
                           child: Image.asset("assets/images/brocast.png")
+                            // Example of double checkmark read
+                            //   child: FaIcon(
+                            //   FontAwesomeIcons.checkDouble,
+                            //   size: 10,
+                            //   color: Colors.blue.shade400,
+                            // ),
                       ),
                     )
                   ],
