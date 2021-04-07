@@ -180,7 +180,7 @@ class _SignUpState extends State<SignUp> {
                                       },
                                       controller: bromotionController,
                                       style: simpleTextStyle(),
-                                      decoration: textFieldInputDecoration("Bromotion"),
+                                      decoration: textFieldInputDecoration("😀"),
                                       readOnly: true,
                                       showCursor: true,
                                     ),

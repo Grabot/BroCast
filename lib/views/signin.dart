@@ -171,7 +171,7 @@ class _SignInState extends State<SignIn> {
                   child: SingleChildScrollView(
                     reverse: true,
                     child: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 24),
+                      padding: EdgeInsets.symmetric(horizontal: 50),
                       child: Form(
                         key: formKey,
                         child: Column(
@@ -190,49 +190,67 @@ class _SignInState extends State<SignIn> {
                               ),
                             ),
                             SizedBox(height: 100),
-                            TextFormField(
-                              onTap: () {
-                                if (!isLoading) {
-                                  onTapTextField();
-                                }
-                              },
-                              validator: (val) {
-                                return val.isEmpty ? "Please provide a bro name": null;
-                              },
-                              controller: broNameController,
-                              style: simpleTextStyle(),
-                              decoration: textFieldInputDecoration("Bro name"),
+                            Row(
+                              children: [
+                                Expanded(
+                                  flex: 4,
+                                  child: TextFormField(
+                                    onTap: () {
+                                      if (!isLoading) {
+                                        onTapTextField();
+                                      }
+                                    },
+                                    validator: (val) {
+                                      return val.isEmpty ? "Please provide a bro name": null;
+                                    },
+                                    controller: broNameController,
+                                    textAlign: TextAlign.center,
+                                    style: simpleTextStyle(),
+                                    decoration: textFieldInputDecoration("Bro name"),
+                                  ),
+                                ),
+                                SizedBox(width: 50),
+                                Expanded(
+                                  flex: 1,
+                                  child: TextFormField(
+                                    onTap: () {
+                                      if (!isLoading) {
+                                        onTapEmojiField();
+                                      }
+                                    },
+                                    validator: (val) {
+                                      return val.isEmpty ? "Please provide bromotion": null;
+                                    },
+                                    controller: bromotionController,
+                                    style: simpleTextStyle(),
+                                    textAlign: TextAlign.center,
+                                    decoration: textFieldInputDecoration("😀"),
+                                    readOnly: true,
+                                    showCursor: true,
+                                  ),
+                                ),
+                              ]
                             ),
-                            TextFormField(
-                              onTap: () {
-                                if (!isLoading) {
-                                  onTapEmojiField();
-                                }
-                              },
-                              validator: (val) {
-                                return val.isEmpty ? "Please provide bromotion": null;
-                              },
-                              controller: bromotionController,
-                              style: simpleTextStyle(),
-                              decoration: textFieldInputDecoration("Bromotion"),
-                              readOnly: true,
-                              showCursor: true,
+                            SizedBox(height: 30),
+                            Container(
+                              padding: EdgeInsets.symmetric(horizontal: 50),
+                              child: TextFormField(
+                                onTap: () {
+                                  if (!isLoading) {
+                                    onTapTextField();
+                                  }
+                                },
+                                obscureText: true,
+                                validator: (val) {
+                                  return val.isEmpty ? "Please provide a password": null;
+                                },
+                                controller: passwordController,
+                                textAlign: TextAlign.center,
+                                style: simpleTextStyle(),
+                                decoration: textFieldInputDecoration("Password"),
+                              ),
                             ),
-                            TextFormField(
-                              onTap: () {
-                                if (!isLoading) {
-                                  onTapTextField();
-                                }
-                              },
-                              obscureText: true,
-                              validator: (val) {
-                                return val.isEmpty ? "Please provide a password": null;
-                              },
-                              controller: passwordController,
-                              style: simpleTextStyle(),
-                              decoration: textFieldInputDecoration("Password"),
-                            ),
-                            SizedBox(height: 20),
+                            SizedBox(height: 60),
                             GestureDetector(
                               onTap: () {
                                 if (!isLoading) {
@@ -280,7 +298,7 @@ class _SignInState extends State<SignIn> {
                                 )
                               ],
                             ),
-                            SizedBox(height: 100),
+                            SizedBox(height: 150),
                           ],
                         )
                     ),
