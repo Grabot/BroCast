@@ -171,7 +171,7 @@ class _SignInState extends State<SignIn> {
                   child: SingleChildScrollView(
                     reverse: true,
                     child: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 50),
+                      padding: EdgeInsets.symmetric(horizontal: 30),
                       child: Form(
                         key: formKey,
                         child: Column(
@@ -191,45 +191,45 @@ class _SignInState extends State<SignIn> {
                             ),
                             SizedBox(height: 100),
                             Row(
-                              children: [
-                                Expanded(
-                                  flex: 4,
-                                  child: TextFormField(
-                                    onTap: () {
-                                      if (!isLoading) {
-                                        onTapTextField();
-                                      }
-                                    },
-                                    validator: (val) {
-                                      return val.isEmpty ? "Please provide a bro name": null;
-                                    },
-                                    controller: broNameController,
-                                    textAlign: TextAlign.center,
-                                    style: simpleTextStyle(),
-                                    decoration: textFieldInputDecoration("Bro name"),
+                                children: [
+                                  Expanded(
+                                    flex: 4,
+                                    child: TextFormField(
+                                      onTap: () {
+                                        if (!isLoading) {
+                                          onTapTextField();
+                                        }
+                                      },
+                                      validator: (val) {
+                                        return val.isEmpty ? "Please provide a bro name": null;
+                                      },
+                                      controller: broNameController,
+                                      textAlign: TextAlign.center,
+                                      style: simpleTextStyle(),
+                                      decoration: textFieldInputDecoration("Bro name"),
+                                    ),
                                   ),
-                                ),
-                                SizedBox(width: 50),
-                                Expanded(
-                                  flex: 1,
-                                  child: TextFormField(
-                                    onTap: () {
-                                      if (!isLoading) {
-                                        onTapEmojiField();
-                                      }
-                                    },
-                                    validator: (val) {
-                                      return val.isEmpty ? "Please provide bromotion": null;
-                                    },
-                                    controller: bromotionController,
-                                    style: simpleTextStyle(),
-                                    textAlign: TextAlign.center,
-                                    decoration: textFieldInputDecoration("😀"),
-                                    readOnly: true,
-                                    showCursor: true,
+                                  SizedBox(width: 50),
+                                  Expanded(
+                                    flex: 1,
+                                    child: TextFormField(
+                                      onTap: () {
+                                        if (!isLoading) {
+                                          onTapEmojiField();
+                                        }
+                                      },
+                                      validator: (val) {
+                                        return val.isEmpty ? "Please provide bromotion": null;
+                                      },
+                                      controller: bromotionController,
+                                      style: simpleTextStyle(),
+                                      textAlign: TextAlign.center,
+                                      decoration: textFieldInputDecoration("😀"),
+                                      readOnly: true,
+                                      showCursor: true,
+                                    ),
                                   ),
-                                ),
-                              ]
+                                ]
                             ),
                             SizedBox(height: 30),
                             Container(
@@ -270,35 +270,39 @@ class _SignInState extends State<SignIn> {
                                     ),
                                     borderRadius: BorderRadius.circular(30)
                                 ),
-                                child: Text("Sign In", style: simpleTextStyle()),
+                                child: Text("Sign in", style: simpleTextStyle()),
                               ),
                             ),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Text("Don't have an account? ", style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 16
-                                ),
-                                ),
-                                GestureDetector(
-                                  onTap: () {
-                                    if (!isLoading) {
-                                      Navigator.pushReplacement(context, MaterialPageRoute(
-                                          builder: (context) => SignUp()
-                                      ));
-                                    }
-                                  },
-                                  child: Text("Register now!", style: TextStyle(
+                                Container(
+                                  child: Text("Don't have an account?  ", style: TextStyle(
                                       color: Colors.white,
-                                      fontSize: 16,
-                                      decoration: TextDecoration.underline
+                                      fontSize: 16
                                   ),
+                                  ),
+                                ),
+                                Expanded(
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      if (!isLoading) {
+                                        Navigator.pushReplacement(context, MaterialPageRoute(
+                                            builder: (context) => SignUp()
+                                        ));
+                                      }
+                                    },
+                                    child: Text("Register now!", style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 16,
+                                        decoration: TextDecoration.underline
+                                    ),
+                                    ),
                                   ),
                                 )
                               ],
                             ),
-                            SizedBox(height: 150),
+                            SizedBox(height: 80),
                           ],
                         )
                     ),
