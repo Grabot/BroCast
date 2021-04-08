@@ -9,7 +9,7 @@ import 'package:brocast/utils/utils.dart';
 import 'package:brocast/views/broHome.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:intl/intl.dart';
 
 class BroMessaging extends StatefulWidget {
 
@@ -69,8 +69,10 @@ class _BroMessagingState extends State<BroMessaging> {
       } else {
         get.getMessages(val, widget.bro.id).then((val) {
           if (!(val is String)) {
+            List<Message> messes = val;
+            setDateTiles(messes);
             setState(() {
-              messages = val;
+              messages = messes;
             });
           } else {
             ShowToastComponent.showDialog(val.toString(), context);
@@ -80,17 +82,60 @@ class _BroMessagingState extends State<BroMessaging> {
     });
   }
 
+  setDateTiles(List<Message> messes) {
+    DateTime now = DateTime.now();
+    DateTime today = DateTime(now.year, now.month, now.day);
+    DateTime yesterday = DateTime(now.year, now.month, now.day - 1);
+
+    Message messageFirst = messes.first;
+    DateTime dayFirst = DateTime(messageFirst.timestamp.year, messageFirst.timestamp.month, messageFirst.timestamp.day);
+    String chatTimeTile = DateFormat.yMMMMd('en_US').format(dayFirst);
+    String timeMessageFirst = DateFormat.yMMMMd('en_US').format(dayFirst);
+    if (dayFirst == today) {
+      timeMessageFirst = "Today";
+    }
+    if (dayFirst == yesterday) {
+      timeMessageFirst = "Yesterday";
+    }
+    Message timeMessage = new Message(0, 0, 0, 0, timeMessageFirst, null);
+    for (int i = 0; i < messes.length; i++ ) {
+      DateTime current = messes[i].timestamp;
+      DateTime dayMessage = DateTime(current.year, current.month, current.day);
+      String currentDayMessage = DateFormat.yMMMMd('en_US').format(dayMessage);
+
+      if (chatTimeTile == null || chatTimeTile != currentDayMessage) {
+        chatTimeTile = DateFormat.yMMMMd('en_US').format(dayMessage);
+        print("time");
+        print(chatTimeTile);
+        String timeMessageTile = chatTimeTile;
+        if (dayMessage == today) {
+          timeMessageTile = "Today";
+        }
+        if (dayMessage == yesterday) {
+          timeMessageTile = "Yesterday";
+        }
+        messes.insert(i, timeMessage);
+        timeMessage = new Message(0, 0, 0, 0, timeMessageTile, null);
+      }
+    }
+    messes.insert(messes.length, timeMessage);
+  }
+
   sendMessage() {
     if (formKey.currentState.validate()) {
       String message = broMessageController.text;
       // We add the message already as being send.
       // If it is received we remove this message and show 'received'
-      Message mes = new Message(0, 0, 0, widget.bro.id, message, null);
+      String timestampString = DateTime.now().toUtc().toString();
+      if (timestampString.endsWith('Z')) {
+        timestampString = timestampString.substring(0, timestampString.length - 1);
+      }
+      Message mes = new Message(0, 0, 0, widget.bro.id, message, timestampString);
       setState(() {
         this.messages.insert(0, mes);
       });
       socketServices.sendMessageSocket(broId, widget.bro.id, message);
-      broMessageController.clear(); 
+      broMessageController.clear();
     }
   }
 
@@ -174,12 +219,6 @@ class _BroMessagingState extends State<BroMessaging> {
                           ),
                           padding: EdgeInsets.all(10),
                           child: Image.asset("assets/images/brocast.png")
-                            // Example of double checkmark read
-                            //   child: FaIcon(
-                            //   FontAwesomeIcons.checkDouble,
-                            //   size: 10,
-                            //   color: Colors.blue.shade400,
-                            // ),
                       ),
                     )
                   ],
@@ -206,13 +245,22 @@ class MessageTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return message.timestamp == null ?
+    Container(
+      child: Text(
+          message.body,
+          style: simpleTextStyle()
+      )
+    ) :
+    Container(
         child: new Material(
-            child: Container(
+          child: Column(
+            children: [
+              Container(
               padding: EdgeInsets.symmetric(horizontal: 12),
-              margin: EdgeInsets.symmetric(vertical: 8),
+              margin: EdgeInsets.only(top: 12),
               width: MediaQuery.of(context).size.width,
-              alignment: myMessage ? Alignment.centerRight : Alignment.centerLeft,
+              alignment: myMessage ? Alignment.bottomRight : Alignment.bottomLeft,
               child: new InkWell(
                 customBorder: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(42),
@@ -220,34 +268,67 @@ class MessageTile extends StatelessWidget {
                 onTap: (){
                   selectMessage(context);
                 },
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: myMessage ? [
-                      const Color(0xAA007E00),
-                      const Color(0xAA2A7512)
-                    ] : [
-                      const Color(0xAA007EF4),
-                      const Color(0xAA2A75BC)
-                    ]
-                  ),
-                  borderRadius: myMessage ?
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                          colors: myMessage ? [
+                            const Color(0xAA007E00),
+                            const Color(0xAA2A7512)
+                          ] : [
+                            const Color(0xAA007EF4),
+                            const Color(0xAA2A75BC)
+                          ]
+                      ),
+                      borderRadius: myMessage ?
                       BorderRadius.only(
                         topLeft: Radius.circular(42),
                         topRight: Radius.circular(42),
                         bottomLeft: Radius.circular(42)
                       ) :
                       BorderRadius.only(
-                        topLeft: Radius.circular(42),
-                        topRight: Radius.circular(42),
-                        bottomRight: Radius.circular(42)
-                  )
+                          topLeft: Radius.circular(42),
+                          topRight: Radius.circular(42),
+                          bottomRight: Radius.circular(42)
+                      )
+                  ),
+                  child: Column(
+                    children: [
+                    Text(message.body, style: simpleTextStyle()),
+                  ],
+                  ),
                 ),
-                child: Text(message.body, style: simpleTextStyle()),
               ),
             ),
-          ),
+            Container(
+              child: Align(
+                alignment: myMessage ? Alignment.bottomRight : Alignment.bottomLeft,
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 12),
+                  child: RichText(
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                          text: DateFormat('HH:mm').format(message.timestamp),
+                          style: TextStyle(
+                              color: Colors.white54,
+                              fontSize: 12
+                          ),
+                        ),
+                        myMessage ? WidgetSpan(
+                          child: Icon(
+                              Icons.done_all,
+                              color: Colors.blue,
+                              size: 18
+                          ),
+                        ) : WidgetSpan(child: Container()),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            )
+          ]),
           color: Colors.transparent,
         )
     );

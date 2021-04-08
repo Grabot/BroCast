@@ -2,7 +2,6 @@ import 'package:brocast/constants/api_path.dart';
 import 'package:brocast/objects/message.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
-
 class SocketServices {
 
   var messaging;

@@ -23,7 +23,7 @@ class Message {
     this.recipientId = recipientId;
     this.body = body;
     if (timestamp != null) {
-      this.timestamp = DateTime.parse(timestamp + 'Z');
+      this.timestamp = DateTime.parse(timestamp + 'Z').toLocal();
     } else {
       this.timestamp = null;
     }
