@@ -1,13 +1,21 @@
+import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:brocast/objects/bro.dart';
 import 'package:brocast/services/auth.dart';
 import 'package:brocast/services/getBros.dart';
+import 'package:brocast/services/socket_services.dart';
 import 'package:brocast/utils/shared.dart';
 import 'package:brocast/utils/utils.dart';
 import 'package:brocast/views/broMessaging.dart';
 import 'package:brocast/views/findBros.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class BroCastHome extends StatefulWidget {
+
+  final SocketServices socket;
+
+  BroCastHome({ Key key, this.socket }): super(key: key);
+
   @override
   _BroCastHomeState createState() => _BroCastHomeState();
 }
@@ -16,6 +24,8 @@ class _BroCastHomeState extends State<BroCastHome> {
 
   GetBros getBros = new GetBros();
   Auth auth = new Auth();
+
+  SocketServices socket;
 
   bool isSearching = false;
   List<Bro> bros = [];
@@ -27,7 +37,8 @@ class _BroCastHomeState extends State<BroCastHome> {
         itemCount: bros.length,
         itemBuilder: (context, index) {
           return BroTile(
-              bros[index]
+              bros[index],
+              socket
           );
         }) : Container();
   }
@@ -53,6 +64,13 @@ class _BroCastHomeState extends State<BroCastHome> {
 
   @override
   void initState() {
+    super.initState();
+    if (widget.socket == null) {
+      socket = new SocketServices();
+      socket.startSockConnection();
+    } else {
+      socket = widget.socket;
+    }
     HelperFunction.getBroToken().then((val) {
       if (val == null) {
         print("no token yet, wait until a token is saved");
@@ -60,7 +78,19 @@ class _BroCastHomeState extends State<BroCastHome> {
         searchBros(val.toString());
       }
     });
-    super.initState();
+    BackButtonInterceptor.add(myInterceptor);
+  }
+
+  @override
+  void dispose() {
+    BackButtonInterceptor.remove(myInterceptor);
+    super.dispose();
+  }
+
+  bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
+    socket.closeSockConnection();
+    SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+    return true;
   }
 
   @override
@@ -91,13 +121,14 @@ class _BroCastHomeState extends State<BroCastHome> {
 
 class BroTile extends StatelessWidget {
   final Bro bro;
+  final SocketServices socket;
 
-  BroTile(this.bro);
+  BroTile(this.bro, this.socket);
 
   selectBro(BuildContext context) {
     print("clicked bro " + bro.getFullBroName());
     Navigator.pushReplacement(context, MaterialPageRoute(
-        builder: (context) => BroMessaging(bro: bro)
+        builder: (context) => BroMessaging(bro: bro, socket: socket)
     ));
   }
 

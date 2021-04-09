@@ -13,9 +13,10 @@ import 'package:intl/intl.dart';
 
 class BroMessaging extends StatefulWidget {
 
-  final Bro bro; // receives the value
+  final Bro bro;
+  final SocketServices socket;
 
-  BroMessaging({ Key key, this.bro }): super(key: key);
+  BroMessaging({ Key key, this.bro, this.socket }): super(key: key);
 
   @override
   _BroMessagingState createState() => _BroMessagingState();
@@ -29,20 +30,22 @@ class _BroMessagingState extends State<BroMessaging> {
   TextEditingController broMessageController = new TextEditingController();
   final formKey = GlobalKey<FormState>();
 
-  SocketServices socketServices = new SocketServices();
+  SocketServices socket;
   List<Message> messages = [];
   int broId;
 
   @override
   void initState() {
     super.initState();
+    socket = widget.socket;
+    socket.setMessaging(this);
     getMessages();
     HelperFunction.getBroId().then((val) {
       if (val == null) {
         print("no token yet, this is not really possible");
       } else {
         broId = val;
-        socketServices.createSockConnection(broId, widget.bro.id, this);
+        socket.joinRoom(broId, widget.bro.id);
       }
     });
     BackButtonInterceptor.add(myInterceptor);
@@ -50,14 +53,14 @@ class _BroMessagingState extends State<BroMessaging> {
 
   @override
   void dispose() {
+    socket.leaveRoom(broId, widget.bro.id);
     BackButtonInterceptor.remove(myInterceptor);
-    socketServices.closeSockConnection();
     super.dispose();
   }
 
   bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
     Navigator.pushReplacement(context, MaterialPageRoute(
-        builder: (context) => BroCastHome()
+        builder: (context) => BroCastHome(socket: socket)
     ));
     return true;
   }
@@ -160,7 +163,7 @@ class _BroMessagingState extends State<BroMessaging> {
       setState(() {
         this.messages.insert(0, mes);
       });
-      socketServices.sendMessageSocket(broId, widget.bro.id, message);
+      socket.sendMessageSocket(broId, widget.bro.id, message);
       broMessageController.clear();
     }
   }
