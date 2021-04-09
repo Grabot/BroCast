@@ -1,12 +1,20 @@
+import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:brocast/objects/bro.dart';
 import 'package:brocast/services/addBro.dart';
 import 'package:brocast/services/search.dart';
+import 'package:brocast/services/socket_services.dart';
 import 'package:brocast/utils/shared.dart';
 import 'package:brocast/utils/utils.dart';
+import 'package:brocast/views/broHome.dart';
 import 'package:brocast/views/broMessaging.dart';
 import 'package:flutter/material.dart';
 
 class FindBros extends StatefulWidget {
+
+  final SocketServices socket;
+
+  FindBros({ Key key, this.socket }): super(key: key);
+
   @override
   _FindBrosState createState() => _FindBrosState();
 }
@@ -18,8 +26,30 @@ class _FindBrosState extends State<FindBros> {
   bool isSearching = false;
   List<Bro> bros = [];
 
+  SocketServices socket;
+
   TextEditingController broNameController = new TextEditingController();
   TextEditingController bromotionController = new TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    socket = widget.socket;
+    BackButtonInterceptor.add(myInterceptor);
+  }
+
+  @override
+  void dispose() {
+    BackButtonInterceptor.remove(myInterceptor);
+    super.dispose();
+  }
+
+  bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
+    Navigator.pushReplacement(context, MaterialPageRoute(
+        builder: (context) => BroCastHome(socket: socket)
+    ));
+    return true;
+  }
 
   searchBros() {
       setState(() {
@@ -48,7 +78,8 @@ class _FindBrosState extends State<FindBros> {
       itemCount: bros.length,
         itemBuilder: (context, index) {
           return BroTileSearch(
-              bros[index]
+              bros[index],
+              this.socket
           );
         }) : Container();
   }
@@ -115,8 +146,9 @@ class _FindBrosState extends State<FindBros> {
 
 class BroTileSearch extends StatelessWidget {
   final Bro bro;
+  final SocketServices socket;
 
-  BroTileSearch(this.bro);
+  BroTileSearch(this.bro, this.socket);
 
   final AddBro add = new AddBro();
 
@@ -126,7 +158,7 @@ class BroTileSearch extends StatelessWidget {
       add.addBro(val.toString(), bro.id);
 
       Navigator.pushReplacement(context, MaterialPageRoute(
-          builder: (context) => BroMessaging(bro: bro)
+          builder: (context) => BroMessaging(bro: bro, socket: socket)
       ));
     });
   }

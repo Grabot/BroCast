@@ -110,7 +110,7 @@ class _BroCastHomeState extends State<BroCastHome> {
         child: Icon(Icons.search),
         onPressed: () {
           Navigator.pushReplacement(context, MaterialPageRoute(
-              builder: (context) => FindBros()
+              builder: (context) => FindBros(socket: socket)
           ));
         },
       ),
