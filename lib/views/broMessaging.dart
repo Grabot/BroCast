@@ -70,10 +70,12 @@ class _BroMessagingState extends State<BroMessaging> {
         get.getMessages(val, widget.bro.id).then((val) {
           if (!(val is String)) {
             List<Message> messes = val;
-            setDateTiles(messes);
-            setState(() {
-              messages = messes;
-            });
+            if (messes.length != 0) {
+              setDateTiles(messes);
+              setState(() {
+                messages = messes;
+              });
+            }
           } else {
             ShowToastComponent.showDialog(val.toString(), context);
           }
@@ -90,6 +92,7 @@ class _BroMessagingState extends State<BroMessaging> {
     Message messageFirst = messes.first;
     DateTime dayFirst = DateTime(messageFirst.timestamp.year, messageFirst.timestamp.month, messageFirst.timestamp.day);
     String chatTimeTile = DateFormat.yMMMMd('en_US').format(dayFirst);
+
     String timeMessageFirst = DateFormat.yMMMMd('en_US').format(dayFirst);
     if (dayFirst == today) {
       timeMessageFirst = "Today";
@@ -97,16 +100,16 @@ class _BroMessagingState extends State<BroMessaging> {
     if (dayFirst == yesterday) {
       timeMessageFirst = "Yesterday";
     }
+
     Message timeMessage = new Message(0, 0, 0, 0, timeMessageFirst, null);
     for (int i = 0; i < messes.length; i++ ) {
       DateTime current = messes[i].timestamp;
       DateTime dayMessage = DateTime(current.year, current.month, current.day);
       String currentDayMessage = DateFormat.yMMMMd('en_US').format(dayMessage);
 
-      if (chatTimeTile == null || chatTimeTile != currentDayMessage) {
+      if (chatTimeTile != currentDayMessage) {
         chatTimeTile = DateFormat.yMMMMd('en_US').format(dayMessage);
-        print("time");
-        print(chatTimeTile);
+
         String timeMessageTile = chatTimeTile;
         if (dayMessage == today) {
           timeMessageTile = "Today";
@@ -121,12 +124,35 @@ class _BroMessagingState extends State<BroMessaging> {
     messes.insert(messes.length, timeMessage);
   }
 
+  updateDateTiles(Message message) {
+    // If the day tiles need to be updated after sending a message it will be the today tile.
+    if (this.messages.length == 0) {
+      this.messages.insert(0, new Message(0, 0, 0, 0, "Today", null));
+    } else {
+      Message messageFirst = this.messages.first;
+      DateTime dayFirst = DateTime(messageFirst.timestamp.year, messageFirst.timestamp.month, messageFirst.timestamp.day);
+      String chatTimeTile = DateFormat.yMMMMd('en_US').format(dayFirst);
+
+      DateTime current = message.timestamp;
+      DateTime dayMessage = DateTime(current.year, current.month, current.day);
+      String currentDayMessage = DateFormat.yMMMMd('en_US').format(dayMessage);
+
+      if (chatTimeTile != currentDayMessage) {
+        chatTimeTile = DateFormat.yMMMMd('en_US').format(dayMessage);
+
+        Message timeMessage = new Message(0, 0, 0, 0, "Today", null);
+        this.messages.insert(0, timeMessage);
+      }
+    }
+  }
+
   sendMessage() {
     if (formKey.currentState.validate()) {
       String message = broMessageController.text;
       // We add the message already as being send.
       // If it is received we remove this message and show 'received'
       String timestampString = DateTime.now().toUtc().toString();
+      // The 'Z' indicates that it's UTC but we'll already add it in the message
       if (timestampString.endsWith('Z')) {
         timestampString = timestampString.substring(0, timestampString.length - 1);
       }
@@ -140,8 +166,13 @@ class _BroMessagingState extends State<BroMessaging> {
   }
 
   updateMessages(Message message) {
-    setState(() {
+    if (message.recipientId == widget.bro.id) {
+      // We added it immediately as a placeholder.
+      // When we get it from the server we add it for real and remove the placeholder
       this.messages.removeAt(0);
+    }
+    updateDateTiles(message);
+    setState(() {
       this.messages.insert(0, message);
     });
   }
@@ -315,13 +346,18 @@ class MessageTile extends StatelessWidget {
                               fontSize: 12
                           ),
                         ),
-                        myMessage ? WidgetSpan(
+                        myMessage ?
+                        message.id != 0 ? WidgetSpan(
                           child: Icon(
                               Icons.done_all,
                               color: Colors.blue,
                               size: 18
-                          ),
-                        ) : WidgetSpan(child: Container()),
+                          )) : WidgetSpan(
+                            child: Icon(
+                            Icons.done,
+                            color: Colors.blue,
+                            size: 18
+                        )) : WidgetSpan(child: Container()),
                       ],
                     ),
                   ),
