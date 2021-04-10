@@ -9,6 +9,8 @@ class Message {
   String body;
   DateTime timestamp;
 
+  bool isRead;
+
   Message(
   int id,
   int broBrosId,
@@ -27,6 +29,7 @@ class Message {
     } else {
       this.timestamp = null;
     }
+    isRead = false;
   }
 
 }

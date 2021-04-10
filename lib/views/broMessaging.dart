@@ -173,10 +173,21 @@ class _BroMessagingState extends State<BroMessaging> {
       // We added it immediately as a placeholder.
       // When we get it from the server we add it for real and remove the placeholder
       this.messages.removeAt(0);
+    } else {
+      socket.messageReadUpdate(broId, widget.bro.id);
     }
     updateDateTiles(message);
     setState(() {
       this.messages.insert(0, message);
+    });
+  }
+
+  updateRead() {
+    for (Message message in this.messages) {
+      message.isRead = true;
+    }
+    setState(() {
+      this.messages = this.messages;
     });
   }
 
@@ -274,7 +285,7 @@ class MessageTile extends StatelessWidget {
   MessageTile(this.message, this.myMessage);
 
   selectMessage(BuildContext context) {
-    print("message " + message.body + " is it send by me? " + myMessage.toString());
+    print("message " + message.body + " is it send by me? " + myMessage.toString() + " is it read? " + message.isRead.toString());
   }
 
   @override
@@ -353,12 +364,12 @@ class MessageTile extends StatelessWidget {
                         message.id != 0 ? WidgetSpan(
                           child: Icon(
                               Icons.done_all,
-                              color: Colors.blue,
+                              color: message.isRead ? Colors.blue : Colors.white54,
                               size: 18
                           )) : WidgetSpan(
                             child: Icon(
                             Icons.done,
-                            color: Colors.blue,
+                            color: Colors.white54,
                             size: 18
                         )) : WidgetSpan(child: Container()),
                       ],

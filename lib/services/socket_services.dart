@@ -28,6 +28,7 @@ class SocketServices {
 
     this.socket.on('message_event', (data) => print(data));
     this.socket.on('message_event_send', (data) => messageReceived(data));
+    this.socket.on('message_event_read', (data) => messageRead(data));
     this.socket.open();
   }
 
@@ -72,9 +73,7 @@ class SocketServices {
   }
 
   sendMessageSocket(int broId, int brosBroId, String message) {
-    print("check socket");
     if (this.socket.connected) {
-      print("socket is connected");
       this.socket.emit("message",
         {
           "bro_id": broId,
@@ -89,5 +88,23 @@ class SocketServices {
     sleep(Duration(seconds:5));
     Message mes = new Message(data["id"], data["bro_bros_id"], data["sender_id"], data["recipient_id"], data["body"], data["timestamp"]);
     this.messaging.updateMessages(mes);
+  }
+
+  messageReadUpdate(int broId, int brosBroId) {
+    print("check socket message read");
+    if (this.socket.connected) {
+      print("socket is connected message read");
+      this.socket.emit("message_read",
+        {
+          "bro_id": broId,
+          "bros_bro_id": brosBroId
+        },
+      );
+    }
+  }
+
+  messageRead(var data) {
+    // This will set all messages to read to anyone receiving the message read update while having the chat open
+    this.messaging.updateRead();
   }
 }

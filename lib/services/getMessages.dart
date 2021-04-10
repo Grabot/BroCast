@@ -24,9 +24,16 @@ class GetMessages {
       bool result = registerResponse["result"];
       if (result) {
         var messageList = registerResponse["message_list"];
+        var lastReadTime = registerResponse["last_read_time_bro"];
+        print("we have the 'last read time' of our friend");
+        var timeLastRead = DateTime.parse(lastReadTime + 'Z').toLocal();
+        print(timeLastRead);
         List<Message> listWithMessages = [];
         for (var message in messageList) {
           Message mes = new Message(message["id"], message["bro_bros_id"], message["sender_id"], message["recipient_id"], message["body"], message["timestamp"]);
+          if (timeLastRead.isAfter(mes.timestamp)) {
+            mes.isRead = true;
+          }
           listWithMessages.add(mes);
         }
         return listWithMessages;

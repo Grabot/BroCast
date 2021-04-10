@@ -118,7 +118,6 @@ class _BroCastHomeState extends State<BroCastHome> {
   }
 }
 
-
 class BroTile extends StatelessWidget {
   final Bro bro;
   final SocketServices socket;
