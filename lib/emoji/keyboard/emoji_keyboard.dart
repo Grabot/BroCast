@@ -1,8 +1,8 @@
+import 'emojis/smileys.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 import 'emoji_key.dart';
-import 'emoji_list.dart' as emojiList;
 
 class EmojiKeyboard extends StatefulWidget {
   EmojiKeyboard({
@@ -14,24 +14,33 @@ class EmojiKeyboard extends StatefulWidget {
 
 class _ExampleState extends State<EmojiKeyboard> {
 
-  Map<String, String> smileyMap = new Map();
+  List smileys;
 
   @override
   void initState() {
-    smileyMap = emojiList.smileys;
-    print(smileyMap);
-
+    smileys = smileyList;
     super.initState();
   }
 
-  Expanded buildRowOne() {
+  Expanded buildKeyboard() {
     return Expanded(
-      child: Wrap(
-        children:
-        [
-          for (var smile in smileyMap.values) EmojiKey(emoji: smile)
-        ],
-      ),
+      child: ListView.builder(
+        itemCount: smileyList.length,
+        itemBuilder: (BuildContext cont, int index) {
+          return new Row(
+            children: [
+              (index*8) < smileyList.length ? EmojiKey(emoji: smileyList[index * 8]) : Container(),
+              (index*8+1) < smileyList.length ? EmojiKey(emoji: smileyList[index*8+1]) : Container(),
+              (index*8+2) < smileyList.length ? EmojiKey(emoji: smileyList[index*8+2]) : Container(),
+              (index*8+3) < smileyList.length ? EmojiKey(emoji: smileyList[index*8+3]) : Container(),
+              (index*8+4) < smileyList.length ? EmojiKey(emoji: smileyList[index*8+4]) : Container(),
+              (index*8+5) < smileyList.length ? EmojiKey(emoji: smileyList[index*8+5]) : Container(),
+              (index*8+6) < smileyList.length ? EmojiKey(emoji: smileyList[index*8+6]) : Container(),
+              (index*8+7) < smileyList.length ? EmojiKey(emoji: smileyList[index*8+7]) : Container()
+            ]
+          );
+        },
+      )
     );
   }
 
@@ -39,10 +48,10 @@ class _ExampleState extends State<EmojiKeyboard> {
   Widget build(BuildContext context) {
     return Container(
         height: 260,
-        color: Colors.green,
+        color: Colors.grey,
         child: Column(
             children: [
-              buildRowOne(),
+              buildKeyboard(),
             ])
     );
   }
