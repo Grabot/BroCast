@@ -290,12 +290,28 @@ class MessageTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return message.timestamp == null ?
-    Container(
-      child: Text(
-          message.body,
-          style: simpleTextStyle()
-      )
+    return message.timestamp == null ? // If the timestamp is null it is a date tile.
+    Row(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        Container(
+            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            decoration: BoxDecoration(
+                gradient: LinearGradient(
+                    colors: [
+                      const Color(0xAAD3D3D3),
+                      const Color(0xAAC0C0C0)
+                    ]
+                ),
+                borderRadius: BorderRadius.all(Radius.circular(12))
+            ),
+          child: Text(
+              message.body,
+              style: simpleTextStyle()
+          )
+        )
+      ]
     ) :
     Container(
         child: new Material(
