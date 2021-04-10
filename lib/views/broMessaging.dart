@@ -300,8 +300,8 @@ class MessageTile extends StatelessWidget {
             decoration: BoxDecoration(
                 gradient: LinearGradient(
                     colors: [
-                      const Color(0xAAD3D3D3),
-                      const Color(0xAAC0C0C0)
+                      const Color(0x55D3D3D3),
+                      const Color(0x55C0C0C0)
                     ]
                 ),
                 borderRadius: BorderRadius.all(Radius.circular(12))

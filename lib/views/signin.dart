@@ -1,5 +1,5 @@
 import 'package:back_button_interceptor/back_button_interceptor.dart';
-import 'package:brocast/emoji/keyboard/custom_keyboard.dart';
+import 'package:brocast/emoji/keyboard/emoji_keyboard.dart';
 import 'package:brocast/services/auth.dart';
 import 'package:brocast/utils/shared.dart';
 import 'package:brocast/utils/utils.dart';
@@ -311,17 +311,7 @@ class _SignInState extends State<SignIn> {
                 ),
               ),
               showEmojiKeyboard ?
-                Container(
-                  alignment: Alignment.bottomCenter,
-                  child: CustomKeyboard(
-                    onTextInput: (myText) {
-                      _insertText(myText);
-                    },
-                    onBackspace: () {
-                      _backspace();
-                    },
-                  ),
-                ) : Container()
+              EmojiKeyboard() : Container()
             ]),
           ),
         ]
