@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:tuple/tuple.dart';
 
 class EmojiKey extends StatelessWidget {
   const EmojiKey({
     Key key,
     this.emoji,
-  }) : super(key: key);  final Tuple2<String, String> emoji;
+  }) : super(key: key);  final String emoji;
 
   Widget build(BuildContext context) {
     return SizedBox(
@@ -16,7 +15,7 @@ class EmojiKey extends StatelessWidget {
         onPressed: () {
           print(emoji);
         },
-        child: Text(emoji.item2),
+        child: Text(emoji),
       )
     );
   }
