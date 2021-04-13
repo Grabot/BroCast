@@ -15,12 +15,14 @@ class MainActivity: FlutterActivity() {
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL).setMethodCallHandler { call, result ->
             if (call.method.equals("isAvailable")) {
                 val paint = Paint()
-                val emojiAvailable = call.argument<String>("emoji")
-                if (paint.hasGlyph(emojiAvailable)) {
-                    result.success("true")
-                } else {
-                    result.success("false")
+                val emojisAvailable: List<List<String>>? = call.argument<List<List<String>>>("emojis")
+                val available: MutableList<List<String>> = mutableListOf()
+                for (item: List<String> in emojisAvailable!!) {
+                    if (paint.hasGlyph(item[1])) {
+                        available.add(item)
+                    }
                 }
+                result.success(available)
             }
         }
     }

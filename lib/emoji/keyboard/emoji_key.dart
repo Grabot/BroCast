@@ -4,8 +4,12 @@ import 'package:flutter/widgets.dart';
 class EmojiKey extends StatelessWidget {
   const EmojiKey({
     Key key,
+    this.onTextInput,
     this.emoji,
-  }) : super(key: key);  final String emoji;
+  }) : super(key: key);
+
+  final List emoji;
+  final ValueSetter<String> onTextInput;
 
   Widget build(BuildContext context) {
     return SizedBox(
@@ -13,9 +17,9 @@ class EmojiKey extends StatelessWidget {
       height: MediaQuery.of(context).size.width / 8, // make it square
       child: TextButton(
         onPressed: () {
-          print(emoji);
+          onTextInput?.call(emoji[1]);
         },
-        child: Text(emoji),
+        child: Text(emoji[1]),
       )
     );
   }

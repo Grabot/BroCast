@@ -1,12 +1,17 @@
-import 'emoji_list.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
+
 import 'emoji_key.dart';
+import 'emojis/smileys.dart';
 
 class EmojiKeyboard extends StatefulWidget {
+
+  ValueSetter<String> onTextInput;
+
   EmojiKeyboard({
-    Key key
+    Key key,
+    this.onTextInput,
   }) : super(key: key);
 
   _ExampleState createState() => _ExampleState();
@@ -15,56 +20,83 @@ class EmojiKeyboard extends StatefulWidget {
 class _ExampleState extends State<EmojiKeyboard> {
 
   List smile;
+  bool isLoading;
+
+  ValueSetter<String> onTextInput;
+
+  void _textInputHandler(String text) => onTextInput?.call(text);
 
   static const platform = const MethodChannel("com.flutter.epic/epic");
 
   @override
   void initState() {
-    var test = smileys;
-    print(test);
-    smile = test.values.toList();
-    print(smile);
-    for (String emoji in smile) {
-      print(emoji);
-    }
-    isAvailable("🤣");
-    isAvailable("😀");
-    isAvailable("👩\u200d🦳");
-    isAvailable("🙋‍♀");
-    isAvailable("🙋‍♂");
-    isAvailable("👴");
-    isAvailable("🙋");
+    onTextInput = widget.onTextInput;
+    isLoading = true;
+    smile = [];
+
+    isAvailable(smileyList);
     super.initState();
   }
 
-  void isAvailable(emoji) async {
-    String value;
+  void isAvailable(List emojis) async {
 
+    print("Going to check availability");
+    // print(emojis);
     try {
-      value = await platform.invokeMethod("isAvailable", {"emoji": emoji});
-      print(value.toString());
+      var value = await platform.invokeMethod("isAvailable", {"emojis": emojis});
+      if (value != null) {
+        setState(() {
+          isLoading = false;
+          smile = value;
+        });
+      }
     } catch (e) {
       print(e);
     }
 
-    print(value.toString());
   }
+
 
   Expanded buildKeyboard() {
     return Expanded(
-      child: ListView.builder(
+      child: isLoading ? Container() :
+      ListView.builder(
         itemCount: smile.length,
         itemBuilder: (BuildContext cont, int index) {
           return new Row(
             children: [
-              (index*8) < smile.length ? EmojiKey(emoji: smile[index * 8]) : Container(),
-              (index*8+1) < smile.length ? EmojiKey(emoji: smile[index*8+1]) : Container(),
-              (index*8+2) < smile.length ? EmojiKey(emoji: smile[index*8+2]) : Container(),
-              (index*8+3) < smile.length ? EmojiKey(emoji: smile[index*8+3]) : Container(),
-              (index*8+4) < smile.length ? EmojiKey(emoji: smile[index*8+4]) : Container(),
-              (index*8+5) < smile.length ? EmojiKey(emoji: smile[index*8+5]) : Container(),
-              (index*8+6) < smile.length ? EmojiKey(emoji: smile[index*8+6]) : Container(),
-              (index*8+7) < smile.length ? EmojiKey(emoji: smile[index*8+7]) : Container()
+              (index*8) < smile.length ? EmojiKey(
+                  onTextInput: _textInputHandler,
+                  emoji: smile[index * 8]
+              ) : Container(),
+              (index*8+1) < smile.length ? EmojiKey(
+                  onTextInput: _textInputHandler,
+                  emoji: smile[index*8+1]
+              ) : Container(),
+              (index*8+2) < smile.length ? EmojiKey(
+                  onTextInput: _textInputHandler,
+                  emoji: smile[index*8+2]
+              ) : Container(),
+              (index*8+3) < smile.length ? EmojiKey(
+                  onTextInput: _textInputHandler,
+                  emoji: smile[index*8+3]
+              ) : Container(),
+              (index*8+4) < smile.length ? EmojiKey(
+                  onTextInput: _textInputHandler,
+                  emoji: smile[index*8+4]
+              ) : Container(),
+              (index*8+5) < smile.length ? EmojiKey(
+                  onTextInput: _textInputHandler,
+                  emoji: smile[index*8+5]
+              ) : Container(),
+              (index*8+6) < smile.length ? EmojiKey(
+                  onTextInput: _textInputHandler,
+                  emoji: smile[index*8+6]
+              ) : Container(),
+              (index*8+7) < smile.length ? EmojiKey(
+                  onTextInput: _textInputHandler,
+                  emoji: smile[index*8+7]
+              ) : Container()
             ]
           );
         },

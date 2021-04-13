@@ -311,7 +311,11 @@ class _SignInState extends State<SignIn> {
                 ),
               ),
               showEmojiKeyboard ?
-              EmojiKeyboard() : Container()
+              EmojiKeyboard(
+                onTextInput: (myText) {
+                  _insertText(myText);
+                },
+              ) : Container()
             ]),
           ),
         ]
