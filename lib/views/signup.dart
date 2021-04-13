@@ -296,7 +296,12 @@ class _SignUpState extends State<SignUp> {
                       showEmojiKeyboard ?
                       Container(
                         alignment: Alignment.bottomCenter,
-                        child: EmojiKeyboard(),
+                        child:
+                        EmojiKeyboard(
+                          onTextInput: (myText) {
+                            _insertText(myText);
+                          },
+                        ),
                       ) : Container()
                     ]),
               ),
