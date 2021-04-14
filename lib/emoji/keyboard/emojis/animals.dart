@@ -1,4 +1,4 @@
-List animalList = [
+List animalsList = [
   ['See-No-Evil Monkey', '🙈'],
   ['Hear-No-Evil Monkey', '🙉'],
   ['Speak-No-Evil Monkey', '🙊'],

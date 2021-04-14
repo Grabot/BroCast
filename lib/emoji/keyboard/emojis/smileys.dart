@@ -1,4 +1,4 @@
-List smileyList = [
+List smileysList = [
   ['Grinning Face', '😀'],
   ['Grinning Face With Big Eyes', '😃'],
   ['Grinning Face With Smiling Eyes', '😄'],

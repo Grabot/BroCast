@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:brocast/emoji/keyboard/emoji_category_key.dart';
 import 'package:brocast/emoji/keyboard/emoji_spacebar.dart';
 import 'package:brocast/emoji/keyboard/emojis/objects.dart';
@@ -38,7 +40,16 @@ class EmojiBoard extends State<EmojiKeyboard> {
   static const platform = const MethodChannel("nl.brocast.emoji/available");
 
   List emojis;
-  bool isLoading;
+
+  List smileys;
+  List animals;
+  List foods;
+  List activities;
+  List travel;
+  List objects;
+  List symbols;
+  List flags;
+
   bool showBottomBar;
 
   double bottomBarHeight = 40;
@@ -50,6 +61,7 @@ class EmojiBoard extends State<EmojiKeyboard> {
   void _searchHandler() => print("searching?");
   void _backspaceHandler() => _backspace();
   void _spacebarHandler() => _insertText("  ");
+  void _categoryHandler(String category) => _categorySelect(category);
 
   ScrollController _scrollController;
 
@@ -58,11 +70,10 @@ class EmojiBoard extends State<EmojiKeyboard> {
     this.bromotionController = widget.bromotionController;
     this.emojiKeyboardHeight = widget.emojiKeyboardHeight;
 
-    isLoading = true;
     showBottomBar = true;
     emojis = [];
 
-    isAvailable(flagsList);
+    isAvailable();
 
     _scrollController = ScrollController();
     _scrollController.addListener(() => keyboardScrollListener());
@@ -107,6 +118,10 @@ class EmojiBoard extends State<EmojiKeyboard> {
     // The user is only allowed to give 1 emoji
     bromotionController.clear();
     bromotionController.text = myText;
+  }
+
+  void _categorySelect(String category) {
+    print("category $category selected");
   }
 
   void _insertText(String myText) {
@@ -171,27 +186,71 @@ class EmojiBoard extends State<EmojiKeyboard> {
     );
   }
 
-  void isAvailable(List emojiList) async {
+  void isAvailable() async {
+    smileys = smileysList;
+    animals = animalsList;
+    foods = foodsList;
+    activities = activitiesList;
+    travel = travelList;
+    objects = objectsList;
+    symbols = symbolsList;
+    flags = flagsList;
+    if (Platform.isAndroid) {
 
-    try {
-      var smileEmojis = platform.invokeMethod("isAvailable", {"emojis": emojiList});
-      var smileys = await smileEmojis;
-      if (smileys != null) {
-        setState(() {
-          isLoading = false;
-          emojis = smileys;
-        });
-      }
-    } catch (e) {
-      print(e);
+      Future.wait([getSmileys(), getAnimals(), getFoods(), getActivities(),
+        getTravels(), getObjects(), getSymbols(), getFlags()])
+          .then((var value) {
+            print("emojis loaded");
+      });
+
     }
+
+    emojis = smileys;
   }
 
+  Future getSmileys() async {
+    smileys = await platform.invokeMethod(
+        "isAvailable", {"emojis": smileysList});
+  }
+
+  Future getAnimals() async {
+    animals = await platform.invokeMethod(
+        "isAvailable", {"emojis": animalsList});
+  }
+
+  Future getFoods() async {
+    foods = await platform.invokeMethod(
+        "isAvailable", {"emojis": foodsList});
+  }
+
+  Future getActivities() async {
+    activities = await platform.invokeMethod(
+        "isAvailable", {"emojis": activitiesList});
+  }
+
+  Future getTravels() async {
+    travel = await platform.invokeMethod(
+        "isAvailable", {"emojis": travelList});
+  }
+
+  Future getObjects() async {
+    objects = await platform.invokeMethod(
+        "isAvailable", {"emojis": objectsList});
+  }
+
+  Future getSymbols() async {
+    symbols = await platform.invokeMethod(
+        "isAvailable", {"emojis": symbolsList});
+  }
+
+  Future getFlags() async {
+    flags = await platform.invokeMethod(
+        "isAvailable", {"emojis": flagsList});
+  }
 
   Expanded buildKeyboard() {
     return Expanded(
-      child: isLoading ? Container() :
-      Stack(
+      child: Stack(
       children: [
         SizedBox(
           height: emojiKeyboardHeight,
@@ -250,31 +309,49 @@ class EmojiBoard extends State<EmojiKeyboard> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   EmojiCategoryKey(
-                      category: Icons.access_time,
+                    onCategorySelect: _categoryHandler,
+                    category: Icons.access_time,
+                    categoryName: "recent"
                   ),
                   EmojiCategoryKey(
+                    onCategorySelect: _categoryHandler,
                     category: Icons.tag_faces,
+                    categoryName: "smileys"
                   ),
                   EmojiCategoryKey(
+                    onCategorySelect: _categoryHandler,
                     category: Icons.pets,
+                    categoryName: "animals"
                   ),
                   EmojiCategoryKey(
+                    onCategorySelect: _categoryHandler,
                     category: Icons.fastfood,
+                    categoryName: "foods"
                   ),
                   EmojiCategoryKey(
+                    onCategorySelect: _categoryHandler,
                     category: Icons.sports_soccer,
+                    categoryName: "activities"
                   ),
                   EmojiCategoryKey(
+                    onCategorySelect: _categoryHandler,
                     category: Icons.directions_car,
+                    categoryName: "travels"
                   ),
                   EmojiCategoryKey(
+                    onCategorySelect: _categoryHandler,
                     category: Icons.lightbulb_outline,
+                    categoryName: "objects"
                   ),
                   EmojiCategoryKey(
+                    onCategorySelect: _categoryHandler,
                     category: Icons.euro_symbol,
+                    categoryName: "symbols"
                   ),
                   EmojiCategoryKey(
+                    onCategorySelect: _categoryHandler,
                     category: Icons.flag,
+                    categoryName: "flags"
                   ),
                 ],
               ),

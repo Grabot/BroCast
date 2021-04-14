@@ -16,6 +16,7 @@ class _SignInState extends State<SignIn> {
 
   bool isLoading = false;
   bool showEmojiKeyboard = false;
+  bool startupSignin = true;
   static const double emojiKeyboardHeight = 290;
 
   Auth auth = new Auth();
@@ -29,6 +30,7 @@ class _SignInState extends State<SignIn> {
   void initState() {
     HelperFunction.getBroToken().then((val) {
       if (val == null) {
+        startupSignin = false;
         print("no token yet, wait until a token is saved");
       } else {
         signIn(val.toString());
@@ -92,6 +94,7 @@ class _SignInState extends State<SignIn> {
         ));
       } else {
         ShowToastComponent.showDialog(val.toString(), context);
+        startupSignin = false;
       }
       setState(() {
         isLoading = false;
@@ -264,7 +267,8 @@ class _SignInState extends State<SignIn> {
                 duration: new Duration(seconds: 1),
                 child: Container(
                     alignment: Alignment.bottomCenter,
-                    child: EmojiKeyboard(
+                    child: startupSignin ? Container() :
+                    EmojiKeyboard(
                       bromotionController: bromotionController,
                       emojiKeyboardHeight: emojiKeyboardHeight,
                       signingScreen: true
