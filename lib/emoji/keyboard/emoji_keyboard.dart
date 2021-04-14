@@ -10,12 +10,11 @@ import 'emojis/smileys.dart';
 
 class EmojiKeyboard extends StatefulWidget {
 
-  ValueSetter<String> onTextInput;
-
+  TextEditingController bromotionController;
 
   EmojiKeyboard({
     Key key,
-    this.onTextInput,
+    this.bromotionController,
   }) : super(key: key);
 
   _ExampleState createState() => _ExampleState();
@@ -23,21 +22,22 @@ class EmojiKeyboard extends StatefulWidget {
 
 class _ExampleState extends State<EmojiKeyboard> {
 
+  static const platform = const MethodChannel("nl.brocast.emoji/available");
+
   List smile;
   bool isLoading;
 
-  ValueSetter<String> onTextInput;
+  TextEditingController bromotionController;
 
-  void _textInputHandler(String text) => onTextInput?.call(text);
+  void _textInputHandler(String text) => _insertText(text);
   void _searchHandler() => print("searching?");
-  void _backspaceHandler() => print("back?!");
+  void _backspaceHandler() => _backspace();
   void _spacebarHandler() => print("spacebar, hell yea");
-
-  static const platform = const MethodChannel("com.flutter.epic/epic");
 
   @override
   void initState() {
-    onTextInput = widget.onTextInput;
+    this.bromotionController = widget.bromotionController;
+
     isLoading = true;
     smile = [];
 
@@ -45,10 +45,64 @@ class _ExampleState extends State<EmojiKeyboard> {
     super.initState();
   }
 
+  void _insertText(String myText) {
+    final text = bromotionController.text;
+    final textSelection = bromotionController.selection;
+    final newText = text.replaceRange(
+      textSelection.start,
+      textSelection.end,
+      myText,
+    );
+    final myTextLength = myText.length;
+    bromotionController.text = newText;
+    bromotionController.selection = textSelection.copyWith(
+      baseOffset: textSelection.start + myTextLength,
+      extentOffset: textSelection.start + myTextLength,
+    );
+  }
+
+
+  void _backspace() {
+    final text = bromotionController.text;
+    final textSelection = bromotionController.selection;
+    final selectionLength = textSelection.end - textSelection.start;
+    if (selectionLength > 0) {
+      final newText = text.replaceRange(
+        textSelection.start,
+        textSelection.end,
+        '',
+      );
+      bromotionController.text = newText;
+      bromotionController.selection = textSelection.copyWith(
+        baseOffset: textSelection.start,
+        extentOffset: textSelection.start,
+      );
+      return;
+    }
+
+    if (textSelection.start == 0) {
+      return;
+    }
+
+    String firstSection = text.substring(0, textSelection.start);
+    String newFirstSection = firstSection.characters.skipLast(1).string;
+    final offset = firstSection.length - newFirstSection.length;
+    final newStart = textSelection.start - offset;
+    final newEnd = textSelection.start;
+    final newText = text.replaceRange(
+      newStart,
+      newEnd,
+      '',
+    );
+    bromotionController.text = newText;
+    bromotionController.selection = textSelection.copyWith(
+      baseOffset: newStart,
+      extentOffset: newStart,
+    );
+  }
+
   void isAvailable(List emojis) async {
 
-    print("Going to check availability");
-    // print(emojis);
     try {
       var value = await platform.invokeMethod("isAvailable", {"emojis": emojis});
       if (value != null) {
@@ -60,7 +114,6 @@ class _ExampleState extends State<EmojiKeyboard> {
     } catch (e) {
       print(e);
     }
-
   }
 
 

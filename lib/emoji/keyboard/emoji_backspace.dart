@@ -16,7 +16,7 @@ class BackspaceKey extends StatelessWidget {
         height: MediaQuery.of(context).size.width / 8, // make it square
         child: TextButton(
             onPressed: () {
-              print("pressed?! Search?!?!");
+              onBackspace?.call();
             },
             child: Icon(Icons.backspace)
         )

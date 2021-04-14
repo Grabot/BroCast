@@ -98,60 +98,6 @@ class _SignInState extends State<SignIn> {
     });
   }
 
-  void _insertText(String myText) {
-    final text = bromotionController.text;
-    final textSelection = bromotionController.selection;
-    final newText = text.replaceRange(
-      textSelection.start,
-      textSelection.end,
-      myText,
-    );
-    final myTextLength = myText.length;
-    bromotionController.text = newText;
-    bromotionController.selection = textSelection.copyWith(
-      baseOffset: textSelection.start + myTextLength,
-      extentOffset: textSelection.start + myTextLength,
-    );
-  }
-
-  void _backspace() {
-    final text = bromotionController.text;
-    final textSelection = bromotionController.selection;
-    final selectionLength = textSelection.end - textSelection.start;  // There is a selection.
-    if (selectionLength > 0) {
-      final newText = text.replaceRange(
-        textSelection.start,
-        textSelection.end,
-        '',
-      );
-      bromotionController.text = newText;
-      bromotionController.selection = textSelection.copyWith(
-        baseOffset: textSelection.start,
-        extentOffset: textSelection.start,
-      );
-      return;
-    }  // The cursor is at the beginning.
-    if (textSelection.start == 0) {
-      return;
-    }  // Delete the previous character
-    final previousCodeUnit = text.codeUnitAt(textSelection.start - 1);
-    final offset = _isUtf16Surrogate(previousCodeUnit) ? 2 : 1;
-    final newStart = textSelection.start - offset;
-    final newEnd = textSelection.start;
-    final newText = text.replaceRange(
-      newStart,
-      newEnd,
-      '',
-    );
-    bromotionController.text = newText;
-    bromotionController.selection = textSelection.copyWith(
-      baseOffset: newStart,
-      extentOffset: newStart,
-    );
-  }bool _isUtf16Surrogate(int value) {
-    return value & 0xF800 == 0xD800;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -312,9 +258,7 @@ class _SignInState extends State<SignIn> {
               ),
               showEmojiKeyboard ?
               EmojiKeyboard(
-                onTextInput: (myText) {
-                  _insertText(myText);
-                },
+                bromotionController: bromotionController
               ) : Container()
             ]),
           ),
