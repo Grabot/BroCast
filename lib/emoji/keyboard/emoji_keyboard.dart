@@ -8,6 +8,7 @@ import 'package:flutter/widgets.dart';
 import 'emoji_backspace.dart';
 import 'emoji_key.dart';
 import 'emoji_search.dart';
+import 'emojis/activities.dart';
 import 'emojis/animals.dart';
 import 'emojis/foods.dart';
 import 'emojis/smileys.dart';
@@ -58,7 +59,7 @@ class EmojiBoard extends State<EmojiKeyboard> {
     showBottomBar = true;
     emojis = [];
 
-    isAvailable(travelList);
+    isAvailable(activitiesList);
 
     _scrollController = ScrollController();
     _scrollController.addListener(() => keyboardScrollListener());
