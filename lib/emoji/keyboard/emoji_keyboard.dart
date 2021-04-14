@@ -86,7 +86,7 @@ class EmojiBoard extends State<EmojiKeyboard> {
       if (_scrollController.offset >=
           _scrollController.position.maxScrollExtent &&
           !_scrollController.position.outOfRange) {
-        print("reached the bottomm of the scrollview");
+        print("reached the bottom of the scrollview");
       }
       if (showBottomBar) {
         if (_scrollController.position.userScrollDirection ==
@@ -121,7 +121,29 @@ class EmojiBoard extends State<EmojiKeyboard> {
   }
 
   void _categorySelect(String category) {
-    print("category $category selected");
+    setState(() {
+      if (category == "smileys") {
+        emojis = smileys;
+      } else if (category == "animals") {
+        emojis = animals;
+      } else if (category == "foods") {
+        emojis = foods;
+      } else if (category == "activities") {
+        emojis = activities;
+      } else if (category == "travels") {
+        emojis = travel;
+      } else if (category == "objects") {
+        emojis = objects;
+      } else if (category == "symbols") {
+        emojis = symbols;
+      } else if (category == "flags") {
+        emojis = flags;
+      }
+      _scrollController.animateTo(
+          _scrollController.position.minScrollExtent,
+          duration: Duration(milliseconds: 500),
+          curve: Curves.fastOutSlowIn);
+    });
   }
 
   void _insertText(String myText) {
