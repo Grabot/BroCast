@@ -57,6 +57,10 @@ class EmojiBoard extends State<EmojiKeyboard> {
 
   TextEditingController bromotionController;
 
+  final pageController = PageController(
+    initialPage: 1
+  );
+
   void _textInputHandler(String text) => widget.signingScreen ? _insertTextSignUpScreen(text) : _insertText(text);
   void _searchHandler() => print("searching?");
   void _backspaceHandler() => _backspace();
@@ -276,47 +280,53 @@ class EmojiBoard extends State<EmojiKeyboard> {
       children: [
         SizedBox(
           height: emojiKeyboardHeight,
-          child: ListView.builder(
-            controller: _scrollController,
-            itemCount: emojis.length,
-            itemBuilder: (BuildContext cont, int index) {
-              return new Row(
-                children: [
-                  (index*8) < emojis.length ? EmojiKey(
-                      onTextInput: _textInputHandler,
-                      emoji: emojis[index * 8]
-                  ) : Container(),
-                  (index*8+1) < emojis.length ? EmojiKey(
-                      onTextInput: _textInputHandler,
-                      emoji: emojis[index*8+1]
-                  ) : Container(),
-                  (index*8+2) < emojis.length ? EmojiKey(
-                      onTextInput: _textInputHandler,
-                      emoji: emojis[index*8+2]
-                  ) : Container(),
-                  (index*8+3) < emojis.length ? EmojiKey(
-                      onTextInput: _textInputHandler,
-                      emoji: emojis[index*8+3]
-                  ) : Container(),
-                  (index*8+4) < emojis.length ? EmojiKey(
-                      onTextInput: _textInputHandler,
-                      emoji: emojis[index*8+4]
-                  ) : Container(),
-                  (index*8+5) < emojis.length ? EmojiKey(
-                      onTextInput: _textInputHandler,
-                      emoji: emojis[index*8+5]
-                  ) : Container(),
-                  (index*8+6) < emojis.length ? EmojiKey(
-                      onTextInput: _textInputHandler,
-                      emoji: emojis[index*8+6]
-                  ) : Container(),
-                  (index*8+7) < emojis.length ? EmojiKey(
-                      onTextInput: _textInputHandler,
-                      emoji: emojis[index*8+7]
-                  ) : Container()
-                ]
-              );
-            },
+          child: PageView(
+            controller: pageController,
+            scrollDirection: Axis.horizontal,
+            children: [
+              ListView.builder(
+                controller: _scrollController,
+                itemCount: emojis.length,
+                itemBuilder: (BuildContext cont, int index) {
+                  return new Row(
+                    children: [
+                      (index*8) < emojis.length ? EmojiKey(
+                          onTextInput: _textInputHandler,
+                          emoji: emojis[index * 8]
+                      ) : Container(),
+                      (index*8+1) < emojis.length ? EmojiKey(
+                          onTextInput: _textInputHandler,
+                          emoji: emojis[index*8+1]
+                      ) : Container(),
+                      (index*8+2) < emojis.length ? EmojiKey(
+                          onTextInput: _textInputHandler,
+                          emoji: emojis[index*8+2]
+                      ) : Container(),
+                      (index*8+3) < emojis.length ? EmojiKey(
+                          onTextInput: _textInputHandler,
+                          emoji: emojis[index*8+3]
+                      ) : Container(),
+                      (index*8+4) < emojis.length ? EmojiKey(
+                          onTextInput: _textInputHandler,
+                          emoji: emojis[index*8+4]
+                      ) : Container(),
+                      (index*8+5) < emojis.length ? EmojiKey(
+                          onTextInput: _textInputHandler,
+                          emoji: emojis[index*8+5]
+                      ) : Container(),
+                      (index*8+6) < emojis.length ? EmojiKey(
+                          onTextInput: _textInputHandler,
+                          emoji: emojis[index*8+6]
+                      ) : Container(),
+                      (index*8+7) < emojis.length ? EmojiKey(
+                          onTextInput: _textInputHandler,
+                          emoji: emojis[index*8+7]
+                      ) : Container()
+                    ]
+                  );
+                },
+              ),
+            ]
           ),
         ),
         Align(
