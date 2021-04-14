@@ -30,11 +30,11 @@ class EmojiBoard extends State<EmojiKeyboard> {
 
   static const platform = const MethodChannel("nl.brocast.emoji/available");
 
-  List smile;
+  List emojis;
   bool isLoading;
   bool showBottomBar;
 
-  double bottomBarHeight;
+  double bottomBarHeight = 40;
   double emojiKeyboardHeight;
 
   TextEditingController bromotionController;
@@ -42,7 +42,7 @@ class EmojiBoard extends State<EmojiKeyboard> {
   void _textInputHandler(String text) => widget.signingScreen ? _insertTextSignUpScreen(text) : _insertText(text);
   void _searchHandler() => print("searching?");
   void _backspaceHandler() => _backspace();
-  void _spacebarHandler() => print("spacebar, hell yea");
+  void _spacebarHandler() => _insertText("  ");
 
   ScrollController _scrollController;
 
@@ -50,11 +50,10 @@ class EmojiBoard extends State<EmojiKeyboard> {
   void initState() {
     this.bromotionController = widget.bromotionController;
     this.emojiKeyboardHeight = widget.emojiKeyboardHeight;
-    this.bottomBarHeight = MediaQuery.of(context).size.width / 8;
 
     isLoading = true;
     showBottomBar = true;
-    smile = [];
+    emojis = [];
 
     isAvailable(smileyList);
 
@@ -78,28 +77,38 @@ class EmojiBoard extends State<EmojiKeyboard> {
             bottomBarHeight = 0;
             showBottomBar = false;
           });
-          print("naar beneden gescrolled!");
         }
       } else {
         if (_scrollController.position.userScrollDirection ==
             ScrollDirection.forward) {
           setState(() {
-            bottomBarHeight = MediaQuery.of(context).size.width / 8;
+            bottomBarHeight = 40;
             showBottomBar = true;
           });
-          print("naar boven gescrolled!");
         }
       }
     }
   }
 
   void _insertTextSignUpScreen(String myText) {
+    if (!showBottomBar) {
+      setState(() {
+        bottomBarHeight = 40;
+        showBottomBar = true;
+      });
+    }
     // The user is only allowed to give 1 emoji
     bromotionController.clear();
     bromotionController.text = myText;
   }
 
   void _insertText(String myText) {
+    if (!showBottomBar) {
+      setState(() {
+        bottomBarHeight = 40;
+        showBottomBar = true;
+      });
+    }
     final text = bromotionController.text;
     final textSelection = bromotionController.selection;
     final newText = text.replaceRange(
@@ -155,14 +164,14 @@ class EmojiBoard extends State<EmojiKeyboard> {
     );
   }
 
-  void isAvailable(List emojis) async {
+  void isAvailable(List emojiList) async {
 
     try {
-      var value = await platform.invokeMethod("isAvailable", {"emojis": emojis});
+      var value = await platform.invokeMethod("isAvailable", {"emojis": emojiList});
       if (value != null) {
         setState(() {
           isLoading = false;
-          smile = value;
+          emojis = value;
         });
       }
     } catch (e) {
@@ -180,41 +189,41 @@ class EmojiBoard extends State<EmojiKeyboard> {
           height: emojiKeyboardHeight,
           child: ListView.builder(
             controller: _scrollController,
-            itemCount: smile.length,
+            itemCount: emojis.length,
             itemBuilder: (BuildContext cont, int index) {
               return new Row(
                 children: [
-                  (index*8) < smile.length ? EmojiKey(
+                  (index*8) < emojis.length ? EmojiKey(
                       onTextInput: _textInputHandler,
-                      emoji: smile[index * 8]
+                      emoji: emojis[index * 8]
                   ) : Container(),
-                  (index*8+1) < smile.length ? EmojiKey(
+                  (index*8+1) < emojis.length ? EmojiKey(
                       onTextInput: _textInputHandler,
-                      emoji: smile[index*8+1]
+                      emoji: emojis[index*8+1]
                   ) : Container(),
-                  (index*8+2) < smile.length ? EmojiKey(
+                  (index*8+2) < emojis.length ? EmojiKey(
                       onTextInput: _textInputHandler,
-                      emoji: smile[index*8+2]
+                      emoji: emojis[index*8+2]
                   ) : Container(),
-                  (index*8+3) < smile.length ? EmojiKey(
+                  (index*8+3) < emojis.length ? EmojiKey(
                       onTextInput: _textInputHandler,
-                      emoji: smile[index*8+3]
+                      emoji: emojis[index*8+3]
                   ) : Container(),
-                  (index*8+4) < smile.length ? EmojiKey(
+                  (index*8+4) < emojis.length ? EmojiKey(
                       onTextInput: _textInputHandler,
-                      emoji: smile[index*8+4]
+                      emoji: emojis[index*8+4]
                   ) : Container(),
-                  (index*8+5) < smile.length ? EmojiKey(
+                  (index*8+5) < emojis.length ? EmojiKey(
                       onTextInput: _textInputHandler,
-                      emoji: smile[index*8+5]
+                      emoji: emojis[index*8+5]
                   ) : Container(),
-                  (index*8+6) < smile.length ? EmojiKey(
+                  (index*8+6) < emojis.length ? EmojiKey(
                       onTextInput: _textInputHandler,
-                      emoji: smile[index*8+6]
+                      emoji: emojis[index*8+6]
                   ) : Container(),
-                  (index*8+7) < smile.length ? EmojiKey(
+                  (index*8+7) < emojis.length ? EmojiKey(
                       onTextInput: _textInputHandler,
-                      emoji: smile[index*8+7]
+                      emoji: emojis[index*8+7]
                   ) : Container()
                 ]
               );
@@ -223,28 +232,46 @@ class EmojiBoard extends State<EmojiKeyboard> {
         ),
         Align(
             alignment: Alignment.topCenter,
-              child: Container(
-              color: Colors.white,
-              height: MediaQuery.of(context).size.width / 8,
-              width: MediaQuery.of(context).size.width,
-              child:SizedBox(
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    SearchKey(
-                      onSearch: _searchHandler,
-                    ),
-                    SpacebarKey(
-                      onSpacebar: _spacebarHandler,
-                    ),
-                    BackspaceKey(
-                      onBackspace: _backspaceHandler,
-                    )
-                  ],
-                ),
+            child: Container(
+            color: Colors.white,
+            height: 50,
+            width: MediaQuery.of(context).size.width,
+            child:SizedBox(
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  EmojiCategoryKey(
+                      category: Icons.access_time,
+                  ),
+                  EmojiCategoryKey(
+                    category: Icons.tag_faces,
+                  ),
+                  EmojiCategoryKey(
+                    category: Icons.pets,
+                  ),
+                  EmojiCategoryKey(
+                    category: Icons.fastfood,
+                  ),
+                  EmojiCategoryKey(
+                    category: Icons.sports_soccer,
+                  ),
+                  EmojiCategoryKey(
+                    category: Icons.directions_car,
+                  ),
+                  EmojiCategoryKey(
+                    category: Icons.lightbulb_outline,
+                  ),
+                  EmojiCategoryKey(
+                    category: Icons.euro_symbol,
+                  ),
+                  EmojiCategoryKey(
+                    category: Icons.flag,
+                  ),
+                ],
               ),
             ),
+          ),
         ),
         Align(
         alignment: Alignment.bottomCenter,
@@ -260,34 +287,16 @@ class EmojiBoard extends State<EmojiKeyboard> {
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    EmojiCategoryKey(
-                        category: "people",
+                    SearchKey(
+                        onSearch: _searchHandler,
                     ),
-                    EmojiCategoryKey(
-                      category: "animals",
+                    SpacebarKey(
+                        onSpacebar: _spacebarHandler,
                     ),
-                    EmojiCategoryKey(
-                      category: "people",
-                    ),
-                    EmojiCategoryKey(
-                      category: "people",
-                    ),
-                    EmojiCategoryKey(
-                      category: "people",
-                    ),
-                    EmojiCategoryKey(
-                      category: "people",
-                    ),
-                    EmojiCategoryKey(
-                      category: "people",
-                    ),
-                    EmojiCategoryKey(
-                      category: "people",
-                    ),
-                    EmojiCategoryKey(
-                      category: "people",
-                    ),
-                  ]),
+                    BackspaceKey(
+                        onBackspace: _backspaceHandler,
+                    )
+                  ],
                 ),
               ),
             ),

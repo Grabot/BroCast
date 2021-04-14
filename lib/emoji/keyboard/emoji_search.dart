@@ -16,7 +16,7 @@ class SearchKey extends StatelessWidget {
         height: MediaQuery.of(context).size.width / 8, // make it square
         child: TextButton(
           onPressed: () {
-            print("pressed?! Search?!?!");
+            onSearch?.call();
           },
           child: Icon(Icons.search)
         )

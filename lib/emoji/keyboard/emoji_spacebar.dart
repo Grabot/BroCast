@@ -16,7 +16,7 @@ class SpacebarKey extends StatelessWidget {
         height: MediaQuery.of(context).size.width / 8, // make it square
         child: TextButton(
           onPressed: () {
-            print("pressed?! SPACE!?!?!");
+            onSpacebar?.call();
           },
           child: Icon(Icons.space_bar)
         )

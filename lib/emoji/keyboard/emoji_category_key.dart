@@ -8,17 +8,17 @@ class EmojiCategoryKey extends StatelessWidget {
     this.category,
   }) : super(key: key);
 
-  final String category;
+  final IconData category;
 
   Widget build(BuildContext context) {
     return SizedBox(
-        width: MediaQuery.of(context).size.width / 8, // make it 8 buttons wide
-        height: MediaQuery.of(context).size.width / 8, // make it square
+        width: MediaQuery.of(context).size.width / 9, // make it 8 buttons wide
+        height: MediaQuery.of(context).size.width / 9, // make it square
         child: TextButton(
           onPressed: () {
             print("pressed category $category");
           },
-          child: Text(category),
+          child: Icon(category),
         )
     );
   }
