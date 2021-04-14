@@ -9,6 +9,7 @@ import 'emoji_backspace.dart';
 import 'emoji_key.dart';
 import 'emoji_search.dart';
 import 'emojis/animals.dart';
+import 'emojis/foods.dart';
 import 'emojis/smileys.dart';
 
 class EmojiKeyboard extends StatefulWidget {
@@ -56,7 +57,7 @@ class EmojiBoard extends State<EmojiKeyboard> {
     showBottomBar = true;
     emojis = [];
 
-    isAvailable(animalList);
+    isAvailable(foodsList);
 
     _scrollController = ScrollController();
     _scrollController.addListener(() => keyboardScrollListener());
