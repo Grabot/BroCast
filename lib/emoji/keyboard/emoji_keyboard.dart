@@ -1,5 +1,7 @@
+import 'package:brocast/emoji/keyboard/emoji_category_key.dart';
 import 'package:brocast/emoji/keyboard/emoji_spacebar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
@@ -11,38 +13,90 @@ import 'emojis/smileys.dart';
 class EmojiKeyboard extends StatefulWidget {
 
   TextEditingController bromotionController;
+  double emojiKeyboardHeight;
+  bool signingScreen;
 
   EmojiKeyboard({
     Key key,
     this.bromotionController,
+    this.emojiKeyboardHeight,
+    this.signingScreen = false
   }) : super(key: key);
 
-  _ExampleState createState() => _ExampleState();
+  EmojiBoard createState() => EmojiBoard();
 }
 
-class _ExampleState extends State<EmojiKeyboard> {
+class EmojiBoard extends State<EmojiKeyboard> {
 
   static const platform = const MethodChannel("nl.brocast.emoji/available");
 
   List smile;
   bool isLoading;
+  bool showBottomBar;
+
+  double bottomBarHeight;
+  double emojiKeyboardHeight;
 
   TextEditingController bromotionController;
 
-  void _textInputHandler(String text) => _insertText(text);
+  void _textInputHandler(String text) => widget.signingScreen ? _insertTextSignUpScreen(text) : _insertText(text);
   void _searchHandler() => print("searching?");
   void _backspaceHandler() => _backspace();
   void _spacebarHandler() => print("spacebar, hell yea");
 
+  ScrollController _scrollController;
+
   @override
   void initState() {
     this.bromotionController = widget.bromotionController;
+    this.emojiKeyboardHeight = widget.emojiKeyboardHeight;
+    this.bottomBarHeight = MediaQuery.of(context).size.width / 8;
 
     isLoading = true;
+    showBottomBar = true;
     smile = [];
 
     isAvailable(smileyList);
+
+    _scrollController = ScrollController();
+    _scrollController.addListener(() => keyboardScrollListener());
+
     super.initState();
+  }
+
+  keyboardScrollListener() {
+    if (_scrollController.hasClients) {
+      if (_scrollController.offset >=
+          _scrollController.position.maxScrollExtent &&
+          !_scrollController.position.outOfRange) {
+        print("reached the bottomm of the scrollview");
+      }
+      if (showBottomBar) {
+        if (_scrollController.position.userScrollDirection ==
+            ScrollDirection.reverse) {
+          setState(() {
+            bottomBarHeight = 0;
+            showBottomBar = false;
+          });
+          print("naar beneden gescrolled!");
+        }
+      } else {
+        if (_scrollController.position.userScrollDirection ==
+            ScrollDirection.forward) {
+          setState(() {
+            bottomBarHeight = MediaQuery.of(context).size.width / 8;
+            showBottomBar = true;
+          });
+          print("naar boven gescrolled!");
+        }
+      }
+    }
+  }
+
+  void _insertTextSignUpScreen(String myText) {
+    // The user is only allowed to give 1 emoji
+    bromotionController.clear();
+    bromotionController.text = myText;
   }
 
   void _insertText(String myText) {
@@ -117,87 +171,140 @@ class _ExampleState extends State<EmojiKeyboard> {
   }
 
 
-  Expanded buildKeyboard(double emojiKeyboardHeight) {
-    double bottomBarHeight = 40;
+  Expanded buildKeyboard() {
     return Expanded(
       child: isLoading ? Container() :
-      Column(
+      Stack(
       children: [
-      SizedBox(
-        height: emojiKeyboardHeight-bottomBarHeight,
-        child: ListView.builder(
-        itemCount: smile.length,
-        itemBuilder: (BuildContext cont, int index) {
-          return new Row(
-            children: [
-              (index*8) < smile.length ? EmojiKey(
-                  onTextInput: _textInputHandler,
-                  emoji: smile[index * 8]
-              ) : Container(),
-              (index*8+1) < smile.length ? EmojiKey(
-                  onTextInput: _textInputHandler,
-                  emoji: smile[index*8+1]
-              ) : Container(),
-              (index*8+2) < smile.length ? EmojiKey(
-                  onTextInput: _textInputHandler,
-                  emoji: smile[index*8+2]
-              ) : Container(),
-              (index*8+3) < smile.length ? EmojiKey(
-                  onTextInput: _textInputHandler,
-                  emoji: smile[index*8+3]
-              ) : Container(),
-              (index*8+4) < smile.length ? EmojiKey(
-                  onTextInput: _textInputHandler,
-                  emoji: smile[index*8+4]
-              ) : Container(),
-              (index*8+5) < smile.length ? EmojiKey(
-                  onTextInput: _textInputHandler,
-                  emoji: smile[index*8+5]
-              ) : Container(),
-              (index*8+6) < smile.length ? EmojiKey(
-                  onTextInput: _textInputHandler,
-                  emoji: smile[index*8+6]
-              ) : Container(),
-              (index*8+7) < smile.length ? EmojiKey(
-                  onTextInput: _textInputHandler,
-                  emoji: smile[index*8+7]
-              ) : Container()
-            ]
-          );
-        },
-      ),
-      ),
-      SizedBox(
-        height: bottomBarHeight,
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            SearchKey(
-                onSearch: _searchHandler,
+        SizedBox(
+          height: emojiKeyboardHeight,
+          child: ListView.builder(
+            controller: _scrollController,
+            itemCount: smile.length,
+            itemBuilder: (BuildContext cont, int index) {
+              return new Row(
+                children: [
+                  (index*8) < smile.length ? EmojiKey(
+                      onTextInput: _textInputHandler,
+                      emoji: smile[index * 8]
+                  ) : Container(),
+                  (index*8+1) < smile.length ? EmojiKey(
+                      onTextInput: _textInputHandler,
+                      emoji: smile[index*8+1]
+                  ) : Container(),
+                  (index*8+2) < smile.length ? EmojiKey(
+                      onTextInput: _textInputHandler,
+                      emoji: smile[index*8+2]
+                  ) : Container(),
+                  (index*8+3) < smile.length ? EmojiKey(
+                      onTextInput: _textInputHandler,
+                      emoji: smile[index*8+3]
+                  ) : Container(),
+                  (index*8+4) < smile.length ? EmojiKey(
+                      onTextInput: _textInputHandler,
+                      emoji: smile[index*8+4]
+                  ) : Container(),
+                  (index*8+5) < smile.length ? EmojiKey(
+                      onTextInput: _textInputHandler,
+                      emoji: smile[index*8+5]
+                  ) : Container(),
+                  (index*8+6) < smile.length ? EmojiKey(
+                      onTextInput: _textInputHandler,
+                      emoji: smile[index*8+6]
+                  ) : Container(),
+                  (index*8+7) < smile.length ? EmojiKey(
+                      onTextInput: _textInputHandler,
+                      emoji: smile[index*8+7]
+                  ) : Container()
+                ]
+              );
+            },
+          ),
+        ),
+        Align(
+            alignment: Alignment.topCenter,
+              child: Container(
+              color: Colors.white,
+              height: MediaQuery.of(context).size.width / 8,
+              width: MediaQuery.of(context).size.width,
+              child:SizedBox(
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    SearchKey(
+                      onSearch: _searchHandler,
+                    ),
+                    SpacebarKey(
+                      onSpacebar: _spacebarHandler,
+                    ),
+                    BackspaceKey(
+                      onBackspace: _backspaceHandler,
+                    )
+                  ],
+                ),
+              ),
             ),
-            SpacebarKey(
-                onSpacebar: _spacebarHandler,
+        ),
+        Align(
+        alignment: Alignment.bottomCenter,
+          child: AnimatedContainer(
+            curve: Curves.fastOutSlowIn,
+            height: bottomBarHeight,
+            width: MediaQuery.of(context).size.width,
+            duration: new Duration(seconds: 1),
+            child: Container(
+              color: Colors.white,
+              child:SizedBox(
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    EmojiCategoryKey(
+                        category: "people",
+                    ),
+                    EmojiCategoryKey(
+                      category: "animals",
+                    ),
+                    EmojiCategoryKey(
+                      category: "people",
+                    ),
+                    EmojiCategoryKey(
+                      category: "people",
+                    ),
+                    EmojiCategoryKey(
+                      category: "people",
+                    ),
+                    EmojiCategoryKey(
+                      category: "people",
+                    ),
+                    EmojiCategoryKey(
+                      category: "people",
+                    ),
+                    EmojiCategoryKey(
+                      category: "people",
+                    ),
+                    EmojiCategoryKey(
+                      category: "people",
+                    ),
+                  ]),
+                ),
+              ),
             ),
-            BackspaceKey(
-                onBackspace: _backspaceHandler,
-            )
-          ],
+          )
         )
-      ),
       ])
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    double emojiKeyboardHeight = 290;
     return Container(
         height: emojiKeyboardHeight,
         color: Colors.grey,
         child: Column(
             children: [
-              buildKeyboard(emojiKeyboardHeight),
+              buildKeyboard(),
             ])
     );
   }

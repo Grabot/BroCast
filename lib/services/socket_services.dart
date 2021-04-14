@@ -1,7 +1,6 @@
 import 'package:brocast/constants/api_path.dart';
 import 'package:brocast/objects/message.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
-import 'dart:io';
 
 class SocketServices {
 
@@ -85,7 +84,6 @@ class SocketServices {
   }
 
   messageReceived(var data) {
-    sleep(Duration(seconds:5));
     Message mes = new Message(data["id"], data["bro_bros_id"], data["sender_id"], data["recipient_id"], data["body"], data["timestamp"]);
     this.messaging.updateMessages(mes);
   }

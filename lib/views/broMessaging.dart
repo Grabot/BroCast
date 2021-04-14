@@ -1,4 +1,5 @@
 import 'package:back_button_interceptor/back_button_interceptor.dart';
+import 'package:brocast/emoji/keyboard/emoji_keyboard.dart';
 import 'package:brocast/objects/bro.dart';
 import 'package:brocast/objects/message.dart';
 import 'package:brocast/services/getMessages.dart';
@@ -25,6 +26,9 @@ class _BroMessagingState extends State<BroMessaging> {
 
   SendMessage send = new SendMessage();
   GetMessages get = new GetMessages();
+
+  bool showEmojiKeyboard = false;
+  static const double emojiKeyboardHeight = 290;
 
   TextEditingController broMessageController = new TextEditingController();
   final formKey = GlobalKey<FormState>();
@@ -58,10 +62,17 @@ class _BroMessagingState extends State<BroMessaging> {
   }
 
   bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
-    Navigator.pushReplacement(context, MaterialPageRoute(
-        builder: (context) => BroCastHome(socket: socket)
-    ));
-    return true;
+    if (showEmojiKeyboard) {
+      setState(() {
+        showEmojiKeyboard = false;
+      });
+      return true;
+    } else {
+      Navigator.pushReplacement(context, MaterialPageRoute(
+          builder: (context) => BroCastHome(socket: socket)
+      ));
+      return true;
+    }
   }
 
   getMessages() {
@@ -202,6 +213,14 @@ class _BroMessagingState extends State<BroMessaging> {
     ) : Container();
   }
 
+  void onTapTextField() {
+    if (!showEmojiKeyboard) {
+      setState(() {
+        showEmojiKeyboard = true;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -231,6 +250,9 @@ class _BroMessagingState extends State<BroMessaging> {
                                 ? "Can't send an empty message"
                                 : null;
                           },
+                          onTap: () {
+                            onTapTextField();
+                          },
                           controller: broMessageController,
                           style: TextStyle(
                               color: Colors.white
@@ -242,6 +264,8 @@ class _BroMessagingState extends State<BroMessaging> {
                               ),
                               border: InputBorder.none
                           ),
+                          readOnly: true,
+                          showCursor: true,
                         ),
                       ),
                     ),
@@ -268,6 +292,20 @@ class _BroMessagingState extends State<BroMessaging> {
                   ],
                 ),
               ),
+            ),
+            AnimatedContainer(
+                curve: Curves.fastOutSlowIn,
+                height: showEmojiKeyboard ? emojiKeyboardHeight : 0,
+                width: MediaQuery.of(context).size.width,
+                duration: new Duration(seconds: 1),
+                child: Container(
+                    alignment: Alignment.bottomCenter,
+                    child: EmojiKeyboard(
+                        bromotionController: broMessageController,
+                        emojiKeyboardHeight: emojiKeyboardHeight,
+                        signingScreen: false
+                    )
+                )
             )
           ],
         ),
@@ -392,7 +430,7 @@ class MessageTile extends StatelessWidget {
                   ),
                 ),
               ),
-            )
+            ),
           ]),
           color: Colors.transparent,
         )

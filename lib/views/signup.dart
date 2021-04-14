@@ -15,6 +15,7 @@ class _SignUpState extends State<SignUp> {
 
   bool isLoading = false;
   bool showEmojiKeyboard = false;
+  static const double emojiKeyboardHeight = 290;
 
   Auth auth = new Auth();
 
@@ -238,14 +239,20 @@ class _SignUpState extends State<SignUp> {
                           ),
                         ),
                       ),
-                      showEmojiKeyboard ?
-                      Container(
-                        alignment: Alignment.bottomCenter,
-                        child:
-                        EmojiKeyboard(
-                          bromotionController: bromotionController
-                        ),
-                      ) : Container()
+                      AnimatedContainer(
+                        curve: Curves.fastOutSlowIn,
+                        height: showEmojiKeyboard ? emojiKeyboardHeight : 0,
+                        width: MediaQuery.of(context).size.width,
+                        duration: new Duration(seconds: 1),
+                        child: Container(
+                            alignment: Alignment.bottomCenter,
+                            child: EmojiKeyboard(
+                              bromotionController: bromotionController,
+                              emojiKeyboardHeight: emojiKeyboardHeight,
+                              signingScreen: true
+                            )
+                        )
+                      )
                     ]),
               ),
             ]
