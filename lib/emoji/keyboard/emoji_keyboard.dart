@@ -11,6 +11,7 @@ import 'emoji_key.dart';
 import 'emoji_search.dart';
 import 'emojis/activities.dart';
 import 'emojis/animals.dart';
+import 'emojis/flags.dart';
 import 'emojis/foods.dart';
 import 'emojis/smileys.dart';
 import 'emojis/symbols.dart';
@@ -61,7 +62,7 @@ class EmojiBoard extends State<EmojiKeyboard> {
     showBottomBar = true;
     emojis = [];
 
-    isAvailable(symbolsList);
+    isAvailable(flagsList);
 
     _scrollController = ScrollController();
     _scrollController.addListener(() => keyboardScrollListener());
