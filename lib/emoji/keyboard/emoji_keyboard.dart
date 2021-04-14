@@ -8,6 +8,7 @@ import 'package:flutter/widgets.dart';
 import 'emoji_backspace.dart';
 import 'emoji_key.dart';
 import 'emoji_search.dart';
+import 'emojis/animals.dart';
 import 'emojis/smileys.dart';
 
 class EmojiKeyboard extends StatefulWidget {
@@ -55,7 +56,7 @@ class EmojiBoard extends State<EmojiKeyboard> {
     showBottomBar = true;
     emojis = [];
 
-    isAvailable(smileyList);
+    isAvailable(animalList);
 
     _scrollController = ScrollController();
     _scrollController.addListener(() => keyboardScrollListener());
@@ -167,11 +168,12 @@ class EmojiBoard extends State<EmojiKeyboard> {
   void isAvailable(List emojiList) async {
 
     try {
-      var value = await platform.invokeMethod("isAvailable", {"emojis": emojiList});
-      if (value != null) {
+      var smileEmojis = platform.invokeMethod("isAvailable", {"emojis": emojiList});
+      var smileys = await smileEmojis;
+      if (smileys != null) {
         setState(() {
           isLoading = false;
-          emojis = value;
+          emojis = smileys;
         });
       }
     } catch (e) {
