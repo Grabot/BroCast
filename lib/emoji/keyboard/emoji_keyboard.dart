@@ -1,5 +1,6 @@
 import 'package:brocast/emoji/keyboard/emoji_category_key.dart';
 import 'package:brocast/emoji/keyboard/emoji_spacebar.dart';
+import 'package:brocast/emoji/keyboard/emojis/objects.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -59,7 +60,7 @@ class EmojiBoard extends State<EmojiKeyboard> {
     showBottomBar = true;
     emojis = [];
 
-    isAvailable(activitiesList);
+    isAvailable(objectsList);
 
     _scrollController = ScrollController();
     _scrollController.addListener(() => keyboardScrollListener());
