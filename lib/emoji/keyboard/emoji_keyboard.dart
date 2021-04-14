@@ -13,6 +13,7 @@ import 'emojis/activities.dart';
 import 'emojis/animals.dart';
 import 'emojis/foods.dart';
 import 'emojis/smileys.dart';
+import 'emojis/symbols.dart';
 import 'emojis/travel.dart';
 
 class EmojiKeyboard extends StatefulWidget {
@@ -60,7 +61,7 @@ class EmojiBoard extends State<EmojiKeyboard> {
     showBottomBar = true;
     emojis = [];
 
-    isAvailable(objectsList);
+    isAvailable(symbolsList);
 
     _scrollController = ScrollController();
     _scrollController.addListener(() => keyboardScrollListener());
