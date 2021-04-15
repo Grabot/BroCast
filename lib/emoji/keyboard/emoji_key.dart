@@ -8,7 +8,7 @@ class EmojiKey extends StatelessWidget {
     this.emoji,
   }) : super(key: key);
 
-  final List emoji;
+  final String emoji;
   final ValueSetter<String> onTextInput;
 
   Widget build(BuildContext context) {
@@ -17,9 +17,9 @@ class EmojiKey extends StatelessWidget {
       height: MediaQuery.of(context).size.width / 8, // make it square
       child: TextButton(
         onPressed: () {
-          onTextInput?.call(emoji[1]);
+          onTextInput?.call(emoji);
         },
-        child: Text(emoji[1]),
+        child: Text(emoji),
       )
     );
   }

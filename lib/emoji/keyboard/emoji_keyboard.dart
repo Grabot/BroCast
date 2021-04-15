@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'emoji_backspace.dart';
 import 'emoji_key.dart';
@@ -39,8 +40,7 @@ class EmojiBoard extends State<EmojiKeyboard> {
 
   static const platform = const MethodChannel("nl.brocast.emoji/available");
 
-  List emojis;
-
+  List<String> recent;
   List smileys;
   List animals;
   List foods;
@@ -53,13 +53,14 @@ class EmojiBoard extends State<EmojiKeyboard> {
   bool showBottomBar;
 
   double bottomBarHeight = 40;
+  double emojiCategoryHeight = 50;
   double emojiKeyboardHeight;
+
+  static String recentEmojisKey = "recentEmojis";
 
   TextEditingController bromotionController;
 
-  final pageController = PageController(
-    initialPage: 1
-  );
+  PageController pageController;
 
   void _textInputHandler(String text) => widget.signingScreen ? _insertTextSignUpScreen(text) : _insertText(text);
   void _searchHandler() => print("searching?");
@@ -71,11 +72,20 @@ class EmojiBoard extends State<EmojiKeyboard> {
 
   @override
   void initState() {
+    recent = [];
+    smileys = [];
+    animals = [];
+    foods = [];
+    activities = [];
+    travel = [];
+    objects = [];
+    symbols = [];
+    flags = [];
+
     this.bromotionController = widget.bromotionController;
     this.emojiKeyboardHeight = widget.emojiKeyboardHeight;
 
     showBottomBar = true;
-    emojis = [];
 
     isAvailable();
 
@@ -126,23 +136,24 @@ class EmojiBoard extends State<EmojiKeyboard> {
 
   void _categorySelect(String category) {
     setState(() {
-      if (category == "smileys") {
-        emojis = smileys;
-      } else if (category == "animals") {
-        emojis = animals;
-      } else if (category == "foods") {
-        emojis = foods;
-      } else if (category == "activities") {
-        emojis = activities;
-      } else if (category == "travels") {
-        emojis = travel;
-      } else if (category == "objects") {
-        emojis = objects;
-      } else if (category == "symbols") {
-        emojis = symbols;
-      } else if (category == "flags") {
-        emojis = flags;
-      }
+      // TODO: @Skools change category switch correctly
+      // if (category == "smileys") {
+      //   emojis = smileys;
+      // } else if (category == "animals") {
+      //   emojis = animals;
+      // } else if (category == "foods") {
+      //   emojis = foods;
+      // } else if (category == "activities") {
+      //   emojis = activities;
+      // } else if (category == "travels") {
+      //   emojis = travel;
+      // } else if (category == "objects") {
+      //   emojis = objects;
+      // } else if (category == "symbols") {
+      //   emojis = symbols;
+      // } else if (category == "flags") {
+      //   emojis = flags;
+      // }
       _scrollController.animateTo(
           _scrollController.position.minScrollExtent,
           duration: Duration(milliseconds: 500),
@@ -157,6 +168,7 @@ class EmojiBoard extends State<EmojiKeyboard> {
         showBottomBar = true;
       });
     }
+    addRecentEmoji(myText);
     final text = bromotionController.text;
     final textSelection = bromotionController.selection;
     final newText = text.replaceRange(
@@ -212,15 +224,40 @@ class EmojiBoard extends State<EmojiKeyboard> {
     );
   }
 
+  List<String> getEmojis(emojiList) {
+    List<String> onlyEmoji = [];
+    for (List<String> emoji in emojiList) {
+      onlyEmoji.add(emoji[1]);
+    }
+    return onlyEmoji;
+  }
+
   void isAvailable() async {
-    smileys = smileysList;
-    animals = animalsList;
-    foods = foodsList;
-    activities = activitiesList;
-    travel = travelList;
-    objects = objectsList;
-    symbols = symbolsList;
-    flags = flagsList;
+    smileys = getEmojis(smileysList);
+    animals = getEmojis(animalsList);
+    foods = getEmojis(foodsList);
+    activities = getEmojis(activitiesList);
+    travel = getEmojis(travelList);
+    objects = getEmojis(objectsList);
+    symbols = getEmojis(symbolsList);
+    flags = getEmojis(flagsList);
+    recent = [];
+
+    getRecentEmojis().then((value) {
+      print("recent thingies");
+      recent = value;
+      if (recent.length > 0) {
+        pageController = PageController(
+            initialPage: 0
+        );
+      } else {
+        pageController = PageController(
+            initialPage: 1
+        );
+      }
+    });
+
+
     if (Platform.isAndroid) {
 
       Future.wait([getSmileys(), getAnimals(), getFoods(), getActivities(),
@@ -230,196 +267,225 @@ class EmojiBoard extends State<EmojiKeyboard> {
       });
 
     }
+  }
 
-    emojis = smileys;
+  void addRecentEmoji(String emoji) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    // If the emoji is already in the list, then remove it so it is added in the front.
+    recent.removeWhere((item) => item == emoji);
+    setState(() {
+      recent.insert(0, emoji.toString());
+      preferences.setStringList(recentEmojisKey, recent);
+    });
+  }
+
+  Future<List> getRecentEmojis() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    return preferences.getStringList(recentEmojisKey) ?? [];
   }
 
   Future getSmileys() async {
     smileys = await platform.invokeMethod(
-        "isAvailable", {"emojis": smileysList});
+        "isAvailable", {"emojis": smileys});
   }
 
   Future getAnimals() async {
     animals = await platform.invokeMethod(
-        "isAvailable", {"emojis": animalsList});
+        "isAvailable", {"emojis": animals});
   }
 
   Future getFoods() async {
     foods = await platform.invokeMethod(
-        "isAvailable", {"emojis": foodsList});
+        "isAvailable", {"emojis": foods});
   }
 
   Future getActivities() async {
     activities = await platform.invokeMethod(
-        "isAvailable", {"emojis": activitiesList});
+        "isAvailable", {"emojis": activities});
   }
 
   Future getTravels() async {
     travel = await platform.invokeMethod(
-        "isAvailable", {"emojis": travelList});
+        "isAvailable", {"emojis": travel});
   }
 
   Future getObjects() async {
     objects = await platform.invokeMethod(
-        "isAvailable", {"emojis": objectsList});
+        "isAvailable", {"emojis": objects});
   }
 
   Future getSymbols() async {
     symbols = await platform.invokeMethod(
-        "isAvailable", {"emojis": symbolsList});
+        "isAvailable", {"emojis": symbols});
   }
 
   Future getFlags() async {
     flags = await platform.invokeMethod(
-        "isAvailable", {"emojis": flagsList});
+        "isAvailable", {"emojis": flags});
   }
 
-  Expanded buildKeyboard() {
-    return Expanded(
-      child: Stack(
-      children: [
-        SizedBox(
-          height: emojiKeyboardHeight,
-          child: PageView(
-            controller: pageController,
-            scrollDirection: Axis.horizontal,
+  Align buildCategories() {
+    return Align(
+      alignment: Alignment.topCenter,
+      child: Container(
+        color: Colors.white,
+        height: emojiCategoryHeight,
+        width: MediaQuery.of(context).size.width,
+        child:SizedBox(
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              ListView.builder(
-                controller: _scrollController,
-                itemCount: emojis.length,
-                itemBuilder: (BuildContext cont, int index) {
-                  return new Row(
-                    children: [
-                      (index*8) < emojis.length ? EmojiKey(
-                          onTextInput: _textInputHandler,
-                          emoji: emojis[index * 8]
-                      ) : Container(),
-                      (index*8+1) < emojis.length ? EmojiKey(
-                          onTextInput: _textInputHandler,
-                          emoji: emojis[index*8+1]
-                      ) : Container(),
-                      (index*8+2) < emojis.length ? EmojiKey(
-                          onTextInput: _textInputHandler,
-                          emoji: emojis[index*8+2]
-                      ) : Container(),
-                      (index*8+3) < emojis.length ? EmojiKey(
-                          onTextInput: _textInputHandler,
-                          emoji: emojis[index*8+3]
-                      ) : Container(),
-                      (index*8+4) < emojis.length ? EmojiKey(
-                          onTextInput: _textInputHandler,
-                          emoji: emojis[index*8+4]
-                      ) : Container(),
-                      (index*8+5) < emojis.length ? EmojiKey(
-                          onTextInput: _textInputHandler,
-                          emoji: emojis[index*8+5]
-                      ) : Container(),
-                      (index*8+6) < emojis.length ? EmojiKey(
-                          onTextInput: _textInputHandler,
-                          emoji: emojis[index*8+6]
-                      ) : Container(),
-                      (index*8+7) < emojis.length ? EmojiKey(
-                          onTextInput: _textInputHandler,
-                          emoji: emojis[index*8+7]
-                      ) : Container()
-                    ]
-                  );
-                },
+              EmojiCategoryKey(
+                  onCategorySelect: _categoryHandler,
+                  category: Icons.access_time,
+                  categoryName: "recent"
               ),
-            ]
+              EmojiCategoryKey(
+                  onCategorySelect: _categoryHandler,
+                  category: Icons.tag_faces,
+                  categoryName: "smileys"
+              ),
+              EmojiCategoryKey(
+                  onCategorySelect: _categoryHandler,
+                  category: Icons.pets,
+                  categoryName: "animals"
+              ),
+              EmojiCategoryKey(
+                  onCategorySelect: _categoryHandler,
+                  category: Icons.fastfood,
+                  categoryName: "foods"
+              ),
+              EmojiCategoryKey(
+                  onCategorySelect: _categoryHandler,
+                  category: Icons.sports_soccer,
+                  categoryName: "activities"
+              ),
+              EmojiCategoryKey(
+                  onCategorySelect: _categoryHandler,
+                  category: Icons.directions_car,
+                  categoryName: "travels"
+              ),
+              EmojiCategoryKey(
+                  onCategorySelect: _categoryHandler,
+                  category: Icons.lightbulb_outline,
+                  categoryName: "objects"
+              ),
+              EmojiCategoryKey(
+                  onCategorySelect: _categoryHandler,
+                  category: Icons.euro_symbol,
+                  categoryName: "symbols"
+              ),
+              EmojiCategoryKey(
+                  onCategorySelect: _categoryHandler,
+                  category: Icons.flag,
+                  categoryName: "flags"
+              ),
+            ],
           ),
         ),
-        Align(
-            alignment: Alignment.topCenter,
-            child: Container(
+      ),
+    );
+  }
+
+  Align buildBottomBar() {
+    return Align(
+        alignment: Alignment.bottomCenter,
+        child: AnimatedContainer(
+          curve: Curves.fastOutSlowIn,
+          height: bottomBarHeight,
+          width: MediaQuery.of(context).size.width,
+          duration: new Duration(seconds: 1),
+          child: Container(
             color: Colors.white,
-            height: 50,
-            width: MediaQuery.of(context).size.width,
             child:SizedBox(
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  EmojiCategoryKey(
-                    onCategorySelect: _categoryHandler,
-                    category: Icons.access_time,
-                    categoryName: "recent"
+                  SearchKey(
+                    onSearch: _searchHandler,
                   ),
-                  EmojiCategoryKey(
-                    onCategorySelect: _categoryHandler,
-                    category: Icons.tag_faces,
-                    categoryName: "smileys"
+                  SpacebarKey(
+                    onSpacebar: _spacebarHandler,
                   ),
-                  EmojiCategoryKey(
-                    onCategorySelect: _categoryHandler,
-                    category: Icons.pets,
-                    categoryName: "animals"
-                  ),
-                  EmojiCategoryKey(
-                    onCategorySelect: _categoryHandler,
-                    category: Icons.fastfood,
-                    categoryName: "foods"
-                  ),
-                  EmojiCategoryKey(
-                    onCategorySelect: _categoryHandler,
-                    category: Icons.sports_soccer,
-                    categoryName: "activities"
-                  ),
-                  EmojiCategoryKey(
-                    onCategorySelect: _categoryHandler,
-                    category: Icons.directions_car,
-                    categoryName: "travels"
-                  ),
-                  EmojiCategoryKey(
-                    onCategorySelect: _categoryHandler,
-                    category: Icons.lightbulb_outline,
-                    categoryName: "objects"
-                  ),
-                  EmojiCategoryKey(
-                    onCategorySelect: _categoryHandler,
-                    category: Icons.euro_symbol,
-                    categoryName: "symbols"
-                  ),
-                  EmojiCategoryKey(
-                    onCategorySelect: _categoryHandler,
-                    category: Icons.flag,
-                    categoryName: "flags"
-                  ),
+                  BackspaceKey(
+                    onBackspace: _backspaceHandler,
+                  )
                 ],
               ),
             ),
           ),
-        ),
-        Align(
-        alignment: Alignment.bottomCenter,
-          child: AnimatedContainer(
-            curve: Curves.fastOutSlowIn,
-            height: bottomBarHeight,
-            width: MediaQuery.of(context).size.width,
-            duration: new Duration(seconds: 1),
-            child: Container(
-              color: Colors.white,
-              child:SizedBox(
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    SearchKey(
-                        onSearch: _searchHandler,
-                    ),
-                    SpacebarKey(
-                        onSpacebar: _spacebarHandler,
-                    ),
-                    BackspaceKey(
-                        onBackspace: _backspaceHandler,
-                    )
-                  ],
-                ),
-              ),
-            ),
-          )
         )
-      ])
+    );
+  }
+
+  ListView emojiScreen(emojis) {
+    return ListView.builder(
+      controller: _scrollController,
+      itemCount: emojis.length,
+      itemBuilder: (BuildContext cont, int index) {
+        return new Row(
+            children: [
+              (index*8) < emojis.length ? EmojiKey(
+                  onTextInput: _textInputHandler,
+                  emoji: emojis[index * 8]
+              ) : Container(),
+              (index*8+1) < emojis.length ? EmojiKey(
+                  onTextInput: _textInputHandler,
+                  emoji: emojis[index*8+1]
+              ) : Container(),
+              (index*8+2) < emojis.length ? EmojiKey(
+                  onTextInput: _textInputHandler,
+                  emoji: emojis[index*8+2]
+              ) : Container(),
+              (index*8+3) < emojis.length ? EmojiKey(
+                  onTextInput: _textInputHandler,
+                  emoji: emojis[index*8+3]
+              ) : Container(),
+              (index*8+4) < emojis.length ? EmojiKey(
+                  onTextInput: _textInputHandler,
+                  emoji: emojis[index*8+4]
+              ) : Container(),
+              (index*8+5) < emojis.length ? EmojiKey(
+                  onTextInput: _textInputHandler,
+                  emoji: emojis[index*8+5]
+              ) : Container(),
+              (index*8+6) < emojis.length ? EmojiKey(
+                  onTextInput: _textInputHandler,
+                  emoji: emojis[index*8+6]
+              ) : Container(),
+              (index*8+7) < emojis.length ? EmojiKey(
+                  onTextInput: _textInputHandler,
+                  emoji: emojis[index*8+7]
+              ) : Container()
+            ]
+        );
+      },
+    );
+  }
+
+  Align buildEmojiScreen() {
+    return Align(
+      alignment: Alignment.bottomCenter,
+      child: SizedBox(
+        height: emojiKeyboardHeight-emojiCategoryHeight,
+        child: PageView(
+            controller: pageController,
+            scrollDirection: Axis.horizontal,
+            children: [
+              emojiScreen(recent),
+              emojiScreen(smileys),
+              emojiScreen(animals),
+              emojiScreen(foods),
+              emojiScreen(activities),
+              emojiScreen(travel),
+              emojiScreen(objects),
+              emojiScreen(symbols),
+              emojiScreen(flags)
+            ]
+        ),
+      ),
     );
   }
 
@@ -428,10 +494,13 @@ class EmojiBoard extends State<EmojiKeyboard> {
     return Container(
         height: emojiKeyboardHeight,
         color: Colors.grey,
-        child: Column(
-            children: [
-              buildKeyboard(),
-            ])
+        child: Stack(
+        children: [
+          buildEmojiScreen(),
+          buildCategories(),
+          buildBottomBar(),
+        ]
+      )
     );
   }
 }
