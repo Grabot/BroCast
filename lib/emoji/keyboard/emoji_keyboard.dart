@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:brocast/emoji/keyboard/emoji_category_key.dart';
 import 'package:brocast/emoji/keyboard/emoji_spacebar.dart';
 import 'package:brocast/emoji/keyboard/emojis/objects.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +8,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'bottom_bar.dart';
+import 'category_bar.dart';
 import 'emoji_backspace.dart';
 import 'emoji_key.dart';
 import 'emoji_search.dart';
@@ -50,6 +51,8 @@ class EmojiBoard extends State<EmojiKeyboard> {
   List symbols;
   List flags;
 
+  int categorySelected;
+
   bool showBottomBar;
 
   double bottomBarHeight = 40;
@@ -61,6 +64,7 @@ class EmojiBoard extends State<EmojiKeyboard> {
   TextEditingController bromotionController;
 
   PageController pageController;
+  ScrollDirection _lastScrollDirection;
 
   void _textInputHandler(String text) => widget.signingScreen ? _insertTextSignUpScreen(text) : _insertText(text);
   void _searchHandler() => print("searching?");
@@ -72,6 +76,8 @@ class EmojiBoard extends State<EmojiKeyboard> {
 
   @override
   void initState() {
+    categorySelected = 0;
+
     recent = [];
     smileys = [];
     animals = [];
@@ -87,12 +93,61 @@ class EmojiBoard extends State<EmojiKeyboard> {
 
     showBottomBar = true;
 
+    smileys = getEmojis(smileysList);
+    animals = getEmojis(animalsList);
+    foods = getEmojis(foodsList);
+    activities = getEmojis(activitiesList);
+    travel = getEmojis(travelList);
+    objects = getEmojis(objectsList);
+    symbols = getEmojis(symbolsList);
+    flags = getEmojis(flagsList);
+    recent = [];
+
     isAvailable();
 
     _scrollController = ScrollController();
+    pageController = PageController();
     _scrollController.addListener(() => keyboardScrollListener());
+    pageController.addListener(() => pageScrollListener());
+
 
     super.initState();
+  }
+
+  List<String> getEmojis(emojiList) {
+    List<String> onlyEmoji = [];
+    for (List<String> emoji in emojiList) {
+      onlyEmoji.add(emoji[1]);
+    }
+    return onlyEmoji;
+  }
+
+  pageScrollListener() {
+    if (pageController.hasClients) {
+      if (pageController.position.userScrollDirection == ScrollDirection.reverse) {
+        print("scrolling reverse");
+        if (_lastScrollDirection != pageController.position.userScrollDirection) {
+          _lastScrollDirection = pageController.position.userScrollDirection;
+          setState(() {
+            categorySelected += 1;
+            pageController.animateToPage(
+                categorySelected, duration: Duration(milliseconds: 500),
+                curve: Curves.ease);
+          });
+        }
+      } else if (pageController.position.userScrollDirection == ScrollDirection.forward) {
+        print("scrolling forward");
+        if (_lastScrollDirection != pageController.position.userScrollDirection) {
+          _lastScrollDirection = pageController.position.userScrollDirection;
+          setState(() {
+            categorySelected -= 1;
+            pageController.animateToPage(
+                categorySelected, duration: Duration(milliseconds: 500),
+                curve: Curves.ease);
+          });
+        }
+      }
+    }
   }
 
   keyboardScrollListener() {
@@ -136,24 +191,26 @@ class EmojiBoard extends State<EmojiKeyboard> {
 
   void _categorySelect(String category) {
     setState(() {
-      // TODO: @Skools change category switch correctly
-      // if (category == "smileys") {
-      //   emojis = smileys;
-      // } else if (category == "animals") {
-      //   emojis = animals;
-      // } else if (category == "foods") {
-      //   emojis = foods;
-      // } else if (category == "activities") {
-      //   emojis = activities;
-      // } else if (category == "travels") {
-      //   emojis = travel;
-      // } else if (category == "objects") {
-      //   emojis = objects;
-      // } else if (category == "symbols") {
-      //   emojis = symbols;
-      // } else if (category == "flags") {
-      //   emojis = flags;
-      // }
+      if (category == "recent") {
+        categorySelected = 0;
+      } else if (category == "smileys") {
+        categorySelected = 1;
+      } else if (category == "animals") {
+        categorySelected = 2;
+      } else if (category == "foods") {
+        categorySelected = 3;
+      } else if (category == "activities") {
+        categorySelected = 4;
+      } else if (category == "travels") {
+        categorySelected = 5;
+      } else if (category == "objects") {
+        categorySelected = 6;
+      } else if (category == "symbols") {
+        categorySelected = 7;
+      } else if (category == "flags") {
+        categorySelected = 8;
+      }
+      pageController.animateToPage(categorySelected, duration: Duration(milliseconds: 500), curve: Curves.ease);
       _scrollController.animateTo(
           _scrollController.position.minScrollExtent,
           duration: Duration(milliseconds: 500),
@@ -224,37 +281,17 @@ class EmojiBoard extends State<EmojiKeyboard> {
     );
   }
 
-  List<String> getEmojis(emojiList) {
-    List<String> onlyEmoji = [];
-    for (List<String> emoji in emojiList) {
-      onlyEmoji.add(emoji[1]);
-    }
-    return onlyEmoji;
-  }
-
   void isAvailable() async {
-    smileys = getEmojis(smileysList);
-    animals = getEmojis(animalsList);
-    foods = getEmojis(foodsList);
-    activities = getEmojis(activitiesList);
-    travel = getEmojis(travelList);
-    objects = getEmojis(objectsList);
-    symbols = getEmojis(symbolsList);
-    flags = getEmojis(flagsList);
-    recent = [];
 
     getRecentEmojis().then((value) {
       print("recent thingies");
       recent = value;
       if (recent.length > 0) {
-        pageController = PageController(
-            initialPage: 0
-        );
+        categorySelected = 0;
       } else {
-        pageController = PageController(
-            initialPage: 1
-        );
+        categorySelected = 1;
       }
+      pageController.animateToPage(categorySelected, duration: Duration(milliseconds: 500), curve: Curves.ease);
     });
 
 
@@ -322,102 +359,6 @@ class EmojiBoard extends State<EmojiKeyboard> {
   Future getFlags() async {
     flags = await platform.invokeMethod(
         "isAvailable", {"emojis": flags});
-  }
-
-  Align buildCategories() {
-    return Align(
-      alignment: Alignment.topCenter,
-      child: Container(
-        color: Colors.white,
-        height: emojiCategoryHeight,
-        width: MediaQuery.of(context).size.width,
-        child:SizedBox(
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              EmojiCategoryKey(
-                  onCategorySelect: _categoryHandler,
-                  category: Icons.access_time,
-                  categoryName: "recent"
-              ),
-              EmojiCategoryKey(
-                  onCategorySelect: _categoryHandler,
-                  category: Icons.tag_faces,
-                  categoryName: "smileys"
-              ),
-              EmojiCategoryKey(
-                  onCategorySelect: _categoryHandler,
-                  category: Icons.pets,
-                  categoryName: "animals"
-              ),
-              EmojiCategoryKey(
-                  onCategorySelect: _categoryHandler,
-                  category: Icons.fastfood,
-                  categoryName: "foods"
-              ),
-              EmojiCategoryKey(
-                  onCategorySelect: _categoryHandler,
-                  category: Icons.sports_soccer,
-                  categoryName: "activities"
-              ),
-              EmojiCategoryKey(
-                  onCategorySelect: _categoryHandler,
-                  category: Icons.directions_car,
-                  categoryName: "travels"
-              ),
-              EmojiCategoryKey(
-                  onCategorySelect: _categoryHandler,
-                  category: Icons.lightbulb_outline,
-                  categoryName: "objects"
-              ),
-              EmojiCategoryKey(
-                  onCategorySelect: _categoryHandler,
-                  category: Icons.euro_symbol,
-                  categoryName: "symbols"
-              ),
-              EmojiCategoryKey(
-                  onCategorySelect: _categoryHandler,
-                  category: Icons.flag,
-                  categoryName: "flags"
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Align buildBottomBar() {
-    return Align(
-        alignment: Alignment.bottomCenter,
-        child: AnimatedContainer(
-          curve: Curves.fastOutSlowIn,
-          height: bottomBarHeight,
-          width: MediaQuery.of(context).size.width,
-          duration: new Duration(seconds: 1),
-          child: Container(
-            color: Colors.white,
-            child:SizedBox(
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  SearchKey(
-                    onSearch: _searchHandler,
-                  ),
-                  SpacebarKey(
-                    onSpacebar: _spacebarHandler,
-                  ),
-                  BackspaceKey(
-                    onBackspace: _backspaceHandler,
-                  )
-                ],
-              ),
-            ),
-          ),
-        )
-    );
   }
 
   ListView emojiScreen(emojis) {
@@ -497,8 +438,8 @@ class EmojiBoard extends State<EmojiKeyboard> {
         child: Stack(
         children: [
           buildEmojiScreen(),
-          buildCategories(),
-          buildBottomBar(),
+          buildCategories(context, emojiCategoryHeight, _categoryHandler, categorySelected),
+          buildBottomBar(context, bottomBarHeight, _searchHandler, _spacebarHandler, _backspaceHandler),
         ]
       )
     );
