@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 
 import 'emoji_key.dart';
 
@@ -8,21 +11,26 @@ class EmojiPage extends StatefulWidget {
   EmojiPage({
     Key key,
     this.emojiList,
+    this.bromotionController
   }): super(key: key);
 
   final List emojiList;
+  TextEditingController bromotionController;
 
   @override
   _EmojiPageState createState() => _EmojiPageState();
 }
 
 class _EmojiPageState extends State<EmojiPage> {
+  static const platform = const MethodChannel("nl.brocast.emoji/available");
 
   List emojis;
 
   ScrollController scrollController;
+  TextEditingController bromotionController;
 
-  void textInputHandler(String text) => print("pressed emoji $text");
+  // TODO: @Skools fix voor sign up screen?
+  void textInputHandler(String text) => insertText(text);
 
   bool showBottomBar = true;
 
@@ -30,10 +38,28 @@ class _EmojiPageState extends State<EmojiPage> {
   void initState() {
     this.emojis = getEmojis(widget.emojiList);
 
+    this.bromotionController = widget.bromotionController;
+
     scrollController = new ScrollController();
     scrollController.addListener(() => keyboardScrollListener());
 
     super.initState();
+  }
+
+  isAvailable() {
+    if (Platform.isAndroid) {
+      Future.wait([getAvailableEmojis()])
+          .then((var value) {
+        setState(() {
+          print("emojis loaded");
+        });
+      });
+    }
+  }
+
+  Future getAvailableEmojis() async {
+    this.emojis = await platform.invokeMethod(
+        "isAvailable", {"emojis": this.emojis});
   }
 
   List<String> getEmojis(emojiList) {
@@ -68,6 +94,22 @@ class _EmojiPageState extends State<EmojiPage> {
     }
   }
 
+  void insertText(String myText) {
+    // addRecentEmoji(myText);
+    final text = bromotionController.text;
+    final textSelection = bromotionController.selection;
+    final newText = text.replaceRange(
+      textSelection.start,
+      textSelection.end,
+      myText,
+    );
+    final myTextLength = myText.length;
+    bromotionController.text = newText;
+    bromotionController.selection = textSelection.copyWith(
+      baseOffset: textSelection.start + myTextLength,
+      extentOffset: textSelection.start + myTextLength,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -12,8 +12,11 @@ import 'emoji_page.dart';
 
 class EmojiScreen extends StatefulWidget {
 
+  TextEditingController bromotionController;
+
   EmojiScreen({
     Key key,
+    this.bromotionController,
     this.screenHeight
   }): super(key: key);
 
@@ -29,9 +32,13 @@ class _EmojiScreenState extends State<EmojiScreen> {
 
   PageController pageController;
 
+  TextEditingController bromotionController;
+
   @override
   void initState() {
     screenHeight = widget.screenHeight;
+
+    this.bromotionController = widget.bromotionController;
 
     pageController = new PageController(
       initialPage: 1
@@ -54,30 +61,39 @@ class _EmojiScreenState extends State<EmojiScreen> {
               // TODO: @Skools fix recent
               EmojiPage(
                 emojiList: [],
+                bromotionController: bromotionController
               ),
               EmojiPage(
                 emojiList: smileysList,
+                bromotionController: bromotionController
               ),
               EmojiPage(
                 emojiList: animalsList,
+                bromotionController: bromotionController
               ),
               EmojiPage(
                 emojiList: foodsList,
+                bromotionController: bromotionController
               ),
               EmojiPage(
                 emojiList: activitiesList,
+                bromotionController: bromotionController
               ),
               EmojiPage(
                 emojiList: travelList,
+                bromotionController: bromotionController
               ),
               EmojiPage(
                 emojiList: objectsList,
+                bromotionController: bromotionController
               ),
               EmojiPage(
                 emojiList: symbolsList,
+                bromotionController: bromotionController
               ),
               EmojiPage(
                 emojiList: flagsList,
+                bromotionController: bromotionController
               )
             ]
         ),

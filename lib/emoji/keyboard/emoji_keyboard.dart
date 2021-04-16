@@ -10,14 +10,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'bottom_bar.dart';
 import 'category_bar.dart';
-import 'emoji_key.dart';
-import 'emojis/activities.dart';
-import 'emojis/animals.dart';
-import 'emojis/flags.dart';
-import 'emojis/foods.dart';
-import 'emojis/smileys.dart';
-import 'emojis/symbols.dart';
-import 'emojis/travel.dart';
 
 class EmojiKeyboard extends StatefulWidget {
 
@@ -37,18 +29,6 @@ class EmojiKeyboard extends StatefulWidget {
 
 class EmojiBoard extends State<EmojiKeyboard> {
 
-  static const platform = const MethodChannel("nl.brocast.emoji/available");
-
-  List<String> recent;
-  List smileys;
-  List animals;
-  List foods;
-  List activities;
-  List travel;
-  List objects;
-  List symbols;
-  List flags;
-
   int categorySelected;
 
   bool showBottomBar;
@@ -61,9 +41,6 @@ class EmojiBoard extends State<EmojiKeyboard> {
 
   TextEditingController bromotionController;
 
-  // PageController pageController;
-
-  void _textInputHandler(String text) => widget.signingScreen ? _insertTextSignUpScreen(text) : _insertText(text);
   void emojiScreenTest(String text) => print("something is pressed! :D $text");
   void _searchHandler() => print("searching?");
   void _backspaceHandler() => _backspace();
@@ -75,37 +52,12 @@ class EmojiBoard extends State<EmojiKeyboard> {
   void initState() {
     categorySelected = 0;
 
-    recent = [];
-    smileys = [];
-    animals = [];
-    foods = [];
-    activities = [];
-    travel = [];
-    objects = [];
-    symbols = [];
-    flags = [];
-
     this.bromotionController = widget.bromotionController;
     this.emojiKeyboardHeight = widget.emojiKeyboardHeight;
     this.emojiCategoryHeight = emojiKeyboardHeight / 6;
     this.bottomBarHeight = emojiKeyboardHeight / 6;
 
     showBottomBar = true;
-
-    smileys = getEmojis(smileysList);
-    animals = getEmojis(animalsList);
-    foods = getEmojis(foodsList);
-    activities = getEmojis(activitiesList);
-    travel = getEmojis(travelList);
-    objects = getEmojis(objectsList);
-    symbols = getEmojis(symbolsList);
-    flags = getEmojis(flagsList);
-    recent = [];
-
-    isAvailable();
-
-    // pageController = PageController();
-    // pageController.addListener(() => pageScrollListener());
 
     super.initState();
   }
@@ -119,7 +71,7 @@ class EmojiBoard extends State<EmojiKeyboard> {
   }
 
   void _insertTextSignUpScreen(String myText) {
-    addRecentEmoji(myText);
+    // addRecentEmoji(myText);
     if (!showBottomBar) {
       setState(() {
         this.bottomBarHeight = emojiKeyboardHeight / 6;
@@ -157,11 +109,6 @@ class EmojiBoard extends State<EmojiKeyboard> {
         categorySelected = 8;
       }
     });
-    // pageController.animateToPage(categorySelected, duration: Duration(milliseconds: 500), curve: Curves.ease);
-    // _scrollController.animateTo(
-    //     _scrollController.position.minScrollExtent,
-    //     duration: Duration(milliseconds: 500),
-    //     curve: Curves.fastOutSlowIn);
   }
 
   void _insertText(String myText) {
@@ -171,7 +118,7 @@ class EmojiBoard extends State<EmojiKeyboard> {
         showBottomBar = true;
       });
     }
-    addRecentEmoji(myText);
+    // addRecentEmoji(myText);
     final text = bromotionController.text;
     final textSelection = bromotionController.selection;
     final newText = text.replaceRange(
@@ -227,89 +174,15 @@ class EmojiBoard extends State<EmojiKeyboard> {
     );
   }
 
-  void isAvailable() async {
-
-    getRecentEmojis().then((value) {
-      recent = [];
-      for (var val in value) {
-        recent.add(val.toString());
-      }
-      if (recent.length > 0) {
-        categorySelected = 0;
-      } else {
-        categorySelected = 1;
-      }
-      // pageController.animateToPage(categorySelected, duration: Duration(milliseconds: 500), curve: Curves.ease);
-    });
-
-
-    if (Platform.isAndroid) {
-
-      Future.wait([getSmileys(), getAnimals(), getFoods(), getActivities(),
-        getTravels(), getObjects(), getSymbols(), getFlags()])
-          .then((var value) {
-            setState(() {
-              print("emojis loaded");
-            });
-      });
-
-    }
-  }
-
-  void addRecentEmoji(String emoji) async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    // If the emoji is already in the list, then remove it so it is added in the front.
-    recent.removeWhere((item) => item == emoji);
-    setState(() {
-      recent.insert(0, emoji.toString());
-      preferences.setStringList(recentEmojisKey, recent);
-    });
-  }
-
-  Future<List> getRecentEmojis() async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    return preferences.getStringList(recentEmojisKey) ?? [];
-  }
-
-  Future getSmileys() async {
-    smileys = await platform.invokeMethod(
-        "isAvailable", {"emojis": smileys});
-  }
-
-  Future getAnimals() async {
-    animals = await platform.invokeMethod(
-        "isAvailable", {"emojis": animals});
-  }
-
-  Future getFoods() async {
-    foods = await platform.invokeMethod(
-        "isAvailable", {"emojis": foods});
-  }
-
-  Future getActivities() async {
-    activities = await platform.invokeMethod(
-        "isAvailable", {"emojis": activities});
-  }
-
-  Future getTravels() async {
-    travel = await platform.invokeMethod(
-        "isAvailable", {"emojis": travel});
-  }
-
-  Future getObjects() async {
-    objects = await platform.invokeMethod(
-        "isAvailable", {"emojis": objects});
-  }
-
-  Future getSymbols() async {
-    symbols = await platform.invokeMethod(
-        "isAvailable", {"emojis": symbols});
-  }
-
-  Future getFlags() async {
-    flags = await platform.invokeMethod(
-        "isAvailable", {"emojis": flags});
-  }
+  // void addRecentEmoji(String emoji) async {
+  //   SharedPreferences preferences = await SharedPreferences.getInstance();
+  //   // If the emoji is already in the list, then remove it so it is added in the front.
+  //   recent.removeWhere((item) => item == emoji);
+  //   setState(() {
+  //     recent.insert(0, emoji.toString());
+  //     preferences.setStringList(recentEmojisKey, recent);
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -319,7 +192,8 @@ class EmojiBoard extends State<EmojiKeyboard> {
         child: Stack(
         children: [
           EmojiScreen(
-            screenHeight: emojiKeyboardHeight-emojiCategoryHeight
+            screenHeight: emojiKeyboardHeight-emojiCategoryHeight,
+            bromotionController: bromotionController
           ),
           CategoryBar(
               categoryHandler: _categoryHandler,
