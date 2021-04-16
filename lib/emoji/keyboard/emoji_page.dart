@@ -12,11 +12,13 @@ class EmojiPage extends StatefulWidget {
   EmojiPage({
     Key key,
     this.emojis,
-    this.bromotionController
+    this.bromotionController,
+    this.emojiScrollShowBottomBar
   }): super(key: key);
 
   final List emojis;
   final TextEditingController bromotionController;
+  final Function(bool) emojiScrollShowBottomBar;
 
   @override
   _EmojiPageState createState() => _EmojiPageState();
@@ -88,23 +90,18 @@ class _EmojiPageState extends State<EmojiPage> {
       }
         if (scrollController.position.userScrollDirection ==
             ScrollDirection.reverse) {
-          if (showBottomBar) {
-            showBottomBar = false;
-            print("going down");
-          }
+          widget.emojiScrollShowBottomBar(false);
         }
         if (scrollController.position.userScrollDirection ==
             ScrollDirection.forward) {
-          if (!showBottomBar) {
-            showBottomBar = true;
-            print("going up");
-          }
+          widget.emojiScrollShowBottomBar(true);
         }
     }
   }
 
   void insertText(String myText) {
     addRecentEmoji(myText);
+    widget.emojiScrollShowBottomBar(true);
     final text = bromotionController.text;
     final textSelection = bromotionController.selection;
     final newText = text.replaceRange(
@@ -125,7 +122,7 @@ class _EmojiPageState extends State<EmojiPage> {
     return ListView.builder(
       physics: AlwaysScrollableScrollPhysics(),
       controller: scrollController,
-      itemCount: (emojis.length/8).ceil() + 1,
+      itemCount: (emojis.length/8).ceil(),
       itemBuilder: (BuildContext cont, int index) {
         return new Row(
             children: [

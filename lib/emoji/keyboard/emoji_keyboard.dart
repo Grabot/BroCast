@@ -34,10 +34,9 @@ class EmojiBoard extends State<EmojiKeyboard> {
 
   TextEditingController bromotionController;
 
-  void emojiScreenTest(String text) => print("something is pressed! :D $text");
-  void _searchHandler() => print("searching?");
-  void _backspaceHandler() => _backspace();
-  void _spacebarHandler() => _insertText(" ");
+  // void _searchHandler() => print("searching?");
+  // void _backspaceHandler() => _backspace();
+  // void _spacebarHandler() => _insertText(" ");
   void _categoryHandler(String category) => _categorySelect(category);
   void showBottomBarHandler(bool show) => visibilityBottomBar(show);
 
@@ -63,68 +62,15 @@ class EmojiBoard extends State<EmojiKeyboard> {
     print("category is $category");
   }
 
-  void _insertText(String myText) {
-    if (!showBottomBar) {
-      setState(() {
-        this.bottomBarHeight = emojiKeyboardHeight / 6;
-        showBottomBar = true;
-      });
+  emojiScrollShowBottomBar(bool showBottom) {
+    print("quick test about emoji scroll $showBottom");
+    if (showBottomBar != showBottom) {
+      showBottomBar = showBottom;
+      bottomBarStateKey.currentState.emojiScrollShowBottomBar(showBottomBar);
     }
-    // addRecentEmoji(myText);
-    final text = bromotionController.text;
-    final textSelection = bromotionController.selection;
-    final newText = text.replaceRange(
-      textSelection.start,
-      textSelection.end,
-      myText,
-    );
-    final myTextLength = myText.length;
-    bromotionController.text = newText;
-    bromotionController.selection = textSelection.copyWith(
-      baseOffset: textSelection.start + myTextLength,
-      extentOffset: textSelection.start + myTextLength,
-    );
   }
 
-
-  void _backspace() {
-    final text = bromotionController.text;
-    final textSelection = bromotionController.selection;
-    final selectionLength = textSelection.end - textSelection.start;
-    if (selectionLength > 0) {
-      final newText = text.replaceRange(
-        textSelection.start,
-        textSelection.end,
-        '',
-      );
-      bromotionController.text = newText;
-      bromotionController.selection = textSelection.copyWith(
-        baseOffset: textSelection.start,
-        extentOffset: textSelection.start,
-      );
-      return;
-    }
-
-    if (textSelection.start == 0) {
-      return;
-    }
-
-    String firstSection = text.substring(0, textSelection.start);
-    String newFirstSection = firstSection.characters.skipLast(1).string;
-    final offset = firstSection.length - newFirstSection.length;
-    final newStart = textSelection.start - offset;
-    final newEnd = textSelection.start;
-    final newText = text.replaceRange(
-      newStart,
-      newEnd,
-      '',
-    );
-    bromotionController.text = newText;
-    bromotionController.selection = textSelection.copyWith(
-      baseOffset: newStart,
-      extentOffset: newStart,
-    );
-  }
+  final GlobalKey<BottomBarState> bottomBarStateKey = GlobalKey<BottomBarState>();
 
   @override
   Widget build(BuildContext context) {
@@ -134,30 +80,18 @@ class EmojiBoard extends State<EmojiKeyboard> {
         child: Stack(
         children: [
           EmojiScreen(
-            screenHeight: emojiKeyboardHeight-emojiCategoryHeight,
-            bromotionController: bromotionController,
-            categorySelected: categorySelected
+              screenHeight: emojiKeyboardHeight,
+              bromotionController: bromotionController,
+              emojiScrollShowBottomBar: emojiScrollShowBottomBar
           ),
           CategoryBar(
               categoryHandler: _categoryHandler,
               emojiCategoryHeight: emojiCategoryHeight,
               categorySelected: categorySelected
           ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: AnimatedContainer(
-            curve: Curves.fastOutSlowIn,
-            height: bottomBarHeight,
-            width: MediaQuery.of(context).size.width,
-            duration: new Duration(seconds: 1),
-            child:
-              BottomBar(
-                  searchHandler: _searchHandler,
-                  spacebarHandler: _spacebarHandler,
-                  backspaceHandler: _backspaceHandler
-              ),
+            BottomBar(
+              key: bottomBarStateKey
             ),
-          ),
         ]
       )
     );

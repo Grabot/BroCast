@@ -14,16 +14,15 @@ import 'emoji_page.dart';
 class EmojiScreen extends StatefulWidget {
 
   final TextEditingController bromotionController;
+  final Function(bool) emojiScrollShowBottomBar;
   final double screenHeight;
-  final int categorySelected;
 
   EmojiScreen({
     Key key,
     this.bromotionController,
     this.screenHeight,
-    this.categorySelected
+    this.emojiScrollShowBottomBar
   }): super(key: key);
-
 
   @override
   _EmojiScreenState createState() => _EmojiScreenState();
@@ -42,10 +41,10 @@ class _EmojiScreenState extends State<EmojiScreen> {
 
   @override
   void initState() {
-    this.screenHeight = widget.screenHeight;
-    this.categorySelected = widget.categorySelected;
+    screenHeight = widget.screenHeight;
 
     recent = [];
+    categorySelected = 1;
 
     getRecentEmoji().then((value) {
       List<String> recentUsed = [];
@@ -94,40 +93,49 @@ class _EmojiScreenState extends State<EmojiScreen> {
             scrollDirection: Axis.horizontal,
             children: [
               EmojiPage(
-                emojis: recent,
-                bromotionController: bromotionController
+                  emojis: recent,
+                  bromotionController: bromotionController,
+                  emojiScrollShowBottomBar: widget.emojiScrollShowBottomBar
               ),
               EmojiPage(
-                emojis: getEmojis(smileysList),
-                bromotionController: bromotionController
+                  emojis: getEmojis(smileysList),
+                  bromotionController: bromotionController,
+                  emojiScrollShowBottomBar: widget.emojiScrollShowBottomBar
               ),
               EmojiPage(
-                emojis: getEmojis(animalsList),
-                bromotionController: bromotionController
+                  emojis: getEmojis(animalsList),
+                  bromotionController: bromotionController,
+                  emojiScrollShowBottomBar: widget.emojiScrollShowBottomBar
               ),
               EmojiPage(
-                emojis: getEmojis(foodsList),
-                bromotionController: bromotionController
+                  emojis: getEmojis(foodsList),
+                  bromotionController: bromotionController,
+                  emojiScrollShowBottomBar: widget.emojiScrollShowBottomBar
               ),
               EmojiPage(
-                emojis: getEmojis(activitiesList),
-                bromotionController: bromotionController
+                  emojis: getEmojis(activitiesList),
+                  bromotionController: bromotionController,
+                  emojiScrollShowBottomBar: widget.emojiScrollShowBottomBar
               ),
               EmojiPage(
-                emojis: getEmojis(travelList),
-                bromotionController: bromotionController
+                  emojis: getEmojis(travelList),
+                  bromotionController: bromotionController,
+                  emojiScrollShowBottomBar: widget.emojiScrollShowBottomBar
               ),
               EmojiPage(
-                emojis: getEmojis(objectsList),
-                bromotionController: bromotionController
+                  emojis: getEmojis(objectsList),
+                  bromotionController: bromotionController,
+                  emojiScrollShowBottomBar: widget.emojiScrollShowBottomBar
               ),
               EmojiPage(
-                emojis: getEmojis(symbolsList),
-                bromotionController: bromotionController
+                  emojis: getEmojis(symbolsList),
+                  bromotionController: bromotionController,
+                  emojiScrollShowBottomBar: widget.emojiScrollShowBottomBar
               ),
               EmojiPage(
-                emojis: getEmojis(flagsList),
-                bromotionController: bromotionController
+                  emojis: getEmojis(flagsList),
+                  bromotionController: bromotionController,
+                  emojiScrollShowBottomBar: widget.emojiScrollShowBottomBar
               )
             ]
         ),
