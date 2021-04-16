@@ -95,7 +95,8 @@ class EmojiBoard extends State<EmojiKeyboard> {
             categoryHandler: categorySelect
           ),
           BottomBar(
-            key: bottomBarStateKey
+            key: bottomBarStateKey,
+            bromotionController: bromotionController,
           ),
         ]
       )

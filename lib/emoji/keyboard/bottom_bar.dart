@@ -7,8 +7,11 @@ import 'emoji_spacebar.dart';
 
 class BottomBar extends StatefulWidget {
 
+  final TextEditingController bromotionController;
+
   BottomBar({
-    Key key
+    Key key,
+    this.bromotionController,
   }):super(key:key);
 
   @override
@@ -17,12 +20,14 @@ class BottomBar extends StatefulWidget {
 
 class BottomBarState extends State<BottomBar> {
 
+  TextEditingController bromotionController;
   final double bottomBarHeight = 50;
   bool showBottomBar;
 
   @override
   void initState() {
     this.showBottomBar = true;
+    this.bromotionController = widget.bromotionController;
     super.initState();
   }
 
@@ -32,6 +37,45 @@ class BottomBarState extends State<BottomBar> {
         showBottomBar = showBottom;
       });
     }
+  }
+
+  void onBackSpace() {
+    final text = bromotionController.text;
+    final textSelection = bromotionController.selection;
+    final selectionLength = textSelection.end - textSelection.start;
+    if (selectionLength > 0) {
+      final newText = text.replaceRange(
+        textSelection.start,
+        textSelection.end,
+        '',
+      );
+      bromotionController.text = newText;
+      bromotionController.selection = textSelection.copyWith(
+        baseOffset: textSelection.start,
+        extentOffset: textSelection.start,
+      );
+      return;
+    }
+
+    if (textSelection.start == 0) {
+      return;
+    }
+
+    String firstSection = text.substring(0, textSelection.start);
+    String newFirstSection = firstSection.characters.skipLast(1).string;
+    final offset = firstSection.length - newFirstSection.length;
+    final newStart = textSelection.start - offset;
+    final newEnd = textSelection.start;
+    final newText = text.replaceRange(
+      newStart,
+      newEnd,
+      '',
+    );
+    bromotionController.text = newText;
+    bromotionController.selection = textSelection.copyWith(
+      baseOffset: newStart,
+      extentOffset: newStart,
+    );
   }
 
   @override
@@ -57,7 +101,7 @@ class BottomBarState extends State<BottomBar> {
                   onSpacebar: null,
                 ),
                 BackspaceKey(
-                  onBackspace: null,
+                  onBackspace: onBackSpace,
                 )
               ],
             ),
