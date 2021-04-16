@@ -1,21 +1,16 @@
-import 'dart:async';
-import 'dart:io';
 
 import 'package:brocast/emoji/keyboard/emoji_screen.dart';
-import 'package:brocast/emoji/keyboard/emojis/objects.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'bottom_bar.dart';
 import 'category_bar.dart';
 
 class EmojiKeyboard extends StatefulWidget {
 
-  TextEditingController bromotionController;
-  double emojiKeyboardHeight;
-  bool signingScreen;
+  final TextEditingController bromotionController;
+  final double emojiKeyboardHeight;
+  final bool signingScreen;
 
   EmojiKeyboard({
     Key key,
@@ -36,8 +31,6 @@ class EmojiBoard extends State<EmojiKeyboard> {
   double bottomBarHeight;
   double emojiCategoryHeight;
   double emojiKeyboardHeight;
-
-  static String recentEmojisKey = "recentEmojis";
 
   TextEditingController bromotionController;
 
@@ -62,53 +55,12 @@ class EmojiBoard extends State<EmojiKeyboard> {
     super.initState();
   }
 
-  List<String> getEmojis(emojiList) {
-    List<String> onlyEmoji = [];
-    for (List<String> emoji in emojiList) {
-      onlyEmoji.add(emoji[1]);
-    }
-    return onlyEmoji;
-  }
-
-  void _insertTextSignUpScreen(String myText) {
-    // addRecentEmoji(myText);
-    if (!showBottomBar) {
-      setState(() {
-        this.bottomBarHeight = emojiKeyboardHeight / 6;
-        showBottomBar = true;
-      });
-    }
-    // The user is only allowed to give 1 emoji
-    bromotionController.clear();
-    bromotionController.text = myText;
-  }
-
   void visibilityBottomBar(bool show) {
     print("you have to $show the bar");
   }
 
   void _categorySelect(String category) {
-    setState(() {
-      if (category == "recent") {
-        categorySelected = 0;
-      } else if (category == "smileys") {
-        categorySelected = 1;
-      } else if (category == "animals") {
-        categorySelected = 2;
-      } else if (category == "foods") {
-        categorySelected = 3;
-      } else if (category == "activities") {
-        categorySelected = 4;
-      } else if (category == "travels") {
-        categorySelected = 5;
-      } else if (category == "objects") {
-        categorySelected = 6;
-      } else if (category == "symbols") {
-        categorySelected = 7;
-      } else if (category == "flags") {
-        categorySelected = 8;
-      }
-    });
+    print("category is $category");
   }
 
   void _insertText(String myText) {
@@ -174,16 +126,6 @@ class EmojiBoard extends State<EmojiKeyboard> {
     );
   }
 
-  // void addRecentEmoji(String emoji) async {
-  //   SharedPreferences preferences = await SharedPreferences.getInstance();
-  //   // If the emoji is already in the list, then remove it so it is added in the front.
-  //   recent.removeWhere((item) => item == emoji);
-  //   setState(() {
-  //     recent.insert(0, emoji.toString());
-  //     preferences.setStringList(recentEmojisKey, recent);
-  //   });
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -193,7 +135,8 @@ class EmojiBoard extends State<EmojiKeyboard> {
         children: [
           EmojiScreen(
             screenHeight: emojiKeyboardHeight-emojiCategoryHeight,
-            bromotionController: bromotionController
+            bromotionController: bromotionController,
+            categorySelected: categorySelected
           ),
           CategoryBar(
               categoryHandler: _categoryHandler,

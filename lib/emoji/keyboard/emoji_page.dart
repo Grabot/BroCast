@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'emoji_key.dart';
 
@@ -10,12 +11,12 @@ class EmojiPage extends StatefulWidget {
 
   EmojiPage({
     Key key,
-    this.emojiList,
+    this.emojis,
     this.bromotionController
   }): super(key: key);
 
-  final List emojiList;
-  TextEditingController bromotionController;
+  final List emojis;
+  final TextEditingController bromotionController;
 
   @override
   _EmojiPageState createState() => _EmojiPageState();
@@ -23,6 +24,7 @@ class EmojiPage extends StatefulWidget {
 
 class _EmojiPageState extends State<EmojiPage> {
   static const platform = const MethodChannel("nl.brocast.emoji/available");
+  static String recentEmojisKey = "recentEmojis";
 
   List emojis;
 
@@ -36,7 +38,7 @@ class _EmojiPageState extends State<EmojiPage> {
 
   @override
   void initState() {
-    this.emojis = getEmojis(widget.emojiList);
+    this.emojis = widget.emojis;
 
     this.bromotionController = widget.bromotionController;
 
@@ -44,6 +46,21 @@ class _EmojiPageState extends State<EmojiPage> {
     scrollController.addListener(() => keyboardScrollListener());
 
     super.initState();
+  }
+
+  void addRecentEmoji(String emoji) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    List<String> recent = preferences.getStringList(recentEmojisKey);
+    if (recent == null || recent == []) {
+      recent = [];
+    } else {
+      // If the emoji is already in the list, then remove it so it is added in the front.
+      recent.removeWhere((item) => item == emoji);
+    }
+    setState(() {
+      recent.insert(0, emoji.toString());
+      preferences.setStringList(recentEmojisKey, recent);
+    });
   }
 
   isAvailable() {
@@ -60,14 +77,6 @@ class _EmojiPageState extends State<EmojiPage> {
   Future getAvailableEmojis() async {
     this.emojis = await platform.invokeMethod(
         "isAvailable", {"emojis": this.emojis});
-  }
-
-  List<String> getEmojis(emojiList) {
-    List<String> onlyEmoji = [];
-    for (List<String> emoji in emojiList) {
-      onlyEmoji.add(emoji[1]);
-    }
-    return onlyEmoji;
   }
 
   keyboardScrollListener() {
@@ -95,7 +104,7 @@ class _EmojiPageState extends State<EmojiPage> {
   }
 
   void insertText(String myText) {
-    // addRecentEmoji(myText);
+    addRecentEmoji(myText);
     final text = bromotionController.text;
     final textSelection = bromotionController.selection;
     final newText = text.replaceRange(
