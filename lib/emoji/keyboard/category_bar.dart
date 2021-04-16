@@ -1,18 +1,41 @@
 import 'package:flutter/material.dart';
 import 'emoji_category_key.dart';
 
-class CategoryBar extends StatelessWidget {
+class CategoryBar extends StatefulWidget {
 
   const CategoryBar({
     Key key,
-    this.categoryHandler,
-    this.emojiCategoryHeight,
-    this.categorySelected
+    this.categorySelected,
+    this.categoryHandler
   }) : super(key: key);
 
-  final double emojiCategoryHeight;
-  final ValueSetter<String> categoryHandler;
   final int categorySelected;
+  final Function(int) categoryHandler;
+
+  @override
+  CategoryBarState createState() => CategoryBarState();
+}
+
+class CategoryBarState extends State<CategoryBar> {
+
+  int categorySelected;
+  final double emojiCategoryHeight = 50;
+
+  @override
+  void initState() {
+    this.categorySelected = widget.categorySelected;
+    super.initState();
+  }
+
+  void updateCategoriesBar(int categoryNumber) {
+    setState(() {
+      categorySelected = categoryNumber;
+    });
+  }
+
+  void onCategorySelect(int category) {
+    widget.categoryHandler(category);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,57 +51,57 @@ class CategoryBar extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               EmojiCategoryKey(
-                onCategorySelect: categoryHandler,
+                onCategorySelect: onCategorySelect,
                 category: Icons.access_time,
-                categoryName: "recent",
+                categoryNumber: 0,
                 active: categorySelected == 0,
               ),
               EmojiCategoryKey(
-                onCategorySelect: categoryHandler,
+                onCategorySelect: onCategorySelect,
                 category: Icons.tag_faces,
-                categoryName: "smileys",
+                categoryNumber: 1,
                 active: categorySelected == 1,
               ),
               EmojiCategoryKey(
-                onCategorySelect: categoryHandler,
+                onCategorySelect: onCategorySelect,
                 category: Icons.pets,
-                categoryName: "animals",
+                categoryNumber: 2,
                 active: categorySelected == 2,
               ),
               EmojiCategoryKey(
-                onCategorySelect: categoryHandler,
+                onCategorySelect: onCategorySelect,
                 category: Icons.fastfood,
-                categoryName: "foods",
+                categoryNumber: 3,
                 active: categorySelected == 3,
               ),
               EmojiCategoryKey(
-                onCategorySelect: categoryHandler,
+                onCategorySelect: onCategorySelect,
                 category: Icons.sports_soccer,
-                categoryName: "activities",
+                categoryNumber: 4,
                 active: categorySelected == 4,
               ),
               EmojiCategoryKey(
-                onCategorySelect: categoryHandler,
+                onCategorySelect: onCategorySelect,
                 category: Icons.directions_car,
-                categoryName: "travels",
+                categoryNumber: 5,
                 active: categorySelected == 5,
               ),
               EmojiCategoryKey(
-                onCategorySelect: categoryHandler,
+                onCategorySelect: onCategorySelect,
                 category: Icons.lightbulb_outline,
-                categoryName: "objects",
+                categoryNumber: 6,
                 active: categorySelected == 6,
               ),
               EmojiCategoryKey(
-                onCategorySelect: categoryHandler,
+                onCategorySelect: onCategorySelect,
                 category: Icons.euro_symbol,
-                categoryName: "symbols",
+                categoryNumber: 7,
                 active: categorySelected == 7,
               ),
               EmojiCategoryKey(
-                onCategorySelect: categoryHandler,
+                onCategorySelect: onCategorySelect,
                 category: Icons.flag,
-                categoryName: "flags",
+                categoryNumber: 8,
                 active: categorySelected == 8,
               ),
             ],
@@ -88,3 +111,4 @@ class CategoryBar extends StatelessWidget {
     );
   }
 }
+

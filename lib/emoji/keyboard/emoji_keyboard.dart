@@ -24,6 +24,10 @@ class EmojiKeyboard extends StatefulWidget {
 
 class EmojiBoard extends State<EmojiKeyboard> {
 
+  final GlobalKey<BottomBarState> bottomBarStateKey = GlobalKey<BottomBarState>();
+  final GlobalKey<CategoryBarState> categoryBarStateKey = GlobalKey<CategoryBarState>();
+  final GlobalKey<EmojiScreenState> emojiScreenStateKey = GlobalKey<EmojiScreenState>();
+
   int categorySelected;
 
   bool showBottomBar;
@@ -34,20 +38,12 @@ class EmojiBoard extends State<EmojiKeyboard> {
 
   TextEditingController bromotionController;
 
-  // void _searchHandler() => print("searching?");
-  // void _backspaceHandler() => _backspace();
-  // void _spacebarHandler() => _insertText(" ");
-  void _categoryHandler(String category) => _categorySelect(category);
-  void showBottomBarHandler(bool show) => visibilityBottomBar(show);
-
   @override
   void initState() {
     categorySelected = 0;
 
     this.bromotionController = widget.bromotionController;
     this.emojiKeyboardHeight = widget.emojiKeyboardHeight;
-    this.emojiCategoryHeight = emojiKeyboardHeight / 6;
-    this.bottomBarHeight = emojiKeyboardHeight / 6;
 
     showBottomBar = true;
 
@@ -58,19 +54,26 @@ class EmojiBoard extends State<EmojiKeyboard> {
     print("you have to $show the bar");
   }
 
-  void _categorySelect(String category) {
-    print("category is $category");
+  void categorySelect(int category) {
+    if (category != categorySelected) {
+      // TODO: @SKools pagecontroller scroll
+      categorySelected = category;
+      categoryBarStateKey.currentState.updateCategoriesBar(categorySelected);
+      emojiScreenStateKey.currentState.updateEmojiPage(categorySelected);
+    }
+  }
+
+  void updateCategory(int category) {
+    categorySelected = category;
+    categoryBarStateKey.currentState.updateCategoriesBar(categorySelected);
   }
 
   emojiScrollShowBottomBar(bool showBottom) {
-    print("quick test about emoji scroll $showBottom");
     if (showBottomBar != showBottom) {
       showBottomBar = showBottom;
       bottomBarStateKey.currentState.emojiScrollShowBottomBar(showBottomBar);
     }
   }
-
-  final GlobalKey<BottomBarState> bottomBarStateKey = GlobalKey<BottomBarState>();
 
   @override
   Widget build(BuildContext context) {
@@ -80,18 +83,20 @@ class EmojiBoard extends State<EmojiKeyboard> {
         child: Stack(
         children: [
           EmojiScreen(
-              screenHeight: emojiKeyboardHeight,
-              bromotionController: bromotionController,
-              emojiScrollShowBottomBar: emojiScrollShowBottomBar
+            key: emojiScreenStateKey,
+            screenHeight: emojiKeyboardHeight,
+            bromotionController: bromotionController,
+            emojiScrollShowBottomBar: emojiScrollShowBottomBar,
+            updateCategory: updateCategory
           ),
           CategoryBar(
-              categoryHandler: _categoryHandler,
-              emojiCategoryHeight: emojiCategoryHeight,
-              categorySelected: categorySelected
+            key: categoryBarStateKey,
+            categorySelected: categorySelected,
+            categoryHandler: categorySelect
           ),
-            BottomBar(
-              key: bottomBarStateKey
-            ),
+          BottomBar(
+            key: bottomBarStateKey
+          ),
         ]
       )
     );

@@ -7,6 +7,7 @@ import 'package:brocast/emoji/keyboard/emojis/smileys.dart';
 import 'package:brocast/emoji/keyboard/emojis/symbols.dart';
 import 'package:brocast/emoji/keyboard/emojis/travel.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'emoji_page.dart';
@@ -15,20 +16,22 @@ class EmojiScreen extends StatefulWidget {
 
   final TextEditingController bromotionController;
   final Function(bool) emojiScrollShowBottomBar;
+  final Function(int) updateCategory;
   final double screenHeight;
 
   EmojiScreen({
     Key key,
     this.bromotionController,
     this.screenHeight,
-    this.emojiScrollShowBottomBar
+    this.emojiScrollShowBottomBar,
+    this.updateCategory
   }): super(key: key);
 
   @override
-  _EmojiScreenState createState() => _EmojiScreenState();
+  EmojiScreenState createState() => EmojiScreenState();
 }
 
-class _EmojiScreenState extends State<EmojiScreen> {
+class EmojiScreenState extends State<EmojiScreen> {
   static String recentEmojisKey = "recentEmojis";
 
   List<String> recent;
@@ -60,11 +63,21 @@ class _EmojiScreenState extends State<EmojiScreen> {
 
     this.bromotionController = widget.bromotionController;
 
-    pageController = new PageController(
-      initialPage: 1
-    );
+    pageController = PageController();
+    pageController.addListener(() => pageScrollListener());
 
     super.initState();
+  }
+
+  pageScrollListener() {
+    if (pageController.hasClients) {
+      if (pageController.position.userScrollDirection == ScrollDirection.reverse || pageController.position.userScrollDirection == ScrollDirection.forward) {
+        if (pageController.page.round() != categorySelected) {
+          categorySelected = pageController.page.round();
+          widget.updateCategory(categorySelected);
+        }
+      }
+    }
   }
 
   Future getRecentEmoji() async {
@@ -79,6 +92,11 @@ class _EmojiScreenState extends State<EmojiScreen> {
       onlyEmoji.add(emoji[1]);
     }
     return onlyEmoji;
+  }
+
+  void updateEmojiPage(int category) {
+    categorySelected = category;
+    pageController.animateToPage(categorySelected, duration: Duration(milliseconds: 500), curve: Curves.ease);
   }
 
   @override

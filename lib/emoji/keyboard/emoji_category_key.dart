@@ -7,13 +7,13 @@ class EmojiCategoryKey extends StatelessWidget {
     Key key,
     this.onCategorySelect,
     this.category,
-    this.categoryName,
+    this.categoryNumber,
     this.active
   }) : super(key: key);
 
-  final ValueSetter<String> onCategorySelect;
+  final ValueSetter<int> onCategorySelect;
   final IconData category;
-  final String categoryName;
+  final int categoryNumber;
   final bool active;
 
   Widget build(BuildContext context) {
@@ -29,7 +29,7 @@ class EmojiCategoryKey extends StatelessWidget {
             icon: Icon(category),
             color: active ? Colors.black : Colors.grey.shade600,
             onPressed: () {
-              onCategorySelect?.call(categoryName);
+              onCategorySelect?.call(categoryNumber);
             },
           )
       ),
