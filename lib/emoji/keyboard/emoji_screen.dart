@@ -1,50 +1,44 @@
+import 'package:brocast/emoji/keyboard/emojis/activities.dart';
+import 'package:brocast/emoji/keyboard/emojis/animals.dart';
+import 'package:brocast/emoji/keyboard/emojis/flags.dart';
+import 'package:brocast/emoji/keyboard/emojis/foods.dart';
+import 'package:brocast/emoji/keyboard/emojis/objects.dart';
+import 'package:brocast/emoji/keyboard/emojis/smileys.dart';
+import 'package:brocast/emoji/keyboard/emojis/symbols.dart';
+import 'package:brocast/emoji/keyboard/emojis/travel.dart';
 import 'package:flutter/material.dart';
 
 import 'emoji_page.dart';
 
-class EmojiScreen extends StatelessWidget {
+class EmojiScreen extends StatefulWidget {
 
   EmojiScreen({
     Key key,
-    this.screenHeight,
-    this.textInputHandler,
-    this.recent,
-    this.smileys,
-    this.animals,
-    this.foods,
-    this.activities,
-    this.travel,
-    this.objects,
-    this.symbols,
-    this.flags
-  }) : super(key: key);
+    this.screenHeight
+  }): super(key: key);
 
   final double screenHeight;
-  final ValueSetter<String> textInputHandler;
 
-  final List recent;
-  final List smileys;
-  final List animals;
-  final List foods;
-  final List activities;
-  final List travel;
-  final List objects;
-  final List symbols;
-  final List flags;
+  @override
+  _EmojiScreenState createState() => _EmojiScreenState();
+}
 
-  final PageController pageController = new PageController();
+class _EmojiScreenState extends State<EmojiScreen> {
 
-  // pageScrollListener() {
-  //   if (pageController.hasClients) {
-  //     if (pageController.position.userScrollDirection == ScrollDirection.reverse || pageController.position.userScrollDirection == ScrollDirection.forward) {
-  //       if (pageController.page.round() != categorySelected) {
-  //         setState(() {
-  //           categorySelected = pageController.page.round();
-  //         });
-  //       }
-  //     }
-  //   }
-  // }
+  double screenHeight;
+
+  PageController pageController;
+
+  @override
+  void initState() {
+    screenHeight = widget.screenHeight;
+
+    pageController = new PageController(
+      initialPage: 1
+    );
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,41 +51,33 @@ class EmojiScreen extends StatelessWidget {
             controller: pageController,
             scrollDirection: Axis.horizontal,
             children: [
+              // TODO: @Skools fix recent
               EmojiPage(
-                  emojis: recent,
-                  textInputHandler: textInputHandler
+                emojiList: [],
               ),
               EmojiPage(
-                  emojis: smileys,
-                  textInputHandler: textInputHandler
+                emojiList: smileysList,
               ),
               EmojiPage(
-                  emojis: animals,
-                  textInputHandler: textInputHandler
+                emojiList: animalsList,
               ),
               EmojiPage(
-                  emojis: foods,
-                  textInputHandler: textInputHandler
+                emojiList: foodsList,
               ),
               EmojiPage(
-                  emojis: activities,
-                  textInputHandler: textInputHandler
+                emojiList: activitiesList,
               ),
               EmojiPage(
-                  emojis: travel,
-                  textInputHandler: textInputHandler
+                emojiList: travelList,
               ),
               EmojiPage(
-                  emojis: objects,
-                  textInputHandler: textInputHandler
+                emojiList: objectsList,
               ),
               EmojiPage(
-                  emojis: symbols,
-                  textInputHandler: textInputHandler
+                emojiList: symbolsList,
               ),
               EmojiPage(
-                  emojis: flags,
-                  textInputHandler: textInputHandler
+                emojiList: flagsList,
               )
             ]
         ),

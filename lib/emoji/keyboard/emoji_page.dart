@@ -1,19 +1,73 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 
 import 'emoji_key.dart';
 
-class EmojiPage extends StatelessWidget {
+class EmojiPage extends StatefulWidget {
 
   EmojiPage({
     Key key,
-    this.emojis,
-    this.textInputHandler
-  }) : super(key: key);
+    this.emojiList,
+  }): super(key: key);
 
-  final List emojis;
-  final ValueSetter<String> textInputHandler;
+  final List emojiList;
 
-  final ScrollController scrollController = new ScrollController();
+  @override
+  _EmojiPageState createState() => _EmojiPageState();
+}
+
+class _EmojiPageState extends State<EmojiPage> {
+
+  List emojis;
+
+  ScrollController scrollController;
+
+  void textInputHandler(String text) => print("pressed emoji $text");
+
+  bool showBottomBar = true;
+
+  @override
+  void initState() {
+    this.emojis = getEmojis(widget.emojiList);
+
+    scrollController = new ScrollController();
+    scrollController.addListener(() => keyboardScrollListener());
+
+    super.initState();
+  }
+
+  List<String> getEmojis(emojiList) {
+    List<String> onlyEmoji = [];
+    for (List<String> emoji in emojiList) {
+      onlyEmoji.add(emoji[1]);
+    }
+    return onlyEmoji;
+  }
+
+  keyboardScrollListener() {
+    if (scrollController.hasClients) {
+      if (scrollController.offset >=
+          scrollController.position.maxScrollExtent &&
+          !scrollController.position.outOfRange) {
+        print("reached the bottom of the scrollview");
+      }
+        if (scrollController.position.userScrollDirection ==
+            ScrollDirection.reverse) {
+          if (showBottomBar) {
+            showBottomBar = false;
+            print("going down");
+          }
+        }
+        if (scrollController.position.userScrollDirection ==
+            ScrollDirection.forward) {
+          if (!showBottomBar) {
+            showBottomBar = true;
+            print("going up");
+          }
+        }
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {

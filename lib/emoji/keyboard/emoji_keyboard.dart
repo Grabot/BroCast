@@ -1,11 +1,9 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:brocast/emoji/keyboard/emoji_page.dart';
 import 'package:brocast/emoji/keyboard/emoji_screen.dart';
 import 'package:brocast/emoji/keyboard/emojis/objects.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -66,20 +64,12 @@ class EmojiBoard extends State<EmojiKeyboard> {
   // PageController pageController;
 
   void _textInputHandler(String text) => widget.signingScreen ? _insertTextSignUpScreen(text) : _insertText(text);
+  void emojiScreenTest(String text) => print("something is pressed! :D $text");
   void _searchHandler() => print("searching?");
   void _backspaceHandler() => _backspace();
-  void _spacebarHandler() => _insertText("  ");
+  void _spacebarHandler() => _insertText(" ");
   void _categoryHandler(String category) => _categorySelect(category);
-
-  // ScrollController scrollControllerRecent;
-  // ScrollController scrollControllerSmileys;
-  // ScrollController scrollControllerAnimals;
-  // ScrollController scrollControllerFoods;
-  // ScrollController scrollControllerActivities;
-  // ScrollController scrollControllerTravel;
-  // ScrollController scrollControllerObjects;
-  // ScrollController scrollControllerSymbols;
-  // ScrollController scrollControllerFlags;
+  void showBottomBarHandler(bool show) => visibilityBottomBar(show);
 
   @override
   void initState() {
@@ -114,39 +104,8 @@ class EmojiBoard extends State<EmojiKeyboard> {
 
     isAvailable();
 
-    // ScrollController scrollControllerRecent;
-    // ScrollController scrollControllerSmileys;
-    // ScrollController scrollControllerAnimals;
-    // ScrollController scrollControllerFoods;
-    // ScrollController scrollControllerActivities;
-    // ScrollController scrollControllerTravel;
-    // ScrollController scrollControllerObjects;
-    // ScrollController scrollControllerSymbols;
-    // ScrollController scrollControllerFlags;
-    //
-    // scrollControllerRecent = ScrollController();
-    // scrollControllerSmileys = ScrollController();
-    // scrollControllerAnimals = ScrollController();
-    // scrollControllerFoods = ScrollController();
-    // scrollControllerActivities = ScrollController();
-    // scrollControllerTravel = ScrollController();
-    // scrollControllerObjects = ScrollController();
-    // scrollControllerSymbols = ScrollController();
-    // scrollControllerFlags = ScrollController();
-
-    // scrollControllerRecent.addListener(() => keyboardScrollListener());
-    // scrollControllerSmileys.addListener(() => keyboardScrollListener());
-    // scrollControllerAnimals.addListener(() => keyboardScrollListener());
-    // scrollControllerFoods.addListener(() => keyboardScrollListener());
-    // scrollControllerActivities.addListener(() => keyboardScrollListener());
-    // scrollControllerTravel.addListener(() => keyboardScrollListener());
-    // scrollControllerObjects.addListener(() => keyboardScrollListener());
-    // scrollControllerSymbols.addListener(() => keyboardScrollListener());
-    // scrollControllerFlags.addListener(() => keyboardScrollListener());
-
     // pageController = PageController();
     // pageController.addListener(() => pageScrollListener());
-
 
     super.initState();
   }
@@ -159,33 +118,6 @@ class EmojiBoard extends State<EmojiKeyboard> {
     return onlyEmoji;
   }
 
-  // keyboardScrollListener() {
-  //   if (_scrollController.hasClients) {
-  //     if (_scrollController.offset >=
-  //         _scrollController.position.maxScrollExtent &&
-  //         !_scrollController.position.outOfRange) {
-  //       print("reached the bottom of the scrollview");
-  //     }
-  //     if (showBottomBar) {
-  //       if (_scrollController.position.userScrollDirection ==
-  //           ScrollDirection.reverse) {
-  //         setState(() {
-  //           bottomBarHeight = 0;
-  //           showBottomBar = false;
-  //         });
-  //       }
-  //     } else {
-  //       if (_scrollController.position.userScrollDirection ==
-  //           ScrollDirection.forward) {
-  //         setState(() {
-  //           this.bottomBarHeight = emojiKeyboardHeight / 6;
-  //           showBottomBar = true;
-  //         });
-  //       }
-  //     }
-  //   }
-  // }
-
   void _insertTextSignUpScreen(String myText) {
     addRecentEmoji(myText);
     if (!showBottomBar) {
@@ -197,6 +129,10 @@ class EmojiBoard extends State<EmojiKeyboard> {
     // The user is only allowed to give 1 emoji
     bromotionController.clear();
     bromotionController.text = myText;
+  }
+
+  void visibilityBottomBar(bool show) {
+    print("you have to $show the bar");
   }
 
   void _categorySelect(String category) {
@@ -375,76 +311,6 @@ class EmojiBoard extends State<EmojiKeyboard> {
         "isAvailable", {"emojis": flags});
   }
 
-  ListView emojiScreen(emojis, scrollControllerEmoji) {
-    return ListView.builder(
-      physics: AlwaysScrollableScrollPhysics(),
-      controller: scrollControllerEmoji,
-      itemCount: (emojis.length/8).ceil() + 1,
-      itemBuilder: (BuildContext cont, int index) {
-        return new Row(
-            children: [
-              (index*8) < emojis.length ? EmojiKey(
-                  onTextInput: _textInputHandler,
-                  emoji: emojis[index * 8]
-              ) : SizedBox(
-                width: MediaQuery.of(context).size.width / 8,
-                height: MediaQuery.of(context).size.width / 8
-              ),// make it square),
-              (index*8+1) < emojis.length ? EmojiKey(
-                  onTextInput: _textInputHandler,
-                  emoji: emojis[index*8+1]
-              ) : SizedBox(
-                width: MediaQuery.of(context).size.width / 8,
-                height: MediaQuery.of(context).size.width / 8
-              ),
-              (index*8+2) < emojis.length ? EmojiKey(
-                  onTextInput: _textInputHandler,
-                  emoji: emojis[index*8+2]
-              ) : SizedBox(
-                  width: MediaQuery.of(context).size.width / 8,
-                  height: MediaQuery.of(context).size.width / 8
-              ),
-              (index*8+3) < emojis.length ? EmojiKey(
-                  onTextInput: _textInputHandler,
-                  emoji: emojis[index*8+3]
-              ) : SizedBox(
-                  width: MediaQuery.of(context).size.width / 8,
-                  height: MediaQuery.of(context).size.width / 8
-              ),
-              (index*8+4) < emojis.length ? EmojiKey(
-                  onTextInput: _textInputHandler,
-                  emoji: emojis[index*8+4]
-              ) : SizedBox(
-                  width: MediaQuery.of(context).size.width / 8,
-                  height: MediaQuery.of(context).size.width / 8
-              ),
-              (index*8+5) < emojis.length ? EmojiKey(
-                  onTextInput: _textInputHandler,
-                  emoji: emojis[index*8+5]
-              ) : SizedBox(
-                  width: MediaQuery.of(context).size.width / 8,
-                  height: MediaQuery.of(context).size.width / 8
-              ),
-              (index*8+6) < emojis.length ? EmojiKey(
-                  onTextInput: _textInputHandler,
-                  emoji: emojis[index*8+6]
-              ) : SizedBox(
-                  width: MediaQuery.of(context).size.width / 8,
-                  height: MediaQuery.of(context).size.width / 8
-              ),
-              (index*8+7) < emojis.length ? EmojiKey(
-                  onTextInput: _textInputHandler,
-                  emoji: emojis[index*8+7]
-              ) : SizedBox(
-                  width: MediaQuery.of(context).size.width / 8,
-                  height: MediaQuery.of(context).size.width / 8
-              ),
-            ]
-        );
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -453,27 +319,27 @@ class EmojiBoard extends State<EmojiKeyboard> {
         child: Stack(
         children: [
           EmojiScreen(
-            screenHeight: emojiKeyboardHeight-emojiCategoryHeight,
-            recent: recent,
-            smileys: smileys,
-            animals: animals,
-            foods:  foods,
-            activities: activities,
-            travel: travel,
-            objects: objects,
-            symbols: symbols,
-            flags: flags
+            screenHeight: emojiKeyboardHeight-emojiCategoryHeight
           ),
           CategoryBar(
               categoryHandler: _categoryHandler,
               emojiCategoryHeight: emojiCategoryHeight,
               categorySelected: categorySelected
           ),
-          BottomBar(
-              searchHandler: _searchHandler,
-              spacebarHandler: _spacebarHandler,
-              backspaceHandler: _backspaceHandler,
-              bottomBarHeight: bottomBarHeight,
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: AnimatedContainer(
+            curve: Curves.fastOutSlowIn,
+            height: bottomBarHeight,
+            width: MediaQuery.of(context).size.width,
+            duration: new Duration(seconds: 1),
+            child:
+              BottomBar(
+                  searchHandler: _searchHandler,
+                  spacebarHandler: _spacebarHandler,
+                  backspaceHandler: _backspaceHandler
+              ),
+            ),
           ),
         ]
       )

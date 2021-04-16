@@ -22,14 +22,7 @@ class BottomBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Align(
-        alignment: Alignment.bottomCenter,
-        child: AnimatedContainer(
-          curve: Curves.fastOutSlowIn,
-          height: bottomBarHeight,
-          width: MediaQuery.of(context).size.width,
-          duration: new Duration(seconds: 1),
-          child: Container(
+    return Container(
             color: Colors.white,
             child:SizedBox(
               child: Row(
@@ -48,8 +41,6 @@ class BottomBar extends StatelessWidget {
                 ],
               ),
             ),
-          ),
-        )
-    );
+          );
   }
 }
