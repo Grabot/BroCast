@@ -42,7 +42,7 @@ class EmojiBoard extends State<EmojiKeyboard> {
 
   static const platform = const MethodChannel("nl.brocast.emoji/available");
 
-  List<String> recent;
+  List recent;
   List smileys;
   List animals;
   List foods;
@@ -270,9 +270,8 @@ class EmojiBoard extends State<EmojiKeyboard> {
   void isAvailable() async {
 
     getRecentEmojis().then((value) {
-      print("recent thingies");
       recent = value;
-      if (recent.length > 0) {
+      if (recent.toList().length > 0) {
         categorySelected = 0;
       } else {
         categorySelected = 1;
@@ -286,7 +285,9 @@ class EmojiBoard extends State<EmojiKeyboard> {
       Future.wait([getSmileys(), getAnimals(), getFoods(), getActivities(),
         getTravels(), getObjects(), getSymbols(), getFlags()])
           .then((var value) {
-            print("emojis loaded");
+            setState(() {
+              print("emojis loaded");
+            });
       });
 
     }
@@ -350,42 +351,66 @@ class EmojiBoard extends State<EmojiKeyboard> {
   ListView emojiScreen(emojis) {
     return ListView.builder(
       controller: _scrollController,
-      itemCount: emojis.length,
+      itemCount: (emojis.length/8).ceil() + 1,
       itemBuilder: (BuildContext cont, int index) {
         return new Row(
             children: [
               (index*8) < emojis.length ? EmojiKey(
                   onTextInput: _textInputHandler,
                   emoji: emojis[index * 8]
-              ) : Container(),
+              ) : Container(
+                width: MediaQuery.of(context).size.width / 8,
+                height: MediaQuery.of(context).size.width / 8
+              ),// make it square),
               (index*8+1) < emojis.length ? EmojiKey(
                   onTextInput: _textInputHandler,
                   emoji: emojis[index*8+1]
-              ) : Container(),
+              ) : Container(
+                width: MediaQuery.of(context).size.width / 8,
+                height: MediaQuery.of(context).size.width / 8
+              ),
               (index*8+2) < emojis.length ? EmojiKey(
                   onTextInput: _textInputHandler,
                   emoji: emojis[index*8+2]
-              ) : Container(),
+              ) : Container(
+                  width: MediaQuery.of(context).size.width / 8,
+                  height: MediaQuery.of(context).size.width / 8
+              ),
               (index*8+3) < emojis.length ? EmojiKey(
                   onTextInput: _textInputHandler,
                   emoji: emojis[index*8+3]
-              ) : Container(),
+              ) : Container(
+                  width: MediaQuery.of(context).size.width / 8,
+                  height: MediaQuery.of(context).size.width / 8
+              ),
               (index*8+4) < emojis.length ? EmojiKey(
                   onTextInput: _textInputHandler,
                   emoji: emojis[index*8+4]
-              ) : Container(),
+              ) : Container(
+                  width: MediaQuery.of(context).size.width / 8,
+                  height: MediaQuery.of(context).size.width / 8
+              ),
               (index*8+5) < emojis.length ? EmojiKey(
                   onTextInput: _textInputHandler,
                   emoji: emojis[index*8+5]
-              ) : Container(),
+              ) : Container(
+                  width: MediaQuery.of(context).size.width / 8,
+                  height: MediaQuery.of(context).size.width / 8
+              ),
               (index*8+6) < emojis.length ? EmojiKey(
                   onTextInput: _textInputHandler,
                   emoji: emojis[index*8+6]
-              ) : Container(),
+              ) : Container(
+                  width: MediaQuery.of(context).size.width / 8,
+                  height: MediaQuery.of(context).size.width / 8
+              ),
               (index*8+7) < emojis.length ? EmojiKey(
                   onTextInput: _textInputHandler,
                   emoji: emojis[index*8+7]
-              ) : Container()
+              ) : Container(
+                  width: MediaQuery.of(context).size.width / 8,
+                  height: MediaQuery.of(context).size.width / 8
+              ),
             ]
         );
       },
