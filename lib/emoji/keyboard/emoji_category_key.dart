@@ -18,12 +18,10 @@ class EmojiCategoryKey extends StatelessWidget {
 
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.only(bottom: 1.0),
-      decoration: active ? BoxDecoration(
-          border: Border(
-              bottom: BorderSide(
-                  width: 2.0, color: Colors.lightBlue.shade900)))
-          : BoxDecoration(),
+      decoration: active ?  BoxDecoration(
+            shape: BoxShape.circle,
+            color: Colors.blueGrey.shade200
+        ) : BoxDecoration(),
       child: SizedBox(
           width: MediaQuery.of(context).size.width / 9, // make it 8 buttons wide
           height: MediaQuery.of(context).size.width / 9, // make it square

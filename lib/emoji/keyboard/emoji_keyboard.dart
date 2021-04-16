@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:brocast/emoji/keyboard/emoji_spacebar.dart';
@@ -55,8 +56,8 @@ class EmojiBoard extends State<EmojiKeyboard> {
 
   bool showBottomBar;
 
-  double bottomBarHeight = 40;
-  double emojiCategoryHeight = 50;
+  double bottomBarHeight;
+  double emojiCategoryHeight;
   double emojiKeyboardHeight;
 
   static String recentEmojisKey = "recentEmojis";
@@ -64,7 +65,6 @@ class EmojiBoard extends State<EmojiKeyboard> {
   TextEditingController bromotionController;
 
   PageController pageController;
-  ScrollDirection _lastScrollDirection;
 
   void _textInputHandler(String text) => widget.signingScreen ? _insertTextSignUpScreen(text) : _insertText(text);
   void _searchHandler() => print("searching?");
@@ -90,6 +90,8 @@ class EmojiBoard extends State<EmojiKeyboard> {
 
     this.bromotionController = widget.bromotionController;
     this.emojiKeyboardHeight = widget.emojiKeyboardHeight;
+    this.emojiCategoryHeight = emojiKeyboardHeight / 6;
+    this.bottomBarHeight = emojiKeyboardHeight / 6;
 
     showBottomBar = true;
 
@@ -124,26 +126,10 @@ class EmojiBoard extends State<EmojiKeyboard> {
 
   pageScrollListener() {
     if (pageController.hasClients) {
-      if (pageController.position.userScrollDirection == ScrollDirection.reverse) {
-        print("scrolling reverse");
-        if (_lastScrollDirection != pageController.position.userScrollDirection) {
-          _lastScrollDirection = pageController.position.userScrollDirection;
+      if (pageController.position.userScrollDirection == ScrollDirection.reverse || pageController.position.userScrollDirection == ScrollDirection.forward) {
+        if (pageController.page.round() != categorySelected) {
           setState(() {
-            categorySelected += 1;
-            pageController.animateToPage(
-                categorySelected, duration: Duration(milliseconds: 500),
-                curve: Curves.ease);
-          });
-        }
-      } else if (pageController.position.userScrollDirection == ScrollDirection.forward) {
-        print("scrolling forward");
-        if (_lastScrollDirection != pageController.position.userScrollDirection) {
-          _lastScrollDirection = pageController.position.userScrollDirection;
-          setState(() {
-            categorySelected -= 1;
-            pageController.animateToPage(
-                categorySelected, duration: Duration(milliseconds: 500),
-                curve: Curves.ease);
+            categorySelected = pageController.page.round();
           });
         }
       }
@@ -169,7 +155,7 @@ class EmojiBoard extends State<EmojiKeyboard> {
         if (_scrollController.position.userScrollDirection ==
             ScrollDirection.forward) {
           setState(() {
-            bottomBarHeight = 40;
+            this.bottomBarHeight = emojiKeyboardHeight / 6;
             showBottomBar = true;
           });
         }
@@ -180,7 +166,7 @@ class EmojiBoard extends State<EmojiKeyboard> {
   void _insertTextSignUpScreen(String myText) {
     if (!showBottomBar) {
       setState(() {
-        bottomBarHeight = 40;
+        this.bottomBarHeight = emojiKeyboardHeight / 6;
         showBottomBar = true;
       });
     }
@@ -221,7 +207,7 @@ class EmojiBoard extends State<EmojiKeyboard> {
   void _insertText(String myText) {
     if (!showBottomBar) {
       setState(() {
-        bottomBarHeight = 40;
+        this.bottomBarHeight = emojiKeyboardHeight / 6;
         showBottomBar = true;
       });
     }
