@@ -1,5 +1,5 @@
 import 'package:back_button_interceptor/back_button_interceptor.dart';
-import 'package:brocast/emoji/keyboard/emoji_keyboard.dart';
+import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
 import 'package:brocast/services/auth.dart';
 import 'package:brocast/utils/utils.dart';
 import 'package:brocast/views/broHome.dart';
@@ -15,7 +15,6 @@ class _SignUpState extends State<SignUp> {
 
   bool isLoading = false;
   bool showEmojiKeyboard = false;
-  static const double emojiKeyboardHeight = 290;
 
   Auth auth = new Auth();
 
@@ -67,6 +66,7 @@ class _SignUpState extends State<SignUp> {
   @override
   void initState() {
     BackButtonInterceptor.add(myInterceptor);
+    bromotionController.addListener(bromotionListener);
     super.initState();
   }
 
@@ -78,6 +78,16 @@ class _SignUpState extends State<SignUp> {
       return true;
     } else {
       return false;
+    }
+  }
+
+  bromotionListener() {
+    bromotionController.selection = TextSelection.fromPosition(TextPosition(offset: 0));
+    String fullText = bromotionController.text;
+    String lastEmoji = fullText.characters.skip(1).string;
+    if (lastEmoji != "") {
+      String newText = bromotionController.text.replaceFirst(lastEmoji, "");
+      bromotionController.text = newText;
     }
   }
 
@@ -148,7 +158,7 @@ class _SignUpState extends State<SignUp> {
                                                 }
                                               },
                                               validator: (val) {
-                                                return val.isEmpty ? "Please provide bromotion": null;
+                                                return val.trim().isEmpty ? "Please provide bromotion": null;
                                               },
                                               controller: bromotionController,
                                               style: simpleTextStyle(),
@@ -239,20 +249,14 @@ class _SignUpState extends State<SignUp> {
                           ),
                         ),
                       ),
-                      AnimatedContainer(
-                        curve: Curves.fastOutSlowIn,
-                        height: showEmojiKeyboard ? emojiKeyboardHeight : 0,
-                        width: MediaQuery.of(context).size.width,
-                        duration: new Duration(seconds: 1),
-                        child: Container(
-                            alignment: Alignment.bottomCenter,
-                            child: EmojiKeyboard(
-                              bromotionController: bromotionController,
-                              emojiKeyboardHeight: emojiKeyboardHeight,
-                              signingScreen: true
-                            )
-                        )
-                      )
+                      Align(
+                        alignment: Alignment.bottomCenter,
+                        child: EmojiKeyboard(
+                            bromotionController: bromotionController,
+                            emojiKeyboardHeight: 350,
+                            showEmojiKeyboard: showEmojiKeyboard
+                        ),
+                      ),
                     ]),
               ),
             ]

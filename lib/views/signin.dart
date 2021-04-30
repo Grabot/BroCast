@@ -1,5 +1,5 @@
 import 'package:back_button_interceptor/back_button_interceptor.dart';
-import 'package:brocast/emoji/keyboard/emoji_keyboard.dart';
+import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
 import 'package:brocast/services/auth.dart';
 import 'package:brocast/utils/shared.dart';
 import 'package:brocast/utils/utils.dart';
@@ -17,11 +17,10 @@ class _SignInState extends State<SignIn> {
   bool isLoading = false;
   bool showEmojiKeyboard = false;
   bool startupSignin = true;
-  static const double emojiKeyboardHeight = 290;
 
   Auth auth = new Auth();
 
-  final formKey = GlobalKey<FormState>();
+  final formFieldKey = GlobalKey<FormFieldState>();
   TextEditingController broNameController = new TextEditingController();
   TextEditingController bromotionController = new TextEditingController();
   TextEditingController passwordController = new TextEditingController();
@@ -37,7 +36,18 @@ class _SignInState extends State<SignIn> {
       }
     });
     BackButtonInterceptor.add(myInterceptor);
+    bromotionController.addListener(bromotionListener);
     super.initState();
+  }
+
+  bromotionListener() {
+    bromotionController.selection = TextSelection.fromPosition(TextPosition(offset: 0));
+    String fullText = bromotionController.text;
+    String lastEmoji = fullText.characters.skip(1).string;
+    if (lastEmoji != "") {
+      String newText = bromotionController.text.replaceFirst(lastEmoji, "");
+      bromotionController.text = newText;
+    }
   }
 
   bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
@@ -76,7 +86,7 @@ class _SignInState extends State<SignIn> {
   }
 
   signInForm() {
-    if (formKey.currentState.validate()) {
+    if (formFieldKey.currentState.validate()) {
       signIn("");
     }
   }
@@ -122,159 +132,154 @@ class _SignInState extends State<SignIn> {
                     reverse: true,
                     child: Container(
                       padding: EdgeInsets.symmetric(horizontal: 30),
-                      child: Form(
-                        key: formKey,
-                        child: Column(
-                          children: [
-                            SizedBox(height: 50),
-                            Container(
-                              height: 120.0,
-                              width: 120.0,
-                              decoration: BoxDecoration(
-                                image: DecorationImage(
-                                  image: AssetImage(
-                                      'assets/images/brocast_transparent.png'),
-                                  fit: BoxFit.fill,
-                                ),
-                                shape: BoxShape.circle,
+                      child: Column(
+                        children: [
+                          SizedBox(height: 50),
+                          Container(
+                            height: 120.0,
+                            width: 120.0,
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                image: AssetImage(
+                                    'assets/images/brocast_transparent.png'),
+                                fit: BoxFit.fill,
                               ),
+                              shape: BoxShape.circle,
                             ),
-                            SizedBox(height: 100),
-                            Row(
-                                children: [
-                                  Expanded(
-                                    flex: 4,
-                                    child: TextFormField(
-                                      onTap: () {
-                                        if (!isLoading) {
-                                          onTapTextField();
-                                        }
-                                      },
-                                      validator: (val) {
-                                        return val.isEmpty ? "Please provide a bro name": null;
-                                      },
-                                      controller: broNameController,
-                                      textAlign: TextAlign.center,
-                                      style: simpleTextStyle(),
-                                      decoration: textFieldInputDecoration("Bro name"),
-                                    ),
-                                  ),
-                                  SizedBox(width: 50),
-                                  Expanded(
-                                    flex: 1,
-                                    child: TextFormField(
-                                      onTap: () {
-                                        if (!isLoading) {
-                                          onTapEmojiField();
-                                        }
-                                      },
-                                      validator: (val) {
-                                        return val.isEmpty ? "Please provide bromotion": null;
-                                      },
-                                      controller: bromotionController,
-                                      style: simpleTextStyle(),
-                                      textAlign: TextAlign.center,
-                                      decoration: textFieldInputDecoration("😀"),
-                                      readOnly: true,
-                                      showCursor: true,
-                                    ),
-                                  ),
-                                ]
-                            ),
-                            SizedBox(height: 30),
-                            Container(
-                              padding: EdgeInsets.symmetric(horizontal: 50),
-                              child: TextFormField(
-                                onTap: () {
-                                  if (!isLoading) {
-                                    onTapTextField();
-                                  }
-                                },
-                                obscureText: true,
-                                validator: (val) {
-                                  return val.isEmpty ? "Please provide a password": null;
-                                },
-                                controller: passwordController,
-                                textAlign: TextAlign.center,
-                                style: simpleTextStyle(),
-                                decoration: textFieldInputDecoration("Password"),
-                              ),
-                            ),
-                            SizedBox(height: 60),
-                            GestureDetector(
-                              onTap: () {
-                                if (!isLoading) {
-                                  signIn("");
-                                }
-                              },
-                              child: Container(
-                                alignment: Alignment.center,
-                                width: MediaQuery.of(context).size.width,
-                                padding: EdgeInsets.symmetric(vertical: 16),
-                                decoration: BoxDecoration(
-                                    gradient: LinearGradient(
-                                        colors: [
-                                          const Color(0xBf007EF4),
-                                          const Color(0xff2A75BC)
-                                        ]
-                                    ),
-                                    borderRadius: BorderRadius.circular(30)
-                                ),
-                                child: Text("Sign in", style: simpleTextStyle()),
-                              ),
-                            ),
-                            SizedBox(height: 10),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
+                          ),
+                          SizedBox(height: 100),
+                          Row(
                               children: [
-                                Container(
-                                  child: Text("Don't have an account?  ", style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 16
-                                  ),
-                                  ),
-                                ),
                                 Expanded(
-                                  child: GestureDetector(
+                                  flex: 4,
+                                  child: TextFormField(
+                                    key: formFieldKey,
                                     onTap: () {
                                       if (!isLoading) {
-                                        Navigator.pushReplacement(context, MaterialPageRoute(
-                                            builder: (context) => SignUp()
-                                        ));
+                                        onTapTextField();
                                       }
                                     },
-                                    child: Text("Register now!", style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 16,
-                                        decoration: TextDecoration.underline
-                                    ),
-                                    ),
+                                    validator: (value) {
+                                      if (value.isEmpty) {
+                                        return 'Please enter some text';
+                                      } else {
+                                        return null;
+                                      }
+                                    },
+                                    controller: broNameController,
+                                    textAlign: TextAlign.center,
+                                    style: simpleTextStyle(),
+                                    decoration: textFieldInputDecoration("Bro name"),
                                   ),
-                                )
-                              ],
+                                ),
+                                SizedBox(width: 50),
+                                Expanded(
+                                  flex: 1,
+                                  child: TextFormField(
+                                    onTap: () {
+                                      if (!isLoading) {
+                                        onTapEmojiField();
+                                      }
+                                    },
+                                    validator: (val) {
+                                      return val.trim().isEmpty ? "Please provide bromotion": null;
+                                    },
+                                    controller: bromotionController,
+                                    style: simpleTextStyle(),
+                                    textAlign: TextAlign.center,
+                                    decoration: textFieldInputDecoration("😀"),
+                                    readOnly: true,
+                                    showCursor: true,
+                                  ),
+                                ),
+                              ]
+                          ),
+                          SizedBox(height: 30),
+                          Container(
+                            padding: EdgeInsets.symmetric(horizontal: 50),
+                            child: TextFormField(
+                              onTap: () {
+                                if (!isLoading) {
+                                  onTapTextField();
+                                }
+                              },
+                              obscureText: true,
+                              validator: (val) {
+                                return val.isEmpty ? "Please provide a password": null;
+                              },
+                              controller: passwordController,
+                              textAlign: TextAlign.center,
+                              style: simpleTextStyle(),
+                              decoration: textFieldInputDecoration("Password"),
                             ),
-                            SizedBox(height: 80),
-                          ],
-                        )
+                          ),
+                          SizedBox(height: 60),
+                          GestureDetector(
+                            onTap: () {
+                              if (!isLoading) {
+                                signIn("");
+                              }
+                            },
+                            child: Container(
+                              alignment: Alignment.center,
+                              width: MediaQuery.of(context).size.width,
+                              padding: EdgeInsets.symmetric(vertical: 16),
+                              decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                      colors: [
+                                        const Color(0xBf007EF4),
+                                        const Color(0xff2A75BC)
+                                      ]
+                                  ),
+                                  borderRadius: BorderRadius.circular(30)
+                              ),
+                              child: Text("Sign in", style: simpleTextStyle()),
+                            ),
+                          ),
+                          SizedBox(height: 10),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Container(
+                                child: Text("Don't have an account?  ", style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16
+                                ),
+                                ),
+                              ),
+                              Expanded(
+                                child: GestureDetector(
+                                  onTap: () {
+                                    if (!isLoading) {
+                                      Navigator.pushReplacement(context, MaterialPageRoute(
+                                          builder: (context) => SignUp()
+                                      ));
+                                    }
+                                  },
+                                  child: Text("Register now!", style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 16,
+                                      decoration: TextDecoration.underline
+                                  ),
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                          SizedBox(height: 80),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-              AnimatedContainer(
-                curve: Curves.fastOutSlowIn,
-                height: showEmojiKeyboard ? emojiKeyboardHeight : 0,
-                width: MediaQuery.of(context).size.width,
-                duration: new Duration(seconds: 1),
-                child: Container(
-                    alignment: Alignment.bottomCenter,
-                    child: startupSignin ? Container() :
-                    EmojiKeyboard(
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: EmojiKeyboard(
                       bromotionController: bromotionController,
-                      emojiKeyboardHeight: emojiKeyboardHeight,
-                      signingScreen: true
-                    )
-                )
-              )
+                      emojiKeyboardHeight: 350,
+                      showEmojiKeyboard: showEmojiKeyboard
+                  ),
+                ),
             ]),
           ),
         ]

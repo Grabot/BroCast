@@ -1,5 +1,5 @@
 import 'package:back_button_interceptor/back_button_interceptor.dart';
-import 'package:brocast/emoji/keyboard/emoji_keyboard.dart';
+import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
 import 'package:brocast/objects/bro.dart';
 import 'package:brocast/objects/message.dart';
 import 'package:brocast/services/getMessages.dart';
@@ -28,7 +28,6 @@ class _BroMessagingState extends State<BroMessaging> {
   GetMessages get = new GetMessages();
 
   bool showEmojiKeyboard = false;
-  static const double emojiKeyboardHeight = 290;
 
   TextEditingController broMessageController = new TextEditingController();
   final formKey = GlobalKey<FormState>();
@@ -293,20 +292,14 @@ class _BroMessagingState extends State<BroMessaging> {
                 ),
               ),
             ),
-            AnimatedContainer(
-                curve: Curves.fastOutSlowIn,
-                height: showEmojiKeyboard ? emojiKeyboardHeight : 0,
-                width: MediaQuery.of(context).size.width,
-                duration: new Duration(seconds: 1),
-                child: Container(
-                    alignment: Alignment.bottomCenter,
-                    child: EmojiKeyboard(
-                        bromotionController: broMessageController,
-                        emojiKeyboardHeight: emojiKeyboardHeight,
-                        signingScreen: false
-                    )
-                )
-            )
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: EmojiKeyboard(
+                  bromotionController: broMessageController,
+                  emojiKeyboardHeight: 350,
+                  showEmojiKeyboard: showEmojiKeyboard
+              ),
+            ),
           ],
         ),
       ),
