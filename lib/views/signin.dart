@@ -4,7 +4,6 @@ import 'package:brocast/services/auth.dart';
 import 'package:brocast/utils/shared.dart';
 import 'package:brocast/utils/utils.dart';
 import 'package:brocast/views/broHome.dart';
-import 'package:brocast/views/signup.dart';
 import 'package:flutter/material.dart';
 
 class SignIn extends StatefulWidget {
