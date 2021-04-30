@@ -90,8 +90,33 @@ class _SignInState extends State<SignIn> {
 
   signInForm() {
     if (formKey.currentState.validate()) {
-      signIn("");
+      if (signUpMode) {
+        print("signin up");
+        signUp();
+      } else {
+        print("singing in");
+        signIn("");
+      }
     }
+  }
+
+  signUp() {
+    setState(() {
+      isLoading = true;
+    });
+
+    auth.signUp(broNameController.text, bromotionController.text, passwordController.text).then((val) {
+      if (val.toString() == "") {
+        Navigator.pushReplacement(context, MaterialPageRoute(
+            builder: (context) => BroCastHome()
+        ));
+      } else {
+        ShowToastComponent.showDialog(val.toString(), context);
+      }
+      setState(() {
+        isLoading = false;
+      });
+    });
   }
 
   signIn(String token) {
@@ -233,7 +258,7 @@ class _SignInState extends State<SignIn> {
                                     ),
                                     borderRadius: BorderRadius.circular(30)
                                 ),
-                                child: Text("Sign in", style: simpleTextStyle()),
+                                child: signUpMode ? Text("Sign up", style: simpleTextStyle()) : Text("Sign in", style: simpleTextStyle()),
                               ),
                             ),
                             SizedBox(height: 10),
@@ -251,16 +276,24 @@ class _SignInState extends State<SignIn> {
                                   child: GestureDetector(
                                     onTap: () {
                                       if (!isLoading) {
-                                        Navigator.pushReplacement(context, MaterialPageRoute(
-                                            builder: (context) => SignUp()
-                                        ));
+                                        setState(() {
+                                          signUpMode = !signUpMode;
+                                        });
+                                        // Navigator.pushReplacement(context, MaterialPageRoute(
+                                        //     builder: (context) => SignUp()
+                                        // ));
                                       }
                                     },
-                                    child: Text("Register now!", style: TextStyle(
+                                    child: signUpMode ? Text("Login now!", style: TextStyle(
                                         color: Colors.white,
                                         fontSize: 16,
                                         decoration: TextDecoration.underline
-                                    ),
+                                      ),
+                                    ) : Text("Register now!", style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 16,
+                                        decoration: TextDecoration.underline
+                                      ),
                                     ),
                                   ),
                                 )
