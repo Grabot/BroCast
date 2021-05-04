@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class HelperFunction {
   static String broTokenKey = "broToken";
   static String broIdKey = "broId";
+  static String broInformationKey = "broInformation";
   static String broNameKey = "broName";
   static String bromotionKey = "bromotion";
   static String broPasswordKey = "password";
@@ -15,6 +16,11 @@ class HelperFunction {
   static Future<bool> setBroId(int broId) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     return await preferences.setInt(broIdKey, broId);
+  }
+
+  static Future<bool> setBroInformation(String broName, String bromotion, String broPassword) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    return await preferences.setStringList(broInformationKey, [broName, bromotion, broPassword]);
   }
 
   static Future<bool> setBroName(String broName) async {
@@ -55,5 +61,10 @@ class HelperFunction {
   static Future<String> getBroPassword() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     return preferences.getString(broPasswordKey);
+  }
+
+  static Future<List<String>> getBroInformation() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    return preferences.getStringList(broInformationKey);
   }
 }

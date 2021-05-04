@@ -76,7 +76,12 @@ class Auth {
     if (responsePost == null) {
       return "Could not connect to the server";
     } else {
-      Map<String, dynamic> registerResponse = jsonDecode(responsePost.body);
+      Map<String, dynamic> registerResponse = null;
+      try {
+        registerResponse = jsonDecode(responsePost.body);
+      } on Exception catch (_) {
+        return "an unknown error has occured";
+      }
       if (registerResponse.containsKey("result") &&
           registerResponse.containsKey("message")) {
         bool result = registerResponse["result"];
@@ -105,11 +110,10 @@ class Auth {
     HelperFunction.setBroId(broId);
     HelperFunction.setBroName(broName);
     HelperFunction.setBromotion(bromotion);
-    HelperFunction.setBroPassword(password);
-    print(token);
-    print(broId);
-    print(broName);
-    print(bromotion);
-    print(password);
+    if (password != null || password != "") {
+      // The password is only set if the user filled it in
+      HelperFunction.setBroPassword(password);
+    }
+    HelperFunction.setBroInformation(broName, bromotion, password);
   }
 }

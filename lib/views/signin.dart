@@ -31,7 +31,10 @@ class _SignInState extends State<SignIn> {
     HelperFunction.getBroToken().then((val) {
       if (val == null) {
         startupSignin = false;
-        print("no token yet, wait until a token is saved");
+        setState(() {
+          isLoading = false;
+        });
+        // no token yet
       } else {
         signIn(val.toString());
       }
@@ -39,6 +42,24 @@ class _SignInState extends State<SignIn> {
     BackButtonInterceptor.add(myInterceptor);
     bromotionController.addListener(bromotionListener);
     signUpMode = false;
+
+    // If credentials are stored we will automatically sign in, but we will also set it on the textfields just for usability reasons (in case logging in fails)
+    HelperFunction.getBroInformation().then((val) {
+      if (val == null) {
+        startupSignin = false;
+        setState(() {
+          isLoading = false;
+        });
+        // no token yet
+      } else {
+        String broName = val[0];
+        String bromotion = val[1];
+        String password = val[2];
+        broNameController.text = broName;
+        bromotionController.text = bromotion;
+        passwordController.text = password;
+      }
+    });
     super.initState();
   }
 
@@ -64,7 +85,6 @@ class _SignInState extends State<SignIn> {
   }
 
   void onTapTextField() {
-    print("Tapped the text field");
     if (showEmojiKeyboard) {
       setState(() {
         showEmojiKeyboard = false;
@@ -73,10 +93,12 @@ class _SignInState extends State<SignIn> {
   }
 
   void onTapEmojiField() {
-    print("Tapped the emoji field");
     if (!showEmojiKeyboard) {
-      setState(() {
-        showEmojiKeyboard = true;
+      // We add a quick delay, this is to ensure that the keyboard is gone at this point.
+      Future.delayed(Duration(milliseconds: 100)).then((value) {
+        setState(() {
+          showEmojiKeyboard = true;
+        });
       });
     }
   }
@@ -90,10 +112,8 @@ class _SignInState extends State<SignIn> {
   signInForm() {
     if (formKey.currentState.validate()) {
       if (signUpMode) {
-        print("signin up");
         signUp();
       } else {
-        print("singing in");
         signIn("");
       }
     }
@@ -118,24 +138,56 @@ class _SignInState extends State<SignIn> {
     });
   }
 
+  singInName(String broName, String bromotion, String password) {
+    auth.signIn(broName, bromotion, password, "").then((val) {
+      if (val.toString() == "") {
+        Navigator.pushReplacement(context, MaterialPageRoute(
+            builder: (context) => BroCastHome()
+        ));
+      } else {
+        // broname, bromotion and password also didn't seem to work. logging failed
+        startupSignin = false;
+        setState(() {
+          isLoading = false;
+        });
+      }
+    });
+  }
+
   signIn(String token) {
     setState(() {
       isLoading = true;
     });
 
     auth.signIn(broNameController.text, bromotionController.text, passwordController.text, token).then((val) {
-      print("$val");
       if (val.toString() == "") {
         Navigator.pushReplacement(context, MaterialPageRoute(
             builder: (context) => BroCastHome()
         ));
       } else {
-        ShowToastComponent.showDialog(val.toString(), context);
-        startupSignin = false;
+        if (val == "The given credentials are not correct!") {
+          // token didn't work, going to check if a username is given and try to log in using password username
+          HelperFunction.getBroInformation().then((val) {
+            if (val == null) {
+              startupSignin = false;
+              setState(() {
+                isLoading = false;
+              });
+            } else {
+              String broName = val[0];
+              String bromotion = val[1];
+              String broPassword = val[2];
+              singInName(broName, bromotion, broPassword);
+            }
+          });
+        } else {
+          ShowToastComponent.showDialog(val.toString(), context);
+          startupSignin = false;
+          setState(() {
+            isLoading = false;
+          });
+        }
       }
-      setState(() {
-        isLoading = false;
-      });
     });
   }
 
@@ -298,7 +350,7 @@ class _SignInState extends State<SignIn> {
                                 )
                               ],
                             ),
-                            SizedBox(height: 80),
+                            SizedBox(height: 60),
                           ],
                         )
                     ),
@@ -309,7 +361,7 @@ class _SignInState extends State<SignIn> {
                   alignment: Alignment.bottomCenter,
                   child: EmojiKeyboard(
                       bromotionController: bromotionController,
-                      emojiKeyboardHeight: 350,
+                      emojiKeyboardHeight: 320,
                       showEmojiKeyboard: showEmojiKeyboard
                   ),
                 ),
