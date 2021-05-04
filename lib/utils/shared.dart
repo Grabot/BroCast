@@ -19,23 +19,18 @@ class HelperFunction {
   }
 
   static Future<bool> setBroInformation(String broName, String bromotion, String broPassword) async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    return await preferences.setStringList(broInformationKey, [broName, bromotion, broPassword]);
+    // We only update this information if a password is given.
+    if (broPassword != null || broPassword != "") {
+      SharedPreferences preferences = await SharedPreferences.getInstance();
+      return await preferences.setStringList(broInformationKey, [broName, bromotion, broPassword]);
+    }
   }
 
-  static Future<bool> setBroName(String broName) async {
+  static Future<bool> logOutBro() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    return await preferences.setString(broNameKey, broName);
-  }
-
-  static Future<bool> setBromotion(String bromotion) async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    return await preferences.setString(bromotionKey, bromotion);
-  }
-
-  static Future<bool> setBroPassword(String broPassword) async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    return await preferences.setString(broPasswordKey, broPassword);
+    await preferences.setString(broTokenKey, "");
+    await preferences.setInt(broIdKey, -1);
+    return await preferences.setStringList(broInformationKey, List.empty());
   }
 
   static Future<String> getBroToken() async {
@@ -46,21 +41,6 @@ class HelperFunction {
   static Future<int> getBroId() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     return preferences.getInt(broIdKey);
-  }
-
-  static Future<String> getBroName() async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    return preferences.getString(broNameKey);
-  }
-
-  static Future<String> getBromotion() async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    return preferences.getString(bromotionKey);
-  }
-
-  static Future<String> getBroPassword() async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    return preferences.getString(broPasswordKey);
   }
 
   static Future<List<String>> getBroInformation() async {

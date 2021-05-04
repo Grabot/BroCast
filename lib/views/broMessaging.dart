@@ -43,7 +43,7 @@ class _BroMessagingState extends State<BroMessaging> {
     socket.setMessaging(this);
     getMessages();
     HelperFunction.getBroId().then((val) {
-      if (val == null) {
+      if (val == null || val == -1) {
         print("no token yet, this is not really possible");
       } else {
         broId = val;
@@ -76,7 +76,7 @@ class _BroMessagingState extends State<BroMessaging> {
 
   getMessages() {
     HelperFunction.getBroToken().then((val) {
-      if (val == null) {
+      if (val == null || val == "") {
         print("no token yet, this is not really possible");
       } else {
         get.getMessages(val, widget.bro.id).then((val) {
@@ -223,7 +223,7 @@ class _BroMessagingState extends State<BroMessaging> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBarMain(context),
+      appBar: appBarMain(context, socket),
       body: Container(
         child: Column(
           children: [

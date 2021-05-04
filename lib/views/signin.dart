@@ -29,7 +29,7 @@ class _SignInState extends State<SignIn> {
   @override
   void initState() {
     HelperFunction.getBroToken().then((val) {
-      if (val == null) {
+      if (val == null || val == "") {
         startupSignin = false;
         setState(() {
           isLoading = false;
@@ -45,7 +45,7 @@ class _SignInState extends State<SignIn> {
 
     // If credentials are stored we will automatically sign in, but we will also set it on the textfields just for usability reasons (in case logging in fails)
     HelperFunction.getBroInformation().then((val) {
-      if (val == null) {
+      if (val == null || val.length == 0) {
         startupSignin = false;
         setState(() {
           isLoading = false;
@@ -168,7 +168,7 @@ class _SignInState extends State<SignIn> {
         if (val == "The given credentials are not correct!") {
           // token didn't work, going to check if a username is given and try to log in using password username
           HelperFunction.getBroInformation().then((val) {
-            if (val == null) {
+            if (val == null || val.length == 0) {
               startupSignin = false;
               setState(() {
                 isLoading = false;
@@ -194,7 +194,7 @@ class _SignInState extends State<SignIn> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBarMain(context),
+      appBar: appBarMain(context, null),
       // TODO: @Skools check if this is really needed (without it the emoji keyboard jumps on top of the other for a split second)
       // resizeToAvoidBottomInset: false,
       body: Stack(

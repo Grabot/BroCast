@@ -72,7 +72,7 @@ class _BroCastHomeState extends State<BroCastHome> {
       socket = widget.socket;
     }
     HelperFunction.getBroToken().then((val) {
-      if (val == null) {
+      if (val == null || val == "") {
         print("no token yet, wait until a token is saved");
       } else {
         searchBros(val.toString());
@@ -96,7 +96,7 @@ class _BroCastHomeState extends State<BroCastHome> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBarMain(context),
+      appBar: appBarMain(context, socket),
         body: Container(
             child: Column(
                 children: [

@@ -1,13 +1,59 @@
+import 'package:brocast/utils/shared.dart';
+import 'package:brocast/views/signin.dart';
 import 'package:flutter/material.dart';
 import 'package:toast/toast.dart';
 
-Widget appBarMain(BuildContext context) {
+Widget appBarMain(BuildContext context, var socket) {
   return AppBar(
-  title: Container(
-  alignment: Alignment.centerLeft,
-      child: Text("BroCast")
-  )
+    title: Container(
+    alignment: Alignment.centerLeft,
+        child: Text("BroCast")
+    ),
+    actions: socket != null ? [
+      PopupMenuButton<int>(
+        onSelected: (item) => onSelect(context, item),
+        itemBuilder: (context) => [
+          PopupMenuItem<int>(
+            value: 0,
+            child: Text("Profile")
+          ),
+          PopupMenuItem<int>(
+              value: 1,
+              child: Text("Settings")
+          ),
+          PopupMenuItem<int>(
+              value: 2,
+              child: Row(
+                children: [
+                  Icon(Icons.logout, color: Colors.black),
+                  SizedBox(width: 8),
+                  Text("Log Out")
+              ])
+          )
+        ]
+      )
+    ] : [],
   );
+}
+
+void onSelect(BuildContext context, int item) {
+  switch(item) {
+    case 0:
+      print("clicked profile :O!");
+      break;
+    case 1:
+      print("Clicked SETTINGS! :D");
+      break;
+    case 2:
+      HelperFunction.logOutBro().then((value) {
+        Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) =>
+                SignIn()
+            ), (route) => false
+        );
+      });
+      break;
+  }
 }
 
 InputDecoration textFieldInputDecoration(String hintText) {

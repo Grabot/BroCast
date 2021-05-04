@@ -76,7 +76,7 @@ class Auth {
     if (responsePost == null) {
       return "Could not connect to the server";
     } else {
-      Map<String, dynamic> registerResponse = null;
+      Map<String, dynamic> registerResponse;
       try {
         registerResponse = jsonDecode(responsePost.body);
       } on Exception catch (_) {
@@ -108,12 +108,6 @@ class Auth {
   setInformation(String token, int broId, String broName, String bromotion, String password) {
     HelperFunction.setBroToken(token);
     HelperFunction.setBroId(broId);
-    HelperFunction.setBroName(broName);
-    HelperFunction.setBromotion(bromotion);
-    if (password != null || password != "") {
-      // The password is only set if the user filled it in
-      HelperFunction.setBroPassword(password);
-    }
     HelperFunction.setBroInformation(broName, bromotion, password);
   }
 }
