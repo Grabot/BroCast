@@ -36,17 +36,15 @@ Widget appBarMain(BuildContext context, var socket) {
 void onSelect(BuildContext context, int item, var socket) {
   switch(item) {
     case 0:
-      Navigator.push(context, MaterialPageRoute(
+      Navigator.pushReplacement(context, MaterialPageRoute(
           builder: (context) => BroProfile(socket: socket)
       ));
       break;
     case 1:
       HelperFunction.logOutBro().then((value) {
-        Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (context) =>
-                SignIn()
-            ), (route) => false
-        );
+        Navigator.pushReplacement(context, MaterialPageRoute(
+            builder: (context) => SignIn()
+        ));
       });
       break;
   }

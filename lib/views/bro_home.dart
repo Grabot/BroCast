@@ -134,12 +134,12 @@ class BroTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        child: new Material(
-          child: new InkWell(
+        child: Material(
+          child: InkWell(
             onTap: (){
               selectBro(context);
             },
-            child: new Container(
+            child: Container(
               padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
               child: Row(
                 children: [
