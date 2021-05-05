@@ -1,12 +1,12 @@
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:brocast/objects/bro.dart';
-import 'package:brocast/services/addBro.dart';
+import 'package:brocast/services/add_bro.dart';
 import 'package:brocast/services/search.dart';
 import 'package:brocast/services/socket_services.dart';
 import 'package:brocast/utils/shared.dart';
 import 'package:brocast/utils/utils.dart';
-import 'package:brocast/views/broHome.dart';
-import 'package:brocast/views/broMessaging.dart';
+import 'package:brocast/views/bro_home.dart';
+import 'package:brocast/views/bro_messaging.dart';
 import 'package:flutter/material.dart';
 
 class FindBros extends StatefulWidget {

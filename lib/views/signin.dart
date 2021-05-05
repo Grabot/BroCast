@@ -3,7 +3,7 @@ import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
 import 'package:brocast/services/auth.dart';
 import 'package:brocast/utils/shared.dart';
 import 'package:brocast/utils/utils.dart';
-import 'package:brocast/views/broHome.dart';
+import 'package:brocast/views/bro_home.dart';
 import 'package:flutter/material.dart';
 
 class SignIn extends StatefulWidget {
