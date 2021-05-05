@@ -166,6 +166,7 @@ class _SignInState extends State<SignIn> {
         ));
       } else {
         if (val == "The given credentials are not correct!") {
+          print("token was probably expired");
           // token didn't work, going to check if a username is given and try to log in using password username
           HelperFunction.getBroInformation().then((val) {
             if (val == null || val.length == 0) {

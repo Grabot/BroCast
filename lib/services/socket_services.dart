@@ -35,6 +35,54 @@ class SocketServices {
     this.messaging = messaging;
   }
 
+  listenForProfileChange(var profilePage) {
+    this.socket.on('message_event_bromotion_change', (data) {
+      print("the bromotion has changed to $data");
+      if (data == "bromotion change successful") {
+        profilePage.onChangeBromotionSuccess();
+      } else if (data == "broName bromotion combination taken") {
+        profilePage.onChangeBromotionFailedExists();
+      } else {
+        profilePage.onChangeBromotionFailedUnknown();
+      }
+    });
+    this.socket.on('message_event_password_change', (data) {
+      print("the password has changed to $data");
+      if (data == "password change successful") {
+        profilePage.onChangePasswordSuccess();
+      } else {
+        profilePage.onChangePasswordFailed();
+      }
+    });
+  }
+
+  stopListeningForProfileChange() {
+    this.socket.off('message_event_bromotion_change', (data) => print(data));
+    this.socket.off('message_event_password_change', (data) => print(data));
+  }
+
+  changeBromotion(String token, String bromotion) {
+    if (this.socket.connected) {
+      this.socket.emit("bromotion_change",
+          {
+            "token": token,
+            "bromotion": bromotion
+          }
+      );
+    }
+  }
+
+  changePassword(String token, String password) {
+    if (this.socket.connected) {
+      this.socket.emit("password_change",
+          {
+            "token": token,
+            "password": password
+          }
+      );
+    }
+  }
+
   isConnected() {
     if (this.socket == null) {
       return false;

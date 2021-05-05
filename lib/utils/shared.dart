@@ -20,7 +20,7 @@ class HelperFunction {
 
   static Future<bool> setBroInformation(String broName, String bromotion, String broPassword) async {
     // We only update this information if a password is given.
-    if (broPassword != null || broPassword != "") {
+    if (broPassword != null && broPassword != "") {
       SharedPreferences preferences = await SharedPreferences.getInstance();
       return await preferences.setStringList(broInformationKey, [broName, bromotion, broPassword]);
     }

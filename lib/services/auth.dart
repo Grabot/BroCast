@@ -91,7 +91,7 @@ class Auth {
           int broId = registerResponse["bro"]["id"];
           String broName = registerResponse["bro"]["bro_name"];
           String bromotion = registerResponse["bro"]["bromotion"];
-          setInformation(token, broId, broName, bromotion, password);
+          await setInformation(token, broId, broName, bromotion, password);
           return "";
         } else {
           return message;
@@ -105,9 +105,9 @@ class Auth {
     setInformation("", 0, "", "", "");
   }
 
-  setInformation(String token, int broId, String broName, String bromotion, String password) {
-    HelperFunction.setBroToken(token);
-    HelperFunction.setBroId(broId);
-    HelperFunction.setBroInformation(broName, bromotion, password);
+  setInformation(String token, int broId, String broName, String bromotion, String password) async {
+    await HelperFunction.setBroToken(token);
+    await HelperFunction.setBroId(broId);
+    await HelperFunction.setBroInformation(broName, bromotion, password);
   }
 }
