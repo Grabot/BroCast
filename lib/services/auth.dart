@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
-
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:brocast/constants/api_path.dart';
 import 'package:brocast/utils/shared.dart';
 import 'package:http/http.dart' as http;
@@ -8,17 +9,24 @@ import 'package:http/http.dart' as http;
 class Auth {
 
   Future signUp(String broName, String bromotion, String password) async {
+
+    await Firebase.initializeApp();
+    String registrationId = await FirebaseMessaging.instance.getToken();
+    print("found a token");
+    print(registrationId);
+
     String urlRegister = baseUrl + 'register';
     Uri uriRegister = Uri.parse(urlRegister);
 
     http.Response responsePost = await http.post(uriRegister,
-      headers: <String, String>{
+      headers: <String, String> {
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode(<String, String> {
         'bro_name': broName,
         'bromotion': bromotion,
-        'password': password
+        'password': password,
+        'registration_id': registrationId
       }),
     ).timeout(
       Duration(seconds: 5),
