@@ -120,3 +120,4 @@ app.*.symbols
 
 # files which should not be shown in repo
 encrypt.dart
+google-services.json
