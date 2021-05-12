@@ -1,3 +1,4 @@
+import 'package:brocast/services/reset_registration.dart';
 import 'package:brocast/utils/shared.dart';
 import 'package:brocast/views/bro_profile.dart';
 import 'package:brocast/views/signin.dart';
@@ -42,10 +43,15 @@ void onSelect(BuildContext context, int item) {
       ));
       break;
     case 1:
-      HelperFunction.logOutBro().then((value) {
-        Navigator.pushReplacement(context, MaterialPageRoute(
-            builder: (context) => SignIn()
-        ));
+
+      HelperFunction.getBroId().then((broId) {
+        HelperFunction.logOutBro().then((value) {
+          ResetRegistration resetRegistration = new ResetRegistration();
+          resetRegistration.removeRegistrationId(broId);
+          Navigator.pushReplacement(context, MaterialPageRoute(
+              builder: (context) => SignIn()
+          ));
+        });
       });
       break;
   }

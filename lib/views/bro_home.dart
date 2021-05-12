@@ -71,6 +71,7 @@ class _BroCastHomeState extends State<BroCastHome> {
         searchBros(val.toString());
       }
     });
+    NotificationService.instance.setScreen(this);
     BackButtonInterceptor.add(myInterceptor);
   }
 
@@ -84,6 +85,12 @@ class _BroCastHomeState extends State<BroCastHome> {
     SocketServices.instance.closeSockConnection();
     SystemChannels.platform.invokeMethod('SystemNavigator.pop');
     return true;
+  }
+
+  void goToDifferentChat(Bro chatBro) {
+    Navigator.pushReplacement(context, MaterialPageRoute(
+        builder: (context) => BroMessaging(bro: chatBro)
+    ));
   }
 
   @override

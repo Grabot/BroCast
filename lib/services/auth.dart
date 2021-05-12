@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:brocast/services/notification_services.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:brocast/constants/api_path.dart';
@@ -10,10 +11,7 @@ class Auth {
 
   Future signUp(String broName, String bromotion, String password) async {
 
-    await Firebase.initializeApp();
-    String registrationId = await FirebaseMessaging.instance.getToken();
-    print("found a token");
-    print(registrationId);
+    String registrationId = await NotificationService.instance.getToken();
 
     String urlRegister = baseUrl + 'register';
     Uri uriRegister = Uri.parse(urlRegister);
@@ -60,6 +58,9 @@ class Auth {
   }
 
   Future signIn(String broName, String bromotion, String password, String token) async {
+
+    String registrationId = await NotificationService.instance.getToken();
+
     String urlLogin = baseUrl + 'login';
     Uri uriLogin = Uri.parse(urlLogin);
 
@@ -71,7 +72,8 @@ class Auth {
         'bro_name': broName,
         'bromotion': bromotion,
         'password': password,
-        'token': token
+        'token': token,
+        'registration_id': registrationId
       }),
     ).timeout(
         Duration(seconds: 5),

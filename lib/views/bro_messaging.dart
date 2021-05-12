@@ -50,6 +50,7 @@ class _BroMessagingState extends State<BroMessaging> {
         SocketServices.instance.joinRoom(broId, widget.bro.id);
       }
     });
+    NotificationService.instance.setScreen(this);
     BackButtonInterceptor.add(myInterceptor);
   }
 
@@ -58,6 +59,12 @@ class _BroMessagingState extends State<BroMessaging> {
     SocketServices.instance.leaveRoom(broId, widget.bro.id);
     BackButtonInterceptor.remove(myInterceptor);
     super.dispose();
+  }
+
+  void goToDifferentChat(Bro chatBro) {
+    Navigator.pushReplacement(context, MaterialPageRoute(
+        builder: (context) => BroMessaging(bro: chatBro)
+    ));
   }
 
   bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {

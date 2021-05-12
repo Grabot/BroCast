@@ -35,6 +35,8 @@ class _SignInState extends State<SignIn> {
 
   @override
   void initState() {
+    NotificationService.instance;
+    NotificationService.instance.setScreen(this);
     HelperFunction.getBroToken().then((val) {
       if (val == null || val == "") {
         startupSignin = false;
@@ -67,8 +69,11 @@ class _SignInState extends State<SignIn> {
         passwordController.text = password;
       }
     });
-
     super.initState();
+  }
+
+  void goToDifferentChat(Bro chatBro) {
+    // not doing it here, first log in.
   }
 
   void goHomeOrToChatNotification() async {
