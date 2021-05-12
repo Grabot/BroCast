@@ -1,10 +1,17 @@
 import 'package:back_button_interceptor/back_button_interceptor.dart';
+import 'package:brocast/objects/bro.dart';
+import 'package:brocast/services/notification_services.dart';
+import 'package:brocast/services/socket_services.dart';
 import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
 import 'package:brocast/services/auth.dart';
 import 'package:brocast/utils/shared.dart';
 import 'package:brocast/utils/utils.dart';
 import 'package:brocast/views/bro_home.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+
+import 'bro_messaging.dart';
 
 class SignIn extends StatefulWidget {
   @override
@@ -60,7 +67,31 @@ class _SignInState extends State<SignIn> {
         passwordController.text = password;
       }
     });
+
     super.initState();
+  }
+
+  void goHomeOrToChatNotification() async {
+    await Firebase.initializeApp();
+    RemoteMessage initialMessage = await FirebaseMessaging.instance.getInitialMessage();
+    if (initialMessage != null) {
+      Map<String, dynamic> broResult = initialMessage.data;
+      if (broResult != null) {
+        String broName = broResult["bro_name"];
+        String bromotion = broResult["bromotion"];
+        String broId = broResult["id"];
+        if (broName != null && bromotion != null && broId != null) {
+          Bro broNotify = Bro(int.parse(broId), broName, bromotion);
+          Navigator.pushReplacement(context, MaterialPageRoute(
+              builder: (context) => BroMessaging(bro: broNotify)
+          ));
+        }
+      }
+    } else {
+      Navigator.pushReplacement(context, MaterialPageRoute(
+          builder: (context) => BroCastHome()
+      ));
+    }
   }
 
   bromotionListener() {
@@ -161,9 +192,7 @@ class _SignInState extends State<SignIn> {
 
     auth.signIn(broNameController.text, bromotionController.text, passwordController.text, token).then((val) {
       if (val.toString() == "") {
-        Navigator.pushReplacement(context, MaterialPageRoute(
-            builder: (context) => BroCastHome()
-        ));
+        goHomeOrToChatNotification();
       } else {
         if (val == "The given credentials are not correct!") {
           print("token was probably expired");
@@ -195,7 +224,7 @@ class _SignInState extends State<SignIn> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBarMain(context, null),
+      appBar: appBarMain(context, false),
       // TODO: @Skools check if this is really needed (without it the emoji keyboard jumps on top of the other for a split second)
       // resizeToAvoidBottomInset: false,
       body: Stack(

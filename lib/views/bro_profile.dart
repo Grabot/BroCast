@@ -9,9 +9,9 @@ import "package:flutter/material.dart";
 
 class BroProfile extends StatefulWidget {
 
-  final SocketServices socket;
+  // final SocketServices socket;
 
-  BroProfile({ Key key, this.socket }): super(key: key);
+  BroProfile({ Key key }): super(key: key);
 
   @override
   _BroProfileState createState() => _BroProfileState();
@@ -25,8 +25,6 @@ class _BroProfileState extends State<BroProfile> {
   bool showEmojiKeyboard = false;
   bool bromotionEnabled = false;
   bool changePassword = false;
-
-  SocketServices socket;
 
   String token;
   String broName;
@@ -43,12 +41,6 @@ class _BroProfileState extends State<BroProfile> {
   @override
   void initState() {
     super.initState();
-    if (widget.socket == null) {
-      socket = new SocketServices();
-      socket.startSockConnection();
-    } else {
-      socket = widget.socket;
-    }
 
     focusNodeBromotion = new FocusNode();
     focusNodePassword = new FocusNode();
@@ -76,7 +68,7 @@ class _BroProfileState extends State<BroProfile> {
         });
       }
     });
-    socket.listenForProfileChange(this);
+    SocketServices.instance.listenForProfileChange(this);
     BackButtonInterceptor.add(myInterceptor);
   }
 
@@ -97,9 +89,9 @@ class _BroProfileState extends State<BroProfile> {
       });
       return true;
     } else {
-      socket.stopListeningForProfileChange();
+      SocketServices.instance.stopListeningForProfileChange();
       Navigator.pushReplacement(context, MaterialPageRoute(
-          builder: (context) => BroCastHome(socket: socket)
+          builder: (context) => BroCastHome()
       ));
       return true;
     }
@@ -147,7 +139,7 @@ class _BroProfileState extends State<BroProfile> {
 
   void onSavePassword() {
     if (passwordFormValidator.currentState.validate()) {
-      socket.changePassword(token, newPasswordController1.text);
+      SocketServices.instance.changePassword(token, newPasswordController1.text);
       setState(() {
         changePassword = false;
       });
@@ -157,7 +149,7 @@ class _BroProfileState extends State<BroProfile> {
   void onSaveBromotion() {
     if (bromotionValidator.currentState.validate()) {
       print("going to try to change the bromotion ${bromotionChangeController.text}");
-      socket.changeBromotion(token, bromotionChangeController.text);
+      SocketServices.instance.changeBromotion(token, bromotionChangeController.text);
       setState(() {
         bromotionEnabled = false;
         showEmojiKeyboard = false;

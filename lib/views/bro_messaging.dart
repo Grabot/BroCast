@@ -1,4 +1,5 @@
 import 'package:back_button_interceptor/back_button_interceptor.dart';
+import 'package:brocast/services/notification_services.dart';
 import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
 import 'package:brocast/objects/bro.dart';
 import 'package:brocast/objects/message.dart';
@@ -14,9 +15,8 @@ import 'package:intl/intl.dart';
 class BroMessaging extends StatefulWidget {
 
   final Bro bro;
-  final SocketServices socket;
 
-  BroMessaging({ Key key, this.bro, this.socket }): super(key: key);
+  BroMessaging({ Key key, this.bro }): super(key: key);
 
   @override
   _BroMessagingState createState() => _BroMessagingState();
@@ -32,22 +32,22 @@ class _BroMessagingState extends State<BroMessaging> {
   TextEditingController broMessageController = new TextEditingController();
   final formKey = GlobalKey<FormState>();
 
-  SocketServices socket;
+  // SocketServices socket;
   List<Message> messages = [];
   int broId;
 
   @override
   void initState() {
     super.initState();
-    socket = widget.socket;
-    socket.setMessaging(this);
+
+    SocketServices.instance.setMessaging(this);
     getMessages();
     HelperFunction.getBroId().then((val) {
       if (val == null || val == -1) {
         print("no token yet, this is not really possible");
       } else {
         broId = val;
-        socket.joinRoom(broId, widget.bro.id);
+        SocketServices.instance.joinRoom(broId, widget.bro.id);
       }
     });
     BackButtonInterceptor.add(myInterceptor);
@@ -55,7 +55,7 @@ class _BroMessagingState extends State<BroMessaging> {
 
   @override
   void dispose() {
-    socket.leaveRoom(broId, widget.bro.id);
+    SocketServices.instance.leaveRoom(broId, widget.bro.id);
     BackButtonInterceptor.remove(myInterceptor);
     super.dispose();
   }
@@ -68,7 +68,7 @@ class _BroMessagingState extends State<BroMessaging> {
       return true;
     } else {
       Navigator.pushReplacement(context, MaterialPageRoute(
-          builder: (context) => BroCastHome(socket: socket)
+          builder: (context) => BroCastHome()
       ));
       return true;
     }
@@ -172,7 +172,7 @@ class _BroMessagingState extends State<BroMessaging> {
       setState(() {
         this.messages.insert(0, mes);
       });
-      socket.sendMessageSocket(broId, widget.bro.id, message);
+      SocketServices.instance.sendMessageSocket(broId, widget.bro.id, message);
       broMessageController.clear();
     }
   }
@@ -183,7 +183,7 @@ class _BroMessagingState extends State<BroMessaging> {
       // When we get it from the server we add it for real and remove the placeholder
       this.messages.removeAt(0);
     } else {
-      socket.messageReadUpdate(broId, widget.bro.id);
+      SocketServices.instance.messageReadUpdate(broId, widget.bro.id);
     }
     updateDateTiles(message);
     setState(() {
@@ -223,7 +223,7 @@ class _BroMessagingState extends State<BroMessaging> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBarMain(context, socket),
+      appBar: appBarMain(context, true),
       body: Container(
         child: Column(
           children: [

@@ -11,9 +11,7 @@ import 'package:flutter/material.dart';
 
 class FindBros extends StatefulWidget {
 
-  final SocketServices socket;
-
-  FindBros({ Key key, this.socket }): super(key: key);
+  FindBros({ Key key }): super(key: key);
 
   @override
   _FindBrosState createState() => _FindBrosState();
@@ -26,15 +24,12 @@ class _FindBrosState extends State<FindBros> {
   bool isSearching = false;
   List<Bro> bros = [];
 
-  SocketServices socket;
-
   TextEditingController broNameController = new TextEditingController();
   TextEditingController bromotionController = new TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    socket = widget.socket;
     BackButtonInterceptor.add(myInterceptor);
   }
 
@@ -46,7 +41,7 @@ class _FindBrosState extends State<FindBros> {
 
   bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
     Navigator.pushReplacement(context, MaterialPageRoute(
-        builder: (context) => BroCastHome(socket: socket)
+        builder: (context) => BroCastHome()
     ));
     return true;
   }
@@ -78,8 +73,7 @@ class _FindBrosState extends State<FindBros> {
       itemCount: bros.length,
         itemBuilder: (context, index) {
           return BroTileSearch(
-              bros[index],
-              this.socket
+              bros[index]
           );
         }) : Container();
   }
@@ -87,7 +81,7 @@ class _FindBrosState extends State<FindBros> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBarMain(context, socket),
+      appBar: appBarMain(context, true),
       body: Container(
         child: Column(
           children: [
@@ -146,9 +140,8 @@ class _FindBrosState extends State<FindBros> {
 
 class BroTileSearch extends StatelessWidget {
   final Bro bro;
-  final SocketServices socket;
 
-  BroTileSearch(this.bro, this.socket);
+  BroTileSearch(this.bro);
 
   final AddBro add = new AddBro();
 
@@ -160,7 +153,7 @@ class BroTileSearch extends StatelessWidget {
         add.addBro(val.toString(), bro.id);
 
         Navigator.pushReplacement(context, MaterialPageRoute(
-            builder: (context) => BroMessaging(bro: bro, socket: socket)
+            builder: (context) => BroMessaging(bro: bro)
         ));
       }
     });

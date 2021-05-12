@@ -4,15 +4,16 @@ import 'package:brocast/views/signin.dart';
 import 'package:flutter/material.dart';
 import 'package:toast/toast.dart';
 
-Widget appBarMain(BuildContext context, var socket) {
+Widget appBarMain(BuildContext context, bool showPopup) {
+  // TODO: @Skools fix the naviagtion bar with the socket stuff
   return AppBar(
     title: Container(
     alignment: Alignment.centerLeft,
         child: Text("BroCast")
     ),
-    actions: socket != null ? [
+    actions: showPopup ? [
       PopupMenuButton<int>(
-        onSelected: (item) => onSelect(context, item, socket),
+        onSelected: (item) => onSelect(context, item),
         itemBuilder: (context) => [
           PopupMenuItem<int>(
             value: 0,
@@ -33,11 +34,11 @@ Widget appBarMain(BuildContext context, var socket) {
   );
 }
 
-void onSelect(BuildContext context, int item, var socket) {
+void onSelect(BuildContext context, int item) {
   switch(item) {
     case 0:
       Navigator.pushReplacement(context, MaterialPageRoute(
-          builder: (context) => BroProfile(socket: socket)
+          builder: (context) => BroProfile()
       ));
       break;
     case 1:

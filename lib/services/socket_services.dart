@@ -4,31 +4,40 @@ import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 class SocketServices {
 
-  var messaging;
+  static SocketServices _instance = new SocketServices._internal();
+  static get instance => _instance;
   IO.Socket socket;
 
+  var messaging;
+
+  SocketServices._internal( ) {
+    startSockConnection();
+  }
+
+
   startSockConnection() {
+    print("starting socket service");
     String namespace = "sock";
     String socketUrl = baseUrl + namespace;
     print(socketUrl);
-    this.socket = IO.io(socketUrl, <String, dynamic>{
+    socket = IO.io(socketUrl, <String, dynamic>{
       'transports': ['websocket'],
     });
 
-    this.socket.onConnect((_) {
+    socket.onConnect((_) {
       print('connect');
       socket.emit('message_event', 'Connected, ms server!');
     });
 
-    this.socket.onDisconnect((_) {
+    socket.onDisconnect((_) {
       print('disconnect');
       socket.emit('message_event', 'sorry ms server, disconnected!');
     });
 
-    this.socket.on('message_event', (data) => print(data));
-    this.socket.on('message_event_send', (data) => messageReceived(data));
-    this.socket.on('message_event_read', (data) => messageRead(data));
-    this.socket.open();
+    socket.on('message_event', (data) => print(data));
+    socket.on('message_event_send', (data) => messageReceived(data));
+    socket.on('message_event_read', (data) => messageRead(data));
+    socket.open();
   }
 
   setMessaging(var messaging) {
