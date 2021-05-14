@@ -1,3 +1,4 @@
+import 'package:brocast/views/opening_screen.dart';
 import 'package:brocast/views/signin.dart';
 import 'package:flutter/material.dart';
 
@@ -17,7 +18,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: SignIn(),
+      home: OpeningScreen(),
     );
   }
 }

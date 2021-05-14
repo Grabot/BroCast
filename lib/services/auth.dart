@@ -1,8 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:brocast/services/notification_services.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:brocast/constants/api_path.dart';
 import 'package:brocast/utils/shared.dart';
 import 'package:http/http.dart' as http;
