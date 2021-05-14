@@ -20,8 +20,31 @@ class NotificationService {
   }
 
   void init() async {
-    print("this also");
     await Firebase.initializeApp();
+
+    NotificationSettings settings = await FirebaseMessaging.instance.requestPermission(
+      alert: true,
+      announcement: false,
+      badge: true,
+      carPlay: false,
+      criticalAlert: false,
+      provisional: false,
+      sound: true,
+    );
+
+    print('User granted permission: ${settings.authorizationStatus}');
+
+    FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
+
+    // request permissions for showing notification in iOS
+    firebaseMessaging.requestPermission(alert: true, badge: true, sound: true);
+
+    // add listener for foreground push notifications
+    FirebaseMessaging.onMessage.listen((remoteMessage) {
+      print("received message foreground");
+      print('[onMessage] message: $remoteMessage');
+      // showNotification(remoteMessage);
+    });
   }
 
   void setScreen(var screen) {
