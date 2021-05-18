@@ -62,8 +62,6 @@ class _BroCastHomeState extends State<BroCastHome> {
   void initState() {
     super.initState();
 
-    SocketServices.instance;
-
     HelperFunction.getBroToken().then((val) {
       if (val == null || val == "") {
         print("no token yet, wait until a token is saved");

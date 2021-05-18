@@ -15,8 +15,6 @@ class NotificationService {
   NotificationService._internal() {
     print("this is now initialized");
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) => notificationWhileOpen(message));
-
-    init();
   }
 
   void init() async {

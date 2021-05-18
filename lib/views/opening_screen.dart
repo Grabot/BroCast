@@ -1,8 +1,10 @@
 import 'package:brocast/objects/bro.dart';
 import 'package:brocast/services/auth.dart';
 import 'package:brocast/services/notification_services.dart';
+import 'package:brocast/services/socket_services.dart';
 import 'package:brocast/utils/shared.dart';
 import 'package:brocast/utils/utils.dart';
+import 'package:brocast/views/signin.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -23,11 +25,14 @@ class _OpeningScreenState extends State<OpeningScreen> {
   @override
   void initState() {
     NotificationService.instance;
+    NotificationService.instance.init();
     NotificationService.instance.setScreen(this);
+    SocketServices.instance;
     HelperFunction.getBroToken().then((val) {
       if (val == null || val == "") {
-        // TODO: @Skools go to signin screen
-        // no token yet
+        Navigator.pushReplacement(context, MaterialPageRoute(
+            builder: (context) => SignIn()
+        ));
       } else {
         signIn(val.toString());
       }
@@ -48,30 +53,36 @@ class _OpeningScreenState extends State<OpeningScreen> {
           // token didn't work, going to check if a username is given and try to log in using password username
           HelperFunction.getBroInformation().then((val) {
             if (val == null || val.length == 0) {
-              // TODO: @SKools go to signin screen
+              Navigator.pushReplacement(context, MaterialPageRoute(
+                  builder: (context) => SignIn()
+              ));
             } else {
               String broName = val[0];
               String bromotion = val[1];
               String broPassword = val[2];
-              singInName(broName, bromotion, broPassword);
+              signInName(broName, bromotion, broPassword);
             }
           });
         } else {
           ShowToastComponent.showDialog(val.toString(), context);
-          // TODO: @SKools go to signin screen
+          Navigator.pushReplacement(context, MaterialPageRoute(
+              builder: (context) => SignIn()
+          ));
         }
       }
     });
   }
 
-  singInName(String broName, String bromotion, String password) {
+  signInName(String broName, String bromotion, String password) {
     auth.signIn(broName, bromotion, password, "").then((val) {
       if (val.toString() == "") {
         Navigator.pushReplacement(context, MaterialPageRoute(
             builder: (context) => BroCastHome()
         ));
       } else {
-        // TODO: @SKools navigate to sign in screen
+        Navigator.pushReplacement(context, MaterialPageRoute(
+            builder: (context) => SignIn()
+        ));
       }
     });
   }
@@ -113,6 +124,14 @@ class _OpeningScreenState extends State<OpeningScreen> {
     return Scaffold(
         appBar: appBarMain(context, false),
         body: Stack(
+          children: [
+            Container(
+                child: Center(
+                  // The opening screen will always be a loading screen,
+                  // so we also show the circular progress indicator
+                    child: CircularProgressIndicator())
+            )
+          ],
         ),
     );
   }

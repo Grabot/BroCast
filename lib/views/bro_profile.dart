@@ -202,6 +202,7 @@ class _BroProfileState extends State<BroProfile> {
           ),
         ),
         body: Container(
+          padding: EdgeInsets.symmetric(vertical: 16),
           child: Column(
             children: [
               Expanded(

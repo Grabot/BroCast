@@ -43,6 +43,15 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
+  flutter_launcher_icons: "^0.8.0"
+
+flutter_icons:
+  image_path_android: "assets/images/brocast.png"
+  image_path_ios: "assets/images/brocast.png"
+  android: true
+  ios: true
+  adaptive_icon_foreground: "assets/images/icon-brocast.png" # only available for Android 8.0 devices and above
+
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 

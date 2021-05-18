@@ -35,19 +35,7 @@ class _SignInState extends State<SignIn> {
 
   @override
   void initState() {
-    NotificationService.instance;
     NotificationService.instance.setScreen(this);
-    HelperFunction.getBroToken().then((val) {
-      if (val == null || val == "") {
-        startupSignin = false;
-        setState(() {
-          isLoading = false;
-        });
-        // no token yet
-      } else {
-        signIn(val.toString());
-      }
-    });
     BackButtonInterceptor.add(myInterceptor);
     bromotionController.addListener(bromotionListener);
     signUpMode = false;
@@ -74,29 +62,6 @@ class _SignInState extends State<SignIn> {
 
   void goToDifferentChat(Bro chatBro) {
     // not doing it here, first log in.
-  }
-
-  void goHomeOrToChatNotification() async {
-    await Firebase.initializeApp();
-    RemoteMessage initialMessage = await FirebaseMessaging.instance.getInitialMessage();
-    if (initialMessage != null) {
-      Map<String, dynamic> broResult = initialMessage.data;
-      if (broResult != null) {
-        String broName = broResult["bro_name"];
-        String bromotion = broResult["bromotion"];
-        String broId = broResult["id"];
-        if (broName != null && bromotion != null && broId != null) {
-          Bro broNotify = Bro(int.parse(broId), broName, bromotion);
-          Navigator.pushReplacement(context, MaterialPageRoute(
-              builder: (context) => BroMessaging(bro: broNotify)
-          ));
-        }
-      }
-    } else {
-      Navigator.pushReplacement(context, MaterialPageRoute(
-          builder: (context) => BroCastHome()
-      ));
-    }
   }
 
   bromotionListener() {
@@ -150,7 +115,7 @@ class _SignInState extends State<SignIn> {
       if (signUpMode) {
         signUp();
       } else {
-        signIn("");
+        signInName(broNameController.text, bromotionController.text, passwordController.text);
       }
     }
   }
@@ -174,7 +139,7 @@ class _SignInState extends State<SignIn> {
     });
   }
 
-  singInName(String broName, String bromotion, String password) {
+  signInName(String broName, String bromotion, String password) {
     auth.signIn(broName, bromotion, password, "").then((val) {
       if (val.toString() == "") {
         Navigator.pushReplacement(context, MaterialPageRoute(
@@ -186,42 +151,6 @@ class _SignInState extends State<SignIn> {
         setState(() {
           isLoading = false;
         });
-      }
-    });
-  }
-
-  signIn(String token) {
-    setState(() {
-      isLoading = true;
-    });
-
-    auth.signIn(broNameController.text, bromotionController.text, passwordController.text, token).then((val) {
-      if (val.toString() == "") {
-        goHomeOrToChatNotification();
-      } else {
-        if (val == "The given credentials are not correct!") {
-          print("token was probably expired");
-          // token didn't work, going to check if a username is given and try to log in using password username
-          HelperFunction.getBroInformation().then((val) {
-            if (val == null || val.length == 0) {
-              startupSignin = false;
-              setState(() {
-                isLoading = false;
-              });
-            } else {
-              String broName = val[0];
-              String bromotion = val[1];
-              String broPassword = val[2];
-              singInName(broName, bromotion, broPassword);
-            }
-          });
-        } else {
-          ShowToastComponent.showDialog(val.toString(), context);
-          startupSignin = false;
-          setState(() {
-            isLoading = false;
-          });
-        }
       }
     });
   }
