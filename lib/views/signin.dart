@@ -22,7 +22,6 @@ class _SignInState extends State<SignIn> {
 
   bool isLoading = false;
   bool showEmojiKeyboard = false;
-  bool startupSignin = true;
 
   bool signUpMode;
 
@@ -43,7 +42,6 @@ class _SignInState extends State<SignIn> {
     // If credentials are stored we will automatically sign in, but we will also set it on the textfields just for usability reasons (in case logging in fails)
     HelperFunction.getBroInformation().then((val) {
       if (val == null || val.length == 0) {
-        startupSignin = false;
         setState(() {
           isLoading = false;
         });
@@ -146,8 +144,7 @@ class _SignInState extends State<SignIn> {
             builder: (context) => BroCastHome()
         ));
       } else {
-        // broname, bromotion and password also didn't seem to work. logging failed
-        startupSignin = false;
+        ShowToastComponent.showDialog(val.toString(), context);
         setState(() {
           isLoading = false;
         });

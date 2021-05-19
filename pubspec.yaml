@@ -24,20 +24,20 @@ dependencies:
   flutter:
     sdk: flutter
 
-  http: ^0.13.1
+  http: ^0.13.3
   toast: ^0.1.5
   shared_preferences: ^2.0.5
   back_button_interceptor: ^5.0.0
-  socket_io_client: ^2.0.0-beta.3-nullsafety.0
+  socket_io_client: ^2.0.0-beta.4-nullsafety.0
   intl: ^0.17.0
   tuple: ^2.0.0
-  emoji_keyboard_flutter: ^0.1.3
-  firebase_messaging: ^9.1.3
+  emoji_keyboard_flutter: ^1.0.0
+  firebase_messaging: ^10.0.0
   flutter_local_notifications: ^5.0.0+4
-  firebase_core: ^1.1.1
+  firebase_core: ^1.1.2
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^1.0.2
+  cupertino_icons: ^1.0.3
 
 dev_dependencies:
   flutter_test:
@@ -50,7 +50,7 @@ flutter_icons:
   image_path_ios: "assets/images/brocast.png"
   android: true
   ios: true
-  adaptive_icon_foreground: "assets/images/icon-brocast.png" # only available for Android 8.0 devices and above
+  adaptive_icon_foreground: "assets/images/icon-brocast.png"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
