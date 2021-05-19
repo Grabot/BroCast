@@ -23,6 +23,8 @@ class HelperFunction {
     if (broPassword != null && broPassword != "") {
       SharedPreferences preferences = await SharedPreferences.getInstance();
       return await preferences.setStringList(broInformationKey, [broName, bromotion, broPassword]);
+    } else {
+      return null;
     }
   }
 

@@ -10,6 +10,8 @@ class Auth {
   Future signUp(String broName, String bromotion, String password) async {
 
     String registrationId = await NotificationService.instance.getToken();
+    print("key test");
+    print(registrationId);
 
     String urlRegister = baseUrl + 'register';
     Uri uriRegister = Uri.parse(urlRegister);
@@ -58,6 +60,8 @@ class Auth {
   Future signIn(String broName, String bromotion, String password, String token) async {
 
     String registrationId = await NotificationService.instance.getToken();
+    print("key test");
+    print(registrationId);
 
     String urlLogin = baseUrl + 'login';
     Uri uriLogin = Uri.parse(urlLogin);

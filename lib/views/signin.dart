@@ -1,17 +1,12 @@
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:brocast/objects/bro.dart';
-import 'package:brocast/services/notification_services.dart';
-import 'package:brocast/services/socket_services.dart';
-import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
 import 'package:brocast/services/auth.dart';
+import 'package:brocast/services/notification_services.dart';
 import 'package:brocast/utils/shared.dart';
 import 'package:brocast/utils/utils.dart';
 import 'package:brocast/views/bro_home.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
 import 'package:flutter/material.dart';
-
-import 'bro_messaging.dart';
 
 class SignIn extends StatefulWidget {
   @override

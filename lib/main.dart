@@ -1,5 +1,4 @@
 import 'package:brocast/views/opening_screen.dart';
-import 'package:brocast/views/signin.dart';
 import 'package:flutter/material.dart';
 
 void main() {
