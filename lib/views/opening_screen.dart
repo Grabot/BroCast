@@ -1,6 +1,5 @@
 import 'package:brocast/objects/bro.dart';
 import 'package:brocast/services/auth.dart';
-import 'package:brocast/services/notification_services.dart';
 import 'package:brocast/services/socket_services.dart';
 import 'package:brocast/utils/shared.dart';
 import 'package:brocast/utils/utils.dart';
@@ -8,7 +7,6 @@ import 'package:brocast/views/signin.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-
 import 'bro_home.dart';
 import 'bro_messaging.dart';
 
@@ -24,9 +22,6 @@ class _OpeningScreenState extends State<OpeningScreen> {
 
   @override
   void initState() {
-    NotificationService.instance;
-    NotificationService.instance.init();
-    NotificationService.instance.setScreen(this);
     SocketServices.instance;
     HelperFunction.getBroToken().then((val) {
       if (val == null || val == "") {

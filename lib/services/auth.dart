@@ -1,15 +1,15 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:brocast/services/notification_services.dart';
 import 'package:brocast/constants/api_path.dart';
 import 'package:brocast/utils/shared.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:http/http.dart' as http;
 
 class Auth {
 
   Future signUp(String broName, String bromotion, String password) async {
 
-    String registrationId = await NotificationService.instance.getToken();
+    String registrationId = await FirebaseMessaging.instance.getToken();
     print("key test");
     print(registrationId);
 
@@ -59,7 +59,7 @@ class Auth {
 
   Future signIn(String broName, String bromotion, String password, String token) async {
 
-    String registrationId = await NotificationService.instance.getToken();
+    String registrationId = await FirebaseMessaging.instance.getToken();
     print("key test");
     print(registrationId);
 
