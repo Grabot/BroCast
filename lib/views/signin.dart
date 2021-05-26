@@ -33,6 +33,7 @@ class _SignInState extends State<SignIn> {
     bromotionController.addListener(bromotionListener);
     signUpMode = false;
     NotificationService.instance.setScreen(this);
+    NotificationService.instance.showNotification("12", "Notification test", ":)", "Heey, even kijken of de notification werkt ");
     // If credentials are stored we will automatically sign in, but we will also set it on the textfields just for usability reasons (in case logging in fails)
     HelperFunction.getBroInformation().then((val) {
       if (val == null || val.length == 0) {
