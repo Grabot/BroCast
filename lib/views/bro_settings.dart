@@ -75,12 +75,7 @@ class _BroSettingsState extends State<BroSettings> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-          appBar: AppBar(
-              title: Container(
-              alignment: Alignment.centerLeft,
-              child: Text("Settings")
-          ),
-        ),
+        appBar: appBarMain(context, true),
         body: Container(
           padding: EdgeInsets.symmetric(vertical: 16),
           child: Column(
