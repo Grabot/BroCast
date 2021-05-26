@@ -1,5 +1,6 @@
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:brocast/objects/bro.dart';
+import 'package:brocast/services/notification_service.dart';
 import 'package:brocast/services/socket_services.dart';
 import 'package:brocast/utils/shared.dart';
 import 'package:brocast/utils/utils.dart';
@@ -43,6 +44,7 @@ class _BroProfileState extends State<BroProfile> {
   @override
   void initState() {
     super.initState();
+    NotificationService.instance.setScreen(this);
 
     focusNodeBromotion = new FocusNode();
     focusNodePassword = new FocusNode();

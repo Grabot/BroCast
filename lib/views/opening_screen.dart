@@ -1,5 +1,6 @@
 import 'package:brocast/objects/bro.dart';
 import 'package:brocast/services/auth.dart';
+import 'package:brocast/services/notification_service.dart';
 import 'package:brocast/services/socket_services.dart';
 import 'package:brocast/utils/shared.dart';
 import 'package:brocast/utils/utils.dart';
@@ -23,6 +24,7 @@ class _OpeningScreenState extends State<OpeningScreen> {
   @override
   void initState() {
     SocketServices.instance;
+    NotificationService.instance.setScreen(this);
     HelperFunction.getBroToken().then((val) {
       if (val == null || val == "") {
         Navigator.pushReplacement(context, MaterialPageRoute(
@@ -42,7 +44,9 @@ class _OpeningScreenState extends State<OpeningScreen> {
 
     auth.signIn("", "", "", token).then((val) {
       if (val.toString() == "") {
-        goHomeOrToChatNotification();
+        Navigator.pushReplacement(context, MaterialPageRoute(
+            builder: (context) => BroCastHome()
+        ));
       } else {
         if (val == "The given credentials are not correct!") {
           // token didn't work, going to check if a username is given and try to log in using password username
@@ -80,29 +84,6 @@ class _OpeningScreenState extends State<OpeningScreen> {
         ));
       }
     });
-  }
-
-  void goHomeOrToChatNotification() async {
-    await Firebase.initializeApp();
-    RemoteMessage initialMessage = await FirebaseMessaging.instance.getInitialMessage();
-    if (initialMessage != null) {
-      Map<String, dynamic> broResult = initialMessage.data;
-      if (broResult != null) {
-        String broName = broResult["bro_name"];
-        String bromotion = broResult["bromotion"];
-        String broId = broResult["id"];
-        if (broName != null && bromotion != null && broId != null) {
-          Bro broNotify = Bro(int.parse(broId), broName, bromotion);
-          Navigator.pushReplacement(context, MaterialPageRoute(
-              builder: (context) => BroMessaging(bro: broNotify)
-          ));
-        }
-      }
-    } else {
-      Navigator.pushReplacement(context, MaterialPageRoute(
-          builder: (context) => BroCastHome()
-      ));
-    }
   }
 
   void goToDifferentChat(Bro chatBro) {

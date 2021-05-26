@@ -1,6 +1,7 @@
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:brocast/objects/bro.dart';
 import 'package:brocast/services/add_bro.dart';
+import 'package:brocast/services/notification_service.dart';
 import 'package:brocast/services/search.dart';
 import 'package:brocast/utils/shared.dart';
 import 'package:brocast/utils/utils.dart';
@@ -29,6 +30,7 @@ class _FindBrosState extends State<FindBros> {
   @override
   void initState() {
     super.initState();
+    NotificationService.instance.setScreen(this);
     BackButtonInterceptor.add(myInterceptor);
   }
 

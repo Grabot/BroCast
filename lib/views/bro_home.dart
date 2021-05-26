@@ -2,6 +2,7 @@ import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:brocast/objects/bro.dart';
 import 'package:brocast/services/auth.dart';
 import 'package:brocast/services/get_bros.dart';
+import 'package:brocast/services/notification_service.dart';
 import 'package:brocast/services/socket_services.dart';
 import 'package:brocast/utils/shared.dart';
 import 'package:brocast/utils/utils.dart';
@@ -60,15 +61,27 @@ class _BroCastHomeState extends State<BroCastHome> {
   @override
   void initState() {
     super.initState();
+    NotificationService.instance.setScreen(this);
+    BackButtonInterceptor.add(myInterceptor);
 
-    HelperFunction.getBroToken().then((val) {
-      if (val == null || val == "") {
-        print("no token yet, wait until a token is saved");
+    // This is called after the build is done.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Bro chatBro = NotificationService.instance.getGoToBro();
+      if (chatBro != null) {
+        NotificationService.instance.resetGoToBro();
+        Navigator.pushReplacement(context, MaterialPageRoute(
+            builder: (context) => BroMessaging(bro: chatBro)
+        ));
       } else {
-        searchBros(val.toString());
+        HelperFunction.getBroToken().then((val) {
+          if (val == null || val == "") {
+            print("no token yet, wait until a token is saved");
+          } else {
+            searchBros(val.toString());
+          }
+        });
       }
     });
-    BackButtonInterceptor.add(myInterceptor);
   }
 
   @override

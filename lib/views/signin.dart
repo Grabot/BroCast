@@ -1,6 +1,7 @@
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:brocast/objects/bro.dart';
 import 'package:brocast/services/auth.dart';
+import 'package:brocast/services/notification_service.dart';
 import 'package:brocast/utils/shared.dart';
 import 'package:brocast/utils/utils.dart';
 import 'package:brocast/views/bro_home.dart';
@@ -31,7 +32,7 @@ class _SignInState extends State<SignIn> {
     BackButtonInterceptor.add(myInterceptor);
     bromotionController.addListener(bromotionListener);
     signUpMode = false;
-
+    NotificationService.instance.setScreen(this);
     // If credentials are stored we will automatically sign in, but we will also set it on the textfields just for usability reasons (in case logging in fails)
     HelperFunction.getBroInformation().then((val) {
       if (val == null || val.length == 0) {

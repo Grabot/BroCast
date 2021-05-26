@@ -9,9 +9,13 @@ class NotificationService {
   static NotificationService _instance = new NotificationService._internal();
   static get instance => _instance;
 
+  var currentScreen;
+  Bro goToBro;
   int notificationId = 1;
 
   NotificationService._internal() {
+
+    this.goToBro = null;
 
     AwesomeNotifications().initialize(
         'resource://drawable/bro_fire',
@@ -52,19 +56,32 @@ class NotificationService {
         String broId = broResult["id"];
         if (broName != null && bromotion != null && broId != null) {
           Bro broNotify = Bro(int.parse(broId), broName, bromotion);
-          // This should be implemented in every screen
-          // TODO: @Skools go to the correct chat
-          // TODO: Refactor all of this to not be in the main dart file.
-          // openScreen.goToDifferentChat(broNotify);
+          if (this.currentScreen != null) {
+            this.currentScreen.goToDifferentChat(broNotify);
+          } else {
+            this.goToBro = broNotify;
+          }
         }
       }
     });
   }
 
+  Bro getGoToBro() {
+    return this.goToBro;
+  }
+
+  Bro resetGoToBro() {
+    this.goToBro = null;
+  }
+
+  void setScreen(var currentScreen) {
+    this.currentScreen = currentScreen;
+  }
+
   Future<void> showNotification(String broId, String broName, String bromotion, String messageBody) async {
     await AwesomeNotifications().createNotification(
         content: NotificationContent(
-            id: 1,
+            id: notificationId,
             channelKey: "brocast_notification",
             title: "$broName $bromotion:",
             body: messageBody,
@@ -77,6 +94,7 @@ class NotificationService {
             }
         )
     );
+    notificationId += 1;
   }
 
 }
