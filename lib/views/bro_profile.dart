@@ -195,7 +195,7 @@ class _BroProfileState extends State<BroProfile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: appBarMain(context, true),
+        appBar: appBarMain(context, true, "Profile"),
         body: Container(
           child: Column(
             children: [

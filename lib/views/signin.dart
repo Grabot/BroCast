@@ -161,7 +161,7 @@ class _SignInState extends State<SignIn> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBarMain(context, false),
+      appBar: appBarMain(context, false, "Bro Cast"),
       // TODO: @Skools check if this is really needed (without it the emoji keyboard jumps on top of the other for a split second)
       // resizeToAvoidBottomInset: false,
       body: Stack(

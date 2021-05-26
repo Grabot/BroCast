@@ -133,7 +133,7 @@ class _FindBrosState extends State<FindBros> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBarMain(context, true),
+      appBar: appBarMain(context, true, "Find Bros"),
       body: Container(
         child: Column(
           children: [
@@ -226,11 +226,11 @@ class BroTileSearch extends StatelessWidget {
       if (val == null || val == "") {
         print("no token found, this should not happen");
       } else {
-        add.addBro(val.toString(), bro.id);
-
-        Navigator.pushReplacement(context, MaterialPageRoute(
-            builder: (context) => BroMessaging(bro: bro)
-        ));
+        add.addBro(val.toString(), bro.id).then((value) {
+          Navigator.pushReplacement(context, MaterialPageRoute(
+              builder: (context) => BroCastHome()
+          ));
+        });
       }
     });
   }

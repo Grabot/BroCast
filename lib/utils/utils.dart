@@ -6,12 +6,11 @@ import 'package:brocast/views/signin.dart';
 import 'package:flutter/material.dart';
 import 'package:toast/toast.dart';
 
-Widget appBarMain(BuildContext context, bool showPopup) {
-  // TODO: @Skools fix the naviagtion bar with the socket stuff
+Widget appBarMain(BuildContext context, bool showPopup, String title) {
   return AppBar(
     title: Container(
     alignment: Alignment.centerLeft,
-        child: Text("BroCast")
+        child: Text(title)
     ),
     actions: showPopup ? [
       PopupMenuButton<int>(

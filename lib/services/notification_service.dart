@@ -1,9 +1,8 @@
 import 'dart:typed_data';
-import 'package:brocast/objects/bro.dart';
+
 import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:brocast/objects/bro.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 
 class NotificationService {
   static NotificationService _instance = new NotificationService._internal();
@@ -52,7 +51,6 @@ class NotificationService {
       if (broResult != null) {
         String broName = broResult["bro_name"];
         String bromotion = broResult["bromotion"];
-        String messageBody = broResult["message_body"];
         String broId = broResult["id"];
         if (broName != null && bromotion != null && broId != null) {
           Bro broNotify = Bro(int.parse(broId), broName, bromotion);
@@ -70,7 +68,7 @@ class NotificationService {
     return this.goToBro;
   }
 
-  Bro resetGoToBro() {
+  void resetGoToBro() {
     this.goToBro = null;
   }
 

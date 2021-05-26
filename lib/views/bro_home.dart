@@ -105,7 +105,7 @@ class _BroCastHomeState extends State<BroCastHome> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBarMain(context, true),
+      appBar: appBarMain(context, true, "Bro Cast"),
         body: Container(
             child: Column(
                 children: [

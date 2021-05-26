@@ -230,7 +230,7 @@ class _BroMessagingState extends State<BroMessaging> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBarMain(context, true),
+      appBar: appBarMain(context, true, "${widget.bro.broName} ${widget.bro.bromotion}"),
       body: Container(
         child: Column(
           children: [
@@ -242,60 +242,63 @@ class _BroMessagingState extends State<BroMessaging> {
             Container(
               alignment: Alignment.bottomCenter,
               child: Container(
-                color: Color(0x54FFFFFF),
-                padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child:
-                      Form(
-                        key: formKey,
-                        child: TextFormField(
-                          validator: (val) {
-                            return val.isEmpty
-                                ? "Can't send an empty message"
-                                : null;
-                          },
-                          onTap: () {
-                            onTapTextField();
-                          },
-                          controller: broMessageController,
-                          style: TextStyle(
-                              color: Colors.white
-                          ),
-                          decoration: InputDecoration(
-                              hintText: "Message...",
-                              hintStyle: TextStyle(
-                                  color: Colors.white54
+                padding: EdgeInsets.symmetric(horizontal: 6, vertical: 6),
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                  decoration: BoxDecoration(
+                      color: Color(0x36FFFFFF),
+                      borderRadius: BorderRadius.circular(40)
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child:
+                        Container(
+                          child: Form(
+                            key: formKey,
+                            child: TextFormField(
+                              validator: (val) {
+                                return val.isEmpty
+                                    ? "Can't send an empty message"
+                                    : null;
+                              },
+                              onTap: () {
+                                onTapTextField();
+                              },
+                              controller: broMessageController,
+                              style: TextStyle(
+                                  color: Colors.white
                               ),
-                              border: InputBorder.none
+                              decoration: InputDecoration(
+                                  hintText: "Message...",
+                                  hintStyle: TextStyle(
+                                      color: Colors.white54
+                                  ),
+                                  border: InputBorder.none
+                              ),
+                              readOnly: true,
+                              showCursor: true,
+                            ),
                           ),
-                          readOnly: true,
-                          showCursor: true,
                         ),
                       ),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        sendMessage();
-                      },
-                      child: Container(
-                          height: 40,
-                          width: 40,
-                          decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                  colors: [
-                                    const Color(0x36FFFFFF),
-                                    const Color(0x0FFFFFFF)
-                                  ]
-                              ),
+                      GestureDetector(
+                        onTap: () {
+                          sendMessage();
+                        },
+                        child: Container(
+                            height: 40,
+                            width: 40,
+                            decoration: BoxDecoration(
+                              color: Color(0x36FFFFFF),
                               borderRadius: BorderRadius.circular(40)
-                          ),
-                          padding: EdgeInsets.all(10),
-                          child: Image.asset("assets/images/brocast.png")
-                      ),
-                    )
-                  ],
+                            ),
+                            padding: EdgeInsets.all(10),
+                            child: Icon(Icons.send)
+                        ),
+                      )
+                    ],
+                  ),
                 ),
               ),
             ),
