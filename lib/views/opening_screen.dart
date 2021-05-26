@@ -1,5 +1,6 @@
 import 'package:brocast/objects/bro.dart';
 import 'package:brocast/services/auth.dart';
+import 'package:brocast/services/settings.dart';
 import 'package:brocast/services/notification_service.dart';
 import 'package:brocast/services/socket_services.dart';
 import 'package:brocast/utils/shared.dart';
@@ -23,6 +24,16 @@ class _OpeningScreenState extends State<OpeningScreen> {
 
   @override
   void initState() {
+    HelperFunction.getKeyboardDarkMode().then((val) {
+      if (val == null) {
+        // no dark mode setting set yet.
+        Settings.instance.setEmojiKeyboardDarkMode(false);
+      } else {
+        setState(() {
+          Settings.instance.setEmojiKeyboardDarkMode(val);
+        });
+      }
+    });
     SocketServices.instance;
     NotificationService.instance.setScreen(this);
     HelperFunction.getBroToken().then((val) {

@@ -1,6 +1,7 @@
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:brocast/objects/bro.dart';
 import 'package:brocast/services/auth.dart';
+import 'package:brocast/services/settings.dart';
 import 'package:brocast/services/notification_service.dart';
 import 'package:brocast/utils/shared.dart';
 import 'package:brocast/utils/utils.dart';
@@ -27,13 +28,14 @@ class _SignInState extends State<SignIn> {
   TextEditingController bromotionController = new TextEditingController();
   TextEditingController passwordController = new TextEditingController();
 
+  bool emojiKeyboardDarkMode = false;
+
   @override
   void initState() {
     BackButtonInterceptor.add(myInterceptor);
     bromotionController.addListener(bromotionListener);
     signUpMode = false;
     NotificationService.instance.setScreen(this);
-    NotificationService.instance.showNotification("12", "Notification test", ":)", "Heey, even kijken of de notification werkt ");
     // If credentials are stored we will automatically sign in, but we will also set it on the textfields just for usability reasons (in case logging in fails)
     HelperFunction.getBroInformation().then((val) {
       if (val == null || val.length == 0) {
@@ -48,6 +50,15 @@ class _SignInState extends State<SignIn> {
         broNameController.text = broName;
         bromotionController.text = bromotion;
         passwordController.text = password;
+      }
+    });
+    HelperFunction.getKeyboardDarkMode().then((val) {
+      if (val == null) {
+        // no dark mode setting set yet.
+      } else {
+        setState(() {
+          emojiKeyboardDarkMode = val;
+        });
       }
     });
     super.initState();
@@ -316,9 +327,10 @@ class _SignInState extends State<SignIn> {
                 Align(
                   alignment: Alignment.bottomCenter,
                   child: EmojiKeyboard(
-                      bromotionController: bromotionController,
-                      emojiKeyboardHeight: 320,
-                      showEmojiKeyboard: showEmojiKeyboard
+                    bromotionController: bromotionController,
+                    emojiKeyboardHeight: 320,
+                    showEmojiKeyboard: showEmojiKeyboard,
+                    darkMode: Settings.instance.getEmojiKeyboardDarkMode()
                   ),
                 ),
             ]),

@@ -1,6 +1,7 @@
 import 'package:brocast/services/reset_registration.dart';
 import 'package:brocast/utils/shared.dart';
 import 'package:brocast/views/bro_profile.dart';
+import 'package:brocast/views/bro_settings.dart';
 import 'package:brocast/views/signin.dart';
 import 'package:flutter/material.dart';
 import 'package:toast/toast.dart';
@@ -22,6 +23,10 @@ Widget appBarMain(BuildContext context, bool showPopup) {
           ),
           PopupMenuItem<int>(
               value: 1,
+              child: Text("Settings")
+          ),
+          PopupMenuItem<int>(
+              value: 2,
               child: Row(
                 children: [
                   Icon(Icons.logout, color: Colors.black),
@@ -43,7 +48,11 @@ void onSelect(BuildContext context, int item) {
       ));
       break;
     case 1:
-
+      Navigator.pushReplacement(context, MaterialPageRoute(
+          builder: (context) => BroSettings()
+      ));
+      break;
+    case 2:
       HelperFunction.getBroId().then((broId) {
         HelperFunction.logOutBro().then((value) {
           ResetRegistration resetRegistration = new ResetRegistration();

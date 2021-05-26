@@ -7,6 +7,7 @@ class HelperFunction {
   static String broNameKey = "broName";
   static String bromotionKey = "bromotion";
   static String broPasswordKey = "password";
+  static String keyboardDarkMode = "keyboardDarkMode";
 
   static Future<bool> setBroToken(String broToken) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
@@ -17,6 +18,12 @@ class HelperFunction {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     return await preferences.setInt(broIdKey, broId);
   }
+
+  static Future<bool> setKeyboardDarkMode(bool darkMode) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    return await preferences.setBool(keyboardDarkMode, darkMode);
+  }
+
 
   static Future<bool> setBroInformation(String broName, String bromotion, String broPassword) async {
     // We only update this information if a password is given.
@@ -43,6 +50,11 @@ class HelperFunction {
   static Future<int> getBroId() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     return preferences.getInt(broIdKey);
+  }
+
+  static Future<bool> getKeyboardDarkMode() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    return preferences.getBool(keyboardDarkMode);
   }
 
   static Future<List<String>> getBroInformation() async {

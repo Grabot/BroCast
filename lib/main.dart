@@ -1,4 +1,5 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:brocast/services/settings.dart';
 import 'package:brocast/services/notification_service.dart';
 import 'package:brocast/views/opening_screen.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +10,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await NotificationService.instance;
   initializeFirebase();
+  Settings.instance;
   runApp(MyApp());
 }
 

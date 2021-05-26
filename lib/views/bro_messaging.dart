@@ -1,5 +1,6 @@
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:brocast/services/notification_service.dart';
+import 'package:brocast/services/settings.dart';
 import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
 import 'package:brocast/objects/bro.dart';
 import 'package:brocast/objects/message.dart';
@@ -301,9 +302,10 @@ class _BroMessagingState extends State<BroMessaging> {
             Align(
               alignment: Alignment.bottomCenter,
               child: EmojiKeyboard(
-                  bromotionController: broMessageController,
-                  emojiKeyboardHeight: 350,
-                  showEmojiKeyboard: showEmojiKeyboard
+                bromotionController: broMessageController,
+                emojiKeyboardHeight: 350,
+                showEmojiKeyboard: showEmojiKeyboard,
+                darkMode: Settings.instance.getEmojiKeyboardDarkMode(),
               ),
             ),
           ],
