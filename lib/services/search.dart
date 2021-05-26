@@ -10,6 +10,10 @@ class Search {
     String urlSearch = baseUrl + 'search';
     Uri uriRegister = Uri.parse(urlSearch);
 
+    if (bromotion == null || bromotion == " ") {
+      bromotion = "";
+    }
+
     http.Response responsePost = await http.post(uriRegister,
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',

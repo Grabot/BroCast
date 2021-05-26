@@ -3,10 +3,12 @@ import 'package:brocast/objects/bro.dart';
 import 'package:brocast/services/add_bro.dart';
 import 'package:brocast/services/notification_service.dart';
 import 'package:brocast/services/search.dart';
+import 'package:brocast/services/settings.dart';
 import 'package:brocast/utils/shared.dart';
 import 'package:brocast/utils/utils.dart';
 import 'package:brocast/views/bro_home.dart';
 import 'package:brocast/views/bro_messaging.dart';
+import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
 import 'package:flutter/material.dart';
 
 class FindBros extends StatefulWidget {
@@ -24,14 +26,29 @@ class _FindBrosState extends State<FindBros> {
   bool isSearching = false;
   List<Bro> bros = [];
 
+  bool showEmojiKeyboard = false;
+
   TextEditingController broNameController = new TextEditingController();
   TextEditingController bromotionController = new TextEditingController();
+
+  final formFieldKey = GlobalKey<FormFieldState>();
 
   @override
   void initState() {
     super.initState();
+    bromotionController.addListener(bromotionListener);
     NotificationService.instance.setScreen(this);
     BackButtonInterceptor.add(myInterceptor);
+  }
+
+  bromotionListener() {
+    bromotionController.selection = TextSelection.fromPosition(TextPosition(offset: 0));
+    String fullText = bromotionController.text;
+    String lastEmoji = fullText.characters.skip(1).string;
+    if (lastEmoji != "") {
+      String newText = bromotionController.text.replaceFirst(lastEmoji, "");
+      bromotionController.text = newText;
+    }
   }
 
   @override
@@ -41,10 +58,36 @@ class _FindBrosState extends State<FindBros> {
   }
 
   bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
-    Navigator.pushReplacement(context, MaterialPageRoute(
-        builder: (context) => BroCastHome()
-    ));
-    return true;
+    if (showEmojiKeyboard) {
+      setState(() {
+        showEmojiKeyboard = false;
+      });
+      return true;
+    } else {
+      Navigator.pushReplacement(context, MaterialPageRoute(
+          builder: (context) => BroCastHome()
+      ));
+      return true;
+    }
+  }
+
+  void onTapTextField() {
+    if (showEmojiKeyboard) {
+      setState(() {
+        showEmojiKeyboard = false;
+      });
+    }
+  }
+
+  void onTapEmojiField() {
+    if (!showEmojiKeyboard) {
+      // We add a quick delay, this is to ensure that the keyboard is gone at this point.
+      Future.delayed(Duration(milliseconds: 100)).then((value) {
+        setState(() {
+          showEmojiKeyboard = true;
+        });
+      });
+    }
   }
 
   void goToDifferentChat(Bro chatBro) {
@@ -54,12 +97,13 @@ class _FindBrosState extends State<FindBros> {
   }
 
   searchBros() {
+    if (formFieldKey.currentState.validate()) {
       setState(() {
         isSearching = true;
       });
 
-      // TODO: @SKools bromotion functionality
-      search.searchBro(broNameController.text, "").then((val) {
+      search.searchBro(broNameController.text, bromotionController.text).then((
+          val) {
         if (!(val is String)) {
           setState(() {
             bros = val;
@@ -71,6 +115,7 @@ class _FindBrosState extends State<FindBros> {
           isSearching = false;
         });
       });
+    }
   }
 
   Widget broList() {
@@ -92,26 +137,46 @@ class _FindBrosState extends State<FindBros> {
       body: Container(
         child: Column(
           children: [
+            Text(
+              "search for your bro using their bro name \n(bromotion optional)",
+              style: simpleTextStyle()
+            ),
             Container(
-              color: Color(0x54FFFFFF),
               padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
               child: Row(
                 children: [
                   Expanded(
-                      child: TextField(
-                        controller: broNameController,
-                        style: TextStyle(
-                            color: Colors.white
-                        ),
-                        decoration: InputDecoration(
-                          hintText: "Search Bros...",
-                          hintStyle: TextStyle(
-                            color: Colors.white54
-                          ),
-                          border: InputBorder.none
-                        ),
-                      )
+                    flex: 4,
+                    child: TextFormField(
+                      key: formFieldKey,
+                      onTap: () {
+                        onTapTextField();
+                      },
+                      validator: (val) {
+                        return val.isEmpty ? "Please provide a bro name": null;
+                      },
+                      controller: broNameController,
+                      textAlign: TextAlign.center,
+                      style: simpleTextStyle(),
+                      decoration: textFieldInputDecoration("Bro name"),
+                    ),
                   ),
+                  SizedBox(width: 50),
+                  Expanded(
+                    flex: 1,
+                    child: TextFormField(
+                      onTap: () {
+                        onTapEmojiField();
+                      },
+                      controller: bromotionController,
+                      style: simpleTextStyle(),
+                      textAlign: TextAlign.center,
+                      decoration: textFieldInputDecoration("😀"),
+                      readOnly: true,
+                      showCursor: true,
+                    ),
+                  ),
+                  SizedBox(width: 30),
                   GestureDetector(
                     onTap: () {
                       searchBros();
@@ -120,12 +185,7 @@ class _FindBrosState extends State<FindBros> {
                       height: 40,
                       width: 40,
                       decoration: BoxDecoration(
-                       gradient: LinearGradient(
-                        colors: [
-                            const Color(0x36FFFFFF),
-                            const Color(0x0FFFFFFF)
-                          ]
-                        ),
+                        color: const Color(0x36FFFFFF),
                         borderRadius: BorderRadius.circular(40)
                       ),
                       padding: EdgeInsets.all(10),
@@ -137,10 +197,19 @@ class _FindBrosState extends State<FindBros> {
             ),
             Expanded(
                 child: broList()
-            )
+            ),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: EmojiKeyboard(
+                  bromotionController: bromotionController,
+                  emojiKeyboardHeight: 320,
+                  showEmojiKeyboard: showEmojiKeyboard,
+                  darkMode: Settings.instance.getEmojiKeyboardDarkMode()
+              ),
+            ),
           ],
-        )
-      )
+        ),
+      ),
     );
   }
 }

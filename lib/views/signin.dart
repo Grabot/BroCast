@@ -324,15 +324,15 @@ class _SignInState extends State<SignIn> {
                   ),
                 ),
               ),
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: EmojiKeyboard(
-                    bromotionController: bromotionController,
-                    emojiKeyboardHeight: 320,
-                    showEmojiKeyboard: showEmojiKeyboard,
-                    darkMode: Settings.instance.getEmojiKeyboardDarkMode()
-                  ),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: EmojiKeyboard(
+                  bromotionController: bromotionController,
+                  emojiKeyboardHeight: 320,
+                  showEmojiKeyboard: showEmojiKeyboard,
+                  darkMode: Settings.instance.getEmojiKeyboardDarkMode()
                 ),
+              ),
             ]),
           ),
         ]
