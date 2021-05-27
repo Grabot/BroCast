@@ -245,7 +245,7 @@ class _BroMessagingState extends State<BroMessaging> {
         shrinkWrap: true,
         reverse: true,
         itemBuilder: (context, index) {
-          return MessageTile(messages[index], messages[index].recipientId == widget.bro.id);
+          return MessageTile(message: messages[index], myMessage: messages[index].recipientId == widget.bro.id);
         }
     ) : Container();
   }
@@ -419,124 +419,139 @@ class _BroMessagingState extends State<BroMessaging> {
   }
 }
 
-class MessageTile extends StatelessWidget {
-  final Message message;
+class MessageTile extends StatefulWidget {
 
-  final bool myMessage;
+  Message message;
+  bool myMessage;
 
-  MessageTile(this.message, this.myMessage);
+  MessageTile({
+    Key key,
+    this.message,
+    this.myMessage
+  }): super(key: key);
+
+  @override
+  _MessageTileState createState() => _MessageTileState();
+}
+
+class _MessageTileState extends State<MessageTile> {
+
+  bool clicked = false;
 
   selectMessage(BuildContext context) {
-    print("message " + message.body + " is it send by me? " + myMessage.toString() + " is it read? " + message.isRead.toString());
+    print("message " + widget.message.body + " is it send by me? " + widget.myMessage.toString() + " is it read? " + widget.message.isRead.toString());
+    print("message text? ${widget.message.textMessage.isEmpty}");
+    if (widget.message.textMessage.isNotEmpty) {
+      setState(() {
+        clicked = !clicked;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return message.timestamp == null ? // If the timestamp is null it is a date tile.
+    return widget.message.timestamp == null ? // If the timestamp is null it is a date tile.
     Row(
-      mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        Container(
-            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            decoration: BoxDecoration(
-                gradient: LinearGradient(
-                    colors: [
-                      const Color(0x55D3D3D3),
-                      const Color(0x55C0C0C0)
-                    ]
-                ),
-                borderRadius: BorderRadius.all(Radius.circular(12))
-            ),
-          child: Text(
-              message.body,
-              style: simpleTextStyle()
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Container(
+              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                      colors: [
+                        const Color(0x55D3D3D3),
+                        const Color(0x55C0C0C0)
+                      ]
+                  ),
+                  borderRadius: BorderRadius.all(Radius.circular(12))
+              ),
+              child: Text(
+                  widget.message.body,
+                  style: simpleTextStyle()
+              )
           )
-        )
-      ]
+        ]
     ) :
     Container(
         child: new Material(
           child: Column(
-            children: [
-              Container(
-              padding: EdgeInsets.symmetric(horizontal: 12),
-              margin: EdgeInsets.only(top: 12),
-              width: MediaQuery.of(context).size.width,
-              alignment: myMessage ? Alignment.bottomRight : Alignment.bottomLeft,
-              child: new InkWell(
-                customBorder: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(42),
-                ),
-                onTap: (){
-                  selectMessage(context);
-                },
-                child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                  decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                          colors: myMessage ? [
-                            const Color(0xAA007E00),
-                            const Color(0xAA2A7512)
-                          ] : [
-                            const Color(0xAA007EF4),
-                            const Color(0xAA2A75BC)
-                          ]
-                      ),
-                      borderRadius: myMessage ?
-                      BorderRadius.only(
-                        topLeft: Radius.circular(42),
-                        topRight: Radius.circular(42),
-                        bottomLeft: Radius.circular(42)
-                      ) :
-                      BorderRadius.only(
-                          topLeft: Radius.circular(42),
-                          topRight: Radius.circular(42),
-                          bottomRight: Radius.circular(42)
-                      )
-                  ),
-                  child: Column(
-                    children: [
-                    Text(message.body, style: simpleTextStyle()),
-                  ],
-                  ),
-                ),
-              ),
-            ),
-            Container(
-              child: Align(
-                alignment: myMessage ? Alignment.bottomRight : Alignment.bottomLeft,
-                child: Container(
+              children: [
+                Container(
                   padding: EdgeInsets.symmetric(horizontal: 12),
-                  child: RichText(
-                    text: TextSpan(
-                      children: [
-                        TextSpan(
-                          text: DateFormat('HH:mm').format(message.timestamp),
-                          style: TextStyle(
-                              color: Colors.white54,
-                              fontSize: 12
-                          ),
-                        ),
-                        myMessage ?
-                        message.id != 0 ? WidgetSpan(
-                          child: Icon(
-                              Icons.done_all,
-                              color: message.isRead ? Colors.blue : Colors.white54,
-                              size: 18
-                          )) : WidgetSpan(
-                            child: Icon(
-                            Icons.done,
-                            color: Colors.white54,
-                            size: 18
-                        )) : WidgetSpan(child: Container()),
-                      ],
+                  margin: EdgeInsets.only(top: 12),
+                  width: MediaQuery.of(context).size.width,
+                  alignment: widget.myMessage ? Alignment.bottomRight : Alignment.bottomLeft,
+                  child: new InkWell(
+                    customBorder: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(42),
+                    ),
+                    onTap: (){
+                      selectMessage(context);
+                    },
+                    child: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                      decoration: BoxDecoration(
+                          color: widget.myMessage ?
+                          widget.message.textMessage.isEmpty || clicked ? Color(0xAA009E00) : Color(
+                              0xFF0ABB7D)
+                              :
+                          widget.message.textMessage.isEmpty || clicked ? Color(0xFF0060BB) : Color(
+                              0xFF0AACBB),
+                          borderRadius: widget.myMessage ?
+                          BorderRadius.only(
+                              topLeft: Radius.circular(42),
+                              topRight: Radius.circular(42),
+                              bottomLeft: Radius.circular(42)
+                          ) :
+                          BorderRadius.only(
+                              topLeft: Radius.circular(42),
+                              topRight: Radius.circular(42),
+                              bottomRight: Radius.circular(42)
+                          )
+                      ),
+                      child: Column(
+                        children: [
+                          clicked ? Text(widget.message.textMessage, style: simpleTextStyle()) : Text(widget.message.body, style: simpleTextStyle()),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ),
-          ]),
+                Container(
+                  child: Align(
+                    alignment: widget.myMessage ? Alignment.bottomRight : Alignment.bottomLeft,
+                    child: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 12),
+                      child: RichText(
+                        text: TextSpan(
+                          children: [
+                            TextSpan(
+                              text: DateFormat('HH:mm').format(widget.message.timestamp),
+                              style: TextStyle(
+                                  color: Colors.white54,
+                                  fontSize: 12
+                              ),
+                            ),
+                            widget.myMessage ?
+                            widget.message.id != 0 ? WidgetSpan(
+                                child: Icon(
+                                    Icons.done_all,
+                                    color: widget.message.isRead ? Colors.blue : Colors.white54,
+                                    size: 18
+                                )) : WidgetSpan(
+                                child: Icon(
+                                    Icons.done,
+                                    color: Colors.white54,
+                                    size: 18
+                                )) : WidgetSpan(child: Container()),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ]),
           color: Colors.transparent,
         )
     );
