@@ -19,11 +19,6 @@ void initializeFirebase() async {
 }
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  print('Handling a background message: ${message.messageId}');
-
-  print('message also contained a notification: ${message.notification}');
-  print('message has data: ${message.data}');
-
   Map<String, dynamic> broResult = message.data;
   if (broResult != null) {
     String broName = broResult["bro_name"];

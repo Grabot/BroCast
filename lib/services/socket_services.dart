@@ -16,21 +16,17 @@ class SocketServices {
 
 
   startSockConnection() {
-    print("starting socket service");
     String namespace = "sock";
     String socketUrl = baseUrl + namespace;
-    print(socketUrl);
     socket = IO.io(socketUrl, <String, dynamic>{
       'transports': ['websocket'],
     });
 
     socket.onConnect((_) {
-      print('connect');
       socket.emit('message_event', 'Connected, ms server!');
     });
 
     socket.onDisconnect((_) {
-      print('disconnect');
       socket.emit('message_event', 'sorry ms server, disconnected!');
     });
 
@@ -100,7 +96,6 @@ class SocketServices {
   }
 
   closeSockConnection() {
-    print("closing socket connection was called");
     if (this.socket.connected) {
       this.socket.close();
     }
@@ -147,9 +142,7 @@ class SocketServices {
   }
 
   messageReadUpdate(int broId, int brosBroId) {
-    print("check socket message read");
     if (this.socket.connected) {
-      print("socket is connected message read");
       this.socket.emit("message_read",
         {
           "bro_id": broId,

@@ -54,7 +54,6 @@ class _BroProfileState extends State<BroProfile> {
     HelperFunction.getBroToken().then((val) {
       if (val == null || val == "") {
         // We assume this won't happen
-        print("no token available, big error");
       } else {
         token = val;
       }
@@ -159,7 +158,6 @@ class _BroProfileState extends State<BroProfile> {
 
   void onSaveBromotion() {
     if (bromotionValidator.currentState.validate()) {
-      print("going to try to change the bromotion ${bromotionChangeController.text}");
       SocketServices.instance.changeBromotion(token, bromotionChangeController.text);
       setState(() {
         bromotionEnabled = false;

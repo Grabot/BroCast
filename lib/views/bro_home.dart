@@ -133,7 +133,6 @@ class BroTile extends StatelessWidget {
   BroTile(this.bro);
 
   selectBro(BuildContext context) {
-    print("clicked bro " + bro.getFullBroName());
     Navigator.pushReplacement(context, MaterialPageRoute(
         builder: (context) => BroMessaging(bro: bro)
     ));

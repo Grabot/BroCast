@@ -439,8 +439,6 @@ class _MessageTileState extends State<MessageTile> {
   bool clicked = false;
 
   selectMessage(BuildContext context) {
-    print("message " + widget.message.body + " is it send by me? " + widget.myMessage.toString() + " is it read? " + widget.message.isRead.toString());
-    print("message text? ${widget.message.textMessage.isEmpty}");
     if (widget.message.textMessage.isNotEmpty) {
       setState(() {
         clicked = !clicked;
@@ -494,10 +492,10 @@ class _MessageTileState extends State<MessageTile> {
                       decoration: BoxDecoration(
                           color: widget.myMessage ?
                           widget.message.textMessage.isEmpty || clicked ? Color(0xAA009E00) : Color(
-                              0xFF0ABB7D)
+                              0xFF0ABB5A)
                               :
                           widget.message.textMessage.isEmpty || clicked ? Color(0xFF0060BB) : Color(
-                              0xFF0AACBB),
+                              0xFF0A98BB),
                           borderRadius: widget.myMessage ?
                           BorderRadius.only(
                               topLeft: Radius.circular(42),

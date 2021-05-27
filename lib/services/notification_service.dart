@@ -43,9 +43,6 @@ class NotificationService {
     });
 
     AwesomeNotifications().actionStream.listen((receivedNotification) {
-      print("this is what you received");
-      print(receivedNotification);
-      print(receivedNotification.payload);
 
       Map<String, dynamic> broResult = receivedNotification.payload;
       if (broResult != null) {
