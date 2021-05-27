@@ -128,20 +128,21 @@ class SocketServices {
     }
   }
 
-  sendMessageSocket(int broId, int brosBroId, String message) {
+  sendMessageSocket(int broId, int brosBroId, String message, String textMessage) {
     if (this.socket.connected) {
       this.socket.emit("message",
         {
           "bro_id": broId,
           "bros_bro_id": brosBroId,
-          "message": message
+          "message": message,
+          "text_message": textMessage
         },
       );
     }
   }
 
   messageReceived(var data) {
-    Message mes = new Message(data["id"], data["bro_bros_id"], data["sender_id"], data["recipient_id"], data["body"], data["timestamp"]);
+    Message mes = new Message(data["id"], data["bro_bros_id"], data["sender_id"], data["recipient_id"], data["body"], data["text_message"], data["timestamp"]);
     this.messaging.updateMessages(mes);
   }
 

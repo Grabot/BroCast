@@ -30,7 +30,12 @@ class _BroMessagingState extends State<BroMessaging> {
 
   bool showEmojiKeyboard = false;
 
+  FocusNode focusAppendText = FocusNode();
+  FocusNode focusEmojiTextField = FocusNode();
+  bool appendingMessage = false;
+
   TextEditingController broMessageController = new TextEditingController();
+  TextEditingController appendTextMessageController = new TextEditingController();
   final formKey = GlobalKey<FormState>();
 
   // SocketServices socket;
@@ -56,6 +61,8 @@ class _BroMessagingState extends State<BroMessaging> {
 
   @override
   void dispose() {
+    focusAppendText.dispose();
+    focusEmojiTextField.dispose();
     SocketServices.instance.leaveRoom(broId, widget.bro.id);
     BackButtonInterceptor.remove(myInterceptor);
     super.dispose();
@@ -120,7 +127,7 @@ class _BroMessagingState extends State<BroMessaging> {
       timeMessageFirst = "Yesterday";
     }
 
-    Message timeMessage = new Message(0, 0, 0, 0, timeMessageFirst, null);
+    Message timeMessage = new Message(0, 0, 0, 0, timeMessageFirst, null, null);
     for (int i = 0; i < messes.length; i++ ) {
       DateTime current = messes[i].timestamp;
       DateTime dayMessage = DateTime(current.year, current.month, current.day);
@@ -137,7 +144,7 @@ class _BroMessagingState extends State<BroMessaging> {
           timeMessageTile = "Yesterday";
         }
         messes.insert(i, timeMessage);
-        timeMessage = new Message(0, 0, 0, 0, timeMessageTile, null);
+        timeMessage = new Message(0, 0, 0, 0, timeMessageTile, null, null);
       }
     }
     messes.insert(messes.length, timeMessage);
@@ -146,7 +153,7 @@ class _BroMessagingState extends State<BroMessaging> {
   updateDateTiles(Message message) {
     // If the day tiles need to be updated after sending a message it will be the today tile.
     if (this.messages.length == 0) {
-      this.messages.insert(0, new Message(0, 0, 0, 0, "Today", null));
+      this.messages.insert(0, new Message(0, 0, 0, 0, "Today", null, null));
     } else {
       Message messageFirst = this.messages.first;
       DateTime dayFirst = DateTime(messageFirst.timestamp.year, messageFirst.timestamp.month, messageFirst.timestamp.day);
@@ -159,15 +166,33 @@ class _BroMessagingState extends State<BroMessaging> {
       if (chatTimeTile != currentDayMessage) {
         chatTimeTile = DateFormat.yMMMMd('en_US').format(dayMessage);
 
-        Message timeMessage = new Message(0, 0, 0, 0, "Today", null);
+        Message timeMessage = new Message(0, 0, 0, 0, "Today", null, null);
         this.messages.insert(0, timeMessage);
       }
+    }
+  }
+
+  appendTextMessage() {
+    print("going to append a real message");
+    if (!appendingMessage) {
+      focusAppendText.requestFocus();
+      setState(() {
+        showEmojiKeyboard = false;
+        appendingMessage = true;
+      });
+    } else {
+      focusEmojiTextField.requestFocus();
+      setState(() {
+        showEmojiKeyboard = true;
+        appendingMessage = false;
+      });
     }
   }
 
   sendMessage() {
     if (formKey.currentState.validate()) {
       String message = broMessageController.text;
+      String textMessage = appendTextMessageController.text;
       // We add the message already as being send.
       // If it is received we remove this message and show 'received'
       String timestampString = DateTime.now().toUtc().toString();
@@ -175,12 +200,13 @@ class _BroMessagingState extends State<BroMessaging> {
       if (timestampString.endsWith('Z')) {
         timestampString = timestampString.substring(0, timestampString.length - 1);
       }
-      Message mes = new Message(0, 0, 0, widget.bro.id, message, timestampString);
+      Message mes = new Message(0, 0, 0, widget.bro.id, message, textMessage, timestampString);
       setState(() {
         this.messages.insert(0, mes);
       });
-      SocketServices.instance.sendMessageSocket(broId, widget.bro.id, message);
+      SocketServices.instance.sendMessageSocket(broId, widget.bro.id, message, textMessage);
       broMessageController.clear();
+      appendTextMessageController.clear();
     }
   }
 
@@ -219,10 +245,19 @@ class _BroMessagingState extends State<BroMessaging> {
     ) : Container();
   }
 
-  void onTapTextField() {
+  void onTapEmojiTextField() {
     if (!showEmojiKeyboard) {
       setState(() {
         showEmojiKeyboard = true;
+      });
+    }
+  }
+
+  void onTapAppendTextField() {
+    print("tapped teh appending text field");
+    if (showEmojiKeyboard) {
+      setState(() {
+        showEmojiKeyboard = false;
       });
     }
   }
@@ -242,35 +277,57 @@ class _BroMessagingState extends State<BroMessaging> {
             Container(
               alignment: Alignment.bottomCenter,
               child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 6, vertical: 6),
+                padding: EdgeInsets.symmetric(horizontal: 6),
                 child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                  padding: EdgeInsets.symmetric(horizontal: 6),
                   decoration: BoxDecoration(
                       color: Color(0x36FFFFFF),
-                      borderRadius: BorderRadius.circular(40)
+                      borderRadius: BorderRadius.circular(35)
                   ),
                   child: Row(
                     children: [
+                      GestureDetector(
+                        onTap: () {
+                          appendTextMessage();
+                        },
+                        child: Container(
+                          height: 35,
+                          width: 35,
+                          decoration: BoxDecoration(
+                              color: Color(0x36FFFFFF),
+                              borderRadius: BorderRadius.circular(35)
+                          ),
+                          padding: EdgeInsets.symmetric(horizontal: 6),
+                          child: Icon(
+                            Icons.text_snippet,
+                            color: appendingMessage ? Colors.green : Colors.grey,
+                          )
+                        ),
+                      ),
                       Expanded(
                         child:
                         Container(
+                          padding: EdgeInsets.only(left: 15),
                           child: Form(
                             key: formKey,
                             child: TextFormField(
+                              focusNode: focusEmojiTextField,
                               validator: (val) {
                                 return val.isEmpty
                                     ? "Can't send an empty message"
                                     : null;
                               },
                               onTap: () {
-                                onTapTextField();
+                                onTapEmojiTextField();
                               },
+                              keyboardType: TextInputType.multiline,
+                              maxLines: null,
                               controller: broMessageController,
                               style: TextStyle(
                                   color: Colors.white
                               ),
                               decoration: InputDecoration(
-                                  hintText: "Message...",
+                                  hintText: "Emoji message...",
                                   hintStyle: TextStyle(
                                       color: Colors.white54
                                   ),
@@ -287,14 +344,16 @@ class _BroMessagingState extends State<BroMessaging> {
                           sendMessage();
                         },
                         child: Container(
-                            height: 40,
-                            width: 40,
+                            height: 35,
+                            width: 35,
                             decoration: BoxDecoration(
                               color: Color(0x36FFFFFF),
-                              borderRadius: BorderRadius.circular(40)
+                              borderRadius: BorderRadius.circular(35)
                             ),
-                            padding: EdgeInsets.all(10),
-                            child: Icon(Icons.send)
+                            padding: EdgeInsets.symmetric(horizontal: 6),
+                            child: Icon(
+                                Icons.send,
+                            )
                         ),
                       )
                     ],
@@ -302,11 +361,49 @@ class _BroMessagingState extends State<BroMessaging> {
                 ),
               ),
             ),
+            Container(
+                child: appendingMessage
+                    ? Container(
+                      padding: EdgeInsets.symmetric(horizontal: 6),
+                      child: Container(
+                          padding: EdgeInsets.symmetric(horizontal: 6),
+                          decoration: BoxDecoration(
+                              color: Color(0x36FFFFFF),
+                              borderRadius: BorderRadius.circular(35)),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Container(
+                                  padding: EdgeInsets.only(left: 15),
+                                  child: Form(
+                                    child: TextFormField(
+                                      onTap: () {
+                                        onTapAppendTextField();
+                                      },
+                                      focusNode: focusAppendText,
+                                      keyboardType: TextInputType.multiline,
+                                      maxLines: null,
+                                      controller: appendTextMessageController,
+                                      style: TextStyle(color: Colors.white),
+                                      decoration: InputDecoration(
+                                          hintText: "Append text message...",
+                                          hintStyle:
+                                              TextStyle(color: Colors.white54),
+                                          border: InputBorder.none),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                    )
+                    : Container()),
             Align(
               alignment: Alignment.bottomCenter,
               child: EmojiKeyboard(
                 bromotionController: broMessageController,
-                emojiKeyboardHeight: 350,
+                emojiKeyboardHeight: 300,
                 showEmojiKeyboard: showEmojiKeyboard,
                 darkMode: Settings.instance.getEmojiKeyboardDarkMode(),
               ),

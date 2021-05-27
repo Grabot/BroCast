@@ -30,7 +30,7 @@ class GetMessages {
         print(timeLastRead);
         List<Message> listWithMessages = [];
         for (var message in messageList) {
-          Message mes = new Message(message["id"], message["bro_bros_id"], message["sender_id"], message["recipient_id"], message["body"], message["timestamp"]);
+          Message mes = new Message(message["id"], message["bro_bros_id"], message["sender_id"], message["recipient_id"], message["body"], message["text_message"], message["timestamp"]);
           if (timeLastRead.isAfter(mes.timestamp)) {
             mes.isRead = true;
           }

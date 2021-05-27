@@ -7,6 +7,7 @@ class Message {
   int senderId;
   int recipientId;
   String body;
+  String textMessage;
   DateTime timestamp;
 
   bool isRead;
@@ -17,6 +18,7 @@ class Message {
   int senderId,
   int recipientId,
   String body,
+  String textMessage,
   String timestamp
       ) {
     this.id = id;
@@ -24,6 +26,7 @@ class Message {
     this.senderId = senderId;
     this.recipientId = recipientId;
     this.body = body;
+    this.textMessage = textMessage;
     if (timestamp != null) {
       this.timestamp = DateTime.parse(timestamp + 'Z').toLocal();
     } else {

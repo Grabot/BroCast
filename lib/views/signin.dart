@@ -328,7 +328,7 @@ class _SignInState extends State<SignIn> {
                 alignment: Alignment.bottomCenter,
                 child: EmojiKeyboard(
                   bromotionController: bromotionController,
-                  emojiKeyboardHeight: 320,
+                  emojiKeyboardHeight: 300,
                   showEmojiKeyboard: showEmojiKeyboard,
                   darkMode: Settings.instance.getEmojiKeyboardDarkMode()
                 ),
