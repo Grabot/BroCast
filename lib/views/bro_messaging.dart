@@ -173,15 +173,20 @@ class _BroMessagingState extends State<BroMessaging> {
   }
 
   appendTextMessage() {
-    print("going to append a real message");
     if (!appendingMessage) {
       focusAppendText.requestFocus();
+      if (broMessageController.text == "") {
+        broMessageController.text = "✉️";
+      }
       setState(() {
         showEmojiKeyboard = false;
         appendingMessage = true;
       });
     } else {
       focusEmojiTextField.requestFocus();
+      if (broMessageController.text == "✉️") {
+        broMessageController.text = "";
+      }
       setState(() {
         showEmojiKeyboard = true;
         appendingMessage = false;
@@ -254,7 +259,6 @@ class _BroMessagingState extends State<BroMessaging> {
   }
 
   void onTapAppendTextField() {
-    print("tapped teh appending text field");
     if (showEmojiKeyboard) {
       setState(() {
         showEmojiKeyboard = false;
