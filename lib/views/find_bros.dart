@@ -1,9 +1,9 @@
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:brocast/objects/bro.dart';
-import 'package:brocast/services/add_bro.dart';
 import 'package:brocast/services/notification_service.dart';
 import 'package:brocast/services/search.dart';
 import 'package:brocast/services/settings.dart';
+import 'package:brocast/services/socket_services.dart';
 import 'package:brocast/utils/shared.dart';
 import 'package:brocast/utils/utils.dart';
 import 'package:brocast/views/bro_home.dart';
@@ -36,6 +36,7 @@ class _FindBrosState extends State<FindBros> {
   @override
   void initState() {
     super.initState();
+    SocketServices.instance.listenForAddingBro(this);
     bromotionController.addListener(bromotionListener);
     NotificationService.instance.setScreen(this);
     BackButtonInterceptor.add(myInterceptor);
@@ -51,9 +52,21 @@ class _FindBrosState extends State<FindBros> {
     }
   }
 
+  broWasAdded() {
+    Navigator.pushReplacement(context, MaterialPageRoute(
+        builder: (context) => BroCastHome()
+    ));
+  }
+
+  broAddingFailed() {
+      ShowToastComponent.showDialog(
+          "Bro could not be added at this time", context);
+  }
+
   @override
   void dispose() {
     BackButtonInterceptor.remove(myInterceptor);
+    SocketServices.instance.stopListeningForAddingBro();
     super.dispose();
   }
 
@@ -219,18 +232,12 @@ class BroTileSearch extends StatelessWidget {
 
   BroTileSearch(this.bro);
 
-  final AddBro add = new AddBro();
-
   addBro(BuildContext context) {
     HelperFunction.getBroToken().then((val) {
       if (val == null || val == "") {
         print("no token found, this should not happen");
       } else {
-        add.addBro(val.toString(), bro.id).then((value) {
-          Navigator.pushReplacement(context, MaterialPageRoute(
-              builder: (context) => BroCastHome()
-          ));
-        });
+        SocketServices.instance.addBro(val.toString(), bro.id);
       }
     });
   }

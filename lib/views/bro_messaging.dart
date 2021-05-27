@@ -212,6 +212,14 @@ class _BroMessagingState extends State<BroMessaging> {
       SocketServices.instance.sendMessageSocket(broId, widget.bro.id, message, textMessage);
       broMessageController.clear();
       appendTextMessageController.clear();
+
+      if (appendingMessage) {
+        focusEmojiTextField.requestFocus();
+        setState(() {
+          showEmojiKeyboard = true;
+          appendingMessage = false;
+        });
+      }
     }
   }
 

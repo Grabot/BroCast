@@ -1,4 +1,5 @@
 import 'package:brocast/constants/api_path.dart';
+import 'package:brocast/objects/bro.dart';
 import 'package:brocast/objects/message.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
@@ -61,6 +62,41 @@ class SocketServices {
     });
   }
 
+  addBro(String token, int broId) {
+    if (this.socket.connected) {
+      print("adding a bro!");
+      this.socket.emit("message_event_add_bro",
+          {
+            "token": token,
+            "bros_bro_id": broId
+          }
+      );
+    }
+  }
+
+  listenForAddingBro(var findBro) {
+    this.socket.on('message_event_add_bro_success', (data) {
+      findBro.broWasAdded();
+    });
+    this.socket.on('message_event_add_bro_failed', (data) {
+      findBro.broAddingFailed();
+    });
+  }
+
+  stopListeningForAddingBro() {
+    this.socket.off('message_event_add_bro_failed', (data) => print(data));
+  }
+
+  listenForBroHome(var broHome) {
+    this.socket.on('message_event_bro_added_you', (data) {
+      broHome.broAddedYou();
+    });
+  }
+
+  stopListeningForBroHome() {
+    this.socket.off('message_event_bro_added_you', (data) => print(data));
+  }
+
   stopListeningForProfileChange() {
     this.socket.off('message_event_bromotion_change', (data) => print(data));
     this.socket.off('message_event_password_change', (data) => print(data));
@@ -101,12 +137,32 @@ class SocketServices {
     }
   }
 
+  joinRoomSolo(String token) {
+    if (this.socket.connected) {
+      this.socket.emit("join_solo",
+        {
+          "token": token,
+        },
+      );
+    }
+  }
+
   joinRoom(int broId, int brosBroId) {
     if (this.socket.connected) {
       this.socket.emit("join",
         {
           "bro_id": broId,
           "bros_bro_id": brosBroId
+        },
+      );
+    }
+  }
+
+  leaveRoomSolo(String token) {
+    if (this.socket.connected) {
+      this.socket.emit("leave_solo",
+        {
+          "token": token
         },
       );
     }

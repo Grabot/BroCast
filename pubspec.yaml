@@ -31,7 +31,7 @@ dependencies:
   socket_io_client: ^2.0.0-beta.4-nullsafety.0
   intl: ^0.17.0
   tuple: ^2.0.0
-  emoji_keyboard_flutter: ^1.0.1
+  emoji_keyboard_flutter: ^1.0.2
   firebase_messaging: ^10.0.0
   flutter_local_notifications: ^5.0.0+4
   firebase_core: ^1.1.2

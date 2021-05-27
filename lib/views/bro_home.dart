@@ -24,6 +24,8 @@ class _BroCastHomeState extends State<BroCastHome> {
   GetBros getBros = new GetBros();
   Auth auth = new Auth();
 
+  String token;
+
   bool isSearching = false;
   List<Bro> bros = [];
 
@@ -58,6 +60,14 @@ class _BroCastHomeState extends State<BroCastHome> {
     });
   }
 
+  void broAddedYou() {
+    if (token != null) {
+      setState(() {
+        searchBros(token);
+      });
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -75,9 +85,12 @@ class _BroCastHomeState extends State<BroCastHome> {
       } else {
         HelperFunction.getBroToken().then((val) {
           if (val == null || val == "") {
-            print("no token yet, wait until a token is saved");
+            print("no token, should not be possible here!");
           } else {
+            token = val.toString();
             searchBros(val.toString());
+            SocketServices.instance.joinRoomSolo(token);
+            SocketServices.instance.listenForBroHome(this);
           }
         });
       }
@@ -87,10 +100,13 @@ class _BroCastHomeState extends State<BroCastHome> {
   @override
   void dispose() {
     BackButtonInterceptor.remove(myInterceptor);
+    SocketServices.instance.leaveRoomSolo(token);
+    SocketServices.instance.stopListeningForBroHome();
     super.dispose();
   }
 
   bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
+    SocketServices.instance.leaveRoomSolo(token);
     SocketServices.instance.closeSockConnection();
     SystemChannels.platform.invokeMethod('SystemNavigator.pop');
     return true;
