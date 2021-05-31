@@ -77,13 +77,12 @@ class _BroCastHomeState extends State<BroCastHome> {
 
     // This is called after the build is done.
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Bro chatBro = NotificationService.instance.getGoToBro();
+      BroBros chatBro = NotificationService.instance.getGoToBro();
       if (chatBro != null) {
-        // TODO: @Skools change notification to brosbro!
-        // NotificationService.instance.resetGoToBro();
-        // Navigator.pushReplacement(context, MaterialPageRoute(
-        //     builder: (context) => BroMessaging(broBros,: chatBro)
-        // ));
+        NotificationService.instance.resetGoToBro();
+        Navigator.pushReplacement(context, MaterialPageRoute(
+            builder: (context) => BroMessaging(broBros: chatBro)
+        ));
       } else {
         HelperFunction.getBroToken().then((val) {
           if (val == null || val == "") {
@@ -114,11 +113,10 @@ class _BroCastHomeState extends State<BroCastHome> {
     return true;
   }
 
-  void goToDifferentChat(Bro chatBro) {
-    // TODO: @Skools change to broBros
-    // Navigator.pushReplacement(context, MaterialPageRoute(
-    //     builder: (context) => BroMessaging(broBros: chatBro)
-    // ));
+  void goToDifferentChat(BroBros chatBro) {
+    Navigator.pushReplacement(context, MaterialPageRoute(
+        builder: (context) => BroMessaging(broBros: chatBro)
+    ));
   }
 
   @override
@@ -176,13 +174,13 @@ class _BroTileState extends State<BroTile> {
             selectBro(context);
           },
           child: Container(
-              color: Colors.black,
+              color: widget.broBros.broColor.withOpacity(0.5),
               padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Row(children: [
-                      SizedBox(width: 40),
+                      SizedBox(width: 15),
                       Text(
                           widget.broBros.chatName,
                           style: TextStyle(

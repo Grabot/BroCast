@@ -1,7 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:awesome_notifications/awesome_notifications.dart';
-import 'package:brocast/objects/bro.dart';
+import 'package:brocast/objects/bro_bros.dart';
 import 'package:flutter/material.dart';
 
 class NotificationService {
@@ -9,7 +9,7 @@ class NotificationService {
   static get instance => _instance;
 
   var currentScreen;
-  Bro goToBro;
+  BroBros goToBro;
   int notificationId = 1;
 
   NotificationService._internal() {
@@ -46,11 +46,11 @@ class NotificationService {
 
       Map<String, dynamic> broResult = receivedNotification.payload;
       if (broResult != null) {
-        String broName = broResult["bro_name"];
-        String bromotion = broResult["bromotion"];
         String broId = broResult["id"];
-        if (broName != null && bromotion != null && broId != null) {
-          Bro broNotify = Bro(int.parse(broId), broName, bromotion);
+        String chatName = broResult["chat_name"];
+        String chatColour = broResult["chat_colour"];
+        if (broId != null && chatName != null && chatColour != null) {
+          BroBros broNotify = new BroBros(int.parse(broId), chatName, chatColour);
           if (this.currentScreen != null) {
             this.currentScreen.goToDifferentChat(broNotify);
           } else {
@@ -61,7 +61,7 @@ class NotificationService {
     });
   }
 
-  Bro getGoToBro() {
+  BroBros getGoToBro() {
     return this.goToBro;
   }
 
@@ -73,19 +73,18 @@ class NotificationService {
     this.currentScreen = currentScreen;
   }
 
-  Future<void> showNotification(String broId, String broName, String bromotion, String messageBody) async {
+  Future<void> showNotification(int broId, String chatName, String chatColour, String messageBody) async {
     await AwesomeNotifications().createNotification(
         content: NotificationContent(
             id: notificationId,
             channelKey: "brocast_notification",
-            title: "$broName $bromotion:",
+            title: "$chatName:",
             body: messageBody,
             color: Colors.red,
             payload: {
-              "id": broId,
-              "bro_name": broName,
-              "bromotion": bromotion,
-              "message_body": messageBody
+              "id": broId.toString(),
+              "chat_name": chatName,
+              "chat_colour": chatColour
             }
         )
     );

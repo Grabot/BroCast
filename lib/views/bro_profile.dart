@@ -1,5 +1,6 @@
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:brocast/objects/bro.dart';
+import 'package:brocast/objects/bro_bros.dart';
 import 'package:brocast/services/notification_service.dart';
 import 'package:brocast/services/settings.dart';
 import 'package:brocast/services/socket_services.dart';
@@ -76,11 +77,10 @@ class _BroProfileState extends State<BroProfile> {
     BackButtonInterceptor.add(myInterceptor);
   }
 
-  void goToDifferentChat(Bro chatBro) {
-    // TODO: @Skools change to brosbro!
-    // Navigator.pushReplacement(context, MaterialPageRoute(
-    //     builder: (context) => BroMessaging(bro: chatBro)
-    // ));
+  void goToDifferentChat(BroBros chatBro) {
+    Navigator.pushReplacement(context, MaterialPageRoute(
+        builder: (context) => BroMessaging(broBros: chatBro)
+    ));
   }
 
   bromotionListener() {

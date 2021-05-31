@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:brocast/services/notification_service.dart';
 import 'package:brocast/services/settings.dart';
 import 'package:brocast/views/opening_screen.dart';
@@ -21,11 +23,12 @@ void initializeFirebase() async {
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   Map<String, dynamic> broResult = message.data;
   if (broResult != null) {
-    String broName = broResult["bro_name"];
-    String bromotion = broResult["bromotion"];
     String messageBody = broResult["message_body"];
-    String broId = broResult["id"];
-    NotificationService.instance.showNotification(broId, broName, bromotion, messageBody);
+    Map<String, dynamic> chat = jsonDecode(broResult["chat"]);
+    int brosBroId = chat["bros_bro_id"];
+    String chatName = chat["chat_name"];
+    String chatColour = chat["chat_colour"];
+    NotificationService.instance.showNotification(brosBroId, chatName, chatColour, messageBody);
   }
 }
 

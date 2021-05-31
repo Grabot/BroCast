@@ -69,11 +69,10 @@ class _BroMessagingState extends State<BroMessaging> {
     super.dispose();
   }
 
-  void goToDifferentChat(Bro chatBro) {
-    // TODO: @Skools change this to BroBros!
-    // Navigator.pushReplacement(context, MaterialPageRoute(
-    //     builder: (context) => BroMessaging(broBros: chatBro)
-    // ));
+  void goToDifferentChat(BroBros chatBro) {
+    Navigator.pushReplacement(context, MaterialPageRoute(
+        builder: (context) => BroMessaging(broBros: chatBro)
+    ));
   }
 
   bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
