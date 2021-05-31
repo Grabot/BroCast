@@ -104,9 +104,10 @@ class _FindBrosState extends State<FindBros> {
   }
 
   void goToDifferentChat(Bro chatBro) {
-    Navigator.pushReplacement(context, MaterialPageRoute(
-        builder: (context) => BroMessaging(bro: chatBro)
-    ));
+    // TODO: @Skools change to broBros!
+    // Navigator.pushReplacement(context, MaterialPageRoute(
+    //     builder: (context) => BroMessaging(bro: chatBro)
+    // ));
   }
 
   searchBros() {

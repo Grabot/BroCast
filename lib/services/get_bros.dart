@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:brocast/constants/api_path.dart';
 import 'package:brocast/objects/bro.dart';
+import 'package:brocast/objects/bro_bros.dart';
 import 'package:http/http.dart' as http;
 
 class GetBros {
@@ -23,10 +24,12 @@ class GetBros {
       bool result = registerResponse["result"];
       if (result) {
         var broList = registerResponse["bro_list"];
-        List<Bro> listWithBros = [];
+        List<BroBros> listWithBros = [];
         for (var br0 in broList) {
-          Bro bro = new Bro(br0["id"], br0["bro_name"], br0["bromotion"]);
-          listWithBros.add(bro);
+          print("the bro!");
+          print(br0);
+          BroBros broBros = new BroBros(br0["bros_bro_id"], br0["chat_name"], br0["chat_colour"]);
+          listWithBros.add(broBros);
         }
         return listWithBros;
       }

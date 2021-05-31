@@ -77,9 +77,10 @@ class _BroProfileState extends State<BroProfile> {
   }
 
   void goToDifferentChat(Bro chatBro) {
-    Navigator.pushReplacement(context, MaterialPageRoute(
-        builder: (context) => BroMessaging(bro: chatBro)
-    ));
+    // TODO: @Skools change to brosbro!
+    // Navigator.pushReplacement(context, MaterialPageRoute(
+    //     builder: (context) => BroMessaging(bro: chatBro)
+    // ));
   }
 
   bromotionListener() {

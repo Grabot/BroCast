@@ -1,4 +1,5 @@
 import 'package:back_button_interceptor/back_button_interceptor.dart';
+import 'package:brocast/objects/bro_bros.dart';
 import 'package:brocast/services/notification_service.dart';
 import 'package:brocast/services/settings.dart';
 import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
@@ -15,9 +16,9 @@ import 'package:intl/intl.dart';
 
 class BroMessaging extends StatefulWidget {
 
-  final Bro bro;
+  final BroBros broBros;
 
-  BroMessaging({ Key key, this.bro }): super(key: key);
+  BroMessaging({ Key key, this.broBros }): super(key: key);
 
   @override
   _BroMessagingState createState() => _BroMessagingState();
@@ -53,7 +54,7 @@ class _BroMessagingState extends State<BroMessaging> {
         print("no token yet, this is not really possible");
       } else {
         broId = val;
-        SocketServices.instance.joinRoom(broId, widget.bro.id);
+        SocketServices.instance.joinRoom(broId, widget.broBros.id);
       }
     });
     BackButtonInterceptor.add(myInterceptor);
@@ -63,15 +64,16 @@ class _BroMessagingState extends State<BroMessaging> {
   void dispose() {
     focusAppendText.dispose();
     focusEmojiTextField.dispose();
-    SocketServices.instance.leaveRoom(broId, widget.bro.id);
+    SocketServices.instance.leaveRoom(broId, widget.broBros.id);
     BackButtonInterceptor.remove(myInterceptor);
     super.dispose();
   }
 
   void goToDifferentChat(Bro chatBro) {
-    Navigator.pushReplacement(context, MaterialPageRoute(
-        builder: (context) => BroMessaging(bro: chatBro)
-    ));
+    // TODO: @Skools change this to BroBros!
+    // Navigator.pushReplacement(context, MaterialPageRoute(
+    //     builder: (context) => BroMessaging(broBros: chatBro)
+    // ));
   }
 
   bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
@@ -93,7 +95,7 @@ class _BroMessagingState extends State<BroMessaging> {
       if (val == null || val == "") {
         print("no token yet, this is not really possible");
       } else {
-        get.getMessages(val, widget.bro.id).then((val) {
+        get.getMessages(val, widget.broBros.id).then((val) {
           if (!(val is String)) {
             List<Message> messes = val;
             if (messes.length != 0) {
@@ -205,11 +207,11 @@ class _BroMessagingState extends State<BroMessaging> {
       if (timestampString.endsWith('Z')) {
         timestampString = timestampString.substring(0, timestampString.length - 1);
       }
-      Message mes = new Message(0, 0, 0, widget.bro.id, message, textMessage, timestampString);
+      Message mes = new Message(0, 0, 0, widget.broBros.id, message, textMessage, timestampString);
       setState(() {
         this.messages.insert(0, mes);
       });
-      SocketServices.instance.sendMessageSocket(broId, widget.bro.id, message, textMessage);
+      SocketServices.instance.sendMessageSocket(broId, widget.broBros.id, message, textMessage);
       broMessageController.clear();
       appendTextMessageController.clear();
 
@@ -224,12 +226,12 @@ class _BroMessagingState extends State<BroMessaging> {
   }
 
   updateMessages(Message message) {
-    if (message.recipientId == widget.bro.id) {
+    if (message.recipientId == widget.broBros.id) {
       // We added it immediately as a placeholder.
       // When we get it from the server we add it for real and remove the placeholder
       this.messages.removeAt(0);
     } else {
-      SocketServices.instance.messageReadUpdate(broId, widget.bro.id);
+      SocketServices.instance.messageReadUpdate(broId, widget.broBros.id);
     }
     updateDateTiles(message);
     setState(() {
@@ -253,7 +255,7 @@ class _BroMessagingState extends State<BroMessaging> {
         shrinkWrap: true,
         reverse: true,
         itemBuilder: (context, index) {
-          return MessageTile(message: messages[index], myMessage: messages[index].recipientId == widget.bro.id);
+          return MessageTile(message: messages[index], myMessage: messages[index].recipientId == widget.broBros.id);
         }
     ) : Container();
   }
@@ -277,7 +279,7 @@ class _BroMessagingState extends State<BroMessaging> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBarMain(context, true, "${widget.bro.broName} ${widget.bro.bromotion}"),
+      appBar: appBarMain(context, true, "${widget.broBros.chatName}"),
       body: Container(
         child: Column(
           children: [

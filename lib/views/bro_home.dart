@@ -1,5 +1,6 @@
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:brocast/objects/bro.dart';
+import 'package:brocast/objects/bro_bros.dart';
 import 'package:brocast/services/auth.dart';
 import 'package:brocast/services/get_bros.dart';
 import 'package:brocast/services/notification_service.dart';
@@ -27,7 +28,7 @@ class _BroCastHomeState extends State<BroCastHome> {
   String token;
 
   bool isSearching = false;
-  List<Bro> bros = [];
+  List<BroBros> bros = [];
 
   Widget broList() {
     return bros.isNotEmpty ?
@@ -36,7 +37,7 @@ class _BroCastHomeState extends State<BroCastHome> {
         itemCount: bros.length,
         itemBuilder: (context, index) {
           return BroTile(
-              bros[index]
+              broBros: bros[index]
           );
         }) : Container();
   }
@@ -78,10 +79,11 @@ class _BroCastHomeState extends State<BroCastHome> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Bro chatBro = NotificationService.instance.getGoToBro();
       if (chatBro != null) {
-        NotificationService.instance.resetGoToBro();
-        Navigator.pushReplacement(context, MaterialPageRoute(
-            builder: (context) => BroMessaging(bro: chatBro)
-        ));
+        // TODO: @Skools change notification to brosbro!
+        // NotificationService.instance.resetGoToBro();
+        // Navigator.pushReplacement(context, MaterialPageRoute(
+        //     builder: (context) => BroMessaging(broBros,: chatBro)
+        // ));
       } else {
         HelperFunction.getBroToken().then((val) {
           if (val == null || val == "") {
@@ -113,9 +115,10 @@ class _BroCastHomeState extends State<BroCastHome> {
   }
 
   void goToDifferentChat(Bro chatBro) {
-    Navigator.pushReplacement(context, MaterialPageRoute(
-        builder: (context) => BroMessaging(bro: chatBro)
-    ));
+    // TODO: @Skools change to broBros
+    // Navigator.pushReplacement(context, MaterialPageRoute(
+    //     builder: (context) => BroMessaging(broBros: chatBro)
+    // ));
   }
 
   @override
@@ -143,43 +146,63 @@ class _BroCastHomeState extends State<BroCastHome> {
   }
 }
 
-class BroTile extends StatelessWidget {
-  final Bro bro;
+class BroTile extends StatefulWidget {
 
-  BroTile(this.bro);
+  BroBros broBros;
+
+  BroTile({
+    Key key,
+    this.broBros
+  }): super(key: key);
+
+  @override
+  _BroTileState createState() => _BroTileState();
+}
+
+class _BroTileState extends State<BroTile> {
 
   selectBro(BuildContext context) {
     Navigator.pushReplacement(context, MaterialPageRoute(
-        builder: (context) => BroMessaging(bro: bro)
+        builder: (context) => BroMessaging(broBros: widget.broBros)
     ));
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-        child: Material(
-          child: InkWell(
-            onTap: (){
-              selectBro(context);
-            },
-            child: Container(
+      child: Material(
+        child: InkWell(
+          onTap: (){
+            selectBro(context);
+          },
+          child: Container(
+              color: Colors.black,
               padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Container(
-                    height: 40,
-                    width: 40,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      color: bro.broColor,
-                      borderRadius: BorderRadius.circular(40)
-                    ),
-                    child: Text("${bro.bromotion}", style: simpleTextStyle())
+                  Row(children: [
+                      SizedBox(width: 40),
+                      Text(
+                          widget.broBros.chatName,
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 20
+                          )),
+                    ],
                   ),
-                  SizedBox(width: 8),
-                  Text(bro.getFullBroName(), style: simpleTextStyle())
+                  Container(
+                      height: 40,
+                      width: 40,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                          color: widget.broBros.broColor,
+                          borderRadius: BorderRadius.circular(40)
+                      ),
+                      child: Text("0", style: simpleTextStyle())
+                  ),
                 ],
-            )
+              )
           ),
         ),
         color: Colors.transparent,
