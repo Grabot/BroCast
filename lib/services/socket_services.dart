@@ -10,6 +10,7 @@ class SocketServices {
   IO.Socket socket;
 
   var messaging;
+  var broHome;
 
   SocketServices._internal( ) {
     startSockConnection();
@@ -39,6 +40,10 @@ class SocketServices {
 
   setMessaging(var messaging) {
     this.messaging = messaging;
+  }
+
+  resetMessaging() {
+    this.messaging = null;
   }
 
   listenForProfileChange(var profilePage) {
@@ -87,13 +92,15 @@ class SocketServices {
     this.socket.off('message_event_add_bro_failed', (data) => print(data));
   }
 
-  listenForBroHome(var broHome) {
+  setBroHome(var broHome) {
+    this.broHome = broHome;
     this.socket.on('message_event_bro_added_you', (data) {
       broHome.broAddedYou();
     });
   }
 
-  stopListeningForBroHome() {
+  resetBroHome() {
+    this.broHome = null;
     this.socket.off('message_event_bro_added_you', (data) => print(data));
   }
 
@@ -193,8 +200,23 @@ class SocketServices {
   }
 
   messageReceived(var data) {
-    Message mes = new Message(data["id"], data["bro_bros_id"], data["sender_id"], data["recipient_id"], data["body"], data["text_message"], data["timestamp"]);
-    this.messaging.updateMessages(mes);
+    print("we have received a message!");
+    if (this.messaging != null) {
+      print("The messaging var is not null");
+      Message mes = new Message(
+          data["id"],
+          data["bro_bros_id"],
+          data["sender_id"],
+          data["recipient_id"],
+          data["body"],
+          data["text_message"],
+          data["timestamp"]);
+      this.messaging.updateMessages(mes);
+    } else {
+      if (broHome != null) {
+        this.broHome.updateMessages(data["sender_id"]);
+      }
+    }
   }
 
   messageReadUpdate(int broId, int brosBroId) {

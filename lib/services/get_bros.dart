@@ -26,9 +26,7 @@ class GetBros {
         var broList = registerResponse["bro_list"];
         List<BroBros> listWithBros = [];
         for (var br0 in broList) {
-          print("the bro!");
-          print(br0);
-          BroBros broBros = new BroBros(br0["bros_bro_id"], br0["chat_name"], br0["chat_colour"]);
+          BroBros broBros = new BroBros(br0["bros_bro_id"], br0["chat_name"], br0["chat_colour"], br0["unread_messages"]);
           listWithBros.add(broBros);
         }
         return listWithBros;

@@ -91,10 +91,22 @@ class _BroCastHomeState extends State<BroCastHome> {
             token = val.toString();
             searchBros(val.toString());
             SocketServices.instance.joinRoomSolo(token);
-            SocketServices.instance.listenForBroHome(this);
+            SocketServices.instance.setBroHome(this);
           }
         });
       }
+    });
+  }
+
+  updateMessages(int senderId) {
+    // TODO: @Skools add a sorting of the bro list based on last message send.
+    for (BroBros br0 in bros) {
+      if (senderId == br0.id) {
+        br0.unreadMessages += 1;
+      }
+    }
+    setState(() {
+      bros;
     });
   }
 
@@ -102,7 +114,7 @@ class _BroCastHomeState extends State<BroCastHome> {
   void dispose() {
     BackButtonInterceptor.remove(myInterceptor);
     SocketServices.instance.leaveRoomSolo(token);
-    SocketServices.instance.stopListeningForBroHome();
+    SocketServices.instance.resetBroHome();
     super.dispose();
   }
 
@@ -174,7 +186,17 @@ class _BroTileState extends State<BroTile> {
             selectBro(context);
           },
           child: Container(
-              color: widget.broBros.broColor.withOpacity(0.5),
+              color:
+              widget.broBros.unreadMessages < 5 ?
+              widget.broBros.unreadMessages < 4 ?
+              widget.broBros.unreadMessages < 3 ?
+              widget.broBros.unreadMessages < 2 ?
+              widget.broBros.unreadMessages < 1 ? widget.broBros.broColor.withOpacity(0.3)
+                  : widget.broBros.broColor.withOpacity(0.4)
+                  : widget.broBros.broColor.withOpacity(0.5)
+                  : widget.broBros.broColor.withOpacity(0.6)
+                  : widget.broBros.broColor.withOpacity(0.7)
+                  : widget.broBros.broColor.withOpacity(0.8),
               padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -197,7 +219,7 @@ class _BroTileState extends State<BroTile> {
                           color: widget.broBros.broColor,
                           borderRadius: BorderRadius.circular(40)
                       ),
-                      child: Text("0", style: simpleTextStyle())
+                      child: Text(widget.broBros.unreadMessages.toString(), style: simpleTextStyle())
                   ),
                 ],
               )

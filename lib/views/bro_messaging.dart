@@ -64,6 +64,7 @@ class _BroMessagingState extends State<BroMessaging> {
   void dispose() {
     focusAppendText.dispose();
     focusEmojiTextField.dispose();
+    SocketServices.instance.resetMessaging();
     SocketServices.instance.leaveRoom(broId, widget.broBros.id);
     BackButtonInterceptor.remove(myInterceptor);
     super.dispose();
@@ -230,6 +231,8 @@ class _BroMessagingState extends State<BroMessaging> {
       // When we get it from the server we add it for real and remove the placeholder
       this.messages.removeAt(0);
     } else {
+      // If we didn't send this message it is from the other person.
+      // We send a response, indicating that we read the messages
       SocketServices.instance.messageReadUpdate(broId, widget.broBros.id);
     }
     updateDateTiles(message);

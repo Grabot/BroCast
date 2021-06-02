@@ -58,8 +58,6 @@ class Auth {
   Future signIn(String broName, String bromotion, String password, String token) async {
 
     String registrationId = await FirebaseMessaging.instance.getToken();
-    print("wow a token");
-    print(registrationId);
 
     String urlLogin = baseUrl + 'login';
     Uri uriLogin = Uri.parse(urlLogin);
