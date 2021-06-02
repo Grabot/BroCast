@@ -26,9 +26,16 @@ class GetBros {
         var broList = registerResponse["bro_list"];
         List<BroBros> listWithBros = [];
         for (var br0 in broList) {
-          BroBros broBros = new BroBros(br0["bros_bro_id"], br0["chat_name"], br0["chat_colour"], br0["unread_messages"]);
+          BroBros broBros = new BroBros(
+              br0["bros_bro_id"],
+              br0["chat_name"],
+              br0["chat_colour"],
+              br0["unread_messages"],
+              br0["last_time_activity"]
+          );
           listWithBros.add(broBros);
         }
+        listWithBros.sort((b, a) => a.lastActivity.compareTo(b.lastActivity));
         return listWithBros;
       }
     }

@@ -99,14 +99,15 @@ class _BroCastHomeState extends State<BroCastHome> {
   }
 
   updateMessages(int senderId) {
-    // TODO: @Skools add a sorting of the bro list based on last message send.
     for (BroBros br0 in bros) {
       if (senderId == br0.id) {
         br0.unreadMessages += 1;
+        br0.lastActivity = DateTime.now();
       }
     }
+
     setState(() {
-      bros;
+      bros.sort((b, a) => a.lastActivity.compareTo(b.lastActivity));
     });
   }
 
@@ -177,6 +178,20 @@ class _BroTileState extends State<BroTile> {
     ));
   }
 
+  Color getTextColor(Color color) {
+    double luminance =
+        (0.299 * color.red + 0.587 * color.green + 0.114 * color.blue) / 255;
+
+    // If the color is very bright we make the text colour black.
+    // We set the limit high because we want it to be white mostly
+    if (luminance > 0.80) {
+      return Colors.black;
+    } else {
+      return Colors.white;
+    }
+
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -219,7 +234,13 @@ class _BroTileState extends State<BroTile> {
                           color: widget.broBros.broColor,
                           borderRadius: BorderRadius.circular(40)
                       ),
-                      child: Text(widget.broBros.unreadMessages.toString(), style: simpleTextStyle())
+                      child: Text(
+                          widget.broBros.unreadMessages.toString(),
+                          style: TextStyle(
+                              color: getTextColor(widget.broBros.broColor),
+                              fontSize: 16
+                          ),
+                      )
                   ),
                 ],
               )

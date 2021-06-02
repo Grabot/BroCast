@@ -50,7 +50,7 @@ class NotificationService {
         String chatName = broResult["chat_name"];
         String chatColour = broResult["chat_colour"];
         if (broId != null && chatName != null && chatColour != null) {
-          BroBros broNotify = new BroBros(int.parse(broId), chatName, chatColour, 0);
+          BroBros broNotify = new BroBros(int.parse(broId), chatName, chatColour, 0, null);
           if (this.currentScreen != null) {
             this.currentScreen.goToDifferentChat(broNotify);
           } else {
