@@ -3,7 +3,6 @@ import 'package:brocast/objects/bro_bros.dart';
 import 'package:brocast/services/notification_service.dart';
 import 'package:brocast/services/settings.dart';
 import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
-import 'package:brocast/objects/bro.dart';
 import 'package:brocast/objects/message.dart';
 import 'package:brocast/services/get_messages.dart';
 import 'package:brocast/services/send_message.dart';
@@ -46,14 +45,14 @@ class _BroMessagingState extends State<BroMessaging> {
   @override
   void initState() {
     super.initState();
-    NotificationService.instance.setScreen(this);
-    SocketServices.instance.setMessaging(this);
     getMessages();
     HelperFunction.getBroId().then((val) {
       if (val == null || val == -1) {
         print("no token yet, this is not really possible");
       } else {
         broId = val;
+        SocketServices.instance.setMessaging(this);
+        NotificationService.instance.setScreen(this);
         SocketServices.instance.joinRoom(broId, widget.broBros.id);
       }
     });
@@ -62,9 +61,9 @@ class _BroMessagingState extends State<BroMessaging> {
 
   @override
   void dispose() {
+    print("disposing the messaging screen thing");
     focusAppendText.dispose();
     focusEmojiTextField.dispose();
-    SocketServices.instance.resetMessaging();
     SocketServices.instance.leaveRoom(broId, widget.broBros.id);
     BackButtonInterceptor.remove(myInterceptor);
     super.dispose();
@@ -110,6 +109,10 @@ class _BroMessagingState extends State<BroMessaging> {
         });
       }
     });
+  }
+
+  int getBroBrosId() {
+    return widget.broBros.id;
   }
 
   setDateTiles(List<Message> messes) {

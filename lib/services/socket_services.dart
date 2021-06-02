@@ -1,7 +1,11 @@
 import 'package:brocast/constants/api_path.dart';
 import 'package:brocast/objects/bro.dart';
+import 'package:brocast/objects/bro_bros.dart';
 import 'package:brocast/objects/message.dart';
+import 'package:brocast/utils/bro_list.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
+
+import 'notification_service.dart';
 
 class SocketServices {
 
@@ -34,6 +38,7 @@ class SocketServices {
 
     socket.on('message_event', (data) => print(data));
     socket.on('message_event_send', (data) => messageReceived(data));
+    socket.on('message_event_send_solo', (data) => messageReceivedSolo(data));
     socket.on('message_event_read', (data) => messageRead(data));
     socket.open();
   }
@@ -200,7 +205,6 @@ class SocketServices {
   }
 
   messageReceived(var data) {
-    print("we have received a message!");
     if (this.messaging != null) {
       print("The messaging var is not null");
       Message mes = new Message(
@@ -212,9 +216,29 @@ class SocketServices {
           data["text_message"],
           data["timestamp"]);
       this.messaging.updateMessages(mes);
-    } else {
-      if (broHome != null) {
-        this.broHome.updateMessages(data["sender_id"]);
+    }
+  }
+
+  messageReceivedSolo(var data) {
+    print("we have received a SOLO message!");
+    print(data);
+    if(broHome != null) {
+      this.broHome.updateMessages(data["sender_id"]);
+    }
+    for (BroBros br0 in BroList.instance.getBros()) {
+      if (br0.id == data["sender_id"]) {
+        if (this.messaging != null) {
+          print("we're in the messaging mode now");
+          print("the bro id is ${this.messaging.getBroBrosId()}");
+          if (this.messaging.getBroBrosId() != data["sender_id"]) {
+            NotificationService.instance.showNotification(
+                br0.id, br0.chatName, "", data["body"]);
+          }
+        } else {
+          print("messaging is null");
+          NotificationService.instance.showNotification(
+              br0.id, br0.chatName, "", data["body"]);
+        }
       }
     }
   }

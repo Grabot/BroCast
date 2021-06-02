@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:brocast/constants/api_path.dart';
+import 'package:brocast/services/socket_services.dart';
 import 'package:brocast/utils/shared.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:http/http.dart' as http;
@@ -42,6 +43,8 @@ class Auth {
         String message = registerResponse["message"];
         if (result) {
           String token = registerResponse["token"];
+          SocketServices.instance.joinRoomSolo(token);
+
           int broId = registerResponse["bro"]["id"];
           String broName = registerResponse["bro"]["bro_name"];
           String bromotion = registerResponse["bro"]["bromotion"];
@@ -96,6 +99,8 @@ class Auth {
         String message = registerResponse["message"];
         if (result) {
           String token = registerResponse["token"];
+          SocketServices.instance.joinRoomSolo(token);
+
           int broId = registerResponse["bro"]["id"];
           String broName = registerResponse["bro"]["bro_name"];
           String bromotion = registerResponse["bro"]["bromotion"];

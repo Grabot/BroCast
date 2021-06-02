@@ -48,9 +48,8 @@ class NotificationService {
       if (broResult != null) {
         String broId = broResult["id"];
         String chatName = broResult["chat_name"];
-        String chatColour = broResult["chat_colour"];
-        if (broId != null && chatName != null && chatColour != null) {
-          BroBros broNotify = new BroBros(int.parse(broId), chatName, chatColour, 0, null);
+        if (broId != null && chatName != null) {
+          BroBros broNotify = new BroBros(int.parse(broId), chatName, "", 0, null);
           if (this.currentScreen != null) {
             this.currentScreen.goToDifferentChat(broNotify);
           } else {
@@ -83,12 +82,14 @@ class NotificationService {
             color: Colors.red,
             payload: {
               "id": broId.toString(),
-              "chat_name": chatName,
-              "chat_colour": chatColour
+              "chat_name": chatName
             }
         )
     );
     notificationId += 1;
   }
 
+  dismissAllNotifications() async {
+    await AwesomeNotifications().dismissAllNotifications();
+  }
 }
