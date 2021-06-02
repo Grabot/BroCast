@@ -40,22 +40,14 @@ class _BroMessagingState extends State<BroMessaging> {
 
   // SocketServices socket;
   List<Message> messages = [];
-  int broId;
 
   @override
   void initState() {
     super.initState();
     getMessages();
-    HelperFunction.getBroId().then((val) {
-      if (val == null || val == -1) {
-        print("no token yet, this is not really possible");
-      } else {
-        broId = val;
-        SocketServices.instance.setMessaging(this);
-        NotificationService.instance.setScreen(this);
-        SocketServices.instance.joinRoom(broId, widget.broBros.id);
-      }
-    });
+    SocketServices.instance.setMessaging(this);
+    NotificationService.instance.setScreen(this);
+    SocketServices.instance.joinRoom(Settings.instance.getBroId(), widget.broBros.id);
     BackButtonInterceptor.add(myInterceptor);
   }
 
@@ -64,7 +56,7 @@ class _BroMessagingState extends State<BroMessaging> {
     print("disposing the messaging screen thing");
     focusAppendText.dispose();
     focusEmojiTextField.dispose();
-    SocketServices.instance.leaveRoom(broId, widget.broBros.id);
+    SocketServices.instance.leaveRoom(Settings.instance.getBroId(), widget.broBros.id);
     BackButtonInterceptor.remove(myInterceptor);
     super.dispose();
   }
@@ -90,23 +82,17 @@ class _BroMessagingState extends State<BroMessaging> {
   }
 
   getMessages() {
-    HelperFunction.getBroToken().then((val) {
-      if (val == null || val == "") {
-        print("no token yet, this is not really possible");
+    get.getMessages(Settings.instance.getToken(), widget.broBros.id).then((val) {
+      if (!(val is String)) {
+        List<Message> messes = val;
+        if (messes.length != 0) {
+          setDateTiles(messes);
+          setState(() {
+            messages = messes;
+          });
+        }
       } else {
-        get.getMessages(val, widget.broBros.id).then((val) {
-          if (!(val is String)) {
-            List<Message> messes = val;
-            if (messes.length != 0) {
-              setDateTiles(messes);
-              setState(() {
-                messages = messes;
-              });
-            }
-          } else {
-            ShowToastComponent.showDialog(val.toString(), context);
-          }
-        });
+        ShowToastComponent.showDialog(val.toString(), context);
       }
     });
   }
@@ -214,7 +200,7 @@ class _BroMessagingState extends State<BroMessaging> {
       setState(() {
         this.messages.insert(0, mes);
       });
-      SocketServices.instance.sendMessageSocket(broId, widget.broBros.id, message, textMessage);
+      SocketServices.instance.sendMessageSocket(Settings.instance.getBroId(), widget.broBros.id, message, textMessage);
       broMessageController.clear();
       appendTextMessageController.clear();
 
@@ -236,7 +222,7 @@ class _BroMessagingState extends State<BroMessaging> {
     } else {
       // If we didn't send this message it is from the other person.
       // We send a response, indicating that we read the messages
-      SocketServices.instance.messageReadUpdate(broId, widget.broBros.id);
+      SocketServices.instance.messageReadUpdate(Settings.instance.getBroId(), widget.broBros.id);
     }
     updateDateTiles(message);
     setState(() {

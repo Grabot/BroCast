@@ -234,13 +234,7 @@ class BroTileSearch extends StatelessWidget {
   BroTileSearch(this.bro);
 
   addBro(BuildContext context) {
-    HelperFunction.getBroToken().then((val) {
-      if (val == null || val == "") {
-        print("no token found, this should not happen");
-      } else {
-        SocketServices.instance.addBro(val.toString(), bro.id);
-      }
-    });
+    SocketServices.instance.addBro(Settings.instance.getToken(), bro.id);
   }
 
   @override

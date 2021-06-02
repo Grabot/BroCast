@@ -53,14 +53,9 @@ class _SignInState extends State<SignIn> {
         passwordController.text = password;
       }
     });
-    HelperFunction.getKeyboardDarkMode().then((val) {
-      if (val == null) {
-        // no dark mode setting set yet.
-      } else {
-        setState(() {
-          emojiKeyboardDarkMode = val;
-        });
-      }
+
+    setState(() {
+      emojiKeyboardDarkMode = Settings.instance.getEmojiKeyboardDarkMode();
     });
     super.initState();
   }

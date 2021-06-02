@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:brocast/constants/api_path.dart';
+import 'package:brocast/services/settings.dart';
 import 'package:brocast/services/socket_services.dart';
 import 'package:brocast/utils/shared.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -44,10 +45,15 @@ class Auth {
         if (result) {
           String token = registerResponse["token"];
           SocketServices.instance.joinRoomSolo(token);
+          Settings.instance.setToken(token);
 
           int broId = registerResponse["bro"]["id"];
           String broName = registerResponse["bro"]["bro_name"];
           String bromotion = registerResponse["bro"]["bromotion"];
+          Settings.instance.setBroId(broId);
+          Settings.instance.setBroName(broName);
+          Settings.instance.setBromotion(bromotion);
+          Settings.instance.setPassword(password);
           setInformation(token, broId, broName, bromotion, password);
           return "";
         } else {
@@ -100,10 +106,15 @@ class Auth {
         if (result) {
           String token = registerResponse["token"];
           SocketServices.instance.joinRoomSolo(token);
+          Settings.instance.setToken(token);
 
           int broId = registerResponse["bro"]["id"];
           String broName = registerResponse["bro"]["bro_name"];
           String bromotion = registerResponse["bro"]["bromotion"];
+          Settings.instance.setBroId(broId);
+          Settings.instance.setBroName(broName);
+          Settings.instance.setBromotion(bromotion);
+          Settings.instance.setPassword(password);
           await setInformation(token, broId, broName, bromotion, password);
           return "";
         } else {

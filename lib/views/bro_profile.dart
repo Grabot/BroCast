@@ -31,7 +31,6 @@ class _BroProfileState extends State<BroProfile> {
   bool bromotionEnabled = false;
   bool changePassword = false;
 
-  String token;
   String broName;
   String bromotion;
   String broPassword;
@@ -52,26 +51,12 @@ class _BroProfileState extends State<BroProfile> {
     focusNodePassword = new FocusNode();
     bromotionChangeController.addListener(bromotionListener);
 
-    HelperFunction.getBroToken().then((val) {
-      if (val == null || val == "") {
-        // We assume this won't happen
-      } else {
-        token = val;
-      }
-    });
-
-    HelperFunction.getBroInformation().then((val) {
-      if (val == null || val.length == 0) {
-        // Something went wrong?
-      } else {
-        setState(() {
-          broName = val[0];
-          bromotion = val[1];
-          bromotionChangeController.text= bromotion;
-          broPassword = val[2];
-          oldPasswordController.text = broPassword;
-        });
-      }
+    setState(() {
+      broName = Settings.instance.getBroName();
+      bromotion = Settings.instance.getBromotion();
+      bromotionChangeController.text= bromotion;
+      broPassword = Settings.instance.getPassword();
+      oldPasswordController.text = broPassword;
     });
     SocketServices.instance.listenForProfileChange(this);
     BackButtonInterceptor.add(myInterceptor);
@@ -150,7 +135,7 @@ class _BroProfileState extends State<BroProfile> {
 
   void onSavePassword() {
     if (passwordFormValidator.currentState.validate()) {
-      SocketServices.instance.changePassword(token, newPasswordController1.text);
+      SocketServices.instance.changePassword(Settings.instance.getToken(), newPasswordController1.text);
       setState(() {
         changePassword = false;
       });
@@ -159,7 +144,7 @@ class _BroProfileState extends State<BroProfile> {
 
   void onSaveBromotion() {
     if (bromotionValidator.currentState.validate()) {
-      SocketServices.instance.changeBromotion(token, bromotionChangeController.text);
+      SocketServices.instance.changeBromotion(Settings.instance.getToken(), bromotionChangeController.text);
       setState(() {
         bromotionEnabled = false;
         showEmojiKeyboard = false;

@@ -4,6 +4,7 @@ import 'package:brocast/objects/bro_bros.dart';
 import 'package:brocast/services/auth.dart';
 import 'package:brocast/services/get_bros.dart';
 import 'package:brocast/services/notification_service.dart';
+import 'package:brocast/services/settings.dart';
 import 'package:brocast/services/socket_services.dart';
 import 'package:brocast/utils/bro_list.dart';
 import 'package:brocast/utils/shared.dart';
@@ -25,8 +26,6 @@ class _BroCastHomeState extends State<BroCastHome> {
 
   GetBros getBros = new GetBros();
   Auth auth = new Auth();
-
-  String token;
 
   bool isSearching = false;
   List<BroBros> bros = [];
@@ -64,11 +63,9 @@ class _BroCastHomeState extends State<BroCastHome> {
   }
 
   void broAddedYou() {
-    if (token != null) {
-      setState(() {
-        searchBros(token);
-      });
-    }
+    setState(() {
+      searchBros(Settings.instance.getToken());
+    });
   }
 
   @override
@@ -87,15 +84,8 @@ class _BroCastHomeState extends State<BroCastHome> {
             builder: (context) => BroMessaging(broBros: chatBro)
         ));
       } else {
-        HelperFunction.getBroToken().then((val) {
-          if (val == null || val == "") {
-            print("no token, should not be possible here!");
-          } else {
-            token = val.toString();
-            searchBros(val.toString());
-            SocketServices.instance.setBroHome(this);
-          }
-        });
+        searchBros(Settings.instance.getToken());
+        SocketServices.instance.setBroHome(this);
       }
     });
   }
@@ -121,7 +111,7 @@ class _BroCastHomeState extends State<BroCastHome> {
   }
 
   bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
-    SocketServices.instance.leaveRoomSolo(token);
+    SocketServices.instance.leaveRoomSolo(Settings.instance.getToken());
     SocketServices.instance.closeSockConnection();
     SystemChannels.platform.invokeMethod('SystemNavigator.pop');
     return true;
