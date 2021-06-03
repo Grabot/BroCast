@@ -170,20 +170,6 @@ class _BroTileState extends State<BroTile> {
     ));
   }
 
-  Color getTextColor(Color color) {
-    double luminance =
-        (0.299 * color.red + 0.587 * color.green + 0.114 * color.blue) / 255;
-
-    // If the color is very bright we make the text colour black.
-    // We set the limit high because we want it to be white mostly
-    if (luminance > 0.80) {
-      return Colors.black;
-    } else {
-      return Colors.white;
-    }
-
-  }
-
   @override
   Widget build(BuildContext context) {
     return Container(

@@ -287,7 +287,7 @@ class _BroMessagingState extends State<BroMessaging> {
 
   Widget appBarChat() {
     return AppBar(
-        backgroundColor: chat.broColor.withOpacity(0.7),
+        backgroundColor: chat.broColor,
         title: Container(
           alignment: Alignment.centerLeft,
           color: Colors.transparent,
@@ -303,14 +303,14 @@ class _BroMessagingState extends State<BroMessaging> {
                   Text(
                     chat.chatName,
                     style: TextStyle(
-                        color: Colors.white,
+                        color: getTextColor(chat.broColor),
                         fontSize: 20
                     )
                   ),
                   chat.chatDescription != "" ? Text(
                     chat.chatDescription,
                     style: TextStyle(
-                        color: Colors.white,
+                        color: getTextColor(chat.broColor),
                         fontSize: 12
                     )
                 ) : Container(),

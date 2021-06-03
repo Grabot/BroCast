@@ -76,10 +76,16 @@ class _BroChatDetailsState extends State<BroChatDetails> {
 
   Widget appBarChatDetails() {
     return AppBar(
-        backgroundColor: chat.broColor.withOpacity(0.7),
+        backgroundColor: chat.broColor,
         title: Container(
             alignment: Alignment.centerLeft,
-            child: Text("Chat details ${chat.chatName}")
+            child: Text(
+              "Chat details ${chat.chatName}",
+              style: TextStyle(
+                  color: getTextColor(chat.broColor),
+                  fontSize: 20
+              ),
+            )
         ),
         actions: [
           PopupMenuButton<int>(
