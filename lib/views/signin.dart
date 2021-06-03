@@ -35,7 +35,6 @@ class _SignInState extends State<SignIn> {
     BackButtonInterceptor.add(myInterceptor);
     bromotionController.addListener(bromotionListener);
     signUpMode = false;
-    NotificationService.instance.setScreen(this);
     // If credentials are stored we will automatically sign in, but we will also set it on the textfields just for usability reasons (in case logging in fails)
     HelperFunction.getBroInformation().then((val) {
       if (val == null || val.length == 0) {

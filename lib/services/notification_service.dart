@@ -44,17 +44,28 @@ class NotificationService {
     });
 
     AwesomeNotifications().actionStream.listen((receivedNotification) {
-      print("doing a notification thing");
       Map<String, dynamic> broResult = receivedNotification.payload;
       if (broResult != null) {
         String broId = broResult["id"];
         String chatName = broResult["chat_name"];
         if (broId != null && chatName != null) {
-          BroBros broNotify = new BroBros(int.parse(broId), chatName, "", 0, null);
-          if (this.currentScreen != null) {
-            this.currentScreen.goToDifferentChat(broNotify);
+          if (BroList.instance.getBros().isEmpty) {
+            BroBros broNotify = new BroBros(int.parse(broId), chatName, "", 0, null);
+            if (this.currentScreen != null) {
+              this.currentScreen.goToDifferentChat(broNotify);
+            } else {
+              this.goToBro = broNotify;
+            }
           } else {
-            this.goToBro = broNotify;
+            for (BroBros br0 in BroList.instance.getBros()) {
+              if (br0.id == int.parse(broId)) {
+                if (this.currentScreen != null) {
+                  this.currentScreen.goToDifferentChat(br0);
+                } else {
+                  this.goToBro = br0;
+                }
+              }
+            }
           }
         }
       }

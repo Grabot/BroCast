@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 
 class GetChat {
 
-  Future getchat(int broId, int broBrosId) async {
+  Future getChat(int broId, int broBrosId) async {
     String urlGetChat = baseUrl + 'get/chat';
     Uri uriGetChat = Uri.parse(urlGetChat);
 
@@ -22,12 +22,9 @@ class GetChat {
 
     Map<String, dynamic> registerResponse = jsonDecode(responsePost.body);
     if (registerResponse.containsKey("result")) {
-      print("received something back!");
       bool result = registerResponse["result"];
       if (result) {
-        print("it was goooood");
         var chat = registerResponse["chat"];
-        print(chat);
         BroBros broBros = new BroBros(
             chat["bros_bro_id"],
             chat["chat_name"],

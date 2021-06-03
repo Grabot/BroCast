@@ -54,12 +54,12 @@ class _BroMessagingState extends State<BroMessaging> {
     getMessages();
     if (widget.broBros.broColor == null) {
       GetChat getChat = new GetChat();
-      getChat.getchat(Settings.instance.getBroId(), widget.broBros.id).then((value) {
-        print("we have gotten something back in messaging part");
-        print(value);
-        setState(() {
-          chat = value;
-        });
+      getChat.getChat(Settings.instance.getBroId(), widget.broBros.id).then((value) {
+        if (value != "an unknown error has occurred") {
+          setState(() {
+            chat = value;
+          });
+        }
       });
     }
     SocketServices.instance.setMessaging(this);

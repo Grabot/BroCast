@@ -33,7 +33,6 @@ class _OpeningScreenState extends State<OpeningScreen> {
       }
     });
     SocketServices.instance;
-    NotificationService.instance.setScreen(this);
     HelperFunction.getBroToken().then((val) {
       if (val == null || val == "") {
         Navigator.pushReplacement(context, MaterialPageRoute(
