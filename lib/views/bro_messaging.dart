@@ -1,17 +1,20 @@
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:brocast/objects/bro_bros.dart';
-import 'package:brocast/services/notification_service.dart';
-import 'package:brocast/services/settings.dart';
-import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
 import 'package:brocast/objects/message.dart';
 import 'package:brocast/services/get_messages.dart';
+import 'package:brocast/services/notification_service.dart';
 import 'package:brocast/services/send_message.dart';
+import 'package:brocast/services/settings.dart';
 import 'package:brocast/services/socket_services.dart';
-import 'package:brocast/utils/shared.dart';
 import 'package:brocast/utils/utils.dart';
 import 'package:brocast/views/bro_home.dart';
+import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
+import 'bro_chat_details.dart';
+import 'bro_profile.dart';
+import 'bro_settings.dart';
 
 class BroMessaging extends StatefulWidget {
 
@@ -267,10 +270,68 @@ class _BroMessagingState extends State<BroMessaging> {
     }
   }
 
+  Widget appBarChat() {
+    return AppBar(
+        title: Container(
+          alignment: Alignment.centerLeft,
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: (){
+              Navigator.pushReplacement(context, MaterialPageRoute(
+                  builder: (context) => BroChatDetails(broBros: widget.broBros)
+              ));
+            },
+            child: Container(
+              child: Text(widget.broBros.chatName),
+            )
+          )
+        ),
+        actions: [
+          PopupMenuButton<int>(
+              onSelected: (item) => onSelectChat(context, item),
+              itemBuilder: (context) =>
+              [
+                PopupMenuItem<int>(
+                    value: 0,
+                    child: Text("Profile")
+                ),
+                PopupMenuItem<int>(
+                    value: 1,
+                    child: Text("Settings")
+                ),
+                PopupMenuItem<int>(
+                    value: 2,
+                    child: Text("Chat details")
+                ),
+              ])
+        ]
+    );
+  }
+
+  void onSelectChat(BuildContext context, int item) {
+    switch(item) {
+      case 0:
+        Navigator.pushReplacement(context, MaterialPageRoute(
+            builder: (context) => BroProfile()
+        ));
+        break;
+      case 1:
+        Navigator.pushReplacement(context, MaterialPageRoute(
+            builder: (context) => BroSettings()
+        ));
+        break;
+      case 2:
+        Navigator.pushReplacement(context, MaterialPageRoute(
+            builder: (context) => BroChatDetails(broBros: widget.broBros)
+        ));
+        break;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBarMain(context, true, "${widget.broBros.chatName}"),
+      appBar: appBarChat(),
       body: Container(
         child: Column(
           children: [
@@ -422,8 +483,8 @@ class _BroMessagingState extends State<BroMessaging> {
 
 class MessageTile extends StatefulWidget {
 
-  Message message;
-  bool myMessage;
+  final Message message;
+  final bool myMessage;
 
   MessageTile({
     Key key,

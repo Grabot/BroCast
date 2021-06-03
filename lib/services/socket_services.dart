@@ -1,5 +1,4 @@
 import 'package:brocast/constants/api_path.dart';
-import 'package:brocast/objects/bro.dart';
 import 'package:brocast/objects/bro_bros.dart';
 import 'package:brocast/objects/message.dart';
 import 'package:brocast/utils/bro_list.dart';

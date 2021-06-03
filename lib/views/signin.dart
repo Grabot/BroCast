@@ -1,9 +1,8 @@
 import 'package:back_button_interceptor/back_button_interceptor.dart';
-import 'package:brocast/objects/bro.dart';
 import 'package:brocast/objects/bro_bros.dart';
 import 'package:brocast/services/auth.dart';
-import 'package:brocast/services/settings.dart';
 import 'package:brocast/services/notification_service.dart';
+import 'package:brocast/services/settings.dart';
 import 'package:brocast/utils/shared.dart';
 import 'package:brocast/utils/utils.dart';
 import 'package:brocast/views/bro_home.dart';

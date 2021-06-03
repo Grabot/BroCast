@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:brocast/constants/api_path.dart';
-import 'package:brocast/objects/bro.dart';
 import 'package:brocast/objects/bro_bros.dart';
 import 'package:http/http.dart' as http;
 

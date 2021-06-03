@@ -1,4 +1,3 @@
-import 'package:brocast/objects/bro.dart';
 import 'package:brocast/objects/bro_bros.dart';
 import 'package:brocast/services/auth.dart';
 import 'package:brocast/services/notification_service.dart';
@@ -8,6 +7,7 @@ import 'package:brocast/utils/shared.dart';
 import 'package:brocast/utils/utils.dart';
 import 'package:brocast/views/signin.dart';
 import 'package:flutter/material.dart';
+
 import 'bro_home.dart';
 
 class OpeningScreen extends StatefulWidget {

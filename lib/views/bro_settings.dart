@@ -1,5 +1,4 @@
 import 'package:back_button_interceptor/back_button_interceptor.dart';
-import 'package:brocast/objects/bro.dart';
 import 'package:brocast/objects/bro_bros.dart';
 import 'package:brocast/services/notification_service.dart';
 import 'package:brocast/services/settings.dart';
@@ -11,8 +10,6 @@ import "package:flutter/material.dart";
 import 'bro_messaging.dart';
 
 class BroSettings extends StatefulWidget {
-
-  // final SocketServices socket;
 
   BroSettings({ Key key }): super(key: key);
 

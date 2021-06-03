@@ -1,5 +1,4 @@
 import 'package:back_button_interceptor/back_button_interceptor.dart';
-import 'package:brocast/objects/bro.dart';
 import 'package:brocast/objects/bro_bros.dart';
 import 'package:brocast/services/notification_service.dart';
 import 'package:brocast/services/settings.dart';
@@ -13,8 +12,6 @@ import "package:flutter/material.dart";
 import 'bro_messaging.dart';
 
 class BroProfile extends StatefulWidget {
-
-  // final SocketServices socket;
 
   BroProfile({ Key key }): super(key: key);
 
@@ -35,8 +32,8 @@ class _BroProfileState extends State<BroProfile> {
   String bromotion;
   String broPassword;
 
-  FocusNode focusNodeBromotion;
-  FocusNode focusNodePassword;
+  FocusNode focusNodeBromotion = new FocusNode();
+  FocusNode focusNodePassword = new FocusNode();
   TextEditingController bromotionChangeController = new TextEditingController();
   TextEditingController oldPasswordController = new TextEditingController();
   TextEditingController newPasswordController1 = new TextEditingController();
@@ -47,8 +44,6 @@ class _BroProfileState extends State<BroProfile> {
     super.initState();
     NotificationService.instance.setScreen(this);
 
-    focusNodeBromotion = new FocusNode();
-    focusNodePassword = new FocusNode();
     bromotionChangeController.addListener(bromotionListener);
 
     setState(() {
