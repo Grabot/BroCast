@@ -30,17 +30,21 @@ class _BroChatDetailsState extends State<BroChatDetails> {
 
   String previousDescription = "";
 
+  BroBros chat;
+
   @override
   void initState() {
     super.initState();
+    chat = widget.broBros;
     NotificationService.instance.setScreen(this);
     SocketServices.instance.listenForBroChatDetails(this);
     BackButtonInterceptor.add(myInterceptor);
+    chatDescriptionController.text = chat.chatDescription;
   }
 
   bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
     Navigator.pushReplacement(context, MaterialPageRoute(
-        builder: (context) => BroMessaging(broBros: widget.broBros,)
+        builder: (context) => BroMessaging(broBros: chat)
     ));
     return true;
   }
@@ -62,7 +66,7 @@ class _BroChatDetailsState extends State<BroChatDetails> {
     return AppBar(
         title: Container(
             alignment: Alignment.centerLeft,
-            child: Text("Chat details ${widget.broBros.chatName}")
+            child: Text("Chat details ${chat.chatName}")
         ),
         actions: [
           PopupMenuButton<int>(
@@ -100,13 +104,14 @@ class _BroChatDetailsState extends State<BroChatDetails> {
         break;
       case 2:
         Navigator.pushReplacement(context, MaterialPageRoute(
-            builder: (context) => BroMessaging(broBros: widget.broBros)
+            builder: (context) => BroMessaging(broBros: chat)
         ));
         break;
     }
   }
 
   void onTapDescriptionField() {
+    previousDescription = chatDescriptionController.text;
     focusNodeDescription.requestFocus();
     setState(() {
       changeDescription = true;
@@ -114,17 +119,31 @@ class _BroChatDetailsState extends State<BroChatDetails> {
   }
 
   void updateDescription() {
-    SocketServices.instance.updateBroChatDetails(Settings.instance.getToken(), widget.broBros.id);
-    setState(() {
-      changeDescription = false;
-    });
+    if (previousDescription != chatDescriptionController.text) {
+      SocketServices.instance.updateBroChatDetails(
+          Settings.instance.getToken(), chat.id,
+          chatDescriptionController.text);
+      setState(() {
+        changeDescription = false;
+      });
+    } else {
+      setState(() {
+        changeDescription = false;
+      });
+    }
   }
 
   void chatDetailUpdateSuccess() {
-    ShowToastComponent.showDialog("Updating the bro chat has gone good!", context);
+    previousDescription = chatDescriptionController.text;
+    chat.chatDescription = chatDescriptionController.text;
+    if (mounted) {
+      setState(() {
+      });
+    }
   }
 
   void chatDetailUpdateFailed() {
+    chatDescriptionController.text = previousDescription;
     ShowToastComponent.showDialog("Updating the bro chat has failed", context);
   }
 
@@ -149,7 +168,7 @@ class _BroChatDetailsState extends State<BroChatDetails> {
                           Container(
                               alignment: Alignment.center,
                               child: Text(
-                                "${widget.broBros.chatName}",
+                                "${chat.chatName}",
                                 style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 25

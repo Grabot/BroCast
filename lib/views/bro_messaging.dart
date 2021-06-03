@@ -52,9 +52,11 @@ class _BroMessagingState extends State<BroMessaging> {
     super.initState();
     chat = widget.broBros;
     getMessages();
-    if (widget.broBros.broColor == null) {
+    if (chat.broColor == null) {
+      // It was opened via a notification and we don't have the whole object.
+      // We retrieve it now
       GetChat getChat = new GetChat();
-      getChat.getChat(Settings.instance.getBroId(), widget.broBros.id).then((value) {
+      getChat.getChat(Settings.instance.getBroId(), chat.id).then((value) {
         if (value != "an unknown error has occurred") {
           setState(() {
             chat = value;
@@ -64,16 +66,15 @@ class _BroMessagingState extends State<BroMessaging> {
     }
     SocketServices.instance.setMessaging(this);
     NotificationService.instance.setScreen(this);
-    SocketServices.instance.joinRoom(Settings.instance.getBroId(), widget.broBros.id);
+    SocketServices.instance.joinRoom(Settings.instance.getBroId(), chat.id);
     BackButtonInterceptor.add(myInterceptor);
   }
 
   @override
   void dispose() {
-    print("disposing the messaging screen thing");
     focusAppendText.dispose();
     focusEmojiTextField.dispose();
-    SocketServices.instance.leaveRoom(Settings.instance.getBroId(), widget.broBros.id);
+    SocketServices.instance.leaveRoom(Settings.instance.getBroId(), chat.id);
     BackButtonInterceptor.remove(myInterceptor);
     super.dispose();
   }
@@ -99,7 +100,7 @@ class _BroMessagingState extends State<BroMessaging> {
   }
 
   getMessages() {
-    get.getMessages(Settings.instance.getToken(), widget.broBros.id).then((val) {
+    get.getMessages(Settings.instance.getToken(), chat.id).then((val) {
       if (!(val is String)) {
         List<Message> messes = val;
         if (messes.length != 0) {
@@ -115,7 +116,7 @@ class _BroMessagingState extends State<BroMessaging> {
   }
 
   int getBroBrosId() {
-    return widget.broBros.id;
+    return chat.id;
   }
 
   setDateTiles(List<Message> messes) {
@@ -213,11 +214,11 @@ class _BroMessagingState extends State<BroMessaging> {
       if (timestampString.endsWith('Z')) {
         timestampString = timestampString.substring(0, timestampString.length - 1);
       }
-      Message mes = new Message(0, 0, 0, widget.broBros.id, message, textMessage, timestampString);
+      Message mes = new Message(0, 0, 0, chat.id, message, textMessage, timestampString);
       setState(() {
         this.messages.insert(0, mes);
       });
-      SocketServices.instance.sendMessageSocket(Settings.instance.getBroId(), widget.broBros.id, message, textMessage);
+      SocketServices.instance.sendMessageSocket(Settings.instance.getBroId(), chat.id, message, textMessage);
       broMessageController.clear();
       appendTextMessageController.clear();
 
@@ -232,14 +233,14 @@ class _BroMessagingState extends State<BroMessaging> {
   }
 
   updateMessages(Message message) {
-    if (message.recipientId == widget.broBros.id) {
+    if (message.recipientId == chat.id) {
       // We added it immediately as a placeholder.
       // When we get it from the server we add it for real and remove the placeholder
       this.messages.removeAt(0);
     } else {
       // If we didn't send this message it is from the other person.
       // We send a response, indicating that we read the messages
-      SocketServices.instance.messageReadUpdate(Settings.instance.getBroId(), widget.broBros.id);
+      SocketServices.instance.messageReadUpdate(Settings.instance.getBroId(), chat.id);
     }
     updateDateTiles(message);
     setState(() {
@@ -263,7 +264,7 @@ class _BroMessagingState extends State<BroMessaging> {
         shrinkWrap: true,
         reverse: true,
         itemBuilder: (context, index) {
-          return MessageTile(message: messages[index], myMessage: messages[index].recipientId == widget.broBros.id);
+          return MessageTile(message: messages[index], myMessage: messages[index].recipientId == chat.id);
         }
     ) : Container();
   }
@@ -295,8 +296,24 @@ class _BroMessagingState extends State<BroMessaging> {
                   builder: (context) => BroChatDetails(broBros: chat)
               ));
             },
-            child: Container(
-              child: Text(chat.chatName),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                  Text(
+                    chat.chatName,
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20
+                    )
+                  ),
+                  chat.chatDescription != "" ? Text(
+                    chat.chatDescription,
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 12
+                    )
+                ) : Container(),
+              ],
             )
           )
         ),

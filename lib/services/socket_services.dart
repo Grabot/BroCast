@@ -91,12 +91,13 @@ class SocketServices {
     });
   }
 
-  void updateBroChatDetails(String token, int broId) {
+  void updateBroChatDetails(String token, int broId, String description) {
     if (this.socket.connected) {
       this.socket.emit("message_event_change_chat_details",
           {
             "token": token,
-            "bros_bro_id": broId
+            "bros_bro_id": broId,
+            "description": description
           }
       );
     }

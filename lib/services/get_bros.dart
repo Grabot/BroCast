@@ -30,6 +30,7 @@ class GetBros {
           BroBros broBros = new BroBros(
               br0["bros_bro_id"],
               br0["chat_name"],
+              br0["chat_description"],
               br0["chat_colour"],
               br0["unread_messages"],
               br0["last_time_activity"]

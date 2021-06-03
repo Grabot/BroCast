@@ -12,12 +12,14 @@ class BroBros {
   BroBros(
       int id,
       String chatName,
+      String chatDescription,
       String chatColour,
       int unreadMessages,
       String lastActivity
       ) {
     this.id = id;
     this.chatName = chatName;
+    this.chatDescription = chatDescription;
     if (chatColour != "") {
       this.broColor = Color(int.parse("0xFF$chatColour"));
     }

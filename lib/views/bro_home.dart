@@ -61,9 +61,11 @@ class _BroCastHomeState extends State<BroCastHome> {
   }
 
   void broAddedYou() {
-    setState(() {
-      searchBros(Settings.instance.getToken());
-    });
+    if (mounted) {
+      setState(() {
+        searchBros(Settings.instance.getToken());
+      });
+    }
   }
 
   @override
@@ -208,12 +210,25 @@ class _BroTileState extends State<BroTile> {
                 children: [
                   Row(children: [
                       SizedBox(width: 15),
-                      Text(
-                          widget.broBros.chatName,
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 20
-                          )),
+                      Container(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                                widget.broBros.chatName,
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 20
+                                )),
+                            widget.broBros.chatDescription != "" ? Text(
+                                widget.broBros.chatDescription,
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 12
+                                )) : Container(),
+                          ],
+                        ),
+                      )
                     ],
                   ),
                   Container(
