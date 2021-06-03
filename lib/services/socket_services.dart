@@ -103,12 +103,30 @@ class SocketServices {
     }
   }
 
+  void updateBroChatColour(String token, int broId, String colour) {
+    if (this.socket.connected) {
+      this.socket.emit("message_event_change_chat_colour",
+          {
+            "token": token,
+            "bros_bro_id": broId,
+            "colour": colour
+          }
+      );
+    }
+  }
+
   listenForBroChatDetails(var broChatDetails) {
     this.socket.on('message_event_change_chat_details_success', (data) {
       broChatDetails.chatDetailUpdateSuccess();
     });
     this.socket.on('message_event_change_chat_details_failed', (data) {
       broChatDetails.chatDetailUpdateFailed();
+    });
+    this.socket.on('message_event_change_chat_colour_success', (data) {
+      broChatDetails.chatColourUpdateSuccess();
+    });
+    this.socket.on('message_event_change_chat_colour_failed', (data) {
+      broChatDetails.chatColourUpdateFailed();
     });
   }
 

@@ -5,6 +5,7 @@ import 'package:brocast/services/settings.dart';
 import 'package:brocast/services/socket_services.dart';
 import 'package:brocast/utils/utils.dart';
 import "package:flutter/material.dart";
+import 'package:flutter_circle_color_picker/flutter_circle_color_picker.dart';
 
 import 'bro_messaging.dart';
 import 'bro_profile.dart';
@@ -25,6 +26,12 @@ class _BroChatDetailsState extends State<BroChatDetails> {
   TextEditingController chatDescriptionController = new TextEditingController();
 
   bool changeDescription = false;
+  bool changeColour = false;
+
+  CircleColorPickerController circleColorPickerController;
+
+  Color currentColor;
+  Color previousColor;
 
   FocusNode focusNodeDescription = new FocusNode();
 
@@ -40,6 +47,11 @@ class _BroChatDetailsState extends State<BroChatDetails> {
     SocketServices.instance.listenForBroChatDetails(this);
     BackButtonInterceptor.add(myInterceptor);
     chatDescriptionController.text = chat.chatDescription;
+
+    circleColorPickerController = CircleColorPickerController(
+      initialColor: chat.broColor,
+    );
+    currentColor = chat.broColor;
   }
 
   bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
@@ -64,6 +76,7 @@ class _BroChatDetailsState extends State<BroChatDetails> {
 
   Widget appBarChatDetails() {
     return AppBar(
+        backgroundColor: chat.broColor.withOpacity(0.7),
         title: Container(
             alignment: Alignment.centerLeft,
             child: Text("Chat details ${chat.chatName}")
@@ -133,6 +146,25 @@ class _BroChatDetailsState extends State<BroChatDetails> {
     }
   }
 
+  updateColour() {
+    previousColor = currentColor;
+    setState(() {
+      changeColour = true;
+    });
+  }
+
+  saveColour() {
+    if (currentColor != chat.broColor) {
+      String newColour = currentColor.value.toRadixString(16).substring(2, 8);
+      SocketServices.instance.updateBroChatColour(
+          Settings.instance.getToken(), chat.id,
+          newColour);
+    }
+    setState(() {
+      changeColour = false;
+    });
+  }
+
   void chatDetailUpdateSuccess() {
     previousDescription = chatDescriptionController.text;
     chat.chatDescription = chatDescriptionController.text;
@@ -143,8 +175,27 @@ class _BroChatDetailsState extends State<BroChatDetails> {
   }
 
   void chatDetailUpdateFailed() {
-    chatDescriptionController.text = previousDescription;
+    currentColor = previousColor;
+    circleColorPickerController.color = previousColor;
     ShowToastComponent.showDialog("Updating the bro chat has failed", context);
+  }
+
+  void chatColourUpdateSuccess() {
+    chat.broColor = currentColor;
+    previousColor = currentColor;
+    if (mounted) {
+      setState(() {
+      });
+    }
+  }
+
+  void chatColourUpdateFailed() {
+    chatDescriptionController.text = previousDescription;
+    ShowToastComponent.showDialog("Updating the bro colour has failed", context);
+  }
+
+  onColorChange(Color colour) {
+    currentColor = colour;
   }
 
   @override
@@ -207,6 +258,49 @@ class _BroChatDetailsState extends State<BroChatDetails> {
                             },
                             child: Text('Update description'),
                           ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                "Color:",
+                                style: simpleTextStyle(),
+                              ),
+                              SizedBox(width: 20),
+                              Container(
+                                  height: 40,
+                                  width: 40,
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                      color: widget.broBros.broColor,
+                                      borderRadius: BorderRadius.circular(40)
+                                  ),
+                              ),
+                            ],
+                          ),
+                          changeColour ? CircleColorPicker(
+                            controller: circleColorPickerController,
+                            onChanged: (colour) {
+                              setState(() => onColorChange(colour));
+                            },
+                          ) : Container(),
+                          changeColour ? TextButton(
+                            style: ButtonStyle(
+                              foregroundColor: MaterialStateProperty.all<Color>(Colors.red),
+                            ),
+                            onPressed: () {
+                              saveColour();
+                            },
+                            child: Text('Save color'),
+                          ) : TextButton(
+                            style: ButtonStyle(
+                              foregroundColor: MaterialStateProperty.all<Color>(Colors.blue),
+                            ),
+                            onPressed: () {
+                              updateColour();
+                            },
+                            child: Text('Change color'),
+                          ),
+                          SizedBox(height: 150),
                         ]
                     ),
                   ),
