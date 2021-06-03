@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:brocast/objects/bro_bros.dart';
+import 'package:brocast/utils/bro_list.dart';
 import 'package:flutter/material.dart';
 
 class NotificationService {
@@ -43,7 +44,7 @@ class NotificationService {
     });
 
     AwesomeNotifications().actionStream.listen((receivedNotification) {
-
+      print("doing a notification thing");
       Map<String, dynamic> broResult = receivedNotification.payload;
       if (broResult != null) {
         String broId = broResult["id"];

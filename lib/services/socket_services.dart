@@ -73,7 +73,6 @@ class SocketServices {
 
   addBro(String token, int broId) {
     if (this.socket.connected) {
-      print("adding a bro!");
       this.socket.emit("message_event_add_bro",
           {
             "token": token,
@@ -92,7 +91,33 @@ class SocketServices {
     });
   }
 
+  void updateBroChatDetails(String token, int broId) {
+    if (this.socket.connected) {
+      this.socket.emit("message_event_change_chat_details",
+          {
+            "token": token,
+            "bros_bro_id": broId
+          }
+      );
+    }
+  }
+
+  listenForBroChatDetails(var broChatDetails) {
+    this.socket.on('message_event_change_chat_details_success', (data) {
+      broChatDetails.chatDetailUpdateSuccess();
+    });
+    this.socket.on('message_event_change_chat_details_failed', (data) {
+      broChatDetails.chatDetailUpdateFailed();
+    });
+  }
+
+  stopListeningForBroChatDetails() {
+    this.socket.off('message_event_change_chat_details_success', (data) => print(data));
+    this.socket.off('message_event_change_chat_details_failed', (data) => print(data));
+  }
+
   stopListeningForAddingBro() {
+    this.socket.off('message_event_add_bro_success', (data) => print(data));
     this.socket.off('message_event_add_bro_failed', (data) => print(data));
   }
 

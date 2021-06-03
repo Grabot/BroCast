@@ -10,12 +10,10 @@ class BroList {
   BroList._internal();
 
   List<BroBros> getBros() {
-    print("get allllll of them");
     return this.bros;
   }
 
   void setBros(List<BroBros> bros) {
-    print("SETTING Bros");
     this.bros = bros;
   }
 }

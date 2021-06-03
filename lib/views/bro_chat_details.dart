@@ -1,6 +1,8 @@
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:brocast/objects/bro_bros.dart';
 import 'package:brocast/services/notification_service.dart';
+import 'package:brocast/services/settings.dart';
+import 'package:brocast/services/socket_services.dart';
 import 'package:brocast/utils/utils.dart';
 import "package:flutter/material.dart";
 
@@ -26,10 +28,13 @@ class _BroChatDetailsState extends State<BroChatDetails> {
 
   FocusNode focusNodeDescription = new FocusNode();
 
+  String previousDescription = "";
+
   @override
   void initState() {
     super.initState();
     NotificationService.instance.setScreen(this);
+    SocketServices.instance.listenForBroChatDetails(this);
     BackButtonInterceptor.add(myInterceptor);
   }
 
@@ -43,6 +48,7 @@ class _BroChatDetailsState extends State<BroChatDetails> {
   @override
   void dispose() {
     BackButtonInterceptor.remove(myInterceptor);
+    SocketServices.instance.stopListeningForBroChatDetails();
     super.dispose();
   }
 
@@ -107,6 +113,21 @@ class _BroChatDetailsState extends State<BroChatDetails> {
     });
   }
 
+  void updateDescription() {
+    SocketServices.instance.updateBroChatDetails(Settings.instance.getToken(), widget.broBros.id);
+    setState(() {
+      changeDescription = false;
+    });
+  }
+
+  void chatDetailUpdateSuccess() {
+    ShowToastComponent.showDialog("Updating the bro chat has gone good!", context);
+  }
+
+  void chatDetailUpdateFailed() {
+    ShowToastComponent.showDialog("Updating the bro chat has failed", context);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -155,7 +176,7 @@ class _BroChatDetailsState extends State<BroChatDetails> {
                               foregroundColor: MaterialStateProperty.all<Color>(Colors.red),
                             ),
                             onPressed: () {
-                              // onSavePassword();
+                              updateDescription();
                             },
                             child: Text('Save description'),
                           ) : TextButton(

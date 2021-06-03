@@ -1,6 +1,7 @@
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:brocast/objects/bro_bros.dart';
 import 'package:brocast/objects/message.dart';
+import 'package:brocast/services/get_chat.dart';
 import 'package:brocast/services/get_messages.dart';
 import 'package:brocast/services/notification_service.dart';
 import 'package:brocast/services/send_message.dart';
@@ -44,10 +45,23 @@ class _BroMessagingState extends State<BroMessaging> {
   // SocketServices socket;
   List<Message> messages = [];
 
+  BroBros chat;
+
   @override
   void initState() {
     super.initState();
+    chat = widget.broBros;
     getMessages();
+    if (widget.broBros.broColor == null) {
+      GetChat getChat = new GetChat();
+      getChat.getchat(Settings.instance.getBroId(), widget.broBros.id).then((value) {
+        print("we have gotten something back in messaging part");
+        print(value);
+        setState(() {
+          chat = value;
+        });
+      });
+    }
     SocketServices.instance.setMessaging(this);
     NotificationService.instance.setScreen(this);
     SocketServices.instance.joinRoom(Settings.instance.getBroId(), widget.broBros.id);
@@ -278,11 +292,11 @@ class _BroMessagingState extends State<BroMessaging> {
           child: InkWell(
             onTap: (){
               Navigator.pushReplacement(context, MaterialPageRoute(
-                  builder: (context) => BroChatDetails(broBros: widget.broBros)
+                  builder: (context) => BroChatDetails(broBros: chat)
               ));
             },
             child: Container(
-              child: Text(widget.broBros.chatName),
+              child: Text(chat.chatName),
             )
           )
         ),
@@ -322,7 +336,7 @@ class _BroMessagingState extends State<BroMessaging> {
         break;
       case 2:
         Navigator.pushReplacement(context, MaterialPageRoute(
-            builder: (context) => BroChatDetails(broBros: widget.broBros)
+            builder: (context) => BroChatDetails(broBros: chat)
         ));
         break;
     }

@@ -4,6 +4,7 @@ class BroBros {
 
   int id;
   String chatName;
+  String chatDescription;
   Color broColor;
   int unreadMessages;
   DateTime lastActivity;
@@ -17,7 +18,9 @@ class BroBros {
       ) {
     this.id = id;
     this.chatName = chatName;
-    this.broColor = Color(int.parse("0xFF$chatColour"));
+    if (chatColour != "") {
+      this.broColor = Color(int.parse("0xFF$chatColour"));
+    }
     this.unreadMessages = unreadMessages;
     if (lastActivity != null) {
       this.lastActivity = DateTime.parse(lastActivity + 'Z').toLocal();
