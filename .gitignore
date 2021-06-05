@@ -120,5 +120,6 @@ app.*.symbols
 
 # files which should not be shown in repo
 encrypt.dart
+base_url.dart
 google-services.json
 GoogleService-Info.plist

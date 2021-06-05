@@ -287,7 +287,7 @@ class _BroMessagingState extends State<BroMessaging> {
 
   Widget appBarChat() {
     return AppBar(
-        backgroundColor: chat.broColor,
+        backgroundColor: chat.broColor != null ? chat.broColor : Color(0xff145C9E),
         title: Container(
           alignment: Alignment.centerLeft,
           color: Colors.transparent,
