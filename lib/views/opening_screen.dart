@@ -106,7 +106,7 @@ class _OpeningScreenState extends State<OpeningScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: appBarMain(context, false, "Bro Cast"),
+        appBar: appBarMain(context, false, "Brocast"),
         body: Stack(
           children: [
             Container(

@@ -155,7 +155,7 @@ class _SignInState extends State<SignIn> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBarMain(context, false, "Bro Cast"),
+      appBar: appBarMain(context, false, "Brocast"),
       body: Stack(
         children: [
           isLoading ? Container(
