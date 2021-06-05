@@ -285,6 +285,7 @@ class _BroChatDetailsState extends State<BroChatDetails> {
                           ),
                           changeColour ? CircleColorPicker(
                             controller: circleColorPickerController,
+                            textStyle: simpleTextStyle(),
                             onChanged: (colour) {
                               setState(() => onColorChange(colour));
                             },

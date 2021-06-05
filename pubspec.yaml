@@ -33,7 +33,7 @@ dependencies:
   tuple: ^2.0.0
   emoji_keyboard_flutter: ^1.0.2
   firebase_messaging: ^10.0.0
-  flutter_local_notifications: ^5.0.0+4
+  flutter_local_notifications: ^6.0.0
   firebase_core: ^1.1.2
   awesome_notifications: ^0.0.6+7
   flutter_circle_color_picker: ^0.3.0
@@ -45,7 +45,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  flutter_launcher_icons: "^0.8.0"
+  flutter_launcher_icons: ^0.9.0
 
 flutter_icons:
   image_path_android: "assets/images/brocast.png"

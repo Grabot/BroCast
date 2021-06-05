@@ -200,18 +200,31 @@ class _BroTileState extends State<BroTile> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                                widget.broBros.chatName,
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 20
-                                )),
-                            widget.broBros.chatDescription != "" ? Text(
-                                widget.broBros.chatDescription,
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 12
-                                )) : Container(),
+                            Container(
+                              // All the padding and sizedboxes (and message bal) added up it's 103.
+                              // We need to make the width the total width of the screen minus 103 at least to not get an overflow.
+                              width: MediaQuery.of(context).size.width-110,
+                              child: Text(
+                                  widget.broBros.chatName,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 20
+                                  )),
+                            ),
+                            widget.broBros.chatDescription != "" ?
+                            Container(
+                              // All the padding and sizedboxes (and message bal) added up it's 103.
+                              // We need to make the width the total width of the screen minus 103 at least to not get an overflow.
+                              width: MediaQuery.of(context).size.width-110,
+                              child: Text(
+                                  widget.broBros.chatDescription,
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 12
+                                  )),
+                            )
+                                : Container(),
                           ],
                         ),
                       )
