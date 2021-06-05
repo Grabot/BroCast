@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:brocast/objects/bro_bros.dart';
 import 'package:brocast/objects/message.dart';
@@ -271,8 +273,11 @@ class _BroMessagingState extends State<BroMessaging> {
 
   void onTapEmojiTextField() {
     if (!showEmojiKeyboard) {
-      setState(() {
-        showEmojiKeyboard = true;
+      Timer(Duration(milliseconds: 100),()
+      {
+        setState((){
+          showEmojiKeyboard = true;
+        });
       });
     }
   }
@@ -392,13 +397,13 @@ class _BroMessagingState extends State<BroMessaging> {
                           height: 35,
                           width: 35,
                           decoration: BoxDecoration(
-                              color: Color(0x36FFFFFF),
+                              color: appendingMessage ? Colors.green : Colors.grey,
                               borderRadius: BorderRadius.circular(35)
                           ),
                           padding: EdgeInsets.symmetric(horizontal: 6),
                           child: Icon(
                             Icons.text_snippet,
-                            color: appendingMessage ? Colors.green : Colors.grey,
+                            color: appendingMessage ? Colors.white : Color(0xFF616161)
                           )
                         ),
                       ),
@@ -445,12 +450,13 @@ class _BroMessagingState extends State<BroMessaging> {
                             height: 35,
                             width: 35,
                             decoration: BoxDecoration(
-                              color: Color(0x36FFFFFF),
+                              color: Color(0xFF34A843),
                               borderRadius: BorderRadius.circular(35)
                             ),
                             padding: EdgeInsets.symmetric(horizontal: 6),
                             child: Icon(
-                                Icons.send,
+                              Icons.send,
+                              color: Colors.white,
                             )
                         ),
                       )
