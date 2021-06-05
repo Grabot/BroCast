@@ -1,9 +1,8 @@
-import 'package:brocast/constants/api_path.dart';
+import 'package:brocast/constants/base_url.dart';
 import 'package:brocast/objects/bro_bros.dart';
 import 'package:brocast/objects/message.dart';
 import 'package:brocast/utils/bro_list.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
-
 import 'notification_service.dart';
 
 class SocketServices {

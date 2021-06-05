@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:brocast/constants/api_path.dart';
+import 'package:brocast/constants/base_url.dart';
 import 'package:brocast/services/settings.dart';
 import 'package:brocast/services/socket_services.dart';
 import 'package:brocast/utils/shared.dart';

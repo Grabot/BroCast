@@ -1,6 +1,5 @@
 import 'dart:convert';
-
-import 'package:brocast/constants/api_path.dart';
+import 'package:brocast/constants/base_url.dart';
 import 'package:http/http.dart' as http;
 
 class SendMessage {
