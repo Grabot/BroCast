@@ -31,7 +31,7 @@ dependencies:
   socket_io_client: ^2.0.0-beta.4-nullsafety.0
   intl: ^0.17.0
   tuple: ^2.0.0
-  emoji_keyboard_flutter: ^1.0.4
+  emoji_keyboard_flutter: ^1.1.0
   firebase_messaging: ^10.0.0
   flutter_local_notifications: ^6.0.0
   firebase_core: ^1.1.2
@@ -48,10 +48,11 @@ dev_dependencies:
   flutter_launcher_icons: ^0.9.0
 
 flutter_icons:
+  ios: true
+  android: true
   image_path_android: "assets/images/brocast.png"
   image_path_ios: "assets/images/brocast.png"
-  android: true
-  ios: true
+  adaptive_icon_background: "assets/images/icon-brocast.png"
   adaptive_icon_foreground: "assets/images/icon-brocast.png"
 
 # For information on the generic Dart part of this file, see the
@@ -68,6 +69,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/images/brocast.png
+    - assets/images/icon-brocast.png
     - assets/images/brocast_transparent.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
