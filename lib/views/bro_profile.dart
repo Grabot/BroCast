@@ -187,7 +187,7 @@ class _BroProfileState extends State<BroProfile> {
                       Container(
                         padding: EdgeInsets.symmetric(vertical: 30),
                         alignment: Alignment.center,
-                        child: Image.asset("assets/images/brocast.png")
+                        child: Image.asset("assets/images/brocast_transparent.png")
                       ),
                       Container(
                           alignment: Alignment.center,

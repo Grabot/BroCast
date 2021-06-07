@@ -87,7 +87,7 @@ class _BroSettingsState extends State<BroSettings> {
                       Container(
                         padding: EdgeInsets.symmetric(vertical: 30),
                         alignment: Alignment.center,
-                        child: Image.asset("assets/images/brocast.png")
+                        child: Image.asset("assets/images/brocast_transparent.png")
                       ),
                       SizedBox(height: 40),
                       Row(
