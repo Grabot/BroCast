@@ -16,7 +16,6 @@ class OpeningScreen extends StatefulWidget {
 }
 
 class _OpeningScreenState extends State<OpeningScreen> {
-
   bool isLoading = false;
   Auth auth = new Auth();
 
@@ -35,9 +34,8 @@ class _OpeningScreenState extends State<OpeningScreen> {
     SocketServices.instance;
     HelperFunction.getBroToken().then((val) {
       if (val == null || val == "") {
-        Navigator.pushReplacement(context, MaterialPageRoute(
-            builder: (context) => SignIn()
-        ));
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => SignIn()));
       } else {
         signIn(val.toString());
       }
@@ -52,17 +50,15 @@ class _OpeningScreenState extends State<OpeningScreen> {
 
     auth.signIn("", "", "", token).then((val) {
       if (val.toString() == "") {
-        Navigator.pushReplacement(context, MaterialPageRoute(
-            builder: (context) => BroCastHome()
-        ));
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => BroCastHome()));
       } else {
         if (val == "The given credentials are not correct!") {
           // token didn't work, going to check if a username is given and try to log in using password username
           HelperFunction.getBroInformation().then((val) {
             if (val == null || val.length == 0) {
-              Navigator.pushReplacement(context, MaterialPageRoute(
-                  builder: (context) => SignIn()
-              ));
+              Navigator.pushReplacement(
+                  context, MaterialPageRoute(builder: (context) => SignIn()));
             } else {
               String broName = val[0];
               String bromotion = val[1];
@@ -72,9 +68,8 @@ class _OpeningScreenState extends State<OpeningScreen> {
           });
         } else {
           ShowToastComponent.showDialog(val.toString(), context);
-          Navigator.pushReplacement(context, MaterialPageRoute(
-              builder: (context) => SignIn()
-          ));
+          Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (context) => SignIn()));
         }
       }
     });
@@ -83,13 +78,11 @@ class _OpeningScreenState extends State<OpeningScreen> {
   signInName(String broName, String bromotion, String password) {
     auth.signIn(broName, bromotion, password, "").then((val) {
       if (val.toString() == "") {
-        Navigator.pushReplacement(context, MaterialPageRoute(
-            builder: (context) => BroCastHome()
-        ));
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => BroCastHome()));
       } else {
-        Navigator.pushReplacement(context, MaterialPageRoute(
-            builder: (context) => SignIn()
-        ));
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => SignIn()));
       }
     });
   }
@@ -106,17 +99,16 @@ class _OpeningScreenState extends State<OpeningScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: appBarMain(context, false, "Brocast"),
-        body: Stack(
-          children: [
-            Container(
-                child: Center(
+      appBar: appBarMain(context, false, "Brocast"),
+      body: Stack(
+        children: [
+          Container(
+              child: Center(
                   // The opening screen will always be a loading screen,
                   // so we also show the circular progress indicator
-                    child: CircularProgressIndicator())
-            )
-          ],
-        ),
+                  child: CircularProgressIndicator()))
+        ],
+      ),
     );
   }
 }

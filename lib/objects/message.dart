@@ -1,7 +1,4 @@
-
-
 class Message {
-
   int id;
   int broBrosId;
   int senderId;
@@ -12,15 +9,8 @@ class Message {
 
   bool isRead;
 
-  Message(
-  int id,
-  int broBrosId,
-  int senderId,
-  int recipientId,
-  String body,
-  String textMessage,
-  String timestamp
-      ) {
+  Message(int id, int broBrosId, int senderId, int recipientId, String body,
+      String textMessage, String timestamp) {
     this.id = id;
     this.broBrosId = broBrosId;
     this.senderId = senderId;
@@ -34,5 +24,4 @@ class Message {
     }
     isRead = false;
   }
-
 }

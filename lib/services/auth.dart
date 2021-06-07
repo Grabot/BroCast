@@ -8,25 +8,26 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:http/http.dart' as http;
 
 class Auth {
-
   Future signUp(String broName, String bromotion, String password) async {
-
     String registrationId = await FirebaseMessaging.instance.getToken();
 
     String urlRegister = baseUrl + 'register';
     Uri uriRegister = Uri.parse(urlRegister);
 
-    http.Response responsePost = await http.post(uriRegister,
-      headers: <String, String> {
+    http.Response responsePost = await http
+        .post(
+      uriRegister,
+      headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
-      body: jsonEncode(<String, String> {
+      body: jsonEncode(<String, String>{
         'bro_name': broName,
         'bromotion': bromotion,
         'password': password,
         'registration_id': registrationId
       }),
-    ).timeout(
+    )
+        .timeout(
       Duration(seconds: 5),
       onTimeout: () {
         // time has run out, do what you wanted to do
@@ -64,30 +65,33 @@ class Auth {
     return "an unknown error has occurred";
   }
 
-  Future signIn(String broName, String bromotion, String password, String token) async {
-
+  Future signIn(
+      String broName, String bromotion, String password, String token) async {
     String registrationId = await FirebaseMessaging.instance.getToken();
 
     String urlLogin = baseUrl + 'login';
     Uri uriLogin = Uri.parse(urlLogin);
 
-    http.Response responsePost = await http.post(uriLogin,
+    http.Response responsePost = await http
+        .post(
+      uriLogin,
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
-      body: jsonEncode(<String, String> {
+      body: jsonEncode(<String, String>{
         'bro_name': broName,
         'bromotion': bromotion,
         'password': password,
         'token': token,
         'registration_id': registrationId
       }),
-    ).timeout(
-        Duration(seconds: 5),
-        onTimeout: () {
-          // time has run out, do what you wanted to do
-          return null;
-        },
+    )
+        .timeout(
+      Duration(seconds: 5),
+      onTimeout: () {
+        // time has run out, do what you wanted to do
+        return null;
+      },
     );
 
     if (responsePost == null) {
@@ -129,7 +133,8 @@ class Auth {
     setInformation("", 0, "", "", "");
   }
 
-  setInformation(String token, int broId, String broName, String bromotion, String password) async {
+  setInformation(String token, int broId, String broName, String bromotion,
+      String password) async {
     await HelperFunction.setBroToken(token);
     await HelperFunction.setBroId(broId);
     await HelperFunction.setBroInformation(broName, bromotion, password);

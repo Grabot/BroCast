@@ -1,7 +1,7 @@
-
 // A class to store anything that might be useful at any point in the app.
 class Settings {
   static Settings _instance = new Settings._internal();
+
   static get instance => _instance;
 
   bool emojiKeyboardDarkMode = false;

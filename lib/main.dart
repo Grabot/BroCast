@@ -28,7 +28,8 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
     int brosBroId = chat["bros_bro_id"];
     String chatName = chat["chat_name"];
     String chatColour = chat["chat_colour"];
-    NotificationService.instance.showNotification(brosBroId, chatName, chatColour, messageBody);
+    NotificationService.instance
+        .showNotification(brosBroId, chatName, chatColour, messageBody);
   }
 }
 

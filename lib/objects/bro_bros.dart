@@ -1,7 +1,6 @@
 import 'dart:ui';
 
 class BroBros {
-
   int id;
   String chatName;
   String chatDescription;
@@ -9,14 +8,8 @@ class BroBros {
   int unreadMessages;
   DateTime lastActivity;
 
-  BroBros(
-      int id,
-      String chatName,
-      String chatDescription,
-      String chatColour,
-      int unreadMessages,
-      String lastActivity
-      ) {
+  BroBros(int id, String chatName, String chatDescription, String chatColour,
+      int unreadMessages, String lastActivity) {
     this.id = id;
     this.chatName = chatName;
     this.chatDescription = chatDescription;

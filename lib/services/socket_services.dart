@@ -6,18 +6,17 @@ import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'notification_service.dart';
 
 class SocketServices {
-
   static SocketServices _instance = new SocketServices._internal();
+
   static get instance => _instance;
   IO.Socket socket;
 
   var messaging;
   var broHome;
 
-  SocketServices._internal( ) {
+  SocketServices._internal() {
     startSockConnection();
   }
-
 
   startSockConnection() {
     String namespace = "sock";
@@ -72,12 +71,8 @@ class SocketServices {
 
   addBro(String token, int broId) {
     if (this.socket.connected) {
-      this.socket.emit("message_event_add_bro",
-          {
-            "token": token,
-            "bros_bro_id": broId
-          }
-      );
+      this.socket.emit(
+          "message_event_add_bro", {"token": token, "bros_bro_id": broId});
     }
   }
 
@@ -93,24 +88,14 @@ class SocketServices {
   void updateBroChatDetails(String token, int broId, String description) {
     if (this.socket.connected) {
       this.socket.emit("message_event_change_chat_details",
-          {
-            "token": token,
-            "bros_bro_id": broId,
-            "description": description
-          }
-      );
+          {"token": token, "bros_bro_id": broId, "description": description});
     }
   }
 
   void updateBroChatColour(String token, int broId, String colour) {
     if (this.socket.connected) {
       this.socket.emit("message_event_change_chat_colour",
-          {
-            "token": token,
-            "bros_bro_id": broId,
-            "colour": colour
-          }
-      );
+          {"token": token, "bros_bro_id": broId, "colour": colour});
     }
   }
 
@@ -130,8 +115,11 @@ class SocketServices {
   }
 
   stopListeningForBroChatDetails() {
-    this.socket.off('message_event_change_chat_details_success', (data) => print(data));
-    this.socket.off('message_event_change_chat_details_failed', (data) => print(data));
+    this.socket.off(
+        'message_event_change_chat_details_success', (data) => print(data));
+    this
+        .socket
+        .off('message_event_change_chat_details_failed', (data) => print(data));
   }
 
   stopListeningForAddingBro() {
@@ -158,23 +146,17 @@ class SocketServices {
 
   changeBromotion(String token, String bromotion) {
     if (this.socket.connected) {
-      this.socket.emit("bromotion_change",
-          {
-            "token": token,
-            "bromotion": bromotion
-          }
-      );
+      this
+          .socket
+          .emit("bromotion_change", {"token": token, "bromotion": bromotion});
     }
   }
 
   changePassword(String token, String password) {
     if (this.socket.connected) {
-      this.socket.emit("password_change",
-          {
-            "token": token,
-            "password": password
-          }
-      );
+      this
+          .socket
+          .emit("password_change", {"token": token, "password": password});
     }
   }
 
@@ -193,7 +175,8 @@ class SocketServices {
 
   joinRoomSolo(String token) {
     if (this.socket.connected) {
-      this.socket.emit("join_solo",
+      this.socket.emit(
+        "join_solo",
         {
           "token": token,
         },
@@ -203,39 +186,36 @@ class SocketServices {
 
   joinRoom(int broId, int brosBroId) {
     if (this.socket.connected) {
-      this.socket.emit("join",
-        {
-          "bro_id": broId,
-          "bros_bro_id": brosBroId
-        },
+      this.socket.emit(
+        "join",
+        {"bro_id": broId, "bros_bro_id": brosBroId},
       );
     }
   }
 
   leaveRoomSolo(String token) {
     if (this.socket.connected) {
-      this.socket.emit("leave_solo",
-        {
-          "token": token
-        },
+      this.socket.emit(
+        "leave_solo",
+        {"token": token},
       );
     }
   }
 
   leaveRoom(int broId, int brosBroId) {
     if (this.socket.connected) {
-      this.socket.emit("leave",
-        {
-          "bro_id": broId,
-          "bros_bro_id": brosBroId
-        },
+      this.socket.emit(
+        "leave",
+        {"bro_id": broId, "bros_bro_id": brosBroId},
       );
     }
   }
 
-  sendMessageSocket(int broId, int brosBroId, String message, String textMessage) {
+  sendMessageSocket(
+      int broId, int brosBroId, String message, String textMessage) {
     if (this.socket.connected) {
-      this.socket.emit("message",
+      this.socket.emit(
+        "message",
         {
           "bro_id": broId,
           "bros_bro_id": brosBroId,
@@ -264,7 +244,7 @@ class SocketServices {
   messageReceivedSolo(var data) {
     print("we have received a SOLO message!");
     print(data);
-    if(broHome != null) {
+    if (broHome != null) {
       this.broHome.updateMessages(data["sender_id"]);
     }
     for (BroBros br0 in BroList.instance.getBros()) {
@@ -273,13 +253,13 @@ class SocketServices {
           print("we're in the messaging mode now");
           print("the bro id is ${this.messaging.getBroBrosId()}");
           if (this.messaging.getBroBrosId() != data["sender_id"]) {
-            NotificationService.instance.showNotification(
-                br0.id, br0.chatName, "", data["body"]);
+            NotificationService.instance
+                .showNotification(br0.id, br0.chatName, "", data["body"]);
           }
         } else {
           print("messaging is null");
-          NotificationService.instance.showNotification(
-              br0.id, br0.chatName, "", data["body"]);
+          NotificationService.instance
+              .showNotification(br0.id, br0.chatName, "", data["body"]);
         }
       }
     }
@@ -287,11 +267,9 @@ class SocketServices {
 
   messageReadUpdate(int broId, int brosBroId) {
     if (this.socket.connected) {
-      this.socket.emit("message_read",
-        {
-          "bro_id": broId,
-          "bros_bro_id": brosBroId
-        },
+      this.socket.emit(
+        "message_read",
+        {"bro_id": broId, "bros_bro_id": brosBroId},
       );
     }
   }

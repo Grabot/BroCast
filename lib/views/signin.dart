@@ -15,7 +15,6 @@ class SignIn extends StatefulWidget {
 }
 
 class _SignInState extends State<SignIn> {
-
   bool isLoading = false;
   bool showEmojiKeyboard = false;
 
@@ -63,7 +62,8 @@ class _SignInState extends State<SignIn> {
   }
 
   bromotionListener() {
-    bromotionController.selection = TextSelection.fromPosition(TextPosition(offset: 0));
+    bromotionController.selection =
+        TextSelection.fromPosition(TextPosition(offset: 0));
     String fullText = bromotionController.text;
     String lastEmoji = fullText.characters.skip(1).string;
     if (lastEmoji != "") {
@@ -113,7 +113,8 @@ class _SignInState extends State<SignIn> {
       if (signUpMode) {
         signUp();
       } else {
-        signInName(broNameController.text, bromotionController.text, passwordController.text);
+        signInName(broNameController.text, bromotionController.text,
+            passwordController.text);
       }
     }
   }
@@ -123,11 +124,13 @@ class _SignInState extends State<SignIn> {
       isLoading = true;
     });
 
-    auth.signUp(broNameController.text, bromotionController.text, passwordController.text).then((val) {
+    auth
+        .signUp(broNameController.text, bromotionController.text,
+            passwordController.text)
+        .then((val) {
       if (val.toString() == "") {
-        Navigator.pushReplacement(context, MaterialPageRoute(
-            builder: (context) => BroCastHome()
-        ));
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => BroCastHome()));
       } else {
         ShowToastComponent.showDialog(val.toString(), context);
       }
@@ -140,9 +143,8 @@ class _SignInState extends State<SignIn> {
   signInName(String broName, String bromotion, String password) {
     auth.signIn(broName, bromotion, password, "").then((val) {
       if (val.toString() == "") {
-        Navigator.pushReplacement(context, MaterialPageRoute(
-            builder: (context) => BroCastHome()
-        ));
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => BroCastHome()));
       } else {
         ShowToastComponent.showDialog(val.toString(), context);
         setState(() {
@@ -155,22 +157,19 @@ class _SignInState extends State<SignIn> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBarMain(context, false, "Brocast"),
-      body: Stack(
-        children: [
-          isLoading ? Container(
-              child: Center(
-                  child: CircularProgressIndicator())
-          ) : Container(),
+        appBar: appBarMain(context, false, "Brocast"),
+        body: Stack(children: [
+          isLoading
+              ? Container(child: Center(child: CircularProgressIndicator()))
+              : Container(),
           Container(
-            child: Column(
-              children: [
-                Expanded(
-                  child: SingleChildScrollView(
-                    reverse: true,
-                    child: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 30),
-                      child: Form(
+            child: Column(children: [
+              Expanded(
+                child: SingleChildScrollView(
+                  reverse: true,
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 30),
+                    child: Form(
                         key: formKey,
                         child: Column(
                           children: [
@@ -178,50 +177,51 @@ class _SignInState extends State<SignIn> {
                             Container(
                                 padding: EdgeInsets.symmetric(vertical: 30),
                                 alignment: Alignment.center,
-                                child: Image.asset("assets/images/brocast_transparent.png")
-                            ),
+                                child: Image.asset(
+                                    "assets/images/brocast_transparent.png")),
                             SizedBox(height: 50),
-                            Row(
-                                children: [
-                                  Expanded(
-                                    flex: 4,
-                                    child: TextFormField(
-                                      onTap: () {
-                                        if (!isLoading) {
-                                          onTapTextField();
-                                        }
-                                      },
-                                      validator: (val) {
-                                        return val.isEmpty ? "Please provide a bro name": null;
-                                      },
-                                      controller: broNameController,
-                                      textAlign: TextAlign.center,
-                                      style: simpleTextStyle(),
-                                      decoration: textFieldInputDecoration("Bro name"),
-                                    ),
-                                  ),
-                                  SizedBox(width: 50),
-                                  Expanded(
-                                    flex: 1,
-                                    child: TextFormField(
-                                      onTap: () {
-                                        if (!isLoading) {
-                                          onTapEmojiField();
-                                        }
-                                      },
-                                      validator: (val) {
-                                        return val.trim().isEmpty ? "😢?😄!": null;
-                                      },
-                                      controller: bromotionController,
-                                      style: simpleTextStyle(),
-                                      textAlign: TextAlign.center,
-                                      decoration: textFieldInputDecoration("😀"),
-                                      readOnly: true,
-                                      showCursor: true,
-                                    ),
-                                  ),
-                                ]
-                            ),
+                            Row(children: [
+                              Expanded(
+                                flex: 4,
+                                child: TextFormField(
+                                  onTap: () {
+                                    if (!isLoading) {
+                                      onTapTextField();
+                                    }
+                                  },
+                                  validator: (val) {
+                                    return val.isEmpty
+                                        ? "Please provide a bro name"
+                                        : null;
+                                  },
+                                  controller: broNameController,
+                                  textAlign: TextAlign.center,
+                                  style: simpleTextStyle(),
+                                  decoration:
+                                      textFieldInputDecoration("Bro name"),
+                                ),
+                              ),
+                              SizedBox(width: 50),
+                              Expanded(
+                                flex: 1,
+                                child: TextFormField(
+                                  onTap: () {
+                                    if (!isLoading) {
+                                      onTapEmojiField();
+                                    }
+                                  },
+                                  validator: (val) {
+                                    return val.trim().isEmpty ? "😢?😄!" : null;
+                                  },
+                                  controller: bromotionController,
+                                  style: simpleTextStyle(),
+                                  textAlign: TextAlign.center,
+                                  decoration: textFieldInputDecoration("😀"),
+                                  readOnly: true,
+                                  showCursor: true,
+                                ),
+                              ),
+                            ]),
                             SizedBox(height: 30),
                             Container(
                               padding: EdgeInsets.symmetric(horizontal: 50),
@@ -233,12 +233,15 @@ class _SignInState extends State<SignIn> {
                                 },
                                 obscureText: true,
                                 validator: (val) {
-                                  return val.isEmpty ? "Please provide a password": null;
+                                  return val.isEmpty
+                                      ? "Please provide a password"
+                                      : null;
                                 },
                                 controller: passwordController,
                                 textAlign: TextAlign.center,
                                 style: simpleTextStyle(),
-                                decoration: textFieldInputDecoration("Password"),
+                                decoration:
+                                    textFieldInputDecoration("Password"),
                               ),
                             ),
                             SizedBox(height: 60),
@@ -253,15 +256,14 @@ class _SignInState extends State<SignIn> {
                                 width: MediaQuery.of(context).size.width,
                                 padding: EdgeInsets.symmetric(vertical: 16),
                                 decoration: BoxDecoration(
-                                    gradient: LinearGradient(
-                                        colors: [
-                                          const Color(0xBf007EF4),
-                                          const Color(0xff2A75BC)
-                                        ]
-                                    ),
-                                    borderRadius: BorderRadius.circular(30)
-                                ),
-                                child: signUpMode ? Text("Sign up", style: simpleTextStyle()) : Text("Sign in", style: simpleTextStyle()),
+                                    gradient: LinearGradient(colors: [
+                                      const Color(0xBf007EF4),
+                                      const Color(0xff2A75BC)
+                                    ]),
+                                    borderRadius: BorderRadius.circular(30)),
+                                child: signUpMode
+                                    ? Text("Sign up", style: simpleTextStyle())
+                                    : Text("Sign in", style: simpleTextStyle()),
                               ),
                             ),
                             SizedBox(height: 10),
@@ -269,10 +271,10 @@ class _SignInState extends State<SignIn> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Container(
-                                  child: Text("Don't have an account?  ", style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 16
-                                  ),
+                                  child: Text(
+                                    "Don't have an account?  ",
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 16),
                                   ),
                                 ),
                                 Expanded(
@@ -287,41 +289,43 @@ class _SignInState extends State<SignIn> {
                                         // ));
                                       }
                                     },
-                                    child: signUpMode ? Text("Login now!", style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 16,
-                                        decoration: TextDecoration.underline
-                                      ),
-                                    ) : Text("Register now!", style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 16,
-                                        decoration: TextDecoration.underline
-                                      ),
-                                    ),
+                                    child: signUpMode
+                                        ? Text(
+                                            "Login now!",
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 16,
+                                                decoration:
+                                                    TextDecoration.underline),
+                                          )
+                                        : Text(
+                                            "Register now!",
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 16,
+                                                decoration:
+                                                    TextDecoration.underline),
+                                          ),
                                   ),
                                 )
                               ],
                             ),
                             SizedBox(height: 100),
                           ],
-                        )
-                    ),
+                        )),
                   ),
                 ),
               ),
               Align(
                 alignment: Alignment.bottomCenter,
                 child: EmojiKeyboard(
-                  bromotionController: bromotionController,
-                  emojiKeyboardHeight: 300,
-                  showEmojiKeyboard: showEmojiKeyboard,
-                  darkMode: Settings.instance.getEmojiKeyboardDarkMode()
-                ),
+                    bromotionController: bromotionController,
+                    emojiKeyboardHeight: 300,
+                    showEmojiKeyboard: showEmojiKeyboard,
+                    darkMode: Settings.instance.getEmojiKeyboardDarkMode()),
               ),
             ]),
           ),
-        ]
-      )
-    );
+        ]));
   }
 }

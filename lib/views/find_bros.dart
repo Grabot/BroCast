@@ -12,15 +12,13 @@ import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
 import 'package:flutter/material.dart';
 
 class FindBros extends StatefulWidget {
-
-  FindBros({ Key key }): super(key: key);
+  FindBros({Key key}) : super(key: key);
 
   @override
   _FindBrosState createState() => _FindBrosState();
 }
 
 class _FindBrosState extends State<FindBros> {
-
   Search search = new Search();
 
   bool isSearching = false;
@@ -43,7 +41,8 @@ class _FindBrosState extends State<FindBros> {
   }
 
   bromotionListener() {
-    bromotionController.selection = TextSelection.fromPosition(TextPosition(offset: 0));
+    bromotionController.selection =
+        TextSelection.fromPosition(TextPosition(offset: 0));
     String fullText = bromotionController.text;
     String lastEmoji = fullText.characters.skip(1).string;
     if (lastEmoji != "") {
@@ -53,14 +52,13 @@ class _FindBrosState extends State<FindBros> {
   }
 
   broWasAdded() {
-    Navigator.pushReplacement(context, MaterialPageRoute(
-        builder: (context) => BroCastHome()
-    ));
+    Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (context) => BroCastHome()));
   }
 
   broAddingFailed() {
-      ShowToastComponent.showDialog(
-          "Bro could not be added at this time", context);
+    ShowToastComponent.showDialog(
+        "Bro could not be added at this time", context);
   }
 
   @override
@@ -77,9 +75,8 @@ class _FindBrosState extends State<FindBros> {
       });
       return true;
     } else {
-      Navigator.pushReplacement(context, MaterialPageRoute(
-          builder: (context) => BroCastHome()
-      ));
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => BroCastHome()));
       return true;
     }
   }
@@ -104,9 +101,10 @@ class _FindBrosState extends State<FindBros> {
   }
 
   void goToDifferentChat(BroBros chatBro) {
-    Navigator.pushReplacement(context, MaterialPageRoute(
-        builder: (context) => BroMessaging(broBros: chatBro)
-    ));
+    Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+            builder: (context) => BroMessaging(broBros: chatBro)));
   }
 
   searchBros() {
@@ -115,8 +113,9 @@ class _FindBrosState extends State<FindBros> {
         isSearching = true;
       });
 
-      search.searchBro(broNameController.text, bromotionController.text).then((
-          val) {
+      search
+          .searchBro(broNameController.text, bromotionController.text)
+          .then((val) {
         if (!(val is String)) {
           setState(() {
             bros = val;
@@ -132,15 +131,14 @@ class _FindBrosState extends State<FindBros> {
   }
 
   Widget broList() {
-    return bros.isNotEmpty ?
-      ListView.builder(
-      shrinkWrap: true,
-      itemCount: bros.length,
-        itemBuilder: (context, index) {
-          return BroTileSearch(
-              bros[index]
-          );
-        }) : Container();
+    return bros.isNotEmpty
+        ? ListView.builder(
+            shrinkWrap: true,
+            itemCount: bros.length,
+            itemBuilder: (context, index) {
+              return BroTileSearch(bros[index]);
+            })
+        : Container();
   }
 
   @override
@@ -151,9 +149,8 @@ class _FindBrosState extends State<FindBros> {
         child: Column(
           children: [
             Text(
-              "search for your bro using their bro name \n(bromotion optional)",
-              style: simpleTextStyle()
-            ),
+                "search for your bro using their bro name \n(bromotion optional)",
+                style: simpleTextStyle()),
             Container(
               padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
               child: Row(
@@ -166,7 +163,7 @@ class _FindBrosState extends State<FindBros> {
                         onTapTextField();
                       },
                       validator: (val) {
-                        return val.isEmpty ? "Please provide a bro name": null;
+                        return val.isEmpty ? "Please provide a bro name" : null;
                       },
                       controller: broNameController,
                       textAlign: TextAlign.center,
@@ -195,30 +192,25 @@ class _FindBrosState extends State<FindBros> {
                       searchBros();
                     },
                     child: Container(
-                      height: 40,
-                      width: 40,
-                      decoration: BoxDecoration(
-                        color: const Color(0x36FFFFFF),
-                        borderRadius: BorderRadius.circular(40)
-                      ),
-                      padding: EdgeInsets.all(10),
-                      child: Icon(Icons.search)
-                    ),
+                        height: 40,
+                        width: 40,
+                        decoration: BoxDecoration(
+                            color: const Color(0x36FFFFFF),
+                            borderRadius: BorderRadius.circular(40)),
+                        padding: EdgeInsets.all(10),
+                        child: Icon(Icons.search)),
                   )
                 ],
               ),
             ),
-            Expanded(
-                child: broList()
-            ),
+            Expanded(child: broList()),
             Align(
               alignment: Alignment.bottomCenter,
               child: EmojiKeyboard(
                   bromotionController: bromotionController,
                   emojiKeyboardHeight: 300,
                   showEmojiKeyboard: showEmojiKeyboard,
-                  darkMode: Settings.instance.getEmojiKeyboardDarkMode()
-              ),
+                  darkMode: Settings.instance.getEmojiKeyboardDarkMode()),
             ),
           ],
         ),
@@ -249,13 +241,11 @@ class BroTileSearch extends StatelessWidget {
               addBro(context);
             },
             child: Container(
-              decoration: BoxDecoration(
-                color: Colors.blue,
-                borderRadius: BorderRadius.circular(30)
-              ),
-              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: Text("Add")
-            ),
+                decoration: BoxDecoration(
+                    color: Colors.blue,
+                    borderRadius: BorderRadius.circular(30)),
+                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                child: Text("Add")),
           )
         ],
       ),

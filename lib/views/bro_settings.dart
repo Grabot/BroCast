@@ -10,15 +10,13 @@ import "package:flutter/material.dart";
 import 'bro_messaging.dart';
 
 class BroSettings extends StatefulWidget {
-
-  BroSettings({ Key key }): super(key: key);
+  BroSettings({Key key}) : super(key: key);
 
   @override
   _BroSettingsState createState() => _BroSettingsState();
 }
 
 class _BroSettingsState extends State<BroSettings> {
-
   bool toggleSwitch = false;
 
   @override
@@ -44,15 +42,15 @@ class _BroSettingsState extends State<BroSettings> {
   }
 
   void goToDifferentChat(BroBros chatBro) {
-    Navigator.pushReplacement(context, MaterialPageRoute(
-        builder: (context) => BroMessaging(broBros: chatBro)
-    ));
+    Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+            builder: (context) => BroMessaging(broBros: chatBro)));
   }
 
   bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
-    Navigator.pushReplacement(context, MaterialPageRoute(
-        builder: (context) => BroCastHome()
-    ));
+    Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (context) => BroCastHome()));
     return true;
   }
 
@@ -76,44 +74,35 @@ class _BroSettingsState extends State<BroSettings> {
         appBar: appBarMain(context, true, "Settings"),
         body: Container(
           padding: EdgeInsets.symmetric(vertical: 16),
-          child: Column(
-            children: [
-              Expanded(
-                child: SingleChildScrollView(
-                  reverse: true,
-                  child: Column(
-                    children:
-                    [
-                      Container(
-                        padding: EdgeInsets.symmetric(vertical: 30),
-                        alignment: Alignment.center,
-                        child: Image.asset("assets/images/brocast_transparent.png")
+          child: Column(children: [
+            Expanded(
+              child: SingleChildScrollView(
+                reverse: true,
+                child: Column(children: [
+                  Container(
+                      padding: EdgeInsets.symmetric(vertical: 30),
+                      alignment: Alignment.center,
+                      child:
+                          Image.asset("assets/images/brocast_transparent.png")),
+                  SizedBox(height: 40),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text("Emoji keyboard Dark Mode",
+                          style: simpleTextStyle()),
+                      Switch(
+                        value: toggleSwitch,
+                        onChanged: (value) {
+                          toggledEmojiKeyboardDarkMode(value);
+                        },
                       ),
-                      SizedBox(height: 40),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                              "Emoji keyboard Dark Mode",
-                              style: simpleTextStyle()
-                          ),
-                          Switch(
-                            value: toggleSwitch,
-                            onChanged: (value){
-                              toggledEmojiKeyboardDarkMode(value);
-                            },
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 300),
-                    ]
+                    ],
                   ),
-                ),
+                  SizedBox(height: 300),
+                ]),
               ),
-            ]
-          ),
-        )
-      );
+            ),
+          ]),
+        ));
   }
 }
-

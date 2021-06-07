@@ -20,17 +20,15 @@ import 'bro_profile.dart';
 import 'bro_settings.dart';
 
 class BroMessaging extends StatefulWidget {
-
   final BroBros broBros;
 
-  BroMessaging({ Key key, this.broBros }): super(key: key);
+  BroMessaging({Key key, this.broBros}) : super(key: key);
 
   @override
   _BroMessagingState createState() => _BroMessagingState();
 }
 
 class _BroMessagingState extends State<BroMessaging> {
-
   SendMessage send = new SendMessage();
   GetMessages get = new GetMessages();
 
@@ -41,7 +39,8 @@ class _BroMessagingState extends State<BroMessaging> {
   bool appendingMessage = false;
 
   TextEditingController broMessageController = new TextEditingController();
-  TextEditingController appendTextMessageController = new TextEditingController();
+  TextEditingController appendTextMessageController =
+      new TextEditingController();
   final formKey = GlobalKey<FormState>();
 
   // SocketServices socket;
@@ -82,9 +81,10 @@ class _BroMessagingState extends State<BroMessaging> {
   }
 
   void goToDifferentChat(BroBros chatBro) {
-    Navigator.pushReplacement(context, MaterialPageRoute(
-        builder: (context) => BroMessaging(broBros: chatBro)
-    ));
+    Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+            builder: (context) => BroMessaging(broBros: chatBro)));
   }
 
   bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
@@ -94,9 +94,8 @@ class _BroMessagingState extends State<BroMessaging> {
       });
       return true;
     } else {
-      Navigator.pushReplacement(context, MaterialPageRoute(
-          builder: (context) => BroCastHome()
-      ));
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => BroCastHome()));
       return true;
     }
   }
@@ -127,7 +126,8 @@ class _BroMessagingState extends State<BroMessaging> {
     DateTime yesterday = DateTime(now.year, now.month, now.day - 1);
 
     Message messageFirst = messes.first;
-    DateTime dayFirst = DateTime(messageFirst.timestamp.year, messageFirst.timestamp.month, messageFirst.timestamp.day);
+    DateTime dayFirst = DateTime(messageFirst.timestamp.year,
+        messageFirst.timestamp.month, messageFirst.timestamp.day);
     String chatTimeTile = DateFormat.yMMMMd('en_US').format(dayFirst);
 
     String timeMessageFirst = DateFormat.yMMMMd('en_US').format(dayFirst);
@@ -139,7 +139,7 @@ class _BroMessagingState extends State<BroMessaging> {
     }
 
     Message timeMessage = new Message(0, 0, 0, 0, timeMessageFirst, null, null);
-    for (int i = 0; i < messes.length; i++ ) {
+    for (int i = 0; i < messes.length; i++) {
       DateTime current = messes[i].timestamp;
       DateTime dayMessage = DateTime(current.year, current.month, current.day);
       String currentDayMessage = DateFormat.yMMMMd('en_US').format(dayMessage);
@@ -167,7 +167,8 @@ class _BroMessagingState extends State<BroMessaging> {
       this.messages.insert(0, new Message(0, 0, 0, 0, "Today", null, null));
     } else {
       Message messageFirst = this.messages.first;
-      DateTime dayFirst = DateTime(messageFirst.timestamp.year, messageFirst.timestamp.month, messageFirst.timestamp.day);
+      DateTime dayFirst = DateTime(messageFirst.timestamp.year,
+          messageFirst.timestamp.month, messageFirst.timestamp.day);
       String chatTimeTile = DateFormat.yMMMMd('en_US').format(dayFirst);
 
       DateTime current = message.timestamp;
@@ -214,13 +215,16 @@ class _BroMessagingState extends State<BroMessaging> {
       String timestampString = DateTime.now().toUtc().toString();
       // The 'Z' indicates that it's UTC but we'll already add it in the message
       if (timestampString.endsWith('Z')) {
-        timestampString = timestampString.substring(0, timestampString.length - 1);
+        timestampString =
+            timestampString.substring(0, timestampString.length - 1);
       }
-      Message mes = new Message(0, 0, 0, chat.id, message, textMessage, timestampString);
+      Message mes =
+          new Message(0, 0, 0, chat.id, message, textMessage, timestampString);
       setState(() {
         this.messages.insert(0, mes);
       });
-      SocketServices.instance.sendMessageSocket(Settings.instance.getBroId(), chat.id, message, textMessage);
+      SocketServices.instance.sendMessageSocket(
+          Settings.instance.getBroId(), chat.id, message, textMessage);
       broMessageController.clear();
       appendTextMessageController.clear();
 
@@ -242,7 +246,8 @@ class _BroMessagingState extends State<BroMessaging> {
     } else {
       // If we didn't send this message it is from the other person.
       // We send a response, indicating that we read the messages
-      SocketServices.instance.messageReadUpdate(Settings.instance.getBroId(), chat.id);
+      SocketServices.instance
+          .messageReadUpdate(Settings.instance.getBroId(), chat.id);
     }
     updateDateTiles(message);
     setState(() {
@@ -260,22 +265,23 @@ class _BroMessagingState extends State<BroMessaging> {
   }
 
   Widget messageList() {
-    return messages.isNotEmpty ?
-    ListView.builder(
-        itemCount: messages.length,
-        shrinkWrap: true,
-        reverse: true,
-        itemBuilder: (context, index) {
-          return MessageTile(message: messages[index], myMessage: messages[index].recipientId == chat.id);
-        }
-    ) : Container();
+    return messages.isNotEmpty
+        ? ListView.builder(
+            itemCount: messages.length,
+            shrinkWrap: true,
+            reverse: true,
+            itemBuilder: (context, index) {
+              return MessageTile(
+                  message: messages[index],
+                  myMessage: messages[index].recipientId == chat.id);
+            })
+        : Container();
   }
 
   void onTapEmojiTextField() {
     if (!showEmojiKeyboard) {
-      Timer(Duration(milliseconds: 100),()
-      {
-        setState((){
+      Timer(Duration(milliseconds: 100), () {
+        setState(() {
           showEmojiKeyboard = true;
         });
       });
@@ -292,75 +298,58 @@ class _BroMessagingState extends State<BroMessaging> {
 
   Widget appBarChat() {
     return AppBar(
-        backgroundColor: chat.broColor != null ? chat.broColor : Color(0xff145C9E),
+        backgroundColor:
+            chat.broColor != null ? chat.broColor : Color(0xff145C9E),
         title: Container(
-          alignment: Alignment.centerLeft,
-          color: Colors.transparent,
-          child: InkWell(
-            onTap: (){
-              Navigator.pushReplacement(context, MaterialPageRoute(
-                  builder: (context) => BroChatDetails(broBros: chat)
-              ));
-            },
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                  Text(
-                    chat.chatName,
-                    style: TextStyle(
-                        color: getTextColor(chat.broColor),
-                        fontSize: 20
-                    )
-                  ),
-                  chat.chatDescription != "" ? Text(
-                    chat.chatDescription,
-                    style: TextStyle(
-                        color: getTextColor(chat.broColor),
-                        fontSize: 12
-                    )
-                ) : Container(),
-              ],
-            )
-          )
-        ),
+            alignment: Alignment.centerLeft,
+            color: Colors.transparent,
+            child: InkWell(
+                onTap: () {
+                  Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => BroChatDetails(broBros: chat)));
+                },
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(chat.chatName,
+                        style: TextStyle(
+                            color: getTextColor(chat.broColor), fontSize: 20)),
+                    chat.chatDescription != ""
+                        ? Text(chat.chatDescription,
+                            style: TextStyle(
+                                color: getTextColor(chat.broColor),
+                                fontSize: 12))
+                        : Container(),
+                  ],
+                ))),
         actions: [
           PopupMenuButton<int>(
               onSelected: (item) => onSelectChat(context, item),
-              itemBuilder: (context) =>
-              [
-                PopupMenuItem<int>(
-                    value: 0,
-                    child: Text("Profile")
-                ),
-                PopupMenuItem<int>(
-                    value: 1,
-                    child: Text("Settings")
-                ),
-                PopupMenuItem<int>(
-                    value: 2,
-                    child: Text("Chat details")
-                ),
-              ])
-        ]
-    );
+              itemBuilder: (context) => [
+                    PopupMenuItem<int>(value: 0, child: Text("Profile")),
+                    PopupMenuItem<int>(value: 1, child: Text("Settings")),
+                    PopupMenuItem<int>(value: 2, child: Text("Chat details")),
+                  ])
+        ]);
   }
 
   void onSelectChat(BuildContext context, int item) {
-    switch(item) {
+    switch (item) {
       case 0:
-        Navigator.pushReplacement(context, MaterialPageRoute(
-            builder: (context) => BroProfile()
-        ));
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => BroProfile()));
         break;
       case 1:
-        Navigator.pushReplacement(context, MaterialPageRoute(
-            builder: (context) => BroSettings()
-        ));
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => BroSettings()));
         break;
       case 2:
-        Navigator.pushReplacement(context, MaterialPageRoute(
-            builder: (context) => BroChatDetails(broBros: chat)
-        ));
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (context) => BroChatDetails(broBros: chat)));
         break;
     }
   }
@@ -373,9 +362,7 @@ class _BroMessagingState extends State<BroMessaging> {
         child: Column(
           children: [
             Expanded(
-              child: Container(
-                child: messageList()
-              ),
+              child: Container(child: messageList()),
             ),
             Container(
               alignment: Alignment.bottomCenter,
@@ -385,8 +372,7 @@ class _BroMessagingState extends State<BroMessaging> {
                   padding: EdgeInsets.symmetric(horizontal: 6),
                   decoration: BoxDecoration(
                       color: Color(0x36FFFFFF),
-                      borderRadius: BorderRadius.circular(35)
-                  ),
+                      borderRadius: BorderRadius.circular(35)),
                   child: Row(
                     children: [
                       GestureDetector(
@@ -394,22 +380,21 @@ class _BroMessagingState extends State<BroMessaging> {
                           appendTextMessage();
                         },
                         child: Container(
-                          height: 35,
-                          width: 35,
-                          decoration: BoxDecoration(
-                              color: appendingMessage ? Colors.green : Colors.grey,
-                              borderRadius: BorderRadius.circular(35)
-                          ),
-                          padding: EdgeInsets.symmetric(horizontal: 6),
-                          child: Icon(
-                            Icons.text_snippet,
-                            color: appendingMessage ? Colors.white : Color(0xFF616161)
-                          )
-                        ),
+                            height: 35,
+                            width: 35,
+                            decoration: BoxDecoration(
+                                color: appendingMessage
+                                    ? Colors.green
+                                    : Colors.grey,
+                                borderRadius: BorderRadius.circular(35)),
+                            padding: EdgeInsets.symmetric(horizontal: 6),
+                            child: Icon(Icons.text_snippet,
+                                color: appendingMessage
+                                    ? Colors.white
+                                    : Color(0xFF616161))),
                       ),
                       Expanded(
-                        child:
-                        Container(
+                        child: Container(
                           padding: EdgeInsets.only(left: 15),
                           child: Form(
                             key: formKey,
@@ -426,16 +411,11 @@ class _BroMessagingState extends State<BroMessaging> {
                               keyboardType: TextInputType.multiline,
                               maxLines: null,
                               controller: broMessageController,
-                              style: TextStyle(
-                                  color: Colors.white
-                              ),
+                              style: TextStyle(color: Colors.white),
                               decoration: InputDecoration(
                                   hintText: "Emoji message...",
-                                  hintStyle: TextStyle(
-                                      color: Colors.white54
-                                  ),
-                                  border: InputBorder.none
-                              ),
+                                  hintStyle: TextStyle(color: Colors.white54),
+                                  border: InputBorder.none),
                               readOnly: true,
                               showCursor: true,
                             ),
@@ -450,15 +430,13 @@ class _BroMessagingState extends State<BroMessaging> {
                             height: 35,
                             width: 35,
                             decoration: BoxDecoration(
-                              color: Color(0xFF34A843),
-                              borderRadius: BorderRadius.circular(35)
-                            ),
+                                color: Color(0xFF34A843),
+                                borderRadius: BorderRadius.circular(35)),
                             padding: EdgeInsets.symmetric(horizontal: 6),
                             child: Icon(
                               Icons.send,
                               color: Colors.white,
-                            )
-                        ),
+                            )),
                       )
                     ],
                   ),
@@ -468,8 +446,8 @@ class _BroMessagingState extends State<BroMessaging> {
             Container(
                 child: appendingMessage
                     ? Container(
-                      padding: EdgeInsets.symmetric(horizontal: 6),
-                      child: Container(
+                        padding: EdgeInsets.symmetric(horizontal: 6),
+                        child: Container(
                           padding: EdgeInsets.symmetric(horizontal: 6),
                           decoration: BoxDecoration(
                               color: Color(0x36FFFFFF),
@@ -501,7 +479,7 @@ class _BroMessagingState extends State<BroMessaging> {
                             ],
                           ),
                         ),
-                    )
+                      )
                     : Container()),
             Align(
               alignment: Alignment.bottomCenter,
@@ -520,22 +498,16 @@ class _BroMessagingState extends State<BroMessaging> {
 }
 
 class MessageTile extends StatefulWidget {
-
   final Message message;
   final bool myMessage;
 
-  MessageTile({
-    Key key,
-    this.message,
-    this.myMessage
-  }): super(key: key);
+  MessageTile({Key key, this.message, this.myMessage}) : super(key: key);
 
   @override
   _MessageTileState createState() => _MessageTileState();
 }
 
 class _MessageTileState extends State<MessageTile> {
-
   bool clicked = false;
 
   selectMessage(BuildContext context) {
@@ -548,110 +520,106 @@ class _MessageTileState extends State<MessageTile> {
 
   @override
   Widget build(BuildContext context) {
-    return widget.message.timestamp == null ? // If the timestamp is null it is a date tile.
-    Row(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          Container(
-              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-              decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                      colors: [
-                        const Color(0x55D3D3D3),
-                        const Color(0x55C0C0C0)
-                      ]
-                  ),
-                  borderRadius: BorderRadius.all(Radius.circular(12))
-              ),
-              child: Text(
-                  widget.message.body,
-                  style: simpleTextStyle()
-              )
-          )
-        ]
-    ) :
-    Container(
-        child: new Material(
-          child: Column(
-              children: [
+    return widget.message.timestamp == null
+        ? // If the timestamp is null it is a date tile.
+        Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
                 Container(
-                  padding: EdgeInsets.symmetric(horizontal: 12),
-                  margin: EdgeInsets.only(top: 12),
-                  width: MediaQuery.of(context).size.width,
-                  alignment: widget.myMessage ? Alignment.bottomRight : Alignment.bottomLeft,
-                  child: new InkWell(
-                    customBorder: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(42),
+                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    decoration: BoxDecoration(
+                        gradient: LinearGradient(colors: [
+                          const Color(0x55D3D3D3),
+                          const Color(0x55C0C0C0)
+                        ]),
+                        borderRadius: BorderRadius.all(Radius.circular(12))),
+                    child: Text(widget.message.body, style: simpleTextStyle()))
+              ])
+        : Container(
+            child: new Material(
+            child: Column(children: [
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 12),
+                margin: EdgeInsets.only(top: 12),
+                width: MediaQuery.of(context).size.width,
+                alignment: widget.myMessage
+                    ? Alignment.bottomRight
+                    : Alignment.bottomLeft,
+                child: new InkWell(
+                  customBorder: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(42),
+                  ),
+                  onTap: () {
+                    selectMessage(context);
+                  },
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                    decoration: BoxDecoration(
+                        color: widget.myMessage
+                            ? widget.message.textMessage.isEmpty || clicked
+                                ? Color(0xAA009E00)
+                                : Color(0xFF0ABB5A)
+                            : widget.message.textMessage.isEmpty || clicked
+                                ? Color(0xFF0060BB)
+                                : Color(0xFF0A98BB),
+                        borderRadius: widget.myMessage
+                            ? BorderRadius.only(
+                                topLeft: Radius.circular(42),
+                                topRight: Radius.circular(42),
+                                bottomLeft: Radius.circular(42))
+                            : BorderRadius.only(
+                                topLeft: Radius.circular(42),
+                                topRight: Radius.circular(42),
+                                bottomRight: Radius.circular(42))),
+                    child: Column(
+                      children: [
+                        clicked
+                            ? Text(widget.message.textMessage,
+                                style: simpleTextStyle())
+                            : Text(widget.message.body,
+                                style: simpleTextStyle()),
+                      ],
                     ),
-                    onTap: (){
-                      selectMessage(context);
-                    },
-                    child: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                      decoration: BoxDecoration(
-                          color: widget.myMessage ?
-                          widget.message.textMessage.isEmpty || clicked ? Color(0xAA009E00) : Color(
-                              0xFF0ABB5A)
-                              :
-                          widget.message.textMessage.isEmpty || clicked ? Color(0xFF0060BB) : Color(
-                              0xFF0A98BB),
-                          borderRadius: widget.myMessage ?
-                          BorderRadius.only(
-                              topLeft: Radius.circular(42),
-                              topRight: Radius.circular(42),
-                              bottomLeft: Radius.circular(42)
-                          ) :
-                          BorderRadius.only(
-                              topLeft: Radius.circular(42),
-                              topRight: Radius.circular(42),
-                              bottomRight: Radius.circular(42)
-                          )
-                      ),
-                      child: Column(
+                  ),
+                ),
+              ),
+              Container(
+                child: Align(
+                  alignment: widget.myMessage
+                      ? Alignment.bottomRight
+                      : Alignment.bottomLeft,
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 12),
+                    child: RichText(
+                      text: TextSpan(
                         children: [
-                          clicked ? Text(widget.message.textMessage, style: simpleTextStyle()) : Text(widget.message.body, style: simpleTextStyle()),
+                          TextSpan(
+                            text: DateFormat('HH:mm')
+                                .format(widget.message.timestamp),
+                            style:
+                                TextStyle(color: Colors.white54, fontSize: 12),
+                          ),
+                          widget.myMessage
+                              ? widget.message.id != 0
+                                  ? WidgetSpan(
+                                      child: Icon(Icons.done_all,
+                                          color: widget.message.isRead
+                                              ? Colors.blue
+                                              : Colors.white54,
+                                          size: 18))
+                                  : WidgetSpan(
+                                      child: Icon(Icons.done,
+                                          color: Colors.white54, size: 18))
+                              : WidgetSpan(child: Container()),
                         ],
                       ),
                     ),
                   ),
                 ),
-                Container(
-                  child: Align(
-                    alignment: widget.myMessage ? Alignment.bottomRight : Alignment.bottomLeft,
-                    child: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 12),
-                      child: RichText(
-                        text: TextSpan(
-                          children: [
-                            TextSpan(
-                              text: DateFormat('HH:mm').format(widget.message.timestamp),
-                              style: TextStyle(
-                                  color: Colors.white54,
-                                  fontSize: 12
-                              ),
-                            ),
-                            widget.myMessage ?
-                            widget.message.id != 0 ? WidgetSpan(
-                                child: Icon(
-                                    Icons.done_all,
-                                    color: widget.message.isRead ? Colors.blue : Colors.white54,
-                                    size: 18
-                                )) : WidgetSpan(
-                                child: Icon(
-                                    Icons.done,
-                                    color: Colors.white54,
-                                    size: 18
-                                )) : WidgetSpan(child: Container()),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ]),
-          color: Colors.transparent,
-        )
-    );
+              ),
+            ]),
+            color: Colors.transparent,
+          ));
   }
 }

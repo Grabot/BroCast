@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 
 class NotificationService {
   static NotificationService _instance = new NotificationService._internal();
+
   static get instance => _instance;
 
   var currentScreen;
@@ -14,7 +15,6 @@ class NotificationService {
   int notificationId = 1;
 
   NotificationService._internal() {
-
     this.goToBro = null;
 
     AwesomeNotifications().initialize(
@@ -34,8 +34,7 @@ class NotificationService {
               vibrationPattern: Int64List.fromList([0, 500, 100, 150]),
               importance: NotificationImportance.High),
         ],
-        debug: true
-    );
+        debug: true);
 
     AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
       if (!isAllowed) {
@@ -50,7 +49,8 @@ class NotificationService {
         String chatName = broResult["chat_name"];
         if (broId != null && chatName != null) {
           if (BroList.instance.getBros().isEmpty) {
-            BroBros broNotify = new BroBros(int.parse(broId), chatName, "", "", 0, null);
+            BroBros broNotify =
+                new BroBros(int.parse(broId), chatName, "", "", 0, null);
             if (this.currentScreen != null) {
               this.currentScreen.goToDifferentChat(broNotify);
             } else {
@@ -84,7 +84,8 @@ class NotificationService {
     this.currentScreen = currentScreen;
   }
 
-  Future<void> showNotification(int broId, String chatName, String chatColour, String messageBody) async {
+  Future<void> showNotification(
+      int broId, String chatName, String chatColour, String messageBody) async {
     await AwesomeNotifications().createNotification(
         content: NotificationContent(
             id: notificationId,
@@ -92,12 +93,7 @@ class NotificationService {
             title: "$chatName:",
             body: messageBody,
             color: Colors.red,
-            payload: {
-              "id": broId.toString(),
-              "chat_name": chatName
-            }
-        )
-    );
+            payload: {"id": broId.toString(), "chat_name": chatName}));
     notificationId += 1;
   }
 

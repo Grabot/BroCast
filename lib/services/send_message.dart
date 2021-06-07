@@ -3,16 +3,16 @@ import 'package:brocast/constants/base_url.dart';
 import 'package:http/http.dart' as http;
 
 class SendMessage {
-
   Future sendMessage(String token, int brosBroId, String message) async {
     String urlSendMessage = baseUrl + 'send/message';
     Uri uriSendMessage = Uri.parse(urlSendMessage);
 
-    http.Response responsePost = await http.post(uriSendMessage,
+    http.Response responsePost = await http.post(
+      uriSendMessage,
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
-      body: jsonEncode(<String, String> {
+      body: jsonEncode(<String, String>{
         'token': token,
         'bros_bro_id': brosBroId.toString(),
         'message': message
@@ -28,5 +28,4 @@ class SendMessage {
     }
     return "an unknown error has occurred";
   }
-
 }

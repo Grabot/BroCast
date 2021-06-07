@@ -4,7 +4,6 @@ import 'package:brocast/objects/bro.dart';
 import 'package:http/http.dart' as http;
 
 class Search {
-
   Future searchBro(String broName, String bromotion) async {
     String urlSearch = baseUrl + 'search';
     Uri uriRegister = Uri.parse(urlSearch);
@@ -13,14 +12,13 @@ class Search {
       bromotion = "";
     }
 
-    http.Response responsePost = await http.post(uriRegister,
+    http.Response responsePost = await http.post(
+      uriRegister,
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
-      body: jsonEncode(<String, String> {
-        'bro_name': broName,
-        'bromotion': bromotion
-      }),
+      body: jsonEncode(
+          <String, String>{'bro_name': broName, 'bromotion': bromotion}),
     );
     Map<String, dynamic> registerResponse = jsonDecode(responsePost.body);
     if (registerResponse.containsKey("result")) {
@@ -37,5 +35,4 @@ class Search {
     }
     return "an unknown error has occurred";
   }
-
 }

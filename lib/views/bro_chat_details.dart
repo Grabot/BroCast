@@ -12,17 +12,15 @@ import 'bro_profile.dart';
 import 'bro_settings.dart';
 
 class BroChatDetails extends StatefulWidget {
-
   final BroBros broBros;
 
-  BroChatDetails({ Key key, this.broBros }): super(key: key);
+  BroChatDetails({Key key, this.broBros}) : super(key: key);
 
   @override
   _BroChatDetailsState createState() => _BroChatDetailsState();
 }
 
 class _BroChatDetailsState extends State<BroChatDetails> {
-
   TextEditingController chatDescriptionController = new TextEditingController();
 
   bool changeDescription = false;
@@ -55,9 +53,8 @@ class _BroChatDetailsState extends State<BroChatDetails> {
   }
 
   bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
-    Navigator.pushReplacement(context, MaterialPageRoute(
-        builder: (context) => BroMessaging(broBros: chat)
-    ));
+    Navigator.pushReplacement(context,
+        MaterialPageRoute(builder: (context) => BroMessaging(broBros: chat)));
     return true;
   }
 
@@ -69,62 +66,49 @@ class _BroChatDetailsState extends State<BroChatDetails> {
   }
 
   void goToDifferentChat(BroBros chatBro) {
-    Navigator.pushReplacement(context, MaterialPageRoute(
-        builder: (context) => BroMessaging(broBros: chatBro)
-    ));
+    Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+            builder: (context) => BroMessaging(broBros: chatBro)));
   }
 
   Widget appBarChatDetails() {
     return AppBar(
-        backgroundColor: chat.broColor != null ? chat.broColor : Color(0xff145C9E),
+        backgroundColor:
+            chat.broColor != null ? chat.broColor : Color(0xff145C9E),
         title: Container(
             alignment: Alignment.centerLeft,
             child: Text(
               "Chat details ${chat.chatName}",
-              style: TextStyle(
-                  color: getTextColor(chat.broColor),
-                  fontSize: 20
-              ),
-            )
-        ),
+              style:
+                  TextStyle(color: getTextColor(chat.broColor), fontSize: 20),
+            )),
         actions: [
           PopupMenuButton<int>(
               onSelected: (item) => onSelectChat(context, item),
-              itemBuilder: (context) =>
-              [
-                PopupMenuItem<int>(
-                    value: 0,
-                    child: Text("Profile")
-                ),
-                PopupMenuItem<int>(
-                    value: 1,
-                    child: Text("Settings")
-                ),
-                PopupMenuItem<int>(
-                    value: 2,
-                    child: Text("Back to chat")
-                ),
-              ])
-        ]
-    );
+              itemBuilder: (context) => [
+                    PopupMenuItem<int>(value: 0, child: Text("Profile")),
+                    PopupMenuItem<int>(value: 1, child: Text("Settings")),
+                    PopupMenuItem<int>(value: 2, child: Text("Back to chat")),
+                  ])
+        ]);
   }
 
   void onSelectChat(BuildContext context, int item) {
-    switch(item) {
+    switch (item) {
       case 0:
-        Navigator.pushReplacement(context, MaterialPageRoute(
-            builder: (context) => BroProfile()
-        ));
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => BroProfile()));
         break;
       case 1:
-        Navigator.pushReplacement(context, MaterialPageRoute(
-            builder: (context) => BroSettings()
-        ));
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => BroSettings()));
         break;
       case 2:
-        Navigator.pushReplacement(context, MaterialPageRoute(
-            builder: (context) => BroMessaging(broBros: chat)
-        ));
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (context) => BroMessaging(broBros: chat)));
         break;
     }
   }
@@ -139,9 +123,8 @@ class _BroChatDetailsState extends State<BroChatDetails> {
 
   void updateDescription() {
     if (previousDescription != chatDescriptionController.text) {
-      SocketServices.instance.updateBroChatDetails(
-          Settings.instance.getToken(), chat.id,
-          chatDescriptionController.text);
+      SocketServices.instance.updateBroChatDetails(Settings.instance.getToken(),
+          chat.id, chatDescriptionController.text);
       setState(() {
         changeDescription = false;
       });
@@ -163,8 +146,7 @@ class _BroChatDetailsState extends State<BroChatDetails> {
     if (currentColor != chat.broColor) {
       String newColour = currentColor.value.toRadixString(16).substring(2, 8);
       SocketServices.instance.updateBroChatColour(
-          Settings.instance.getToken(), chat.id,
-          newColour);
+          Settings.instance.getToken(), chat.id, newColour);
     }
     setState(() {
       changeColour = false;
@@ -175,8 +157,7 @@ class _BroChatDetailsState extends State<BroChatDetails> {
     previousDescription = chatDescriptionController.text;
     chat.chatDescription = chatDescriptionController.text;
     if (mounted) {
-      setState(() {
-      });
+      setState(() {});
     }
   }
 
@@ -190,14 +171,14 @@ class _BroChatDetailsState extends State<BroChatDetails> {
     chat.broColor = currentColor;
     previousColor = currentColor;
     if (mounted) {
-      setState(() {
-      });
+      setState(() {});
     }
   }
 
   void chatColourUpdateFailed() {
     chatDescriptionController.text = previousDescription;
-    ShowToastComponent.showDialog("Updating the bro colour has failed", context);
+    ShowToastComponent.showDialog(
+        "Updating the bro colour has failed", context);
   }
 
   onColorChange(Color colour) {
@@ -209,113 +190,112 @@ class _BroChatDetailsState extends State<BroChatDetails> {
     return Scaffold(
         appBar: appBarChatDetails(),
         body: Container(
-          child: Column(
-              children: [
-                Expanded(
-                  child: SingleChildScrollView(
-                    reverse: true,
-                    child: Column(
-                        children:
-                        [
-                          Container(
-                              padding: EdgeInsets.symmetric(vertical: 30),
-                              alignment: Alignment.center,
-                              child: Image.asset("assets/images/brocast_transparent.png")
-                          ),
-                          Container(
-                              alignment: Alignment.center,
-                              child: Text(
-                                "${chat.chatName}",
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 25
-                                ),
-                              )
-                          ),
-                          SizedBox(height: 20),
-                          Container(
-                            padding: EdgeInsets.symmetric(horizontal: 20),
-                            child: TextFormField(
-                              focusNode: focusNodeDescription,
-                              onTap: () {
-                                onTapDescriptionField();
-                              },
-                              controller: chatDescriptionController,
-                              style: simpleTextStyle(),
-                              textAlign: TextAlign.center,
-                              decoration: textFieldInputDecoration("No chat description yet"),
-                            ),
-                          ),
-                          SizedBox(height: 20),
-                          changeDescription ? TextButton(
-                            style: ButtonStyle(
-                              foregroundColor: MaterialStateProperty.all<Color>(Colors.red),
-                            ),
-                            onPressed: () {
-                              updateDescription();
-                            },
-                            child: Text('Save description'),
-                          ) : TextButton(
-                            style: ButtonStyle(
-                              foregroundColor: MaterialStateProperty.all<Color>(Colors.blue),
-                            ),
-                            onPressed: () {
-                              onTapDescriptionField();
-                            },
-                            child: Text('Update description'),
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                "Color:",
-                                style: simpleTextStyle(),
-                              ),
-                              SizedBox(width: 20),
-                              Container(
-                                  height: 40,
-                                  width: 40,
-                                  alignment: Alignment.center,
-                                  decoration: BoxDecoration(
-                                      color: widget.broBros.broColor,
-                                      borderRadius: BorderRadius.circular(40)
-                                  ),
-                              ),
-                            ],
-                          ),
-                          changeColour ? CircleColorPicker(
-                            controller: circleColorPickerController,
-                            textStyle: simpleTextStyle(),
-                            onChanged: (colour) {
-                              setState(() => onColorChange(colour));
-                            },
-                          ) : Container(),
-                          changeColour ? TextButton(
-                            style: ButtonStyle(
-                              foregroundColor: MaterialStateProperty.all<Color>(Colors.red),
-                            ),
-                            onPressed: () {
-                              saveColour();
-                            },
-                            child: Text('Save color'),
-                          ) : TextButton(
-                            style: ButtonStyle(
-                              foregroundColor: MaterialStateProperty.all<Color>(Colors.blue),
-                            ),
-                            onPressed: () {
-                              updateColour();
-                            },
-                            child: Text('Change color'),
-                          ),
-                          SizedBox(height: 150),
-                        ]
+          child: Column(children: [
+            Expanded(
+              child: SingleChildScrollView(
+                reverse: true,
+                child: Column(children: [
+                  Container(
+                      padding: EdgeInsets.symmetric(vertical: 30),
+                      alignment: Alignment.center,
+                      child:
+                          Image.asset("assets/images/brocast_transparent.png")),
+                  Container(
+                      alignment: Alignment.center,
+                      child: Text(
+                        "${chat.chatName}",
+                        style: TextStyle(color: Colors.white, fontSize: 25),
+                      )),
+                  SizedBox(height: 20),
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    child: TextFormField(
+                      focusNode: focusNodeDescription,
+                      onTap: () {
+                        onTapDescriptionField();
+                      },
+                      controller: chatDescriptionController,
+                      style: simpleTextStyle(),
+                      textAlign: TextAlign.center,
+                      decoration:
+                          textFieldInputDecoration("No chat description yet"),
                     ),
                   ),
-                ),
-              ]
-          ),
-        )
-    );
+                  SizedBox(height: 20),
+                  changeDescription
+                      ? TextButton(
+                          style: ButtonStyle(
+                            foregroundColor:
+                                MaterialStateProperty.all<Color>(Colors.red),
+                          ),
+                          onPressed: () {
+                            updateDescription();
+                          },
+                          child: Text('Save description'),
+                        )
+                      : TextButton(
+                          style: ButtonStyle(
+                            foregroundColor:
+                                MaterialStateProperty.all<Color>(Colors.blue),
+                          ),
+                          onPressed: () {
+                            onTapDescriptionField();
+                          },
+                          child: Text('Update description'),
+                        ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Color:",
+                        style: simpleTextStyle(),
+                      ),
+                      SizedBox(width: 20),
+                      Container(
+                        height: 40,
+                        width: 40,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                            color: widget.broBros.broColor,
+                            borderRadius: BorderRadius.circular(40)),
+                      ),
+                    ],
+                  ),
+                  changeColour
+                      ? CircleColorPicker(
+                          controller: circleColorPickerController,
+                          textStyle: simpleTextStyle(),
+                          onChanged: (colour) {
+                            setState(() => onColorChange(colour));
+                          },
+                        )
+                      : Container(),
+                  changeColour
+                      ? TextButton(
+                          style: ButtonStyle(
+                            foregroundColor:
+                                MaterialStateProperty.all<Color>(Colors.red),
+                          ),
+                          onPressed: () {
+                            saveColour();
+                          },
+                          child: Text('Save color'),
+                        )
+                      : TextButton(
+                          style: ButtonStyle(
+                            foregroundColor:
+                                MaterialStateProperty.all<Color>(Colors.blue),
+                          ),
+                          onPressed: () {
+                            updateColour();
+                          },
+                          child: Text('Change color'),
+                        ),
+                  SizedBox(height: 150),
+                ]),
+              ),
+            ),
+          ]),
+        ));
   }
 }
-

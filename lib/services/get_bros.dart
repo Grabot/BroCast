@@ -4,18 +4,16 @@ import 'package:brocast/objects/bro_bros.dart';
 import 'package:http/http.dart' as http;
 
 class GetBros {
-
   Future getBros(String token) async {
     String urlGetBros = baseUrl + 'get/bros';
     Uri uriGetBros = Uri.parse(urlGetBros);
 
-    http.Response responsePost = await http.post(uriGetBros,
+    http.Response responsePost = await http.post(
+      uriGetBros,
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
-      body: jsonEncode(<String, String> {
-        'token': token
-      }),
+      body: jsonEncode(<String, String>{'token': token}),
     );
     Map<String, dynamic> registerResponse = jsonDecode(responsePost.body);
     if (registerResponse.containsKey("result")) {
@@ -32,8 +30,7 @@ class GetBros {
               br0["chat_description"],
               br0["chat_colour"],
               br0["unread_messages"],
-              br0["last_time_activity"]
-          );
+              br0["last_time_activity"]);
           listWithBros.add(broBros);
         }
         listWithBros.sort((b, a) => a.lastActivity.compareTo(b.lastActivity));
@@ -42,5 +39,4 @@ class GetBros {
     }
     return "an unknown error has occurred";
   }
-
 }
