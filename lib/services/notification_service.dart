@@ -18,7 +18,7 @@ class NotificationService {
     this.goToBro = null;
 
     AwesomeNotifications().initialize(
-        'resource://drawable/bro_fire',
+        'resource://drawable/bro_icon',
         [
           NotificationChannel(
               channelKey: "brocast_notification",
@@ -29,8 +29,8 @@ class NotificationService {
               groupAlertBehavior: GroupAlertBehavior.Children,
               playSound: true,
               soundSource: 'resource://raw/brodio',
-              defaultColor: Colors.red,
-              ledColor: Colors.red,
+              defaultColor: Color(0xff6b6e97),
+              ledColor: Color(0xff6b6e97),
               vibrationPattern: Int64List.fromList([0, 500, 100, 150]),
               importance: NotificationImportance.High),
         ],
@@ -92,7 +92,7 @@ class NotificationService {
             channelKey: "brocast_notification",
             title: "$chatName:",
             body: messageBody,
-            color: Colors.red,
+            color: Color(0xff6b6e97),
             payload: {"id": broId.toString(), "chat_name": chatName}));
     notificationId += 1;
   }
