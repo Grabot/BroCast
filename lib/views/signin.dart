@@ -176,18 +176,11 @@ class _SignInState extends State<SignIn> {
                           children: [
                             SizedBox(height: 50),
                             Container(
-                              height: 120.0,
-                              width: 120.0,
-                              decoration: BoxDecoration(
-                                image: DecorationImage(
-                                  image: AssetImage(
-                                      'assets/images/brocast_transparent.png'),
-                                  fit: BoxFit.fill,
-                                ),
-                                shape: BoxShape.circle,
-                              ),
+                                padding: EdgeInsets.symmetric(vertical: 30),
+                                alignment: Alignment.center,
+                                child: Image.asset("assets/images/brocast_transparent.png")
                             ),
-                            SizedBox(height: 100),
+                            SizedBox(height: 50),
                             Row(
                                 children: [
                                   Expanded(
@@ -309,7 +302,7 @@ class _SignInState extends State<SignIn> {
                                 )
                               ],
                             ),
-                            SizedBox(height: 60),
+                            SizedBox(height: 100),
                           ],
                         )
                     ),
