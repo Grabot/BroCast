@@ -62,9 +62,6 @@ class _BroProfileState extends State<BroProfile> {
         String broName = val[0];
         String bromotion = val[1];
         String password = val[2];
-        print(broName);
-        print(bromotion);
-        print(password);
         if (broPassword.isEmpty || broPassword != password) {
           setState(() {
             // The password might not be saved in the settings,
@@ -72,7 +69,6 @@ class _BroProfileState extends State<BroProfile> {
             broPassword = password;
           });
         }
-        print("is any of these empyt?");
       }
     });
     BackButtonInterceptor.add(myInterceptor);
@@ -207,8 +203,10 @@ class _BroProfileState extends State<BroProfile> {
   void onSavePassword() {
     if (mounted) {
       if (passwordFormValidator.currentState.validate()) {
-        SocketServices.instance.changePassword(
-            Settings.instance.getToken(), newPasswordController1.text);
+        if (SocketServices.instance.socket.connected) {
+          SocketServices.instance.socket
+              .emit("password_change", {"token": Settings.instance.getToken(), "password": newPasswordController1.text});
+        }
         setState(() {
           changePassword = false;
         });
@@ -219,8 +217,10 @@ class _BroProfileState extends State<BroProfile> {
   void onSaveBromotion() {
     if (mounted) {
       if (bromotionValidator.currentState.validate()) {
-        SocketServices.instance.changeBromotion(
-            Settings.instance.getToken(), bromotionChangeController.text);
+        if (SocketServices.instance.socket.connected) {
+          SocketServices.instance.socket
+              .emit("bromotion_change", {"token": Settings.instance.getToken(), "bromotion": bromotion});
+        }
         setState(() {
           bromotionEnabled = false;
           showEmojiKeyboard = false;
@@ -261,7 +261,8 @@ class _BroProfileState extends State<BroProfile> {
         showEmojiKeyboard = false;
       });
     } else {
-      SocketServices.instance.stopListeningForProfileChange();
+      SocketServices.instance.socket.off('message_event_bromotion_change', (data) => print(data));
+      SocketServices.instance.socket.off('message_event_password_change', (data) => print(data));
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => BroCastHome()));
     }

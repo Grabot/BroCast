@@ -42,7 +42,6 @@ class _FindBrosState extends State<FindBros> {
   @override
   void initState() {
     super.initState();
-    SocketServices.instance.listenForAddingBro(this);
     bromotionController.addListener(bromotionListener);
     initSockets();
     NotificationService.instance.setScreen(this);
@@ -51,6 +50,12 @@ class _FindBrosState extends State<FindBros> {
 
   void initSockets() {
     SocketServices.instance.socket.on('message_event_send_solo', (data) => messageReceivedSolo(data));
+    SocketServices.instance.socket.on('message_event_add_bro_success', (data) {
+      broWasAdded();
+    });
+    SocketServices.instance.socket.on('message_event_add_bro_failed', (data) {
+      broAddingFailed();
+    });
   }
 
   messageReceivedSolo(var data) {
@@ -92,7 +97,9 @@ class _FindBrosState extends State<FindBros> {
   @override
   void dispose() {
     BackButtonInterceptor.remove(myInterceptor);
-    SocketServices.instance.stopListeningForAddingBro();
+    SocketServices.instance.socket.off('message_event_add_bro_success', (data) => print(data));
+    SocketServices.instance.socket.off('message_event_add_bro_failed', (data) => print(data));
+    SocketServices.instance.socket.off('message_event_send_solo', (data) => print(data));
     super.dispose();
   }
 
@@ -306,7 +313,10 @@ class BroTileSearch extends StatelessWidget {
   BroTileSearch(this.bro);
 
   addBro(BuildContext context) {
-    SocketServices.instance.addBro(Settings.instance.getToken(), bro.id);
+    if (SocketServices.instance.socket.connected) {
+      SocketServices.instance.socket.emit(
+          "message_event_add_bro", {"token": Settings.instance.getToken(), "bros_bro_id": bro.id});
+    }
   }
 
   @override

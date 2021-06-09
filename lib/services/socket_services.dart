@@ -11,8 +11,6 @@ class SocketServices {
   static get instance => _instance;
   IO.Socket socket;
 
-  var broHome;
-
   SocketServices._internal() {
     startSockConnection();
   }
@@ -35,22 +33,6 @@ class SocketServices {
     socket.on('message_event', (data) => print(data));
 
     socket.open();
-  }
-
-  addBro(String token, int broId) {
-    if (this.socket.connected) {
-      this.socket.emit(
-          "message_event_add_bro", {"token": token, "bros_bro_id": broId});
-    }
-  }
-
-  listenForAddingBro(var findBro) {
-    this.socket.on('message_event_add_bro_success', (data) {
-      findBro.broWasAdded();
-    });
-    this.socket.on('message_event_add_bro_failed', (data) {
-      findBro.broAddingFailed();
-    });
   }
 
   void updateBroChatDetails(String token, int broId, String description) {
@@ -88,37 +70,6 @@ class SocketServices {
     this
         .socket
         .off('message_event_change_chat_details_failed', (data) => print(data));
-  }
-
-  stopListeningForAddingBro() {
-    this.socket.off('message_event_add_bro_success', (data) => print(data));
-    this.socket.off('message_event_add_bro_failed', (data) => print(data));
-  }
-
-  resetBroHome() {
-    this.broHome = null;
-    this.socket.off('message_event_bro_added_you', (data) => print(data));
-  }
-
-  stopListeningForProfileChange() {
-    this.socket.off('message_event_bromotion_change', (data) => print(data));
-    this.socket.off('message_event_password_change', (data) => print(data));
-  }
-
-  changeBromotion(String token, String bromotion) {
-    if (this.socket.connected) {
-      this
-          .socket
-          .emit("bromotion_change", {"token": token, "bromotion": bromotion});
-    }
-  }
-
-  changePassword(String token, String password) {
-    if (this.socket.connected) {
-      this
-          .socket
-          .emit("password_change", {"token": token, "password": password});
-    }
   }
 
   isConnected() {
