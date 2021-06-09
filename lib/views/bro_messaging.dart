@@ -66,18 +66,16 @@ class _BroMessagingState extends State<BroMessaging> {
         }
       });
     }
-    SocketServices.instance.setMessaging(this);
     NotificationService.instance.setScreen(this);
-    joinRoom(Settings.instance.getBroId(), chat.id, this);
+    joinRoom(Settings.instance.getBroId(), chat.id);
     BackButtonInterceptor.add(myInterceptor);
   }
 
-  joinRoom(int broId, int brosBroId, var messagingScreen) {
-    print("joining solo room :)");
+  joinRoom(int broId, int brosBroId) {
     if (SocketServices.instance.socket.connected) {
-      print("socket was good");
-      SocketServices.instance.socket.on('message_event_send', (data) => messageReceived(data, messagingScreen));
+      SocketServices.instance.socket.on('message_event_send', (data) => messageReceived(data));
       SocketServices.instance.socket.on('message_event_send_solo', (data) => messageReceivedSolo(data));
+      SocketServices.instance.socket.on('message_event_read', (data) => messageRead(data));
       SocketServices.instance.socket.emit(
         "join",
         {"bro_id": broId, "bros_bro_id": brosBroId},
@@ -100,7 +98,7 @@ class _BroMessagingState extends State<BroMessaging> {
     }
   }
 
-  messageReceived(var data, var messagingScreen) {
+  messageReceived(var data) {
     if (mounted) {
       print("received a message while in chat mode");
       Message mes = new Message(
@@ -111,7 +109,7 @@ class _BroMessagingState extends State<BroMessaging> {
           data["body"],
           data["text_message"],
           data["timestamp"]);
-      messagingScreen.updateMessages(mes);
+      updateMessages(mes);
     }
   }
 
@@ -120,6 +118,8 @@ class _BroMessagingState extends State<BroMessaging> {
       if (SocketServices.instance.socket.connected) {
         SocketServices.instance.socket.off(
             'message_event_send', (data) => print(data));
+        SocketServices.instance.socket.off('message_event_send_solo', (data) => print(data));
+        SocketServices.instance.socket.off('message_event_read', (data) => print(data));
         SocketServices.instance.socket.emit(
           "leave",
           {"bro_id": Settings.instance.getBroId(), "bros_bro_id": chat.id},
@@ -132,7 +132,6 @@ class _BroMessagingState extends State<BroMessaging> {
   void dispose() {
     focusAppendText.dispose();
     focusEmojiTextField.dispose();
-    SocketServices.instance.setMessaging(null);
     leaveRoom();
     BackButtonInterceptor.remove(myInterceptor);
     super.dispose();
@@ -275,8 +274,17 @@ class _BroMessagingState extends State<BroMessaging> {
       setState(() {
         this.messages.insert(0, mes);
       });
-      SocketServices.instance.sendMessageSocket(
-          Settings.instance.getBroId(), chat.id, message, textMessage);
+      if (SocketServices.instance.socket.connected) {
+        SocketServices.instance.socket.emit(
+          "message",
+          {
+            "bro_id": Settings.instance.getBroId(),
+            "bros_bro_id": chat.id,
+            "message": message,
+            "text_message": textMessage
+          },
+        );
+      }
       broMessageController.clear();
       appendTextMessageController.clear();
 
@@ -291,7 +299,6 @@ class _BroMessagingState extends State<BroMessaging> {
   }
 
   updateMessages(Message message) {
-    print("messaging test");
     if (message.recipientId == chat.id) {
       // We added it immediately as a placeholder.
       // When we get it from the server we add it for real and remove the placeholder
@@ -299,8 +306,12 @@ class _BroMessagingState extends State<BroMessaging> {
     } else {
       // If we didn't send this message it is from the other person.
       // We send a response, indicating that we read the messages
-      SocketServices.instance
-          .messageReadUpdate(Settings.instance.getBroId(), chat.id);
+      if (SocketServices.instance.socket.connected) {
+        SocketServices.instance.socket.emit(
+          "message_read",
+          {"bro_id": Settings.instance.getBroId(), "bros_bro_id": chat.id},
+        );
+      }
     }
     updateDateTiles(message);
     setState(() {
@@ -308,13 +319,15 @@ class _BroMessagingState extends State<BroMessaging> {
     });
   }
 
-  updateRead() {
-    for (Message message in this.messages) {
-      message.isRead = true;
+  messageRead(var data) {
+    if (mounted) {
+      for (Message message in this.messages) {
+        message.isRead = true;
+      }
+      setState(() {
+        this.messages = this.messages;
+      });
     }
-    setState(() {
-      this.messages = this.messages;
-    });
   }
 
   Widget messageList() {
@@ -355,7 +368,6 @@ class _BroMessagingState extends State<BroMessaging> {
         showEmojiKeyboard = false;
       });
     } else {
-      SocketServices.instance.setMessaging(null);
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => BroCastHome()));
     }
@@ -409,17 +421,14 @@ class _BroMessagingState extends State<BroMessaging> {
   void onSelectChat(BuildContext context, int item) {
     switch (item) {
       case 0:
-        SocketServices.instance.setMessaging(null);
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => BroProfile()));
         break;
       case 1:
-        SocketServices.instance.setMessaging(null);
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => BroSettings()));
         break;
       case 2:
-        SocketServices.instance.setMessaging(null);
         Navigator.pushReplacement(
             context,
             MaterialPageRoute(

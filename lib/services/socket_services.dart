@@ -11,7 +11,6 @@ class SocketServices {
   static get instance => _instance;
   IO.Socket socket;
 
-  var messaging;
   var broHome;
 
   SocketServices._internal() {
@@ -34,34 +33,9 @@ class SocketServices {
     });
 
     socket.on('message_event', (data) => print(data));
-    socket.on('message_event_read', (data) => messageRead(data));
 
-    print("a test, it arrives at the 'open' command");
     socket.open();
   }
-
-  setMessaging(var messaging) {
-    this.messaging = messaging;
-  }
-  //
-  // listenForProfileChange(var profilePage) {
-  //   this.socket.on('message_event_bromotion_change', (data) {
-  //     if (data == "bromotion change successful") {
-  //       profilePage.onChangeBromotionSuccess();
-  //     } else if (data == "broName bromotion combination taken") {
-  //       profilePage.onChangeBromotionFailedExists();
-  //     } else {
-  //       profilePage.onChangeBromotionFailedUnknown();
-  //     }
-  //   });
-  //   this.socket.on('message_event_password_change', (data) {
-  //     if (data == "password change successful") {
-  //       profilePage.onChangePasswordSuccess();
-  //     } else {
-  //       profilePage.onChangePasswordFailed();
-  //     }
-  //   });
-  // }
 
   addBro(String token, int broId) {
     if (this.socket.connected) {
@@ -161,32 +135,4 @@ class SocketServices {
     }
   }
 
-  sendMessageSocket(
-      int broId, int brosBroId, String message, String textMessage) {
-    if (this.socket.connected) {
-      this.socket.emit(
-        "message",
-        {
-          "bro_id": broId,
-          "bros_bro_id": brosBroId,
-          "message": message,
-          "text_message": textMessage
-        },
-      );
-    }
-  }
-
-  messageReadUpdate(int broId, int brosBroId) {
-    if (this.socket.connected) {
-      this.socket.emit(
-        "message_read",
-        {"bro_id": broId, "bros_bro_id": brosBroId},
-      );
-    }
-  }
-
-  messageRead(var data) {
-    // This will set all messages to read to anyone receiving the message read update while having the chat open
-    this.messaging.updateRead();
-  }
 }
