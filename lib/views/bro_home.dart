@@ -75,7 +75,6 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
-    SocketServices.instance.setBroHome(this);
     joinRoomSolo(Settings.instance.getBroId());
 
     // This is called after the build is done.
@@ -83,7 +82,6 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
       BroBros chatBro = NotificationService.instance.getGoToBro();
       if (chatBro != null) {
         NotificationService.instance.resetGoToBro();
-        SocketServices.instance.setBroHome(null);
         Navigator.pushReplacement(
             context,
             MaterialPageRoute(
@@ -99,6 +97,9 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
     print("joining solo room");
     if (SocketServices.instance.socket.connected) {
       SocketServices.instance.socket.on('message_event_send_solo', (data) => messageReceivedSolo(data));
+      SocketServices.instance.socket.on('message_event_bro_added_you', (data) {
+        broAddedYou();
+      });
       SocketServices.instance.socket.emit(
         "join_solo",
         {
@@ -109,22 +110,16 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
   }
 
   messageReceivedSolo(var data) {
-    print("received a message in the solo room :)");
-    updateMessages(data["sender_id"]);
+    if (mounted) {
+      updateMessages(data["sender_id"]);
 
-    // for (BroBros br0 in BroList.instance.getBros()) {
-    //   if (br0.id == data["sender_id"]) {
-    //     if (this.messaging != null) {
-    //       if (this.messaging.getBroBrosId() != data["sender_id"]) {
-    //         NotificationService.instance
-    //             .showNotification(br0.id, br0.chatName, "", data["body"]);
-    //       }
-    //     } else {
-    //       NotificationService.instance
-    //           .showNotification(br0.id, br0.chatName, "", data["body"]);
-    //     }
-    //   }
-    // }
+      for (BroBros br0 in BroList.instance.getBros()) {
+        if (br0.id == data["sender_id"]) {
+          NotificationService.instance
+              .showNotification(br0.id, br0.chatName, "", data["body"]);
+        }
+      }
+    }
   }
 
   updateMessages(int senderId) {
@@ -159,7 +154,6 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
 
   @override
   void dispose() {
-    SocketServices.instance.resetBroHome();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
@@ -174,7 +168,6 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
   }
 
   void goToDifferentChat(BroBros chatBro) {
-    SocketServices.instance.setBroHome(null);
     Navigator.pushReplacement(
         context,
         MaterialPageRoute(
@@ -206,17 +199,14 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
   void onSelect(BuildContext context, int item) {
     switch (item) {
       case 0:
-        SocketServices.instance.setBroHome(null);
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => BroProfile()));
         break;
       case 1:
-        SocketServices.instance.setBroHome(null);
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => BroSettings()));
         break;
       case 2:
-        SocketServices.instance.setBroHome(null);
         leaveRoomSolo();
         SocketServices.instance.closeSockConnection();
         if (Platform.isAndroid) {
@@ -227,7 +217,6 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
         break;
       case 3:
         HelperFunction.logOutBro().then((value) {
-          SocketServices.instance.setBroHome(null);
           leaveRoomSolo();
           ResetRegistration resetRegistration = new ResetRegistration();
           resetRegistration.removeRegistrationId(Settings.instance.getBroId());
@@ -280,7 +269,6 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.search),
         onPressed: () {
-          SocketServices.instance.setBroHome(null);
           Navigator.pushReplacement(
               context, MaterialPageRoute(builder: (context) => FindBros()));
         },
@@ -301,7 +289,6 @@ class BroTile extends StatefulWidget {
 class _BroTileState extends State<BroTile> {
   selectBro(BuildContext context) {
     NotificationService.instance.dismissAllNotifications();
-    SocketServices.instance.setBroHome(null);
     Navigator.pushReplacement(
         context,
         MaterialPageRoute(

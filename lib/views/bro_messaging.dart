@@ -9,6 +9,7 @@ import 'package:brocast/services/notification_service.dart';
 import 'package:brocast/services/send_message.dart';
 import 'package:brocast/services/settings.dart';
 import 'package:brocast/services/socket_services.dart';
+import 'package:brocast/utils/bro_list.dart';
 import 'package:brocast/utils/utils.dart';
 import 'package:brocast/views/bro_home.dart';
 import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';

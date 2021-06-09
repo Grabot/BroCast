@@ -121,13 +121,6 @@ class SocketServices {
     this.socket.off('message_event_add_bro_failed', (data) => print(data));
   }
 
-  setBroHome(var broHome) {
-    this.broHome = broHome;
-    this.socket.on('message_event_bro_added_you', (data) {
-      broHome.broAddedYou();
-    });
-  }
-
   resetBroHome() {
     this.broHome = null;
     this.socket.off('message_event_bro_added_you', (data) => print(data));
