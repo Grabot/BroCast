@@ -76,10 +76,26 @@ class _BroMessagingState extends State<BroMessaging> {
     if (SocketServices.instance.socket.connected) {
       print("socket was good");
       SocketServices.instance.socket.on('message_event_send', (data) => messageReceived(data, messagingScreen));
+      SocketServices.instance.socket.on('message_event_send_solo', (data) => messageReceivedSolo(data));
       SocketServices.instance.socket.emit(
         "join",
         {"bro_id": broId, "bros_bro_id": brosBroId},
       );
+    }
+  }
+
+  messageReceivedSolo(var data) {
+    if (mounted) {
+      print("going solo");
+      if (chat.id != data["sender_id"]) {
+        print("received a message from someone who's in a different chat!");
+        for (BroBros br0 in BroList.instance.getBros()) {
+          if (br0.id == data["sender_id"]) {
+            NotificationService.instance
+                .showNotification(br0.id, br0.chatName, "", data["body"]);
+          }
+        }
+      }
     }
   }
 
