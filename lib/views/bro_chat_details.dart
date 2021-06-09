@@ -3,6 +3,7 @@ import 'package:brocast/objects/bro_bros.dart';
 import 'package:brocast/services/notification_service.dart';
 import 'package:brocast/services/settings.dart';
 import 'package:brocast/services/socket_services.dart';
+import 'package:brocast/utils/bro_list.dart';
 import 'package:brocast/utils/utils.dart';
 import "package:flutter/material.dart";
 import 'package:flutter_circle_color_picker/flutter_circle_color_picker.dart';
@@ -45,10 +46,27 @@ class _BroChatDetailsState extends State<BroChatDetails> {
     BackButtonInterceptor.add(myInterceptor);
     chatDescriptionController.text = chat.chatDescription;
 
+    initSockets();
+
     circleColorPickerController = CircleColorPickerController(
       initialColor: chat.broColor,
     );
     currentColor = chat.broColor;
+  }
+
+  void initSockets() {
+    SocketServices.instance.socket.on('message_event_send_solo', (data) => messageReceivedSolo(data));
+  }
+
+  messageReceivedSolo(var data) {
+    if (mounted) {
+      for (BroBros br0 in BroList.instance.getBros()) {
+        if (br0.id == data["sender_id"]) {
+          NotificationService.instance
+              .showNotification(br0.id, br0.chatName, "", data["body"]);
+        }
+      }
+    }
   }
 
   bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {

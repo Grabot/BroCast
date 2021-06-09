@@ -3,6 +3,8 @@ import 'package:brocast/objects/bro_bros.dart';
 import 'package:brocast/services/notification_service.dart';
 import 'package:brocast/services/reset_registration.dart';
 import 'package:brocast/services/settings.dart';
+import 'package:brocast/services/socket_services.dart';
+import 'package:brocast/utils/bro_list.dart';
 import 'package:brocast/utils/shared.dart';
 import 'package:brocast/utils/utils.dart';
 import 'package:brocast/views/bro_home.dart';
@@ -39,8 +41,23 @@ class _BroSettingsState extends State<BroSettings> {
         });
       }
     });
-
+    initSockets();
     BackButtonInterceptor.add(myInterceptor);
+  }
+
+  void initSockets() {
+    SocketServices.instance.socket.on('message_event_send_solo', (data) => messageReceivedSolo(data));
+  }
+
+  messageReceivedSolo(var data) {
+    if (mounted) {
+      for (BroBros br0 in BroList.instance.getBros()) {
+        if (br0.id == data["sender_id"]) {
+          NotificationService.instance
+              .showNotification(br0.id, br0.chatName, "", data["body"]);
+        }
+      }
+    }
   }
 
   void goToDifferentChat(BroBros chatBro) {
