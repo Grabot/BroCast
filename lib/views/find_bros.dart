@@ -2,14 +2,20 @@ import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:brocast/objects/bro.dart';
 import 'package:brocast/objects/bro_bros.dart';
 import 'package:brocast/services/notification_service.dart';
+import 'package:brocast/services/reset_registration.dart';
 import 'package:brocast/services/search.dart';
 import 'package:brocast/services/settings.dart';
 import 'package:brocast/services/socket_services.dart';
+import 'package:brocast/utils/shared.dart';
 import 'package:brocast/utils/utils.dart';
 import 'package:brocast/views/bro_home.dart';
 import 'package:brocast/views/bro_messaging.dart';
+import 'package:brocast/views/signin.dart';
 import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
 import 'package:flutter/material.dart';
+
+import 'bro_profile.dart';
+import 'bro_settings.dart';
 
 class FindBros extends StatefulWidget {
   FindBros({Key key}) : super(key: key);
@@ -36,7 +42,6 @@ class _FindBrosState extends State<FindBros> {
     super.initState();
     SocketServices.instance.listenForAddingBro(this);
     bromotionController.addListener(bromotionListener);
-    NotificationService.instance.setScreen(this);
     BackButtonInterceptor.add(myInterceptor);
   }
 
@@ -52,13 +57,17 @@ class _FindBrosState extends State<FindBros> {
   }
 
   broWasAdded() {
-    Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => BroCastHome()));
+    if (mounted) {
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => BroCastHome()));
+    }
   }
 
   broAddingFailed() {
-    ShowToastComponent.showDialog(
-        "Bro could not be added at this time", context);
+    if (mounted) {
+      ShowToastComponent.showDialog(
+          "Bro could not be added at this time", context);
+    }
   }
 
   @override
@@ -69,16 +78,8 @@ class _FindBrosState extends State<FindBros> {
   }
 
   bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
-    if (showEmojiKeyboard) {
-      setState(() {
-        showEmojiKeyboard = false;
-      });
-      return true;
-    } else {
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => BroCastHome()));
-      return true;
-    }
+    backButtonFunctionality();
+    return true;
   }
 
   void onTapTextField() {
@@ -141,10 +142,69 @@ class _FindBrosState extends State<FindBros> {
         : Container();
   }
 
+  void backButtonFunctionality() {
+    if (showEmojiKeyboard) {
+      setState(() {
+        showEmojiKeyboard = false;
+      });
+    } else {
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => BroCastHome()));
+    }
+  }
+
+  Widget appBarFindBros(BuildContext context) {
+    return AppBar(
+        leading: IconButton(
+            icon: Icon(Icons.arrow_back, color: Colors.white),
+            onPressed: () {
+              backButtonFunctionality();
+            }
+        ),
+      title: Container(alignment: Alignment.centerLeft, child: Text("Find Bros")),
+      actions: [
+      PopupMenuButton<int>(
+          onSelected: (item) => onSelect(context, item),
+          itemBuilder: (context) => [
+            PopupMenuItem<int>(value: 0, child: Text("Profile")),
+            PopupMenuItem<int>(value: 1, child: Text("Settings")),
+            PopupMenuItem<int>(
+                value: 2,
+                child: Row(children: [
+                  Icon(Icons.logout, color: Colors.black),
+                  SizedBox(width: 8),
+                  Text("Log Out")
+                ]))
+          ])
+      ]
+    );
+  }
+
+  void onSelect(BuildContext context, int item) {
+    switch (item) {
+      case 0:
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => BroProfile()));
+        break;
+      case 1:
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => BroSettings()));
+        break;
+      case 2:
+        HelperFunction.logOutBro().then((value) {
+          ResetRegistration resetRegistration = new ResetRegistration();
+          resetRegistration.removeRegistrationId(Settings.instance.getBroId());
+          Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (context) => SignIn()));
+        });
+        break;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBarMain(context, true, "Find Bros"),
+      appBar: appBarFindBros(context),
       body: Container(
         child: Column(
           children: [

@@ -45,16 +45,15 @@ class Auth {
         String message = registerResponse["message"];
         if (result) {
           String token = registerResponse["token"];
-          SocketServices.instance.joinRoomSolo(token);
-          Settings.instance.setToken(token);
-
           int broId = registerResponse["bro"]["id"];
           String broName = registerResponse["bro"]["bro_name"];
           String bromotion = registerResponse["bro"]["bromotion"];
+
           Settings.instance.setBroId(broId);
           Settings.instance.setBroName(broName);
           Settings.instance.setBromotion(bromotion);
           Settings.instance.setPassword(password);
+          Settings.instance.setToken(token);
           setInformation(token, broId, broName, bromotion, password);
           return "";
         } else {
@@ -101,7 +100,7 @@ class Auth {
       try {
         registerResponse = jsonDecode(responsePost.body);
       } on Exception catch (_) {
-        return "an unknown error has occured";
+        return "an unknown error has occurred";
       }
       if (registerResponse.containsKey("result") &&
           registerResponse.containsKey("message")) {
@@ -109,16 +108,15 @@ class Auth {
         String message = registerResponse["message"];
         if (result) {
           String token = registerResponse["token"];
-          SocketServices.instance.joinRoomSolo(token);
-          Settings.instance.setToken(token);
-
           int broId = registerResponse["bro"]["id"];
           String broName = registerResponse["bro"]["bro_name"];
           String bromotion = registerResponse["bro"]["bromotion"];
+
           Settings.instance.setBroId(broId);
           Settings.instance.setBroName(broName);
           Settings.instance.setBromotion(bromotion);
           Settings.instance.setPassword(password);
+          Settings.instance.setToken(token);
           await setInformation(token, broId, broName, bromotion, password);
           return "";
         } else {

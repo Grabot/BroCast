@@ -1,6 +1,5 @@
 import 'package:brocast/objects/bro_bros.dart';
 import 'package:brocast/services/auth.dart';
-import 'package:brocast/services/notification_service.dart';
 import 'package:brocast/services/settings.dart';
 import 'package:brocast/services/socket_services.dart';
 import 'package:brocast/utils/shared.dart';
@@ -99,7 +98,9 @@ class _OpeningScreenState extends State<OpeningScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBarMain(context, false, "Brocast"),
+      appBar: AppBar(
+        title: Container(alignment: Alignment.centerLeft, child: Text("Brocast"))
+      ),
       body: Stack(
         children: [
           Container(

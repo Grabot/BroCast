@@ -8,6 +8,7 @@ class Message {
   DateTime timestamp;
 
   bool isRead;
+  bool clicked;
 
   Message(int id, int broBrosId, int senderId, int recipientId, String body,
       String textMessage, String timestamp) {
@@ -23,5 +24,6 @@ class Message {
       this.timestamp = null;
     }
     isRead = false;
+    clicked = false;
   }
 }

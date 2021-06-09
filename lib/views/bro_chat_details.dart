@@ -41,7 +41,6 @@ class _BroChatDetailsState extends State<BroChatDetails> {
   void initState() {
     super.initState();
     chat = widget.broBros;
-    NotificationService.instance.setScreen(this);
     SocketServices.instance.listenForBroChatDetails(this);
     BackButtonInterceptor.add(myInterceptor);
     chatDescriptionController.text = chat.chatDescription;
@@ -53,9 +52,13 @@ class _BroChatDetailsState extends State<BroChatDetails> {
   }
 
   bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
+    backButtonFunctionality();
+    return true;
+  }
+
+  void backButtonFunctionality() {
     Navigator.pushReplacement(context,
         MaterialPageRoute(builder: (context) => BroMessaging(broBros: chat)));
-    return true;
   }
 
   @override
@@ -74,6 +77,12 @@ class _BroChatDetailsState extends State<BroChatDetails> {
 
   Widget appBarChatDetails() {
     return AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: getTextColor(chat.broColor)),
+          onPressed: () {
+            backButtonFunctionality();
+          }
+        ),
         backgroundColor:
             chat.broColor != null ? chat.broColor : Color(0xff145C9E),
         title: Container(

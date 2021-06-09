@@ -2,6 +2,8 @@ import 'dart:typed_data';
 
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:brocast/objects/bro_bros.dart';
+import 'package:brocast/services/settings.dart';
+import 'package:brocast/services/socket_services.dart';
 import 'package:brocast/utils/bro_list.dart';
 import 'package:flutter/material.dart';
 
@@ -49,21 +51,16 @@ class NotificationService {
         String chatName = broResult["chat_name"];
         if (broId != null && chatName != null) {
           if (BroList.instance.getBros().isEmpty) {
+            // SocketServices.instance.joinRoomSolo(Settings.instance.getBroId());
             BroBros broNotify =
                 new BroBros(int.parse(broId), chatName, "", "", 0, null);
             if (this.currentScreen != null) {
-              this.currentScreen.goToDifferentChat(broNotify);
-            } else {
               this.goToBro = broNotify;
             }
           } else {
             for (BroBros br0 in BroList.instance.getBros()) {
               if (br0.id == int.parse(broId)) {
-                if (this.currentScreen != null) {
-                  this.currentScreen.goToDifferentChat(br0);
-                } else {
-                  this.goToBro = br0;
-                }
+                this.goToBro = br0;
               }
             }
           }

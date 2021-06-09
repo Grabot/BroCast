@@ -66,16 +66,56 @@ class _BroMessagingState extends State<BroMessaging> {
       });
     }
     SocketServices.instance.setMessaging(this);
-    NotificationService.instance.setScreen(this);
-    SocketServices.instance.joinRoom(Settings.instance.getBroId(), chat.id);
+    joinRoom(Settings.instance.getBroId(), chat.id, this);
     BackButtonInterceptor.add(myInterceptor);
+  }
+
+  joinRoom(int broId, int brosBroId, var messagingScreen) {
+    print("joining solo room :)");
+    if (SocketServices.instance.socket.connected) {
+      print("socket was good");
+      SocketServices.instance.socket.on('message_event_send', (data) => messageReceived(data, messagingScreen));
+      SocketServices.instance.socket.emit(
+        "join",
+        {"bro_id": broId, "bros_bro_id": brosBroId},
+      );
+    }
+  }
+
+  messageReceived(var data, var messagingScreen) {
+    if (mounted) {
+      print("received a message while in chat mode");
+      Message mes = new Message(
+          data["id"],
+          data["bro_bros_id"],
+          data["sender_id"],
+          data["recipient_id"],
+          data["body"],
+          data["text_message"],
+          data["timestamp"]);
+      messagingScreen.updateMessages(mes);
+    }
+  }
+
+  leaveRoom() {
+    if (mounted) {
+      if (SocketServices.instance.socket.connected) {
+        SocketServices.instance.socket.off(
+            'message_event_send', (data) => print(data));
+        SocketServices.instance.socket.emit(
+          "leave",
+          {"bro_id": Settings.instance.getBroId(), "bros_bro_id": chat.id},
+        );
+      }
+    }
   }
 
   @override
   void dispose() {
     focusAppendText.dispose();
     focusEmojiTextField.dispose();
-    SocketServices.instance.leaveRoom(Settings.instance.getBroId(), chat.id);
+    SocketServices.instance.setMessaging(null);
+    leaveRoom();
     BackButtonInterceptor.remove(myInterceptor);
     super.dispose();
   }
@@ -88,16 +128,8 @@ class _BroMessagingState extends State<BroMessaging> {
   }
 
   bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
-    if (showEmojiKeyboard) {
-      setState(() {
-        showEmojiKeyboard = false;
-      });
-      return true;
-    } else {
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => BroCastHome()));
-      return true;
-    }
+    backButtonFunctionality();
+    return true;
   }
 
   getMessages() {
@@ -239,6 +271,7 @@ class _BroMessagingState extends State<BroMessaging> {
   }
 
   updateMessages(Message message) {
+    print("messaging test");
     if (message.recipientId == chat.id) {
       // We added it immediately as a placeholder.
       // When we get it from the server we add it for real and remove the placeholder
@@ -296,8 +329,26 @@ class _BroMessagingState extends State<BroMessaging> {
     }
   }
 
+  void backButtonFunctionality() {
+    if (showEmojiKeyboard) {
+      setState(() {
+        showEmojiKeyboard = false;
+      });
+    } else {
+      SocketServices.instance.setMessaging(null);
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => BroCastHome()));
+    }
+  }
+
   Widget appBarChat() {
     return AppBar(
+        leading: IconButton(
+            icon: Icon(Icons.arrow_back, color: getTextColor(chat.broColor)),
+            onPressed: () {
+              backButtonFunctionality();
+            }
+        ),
         backgroundColor:
             chat.broColor != null ? chat.broColor : Color(0xff145C9E),
         title: Container(
@@ -338,14 +389,17 @@ class _BroMessagingState extends State<BroMessaging> {
   void onSelectChat(BuildContext context, int item) {
     switch (item) {
       case 0:
+        SocketServices.instance.setMessaging(null);
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => BroProfile()));
         break;
       case 1:
+        SocketServices.instance.setMessaging(null);
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => BroSettings()));
         break;
       case 2:
+        SocketServices.instance.setMessaging(null);
         Navigator.pushReplacement(
             context,
             MaterialPageRoute(
@@ -508,12 +562,11 @@ class MessageTile extends StatefulWidget {
 }
 
 class _MessageTileState extends State<MessageTile> {
-  bool clicked = false;
 
   selectMessage(BuildContext context) {
     if (widget.message.textMessage.isNotEmpty) {
       setState(() {
-        clicked = !clicked;
+        widget.message.clicked = !widget.message.clicked;
       });
     }
   }
@@ -557,10 +610,10 @@ class _MessageTileState extends State<MessageTile> {
                     padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                     decoration: BoxDecoration(
                         color: widget.myMessage
-                            ? widget.message.textMessage.isEmpty || clicked
+                            ? widget.message.textMessage.isEmpty || widget.message.clicked
                                 ? Color(0xAA009E00)
                                 : Color(0xFF0ABB5A)
-                            : widget.message.textMessage.isEmpty || clicked
+                            : widget.message.textMessage.isEmpty || widget.message.clicked
                                 ? Color(0xFF0060BB)
                                 : Color(0xFF0A98BB),
                         borderRadius: widget.myMessage
@@ -574,7 +627,7 @@ class _MessageTileState extends State<MessageTile> {
                                 bottomRight: Radius.circular(42))),
                     child: Column(
                       children: [
-                        clicked
+                        widget.message.clicked
                             ? Text(widget.message.textMessage,
                                 style: simpleTextStyle())
                             : Text(widget.message.body,

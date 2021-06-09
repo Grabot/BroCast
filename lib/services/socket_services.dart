@@ -34,9 +34,9 @@ class SocketServices {
     });
 
     socket.on('message_event', (data) => print(data));
-    socket.on('message_event_send', (data) => messageReceived(data));
-    socket.on('message_event_send_solo', (data) => messageReceivedSolo(data));
     socket.on('message_event_read', (data) => messageRead(data));
+
+    print("a test, it arrives at the 'open' command");
     socket.open();
   }
 
@@ -44,13 +44,8 @@ class SocketServices {
     this.messaging = messaging;
   }
 
-  resetMessaging() {
-    this.messaging = null;
-  }
-
   listenForProfileChange(var profilePage) {
     this.socket.on('message_event_bromotion_change', (data) {
-      print("the bromotion has changed to $data");
       if (data == "bromotion change successful") {
         profilePage.onChangeBromotionSuccess();
       } else if (data == "broName bromotion combination taken") {
@@ -60,7 +55,6 @@ class SocketServices {
       }
     });
     this.socket.on('message_event_password_change', (data) {
-      print("the password has changed to $data");
       if (data == "password change successful") {
         profilePage.onChangePasswordSuccess();
       } else {
@@ -168,46 +162,9 @@ class SocketServices {
   }
 
   closeSockConnection() {
+    print("it closed the socket again, dammit!");
     if (this.socket.connected) {
       this.socket.close();
-    }
-  }
-
-  joinRoomSolo(String token) {
-    if (this.socket.connected) {
-      this.socket.emit(
-        "join_solo",
-        {
-          "token": token,
-        },
-      );
-    }
-  }
-
-  joinRoom(int broId, int brosBroId) {
-    if (this.socket.connected) {
-      this.socket.emit(
-        "join",
-        {"bro_id": broId, "bros_bro_id": brosBroId},
-      );
-    }
-  }
-
-  leaveRoomSolo(String token) {
-    if (this.socket.connected) {
-      this.socket.emit(
-        "leave_solo",
-        {"token": token},
-      );
-    }
-  }
-
-  leaveRoom(int broId, int brosBroId) {
-    if (this.socket.connected) {
-      this.socket.emit(
-        "leave",
-        {"bro_id": broId, "bros_bro_id": brosBroId},
-      );
     }
   }
 
@@ -223,45 +180,6 @@ class SocketServices {
           "text_message": textMessage
         },
       );
-    }
-  }
-
-  messageReceived(var data) {
-    if (this.messaging != null) {
-      print("The messaging var is not null");
-      Message mes = new Message(
-          data["id"],
-          data["bro_bros_id"],
-          data["sender_id"],
-          data["recipient_id"],
-          data["body"],
-          data["text_message"],
-          data["timestamp"]);
-      this.messaging.updateMessages(mes);
-    }
-  }
-
-  messageReceivedSolo(var data) {
-    print("we have received a SOLO message!");
-    print(data);
-    if (broHome != null) {
-      this.broHome.updateMessages(data["sender_id"]);
-    }
-    for (BroBros br0 in BroList.instance.getBros()) {
-      if (br0.id == data["sender_id"]) {
-        if (this.messaging != null) {
-          print("we're in the messaging mode now");
-          print("the bro id is ${this.messaging.getBroBrosId()}");
-          if (this.messaging.getBroBrosId() != data["sender_id"]) {
-            NotificationService.instance
-                .showNotification(br0.id, br0.chatName, "", data["body"]);
-          }
-        } else {
-          print("messaging is null");
-          NotificationService.instance
-              .showNotification(br0.id, br0.chatName, "", data["body"]);
-        }
-      }
     }
   }
 

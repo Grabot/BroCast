@@ -1,16 +1,23 @@
-import 'package:back_button_interceptor/back_button_interceptor.dart';
+import 'dart:io';
+
 import 'package:brocast/objects/bro_bros.dart';
 import 'package:brocast/services/auth.dart';
 import 'package:brocast/services/get_bros.dart';
 import 'package:brocast/services/notification_service.dart';
+import 'package:brocast/services/reset_registration.dart';
 import 'package:brocast/services/settings.dart';
 import 'package:brocast/services/socket_services.dart';
 import 'package:brocast/utils/bro_list.dart';
+import 'package:brocast/utils/shared.dart';
 import 'package:brocast/utils/utils.dart';
 import 'package:brocast/views/bro_messaging.dart';
 import 'package:brocast/views/find_bros.dart';
+import 'package:brocast/views/signin.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
+import 'bro_profile.dart';
+import 'bro_settings.dart';
 
 class BroCastHome extends StatefulWidget {
   BroCastHome({Key key}) : super(key: key);
@@ -19,7 +26,7 @@ class BroCastHome extends StatefulWidget {
   _BroCastHomeState createState() => _BroCastHomeState();
 }
 
-class _BroCastHomeState extends State<BroCastHome> {
+class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
   GetBros getBros = new GetBros();
   Auth auth = new Auth();
 
@@ -68,73 +75,212 @@ class _BroCastHomeState extends State<BroCastHome> {
   @override
   void initState() {
     super.initState();
-    NotificationService.instance.setScreen(this);
-    BackButtonInterceptor.add(myInterceptor);
-    SocketServices.instance.resetMessaging();
+    SocketServices.instance.setBroHome(this);
+    joinRoomSolo(Settings.instance.getBroId());
 
     // This is called after the build is done.
     WidgetsBinding.instance.addPostFrameCallback((_) {
       BroBros chatBro = NotificationService.instance.getGoToBro();
       if (chatBro != null) {
         NotificationService.instance.resetGoToBro();
+        SocketServices.instance.setBroHome(null);
         Navigator.pushReplacement(
             context,
             MaterialPageRoute(
                 builder: (context) => BroMessaging(broBros: chatBro)));
       } else {
         searchBros(Settings.instance.getToken());
-        SocketServices.instance.setBroHome(this);
       }
     });
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  joinRoomSolo(int broId) {
+    print("joining solo room");
+    if (SocketServices.instance.socket.connected) {
+      SocketServices.instance.socket.on('message_event_send_solo', (data) => messageReceivedSolo(data));
+      SocketServices.instance.socket.emit(
+        "join_solo",
+        {
+          "bro_id": broId,
+        },
+      );
+    }
+  }
+
+  messageReceivedSolo(var data) {
+    print("received a message in the solo room :)");
+    updateMessages(data["sender_id"]);
+
+    // for (BroBros br0 in BroList.instance.getBros()) {
+    //   if (br0.id == data["sender_id"]) {
+    //     if (this.messaging != null) {
+    //       if (this.messaging.getBroBrosId() != data["sender_id"]) {
+    //         NotificationService.instance
+    //             .showNotification(br0.id, br0.chatName, "", data["body"]);
+    //       }
+    //     } else {
+    //       NotificationService.instance
+    //           .showNotification(br0.id, br0.chatName, "", data["body"]);
+    //     }
+    //   }
+    // }
   }
 
   updateMessages(int senderId) {
-    for (BroBros br0 in bros) {
-      if (senderId == br0.id) {
-        br0.unreadMessages += 1;
-        br0.lastActivity = DateTime.now();
+    if (mounted) {
+      print("bro home test");
+      for (BroBros br0 in bros) {
+        if (senderId == br0.id) {
+          br0.unreadMessages += 1;
+          br0.lastActivity = DateTime.now();
+        }
+      }
+
+      setState(() {
+        bros.sort((b, a) => a.lastActivity.compareTo(b.lastActivity));
+      });
+    }
+  }
+
+
+  leaveRoomSolo() {
+    if (mounted) {
+      if (SocketServices.instance.socket.connected) {
+        SocketServices.instance.socket.off('message_event_send_solo', (data) => print(data));
+        SocketServices.instance.socket.emit(
+          "leave_solo",
+          {"bro_id": Settings.instance.getBroId()},
+        );
       }
     }
-
-    setState(() {
-      bros.sort((b, a) => a.lastActivity.compareTo(b.lastActivity));
-    });
   }
+
 
   @override
   void dispose() {
-    BackButtonInterceptor.remove(myInterceptor);
     SocketServices.instance.resetBroHome();
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
-  bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
-    SocketServices.instance.leaveRoomSolo(Settings.instance.getToken());
-    SocketServices.instance.closeSockConnection();
-    SystemChannels.platform.invokeMethod('SystemNavigator.pop');
-    return true;
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    setState(() {
+      print("changed state!");
+      print(state);
+      print(state.toString());
+    });
   }
 
   void goToDifferentChat(BroBros chatBro) {
+    SocketServices.instance.setBroHome(null);
     Navigator.pushReplacement(
         context,
         MaterialPageRoute(
             builder: (context) => BroMessaging(broBros: chatBro)));
   }
 
+  Widget appBarHome(BuildContext context) {
+    return AppBar(
+      title: Container(alignment: Alignment.centerLeft, child: Text("Brocast")),
+      actions: [
+      PopupMenuButton<int>(
+          onSelected: (item) => onSelect(context, item),
+          itemBuilder: (context) => [
+            PopupMenuItem<int>(value: 0, child: Text("Profile")),
+            PopupMenuItem<int>(value: 1, child: Text("Settings")),
+            PopupMenuItem<int>(value: 2, child: Text("Exit Brocast")),
+            PopupMenuItem<int>(
+                value: 3,
+                child: Row(children: [
+                  Icon(Icons.logout, color: Colors.black),
+                  SizedBox(width: 8),
+                  Text("Log Out")
+                ]))
+          ])
+      ]
+    );
+  }
+
+  void onSelect(BuildContext context, int item) {
+    switch (item) {
+      case 0:
+        SocketServices.instance.setBroHome(null);
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => BroProfile()));
+        break;
+      case 1:
+        SocketServices.instance.setBroHome(null);
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => BroSettings()));
+        break;
+      case 2:
+        SocketServices.instance.setBroHome(null);
+        leaveRoomSolo();
+        SocketServices.instance.closeSockConnection();
+        if (Platform.isAndroid) {
+          SystemNavigator.pop();
+        } else {
+          exit(0);
+        }
+        break;
+      case 3:
+        HelperFunction.logOutBro().then((value) {
+          SocketServices.instance.setBroHome(null);
+          leaveRoomSolo();
+          ResetRegistration resetRegistration = new ResetRegistration();
+          resetRegistration.removeRegistrationId(Settings.instance.getBroId());
+          Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (context) => SignIn()));
+        });
+        break;
+    }
+  }
+
+  DateTime lastPressed;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBarMain(context, true, "Brocast"),
-      body: Container(
-          child: Column(children: [
-        Container(
-          child: Expanded(child: broList()),
-        ),
-      ])),
+      appBar: appBarHome(context),
+      body: WillPopScope(
+        onWillPop: () async {
+          final now = DateTime.now();
+          final maxDuration = Duration(seconds: 2);
+          final isWarning = lastPressed == null ||
+              now.difference(lastPressed) > maxDuration;
+
+          if (isWarning) {
+            lastPressed = DateTime.now();
+
+            final snackBar = SnackBar(
+              content: Text('Press back twice to exit the application'),
+              duration: maxDuration,
+            );
+
+            ScaffoldMessenger.of(context)
+              ..removeCurrentSnackBar()
+              ..showSnackBar(snackBar);
+
+            return false;
+          } else {
+            leaveRoomSolo();
+            SocketServices.instance.closeSockConnection();
+            return true;
+          }
+        },
+        child: Container(
+            child: Column(children: [
+          Container(
+            child: Expanded(child: broList()),
+          ),
+        ])),
+      ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.search),
         onPressed: () {
+          SocketServices.instance.setBroHome(null);
           Navigator.pushReplacement(
               context, MaterialPageRoute(builder: (context) => FindBros()));
         },
@@ -155,6 +301,7 @@ class BroTile extends StatefulWidget {
 class _BroTileState extends State<BroTile> {
   selectBro(BuildContext context) {
     NotificationService.instance.dismissAllNotifications();
+    SocketServices.instance.setBroHome(null);
     Navigator.pushReplacement(
         context,
         MaterialPageRoute(

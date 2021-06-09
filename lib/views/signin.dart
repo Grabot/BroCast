@@ -1,13 +1,15 @@
+import 'dart:io';
+
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:brocast/objects/bro_bros.dart';
 import 'package:brocast/services/auth.dart';
-import 'package:brocast/services/notification_service.dart';
 import 'package:brocast/services/settings.dart';
 import 'package:brocast/utils/shared.dart';
 import 'package:brocast/utils/utils.dart';
 import 'package:brocast/views/bro_home.dart';
 import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class SignIn extends StatefulWidget {
   @override
@@ -154,178 +156,224 @@ class _SignInState extends State<SignIn> {
     });
   }
 
+  void onSelect(BuildContext context, int item) {
+    switch (item) {
+      case 0:
+        if (Platform.isAndroid) {
+          SystemNavigator.pop();
+        } else {
+          exit(0);
+        }
+        break;
+    }
+  }
+
+  DateTime lastPressed;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: appBarMain(context, false, "Brocast"),
-        body: Stack(children: [
-          isLoading
-              ? Container(child: Center(child: CircularProgressIndicator()))
-              : Container(),
-          Container(
-            child: Column(children: [
-              Expanded(
-                child: SingleChildScrollView(
-                  reverse: true,
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 30),
-                    child: Form(
-                        key: formKey,
-                        child: Column(
-                          children: [
-                            SizedBox(height: 50),
-                            Container(
-                                padding: EdgeInsets.symmetric(vertical: 30),
-                                alignment: Alignment.center,
-                                child: Image.asset(
-                                    "assets/images/brocast_transparent.png")),
-                            SizedBox(height: 50),
-                            Row(children: [
-                              Expanded(
-                                flex: 4,
+        appBar:AppBar(
+          title: Container(alignment: Alignment.centerLeft, child: Text("Brocast")),
+          actions: [
+            PopupMenuButton<int>(
+                onSelected: (item) => onSelect(context, item),
+                itemBuilder: (context) => [
+                  PopupMenuItem<int>(value: 0, child: Text("Exit Brocast")),
+                ]
+            ),
+          ],
+        ),
+        body: WillPopScope(
+          onWillPop: () async {
+            final now = DateTime.now();
+            final maxDuration = Duration(seconds: 2);
+            final isWarning = lastPressed == null ||
+                now.difference(lastPressed) > maxDuration;
+
+            if (isWarning) {
+              lastPressed = DateTime.now();
+
+              final snackBar = SnackBar(
+                content: Text('Press back twice to exit the application'),
+                duration: maxDuration,
+              );
+
+              ScaffoldMessenger.of(context)
+                ..removeCurrentSnackBar()
+                ..showSnackBar(snackBar);
+
+              return false;
+            } else {
+              return true;
+            }
+          },
+          child: Stack(children: [
+            isLoading
+                ? Container(child: Center(child: CircularProgressIndicator()))
+                : Container(),
+            Container(
+              child: Column(children: [
+                Expanded(
+                  child: SingleChildScrollView(
+                    reverse: true,
+                    child: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 30),
+                      child: Form(
+                          key: formKey,
+                          child: Column(
+                            children: [
+                              SizedBox(height: 50),
+                              Container(
+                                  padding: EdgeInsets.symmetric(vertical: 30),
+                                  alignment: Alignment.center,
+                                  child: Image.asset(
+                                      "assets/images/brocast_transparent.png")),
+                              SizedBox(height: 50),
+                              Row(children: [
+                                Expanded(
+                                  flex: 4,
+                                  child: TextFormField(
+                                    onTap: () {
+                                      if (!isLoading) {
+                                        onTapTextField();
+                                      }
+                                    },
+                                    validator: (val) {
+                                      return val.isEmpty
+                                          ? "Please provide a bro name"
+                                          : null;
+                                    },
+                                    controller: broNameController,
+                                    textAlign: TextAlign.center,
+                                    style: simpleTextStyle(),
+                                    decoration:
+                                        textFieldInputDecoration("Bro name"),
+                                  ),
+                                ),
+                                SizedBox(width: 50),
+                                Expanded(
+                                  flex: 1,
+                                  child: TextFormField(
+                                    onTap: () {
+                                      if (!isLoading) {
+                                        onTapEmojiField();
+                                      }
+                                    },
+                                    validator: (val) {
+                                      return val.trim().isEmpty ? "😢?😄!" : null;
+                                    },
+                                    controller: bromotionController,
+                                    style: simpleTextStyle(),
+                                    textAlign: TextAlign.center,
+                                    decoration: textFieldInputDecoration("😀"),
+                                    readOnly: true,
+                                    showCursor: true,
+                                  ),
+                                ),
+                              ]),
+                              SizedBox(height: 30),
+                              Container(
+                                padding: EdgeInsets.symmetric(horizontal: 50),
                                 child: TextFormField(
                                   onTap: () {
                                     if (!isLoading) {
                                       onTapTextField();
                                     }
                                   },
+                                  obscureText: true,
                                   validator: (val) {
                                     return val.isEmpty
-                                        ? "Please provide a bro name"
+                                        ? "Please provide a password"
                                         : null;
                                   },
-                                  controller: broNameController,
+                                  controller: passwordController,
                                   textAlign: TextAlign.center,
                                   style: simpleTextStyle(),
                                   decoration:
-                                      textFieldInputDecoration("Bro name"),
+                                      textFieldInputDecoration("Password"),
                                 ),
                               ),
-                              SizedBox(width: 50),
-                              Expanded(
-                                flex: 1,
-                                child: TextFormField(
-                                  onTap: () {
-                                    if (!isLoading) {
-                                      onTapEmojiField();
-                                    }
-                                  },
-                                  validator: (val) {
-                                    return val.trim().isEmpty ? "😢?😄!" : null;
-                                  },
-                                  controller: bromotionController,
-                                  style: simpleTextStyle(),
-                                  textAlign: TextAlign.center,
-                                  decoration: textFieldInputDecoration("😀"),
-                                  readOnly: true,
-                                  showCursor: true,
-                                ),
-                              ),
-                            ]),
-                            SizedBox(height: 30),
-                            Container(
-                              padding: EdgeInsets.symmetric(horizontal: 50),
-                              child: TextFormField(
+                              SizedBox(height: 60),
+                              GestureDetector(
                                 onTap: () {
                                   if (!isLoading) {
-                                    onTapTextField();
+                                    signInForm();
                                   }
                                 },
-                                obscureText: true,
-                                validator: (val) {
-                                  return val.isEmpty
-                                      ? "Please provide a password"
-                                      : null;
-                                },
-                                controller: passwordController,
-                                textAlign: TextAlign.center,
-                                style: simpleTextStyle(),
-                                decoration:
-                                    textFieldInputDecoration("Password"),
-                              ),
-                            ),
-                            SizedBox(height: 60),
-                            GestureDetector(
-                              onTap: () {
-                                if (!isLoading) {
-                                  signInForm();
-                                }
-                              },
-                              child: Container(
-                                alignment: Alignment.center,
-                                width: MediaQuery.of(context).size.width,
-                                padding: EdgeInsets.symmetric(vertical: 16),
-                                decoration: BoxDecoration(
-                                    gradient: LinearGradient(colors: [
-                                      const Color(0xBf007EF4),
-                                      const Color(0xff2A75BC)
-                                    ]),
-                                    borderRadius: BorderRadius.circular(30)),
-                                child: signUpMode
-                                    ? Text("Sign up", style: simpleTextStyle())
-                                    : Text("Sign in", style: simpleTextStyle()),
-                              ),
-                            ),
-                            SizedBox(height: 10),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Container(
-                                  child: Text(
-                                    "Don't have an account?  ",
-                                    style: TextStyle(
-                                        color: Colors.white, fontSize: 16),
-                                  ),
+                                child: Container(
+                                  alignment: Alignment.center,
+                                  width: MediaQuery.of(context).size.width,
+                                  padding: EdgeInsets.symmetric(vertical: 16),
+                                  decoration: BoxDecoration(
+                                      gradient: LinearGradient(colors: [
+                                        const Color(0xBf007EF4),
+                                        const Color(0xff2A75BC)
+                                      ]),
+                                      borderRadius: BorderRadius.circular(30)),
+                                  child: signUpMode
+                                      ? Text("Sign up", style: simpleTextStyle())
+                                      : Text("Sign in", style: simpleTextStyle()),
                                 ),
-                                Expanded(
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      if (!isLoading) {
-                                        setState(() {
-                                          signUpMode = !signUpMode;
-                                        });
-                                        // Navigator.pushReplacement(context, MaterialPageRoute(
-                                        //     builder: (context) => SignUp()
-                                        // ));
-                                      }
-                                    },
-                                    child: signUpMode
-                                        ? Text(
-                                            "Login now!",
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 16,
-                                                decoration:
-                                                    TextDecoration.underline),
-                                          )
-                                        : Text(
-                                            "Register now!",
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 16,
-                                                decoration:
-                                                    TextDecoration.underline),
-                                          ),
+                              ),
+                              SizedBox(height: 10),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    child: Text(
+                                      "Don't have an account?  ",
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 16),
+                                    ),
                                   ),
-                                )
-                              ],
-                            ),
-                            SizedBox(height: 100),
-                          ],
-                        )),
+                                  Expanded(
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        if (!isLoading) {
+                                          setState(() {
+                                            signUpMode = !signUpMode;
+                                          });
+                                        }
+                                      },
+                                      child: signUpMode
+                                          ? Text(
+                                              "Login now!",
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 16,
+                                                  decoration:
+                                                      TextDecoration.underline),
+                                            )
+                                          : Text(
+                                              "Register now!",
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 16,
+                                                  decoration:
+                                                      TextDecoration.underline),
+                                            ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                              SizedBox(height: 100),
+                            ],
+                          )),
+                    ),
                   ),
                 ),
-              ),
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: EmojiKeyboard(
-                    bromotionController: bromotionController,
-                    emojiKeyboardHeight: 300,
-                    showEmojiKeyboard: showEmojiKeyboard,
-                    darkMode: Settings.instance.getEmojiKeyboardDarkMode()),
-              ),
-            ]),
-          ),
-        ]));
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: EmojiKeyboard(
+                      bromotionController: bromotionController,
+                      emojiKeyboardHeight: 300,
+                      showEmojiKeyboard: showEmojiKeyboard,
+                      darkMode: Settings.instance.getEmojiKeyboardDarkMode()),
+                ),
+              ]),
+            ),
+          ]),
+        ));
   }
 }
