@@ -1,3 +1,4 @@
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:brocast/objects/bro_bros.dart';
 import 'package:brocast/services/notification_service.dart';
@@ -47,6 +48,7 @@ class _BroChatDetailsState extends State<BroChatDetails> {
     chatDescriptionController.text = chat.chatDescription;
 
     initSockets();
+    NotificationService.instance.setScreen(this);
 
     circleColorPickerController = CircleColorPickerController(
       initialColor: chat.broColor,
@@ -87,10 +89,12 @@ class _BroChatDetailsState extends State<BroChatDetails> {
   }
 
   void goToDifferentChat(BroBros chatBro) {
-    Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-            builder: (context) => BroMessaging(broBros: chatBro)));
+    if (mounted) {
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => BroMessaging(broBros: chatBro)));
+    }
   }
 
   Widget appBarChatDetails() {

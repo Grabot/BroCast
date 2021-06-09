@@ -1,3 +1,4 @@
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:brocast/objects/bro_bros.dart';
 import 'package:brocast/services/notification_service.dart';
@@ -46,6 +47,7 @@ class _BroProfileState extends State<BroProfile> {
     super.initState();
     bromotionChangeController.addListener(bromotionListener);
     initSockets();
+    NotificationService.instance.setScreen(this);
     setState(() {
       broName = Settings.instance.getBroName();
       bromotion = Settings.instance.getBromotion();
@@ -73,10 +75,12 @@ class _BroProfileState extends State<BroProfile> {
   }
 
   void goToDifferentChat(BroBros chatBro) {
-    Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-            builder: (context) => BroMessaging(broBros: chatBro)));
+    if (mounted) {
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => BroMessaging(broBros: chatBro)));
+    }
   }
 
   bromotionListener() {

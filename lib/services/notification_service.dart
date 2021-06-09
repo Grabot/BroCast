@@ -51,16 +51,21 @@ class NotificationService {
         String chatName = broResult["chat_name"];
         if (broId != null && chatName != null) {
           if (BroList.instance.getBros().isEmpty) {
-            // SocketServices.instance.joinRoomSolo(Settings.instance.getBroId());
             BroBros broNotify =
                 new BroBros(int.parse(broId), chatName, "", "", 0, null);
             if (this.currentScreen != null) {
+              this.currentScreen.goToDifferentChat(broNotify);
+            } else {
               this.goToBro = broNotify;
             }
           } else {
             for (BroBros br0 in BroList.instance.getBros()) {
               if (br0.id == int.parse(broId)) {
-                this.goToBro = br0;
+                if (this.currentScreen != null) {
+                  this.currentScreen.goToDifferentChat(br0);
+                } else {
+                  this.goToBro = br0;
+                }
               }
             }
           }

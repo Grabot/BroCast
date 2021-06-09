@@ -1,3 +1,4 @@
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:brocast/objects/bro.dart';
 import 'package:brocast/objects/bro_bros.dart';
@@ -44,6 +45,7 @@ class _FindBrosState extends State<FindBros> {
     SocketServices.instance.listenForAddingBro(this);
     bromotionController.addListener(bromotionListener);
     initSockets();
+    NotificationService.instance.setScreen(this);
     BackButtonInterceptor.add(myInterceptor);
   }
 
@@ -119,10 +121,12 @@ class _FindBrosState extends State<FindBros> {
   }
 
   void goToDifferentChat(BroBros chatBro) {
-    Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-            builder: (context) => BroMessaging(broBros: chatBro)));
+    if (mounted) {
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => BroMessaging(broBros: chatBro)));
+    }
   }
 
   searchBros() {

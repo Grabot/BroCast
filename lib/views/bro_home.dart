@@ -76,6 +76,7 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     joinRoomSolo(Settings.instance.getBroId());
+    NotificationService.instance.setScreen(this);
 
     // This is called after the build is done.
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -168,10 +169,12 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
   }
 
   void goToDifferentChat(BroBros chatBro) {
-    Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-            builder: (context) => BroMessaging(broBros: chatBro)));
+    if (mounted) {
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => BroMessaging(broBros: chatBro)));
+    }
   }
 
   Widget appBarHome(BuildContext context) {
