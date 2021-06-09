@@ -43,25 +43,25 @@ class SocketServices {
   setMessaging(var messaging) {
     this.messaging = messaging;
   }
-
-  listenForProfileChange(var profilePage) {
-    this.socket.on('message_event_bromotion_change', (data) {
-      if (data == "bromotion change successful") {
-        profilePage.onChangeBromotionSuccess();
-      } else if (data == "broName bromotion combination taken") {
-        profilePage.onChangeBromotionFailedExists();
-      } else {
-        profilePage.onChangeBromotionFailedUnknown();
-      }
-    });
-    this.socket.on('message_event_password_change', (data) {
-      if (data == "password change successful") {
-        profilePage.onChangePasswordSuccess();
-      } else {
-        profilePage.onChangePasswordFailed();
-      }
-    });
-  }
+  //
+  // listenForProfileChange(var profilePage) {
+  //   this.socket.on('message_event_bromotion_change', (data) {
+  //     if (data == "bromotion change successful") {
+  //       profilePage.onChangeBromotionSuccess();
+  //     } else if (data == "broName bromotion combination taken") {
+  //       profilePage.onChangeBromotionFailedExists();
+  //     } else {
+  //       profilePage.onChangeBromotionFailedUnknown();
+  //     }
+  //   });
+  //   this.socket.on('message_event_password_change', (data) {
+  //     if (data == "password change successful") {
+  //       profilePage.onChangePasswordSuccess();
+  //     } else {
+  //       profilePage.onChangePasswordFailed();
+  //     }
+  //   });
+  // }
 
   addBro(String token, int broId) {
     if (this.socket.connected) {

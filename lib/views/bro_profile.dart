@@ -55,12 +55,47 @@ class _BroProfileState extends State<BroProfile> {
       broPassword = Settings.instance.getPassword();
       oldPasswordController.text = broPassword;
     });
-    SocketServices.instance.listenForProfileChange(this);
+    HelperFunction.getBroInformation().then((val) {
+      if (val == null || val.length == 0) {
+        // couldn't get token for some reason
+      } else {
+        String broName = val[0];
+        String bromotion = val[1];
+        String password = val[2];
+        print(broName);
+        print(bromotion);
+        print(password);
+        if (broPassword.isEmpty || broPassword != password) {
+          setState(() {
+            // The password might not be saved in the settings,
+            // we retrieve it from the preferences
+            broPassword = password;
+          });
+        }
+        print("is any of these empyt?");
+      }
+    });
     BackButtonInterceptor.add(myInterceptor);
   }
 
   void initSockets() {
     SocketServices.instance.socket.on('message_event_send_solo', (data) => messageReceivedSolo(data));
+    SocketServices.instance.socket.on('message_event_bromotion_change', (data) {
+      if (data == "bromotion change successful") {
+        onChangeBromotionSuccess();
+      } else if (data == "broName bromotion combination taken") {
+        onChangeBromotionFailedExists();
+      } else {
+        onChangeBromotionFailedUnknown();
+      }
+    });
+    SocketServices.instance.socket.on('message_event_password_change', (data) {
+      if (data == "password change successful") {
+        onChangePasswordSuccess();
+      } else {
+        onChangePasswordFailed();
+      }
+    });
   }
 
   messageReceivedSolo(var data) {
@@ -101,75 +136,107 @@ class _BroProfileState extends State<BroProfile> {
   }
 
   void onChangePasswordSuccess() {
-    broPassword = newPasswordController2.text;
-    HelperFunction.setBroInformation(broName, bromotion, broPassword);
-    setState(() {
-      oldPasswordController.text = broPassword;
-      newPasswordController1.text = "";
-      newPasswordController2.text = "";
-    });
+    if (mounted) {
+      ShowToastComponent.showDialog(
+          "password changed successfully",
+          context);
+      broPassword = newPasswordController2.text;
+      Settings.instance.setPassword(broPassword);
+      HelperFunction.setBroInformation(broName, bromotion, broPassword);
+      setState(() {
+        oldPasswordController.text = broPassword;
+        newPasswordController1.text = "";
+        newPasswordController2.text = "";
+      });
+    }
   }
 
   void onChangePasswordFailed() {
-    ShowToastComponent.showDialog(
-        "changing password failed due to an unknown error.", context);
-    setState(() {
-      newPasswordController1.text = "";
-      newPasswordController2.text = "";
-    });
+    if (mounted) {
+      ShowToastComponent.showDialog(
+          "changing password failed due to an unknown error.", context);
+      setState(() {
+        newPasswordController1.text = "";
+        newPasswordController2.text = "";
+      });
+    }
   }
 
   void onChangeBromotionSuccess() {
-    bromotion = bromotionChangeController.text;
-    HelperFunction.setBroInformation(broName, bromotion, broPassword);
+    if (mounted) {
+      ShowToastComponent.showDialog(
+          "bromotion changed successfully",
+          context);
+      setState(() {
+        bromotion = bromotionChangeController.text;
+        Settings.instance.setBromotion(bromotion);
+        HelperFunction.setBroInformation(broName, bromotion, broPassword);
+      });
+    }
   }
 
   void onChangeBromotionFailedExists() {
-    ShowToastComponent.showDialog(
-        "BroName bromotion combination exists, please pick a different bromotion",
-        context);
-    bromotionChangeController.text = bromotion;
+    if (mounted) {
+      ShowToastComponent.showDialog(
+          "BroName bromotion combination exists, please pick a different bromotion",
+          context);
+      setState(() {
+        bromotionChangeController.text = bromotion;
+      });
+    }
   }
 
   void onChangeBromotionFailedUnknown() {
-    ShowToastComponent.showDialog("an unknown Error has occurred", context);
-    bromotionChangeController.text = bromotion;
+    if (mounted) {
+      ShowToastComponent.showDialog("an unknown Error has occurred", context);
+      setState(() {
+        bromotionChangeController.text = bromotion;
+      });
+    }
   }
 
   void onChangePassword() {
-    focusNodePassword.requestFocus();
-    setState(() {
-      changePassword = true;
-    });
+    if (mounted) {
+      focusNodePassword.requestFocus();
+      setState(() {
+        changePassword = true;
+      });
+    }
   }
 
   void onSavePassword() {
-    if (passwordFormValidator.currentState.validate()) {
-      SocketServices.instance.changePassword(
-          Settings.instance.getToken(), newPasswordController1.text);
-      setState(() {
-        changePassword = false;
-      });
+    if (mounted) {
+      if (passwordFormValidator.currentState.validate()) {
+        SocketServices.instance.changePassword(
+            Settings.instance.getToken(), newPasswordController1.text);
+        setState(() {
+          changePassword = false;
+        });
+      }
     }
   }
 
   void onSaveBromotion() {
-    if (bromotionValidator.currentState.validate()) {
-      SocketServices.instance.changeBromotion(
-          Settings.instance.getToken(), bromotionChangeController.text);
-      setState(() {
-        bromotionEnabled = false;
-        showEmojiKeyboard = false;
-      });
+    if (mounted) {
+      if (bromotionValidator.currentState.validate()) {
+        SocketServices.instance.changeBromotion(
+            Settings.instance.getToken(), bromotionChangeController.text);
+        setState(() {
+          bromotionEnabled = false;
+          showEmojiKeyboard = false;
+        });
+      }
     }
   }
 
   void onChangeBromotion() {
-    focusNodeBromotion.requestFocus();
-    setState(() {
-      bromotionEnabled = true;
-      showEmojiKeyboard = true;
-    });
+    if (mounted) {
+      focusNodeBromotion.requestFocus();
+      setState(() {
+        bromotionEnabled = true;
+        showEmojiKeyboard = true;
+      });
+    }
   }
 
   void onTapEmojiField() {
