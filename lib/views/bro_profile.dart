@@ -77,7 +77,8 @@ class _BroProfileState extends State<BroProfile> with WidgetsBindingObserver {
   }
 
   void initSockets() {
-    SocketServices.instance.socket.on('message_event_send_solo', (data) => messageReceivedSolo(data));
+    SocketServices.instance.socket
+        .on('message_event_send_solo', (data) => messageReceivedSolo(data));
     SocketServices.instance.socket.on('message_event_bromotion_change', (data) {
       if (data == "bromotion change successful") {
         onChangeBromotionSuccess();
@@ -137,9 +138,7 @@ class _BroProfileState extends State<BroProfile> with WidgetsBindingObserver {
 
   void onChangePasswordSuccess() {
     if (mounted) {
-      ShowToastComponent.showDialog(
-          "password changed successfully",
-          context);
+      ShowToastComponent.showDialog("password changed successfully", context);
       broPassword = newPasswordController2.text;
       Settings.instance.setPassword(broPassword);
       HelperFunction.setBroInformation(broName, bromotion, broPassword);
@@ -164,9 +163,7 @@ class _BroProfileState extends State<BroProfile> with WidgetsBindingObserver {
 
   void onChangeBromotionSuccess() {
     if (mounted) {
-      ShowToastComponent.showDialog(
-          "bromotion changed successfully",
-          context);
+      ShowToastComponent.showDialog("bromotion changed successfully", context);
       setState(() {
         bromotion = bromotionChangeController.text;
         Settings.instance.setBromotion(bromotion);
@@ -208,8 +205,10 @@ class _BroProfileState extends State<BroProfile> with WidgetsBindingObserver {
     if (mounted) {
       if (passwordFormValidator.currentState.validate()) {
         if (SocketServices.instance.socket.connected) {
-          SocketServices.instance.socket
-              .emit("password_change", {"token": Settings.instance.getToken(), "password": newPasswordController1.text});
+          SocketServices.instance.socket.emit("password_change", {
+            "token": Settings.instance.getToken(),
+            "password": newPasswordController1.text
+          });
         }
         setState(() {
           changePassword = false;
@@ -222,8 +221,10 @@ class _BroProfileState extends State<BroProfile> with WidgetsBindingObserver {
     if (mounted) {
       if (bromotionValidator.currentState.validate()) {
         if (SocketServices.instance.socket.connected) {
-          SocketServices.instance.socket
-              .emit("bromotion_change", {"token": Settings.instance.getToken(), "bromotion": bromotionChangeController.text});
+          SocketServices.instance.socket.emit("bromotion_change", {
+            "token": Settings.instance.getToken(),
+            "bromotion": bromotionChangeController.text
+          });
         }
         setState(() {
           bromotionEnabled = false;
@@ -265,8 +266,10 @@ class _BroProfileState extends State<BroProfile> with WidgetsBindingObserver {
         showEmojiKeyboard = false;
       });
     } else {
-      SocketServices.instance.socket.off('message_event_bromotion_change', (data) => print(data));
-      SocketServices.instance.socket.off('message_event_password_change', (data) => print(data));
+      SocketServices.instance.socket
+          .off('message_event_bromotion_change', (data) => print(data));
+      SocketServices.instance.socket
+          .off('message_event_password_change', (data) => print(data));
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => BroCastHome()));
     }
@@ -283,29 +286,27 @@ class _BroProfileState extends State<BroProfile> with WidgetsBindingObserver {
 
   Widget appBarProfile(BuildContext context) {
     return AppBar(
-      leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () {
-            backButtonFunctionality();
-          }
-      ),
-      title: Container(alignment: Alignment.centerLeft, child: Text("Profile")),
-      actions: [
-      PopupMenuButton<int>(
-          onSelected: (item) => onSelect(context, item),
-          itemBuilder: (context) => [
-            PopupMenuItem<int>(value: 0, child: Text("Settings")),
-            PopupMenuItem<int>(
-                value: 1,
-                child: Row(children: [
-                  Icon(Icons.logout, color: Colors.black),
-                  SizedBox(width: 8),
-                  Text("Log Out")
-                ]))
-          ]
-        )
-      ]
-    );
+        leading: IconButton(
+            icon: Icon(Icons.arrow_back, color: Colors.white),
+            onPressed: () {
+              backButtonFunctionality();
+            }),
+        title:
+            Container(alignment: Alignment.centerLeft, child: Text("Profile")),
+        actions: [
+          PopupMenuButton<int>(
+              onSelected: (item) => onSelect(context, item),
+              itemBuilder: (context) => [
+                    PopupMenuItem<int>(value: 0, child: Text("Settings")),
+                    PopupMenuItem<int>(
+                        value: 1,
+                        child: Row(children: [
+                          Icon(Icons.logout, color: Colors.black),
+                          SizedBox(width: 8),
+                          Text("Log Out")
+                        ]))
+                  ])
+        ]);
   }
 
   void onSelect(BuildContext context, int item) {

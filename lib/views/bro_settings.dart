@@ -50,7 +50,8 @@ class _BroSettingsState extends State<BroSettings> with WidgetsBindingObserver {
   }
 
   void initSockets() {
-    SocketServices.instance.socket.on('message_event_send_solo', (data) => messageReceivedSolo(data));
+    SocketServices.instance.socket
+        .on('message_event_send_solo', (data) => messageReceivedSolo(data));
   }
 
   messageReceivedSolo(var data) {
@@ -110,29 +111,27 @@ class _BroSettingsState extends State<BroSettings> with WidgetsBindingObserver {
 
   Widget appBarSettings(BuildContext context) {
     return AppBar(
-      leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () {
-            backButtonFunctionality();
-          }
-      ),
-      title: Container(alignment: Alignment.centerLeft, child: Text("Settings")),
-      actions: [
-      PopupMenuButton<int>(
-          onSelected: (item) => onSelect(context, item),
-          itemBuilder: (context) => [
-            PopupMenuItem<int>(value: 0, child: Text("Profile")),
-            PopupMenuItem<int>(
-                value: 1,
-                child: Row(children: [
-                  Icon(Icons.logout, color: Colors.black),
-                  SizedBox(width: 8),
-                  Text("Log Out")
-                ]))
-          ]
-        )
-      ]
-    );
+        leading: IconButton(
+            icon: Icon(Icons.arrow_back, color: Colors.white),
+            onPressed: () {
+              backButtonFunctionality();
+            }),
+        title:
+            Container(alignment: Alignment.centerLeft, child: Text("Settings")),
+        actions: [
+          PopupMenuButton<int>(
+              onSelected: (item) => onSelect(context, item),
+              itemBuilder: (context) => [
+                    PopupMenuItem<int>(value: 0, child: Text("Profile")),
+                    PopupMenuItem<int>(
+                        value: 1,
+                        child: Row(children: [
+                          Icon(Icons.logout, color: Colors.black),
+                          SizedBox(width: 8),
+                          Text("Log Out")
+                        ]))
+                  ])
+        ]);
   }
 
   void onSelect(BuildContext context, int item) {

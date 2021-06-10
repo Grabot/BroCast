@@ -29,7 +29,8 @@ class BroMessaging extends StatefulWidget {
   _BroMessagingState createState() => _BroMessagingState();
 }
 
-class _BroMessagingState extends State<BroMessaging> with WidgetsBindingObserver {
+class _BroMessagingState extends State<BroMessaging>
+    with WidgetsBindingObserver {
   SendMessage send = new SendMessage();
   GetMessages get = new GetMessages();
 
@@ -75,9 +76,12 @@ class _BroMessagingState extends State<BroMessaging> with WidgetsBindingObserver
 
   joinRoom(int broId, int brosBroId) {
     if (SocketServices.instance.socket.connected) {
-      SocketServices.instance.socket.on('message_event_send', (data) => messageReceived(data));
-      SocketServices.instance.socket.on('message_event_send_solo', (data) => messageReceivedSolo(data));
-      SocketServices.instance.socket.on('message_event_read', (data) => messageRead(data));
+      SocketServices.instance.socket
+          .on('message_event_send', (data) => messageReceived(data));
+      SocketServices.instance.socket
+          .on('message_event_send_solo', (data) => messageReceivedSolo(data));
+      SocketServices.instance.socket
+          .on('message_event_read', (data) => messageRead(data));
       SocketServices.instance.socket.emit(
         "join",
         {"bro_id": broId, "bros_bro_id": brosBroId},
@@ -126,10 +130,12 @@ class _BroMessagingState extends State<BroMessaging> with WidgetsBindingObserver
   leaveRoom() {
     if (mounted) {
       if (SocketServices.instance.socket.connected) {
-        SocketServices.instance.socket.off(
-            'message_event_send', (data) => print(data));
-        SocketServices.instance.socket.off('message_event_send_solo', (data) => print(data));
-        SocketServices.instance.socket.off('message_event_read', (data) => print(data));
+        SocketServices.instance.socket
+            .off('message_event_send', (data) => print(data));
+        SocketServices.instance.socket
+            .off('message_event_send_solo', (data) => print(data));
+        SocketServices.instance.socket
+            .off('message_event_read', (data) => print(data));
         SocketServices.instance.socket.emit(
           "leave",
           {"bro_id": Settings.instance.getBroId(), "bros_bro_id": chat.id},
@@ -389,8 +395,7 @@ class _BroMessagingState extends State<BroMessaging> with WidgetsBindingObserver
             icon: Icon(Icons.arrow_back, color: getTextColor(chat.broColor)),
             onPressed: () {
               backButtonFunctionality();
-            }
-        ),
+            }),
         backgroundColor:
             chat.broColor != null ? chat.broColor : Color(0xff145C9E),
         title: Container(
@@ -601,7 +606,6 @@ class MessageTile extends StatefulWidget {
 }
 
 class _MessageTileState extends State<MessageTile> {
-
   selectMessage(BuildContext context) {
     if (widget.message.textMessage.isNotEmpty) {
       setState(() {
@@ -649,10 +653,12 @@ class _MessageTileState extends State<MessageTile> {
                     padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                     decoration: BoxDecoration(
                         color: widget.myMessage
-                            ? widget.message.textMessage.isEmpty || widget.message.clicked
+                            ? widget.message.textMessage.isEmpty ||
+                                    widget.message.clicked
                                 ? Color(0xAA009E00)
                                 : Color(0xFF0ABB5A)
-                            : widget.message.textMessage.isEmpty || widget.message.clicked
+                            : widget.message.textMessage.isEmpty ||
+                                    widget.message.clicked
                                 ? Color(0xFF0060BB)
                                 : Color(0xFF0A98BB),
                         borderRadius: widget.myMessage

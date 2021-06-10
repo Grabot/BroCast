@@ -51,7 +51,8 @@ class _FindBrosState extends State<FindBros> with WidgetsBindingObserver {
   }
 
   void initSockets() {
-    SocketServices.instance.socket.on('message_event_send_solo', (data) => messageReceivedSolo(data));
+    SocketServices.instance.socket
+        .on('message_event_send_solo', (data) => messageReceivedSolo(data));
     SocketServices.instance.socket.on('message_event_add_bro_success', (data) {
       broWasAdded();
     });
@@ -101,9 +102,12 @@ class _FindBrosState extends State<FindBros> with WidgetsBindingObserver {
   @override
   void dispose() {
     BackButtonInterceptor.remove(myInterceptor);
-    SocketServices.instance.socket.off('message_event_add_bro_success', (data) => print(data));
-    SocketServices.instance.socket.off('message_event_add_bro_failed', (data) => print(data));
-    SocketServices.instance.socket.off('message_event_send_solo', (data) => print(data));
+    SocketServices.instance.socket
+        .off('message_event_add_bro_success', (data) => print(data));
+    SocketServices.instance.socket
+        .off('message_event_add_bro_failed', (data) => print(data));
+    SocketServices.instance.socket
+        .off('message_event_send_solo', (data) => print(data));
     super.dispose();
   }
 
@@ -158,9 +162,7 @@ class _FindBrosState extends State<FindBros> with WidgetsBindingObserver {
       String broNameSearch = broNameController.text.trimRight();
       String bromotionSearch = bromotionController.text;
 
-      search
-          .searchBro(broNameSearch, bromotionSearch)
-          .then((val) {
+      search.searchBro(broNameSearch, bromotionSearch).then((val) {
         if (!(val is String)) {
           setState(() {
             bros = val;
@@ -203,25 +205,24 @@ class _FindBrosState extends State<FindBros> with WidgetsBindingObserver {
             icon: Icon(Icons.arrow_back, color: Colors.white),
             onPressed: () {
               backButtonFunctionality();
-            }
-        ),
-      title: Container(alignment: Alignment.centerLeft, child: Text("Find Bros")),
-      actions: [
-      PopupMenuButton<int>(
-          onSelected: (item) => onSelect(context, item),
-          itemBuilder: (context) => [
-            PopupMenuItem<int>(value: 0, child: Text("Profile")),
-            PopupMenuItem<int>(value: 1, child: Text("Settings")),
-            PopupMenuItem<int>(
-                value: 2,
-                child: Row(children: [
-                  Icon(Icons.logout, color: Colors.black),
-                  SizedBox(width: 8),
-                  Text("Log Out")
-                ]))
-          ])
-      ]
-    );
+            }),
+        title: Container(
+            alignment: Alignment.centerLeft, child: Text("Find Bros")),
+        actions: [
+          PopupMenuButton<int>(
+              onSelected: (item) => onSelect(context, item),
+              itemBuilder: (context) => [
+                    PopupMenuItem<int>(value: 0, child: Text("Profile")),
+                    PopupMenuItem<int>(value: 1, child: Text("Settings")),
+                    PopupMenuItem<int>(
+                        value: 2,
+                        child: Row(children: [
+                          Icon(Icons.logout, color: Colors.black),
+                          SizedBox(width: 8),
+                          Text("Log Out")
+                        ]))
+                  ])
+        ]);
   }
 
   void onSelect(BuildContext context, int item) {
@@ -330,8 +331,8 @@ class BroTileSearch extends StatelessWidget {
 
   addBro(BuildContext context) {
     if (SocketServices.instance.socket.connected) {
-      SocketServices.instance.socket.emit(
-          "message_event_add_bro", {"token": Settings.instance.getToken(), "bros_bro_id": bro.id});
+      SocketServices.instance.socket.emit("message_event_add_bro",
+          {"token": Settings.instance.getToken(), "bros_bro_id": bro.id});
     }
   }
 

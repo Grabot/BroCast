@@ -98,7 +98,8 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
 
   joinRoomSolo(int broId) {
     if (SocketServices.instance.socket.connected) {
-      SocketServices.instance.socket.on('message_event_send_solo', (data) => messageReceivedSolo(data));
+      SocketServices.instance.socket
+          .on('message_event_send_solo', (data) => messageReceivedSolo(data));
       SocketServices.instance.socket.on('message_event_bro_added_you', (data) {
         broAddedYou();
       });
@@ -141,11 +142,11 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
     }
   }
 
-
   leaveRoomSolo() {
     if (mounted) {
       if (SocketServices.instance.socket.connected) {
-        SocketServices.instance.socket.off('message_event_send_solo', (data) => print(data));
+        SocketServices.instance.socket
+            .off('message_event_send_solo', (data) => print(data));
         SocketServices.instance.socket.emit(
           "leave_solo",
           {"bro_id": Settings.instance.getBroId()},
@@ -153,7 +154,6 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
       }
     }
   }
-
 
   @override
   void dispose() {
@@ -181,24 +181,24 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
 
   Widget appBarHome(BuildContext context) {
     return AppBar(
-      title: Container(alignment: Alignment.centerLeft, child: Text("Brocast")),
-      actions: [
-      PopupMenuButton<int>(
-          onSelected: (item) => onSelect(context, item),
-          itemBuilder: (context) => [
-            PopupMenuItem<int>(value: 0, child: Text("Profile")),
-            PopupMenuItem<int>(value: 1, child: Text("Settings")),
-            PopupMenuItem<int>(value: 2, child: Text("Exit Brocast")),
-            PopupMenuItem<int>(
-                value: 3,
-                child: Row(children: [
-                  Icon(Icons.logout, color: Colors.black),
-                  SizedBox(width: 8),
-                  Text("Log Out")
-                ]))
-          ])
-      ]
-    );
+        title:
+            Container(alignment: Alignment.centerLeft, child: Text("Brocast")),
+        actions: [
+          PopupMenuButton<int>(
+              onSelected: (item) => onSelect(context, item),
+              itemBuilder: (context) => [
+                    PopupMenuItem<int>(value: 0, child: Text("Profile")),
+                    PopupMenuItem<int>(value: 1, child: Text("Settings")),
+                    PopupMenuItem<int>(value: 2, child: Text("Exit Brocast")),
+                    PopupMenuItem<int>(
+                        value: 3,
+                        child: Row(children: [
+                          Icon(Icons.logout, color: Colors.black),
+                          SizedBox(width: 8),
+                          Text("Log Out")
+                        ]))
+                  ])
+        ]);
   }
 
   void onSelect(BuildContext context, int item) {
@@ -242,8 +242,8 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
         onWillPop: () async {
           final now = DateTime.now();
           final maxDuration = Duration(seconds: 2);
-          final isWarning = lastPressed == null ||
-              now.difference(lastPressed) > maxDuration;
+          final isWarning =
+              lastPressed == null || now.difference(lastPressed) > maxDuration;
 
           if (isWarning) {
             lastPressed = DateTime.now();
@@ -265,34 +265,30 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
           }
         },
         child: Container(
-          child: Column(children: [
-            Container(
-              child: Material(
-                child: InkWell(
-                  onTap: () {
-                    Navigator.pushReplacement(
-                        context, MaterialPageRoute(builder: (context) => BroProfile()));
-                  },
-                  child: Container(
+            child: Column(children: [
+          Container(
+            child: Material(
+              child: InkWell(
+                onTap: () {
+                  Navigator.pushReplacement(context,
+                      MaterialPageRoute(builder: (context) => BroProfile()));
+                },
+                child: Container(
                     color: Color(0x8b2d69a3),
                     width: MediaQuery.of(context).size.width,
                     height: 40,
                     alignment: Alignment.center,
                     child: Text(
                       "Hey ${Settings.instance.getBroName()} ${Settings.instance.getBromotion()}!",
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20
-                      ),
-                    )
-                  ),
-                ),
-                color: Colors.transparent,
+                      style: TextStyle(color: Colors.white, fontSize: 20),
+                    )),
               ),
+              color: Colors.transparent,
             ),
-            Container(
-              child: Expanded(child: broList()),
-            ),
+          ),
+          Container(
+            child: Expanded(child: broList()),
+          ),
         ])),
       ),
       floatingActionButton: FloatingActionButton(
@@ -394,8 +390,7 @@ class _BroTileState extends State<BroTile> {
                             fontSize: 16),
                       )),
                 ],
-              )
-          ),
+              )),
         ),
         color: Colors.transparent,
       ),

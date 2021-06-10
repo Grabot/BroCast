@@ -22,7 +22,8 @@ class BroChatDetails extends StatefulWidget {
   _BroChatDetailsState createState() => _BroChatDetailsState();
 }
 
-class _BroChatDetailsState extends State<BroChatDetails> with WidgetsBindingObserver {
+class _BroChatDetailsState extends State<BroChatDetails>
+    with WidgetsBindingObserver {
   TextEditingController chatDescriptionController = new TextEditingController();
 
   bool changeDescription = false;
@@ -67,17 +68,22 @@ class _BroChatDetailsState extends State<BroChatDetails> with WidgetsBindingObse
   }
 
   void initSockets() {
-    SocketServices.instance.socket.on('message_event_send_solo', (data) => messageReceivedSolo(data));
-    SocketServices.instance.socket.on('message_event_change_chat_details_success', (data) {
+    SocketServices.instance.socket
+        .on('message_event_send_solo', (data) => messageReceivedSolo(data));
+    SocketServices.instance.socket
+        .on('message_event_change_chat_details_success', (data) {
       chatDetailUpdateSuccess();
     });
-    SocketServices.instance.socket.on('message_event_change_chat_details_failed', (data) {
+    SocketServices.instance.socket
+        .on('message_event_change_chat_details_failed', (data) {
       chatDetailUpdateFailed();
     });
-    SocketServices.instance.socket.on('message_event_change_chat_colour_success', (data) {
+    SocketServices.instance.socket
+        .on('message_event_change_chat_colour_success', (data) {
       chatColourUpdateSuccess();
     });
-    SocketServices.instance.socket.on('message_event_change_chat_colour_failed', (data) {
+    SocketServices.instance.socket.on('message_event_change_chat_colour_failed',
+        (data) {
       chatColourUpdateFailed();
     });
   }
@@ -108,11 +114,16 @@ class _BroChatDetailsState extends State<BroChatDetails> with WidgetsBindingObse
   @override
   void dispose() {
     BackButtonInterceptor.remove(myInterceptor);
-    SocketServices.instance.socket.off('message_event_send_solo', (data) => print(data));
-    SocketServices.instance.socket.off('message_event_change_chat_details_success', (data) => print(data));
-    SocketServices.instance.socket.off('message_event_change_chat_details_failed', (data) => print(data));
-    SocketServices.instance.socket.off('message_event_change_chat_colour_success', (data) => print(data));
-    SocketServices.instance.socket.off('message_event_change_chat_colour_failed', (data) => print(data));
+    SocketServices.instance.socket
+        .off('message_event_send_solo', (data) => print(data));
+    SocketServices.instance.socket.off(
+        'message_event_change_chat_details_success', (data) => print(data));
+    SocketServices.instance.socket
+        .off('message_event_change_chat_details_failed', (data) => print(data));
+    SocketServices.instance.socket
+        .off('message_event_change_chat_colour_success', (data) => print(data));
+    SocketServices.instance.socket
+        .off('message_event_change_chat_colour_failed', (data) => print(data));
     super.dispose();
   }
 
@@ -128,11 +139,10 @@ class _BroChatDetailsState extends State<BroChatDetails> with WidgetsBindingObse
   Widget appBarChatDetails() {
     return AppBar(
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: getTextColor(chat.broColor)),
-          onPressed: () {
-            backButtonFunctionality();
-          }
-        ),
+            icon: Icon(Icons.arrow_back, color: getTextColor(chat.broColor)),
+            onPressed: () {
+              backButtonFunctionality();
+            }),
         backgroundColor:
             chat.broColor != null ? chat.broColor : Color(0xff145C9E),
         title: Container(
@@ -183,8 +193,12 @@ class _BroChatDetailsState extends State<BroChatDetails> with WidgetsBindingObse
   void updateDescription() {
     if (previousDescription != chatDescriptionController.text) {
       if (SocketServices.instance.socket.connected) {
-        SocketServices.instance.socket.emit("message_event_change_chat_details",
-            {"token": Settings.instance.getToken(), "bros_bro_id": chat.id, "description": chatDescriptionController.text});
+        SocketServices.instance.socket
+            .emit("message_event_change_chat_details", {
+          "token": Settings.instance.getToken(),
+          "bros_bro_id": chat.id,
+          "description": chatDescriptionController.text
+        });
       }
       setState(() {
         changeDescription = false;
@@ -207,8 +221,12 @@ class _BroChatDetailsState extends State<BroChatDetails> with WidgetsBindingObse
     if (currentColor != chat.broColor) {
       String newColour = currentColor.value.toRadixString(16).substring(2, 8);
       if (SocketServices.instance.socket.connected) {
-        SocketServices.instance.socket.emit("message_event_change_chat_colour",
-            {"token": Settings.instance.getToken(), "bros_bro_id": chat.id, "colour": newColour});
+        SocketServices.instance.socket
+            .emit("message_event_change_chat_colour", {
+          "token": Settings.instance.getToken(),
+          "bros_bro_id": chat.id,
+          "colour": newColour
+        });
       }
     }
     setState(() {

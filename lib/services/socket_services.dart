@@ -36,5 +36,4 @@ class SocketServices {
       this.socket.close();
     }
   }
-
 }

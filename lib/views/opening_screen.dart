@@ -101,8 +101,8 @@ class _OpeningScreenState extends State<OpeningScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Container(alignment: Alignment.centerLeft, child: Text("Brocast"))
-      ),
+          title: Container(
+              alignment: Alignment.centerLeft, child: Text("Brocast"))),
       body: Stack(
         children: [
           Container(

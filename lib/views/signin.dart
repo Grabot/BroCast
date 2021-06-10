@@ -117,11 +117,10 @@ class _SignInState extends State<SignIn> {
       if (signUpMode) {
         signUp();
       } else {
-
         String broNameSignup = broNameController.text.trimRight();
         String bromotionSignup = bromotionController.text;
         String passwordSignup = passwordController.text;
-        
+
         signInName(broNameSignup, bromotionSignup, passwordSignup);
       }
     }
@@ -136,9 +135,7 @@ class _SignInState extends State<SignIn> {
     String bromotionSignup = bromotionController.text;
     String passwordSignup = passwordController.text;
 
-    auth
-        .signUp(broNameSignup, bromotionSignup,passwordSignup)
-        .then((val) {
+    auth.signUp(broNameSignup, bromotionSignup, passwordSignup).then((val) {
       if (val.toString() == "") {
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => BroCastHome()));
@@ -182,15 +179,15 @@ class _SignInState extends State<SignIn> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar:AppBar(
-          title: Container(alignment: Alignment.centerLeft, child: Text("Brocast")),
+        appBar: AppBar(
+          title: Container(
+              alignment: Alignment.centerLeft, child: Text("Brocast")),
           actions: [
             PopupMenuButton<int>(
                 onSelected: (item) => onSelect(context, item),
                 itemBuilder: (context) => [
-                  PopupMenuItem<int>(value: 0, child: Text("Exit Brocast")),
-                ]
-            ),
+                      PopupMenuItem<int>(value: 0, child: Text("Exit Brocast")),
+                    ]),
           ],
         ),
         body: WillPopScope(
@@ -267,7 +264,9 @@ class _SignInState extends State<SignIn> {
                                       }
                                     },
                                     validator: (val) {
-                                      return val.trim().isEmpty ? "😢?😄!" : null;
+                                      return val.trim().isEmpty
+                                          ? "😢?😄!"
+                                          : null;
                                     },
                                     controller: bromotionController,
                                     style: simpleTextStyle(),
@@ -318,8 +317,10 @@ class _SignInState extends State<SignIn> {
                                       ]),
                                       borderRadius: BorderRadius.circular(30)),
                                   child: signUpMode
-                                      ? Text("Sign up", style: simpleTextStyle())
-                                      : Text("Sign in", style: simpleTextStyle()),
+                                      ? Text("Sign up",
+                                          style: simpleTextStyle())
+                                      : Text("Sign in",
+                                          style: simpleTextStyle()),
                                 ),
                               ),
                               SizedBox(height: 10),
