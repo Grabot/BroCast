@@ -265,10 +265,34 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
           }
         },
         child: Container(
-            child: Column(children: [
-          Container(
-            child: Expanded(child: broList()),
-          ),
+          child: Column(children: [
+            Container(
+              child: Material(
+                child: InkWell(
+                  onTap: () {
+                    Navigator.pushReplacement(
+                        context, MaterialPageRoute(builder: (context) => BroProfile()));
+                  },
+                  child: Container(
+                    color: Color(0x8b2d69a3),
+                    width: MediaQuery.of(context).size.width,
+                    height: 40,
+                    alignment: Alignment.center,
+                    child: Text(
+                      "Hey ${Settings.instance.getBroName()} ${Settings.instance.getBromotion()}!",
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20
+                      ),
+                    )
+                  ),
+                ),
+                color: Colors.transparent,
+              ),
+            ),
+            Container(
+              child: Expanded(child: broList()),
+            ),
         ])),
       ),
       floatingActionButton: FloatingActionButton(
@@ -370,7 +394,8 @@ class _BroTileState extends State<BroTile> {
                             fontSize: 16),
                       )),
                 ],
-              )),
+              )
+          ),
         ),
         color: Colors.transparent,
       ),

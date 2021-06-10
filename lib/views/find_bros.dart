@@ -155,8 +155,11 @@ class _FindBrosState extends State<FindBros> with WidgetsBindingObserver {
         isSearching = true;
       });
 
+      String broNameSearch = broNameController.text.trimRight();
+      String bromotionSearch = bromotionController.text;
+
       search
-          .searchBro(broNameController.text, bromotionController.text)
+          .searchBro(broNameSearch, bromotionSearch)
           .then((val) {
         if (!(val is String)) {
           setState(() {

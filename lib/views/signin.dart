@@ -117,8 +117,12 @@ class _SignInState extends State<SignIn> {
       if (signUpMode) {
         signUp();
       } else {
-        signInName(broNameController.text, bromotionController.text,
-            passwordController.text);
+
+        String broNameSignup = broNameController.text.trimRight();
+        String bromotionSignup = bromotionController.text;
+        String passwordSignup = passwordController.text;
+        
+        signInName(broNameSignup, bromotionSignup, passwordSignup);
       }
     }
   }
@@ -128,9 +132,12 @@ class _SignInState extends State<SignIn> {
       isLoading = true;
     });
 
+    String broNameSignup = broNameController.text.trimRight();
+    String bromotionSignup = bromotionController.text;
+    String passwordSignup = passwordController.text;
+
     auth
-        .signUp(broNameController.text, bromotionController.text,
-            passwordController.text)
+        .signUp(broNameSignup, bromotionSignup,passwordSignup)
         .then((val) {
       if (val.toString() == "") {
         Navigator.pushReplacement(
