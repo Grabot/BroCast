@@ -151,11 +151,9 @@ class _BroSettingsState extends State<BroSettings> {
                 reverse: true,
                 child: Column(children: [
                   Container(
-                      padding: EdgeInsets.symmetric(vertical: 30),
                       alignment: Alignment.center,
                       child:
                           Image.asset("assets/images/brocast_transparent.png")),
-                  SizedBox(height: 40),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [

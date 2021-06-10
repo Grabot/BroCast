@@ -246,7 +246,6 @@ class _BroChatDetailsState extends State<BroChatDetails> {
                 reverse: true,
                 child: Column(children: [
                   Container(
-                      padding: EdgeInsets.symmetric(vertical: 30),
                       alignment: Alignment.center,
                       child:
                           Image.asset("assets/images/brocast_transparent.png")),

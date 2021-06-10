@@ -225,13 +225,10 @@ class _SignInState extends State<SignIn> {
                           key: formKey,
                           child: Column(
                             children: [
-                              SizedBox(height: 50),
                               Container(
-                                  padding: EdgeInsets.symmetric(vertical: 30),
                                   alignment: Alignment.center,
                                   child: Image.asset(
                                       "assets/images/brocast_transparent.png")),
-                              SizedBox(height: 50),
                               Row(children: [
                                 Expanded(
                                   flex: 4,

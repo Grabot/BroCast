@@ -95,7 +95,6 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
   }
 
   joinRoomSolo(int broId) {
-    print("joining solo room");
     if (SocketServices.instance.socket.connected) {
       SocketServices.instance.socket.on('message_event_send_solo', (data) => messageReceivedSolo(data));
       SocketServices.instance.socket.on('message_event_bro_added_you', (data) {

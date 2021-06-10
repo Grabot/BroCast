@@ -219,7 +219,7 @@ class _BroProfileState extends State<BroProfile> {
       if (bromotionValidator.currentState.validate()) {
         if (SocketServices.instance.socket.connected) {
           SocketServices.instance.socket
-              .emit("bromotion_change", {"token": Settings.instance.getToken(), "bromotion": bromotion});
+              .emit("bromotion_change", {"token": Settings.instance.getToken(), "bromotion": bromotionChangeController.text});
         }
         setState(() {
           bromotionEnabled = false;
@@ -323,7 +323,6 @@ class _BroProfileState extends State<BroProfile> {
                 reverse: true,
                 child: Column(children: [
                   Container(
-                      padding: EdgeInsets.symmetric(vertical: 30),
                       alignment: Alignment.center,
                       child:
                           Image.asset("assets/images/brocast_transparent.png")),
