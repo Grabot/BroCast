@@ -32,7 +32,6 @@ class SocketServices {
   }
 
   closeSockConnection() {
-    print("it closed the socket again, dammit!");
     if (this.socket.connected) {
       this.socket.close();
     }

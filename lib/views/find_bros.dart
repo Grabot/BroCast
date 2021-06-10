@@ -26,10 +26,11 @@ class FindBros extends StatefulWidget {
   _FindBrosState createState() => _FindBrosState();
 }
 
-class _FindBrosState extends State<FindBros> {
+class _FindBrosState extends State<FindBros> with WidgetsBindingObserver {
   Search search = new Search();
 
   bool isSearching = false;
+  bool showNotification = true;
   List<Bro> bros = [];
 
   bool showEmojiKeyboard = false;
@@ -45,6 +46,7 @@ class _FindBrosState extends State<FindBros> {
     bromotionController.addListener(bromotionListener);
     initSockets();
     NotificationService.instance.setScreen(this);
+    WidgetsBinding.instance.addObserver(this);
     BackButtonInterceptor.add(myInterceptor);
   }
 
@@ -62,8 +64,10 @@ class _FindBrosState extends State<FindBros> {
     if (mounted) {
       for (BroBros br0 in BroList.instance.getBros()) {
         if (br0.id == data["sender_id"]) {
-          NotificationService.instance
-              .showNotification(br0.id, br0.chatName, "", data["body"]);
+          if (showNotification) {
+            NotificationService.instance
+                .showNotification(br0.id, br0.chatName, "", data["body"]);
+          }
         }
       }
     }
@@ -113,6 +117,15 @@ class _FindBrosState extends State<FindBros> {
       setState(() {
         showEmojiKeyboard = false;
       });
+    }
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      showNotification = true;
+    } else {
+      showNotification = false;
     }
   }
 

@@ -33,6 +33,8 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
   bool isSearching = false;
   List<BroBros> bros = [];
 
+  bool showNotification = true;
+
   Widget broList() {
     return bros.isNotEmpty
         ? ListView.builder(
@@ -115,8 +117,10 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
 
       for (BroBros br0 in BroList.instance.getBros()) {
         if (br0.id == data["sender_id"]) {
-          NotificationService.instance
-              .showNotification(br0.id, br0.chatName, "", data["body"]);
+          if (showNotification) {
+            NotificationService.instance
+                .showNotification(br0.id, br0.chatName, "", data["body"]);
+          }
         }
       }
     }
@@ -124,7 +128,6 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
 
   updateMessages(int senderId) {
     if (mounted) {
-      print("bro home test");
       for (BroBros br0 in bros) {
         if (senderId == br0.id) {
           br0.unreadMessages += 1;
@@ -160,11 +163,11 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    setState(() {
-      print("changed state!");
-      print(state);
-      print(state.toString());
-    });
+    if (state == AppLifecycleState.resumed) {
+      showNotification = true;
+    } else {
+      showNotification = false;
+    }
   }
 
   void goToDifferentChat(BroBros chatBro) {

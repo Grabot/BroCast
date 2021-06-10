@@ -23,13 +23,14 @@ class BroProfile extends StatefulWidget {
   _BroProfileState createState() => _BroProfileState();
 }
 
-class _BroProfileState extends State<BroProfile> {
+class _BroProfileState extends State<BroProfile> with WidgetsBindingObserver {
   final passwordFormValidator = GlobalKey<FormState>();
   final bromotionValidator = GlobalKey<FormFieldState>();
 
   bool showEmojiKeyboard = false;
   bool bromotionEnabled = false;
   bool changePassword = false;
+  bool showNotification = true;
 
   String broName;
   String bromotion;
@@ -71,6 +72,7 @@ class _BroProfileState extends State<BroProfile> {
         }
       }
     });
+    WidgetsBinding.instance.addObserver(this);
     BackButtonInterceptor.add(myInterceptor);
   }
 
@@ -98,8 +100,10 @@ class _BroProfileState extends State<BroProfile> {
     if (mounted) {
       for (BroBros br0 in BroList.instance.getBros()) {
         if (br0.id == data["sender_id"]) {
-          NotificationService.instance
-              .showNotification(br0.id, br0.chatName, "", data["body"]);
+          if (showNotification) {
+            NotificationService.instance
+                .showNotification(br0.id, br0.chatName, "", data["body"]);
+          }
         }
       }
     }
@@ -265,6 +269,15 @@ class _BroProfileState extends State<BroProfile> {
       SocketServices.instance.socket.off('message_event_password_change', (data) => print(data));
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => BroCastHome()));
+    }
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      showNotification = true;
+    } else {
+      showNotification = false;
     }
   }
 

@@ -29,7 +29,7 @@ class BroMessaging extends StatefulWidget {
   _BroMessagingState createState() => _BroMessagingState();
 }
 
-class _BroMessagingState extends State<BroMessaging> {
+class _BroMessagingState extends State<BroMessaging> with WidgetsBindingObserver {
   SendMessage send = new SendMessage();
   GetMessages get = new GetMessages();
 
@@ -38,6 +38,7 @@ class _BroMessagingState extends State<BroMessaging> {
   FocusNode focusAppendText = FocusNode();
   FocusNode focusEmojiTextField = FocusNode();
   bool appendingMessage = false;
+  bool showNotification = true;
 
   TextEditingController broMessageController = new TextEditingController();
   TextEditingController appendTextMessageController =
@@ -68,6 +69,7 @@ class _BroMessagingState extends State<BroMessaging> {
     }
     NotificationService.instance.setScreen(this);
     joinRoom(Settings.instance.getBroId(), chat.id);
+    WidgetsBinding.instance.addObserver(this);
     BackButtonInterceptor.add(myInterceptor);
   }
 
@@ -85,22 +87,30 @@ class _BroMessagingState extends State<BroMessaging> {
 
   messageReceivedSolo(var data) {
     if (mounted) {
-      print("going solo");
       if (chat.id != data["sender_id"]) {
-        print("received a message from someone who's in a different chat!");
         for (BroBros br0 in BroList.instance.getBros()) {
           if (br0.id == data["sender_id"]) {
-            NotificationService.instance
-                .showNotification(br0.id, br0.chatName, "", data["body"]);
+            if (showNotification) {
+              NotificationService.instance
+                  .showNotification(br0.id, br0.chatName, "", data["body"]);
+            }
           }
         }
       }
     }
   }
 
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      showNotification = true;
+    } else {
+      showNotification = false;
+    }
+  }
+
   messageReceived(var data) {
     if (mounted) {
-      print("received a message while in chat mode");
       Message mes = new Message(
           data["id"],
           data["bro_bros_id"],

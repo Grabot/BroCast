@@ -22,11 +22,12 @@ class BroChatDetails extends StatefulWidget {
   _BroChatDetailsState createState() => _BroChatDetailsState();
 }
 
-class _BroChatDetailsState extends State<BroChatDetails> {
+class _BroChatDetailsState extends State<BroChatDetails> with WidgetsBindingObserver {
   TextEditingController chatDescriptionController = new TextEditingController();
 
   bool changeDescription = false;
   bool changeColour = false;
+  bool showNotification = true;
 
   CircleColorPickerController circleColorPickerController;
 
@@ -53,6 +54,16 @@ class _BroChatDetailsState extends State<BroChatDetails> {
       initialColor: chat.broColor,
     );
     currentColor = chat.broColor;
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      showNotification = true;
+    } else {
+      showNotification = false;
+    }
   }
 
   void initSockets() {
@@ -75,8 +86,10 @@ class _BroChatDetailsState extends State<BroChatDetails> {
     if (mounted) {
       for (BroBros br0 in BroList.instance.getBros()) {
         if (br0.id == data["sender_id"]) {
-          NotificationService.instance
-              .showNotification(br0.id, br0.chatName, "", data["body"]);
+          if (showNotification) {
+            NotificationService.instance
+                .showNotification(br0.id, br0.chatName, "", data["body"]);
+          }
         }
       }
     }

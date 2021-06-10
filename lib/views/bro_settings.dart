@@ -22,8 +22,9 @@ class BroSettings extends StatefulWidget {
   _BroSettingsState createState() => _BroSettingsState();
 }
 
-class _BroSettingsState extends State<BroSettings> {
+class _BroSettingsState extends State<BroSettings> with WidgetsBindingObserver {
   bool toggleSwitch = false;
+  bool showNotification = true;
 
   @override
   void initState() {
@@ -44,6 +45,7 @@ class _BroSettingsState extends State<BroSettings> {
     });
     initSockets();
     NotificationService.instance.setScreen(this);
+    WidgetsBinding.instance.addObserver(this);
     BackButtonInterceptor.add(myInterceptor);
   }
 
@@ -55,8 +57,10 @@ class _BroSettingsState extends State<BroSettings> {
     if (mounted) {
       for (BroBros br0 in BroList.instance.getBros()) {
         if (br0.id == data["sender_id"]) {
-          NotificationService.instance
-              .showNotification(br0.id, br0.chatName, "", data["body"]);
+          if (showNotification) {
+            NotificationService.instance
+                .showNotification(br0.id, br0.chatName, "", data["body"]);
+          }
         }
       }
     }
@@ -80,6 +84,15 @@ class _BroSettingsState extends State<BroSettings> {
   void dispose() {
     BackButtonInterceptor.remove(myInterceptor);
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      showNotification = true;
+    } else {
+      showNotification = false;
+    }
   }
 
   void toggledEmojiKeyboardDarkMode(value) {
