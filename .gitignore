@@ -123,3 +123,4 @@ encrypt.dart
 base_url.dart
 google-services.json
 GoogleService-Info.plist
+key.properties
