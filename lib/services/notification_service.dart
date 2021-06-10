@@ -20,7 +20,7 @@ class NotificationService {
     this.goToBro = null;
 
     AwesomeNotifications().initialize(
-        'resource://drawable/bro_icon',
+        'resource://drawable/res_bro_icon',
         [
           NotificationChannel(
               channelKey: "brocast_notification",
@@ -30,7 +30,7 @@ class NotificationService {
               groupSort: GroupSort.Desc,
               groupAlertBehavior: GroupAlertBehavior.Children,
               playSound: true,
-              soundSource: 'resource://raw/brodio',
+              soundSource: 'resource://raw/res_brodio',
               defaultColor: Color(0xff6b6e97),
               ledColor: Color(0xff6b6e97),
               vibrationPattern: Int64List.fromList([0, 500, 100, 150]),

@@ -2,13 +2,14 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:brocast/constants/base_url.dart';
 import 'package:brocast/services/settings.dart';
-import 'package:brocast/services/socket_services.dart';
 import 'package:brocast/utils/shared.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:http/http.dart' as http;
 
 class Auth {
   Future signUp(String broName, String bromotion, String password) async {
+    await Firebase.initializeApp();
     String registrationId = await FirebaseMessaging.instance.getToken();
 
     String urlRegister = baseUrl + 'register';
@@ -66,6 +67,7 @@ class Auth {
 
   Future signIn(
       String broName, String bromotion, String password, String token) async {
+    await Firebase.initializeApp();
     String registrationId = await FirebaseMessaging.instance.getToken();
 
     String urlLogin = baseUrl + 'login';

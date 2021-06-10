@@ -21,7 +21,7 @@ class _OpeningScreenState extends State<OpeningScreen> {
 
   @override
   void initState() {
-    NotificationService.instance.setScreen(this);
+    NotificationService.instance.setScreen(null);
     HelperFunction.getKeyboardDarkMode().then((val) {
       if (val == null) {
         // no dark mode setting set yet.

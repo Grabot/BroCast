@@ -156,7 +156,6 @@ class _BroSettingsState extends State<BroSettings> with WidgetsBindingObserver {
     return Scaffold(
         appBar: appBarSettings(context),
         body: Container(
-          padding: EdgeInsets.symmetric(vertical: 16),
           child: Column(children: [
             Expanded(
               child: SingleChildScrollView(
