@@ -499,7 +499,7 @@ class _BroMessagingState extends State<BroMessaging>
                             child: TextFormField(
                               focusNode: focusEmojiTextField,
                               validator: (val) {
-                                return val.isEmpty
+                                return val.isEmpty || val.trimRight().isEmpty
                                     ? "Can't send an empty message"
                                     : null;
                               },
