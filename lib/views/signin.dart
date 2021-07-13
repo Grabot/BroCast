@@ -328,7 +328,11 @@ class _SignInState extends State<SignIn> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Container(
-                                    child: Text(
+                                    child: signUpMode ? Text(
+                                      "Already have an account?  ",
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 16),
+                                    ) : Text(
                                       "Don't have an account?  ",
                                       style: TextStyle(
                                           color: Colors.white, fontSize: 16),
