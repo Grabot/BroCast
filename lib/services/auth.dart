@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'package:brocast/constants/base_url.dart';
 import 'package:brocast/services/settings.dart';
 import 'package:brocast/utils/shared.dart';
@@ -12,8 +13,13 @@ class Auth {
     await Firebase.initializeApp();
     String registrationId = await FirebaseMessaging.instance.getToken();
 
-    String urlRegister = baseUrl + 'register';
+    String urlRegister = baseUrl_v1_1 + 'register';
     Uri uriRegister = Uri.parse(urlRegister);
+
+    String deviceType = "Android";
+    if (Platform.isIOS) {
+      deviceType = "IOS";
+    }
 
     http.Response responsePost = await http
         .post(
@@ -25,7 +31,8 @@ class Auth {
         'bro_name': broName,
         'bromotion': bromotion,
         'password': password,
-        'registration_id': registrationId
+        'registration_id': registrationId,
+        'device_type': deviceType
       }),
     )
         .timeout(
@@ -70,8 +77,13 @@ class Auth {
     await Firebase.initializeApp();
     String registrationId = await FirebaseMessaging.instance.getToken();
 
-    String urlLogin = baseUrl + 'login';
+    String urlLogin = baseUrl_v1_1 + 'login';
     Uri uriLogin = Uri.parse(urlLogin);
+
+    String deviceType = "Android";
+    if (Platform.isIOS) {
+      deviceType = "IOS";
+    }
 
     http.Response responsePost = await http
         .post(
@@ -84,7 +96,8 @@ class Auth {
         'bromotion': bromotion,
         'password': password,
         'token': token,
-        'registration_id': registrationId
+        'registration_id': registrationId,
+        'device_type': deviceType
       }),
     )
         .timeout(

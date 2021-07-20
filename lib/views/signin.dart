@@ -149,6 +149,11 @@ class _SignInState extends State<SignIn> {
   }
 
   signInName(String broName, String bromotion, String password) {
+
+    setState(() {
+      isLoading = true;
+    });
+
     auth.signIn(broName, bromotion, password, "").then((val) {
       if (val.toString() == "") {
         Navigator.pushReplacement(
