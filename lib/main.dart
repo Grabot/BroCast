@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:brocast/services/notification_service.dart';
 import 'package:brocast/services/settings.dart';
@@ -28,8 +29,10 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
     int brosBroId = chat["bros_bro_id"];
     String chatName = chat["chat_name"];
     String chatColour = chat["chat_colour"];
-    NotificationService.instance
-        .showNotification(brosBroId, chatName, chatColour, messageBody);
+    if (Platform.isAndroid) {
+      NotificationService.instance
+          .showNotification(brosBroId, chatName, chatColour, messageBody);
+    }
   }
 }
 

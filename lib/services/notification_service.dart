@@ -1,10 +1,7 @@
-import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:brocast/objects/bro_bros.dart';
-import 'package:brocast/services/settings.dart';
-import 'package:brocast/services/socket_services.dart';
 import 'package:brocast/utils/bro_list.dart';
 import 'package:flutter/material.dart';
 
@@ -89,17 +86,15 @@ class NotificationService {
 
   Future<void> showNotification(
       int broId, String chatName, String chatColour, String messageBody) async {
-    if (Platform.isAndroid) {
-      await AwesomeNotifications().createNotification(
-          content: NotificationContent(
-              id: notificationId,
-              channelKey: "brocast_notification",
-              title: "$chatName:",
-              body: messageBody,
-              color: Color(0xff6b6e97),
-              payload: {"id": broId.toString(), "chat_name": chatName}));
-      notificationId += 1;
-    }
+    await AwesomeNotifications().createNotification(
+        content: NotificationContent(
+            id: notificationId,
+            channelKey: "brocast_notification",
+            title: "$chatName:",
+            body: messageBody,
+            color: Color(0xff6b6e97),
+            payload: {"id": broId.toString(), "chat_name": chatName}));
+    notificationId += 1;
   }
 
   dismissAllNotifications() async {
