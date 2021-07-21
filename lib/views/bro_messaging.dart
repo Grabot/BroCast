@@ -652,15 +652,19 @@ class _MessageTileState extends State<MessageTile> {
                   child: Container(
                     padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                     decoration: BoxDecoration(
+                        border: Border.all(
+                            color: widget.myMessage ?
+                            widget.message.textMessage.isEmpty ||
+                                widget.message.clicked ? Color(0xFF009E00)
+                                : Colors.yellow :
+                            widget.message.textMessage.isEmpty ||
+                                widget.message.clicked ? Color(0xFF0060BB)
+                                : Colors.yellow,
+                            width: 2,
+                        ), // Color(0xAA009E00)
                         color: widget.myMessage
-                            ? widget.message.textMessage.isEmpty ||
-                                    widget.message.clicked
-                                ? Color(0xAA009E00)
-                                : Color(0xFF0ABB5A)
-                            : widget.message.textMessage.isEmpty ||
-                                    widget.message.clicked
-                                ? Color(0xFF0060BB)
-                                : Color(0xFF0A98BB),
+                            ?  Color(0xFF009E00)
+                            : Color(0xFF0060BB),
                         borderRadius: widget.myMessage
                             ? BorderRadius.only(
                                 topLeft: Radius.circular(42),

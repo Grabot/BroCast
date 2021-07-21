@@ -16,9 +16,9 @@ class Auth {
     String urlRegister = baseUrl_v1_1 + 'register';
     Uri uriRegister = Uri.parse(urlRegister);
 
-    String deviceType = "Android";
-    if (Platform.isIOS) {
-      deviceType = "IOS";
+    String deviceType = "IOS";
+    if (Platform.isAndroid) {
+      deviceType = "Android";
     }
 
     http.Response responsePost = await http
@@ -38,7 +38,6 @@ class Auth {
         .timeout(
       Duration(seconds: 5),
       onTimeout: () {
-        // time has run out, do what you wanted to do
         return null;
       },
     );
@@ -80,9 +79,9 @@ class Auth {
     String urlLogin = baseUrl_v1_1 + 'login';
     Uri uriLogin = Uri.parse(urlLogin);
 
-    String deviceType = "Android";
-    if (Platform.isIOS) {
-      deviceType = "IOS";
+    String deviceType = "IOS";
+    if (Platform.isAndroid) {
+      deviceType = "Android";
     }
 
     http.Response responsePost = await http
@@ -103,7 +102,6 @@ class Auth {
         .timeout(
       Duration(seconds: 5),
       onTimeout: () {
-        // time has run out, do what you wanted to do
         return null;
       },
     );
