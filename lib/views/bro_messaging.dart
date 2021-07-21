@@ -661,7 +661,7 @@ class _MessageTileState extends State<MessageTile> {
                                 widget.message.clicked ? Color(0xFF0060BB)
                                 : Colors.yellow,
                             width: 2,
-                        ), // Color(0xAA009E00)
+                        ),
                         color: widget.myMessage
                             ?  Color(0xFF009E00)
                             : Color(0xFF0060BB),
