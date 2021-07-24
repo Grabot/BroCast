@@ -463,80 +463,83 @@ class _BroMessagingState extends State<BroMessaging>
               child: Container(child: messageList()),
             ),
             Container(
-              alignment: Alignment.bottomCenter,
+              padding: EdgeInsets.only(bottom: 20),
               child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 6),
+                alignment: Alignment.bottomCenter,
                 child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 6),
-                  decoration: BoxDecoration(
-                      color: Color(0x36FFFFFF),
-                      borderRadius: BorderRadius.circular(35)),
-                  child: Row(
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          appendTextMessage();
-                        },
-                        child: Container(
-                            height: 35,
-                            width: 35,
-                            decoration: BoxDecoration(
-                                color: appendingMessage
-                                    ? Colors.green
-                                    : Colors.grey,
-                                borderRadius: BorderRadius.circular(35)),
-                            padding: EdgeInsets.symmetric(horizontal: 6),
-                            child: Icon(Icons.text_snippet,
-                                color: appendingMessage
-                                    ? Colors.white
-                                    : Color(0xFF616161))),
-                      ),
-                      Expanded(
-                        child: Container(
-                          padding: EdgeInsets.only(left: 15),
-                          child: Form(
-                            key: formKey,
-                            child: TextFormField(
-                              focusNode: focusEmojiTextField,
-                              validator: (val) {
-                                return val.isEmpty || val.trimRight().isEmpty
-                                    ? "Can't send an empty message"
-                                    : null;
-                              },
-                              onTap: () {
-                                onTapEmojiTextField();
-                              },
-                              keyboardType: TextInputType.multiline,
-                              maxLines: null,
-                              controller: broMessageController,
-                              style: TextStyle(color: Colors.white),
-                              decoration: InputDecoration(
-                                  hintText: "Emoji message...",
-                                  hintStyle: TextStyle(color: Colors.white54),
-                                  border: InputBorder.none),
-                              readOnly: true,
-                              showCursor: true,
+                  padding: EdgeInsets.symmetric(horizontal: 10),
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    decoration: BoxDecoration(
+                        color: Color(0x36FFFFFF),
+                        borderRadius: BorderRadius.circular(35)),
+                    child: Row(
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            appendTextMessage();
+                          },
+                          child: Container(
+                              height: 35,
+                              width: 35,
+                              decoration: BoxDecoration(
+                                  color: appendingMessage
+                                      ? Colors.green
+                                      : Colors.grey,
+                                  borderRadius: BorderRadius.circular(35)),
+                              padding: EdgeInsets.symmetric(horizontal: 6),
+                              child: Icon(Icons.text_snippet,
+                                  color: appendingMessage
+                                      ? Colors.white
+                                      : Color(0xFF616161))),
+                        ),
+                        Expanded(
+                          child: Container(
+                            padding: EdgeInsets.only(left: 15),
+                            child: Form(
+                              key: formKey,
+                              child: TextFormField(
+                                focusNode: focusEmojiTextField,
+                                validator: (val) {
+                                  return val.isEmpty || val.trimRight().isEmpty
+                                      ? "Can't send an empty message"
+                                      : null;
+                                },
+                                onTap: () {
+                                  onTapEmojiTextField();
+                                },
+                                keyboardType: TextInputType.multiline,
+                                maxLines: null,
+                                controller: broMessageController,
+                                style: TextStyle(color: Colors.white),
+                                decoration: InputDecoration(
+                                    hintText: "Emoji message...",
+                                    hintStyle: TextStyle(color: Colors.white54),
+                                    border: InputBorder.none),
+                                readOnly: true,
+                                showCursor: true,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          sendMessage();
-                        },
-                        child: Container(
-                            height: 35,
-                            width: 35,
-                            decoration: BoxDecoration(
-                                color: Color(0xFF34A843),
-                                borderRadius: BorderRadius.circular(35)),
-                            padding: EdgeInsets.symmetric(horizontal: 6),
-                            child: Icon(
-                              Icons.send,
-                              color: Colors.white,
-                            )),
-                      )
-                    ],
+                        GestureDetector(
+                          onTap: () {
+                            sendMessage();
+                          },
+                          child: Container(
+                              height: 35,
+                              width: 35,
+                              decoration: BoxDecoration(
+                                  color: Color(0xFF34A843),
+                                  borderRadius: BorderRadius.circular(35)),
+                              padding: EdgeInsets.symmetric(horizontal: 6),
+                              child: Icon(
+                                Icons.send,
+                                color: Colors.white,
+                              )),
+                        )
+                      ],
+                    ),
                   ),
                 ),
               ),
