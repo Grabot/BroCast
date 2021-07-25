@@ -1,6 +1,7 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:brocast/objects/bro_bros.dart';
+import 'package:brocast/services/block_bro.dart';
 import 'package:brocast/services/notification_service.dart';
 import 'package:brocast/services/settings.dart';
 import 'package:brocast/services/socket_services.dart';
@@ -32,6 +33,8 @@ class _BroChatDetailsState extends State<BroChatDetails>
 
   CircleColorPickerController circleColorPickerController;
 
+  BlockBro blockBro;
+
   Color currentColor;
   Color previousColor;
 
@@ -56,6 +59,8 @@ class _BroChatDetailsState extends State<BroChatDetails>
     );
     currentColor = chat.broColor;
     WidgetsBinding.instance.addObserver(this);
+
+    blockBro = new BlockBro();
   }
 
   @override
@@ -211,10 +216,12 @@ class _BroChatDetailsState extends State<BroChatDetails>
   }
 
   updateColour() {
-    previousColor = currentColor;
-    setState(() {
-      changeColour = true;
-    });
+    if (!chat.blocked) {
+      previousColor = currentColor;
+      setState(() {
+        changeColour = true;
+      });
+    }
   }
 
   saveColour() {
@@ -232,6 +239,35 @@ class _BroChatDetailsState extends State<BroChatDetails>
     setState(() {
       changeColour = false;
     });
+  }
+
+  void reportTheBro() {
+    print("reporting bro :'(");
+    Navigator.of(context).pop();
+  }
+
+  void blockTheBro(bool blocked) {
+    print("blocking bro :'(");
+    blockBro.blockBro(
+      Settings.instance.getToken(),
+      chat.id,
+        blocked
+    ).then((val) {
+      if (val is BroBros) {
+        setState(() {
+          this.chat = val;
+        });
+      } else {
+        if (val == "an unknown error has occurred") {
+          ShowToastComponent.showDialog("An unknown error has occurred", context);
+        } else {
+          ShowToastComponent.showDialog("There was an error with the server, we apologize for the inconvenience.", context);
+        }
+      }
+    });
+    if (blocked) {
+      Navigator.of(context).pop();
+    }
   }
 
   void chatDetailUpdateSuccess() {
@@ -336,7 +372,7 @@ class _BroChatDetailsState extends State<BroChatDetails>
                         width: 40,
                         alignment: Alignment.center,
                         decoration: BoxDecoration(
-                            color: widget.broBros.broColor,
+                            color: chat.broColor,
                             borderRadius: BorderRadius.circular(40)),
                       ),
                     ],
@@ -371,11 +407,116 @@ class _BroChatDetailsState extends State<BroChatDetails>
                           },
                           child: Text('Change color'),
                         ),
-                  SizedBox(height: 150),
+                  SizedBox(height: 10),
+                  TextButton(
+                      style: ButtonStyle(
+                        foregroundColor:
+                        MaterialStateProperty.all<Color>(Colors.red),
+                      ),
+                      onPressed: () {
+                        chat.blocked ?
+                        blockTheBro(false) : showDialogBlock(context, chat.chatName);
+                      },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                              Icons.block,
+                              color: chat.blocked ? Colors.grey : Colors.red
+                          ),
+                          SizedBox(width: 20),
+                          chat.blocked ? Text(
+                            'Unblock',
+                            style: simpleTextStyle(),
+                          ) : Text(
+                            'Block',
+                            style: simpleTextStyle(),
+                          ),
+                        ]
+                      )
+                    ),
+                  SizedBox(height: 10),
+                  TextButton(
+                      style: ButtonStyle(
+                        foregroundColor:
+                        MaterialStateProperty.all<Color>(Colors.red),
+                      ),
+                      onPressed: () {
+                        showDialogReport(context, chat.chatName);
+                      },
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.thumb_down, color: Colors.red),
+                            SizedBox(width: 20),
+                            Text(
+                              'Report Bro',
+                              style: simpleTextStyle(),
+                            ),
+                          ]
+                      )
+                  ),
+                  SizedBox(height: 100),
                 ]),
               ),
             ),
           ]),
         ));
+  }
+
+  void showDialogBlock(BuildContext context, String chatName) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: new Text("Block bro $chatName!"),
+          content: new Text(
+              "Are you sure you want to block this bro? The former bro will no longer be able to send you messages."),
+          actions: <Widget>[
+            new FlatButton(
+              child: new Text("Cancel"),
+              onPressed: () {
+                print("cancelled the blocking");
+                Navigator.of(context).pop();
+              },
+            ),
+            new FlatButton(
+              child: new Text("Block"),
+              onPressed: () {
+                blockTheBro(true);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void showDialogReport(BuildContext context, String chatName) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: new Text("Report bro $chatName!"),
+          content: new Text(
+              "Are you sure you want to report this bro? The most recent messages from this bro to you will be forwarded to Zwaar developers to assess possible deletion of the bro's account. This bro will be blocked, which means the bro can't send you messages anymore. This former bro will not be notified of the report."),
+          actions: <Widget>[
+            new FlatButton(
+              child: new Text("Cancel"),
+              onPressed: () {
+                print("cancelled the report");
+                Navigator.of(context).pop();
+              },
+            ),
+            new FlatButton(
+              child: new Text("Report"),
+              onPressed: () {
+                reportTheBro();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 }

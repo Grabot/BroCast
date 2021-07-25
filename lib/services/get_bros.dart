@@ -28,7 +28,8 @@ class GetBros {
               br0["chat_description"],
               br0["chat_colour"],
               br0["unread_messages"],
-              br0["last_time_activity"]);
+              br0["last_time_activity"],
+              br0["blocked"]);
           listWithBros.add(broBros);
         }
         listWithBros.sort((b, a) => a.lastActivity.compareTo(b.lastActivity));

@@ -30,7 +30,8 @@ class GetChat {
             chat["chat_description"],
             chat["chat_colour"],
             chat["unread_messages"],
-            chat["last_time_activity"]);
+            chat["last_time_activity"],
+            chat["blocked"]);
         return broBros;
       }
     }
