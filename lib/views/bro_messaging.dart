@@ -502,9 +502,13 @@ class _BroMessagingState extends State<BroMessaging>
                                 child: TextFormField(
                                   focusNode: focusEmojiTextField,
                                   validator: (val) {
-                                    return val.isEmpty || val.trimRight().isEmpty
-                                        ? "Can't send an empty message"
-                                        : null;
+                                    if (val.isEmpty || val.trimRight().isEmpty) {
+                                      return "Can't send an empty message";
+                                    }
+                                    if (chat.blocked) {
+                                      return "Can't send messages to a blocked bro";
+                                    }
+                                    return null;
                                   },
                                   onTap: () {
                                     onTapEmojiTextField();

@@ -3,6 +3,7 @@ import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:brocast/objects/bro_bros.dart';
 import 'package:brocast/services/block_bro.dart';
 import 'package:brocast/services/notification_service.dart';
+import 'package:brocast/services/report_bro.dart';
 import 'package:brocast/services/settings.dart';
 import 'package:brocast/services/socket_services.dart';
 import 'package:brocast/utils/bro_list.dart';
@@ -10,6 +11,7 @@ import 'package:brocast/utils/utils.dart';
 import "package:flutter/material.dart";
 import 'package:flutter_circle_color_picker/flutter_circle_color_picker.dart';
 
+import 'bro_home.dart';
 import 'bro_messaging.dart';
 import 'bro_profile.dart';
 import 'bro_settings.dart';
@@ -34,6 +36,7 @@ class _BroChatDetailsState extends State<BroChatDetails>
   CircleColorPickerController circleColorPickerController;
 
   BlockBro blockBro;
+  ReportBro reportBro;
 
   Color currentColor;
   Color previousColor;
@@ -61,6 +64,7 @@ class _BroChatDetailsState extends State<BroChatDetails>
     WidgetsBinding.instance.addObserver(this);
 
     blockBro = new BlockBro();
+    reportBro = new ReportBro();
   }
 
   @override
@@ -243,6 +247,21 @@ class _BroChatDetailsState extends State<BroChatDetails>
 
   void reportTheBro() {
     print("reporting bro :'(");
+    reportBro.reportBro(
+        Settings.instance.getToken(),
+        chat.id
+    ).then((val) {
+      if (val) {
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => BroCastHome()));
+      } else {
+        if (val == "an unknown error has occurred") {
+          ShowToastComponent.showDialog("An unknown error has occurred", context);
+        } else {
+          ShowToastComponent.showDialog("There was an error with the server, we apologize for the inconvenience.", context);
+        }
+      }
+    });
     Navigator.of(context).pop();
   }
 
@@ -499,7 +518,7 @@ class _BroChatDetailsState extends State<BroChatDetails>
         return AlertDialog(
           title: new Text("Report bro $chatName!"),
           content: new Text(
-              "Are you sure you want to report this bro? The most recent messages from this bro to you will be forwarded to Zwaar developers to assess possible deletion of the bro's account. This bro will be blocked, which means the bro can't send you messages anymore. This former bro will not be notified of the report."),
+              "Are you sure you want to report this bro? The most recent messages from this bro to you will be forwarded to Zwaar developers to assess possible deletion of the bro's account. This bro and the messages will be removed from your bro list and the former bro can't send you messages anymore. This former bro will not be notified of the report. (This action cannot be undone!)"),
           actions: <Widget>[
             new FlatButton(
               child: new Text("Cancel"),
