@@ -17,28 +17,40 @@ class OpeningScreen extends StatefulWidget {
 
 class _OpeningScreenState extends State<OpeningScreen> {
   bool isLoading = false;
+  bool acceptEULA;
   Auth auth = new Auth();
 
   @override
   void initState() {
     NotificationService.instance.setScreen(null);
-    HelperFunction.getKeyboardDarkMode().then((val) {
-      if (val == null) {
-        // no dark mode setting set yet.
-        Settings.instance.setEmojiKeyboardDarkMode(false);
-      } else {
+    acceptEULA = false;
+    HelperFunction.getEULA().then((val) {
+      print("eula thing!");
+      if (val == null || val == false) {
+        // first time opening this app!
         setState(() {
-          Settings.instance.setEmojiKeyboardDarkMode(val);
+          acceptEULA = true;
         });
-      }
-    });
-    SocketServices.instance;
-    HelperFunction.getBroToken().then((val) {
-      if (val == null || val == "") {
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => SignIn()));
       } else {
-        signIn(val.toString());
+        HelperFunction.getKeyboardDarkMode().then((val) {
+          if (val == null) {
+            // no dark mode setting set yet.
+            Settings.instance.setEmojiKeyboardDarkMode(false);
+          } else {
+            setState(() {
+              Settings.instance.setEmojiKeyboardDarkMode(val);
+            });
+          }
+        });
+        SocketServices.instance;
+        HelperFunction.getBroToken().then((val) {
+          if (val == null || val == "") {
+            Navigator.pushReplacement(
+                context, MaterialPageRoute(builder: (context) => SignIn()));
+          } else {
+            signIn(val.toString());
+          }
+        });
       }
     });
     super.initState();
@@ -105,7 +117,65 @@ class _OpeningScreenState extends State<OpeningScreen> {
               alignment: Alignment.centerLeft, child: Text("Brocast"))),
       body: Stack(
         children: [
-          Container(
+          acceptEULA ? Container(
+            child: Container(
+                alignment: Alignment.center,
+              child: Column(children: [
+              Expanded(
+              child: SingleChildScrollView(
+                reverse: true,
+                child: Column(children: [
+                  SizedBox(height:40),
+                  Container(
+                      child: Text(
+                          "Welcome to Brocast!",
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 30
+                          )
+                      )
+                  ),
+                  Container(
+                      alignment: Alignment.center,
+                      child:
+                      Image.asset("assets/images/brocast_transparent.png")
+                  ),
+                  SizedBox(height: 100),
+                  Container(
+                    width: MediaQuery.of(context).size.width*0.9,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                    Text(
+                      "Read our ",
+                      style: TextStyle(
+                          color: Colors.white, fontSize: 16),
+                      ),
+                    GestureDetector(
+                        onTap: () {
+                          print("tapped the privacy policy");
+                        },
+                        child: Text(
+                          "privacy policy.",
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              decoration:
+                              TextDecoration.underline),
+                        )
+                    )
+                        ]
+                ),
+                  )
+                ]
+                ),
+              )
+              ),
+              ]
+              )
+            )
+          )
+              : Container(
               child: Center(
                   // The opening screen will always be a loading screen,
                   // so we also show the circular progress indicator

@@ -3,6 +3,7 @@ import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:brocast/objects/bro_bros.dart';
 import 'package:brocast/services/block_bro.dart';
 import 'package:brocast/services/notification_service.dart';
+import 'package:brocast/services/remove_bro.dart';
 import 'package:brocast/services/report_bro.dart';
 import 'package:brocast/services/settings.dart';
 import 'package:brocast/services/socket_services.dart';
@@ -37,6 +38,7 @@ class _BroChatDetailsState extends State<BroChatDetails>
 
   BlockBro blockBro;
   ReportBro reportBro;
+  RemoveBro removeBro;
 
   Color currentColor;
   Color previousColor;
@@ -65,6 +67,7 @@ class _BroChatDetailsState extends State<BroChatDetails>
 
     blockBro = new BlockBro();
     reportBro = new ReportBro();
+    removeBro = new RemoveBro();
   }
 
   @override
@@ -248,6 +251,26 @@ class _BroChatDetailsState extends State<BroChatDetails>
   void reportTheBro() {
     print("reporting bro :'(");
     reportBro.reportBro(
+        Settings.instance.getToken(),
+        chat.id
+    ).then((val) {
+      if (val) {
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => BroCastHome()));
+      } else {
+        if (val == "an unknown error has occurred") {
+          ShowToastComponent.showDialog("An unknown error has occurred", context);
+        } else {
+          ShowToastComponent.showDialog("There was an error with the server, we apologize for the inconvenience.", context);
+        }
+      }
+    });
+    Navigator.of(context).pop();
+  }
+
+  void removeTheBro() {
+    print("removing bro :'(");
+    removeBro.removeBro(
         Settings.instance.getToken(),
         chat.id
     ).then((val) {
@@ -461,6 +484,27 @@ class _BroChatDetailsState extends State<BroChatDetails>
                         MaterialStateProperty.all<Color>(Colors.red),
                       ),
                       onPressed: () {
+                        showDialogRemove(context, chat.chatName);
+                      },
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.delete_forever, color: Colors.red),
+                            SizedBox(width: 20),
+                            Text(
+                              'Remove Bro',
+                              style: simpleTextStyle(),
+                            ),
+                          ]
+                      )
+                  ),
+                  SizedBox(height: 10),
+                  TextButton(
+                      style: ButtonStyle(
+                        foregroundColor:
+                        MaterialStateProperty.all<Color>(Colors.red),
+                      ),
+                      onPressed: () {
                         showDialogReport(context, chat.chatName);
                       },
                       child: Row(
@@ -511,6 +555,34 @@ class _BroChatDetailsState extends State<BroChatDetails>
     );
   }
 
+  void showDialogRemove(BuildContext context, String chatName) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: new Text("Remove chat $chatName!"),
+          content: new Text(
+              "Are you sure you want to remove this chat? This bro and the messages will be removed from your bro list and the former bro can't send you messages anymore. \n(This action cannot be undone!)"),
+          actions: <Widget>[
+            new FlatButton(
+              child: new Text("Cancel"),
+              onPressed: () {
+                print("cancelled the report");
+                Navigator.of(context).pop();
+              },
+            ),
+            new FlatButton(
+              child: new Text("Remove"),
+              onPressed: () {
+                removeTheBro();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   void showDialogReport(BuildContext context, String chatName) {
     showDialog(
       context: context,
@@ -518,7 +590,7 @@ class _BroChatDetailsState extends State<BroChatDetails>
         return AlertDialog(
           title: new Text("Report bro $chatName!"),
           content: new Text(
-              "Are you sure you want to report this bro? The most recent messages from this bro to you will be forwarded to Zwaar developers to assess possible deletion of the bro's account. This bro and the messages will be removed from your bro list and the former bro can't send you messages anymore. This former bro will not be notified of the report. (This action cannot be undone!)"),
+              "Are you sure you want to report this bro? The most recent messages from this bro to you will be forwarded to Zwaar developers to assess possible deletion of the bro's account. This bro and the messages will be removed from your bro list and the former bro can't send you messages anymore. This former bro will not be notified of the report. \n(This action cannot be undone!)"),
           actions: <Widget>[
             new FlatButton(
               child: new Text("Cancel"),
