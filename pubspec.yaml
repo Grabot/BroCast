@@ -37,6 +37,7 @@ dependencies:
   firebase_core: ^1.1.2
   awesome_notifications: ^0.0.6+7
   flutter_circle_color_picker: ^0.3.0
+  url_launcher: ^6.0.9
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.3

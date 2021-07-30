@@ -1,3 +1,4 @@
+import 'package:brocast/constants/base_url.dart';
 import 'package:brocast/objects/bro_bros.dart';
 import 'package:brocast/services/auth.dart';
 import 'package:brocast/services/notification_service.dart';
@@ -7,6 +8,7 @@ import 'package:brocast/utils/shared.dart';
 import 'package:brocast/utils/utils.dart';
 import 'package:brocast/views/signin.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'bro_home.dart';
 
@@ -32,28 +34,36 @@ class _OpeningScreenState extends State<OpeningScreen> {
           acceptEULA = true;
         });
       } else {
-        HelperFunction.getKeyboardDarkMode().then((val) {
-          if (val == null) {
-            // no dark mode setting set yet.
-            Settings.instance.setEmojiKeyboardDarkMode(false);
-          } else {
-            setState(() {
-              Settings.instance.setEmojiKeyboardDarkMode(val);
-            });
-          }
-        });
-        SocketServices.instance;
-        HelperFunction.getBroToken().then((val) {
-          if (val == null || val == "") {
-            Navigator.pushReplacement(
-                context, MaterialPageRoute(builder: (context) => SignIn()));
-          } else {
-            signIn(val.toString());
-          }
-        });
+        acceptEULA = false;
+        startUp();
       }
     });
     super.initState();
+  }
+
+  void startUp() {
+    setState(() {
+      isLoading = true;
+    });
+    HelperFunction.getKeyboardDarkMode().then((val) {
+      if (val == null) {
+        // no dark mode setting set yet.
+        Settings.instance.setEmojiKeyboardDarkMode(false);
+      } else {
+        setState(() {
+          Settings.instance.setEmojiKeyboardDarkMode(val);
+        });
+      }
+    });
+    SocketServices.instance;
+    HelperFunction.getBroToken().then((val) {
+      if (val == null || val == "") {
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => SignIn()));
+      } else {
+        signIn(val.toString());
+      }
+    });
   }
 
   signIn(String token) {
@@ -104,6 +114,13 @@ class _OpeningScreenState extends State<OpeningScreen> {
     // not doing it here, first log in.
   }
 
+  void agreeAndContinue() {
+    print("Agreeing with the agree and continue button");
+    HelperFunction.setEULA(true).then((val) {
+      startUp();
+    });
+  }
+
   @override
   void dispose() {
     super.dispose();
@@ -140,9 +157,9 @@ class _OpeningScreenState extends State<OpeningScreen> {
                       child:
                       Image.asset("assets/images/brocast_transparent.png")
                   ),
-                  SizedBox(height: 100),
+                  SizedBox(height: 50),
                   Container(
-                    width: MediaQuery.of(context).size.width*0.9,
+                    width: MediaQuery.of(context).size.width*1,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -153,12 +170,12 @@ class _OpeningScreenState extends State<OpeningScreen> {
                       ),
                     GestureDetector(
                         onTap: () {
-                          print("tapped the privacy policy");
+                          launch(brocastPrivacyUrl);
                         },
                         child: Text(
                           "privacy policy.",
                           style: TextStyle(
-                              color: Colors.white,
+                              color: Colors.lightBlue,
                               fontSize: 16,
                               decoration:
                               TextDecoration.underline),
@@ -166,7 +183,72 @@ class _OpeningScreenState extends State<OpeningScreen> {
                     )
                         ]
                 ),
-                  )
+                  ),
+                  Container(
+                    width: MediaQuery.of(context).size.width*1,
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            "Tap \"Agree and continue\" to ",
+                            style: TextStyle(
+                                color: Colors.white, fontSize: 16),
+                          ),
+                        ]
+                    ),
+                  ),
+                  Container(
+                    width: MediaQuery.of(context).size.width*1,
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            "accept the ",
+                            style: TextStyle(
+                                color: Colors.white, fontSize: 16),
+                          ),
+                          GestureDetector(
+                              onTap: () {
+                                launch(brocastTermsUrl);
+                              },
+                              child: Text(
+                                "Terms and Service.",
+                                style: TextStyle(
+                                    color: Colors.lightBlue,
+                                    fontSize: 16,
+                                    decoration:
+                                    TextDecoration.underline),
+                              )
+                          )
+                        ]
+                    ),
+                  ),
+                  SizedBox(height: 20),
+                  ElevatedButton(
+                    child: Text('Agree and continue'),
+                    onPressed: () {
+                      agreeAndContinue();
+                    },
+                    style: ElevatedButton.styleFrom(
+                        primary: Colors.green,
+                        padding: EdgeInsets.symmetric(horizontal: 80, vertical: 5),
+                        textStyle: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold)),
+                  ),
+                  SizedBox(height: 80),
+                  Text(
+                    "from",
+                    style: TextStyle(
+                        color: Colors.blueGrey, fontSize: 12),
+                  ),
+                  SizedBox(height: 6),
+                  Text(
+                    "Zwaar developers",
+                    style: TextStyle(
+                        color: Colors.blueGrey, fontSize: 20),
+                  ),
+                  SizedBox(height: 10),
                 ]
                 ),
               )
