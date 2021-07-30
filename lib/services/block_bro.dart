@@ -24,9 +24,7 @@ class BlockBro {
     if (blockBroResponse.containsKey("result")) {
       bool result = blockBroResponse["result"];
       if (result) {
-        print("result");
         Map<String, dynamic> chatResponse = blockBroResponse["chat"];
-        print(chatResponse);
         BroBros broBros = new BroBros(
             chatResponse["bros_bro_id"],
             chatResponse["chat_name"],
@@ -35,7 +33,6 @@ class BlockBro {
             chatResponse["unread_messages"],
             chatResponse["last_time_activity"],
             chatResponse["blocked"]);
-        print(broBros.toString());
         return broBros;
       }
     }

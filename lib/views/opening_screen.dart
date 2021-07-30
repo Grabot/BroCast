@@ -27,7 +27,6 @@ class _OpeningScreenState extends State<OpeningScreen> {
     NotificationService.instance.setScreen(null);
     acceptEULA = false;
     HelperFunction.getEULA().then((val) {
-      print("eula thing!");
       if (val == null || val == false) {
         // first time opening this app!
         setState(() {
@@ -115,7 +114,6 @@ class _OpeningScreenState extends State<OpeningScreen> {
   }
 
   void agreeAndContinue() {
-    print("Agreeing with the agree and continue button");
     HelperFunction.setEULA(true).then((val) {
       startUp();
     });

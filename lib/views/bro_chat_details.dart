@@ -249,7 +249,6 @@ class _BroChatDetailsState extends State<BroChatDetails>
   }
 
   void reportTheBro() {
-    print("reporting bro :'(");
     reportBro.reportBro(
         Settings.instance.getToken(),
         chat.id
@@ -269,7 +268,6 @@ class _BroChatDetailsState extends State<BroChatDetails>
   }
 
   void removeTheBro() {
-    print("removing bro :'(");
     removeBro.removeBro(
         Settings.instance.getToken(),
         chat.id
@@ -289,7 +287,6 @@ class _BroChatDetailsState extends State<BroChatDetails>
   }
 
   void blockTheBro(bool blocked) {
-    print("blocking bro :'(");
     blockBro.blockBro(
       Settings.instance.getToken(),
       chat.id,
@@ -519,7 +516,7 @@ class _BroChatDetailsState extends State<BroChatDetails>
                           ]
                       )
                   ),
-                  SizedBox(height: 100),
+                  SizedBox(height: 20),
                 ]),
               ),
             ),
@@ -539,7 +536,6 @@ class _BroChatDetailsState extends State<BroChatDetails>
             new FlatButton(
               child: new Text("Cancel"),
               onPressed: () {
-                print("cancelled the blocking");
                 Navigator.of(context).pop();
               },
             ),
@@ -567,7 +563,6 @@ class _BroChatDetailsState extends State<BroChatDetails>
             new FlatButton(
               child: new Text("Cancel"),
               onPressed: () {
-                print("cancelled the report");
                 Navigator.of(context).pop();
               },
             ),
@@ -595,7 +590,6 @@ class _BroChatDetailsState extends State<BroChatDetails>
             new FlatButton(
               child: new Text("Cancel"),
               onPressed: () {
-                print("cancelled the report");
                 Navigator.of(context).pop();
               },
             ),
