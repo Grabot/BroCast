@@ -51,11 +51,13 @@ class _BroMessagingState extends State<BroMessaging>
 
   BroBros chat;
 
+  int amountViewed;
   @override
   void initState() {
     super.initState();
     chat = widget.broBros;
-    getMessages();
+    amountViewed = 1;
+    getMessages(amountViewed);
     if (chat.broColor == null) {
       // It was opened via a notification and we don't have the whole object.
       // We retrieve it now
@@ -72,7 +74,16 @@ class _BroMessagingState extends State<BroMessaging>
     joinRoom(Settings.instance.getBroId(), chat.id);
     WidgetsBinding.instance.addObserver(this);
     BackButtonInterceptor.add(myInterceptor);
+
+    messageScrollController.addListener(() {
+      if (messageScrollController.position.atEdge) {
+        if (messageScrollController.position.pixels != 0) {
+          getMessages(amountViewed);
+        }
+      }
+    });
   }
+
 
   joinRoom(int broId, int brosBroId) {
     if (SocketServices.instance.socket.connected) {
@@ -167,15 +178,17 @@ class _BroMessagingState extends State<BroMessaging>
     return true;
   }
 
-  getMessages() {
-    get.getMessages(Settings.instance.getToken(), chat.id).then((val) {
+  getMessages(int page) {
+    // TODO: @Skools add spinner while getting messages
+    get.getMessages(Settings.instance.getToken(), chat.id, page).then((val) {
       if (!(val is String)) {
         List<Message> messes = val;
         if (messes.length != 0) {
-          setDateTiles(messes);
           setState(() {
-            messages = messes;
+            mergeMessages(messes);
+            setDateTiles();
           });
+          amountViewed += 1;
         }
       } else {
         ShowToastComponent.showDialog(val.toString(), context);
@@ -183,16 +196,42 @@ class _BroMessagingState extends State<BroMessaging>
     });
   }
 
+  mergeMessages(List<Message> newMessages) {
+    print("merging messages");
+    // this.messages[1].id (the last id) 67
+    // this.messages.length-1].id (the first id of the original list (top item)) 48
+    if (this.messages.length != 0) {
+      // So it's possible for the top item (this.messages.length-1 (or this.messages.length-2 if the top one is a date tile.))
+      // to be in the newMessages list.
+      // newMessages[0].id (the first id of the new messages) (should be bottom of the new items) (49, which is overlapping)
+      // newMessages[newMessages.length-1].id (the last of the new messages) (30)
+      // We will assume that the lists always arrive ordered and that the id's are in decending order. (high to low)
+      int lastId = this.messages[this.messages.length - 1].id;
+      if (lastId == 0) {
+        // If the top message is a date tile we will need to go 1 message lower.
+        lastId = this.messages[this.messages.length - 2].id;
+      }
+      if (lastId <= newMessages[0].id) {
+        newMessages = newMessages.where((x) => x.id < lastId).toList();
+      }
+      // remove the date tiles, which will have the id 0
+      this.messages = this.messages.where((x) => x.id != 0).toList();
+    }
+    this.messages.addAll(newMessages);
+    this.messages.sort((b, a) => a.timestamp.compareTo(b.timestamp));
+  }
+
   int getBroBrosId() {
     return chat.id;
   }
 
-  setDateTiles(List<Message> messes) {
+  setDateTiles() {
     DateTime now = DateTime.now();
     DateTime today = DateTime(now.year, now.month, now.day);
     DateTime yesterday = DateTime(now.year, now.month, now.day - 1);
-
-    Message messageFirst = messes.first;
+    print(this.messages);
+    print(this.messages[0]);
+    Message messageFirst = this.messages.first;
     DateTime dayFirst = DateTime(messageFirst.timestamp.year,
         messageFirst.timestamp.month, messageFirst.timestamp.day);
     String chatTimeTile = DateFormat.yMMMMd('en_US').format(dayFirst);
@@ -206,8 +245,8 @@ class _BroMessagingState extends State<BroMessaging>
     }
 
     Message timeMessage = new Message(0, 0, 0, 0, timeMessageFirst, null, null);
-    for (int i = 0; i < messes.length; i++) {
-      DateTime current = messes[i].timestamp;
+    for (int i = 0; i < this.messages.length; i++) {
+      DateTime current = this.messages[i].timestamp;
       DateTime dayMessage = DateTime(current.year, current.month, current.day);
       String currentDayMessage = DateFormat.yMMMMd('en_US').format(dayMessage);
 
@@ -221,11 +260,11 @@ class _BroMessagingState extends State<BroMessaging>
         if (dayMessage == yesterday) {
           timeMessageTile = "Yesterday";
         }
-        messes.insert(i, timeMessage);
+        this.messages.insert(i, timeMessage);
         timeMessage = new Message(0, 0, 0, 0, timeMessageTile, null, null);
       }
     }
-    messes.insert(messes.length, timeMessage);
+    this.messages.insert(this.messages.length, timeMessage);
   }
 
   updateDateTiles(Message message) {
@@ -285,8 +324,9 @@ class _BroMessagingState extends State<BroMessaging>
         timestampString =
             timestampString.substring(0, timestampString.length - 1);
       }
+      // We set the id to be "-1". For date tiles it is "0", these will be filtered.
       Message mes =
-          new Message(0, 0, 0, chat.id, message, textMessage, timestampString);
+          new Message(-1, 0, 0, chat.id, message, textMessage, timestampString);
       setState(() {
         this.messages.insert(0, mes);
       });
@@ -346,12 +386,15 @@ class _BroMessagingState extends State<BroMessaging>
     }
   }
 
+  var messageScrollController = ScrollController();
+
   Widget messageList() {
     return messages.isNotEmpty
         ? ListView.builder(
             itemCount: messages.length,
             shrinkWrap: true,
             reverse: true,
+            controller: messageScrollController,
             itemBuilder: (context, index) {
               return MessageTile(
                   message: messages[index],

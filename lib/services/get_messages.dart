@@ -4,8 +4,8 @@ import 'package:brocast/objects/message.dart';
 import 'package:http/http.dart' as http;
 
 class GetMessages {
-  Future getMessages(String token, int brosBroId) async {
-    String urlGetMessages = baseUrl + 'get/messages/1';
+  Future getMessages(String token, int brosBroId, int page) async {
+    String urlGetMessages = baseUrl + 'get/messages/' + page.toString();
     Uri uriGetMessages = Uri.parse(urlGetMessages);
 
     http.Response responsePost = await http.post(
@@ -40,6 +40,8 @@ class GetMessages {
           }
           listWithMessages.add(mes);
         }
+        print("you have this many messages");
+        print(listWithMessages.length);
         return listWithMessages;
       }
     }
