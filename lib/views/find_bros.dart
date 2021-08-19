@@ -1,4 +1,3 @@
-import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:brocast/objects/bro.dart';
 import 'package:brocast/objects/bro_bros.dart';
@@ -16,6 +15,7 @@ import 'package:brocast/views/signin.dart';
 import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
 import 'package:flutter/material.dart';
 
+import 'add_broup.dart';
 import 'bro_profile.dart';
 import 'bro_settings.dart';
 
@@ -124,6 +124,11 @@ class _FindBrosState extends State<FindBros> with WidgetsBindingObserver {
     }
   }
 
+  void addGroup() {
+    Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (context) => AddBroup()));
+  }
+
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
@@ -207,7 +212,7 @@ class _FindBrosState extends State<FindBros> with WidgetsBindingObserver {
               backButtonFunctionality();
             }),
         title: Container(
-            alignment: Alignment.centerLeft, child: Text("Find Bros")),
+            alignment: Alignment.centerLeft, child: Text("Create new Broup")),
         actions: [
           PopupMenuButton<int>(
               onSelected: (item) => onSelect(context, item),
@@ -253,9 +258,44 @@ class _FindBrosState extends State<FindBros> with WidgetsBindingObserver {
       body: Container(
         child: Column(
           children: [
-            Text(
-                "search for your bro using their bro name \n(bromotion optional)",
-                style: simpleTextStyle()),
+            Container(
+              height: 80,
+              child: InkWell(
+                onTap: () {
+                  addGroup();
+                },
+                child: Row(
+                  children: [
+                    SizedBox(width: 20),
+                    Container(
+                      decoration: BoxDecoration(
+                          color: Colors.green,
+                          borderRadius: BorderRadius.all(Radius.circular(40))
+                      ),
+                      child: IconButton(
+                          icon: Icon(
+                              Icons.group_add,
+                              color: Colors.white
+                          ),
+                      )
+                    ),
+                    SizedBox(width: 20),
+                    Text(
+                        "Add new Broup",
+                        style: TextStyle(color: Colors.grey, fontSize: 20),
+                    )
+                  ]
+                ),
+              ),
+            ),
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 24),
+              alignment: Alignment.centerLeft,
+              child: Text(
+                  "Or search for a bro using their bro name \n(bromotion optional)",
+                  style: simpleTextStyle()
+              ),
+            ),
             Container(
               padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
               child: Row(

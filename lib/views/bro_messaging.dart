@@ -31,6 +31,7 @@ class BroMessaging extends StatefulWidget {
 
 class _BroMessagingState extends State<BroMessaging>
     with WidgetsBindingObserver {
+  bool isLoading;
   SendMessage send = new SendMessage();
   GetMessages get = new GetMessages();
 
@@ -56,6 +57,7 @@ class _BroMessagingState extends State<BroMessaging>
   void initState() {
     super.initState();
     chat = widget.broBros;
+    isLoading = false;
     amountViewed = 1;
     getMessages(amountViewed);
     if (chat.broColor == null) {
@@ -179,8 +181,11 @@ class _BroMessagingState extends State<BroMessaging>
   }
 
   getMessages(int page) {
-    // TODO: @Skools add spinner while getting messages
+    setState(() {
+      isLoading = true;
+    });
     get.getMessages(Settings.instance.getToken(), chat.id, page).then((val) {
+      isLoading = false;
       if (!(val is String)) {
         List<Message> messes = val;
         if (messes.length != 0) {
@@ -505,7 +510,15 @@ class _BroMessagingState extends State<BroMessaging>
           child: Column(
             children: [
               Expanded(
-                child: Container(child: messageList()),
+                child: Stack(
+                  children: [
+                    messageList(),
+                    isLoading? Center(
+                        child: Container(child: CircularProgressIndicator()
+                        )
+                    ) : Container()
+                  ]
+                )
               ),
               Container(
                 child: Container(

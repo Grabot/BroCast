@@ -292,7 +292,7 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
         ])),
       ),
       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.search),
+        child: Icon(Icons.add),
         onPressed: () {
           Navigator.pushReplacement(
               context, MaterialPageRoute(builder: (context) => FindBros()));
