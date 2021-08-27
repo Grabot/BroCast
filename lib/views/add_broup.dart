@@ -25,6 +25,8 @@ class _AddBroupState extends State<AddBroup> with WidgetsBindingObserver {
 
   GetBros getBros = new GetBros();
 
+  final broupValidator = GlobalKey<FormFieldState>();
+
   List<BroAddBroup> bros = [];
   List<BroAddBroup> shownBros = [];
   List<BroBros> broupParticipants = [];
@@ -205,10 +207,20 @@ class _AddBroupState extends State<AddBroup> with WidgetsBindingObserver {
     return Colors.red;
   }
 
+  void removeParticipant(BroBros participant) {
+    broupParticipants.remove(participant);
+    for (BroAddBroup broAddBroup in bros) {
+      if (participant.id == broAddBroup.getBroBros().id) {
+        broAddBroup.setSelected(false);
+      }
+    }
+    onChangedBroNameField(broNameController.text, bromotionController.text);
+  }
+
   Widget broupParticipantsTile(BroBros participant) {
     return InkWell(
       onTap: () {
-        print("tapped the participant");
+        removeParticipant(participant);
       },
       child: Container(
         width: MediaQuery.of(context).size.width,
@@ -244,7 +256,16 @@ class _AddBroupState extends State<AddBroup> with WidgetsBindingObserver {
                     ),
                   ),
                   Container(
-                    width: 40
+                    width: 40,
+                    child: IconButton(
+                      onPressed: () {
+                        removeParticipant(participant);
+                      },
+                      icon: Icon(
+                          Icons.highlight_remove,
+                          color: Colors.white
+                      ),
+                    )
                   )
                 ],
               )
@@ -361,6 +382,12 @@ class _AddBroupState extends State<AddBroup> with WidgetsBindingObserver {
     }
   }
 
+  void addBroup() {
+    if (broupValidator.currentState.validate()) {
+      print("it is fine");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -377,7 +404,7 @@ class _AddBroupState extends State<AddBroup> with WidgetsBindingObserver {
                 ),
               ),
               Container(
-                height: 100,
+                height: 120,
                 child: broupParticipantsList()
               ),
               SizedBox(
@@ -391,13 +418,18 @@ class _AddBroupState extends State<AddBroup> with WidgetsBindingObserver {
                     Container(
                       width: MediaQuery.of(context).size.width-100,
                       child: TextFormField(
+                        key: broupValidator,
                         onTap: () {
-                          print("text form field");
+                          print("tapped the broup name textfield");
                         },
                         validator: (val) {
-                          return val.isEmpty
-                              ? "Please provide a Broup name"
-                              : null;
+                          if (val.isEmpty || val.trimRight().isEmpty) {
+                            return "Please provide a Broup name";
+                          }
+                          if (broupParticipants.length <= 2) {
+                            return "Can't create broup with less than 3 bros";
+                          }
+                          return null;
                         },
                         textAlign: TextAlign.center,
                         style: simpleTextStyle(),
@@ -415,7 +447,7 @@ class _AddBroupState extends State<AddBroup> with WidgetsBindingObserver {
                         ),
                         child: IconButton(
                           onPressed: () {
-                            print("pressed the check");
+                            addBroup();
                           },
                           icon: Icon(
                               Icons.check,
