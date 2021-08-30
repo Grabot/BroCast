@@ -1,19 +1,20 @@
 import 'package:brocast/objects/bro_bros.dart';
+import 'package:brocast/objects/chat.dart';
 
 class BroList {
   static BroList _instance = new BroList._internal();
 
-  List<BroBros> bros = [];
+  List<Chat> bros = [];
 
   static get instance => _instance;
 
   BroList._internal();
 
-  List<BroBros> getBros() {
+  List<Chat> getBros() {
     return this.bros;
   }
 
-  void setBros(List<BroBros> bros) {
+  void setBros(List<Chat> bros) {
     this.bros = bros;
   }
 }

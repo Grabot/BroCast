@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:brocast/objects/bro_bros.dart';
+import 'package:brocast/objects/broup.dart';
+import 'package:brocast/objects/chat.dart';
 import 'package:brocast/objects/message.dart';
 import 'package:brocast/services/get_chat.dart';
 import 'package:brocast/services/get_messages.dart';
@@ -21,9 +23,9 @@ import 'bro_profile.dart';
 import 'bro_settings.dart';
 
 class BroMessaging extends StatefulWidget {
-  final BroBros broBros;
+  final Chat chat;
 
-  BroMessaging({Key key, this.broBros}) : super(key: key);
+  BroMessaging({Key key, this.chat}) : super(key: key);
 
   @override
   _BroMessagingState createState() => _BroMessagingState();
@@ -50,17 +52,17 @@ class _BroMessagingState extends State<BroMessaging>
   // SocketServices socket;
   List<Message> messages = [];
 
-  BroBros chat;
+  Chat chat;
 
   int amountViewed;
   @override
   void initState() {
     super.initState();
-    chat = widget.broBros;
+    chat = widget.chat;
     isLoading = false;
     amountViewed = 1;
     getMessages(amountViewed);
-    if (chat.broColor == null) {
+    if (chat.chatColor == null) {
       // It was opened via a notification and we don't have the whole object.
       // We retrieve it now
       GetChat getChat = new GetChat();
@@ -73,7 +75,11 @@ class _BroMessagingState extends State<BroMessaging>
       });
     }
     NotificationService.instance.setScreen(this);
-    joinRoom(Settings.instance.getBroId(), chat.id);
+    if (chat is BroBros) {
+      joinRoom(Settings.instance.getBroId(), chat.id);
+    } else {
+      // TODO: @SKools add the broup functionality
+    }
     WidgetsBinding.instance.addObserver(this);
     BackButtonInterceptor.add(myInterceptor);
 
@@ -161,17 +167,21 @@ class _BroMessagingState extends State<BroMessaging>
   void dispose() {
     focusAppendText.dispose();
     focusEmojiTextField.dispose();
-    leaveRoom();
+    if (chat is BroBros) {
+      leaveRoom();
+    } else {
+      // TODO: @SKools add the broup functionality
+    }
     BackButtonInterceptor.remove(myInterceptor);
     super.dispose();
   }
 
-  void goToDifferentChat(BroBros chatBro) {
+  void goToDifferentChat(Chat chatBro) {
     if (mounted) {
       Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-              builder: (context) => BroMessaging(broBros: chatBro)));
+              builder: (context) => BroMessaging(chat: chatBro)));
     }
   }
 
@@ -184,42 +194,43 @@ class _BroMessagingState extends State<BroMessaging>
     setState(() {
       isLoading = true;
     });
-    get.getMessages(Settings.instance.getToken(), chat.id, page).then((val) {
-      isLoading = false;
-      if (!(val is String)) {
-        List<Message> messes = val;
-        if (messes.length != 0) {
-          setState(() {
-            mergeMessages(messes);
-            setDateTiles();
-          });
-          amountViewed += 1;
+    if (chat is BroBros) {
+      get.getMessages(Settings.instance.getToken(), chat.id, page).then((val) {
+        if (!(val is String)) {
+          List<Message> messes = val;
+          if (messes.length != 0) {
+            setState(() {
+              mergeMessages(messes);
+              setDateTiles();
+            });
+            amountViewed += 1;
+          }
+        } else {
+          ShowToastComponent.showDialog(val.toString(), context);
         }
-      } else {
-        ShowToastComponent.showDialog(val.toString(), context);
-      }
-    });
+        setState(() {
+          isLoading = false;
+        });
+      });
+    } else if (chat is Broup) {
+      print("we need messages for the broup");
+      setState(() {
+        isLoading = false;
+      });
+    } else {
+      print("big problem");
+    }
   }
 
   mergeMessages(List<Message> newMessages) {
-    print("merging messages");
-    // this.messages[1].id (the last id) 67
-    // this.messages.length-1].id (the first id of the original list (top item)) 48
     if (this.messages.length != 0) {
-      // So it's possible for the top item (this.messages.length-1 (or this.messages.length-2 if the top one is a date tile.))
-      // to be in the newMessages list.
-      // newMessages[0].id (the first id of the new messages) (should be bottom of the new items) (49, which is overlapping)
-      // newMessages[newMessages.length-1].id (the last of the new messages) (30)
-      // We will assume that the lists always arrive ordered and that the id's are in decending order. (high to low)
       int lastId = this.messages[this.messages.length - 1].id;
       if (lastId == 0) {
-        // If the top message is a date tile we will need to go 1 message lower.
         lastId = this.messages[this.messages.length - 2].id;
       }
       if (lastId <= newMessages[0].id) {
         newMessages = newMessages.where((x) => x.id < lastId).toList();
       }
-      // remove the date tiles, which will have the id 0
       this.messages = this.messages.where((x) => x.id != 0).toList();
     }
     this.messages.addAll(newMessages);
@@ -234,8 +245,6 @@ class _BroMessagingState extends State<BroMessaging>
     DateTime now = DateTime.now();
     DateTime today = DateTime(now.year, now.month, now.day);
     DateTime yesterday = DateTime(now.year, now.month, now.day - 1);
-    print(this.messages);
-    print(this.messages[0]);
     Message messageFirst = this.messages.first;
     DateTime dayFirst = DateTime(messageFirst.timestamp.year,
         messageFirst.timestamp.month, messageFirst.timestamp.day);
@@ -440,12 +449,12 @@ class _BroMessagingState extends State<BroMessaging>
   Widget appBarChat() {
     return AppBar(
         leading: IconButton(
-            icon: Icon(Icons.arrow_back, color: getTextColor(chat.broColor)),
+            icon: Icon(Icons.arrow_back, color: getTextColor(chat.chatColor)),
             onPressed: () {
               backButtonFunctionality();
             }),
         backgroundColor:
-            chat.broColor != null ? chat.broColor : Color(0xff145C9E),
+            chat.chatColor != null ? chat.chatColor : Color(0xff145C9E),
         title: Container(
             alignment: Alignment.centerLeft,
             color: Colors.transparent,
@@ -461,11 +470,11 @@ class _BroMessagingState extends State<BroMessaging>
                   children: [
                     Text(chat.chatName,
                         style: TextStyle(
-                            color: getTextColor(chat.broColor), fontSize: 20)),
+                            color: getTextColor(chat.chatColor), fontSize: 20)),
                     chat.chatDescription != ""
                         ? Text(chat.chatDescription,
                             style: TextStyle(
-                                color: getTextColor(chat.broColor),
+                                color: getTextColor(chat.chatColor),
                                 fontSize: 12))
                         : Container(),
                   ],

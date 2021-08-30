@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:brocast/objects/bro_bros.dart';
+import 'package:brocast/objects/chat.dart';
 import 'package:brocast/utils/bro_list.dart';
 import 'package:flutter/material.dart';
 
@@ -11,11 +12,11 @@ class NotificationService {
   static get instance => _instance;
 
   var currentScreen;
-  BroBros goToBro;
+  Chat goToChat;
   int notificationId = 1;
 
   NotificationService._internal() {
-    this.goToBro = null;
+    this.goToChat = null;
 
     AwesomeNotifications().initialize(
         'resource://drawable/res_bro_icon',
@@ -49,20 +50,20 @@ class NotificationService {
         String chatName = broResult["chat_name"];
         if (broId != null && chatName != null) {
           if (BroList.instance.getBros().isEmpty) {
-            BroBros broNotify =
+            Chat broNotify =
                 new BroBros(int.parse(broId), chatName, "", "", 0, null, false);
             if (this.currentScreen != null) {
               this.currentScreen.goToDifferentChat(broNotify);
             } else {
-              this.goToBro = broNotify;
+              this.goToChat = broNotify;
             }
           } else {
-            for (BroBros br0 in BroList.instance.getBros()) {
+            for (Chat br0 in BroList.instance.getBros()) {
               if (br0.id == int.parse(broId)) {
                 if (this.currentScreen != null) {
                   this.currentScreen.goToDifferentChat(br0);
                 } else {
-                  this.goToBro = br0;
+                  this.goToChat = br0;
                 }
               }
             }
@@ -72,12 +73,12 @@ class NotificationService {
     });
   }
 
-  BroBros getGoToBro() {
-    return this.goToBro;
+  Chat getGoToBro() {
+    return this.goToChat;
   }
 
   void resetGoToBro() {
-    this.goToBro = null;
+    this.goToChat = null;
   }
 
   void setScreen(var currentScreen) {

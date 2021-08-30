@@ -1,6 +1,7 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:brocast/objects/bro_bros.dart';
+import 'package:brocast/objects/chat.dart';
 import 'package:brocast/services/notification_service.dart';
 import 'package:brocast/services/reset_registration.dart';
 import 'package:brocast/services/settings.dart';
@@ -110,12 +111,12 @@ class _BroProfileState extends State<BroProfile> with WidgetsBindingObserver {
     }
   }
 
-  void goToDifferentChat(BroBros chatBro) {
+  void goToDifferentChat(Chat chatBro) {
     if (mounted) {
       Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-              builder: (context) => BroMessaging(broBros: chatBro)));
+              builder: (context) => BroMessaging(chat: chatBro)));
     }
   }
 

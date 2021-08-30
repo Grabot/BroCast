@@ -1,4 +1,5 @@
 import 'package:brocast/objects/bro_bros.dart';
+import 'package:brocast/services/add_new_broup.dart';
 import 'package:brocast/services/get_bros.dart';
 import 'package:brocast/services/reset_registration.dart';
 import 'package:brocast/services/settings.dart';
@@ -224,7 +225,7 @@ class _AddBroupState extends State<AddBroup> with WidgetsBindingObserver {
       },
       child: Container(
         width: MediaQuery.of(context).size.width,
-        color: participant.broColor.withOpacity(0.3),
+        color: participant.chatColor.withOpacity(0.3),
         child: Row(
           children:
           [
@@ -382,9 +383,23 @@ class _AddBroupState extends State<AddBroup> with WidgetsBindingObserver {
     }
   }
 
+  AddNewBroup addNewBroup = new AddNewBroup();
   void addBroup() {
+    List<int> participants = [];
+    for (BroBros partici in broupParticipants) {
+      participants.add(partici.id);
+    }
     if (broupValidator.currentState.validate()) {
-      print("it is fine");
+      addNewBroup.addNewBroup(Settings.instance.getToken(), participants).then((val) {
+        if (val.toString() == "") {
+          Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (context) => BroCastHome()));
+        } else {
+          ShowToastComponent.showDialog(val.toString(), context);
+        }
+        setState(() {
+        });
+      });
     }
   }
 

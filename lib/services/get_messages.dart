@@ -40,8 +40,6 @@ class GetMessages {
           }
           listWithMessages.add(mes);
         }
-        print("you have this many messages");
-        print(listWithMessages.length);
         return listWithMessages;
       }
     }

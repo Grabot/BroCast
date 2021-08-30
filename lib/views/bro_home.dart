@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:brocast/objects/bro_bros.dart';
+import 'package:brocast/objects/chat.dart';
 import 'package:brocast/services/auth.dart';
 import 'package:brocast/services/get_bros.dart';
 import 'package:brocast/services/notification_service.dart';
@@ -31,7 +32,7 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
   Auth auth = new Auth();
 
   bool isSearching = false;
-  List<BroBros> bros = [];
+  List<Chat> bros = [];
 
   bool showNotification = true;
 
@@ -41,7 +42,7 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
             shrinkWrap: true,
             itemCount: bros.length,
             itemBuilder: (context, index) {
-              return BroTile(broBros: bros[index]);
+              return BroTile(chat: bros[index]);
             })
         : Container();
   }
@@ -82,13 +83,13 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
 
     // This is called after the build is done.
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      BroBros chatBro = NotificationService.instance.getGoToBro();
+      Chat chatBro = NotificationService.instance.getGoToBro();
       if (chatBro != null) {
         NotificationService.instance.resetGoToBro();
         Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-                builder: (context) => BroMessaging(broBros: chatBro)));
+                builder: (context) => BroMessaging(chat: chatBro)));
       } else {
         searchBros(Settings.instance.getToken());
       }
@@ -170,12 +171,12 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
     }
   }
 
-  void goToDifferentChat(BroBros chatBro) {
+  void goToDifferentChat(Chat chatBro) {
     if (mounted) {
       Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-              builder: (context) => BroMessaging(broBros: chatBro)));
+              builder: (context) => BroMessaging(chat: chatBro)));
     }
   }
 
@@ -292,7 +293,7 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
         ])),
       ),
       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
+        child: Icon(Icons.person_add),
         onPressed: () {
           Navigator.pushReplacement(
               context, MaterialPageRoute(builder: (context) => FindBros()));
@@ -303,9 +304,9 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
 }
 
 class BroTile extends StatefulWidget {
-  final BroBros broBros;
+  final Chat chat;
 
-  BroTile({Key key, this.broBros}) : super(key: key);
+  BroTile({Key key, this.chat}) : super(key: key);
 
   @override
   _BroTileState createState() => _BroTileState();
@@ -317,7 +318,7 @@ class _BroTileState extends State<BroTile> {
     Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-            builder: (context) => BroMessaging(broBros: widget.broBros)));
+            builder: (context) => BroMessaging(chat: widget.chat)));
   }
 
   @override
@@ -329,17 +330,17 @@ class _BroTileState extends State<BroTile> {
             selectBro(context);
           },
           child: Container(
-              color: widget.broBros.unreadMessages < 5
-                  ? widget.broBros.unreadMessages < 4
-                      ? widget.broBros.unreadMessages < 3
-                          ? widget.broBros.unreadMessages < 2
-                              ? widget.broBros.unreadMessages < 1
-                                  ? widget.broBros.broColor.withOpacity(0.3)
-                                  : widget.broBros.broColor.withOpacity(0.4)
-                              : widget.broBros.broColor.withOpacity(0.5)
-                          : widget.broBros.broColor.withOpacity(0.6)
-                      : widget.broBros.broColor.withOpacity(0.7)
-                  : widget.broBros.broColor.withOpacity(0.8),
+              color: widget.chat.unreadMessages < 5
+                  ? widget.chat.unreadMessages < 4
+                      ? widget.chat.unreadMessages < 3
+                          ? widget.chat.unreadMessages < 2
+                              ? widget.chat.unreadMessages < 1
+                                  ? widget.chat.chatColor.withOpacity(0.3)
+                                  : widget.chat.chatColor.withOpacity(0.4)
+                              : widget.chat.chatColor.withOpacity(0.5)
+                          : widget.chat.chatColor.withOpacity(0.6)
+                      : widget.chat.chatColor.withOpacity(0.7)
+                  : widget.chat.chatColor.withOpacity(0.8),
               padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -355,18 +356,18 @@ class _BroTileState extends State<BroTile> {
                               // All the padding and sizedboxes (and message bal) added up it's 103.
                               // We need to make the width the total width of the screen minus 103 at least to not get an overflow.
                               width: MediaQuery.of(context).size.width - 110,
-                              child: Text(widget.broBros.chatName,
+                              child: Text(widget.chat.chatName,
                                   overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
                                       color: Colors.white, fontSize: 20)),
                             ),
-                            widget.broBros.chatDescription != ""
+                            widget.chat.chatDescription != ""
                                 ? Container(
                                     // All the padding and sizedboxes (and message bal) added up it's 103.
                                     // We need to make the width the total width of the screen minus 103 at least to not get an overflow.
                                     width:
                                         MediaQuery.of(context).size.width - 110,
-                                    child: Text(widget.broBros.chatDescription,
+                                    child: Text(widget.chat.chatDescription,
                                         style: TextStyle(
                                             color: Colors.white, fontSize: 12)),
                                   )
@@ -381,12 +382,12 @@ class _BroTileState extends State<BroTile> {
                       width: 40,
                       alignment: Alignment.center,
                       decoration: BoxDecoration(
-                          color: widget.broBros.broColor,
+                          color: widget.chat.chatColor,
                           borderRadius: BorderRadius.circular(40)),
                       child: Text(
-                        widget.broBros.unreadMessages.toString(),
+                        widget.chat.unreadMessages.toString(),
                         style: TextStyle(
-                            color: getTextColor(widget.broBros.broColor),
+                            color: getTextColor(widget.chat.chatColor),
                             fontSize: 16),
                       )),
                 ],

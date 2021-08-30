@@ -1,14 +1,16 @@
 import 'dart:ui';
+
 import 'chat.dart';
 
-class BroBros extends Chat {
-  BroBros(int id, String chatName, String chatDescription, String chatColour,
+class Broup extends Chat {
+
+  Broup(int id, String broupName, String broupDescription, String broupColor,
       int unreadMessages, String lastActivity, bool blocked) {
     this.id = id;
-    this.chatName = chatName;
-    this.chatDescription = chatDescription;
-    if (chatColour != "") {
-      this.chatColor = Color(int.parse("0xFF$chatColour"));
+    this.chatName = broupName;
+    this.chatDescription = broupDescription;
+    if (broupColor != "") {
+      this.chatColor = Color(int.parse("0xFF$broupColor"));
     }
     if (blocked) {
       this.chatColor = Color(int.parse("0xFF000000"));

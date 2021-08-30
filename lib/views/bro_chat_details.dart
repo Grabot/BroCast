@@ -1,6 +1,7 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:brocast/objects/bro_bros.dart';
+import 'package:brocast/objects/chat.dart';
 import 'package:brocast/services/block_bro.dart';
 import 'package:brocast/services/notification_service.dart';
 import 'package:brocast/services/remove_bro.dart';
@@ -47,7 +48,7 @@ class _BroChatDetailsState extends State<BroChatDetails>
 
   String previousDescription = "";
 
-  BroBros chat;
+  Chat chat;
 
   @override
   void initState() {
@@ -60,9 +61,9 @@ class _BroChatDetailsState extends State<BroChatDetails>
     NotificationService.instance.setScreen(this);
 
     circleColorPickerController = CircleColorPickerController(
-      initialColor: chat.broColor,
+      initialColor: chat.chatColor,
     );
-    currentColor = chat.broColor;
+    currentColor = chat.chatColor;
     WidgetsBinding.instance.addObserver(this);
 
     blockBro = new BlockBro();
@@ -120,7 +121,7 @@ class _BroChatDetailsState extends State<BroChatDetails>
 
   void backButtonFunctionality() {
     Navigator.pushReplacement(context,
-        MaterialPageRoute(builder: (context) => BroMessaging(broBros: chat)));
+        MaterialPageRoute(builder: (context) => BroMessaging(chat: chat)));
   }
 
   @override
@@ -144,25 +145,25 @@ class _BroChatDetailsState extends State<BroChatDetails>
       Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-              builder: (context) => BroMessaging(broBros: chatBro)));
+              builder: (context) => BroMessaging(chat: chatBro)));
     }
   }
 
   Widget appBarChatDetails() {
     return AppBar(
         leading: IconButton(
-            icon: Icon(Icons.arrow_back, color: getTextColor(chat.broColor)),
+            icon: Icon(Icons.arrow_back, color: getTextColor(chat.chatColor)),
             onPressed: () {
               backButtonFunctionality();
             }),
         backgroundColor:
-            chat.broColor != null ? chat.broColor : Color(0xff145C9E),
+            chat.chatColor != null ? chat.chatColor : Color(0xff145C9E),
         title: Container(
             alignment: Alignment.centerLeft,
             child: Text(
               "Chat details ${chat.chatName}",
               style:
-                  TextStyle(color: getTextColor(chat.broColor), fontSize: 20),
+                  TextStyle(color: getTextColor(chat.chatColor), fontSize: 20),
             )),
         actions: [
           PopupMenuButton<int>(
@@ -189,7 +190,7 @@ class _BroChatDetailsState extends State<BroChatDetails>
         Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-                builder: (context) => BroMessaging(broBros: chat)));
+                builder: (context) => BroMessaging(chat: chat)));
         break;
     }
   }
@@ -232,7 +233,7 @@ class _BroChatDetailsState extends State<BroChatDetails>
   }
 
   saveColour() {
-    if (currentColor != chat.broColor) {
+    if (currentColor != chat.chatColor) {
       String newColour = currentColor.value.toRadixString(16).substring(2, 8);
       if (SocketServices.instance.socket.connected) {
         SocketServices.instance.socket
@@ -324,7 +325,7 @@ class _BroChatDetailsState extends State<BroChatDetails>
   }
 
   void chatColourUpdateSuccess() {
-    chat.broColor = currentColor;
+    chat.chatColor = currentColor;
     previousColor = currentColor;
     if (mounted) {
       setState(() {});
@@ -411,7 +412,7 @@ class _BroChatDetailsState extends State<BroChatDetails>
                         width: 40,
                         alignment: Alignment.center,
                         decoration: BoxDecoration(
-                            color: chat.broColor,
+                            color: chat.chatColor,
                             borderRadius: BorderRadius.circular(40)),
                       ),
                     ],

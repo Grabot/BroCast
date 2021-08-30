@@ -1,6 +1,7 @@
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:brocast/objects/bro.dart';
 import 'package:brocast/objects/bro_bros.dart';
+import 'package:brocast/objects/chat.dart';
 import 'package:brocast/services/notification_service.dart';
 import 'package:brocast/services/reset_registration.dart';
 import 'package:brocast/services/search.dart';
@@ -149,12 +150,12 @@ class _FindBrosState extends State<FindBros> with WidgetsBindingObserver {
     }
   }
 
-  void goToDifferentChat(BroBros chatBro) {
+  void goToDifferentChat(Chat chatBro) {
     if (mounted) {
       Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-              builder: (context) => BroMessaging(broBros: chatBro)));
+              builder: (context) => BroMessaging(chat: chatBro)));
     }
   }
 
@@ -273,10 +274,13 @@ class _FindBrosState extends State<FindBros> with WidgetsBindingObserver {
                           borderRadius: BorderRadius.all(Radius.circular(40))
                       ),
                       child: IconButton(
-                          icon: Icon(
-                              Icons.group_add,
-                              color: Colors.white
-                          ),
+                        onPressed: () {
+                          addGroup();
+                        },
+                        icon: Icon(
+                            Icons.group_add,
+                            color: Colors.white
+                        ),
                       )
                     ),
                     SizedBox(width: 20),
