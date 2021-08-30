@@ -19,19 +19,20 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import 'bro_chat_details.dart';
+import 'bro_messaging.dart';
 import 'bro_profile.dart';
 import 'bro_settings.dart';
 
-class BroMessaging extends StatefulWidget {
+class BroupMessaging extends StatefulWidget {
   final Chat chat;
 
-  BroMessaging({Key key, this.chat}) : super(key: key);
+  BroupMessaging({Key key, this.chat}) : super(key: key);
 
   @override
-  _BroMessagingState createState() => _BroMessagingState();
+  _BroupMessagingState createState() => _BroupMessagingState();
 }
 
-class _BroMessagingState extends State<BroMessaging>
+class _BroupMessagingState extends State<BroupMessaging>
     with WidgetsBindingObserver {
   bool isLoading;
   SendMessage send = new SendMessage();
@@ -59,7 +60,7 @@ class _BroMessagingState extends State<BroMessaging>
   void initState() {
     super.initState();
     chat = widget.chat;
-    print("opened chat with room name ${chat.roomName}");
+    print("this is a broup with name ${chat.roomName}");
     isLoading = false;
     amountViewed = 1;
     getMessages(amountViewed);
@@ -76,7 +77,8 @@ class _BroMessagingState extends State<BroMessaging>
       });
     }
     NotificationService.instance.setScreen(this);
-    joinRoom(Settings.instance.getBroId(), chat.id);
+    // TODO: @SKools add the broup functionality
+    // joinRoom(Settings.instance.getBroId(), chat.id);
     WidgetsBinding.instance.addObserver(this);
     BackButtonInterceptor.add(myInterceptor);
 
@@ -164,7 +166,8 @@ class _BroMessagingState extends State<BroMessaging>
   void dispose() {
     focusAppendText.dispose();
     focusEmojiTextField.dispose();
-    leaveRoom();
+    // TODO: @SKools add the broup functionality
+    // leaveRoom();
     BackButtonInterceptor.remove(myInterceptor);
     super.dispose();
   }
@@ -187,23 +190,24 @@ class _BroMessagingState extends State<BroMessaging>
     setState(() {
       isLoading = true;
     });
-    get.getMessages(Settings.instance.getToken(), chat.id, page).then((val) {
-      if (!(val is String)) {
-        List<Message> messes = val;
-        if (messes.length != 0) {
-          setState(() {
-            mergeMessages(messes);
-            setDateTiles();
-          });
-          amountViewed += 1;
-        }
-      } else {
-        ShowToastComponent.showDialog(val.toString(), context);
-      }
-      setState(() {
-        isLoading = false;
-      });
-    });
+    // TODO: SKools fix this for broups
+    // get.getMessages(Settings.instance.getToken(), chat.id, page).then((val) {
+    //   if (!(val is String)) {
+    //     List<Message> messes = val;
+    //     if (messes.length != 0) {
+    //       setState(() {
+    //         mergeMessages(messes);
+    //         setDateTiles();
+    //       });
+    //       amountViewed += 1;
+    //     }
+    //   } else {
+    //     ShowToastComponent.showDialog(val.toString(), context);
+    //   }
+    //   setState(() {
+    //     isLoading = false;
+    //   });
+    // });
   }
 
   mergeMessages(List<Message> newMessages) {

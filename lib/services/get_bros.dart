@@ -32,6 +32,7 @@ class GetBros {
                 br0["chat_colour"],
                 br0["unread_messages"],
                 br0["last_time_activity"],
+                br0["room_name"],
                 br0["blocked"]);
             listWithBros.add(broBros);
           } else if (br0.containsKey("broup_name")) {
@@ -43,6 +44,7 @@ class GetBros {
                 br0["broup_colour"],
                 br0["unread_messages"],
                 br0["last_time_activity"],
+                br0["room_name"],
                 br0["blocked"]);
             listWithBros.add(broup);
           } else {

@@ -3,7 +3,7 @@ import 'chat.dart';
 
 class BroBros extends Chat {
   BroBros(int id, String chatName, String chatDescription, String chatColour,
-      int unreadMessages, String lastActivity, bool blocked) {
+      int unreadMessages, String lastActivity, String roomName, bool blocked) {
     this.id = id;
     this.chatName = chatName;
     this.chatDescription = chatDescription;
@@ -20,5 +20,6 @@ class BroBros extends Chat {
     } else {
       this.lastActivity = DateTime.now();
     }
+    this.roomName = roomName;
   }
 }

@@ -19,9 +19,9 @@ import 'bro_profile.dart';
 import 'bro_settings.dart';
 
 class BroChatDetails extends StatefulWidget {
-  final BroBros broBros;
+  final Chat chat;
 
-  BroChatDetails({Key key, this.broBros}) : super(key: key);
+  BroChatDetails({Key key, this.chat}) : super(key: key);
 
   @override
   _BroChatDetailsState createState() => _BroChatDetailsState();
@@ -53,7 +53,7 @@ class _BroChatDetailsState extends State<BroChatDetails>
   @override
   void initState() {
     super.initState();
-    chat = widget.broBros;
+    chat = widget.chat;
     BackButtonInterceptor.add(myInterceptor);
     chatDescriptionController.text = chat.chatDescription;
 

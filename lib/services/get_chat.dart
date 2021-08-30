@@ -31,6 +31,7 @@ class GetChat {
             chat["chat_colour"],
             chat["unread_messages"],
             chat["last_time_activity"],
+            chat["room_name"],
             chat["blocked"]);
         return broBros;
       }

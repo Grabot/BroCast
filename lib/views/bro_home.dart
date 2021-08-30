@@ -19,6 +19,7 @@ import 'package:flutter/services.dart';
 
 import 'bro_profile.dart';
 import 'bro_settings.dart';
+import 'broup_messaging.dart';
 
 class BroCastHome extends StatefulWidget {
   BroCastHome({Key key}) : super(key: key);
@@ -315,10 +316,17 @@ class BroTile extends StatefulWidget {
 class _BroTileState extends State<BroTile> {
   selectBro(BuildContext context) {
     NotificationService.instance.dismissAllNotifications();
-    Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-            builder: (context) => BroMessaging(chat: widget.chat)));
+    if (widget.chat is BroBros) {
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => BroMessaging(chat: widget.chat)));
+    } else {
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => BroupMessaging(chat: widget.chat)));
+    }
   }
 
   @override
