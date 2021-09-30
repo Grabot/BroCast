@@ -50,10 +50,6 @@ class GetMessages {
     String urlGetMessages = baseUrl_v1_2 + 'get/messages/broup/' + page.toString();
     Uri uriGetMessages = Uri.parse(urlGetMessages);
 
-    print("getting messages in a broup");
-    print(token);
-    print(broupId);
-
     http.Response responsePost = await http.post(
       uriGetMessages,
       headers: <String, String>{

@@ -60,7 +60,7 @@ class _BroupMessagingState extends State<BroupMessaging>
   void initState() {
     super.initState();
     chat = widget.chat;
-    print("this is a broup with name ${chat.roomName}");
+
     isLoading = false;
     amountViewed = 1;
     getMessages(amountViewed);
