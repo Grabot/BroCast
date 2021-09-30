@@ -1,4 +1,5 @@
 import 'package:brocast/objects/bro_bros.dart';
+import 'package:brocast/objects/chat.dart';
 import 'package:brocast/services/add_new_broup.dart';
 import 'package:brocast/services/get_bros.dart';
 import 'package:brocast/services/reset_registration.dart';
@@ -35,6 +36,8 @@ class _AddBroupState extends State<AddBroup> with WidgetsBindingObserver {
   TextEditingController bromotionController = new TextEditingController();
   TextEditingController broNameController = new TextEditingController();
 
+  TextEditingController broupNameController = new TextEditingController();
+
   bool showEmojiKeyboard = false;
 
   @override
@@ -42,14 +45,15 @@ class _AddBroupState extends State<AddBroup> with WidgetsBindingObserver {
     super.initState();
     bromotionController.addListener(bromotionListener);
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      List<BroBros> broBros = BroList.instance.getBros();
+      List<Chat> broBros = BroList.instance.getBros();
       if (broBros.isEmpty) {
         searchBros(Settings.instance.getToken());
       } else {
         bros.clear();
         shownBros.clear();
         broupParticipants.clear();
-        for (BroBros myBro in broBros) {
+        for (Chat myBro in broBros) {
+          // TODO: @Skools filter out Broups here.
           BroAddBroup broAddBroup = new BroAddBroup(false, myBro);
           bros.add(broAddBroup);
         }
@@ -208,7 +212,7 @@ class _AddBroupState extends State<AddBroup> with WidgetsBindingObserver {
     return Colors.red;
   }
 
-  void removeParticipant(BroBros participant) {
+  void removeParticipant(Chat participant) {
     broupParticipants.remove(participant);
     for (BroAddBroup broAddBroup in bros) {
       if (participant.id == broAddBroup.getBroBros().id) {
@@ -218,7 +222,7 @@ class _AddBroupState extends State<AddBroup> with WidgetsBindingObserver {
     onChangedBroNameField(broNameController.text, bromotionController.text);
   }
 
-  Widget broupParticipantsTile(BroBros participant) {
+  Widget broupParticipantsTile(Chat participant) {
     return InkWell(
       onTap: () {
         removeParticipant(participant);
@@ -284,7 +288,7 @@ class _AddBroupState extends State<AddBroup> with WidgetsBindingObserver {
       },
       child: Container(
         width: MediaQuery.of(context).size.width,
-        color: shownBros[index].getBroBros().broColor.withOpacity(0.3),
+        color: shownBros[index].getBroBros().chatColor.withOpacity(0.3),
         child: Row(
             children: [
               Container(
@@ -386,11 +390,11 @@ class _AddBroupState extends State<AddBroup> with WidgetsBindingObserver {
   AddNewBroup addNewBroup = new AddNewBroup();
   void addBroup() {
     List<int> participants = [];
-    for (BroBros partici in broupParticipants) {
+    for (Chat partici in broupParticipants) {
       participants.add(partici.id);
     }
     if (broupValidator.currentState.validate()) {
-      addNewBroup.addNewBroup(Settings.instance.getToken(), participants).then((val) {
+      addNewBroup.addNewBroup(Settings.instance.getToken(), broupNameController.text, participants).then((val) {
         if (val.toString() == "") {
           Navigator.pushReplacement(
               context, MaterialPageRoute(builder: (context) => BroCastHome()));
@@ -433,6 +437,7 @@ class _AddBroupState extends State<AddBroup> with WidgetsBindingObserver {
                     Container(
                       width: MediaQuery.of(context).size.width-100,
                       child: TextFormField(
+                        controller: broupNameController,
                         key: broupValidator,
                         onTap: () {
                           print("tapped the broup name textfield");
@@ -541,9 +546,9 @@ class _AddBroupState extends State<AddBroup> with WidgetsBindingObserver {
 class BroAddBroup {
 
   bool selected;
-  BroBros broBros;
+  Chat broBros;
 
-  BroAddBroup(bool selected, BroBros broBros) {
+  BroAddBroup(bool selected, Chat broBros) {
     this.selected = selected;
     this.broBros = broBros;
   }

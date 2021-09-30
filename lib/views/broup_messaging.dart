@@ -190,24 +190,23 @@ class _BroupMessagingState extends State<BroupMessaging>
     setState(() {
       isLoading = true;
     });
-    // TODO: SKools fix this for broups
-    // get.getMessages(Settings.instance.getToken(), chat.id, page).then((val) {
-    //   if (!(val is String)) {
-    //     List<Message> messes = val;
-    //     if (messes.length != 0) {
-    //       setState(() {
-    //         mergeMessages(messes);
-    //         setDateTiles();
-    //       });
-    //       amountViewed += 1;
-    //     }
-    //   } else {
-    //     ShowToastComponent.showDialog(val.toString(), context);
-    //   }
-    //   setState(() {
-    //     isLoading = false;
-    //   });
-    // });
+    get.getMessagesBroup(Settings.instance.getToken(), chat.id, page).then((val) {
+      if (!(val is String)) {
+        List<Message> messes = val;
+        if (messes.length != 0) {
+          setState(() {
+            mergeMessages(messes);
+            setDateTiles();
+          });
+          amountViewed += 1;
+        }
+      } else {
+        ShowToastComponent.showDialog(val.toString(), context);
+      }
+      setState(() {
+        isLoading = false;
+      });
+    });
   }
 
   mergeMessages(List<Message> newMessages) {
@@ -314,7 +313,7 @@ class _BroupMessagingState extends State<BroupMessaging>
     }
   }
 
-  sendMessage() {
+  sendMessageBroup() {
     if (formKey.currentState.validate()) {
       String message = broMessageController.text;
       String textMessage = appendTextMessageController.text;
@@ -334,10 +333,10 @@ class _BroupMessagingState extends State<BroupMessaging>
       });
       if (SocketServices.instance.socket.connected) {
         SocketServices.instance.socket.emit(
-          "message",
+          "message_broup",
           {
             "bro_id": Settings.instance.getBroId(),
-            "bros_bro_id": chat.id,
+            "broup_id": chat.id,
             "message": message,
             "text_message": textMessage
           },
@@ -582,7 +581,7 @@ class _BroupMessagingState extends State<BroupMessaging>
                           ),
                           GestureDetector(
                             onTap: () {
-                              sendMessage();
+                              sendMessageBroup();
                             },
                             child: Container(
                                 height: 35,

@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 
 class AddNewBroup {
 
-  Future addNewBroup(String token, List<int> participants) async {
+  Future addNewBroup(String token, String broupName, List<int> participants) async {
     String urlRegister = baseUrl_v1_2 + 'add_broup';
     Uri uriRegister = Uri.parse(urlRegister);
 
@@ -17,6 +17,7 @@ class AddNewBroup {
       },
       body: jsonEncode(<String, String>{
         'token': token,
+        'broup_name': broupName,
         'participants': jsonEncode(participants)
       }),
     )

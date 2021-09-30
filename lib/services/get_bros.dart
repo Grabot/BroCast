@@ -38,7 +38,7 @@ class GetBros {
           } else if (br0.containsKey("broup_name")) {
             print("a broup!!!!!");
             Broup broup = new Broup(
-                br0["bros_bro_id"],
+                br0["id"],
                 br0["broup_name"],
                 br0["broup_description"],
                 br0["broup_colour"],
