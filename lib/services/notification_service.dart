@@ -51,7 +51,7 @@ class NotificationService {
         if (broId != null && chatName != null) {
           if (BroList.instance.getBros().isEmpty) {
             Chat broNotify =
-                new BroBros(int.parse(broId), chatName, "", "", 0, null, "", false);
+                new BroBros(int.parse(broId), chatName, "", "", 0, null, "", false, false);
             if (this.currentScreen != null) {
               this.currentScreen.goToDifferentChat(broNotify);
             } else {

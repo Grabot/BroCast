@@ -2,13 +2,11 @@ import 'dart:async';
 
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:brocast/objects/bro_bros.dart';
-import 'package:brocast/objects/broup.dart';
 import 'package:brocast/objects/chat.dart';
 import 'package:brocast/objects/message.dart';
 import 'package:brocast/services/get_chat.dart';
 import 'package:brocast/services/get_messages.dart';
 import 'package:brocast/services/notification_service.dart';
-import 'package:brocast/services/send_message.dart';
 import 'package:brocast/services/settings.dart';
 import 'package:brocast/services/socket_services.dart';
 import 'package:brocast/utils/bro_list.dart';
@@ -34,7 +32,6 @@ class BroMessaging extends StatefulWidget {
 class _BroMessagingState extends State<BroMessaging>
     with WidgetsBindingObserver {
   bool isLoading;
-  SendMessage send = new SendMessage();
   GetMessages get = new GetMessages();
 
   bool showEmojiKeyboard = false;

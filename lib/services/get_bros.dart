@@ -33,7 +33,8 @@ class GetBros {
                 br0["unread_messages"],
                 br0["last_time_activity"],
                 br0["room_name"],
-                br0["blocked"]);
+                br0["blocked"],
+                false);
             listWithBros.add(broBros);
           } else if (br0.containsKey("broup_name")) {
             print("a broup!!!!!");
@@ -45,7 +46,8 @@ class GetBros {
                 br0["unread_messages"],
                 br0["last_time_activity"],
                 br0["room_name"],
-                br0["blocked"]);
+                br0["blocked"],
+                true);
             listWithBros.add(broup);
           } else {
             print("big problem");

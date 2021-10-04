@@ -53,9 +53,10 @@ class _AddBroupState extends State<AddBroup> with WidgetsBindingObserver {
         shownBros.clear();
         broupParticipants.clear();
         for (Chat myBro in broBros) {
-          // TODO: @Skools filter out Broups here.
-          BroAddBroup broAddBroup = new BroAddBroup(false, myBro);
-          bros.add(broAddBroup);
+          if (!myBro.isBroup) {
+            BroAddBroup broAddBroup = new BroAddBroup(false, myBro);
+            bros.add(broAddBroup);
+          }
         }
         setState(() {
           shownBros = bros;

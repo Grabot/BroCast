@@ -5,7 +5,7 @@ import 'chat.dart';
 class Broup extends Chat {
 
   Broup(int id, String broupName, String broupDescription, String broupColor,
-      int unreadMessages, String lastActivity, String roomName, bool blocked) {
+      int unreadMessages, String lastActivity, String roomName, bool blocked, bool isBroup) {
     this.id = id;
     this.chatName = broupName;
     this.chatDescription = broupDescription;
@@ -23,5 +23,6 @@ class Broup extends Chat {
       this.lastActivity = DateTime.now();
     }
     this.roomName = roomName;
+    this.isBroup = isBroup;
   }
 }

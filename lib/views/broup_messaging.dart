@@ -2,13 +2,11 @@ import 'dart:async';
 
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:brocast/objects/bro_bros.dart';
-import 'package:brocast/objects/broup.dart';
 import 'package:brocast/objects/chat.dart';
 import 'package:brocast/objects/message.dart';
 import 'package:brocast/services/get_chat.dart';
 import 'package:brocast/services/get_messages.dart';
 import 'package:brocast/services/notification_service.dart';
-import 'package:brocast/services/send_message.dart';
 import 'package:brocast/services/settings.dart';
 import 'package:brocast/services/socket_services.dart';
 import 'package:brocast/utils/bro_list.dart';
@@ -35,7 +33,6 @@ class BroupMessaging extends StatefulWidget {
 class _BroupMessagingState extends State<BroupMessaging>
     with WidgetsBindingObserver {
   bool isLoading;
-  SendMessage send = new SendMessage();
   GetMessages get = new GetMessages();
 
   bool showEmojiKeyboard = false;
@@ -137,7 +134,7 @@ class _BroupMessagingState extends State<BroupMessaging>
           data["id"],
           data["bro_bros_id"],
           data["sender_id"],
-          data["recipient_id"],
+          data["broup_id"],
           data["body"],
           data["text_message"],
           data["timestamp"]);
@@ -327,7 +324,7 @@ class _BroupMessagingState extends State<BroupMessaging>
       }
       // We set the id to be "-1". For date tiles it is "0", these will be filtered.
       Message mes =
-          new Message(-1, 0, 0, chat.id, message, textMessage, timestampString);
+          new Message(-1, 0, Settings.instance.getBroId(), chat.id, message, textMessage, timestampString);
       setState(() {
         this.messages.insert(0, mes);
       });
@@ -356,7 +353,7 @@ class _BroupMessagingState extends State<BroupMessaging>
   }
 
   updateMessages(Message message) {
-    if (message.recipientId == chat.id) {
+    if (message.senderId == Settings.instance.getBroId()) {
       // We added it immediately as a placeholder.
       // When we get it from the server we add it for real and remove the placeholder
       this.messages.removeAt(0);
@@ -399,7 +396,7 @@ class _BroupMessagingState extends State<BroupMessaging>
             itemBuilder: (context, index) {
               return MessageTile(
                   message: messages[index],
-                  myMessage: messages[index].recipientId == chat.id);
+                  myMessage: messages[index].senderId == Settings.instance.getBroId());
             })
         : Container();
   }

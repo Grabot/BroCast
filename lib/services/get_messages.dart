@@ -73,7 +73,7 @@ class GetMessages {
               message["id"],
               message["bro_bros_id"],
               message["sender_id"],
-              message["recipient_id"],
+              message["sender_id"],
               message["body"],
               message["text_message"],
               message["timestamp"]);

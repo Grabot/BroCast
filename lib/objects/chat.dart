@@ -10,6 +10,7 @@ class Chat {
   Color chatColor;
   int unreadMessages;
   bool blocked;
+  bool isBroup;
 
   Chat();
 }
