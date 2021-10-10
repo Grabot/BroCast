@@ -1,4 +1,6 @@
 // A class to store anything that might be useful at any point in the app.
+import 'package:brocast/objects/bro.dart';
+
 class Settings {
   static Settings _instance = new Settings._internal();
 
@@ -10,6 +12,8 @@ class Settings {
   int broId = -1;
   String broName = "";
   String bromotion = "";
+
+  Bro me;
 
   Settings._internal();
 
@@ -46,6 +50,9 @@ class Settings {
   }
 
   setBroName(String broName) {
+    if (this.bromotion.isNotEmpty) {
+      me = new Bro(-1, broName, this.bromotion);
+    }
     this.broName = broName;
   }
 
@@ -54,10 +61,21 @@ class Settings {
   }
 
   setBromotion(String bromotion) {
+    if (this.broName.isNotEmpty) {
+      me = new Bro(-1, this.broName, bromotion);
+    }
     this.bromotion = bromotion;
   }
 
   String getBromotion() {
     return this.bromotion;
+  }
+
+  setMe(Bro me) {
+    this.me = me;
+  }
+
+  Bro getMe() {
+    return this.me;
   }
 }

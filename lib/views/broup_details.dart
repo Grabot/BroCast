@@ -1,10 +1,9 @@
 import 'package:back_button_interceptor/back_button_interceptor.dart';
+import 'package:brocast/objects/bro.dart';
 import 'package:brocast/objects/bro_bros.dart';
+import 'package:brocast/objects/broup.dart';
 import 'package:brocast/objects/chat.dart';
-import 'package:brocast/services/block_bro.dart';
 import 'package:brocast/services/notification_service.dart';
-import 'package:brocast/services/remove_bro.dart';
-import 'package:brocast/services/report_bro.dart';
 import 'package:brocast/services/settings.dart';
 import 'package:brocast/services/socket_services.dart';
 import 'package:brocast/utils/bro_list.dart';
@@ -12,21 +11,20 @@ import 'package:brocast/utils/utils.dart';
 import "package:flutter/material.dart";
 import 'package:flutter_circle_color_picker/flutter_circle_color_picker.dart';
 
-import 'bro_home.dart';
-import 'bro_messaging.dart';
 import 'bro_profile.dart';
 import 'bro_settings.dart';
 
-class BroChatDetails extends StatefulWidget {
+
+class BroupDetails extends StatefulWidget {
   final Chat chat;
 
-  BroChatDetails({Key key, this.chat}) : super(key: key);
+  BroupDetails({Key key, this.chat}) : super(key: key);
 
   @override
-  _BroChatDetailsState createState() => _BroChatDetailsState();
+  _BroupDetailsState createState() => _BroupDetailsState();
 }
 
-class _BroChatDetailsState extends State<BroChatDetails>
+class _BroupDetailsState extends State<BroupDetails>
     with WidgetsBindingObserver {
   TextEditingController chatDescriptionController = new TextEditingController();
 
@@ -34,11 +32,9 @@ class _BroChatDetailsState extends State<BroChatDetails>
   bool changeColour = false;
   bool showNotification = true;
 
-  CircleColorPickerController circleColorPickerController;
+  int amountInGroup;
 
-  BlockBro blockBro;
-  ReportBro reportBro;
-  RemoveBro removeBro;
+  CircleColorPickerController circleColorPickerController;
 
   Color currentColor;
   Color previousColor;
@@ -47,14 +43,17 @@ class _BroChatDetailsState extends State<BroChatDetails>
 
   String previousDescription = "";
 
-  Chat chat;
+  Broup chat;
 
   @override
   void initState() {
     super.initState();
     chat = widget.chat;
+    amountInGroup = chat.getParticipants().length + 1;
     BackButtonInterceptor.add(myInterceptor);
     chatDescriptionController.text = chat.chatDescription;
+
+    print(chat.getBroupBros());
 
     initSockets();
     NotificationService.instance.setScreen(this);
@@ -64,10 +63,6 @@ class _BroChatDetailsState extends State<BroChatDetails>
     );
     currentColor = chat.chatColor;
     WidgetsBinding.instance.addObserver(this);
-
-    blockBro = new BlockBro();
-    reportBro = new ReportBro();
-    removeBro = new RemoveBro();
   }
 
   @override
@@ -119,8 +114,9 @@ class _BroChatDetailsState extends State<BroChatDetails>
   }
 
   void backButtonFunctionality() {
-    Navigator.pushReplacement(context,
-        MaterialPageRoute(builder: (context) => BroMessaging(chat: chat)));
+    // TODO: @SKools I think this is wrong.
+    // Navigator.pushReplacement(context,
+    //     MaterialPageRoute(builder: (context) => BroMessaging(chat: chat)));
   }
 
   @override
@@ -140,12 +136,13 @@ class _BroChatDetailsState extends State<BroChatDetails>
   }
 
   void goToDifferentChat(BroBros chatBro) {
-    if (mounted) {
-      Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (context) => BroMessaging(chat: chatBro)));
-    }
+    // TODO: @SKools I think this is wrong
+    // if (mounted) {
+    //   Navigator.pushReplacement(
+    //       context,
+    //       MaterialPageRoute(
+    //           builder: (context) => BroMessaging(chat: chatBro)));
+    // }
   }
 
   Widget appBarChatDetails() {
@@ -186,10 +183,11 @@ class _BroChatDetailsState extends State<BroChatDetails>
             context, MaterialPageRoute(builder: (context) => BroSettings()));
         break;
       case 2:
-        Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (context) => BroMessaging(chat: chat)));
+        // TODO: @SKools I think this is wrong
+        // Navigator.pushReplacement(
+        //     context,
+        //     MaterialPageRoute(
+        //         builder: (context) => BroMessaging(chat: chat)));
         break;
     }
   }
@@ -248,67 +246,6 @@ class _BroChatDetailsState extends State<BroChatDetails>
     });
   }
 
-  void reportTheBro() {
-    reportBro.reportBro(
-        Settings.instance.getToken(),
-        chat.id
-    ).then((val) {
-      if (val) {
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => BroCastHome()));
-      } else {
-        if (val == "an unknown error has occurred") {
-          ShowToastComponent.showDialog("An unknown error has occurred", context);
-        } else {
-          ShowToastComponent.showDialog("There was an error with the server, we apologize for the inconvenience.", context);
-        }
-      }
-    });
-    Navigator.of(context).pop();
-  }
-
-  void removeTheBro() {
-    removeBro.removeBro(
-        Settings.instance.getToken(),
-        chat.id
-    ).then((val) {
-      if (val) {
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => BroCastHome()));
-      } else {
-        if (val == "an unknown error has occurred") {
-          ShowToastComponent.showDialog("An unknown error has occurred", context);
-        } else {
-          ShowToastComponent.showDialog("There was an error with the server, we apologize for the inconvenience.", context);
-        }
-      }
-    });
-    Navigator.of(context).pop();
-  }
-
-  void blockTheBro(bool blocked) {
-    blockBro.blockBro(
-      Settings.instance.getToken(),
-      chat.id,
-        blocked
-    ).then((val) {
-      if (val is BroBros) {
-        setState(() {
-          this.chat = val;
-        });
-      } else {
-        if (val == "an unknown error has occurred") {
-          ShowToastComponent.showDialog("An unknown error has occurred", context);
-        } else {
-          ShowToastComponent.showDialog("There was an error with the server, we apologize for the inconvenience.", context);
-        }
-      }
-    });
-    if (blocked) {
-      Navigator.of(context).pop();
-    }
-  }
-
   void chatDetailUpdateSuccess() {
     previousDescription = chatDescriptionController.text;
     chat.chatDescription = chatDescriptionController.text;
@@ -339,6 +276,17 @@ class _BroChatDetailsState extends State<BroChatDetails>
 
   onColorChange(Color colour) {
     currentColor = colour;
+  }
+
+  Widget brosInBroupList() {
+    return chat.getBroupBros().isNotEmpty
+        ? ListView.builder(
+        shrinkWrap: true,
+        itemCount: chat.getBroupBros().length,
+        itemBuilder: (context, index) {
+          return BroTile(bro: chat.getBroupBros()[index]);
+        })
+        : Container();
   }
 
   @override
@@ -398,6 +346,23 @@ class _BroChatDetailsState extends State<BroChatDetails>
                           },
                           child: Text('Update description'),
                         ),
+                  SizedBox(height: 20),
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 30),
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      "" + amountInGroup.toString() + " participants",
+                      style: simpleTextStyle(),
+                    ),
+                  ),
+                  Container(
+                      alignment: Alignment.center,
+                      child: BroTile(bro: Settings.instance.getMe())
+                  ),
+                  Container(
+                      alignment: Alignment.center,
+                      child: brosInBroupList()
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -446,76 +411,6 @@ class _BroChatDetailsState extends State<BroChatDetails>
                           },
                           child: Text('Change color'),
                         ),
-                  SizedBox(height: 10),
-                  TextButton(
-                      style: ButtonStyle(
-                        foregroundColor:
-                        MaterialStateProperty.all<Color>(Colors.red),
-                      ),
-                      onPressed: () {
-                        chat.blocked ?
-                        blockTheBro(false) : showDialogBlock(context, chat.chatName);
-                      },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                              Icons.block,
-                              color: chat.blocked ? Colors.grey : Colors.red
-                          ),
-                          SizedBox(width: 20),
-                          chat.blocked ? Text(
-                            'Unblock',
-                            style: simpleTextStyle(),
-                          ) : Text(
-                            'Block',
-                            style: simpleTextStyle(),
-                          ),
-                        ]
-                      )
-                    ),
-                  SizedBox(height: 10),
-                  TextButton(
-                      style: ButtonStyle(
-                        foregroundColor:
-                        MaterialStateProperty.all<Color>(Colors.red),
-                      ),
-                      onPressed: () {
-                        showDialogRemove(context, chat.chatName);
-                      },
-                      child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(Icons.delete_forever, color: Colors.red),
-                            SizedBox(width: 20),
-                            Text(
-                              'Remove Bro',
-                              style: simpleTextStyle(),
-                            ),
-                          ]
-                      )
-                  ),
-                  SizedBox(height: 10),
-                  TextButton(
-                      style: ButtonStyle(
-                        foregroundColor:
-                        MaterialStateProperty.all<Color>(Colors.red),
-                      ),
-                      onPressed: () {
-                        showDialogReport(context, chat.chatName);
-                      },
-                      child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(Icons.thumb_down, color: Colors.red),
-                            SizedBox(width: 20),
-                            Text(
-                              'Report Bro',
-                              style: simpleTextStyle(),
-                            ),
-                          ]
-                      )
-                  ),
                   SizedBox(height: 20),
                 ]),
               ),
@@ -523,85 +418,46 @@ class _BroChatDetailsState extends State<BroChatDetails>
           ]),
         ));
   }
+}
 
-  void showDialogBlock(BuildContext context, String chatName) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: new Text("Block bro $chatName!"),
-          content: new Text(
-              "Are you sure you want to block this bro? The former bro will no longer be able to send you messages."),
-          actions: <Widget>[
-            new FlatButton(
-              child: new Text("Cancel"),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            new FlatButton(
-              child: new Text("Block"),
-              onPressed: () {
-                blockTheBro(true);
-              },
-            ),
-          ],
-        );
-      },
-    );
+class BroTile extends StatefulWidget {
+  final Bro bro;
+
+  BroTile({Key key, this.bro}) : super(key: key);
+
+  @override
+  _BroTileState createState() => _BroTileState();
+}
+
+class _BroTileState extends State<BroTile> {
+  selectBro(BuildContext context) {
+    for (Chat br0 in BroList.instance.getBros()) {
+      if (br0 is BroBros) {
+        if (br0.id == widget.bro.id) {
+          print("selected a bro " + br0.chatName);
+        }
+      }
+    }
   }
 
-  void showDialogRemove(BuildContext context, String chatName) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: new Text("Remove chat $chatName!"),
-          content: new Text(
-              "Are you sure you want to remove this chat? This bro and the messages will be removed from your bro list and the former bro can't send you messages anymore. \n(This action cannot be undone!)"),
-          actions: <Widget>[
-            new FlatButton(
-              child: new Text("Cancel"),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            new FlatButton(
-              child: new Text("Remove"),
-              onPressed: () {
-                removeTheBro();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void showDialogReport(BuildContext context, String chatName) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: new Text("Report bro $chatName!"),
-          content: new Text(
-              "Are you sure you want to report this bro? The most recent messages from this bro to you will be forwarded to Zwaar developers to assess possible deletion of the bro's account. This bro and the messages will be removed from your bro list and the former bro can't send you messages anymore. This former bro will not be notified of the report. \n(This action cannot be undone!)"),
-          actions: <Widget>[
-            new FlatButton(
-              child: new Text("Cancel"),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            new FlatButton(
-              child: new Text("Report"),
-              onPressed: () {
-                reportTheBro();
-              },
-            ),
-          ],
-        );
-      },
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      child: Material(
+        child: InkWell(
+            onTap: () {
+              selectBro(context);
+            },
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+              child: Text(
+                  widget.bro.broName + " " + widget.bro.bromotion,
+                  style: simpleTextStyle()),
+            )
+        ),
+        color: Colors.transparent,
+      ),
     );
   }
 }

@@ -1,8 +1,12 @@
 import 'dart:ui';
 
+import 'bro.dart';
 import 'chat.dart';
 
 class Broup extends Chat {
+
+  List<int> participants = [];
+  List<Bro> broupBros = [];
 
   Broup(int id, String broupName, String broupDescription, String broupColor,
       int unreadMessages, String lastActivity, String roomName, bool blocked, bool isBroup) {
@@ -24,5 +28,21 @@ class Broup extends Chat {
     }
     this.roomName = roomName;
     this.isBroup = isBroup;
+  }
+
+  void setParticipants(List<int> participants) {
+    this.participants = participants;
+  }
+
+  List<int> getParticipants() {
+    return this.participants;
+  }
+
+  void setBroupBros(List<Bro> broupBros) {
+    this.broupBros = broupBros;
+  }
+
+  List<Bro> getBroupBros() {
+    return this.broupBros;
   }
 }

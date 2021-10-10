@@ -1,9 +1,12 @@
 import 'dart:async';
 
 import 'package:back_button_interceptor/back_button_interceptor.dart';
+import 'package:brocast/objects/bro.dart';
 import 'package:brocast/objects/bro_bros.dart';
+import 'package:brocast/objects/broup.dart';
 import 'package:brocast/objects/chat.dart';
 import 'package:brocast/objects/message.dart';
+import 'package:brocast/services/get_broup_bros.dart';
 import 'package:brocast/services/get_chat.dart';
 import 'package:brocast/services/get_messages.dart';
 import 'package:brocast/services/notification_service.dart';
@@ -16,10 +19,10 @@ import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import 'bro_chat_details.dart';
 import 'bro_messaging.dart';
 import 'bro_profile.dart';
 import 'bro_settings.dart';
+import 'broup_details.dart';
 
 class BroupMessaging extends StatefulWidget {
   final Chat chat;
@@ -50,13 +53,17 @@ class _BroupMessagingState extends State<BroupMessaging>
   // SocketServices socket;
   List<Message> messages = [];
 
-  Chat chat;
+  Broup chat;
 
   int amountViewed;
   @override
   void initState() {
     super.initState();
     chat = widget.chat;
+
+    if (chat.getBroupBros().isEmpty && chat.getParticipants().isNotEmpty) {
+      getParticipants();
+    }
 
     isLoading = false;
     amountViewed = 1;
@@ -69,6 +76,7 @@ class _BroupMessagingState extends State<BroupMessaging>
         if (value != "an unknown error has occurred") {
           setState(() {
             chat = value;
+            getParticipants();
           });
         }
       });
@@ -88,6 +96,21 @@ class _BroupMessagingState extends State<BroupMessaging>
     });
   }
 
+  getParticipants() {
+    List<int> remainingParticipants = chat.getParticipants();
+    List<Bro> foundParticipants = [];
+    for (Chat br0 in BroList.instance.getBros()) {
+      if (br0 is BroBros) {
+
+      }
+    }
+    GetBroupBros getBroupBros = new GetBroupBros();
+    getBroupBros.getBroupBros(Settings.instance.getToken(), chat.getParticipants()).then((value) {
+      if (value != "an unknown error has occurred") {
+        chat.setBroupBros(value);
+      }
+    });
+  }
 
   joinRoom(int broId, int brosBroId) {
     if (SocketServices.instance.socket.connected) {
@@ -447,7 +470,7 @@ class _BroupMessagingState extends State<BroupMessaging>
                   Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => BroChatDetails(chat: chat)));
+                          builder: (context) => BroupDetails(chat: chat)));
                 },
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -469,7 +492,7 @@ class _BroupMessagingState extends State<BroupMessaging>
               itemBuilder: (context) => [
                     PopupMenuItem<int>(value: 0, child: Text("Profile")),
                     PopupMenuItem<int>(value: 1, child: Text("Settings")),
-                    PopupMenuItem<int>(value: 2, child: Text("Chat details")),
+                    PopupMenuItem<int>(value: 2, child: Text("Broup details")),
                   ])
         ]);
   }
@@ -488,7 +511,7 @@ class _BroupMessagingState extends State<BroupMessaging>
         Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-                builder: (context) => BroChatDetails(chat: chat)));
+                builder: (context) => BroupDetails(chat: chat)));
         break;
     }
   }

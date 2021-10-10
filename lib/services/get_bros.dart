@@ -48,6 +48,12 @@ class GetBros {
                 br0["room_name"],
                 br0["blocked"],
                 true);
+            print("we have found a broup");
+            print(br0["bro_ids"]);
+            List<dynamic> temp = br0["bro_ids"];
+            List<int> temp2 = temp.map((s) => s as int).toList();
+            print(temp2);
+            broup.setParticipants(temp2);
             listWithBros.add(broup);
           } else {
             print("big problem");
