@@ -1,8 +1,8 @@
 import 'dart:convert';
+
 import 'package:brocast/constants/base_url.dart';
 import 'package:brocast/objects/bro.dart';
-import 'package:brocast/objects/bro_bros.dart';
-import 'package:brocast/utils/bro_list.dart';
+import 'package:brocast/objects/bro_not_added.dart';
 import 'package:http/http.dart' as http;
 
 class GetBroupBros {
@@ -29,7 +29,7 @@ class GetBroupBros {
         var broList = registerResponse["bro_list"];
         List<Bro> listWithBros = [];
         for (var br0 in broList) {
-          Bro bro = new Bro(br0["id"], br0["bro_name"], br0["bromotion"]);
+          Bro bro = new BroNotAdded(br0["id"], br0["bro_name"], br0["bromotion"]);
           listWithBros.add(bro);
         }
         return listWithBros;

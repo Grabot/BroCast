@@ -1,5 +1,6 @@
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:brocast/objects/bro.dart';
+import 'package:brocast/objects/bro_added.dart';
 import 'package:brocast/objects/bro_bros.dart';
 import 'package:brocast/objects/broup.dart';
 import 'package:brocast/objects/chat.dart';
@@ -49,7 +50,7 @@ class _BroupDetailsState extends State<BroupDetails>
   void initState() {
     super.initState();
     chat = widget.chat;
-    amountInGroup = chat.getParticipants().length + 1;
+    amountInGroup = chat.getBroupBros().length;
     BackButtonInterceptor.add(myInterceptor);
     chatDescriptionController.text = chat.chatDescription;
 
@@ -357,10 +358,6 @@ class _BroupDetailsState extends State<BroupDetails>
                   ),
                   Container(
                       alignment: Alignment.center,
-                      child: BroTile(bro: Settings.instance.getMe())
-                  ),
-                  Container(
-                      alignment: Alignment.center,
                       child: brosInBroupList()
                   ),
                   Row(
@@ -431,11 +428,13 @@ class BroTile extends StatefulWidget {
 
 class _BroTileState extends State<BroTile> {
   selectBro(BuildContext context) {
-    for (Chat br0 in BroList.instance.getBros()) {
-      if (br0 is BroBros) {
-        if (br0.id == widget.bro.id) {
-          print("selected a bro " + br0.chatName);
-        }
+    if (widget.bro.id == -1) {
+      print("selected myself");
+    } else {
+      if (widget.bro is BroAdded) {
+        print("selected a bro, who's a bro of this bro");
+      } else {
+        print("selected a possibly future bro of this bro");
       }
     }
   }
@@ -452,7 +451,7 @@ class _BroTileState extends State<BroTile> {
             child: Container(
               padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
               child: Text(
-                  widget.bro.broName + " " + widget.bro.bromotion,
+                  widget.bro.getFullName(),
                   style: simpleTextStyle()),
             )
         ),

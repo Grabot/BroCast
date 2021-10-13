@@ -386,7 +386,7 @@ class BroTileSearch extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
       child: Row(
         children: [
-          Text(bro.getFullBroName(), style: simpleTextStyle()),
+          Text(bro.getFullName(), style: simpleTextStyle()),
           Spacer(),
           GestureDetector(
             onTap: () {

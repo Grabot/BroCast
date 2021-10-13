@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:brocast/objects/bro.dart';
+import 'package:brocast/objects/bro_added.dart';
 import 'package:brocast/objects/bro_bros.dart';
 import 'package:brocast/objects/broup.dart';
 import 'package:brocast/objects/chat.dart';
@@ -99,17 +100,37 @@ class _BroupMessagingState extends State<BroupMessaging>
   getParticipants() {
     List<int> remainingParticipants = chat.getParticipants();
     List<Bro> foundParticipants = [];
+
+    foundParticipants.add(Settings.instance.getMe());
+    // This id has to be in the array, since you are in the group.
+    remainingParticipants.remove(Settings.instance.getBroId());
+
     for (Chat br0 in BroList.instance.getBros()) {
       if (br0 is BroBros) {
-
+        if (remainingParticipants.contains(br0.id)) {
+          BroAdded broAdded = new BroAdded(br0.id, br0.chatName);
+          foundParticipants.add(broAdded);
+          remainingParticipants.remove(br0.id);
+        }
       }
     }
-    GetBroupBros getBroupBros = new GetBroupBros();
-    getBroupBros.getBroupBros(Settings.instance.getToken(), chat.getParticipants()).then((value) {
-      if (value != "an unknown error has occurred") {
-        chat.setBroupBros(value);
-      }
-    });
+
+    if (remainingParticipants.length != 0) {
+      print("not everyone is found yet");
+      print(remainingParticipants);
+      print(foundParticipants);
+      GetBroupBros getBroupBros = new GetBroupBros();
+      getBroupBros.getBroupBros(
+          Settings.instance.getToken(), remainingParticipants).then((value) {
+        if (value != "an unknown error has occurred") {
+          List<Bro> notAddedBros = value;
+          chat.setBroupBros(foundParticipants + notAddedBros);
+          print(chat.getBroupBros());
+        }
+      });
+    } else {
+      chat.setBroupBros(foundParticipants);
+    }
   }
 
   joinRoom(int broId, int brosBroId) {
