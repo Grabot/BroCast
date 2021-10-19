@@ -78,20 +78,20 @@ class _BroupDetailsState extends State<BroupDetails>
     SocketServices.instance.socket
         .on('message_event_send_solo', (data) => messageReceivedSolo(data));
     SocketServices.instance.socket
-        .on('message_event_change_chat_details_success', (data) {
-      chatDetailUpdateSuccess();
+        .on('message_event_change_broup_details_success', (data) {
+      broupDetailUpdateSuccess();
     });
     SocketServices.instance.socket
-        .on('message_event_change_chat_details_failed', (data) {
-      chatDetailUpdateFailed();
+        .on('message_event_change_broup_details_failed', (data) {
+      broupDetailUpdateFailed();
     });
     SocketServices.instance.socket
-        .on('message_event_change_chat_colour_success', (data) {
-      chatColourUpdateSuccess();
+        .on('message_event_change_broup_colour_success', (data) {
+      broupColourUpdateSuccess();
     });
-    SocketServices.instance.socket.on('message_event_change_chat_colour_failed',
+    SocketServices.instance.socket.on('message_event_change_broup_colour_failed',
         (data) {
-      chatColourUpdateFailed();
+          broupColourUpdateFailed();
     });
   }
 
@@ -199,11 +199,13 @@ class _BroupDetailsState extends State<BroupDetails>
 
   void updateDescription() {
     if (previousDescription != chatDescriptionController.text) {
+      print("going to update the description");
       if (SocketServices.instance.socket.connected) {
+        print("socket is connected");
         SocketServices.instance.socket
-            .emit("message_event_change_chat_details", {
+            .emit("message_event_change_broup_details", {
           "token": Settings.instance.getToken(),
-          "bros_bro_id": chat.id,
+          "broup_id": chat.id,
           "description": chatDescriptionController.text
         });
       }
@@ -231,9 +233,9 @@ class _BroupDetailsState extends State<BroupDetails>
       String newColour = currentColor.value.toRadixString(16).substring(2, 8);
       if (SocketServices.instance.socket.connected) {
         SocketServices.instance.socket
-            .emit("message_event_change_chat_colour", {
+            .emit("message_event_change_broup_colour", {
           "token": Settings.instance.getToken(),
-          "bros_bro_id": chat.id,
+          "broup_id": chat.id,
           "colour": newColour
         });
       }
@@ -243,7 +245,8 @@ class _BroupDetailsState extends State<BroupDetails>
     });
   }
 
-  void chatDetailUpdateSuccess() {
+  void broupDetailUpdateSuccess() {
+    print("broup description has been successfully updated");
     previousDescription = chatDescriptionController.text;
     chat.chatDescription = chatDescriptionController.text;
     if (mounted) {
@@ -251,13 +254,13 @@ class _BroupDetailsState extends State<BroupDetails>
     }
   }
 
-  void chatDetailUpdateFailed() {
+  void broupDetailUpdateFailed() {
     currentColor = previousColor;
     circleColorPickerController.color = previousColor;
     ShowToastComponent.showDialog("Updating the bro chat has failed", context);
   }
 
-  void chatColourUpdateSuccess() {
+  void broupColourUpdateSuccess() {
     chat.chatColor = currentColor;
     previousColor = currentColor;
     if (mounted) {
@@ -265,7 +268,7 @@ class _BroupDetailsState extends State<BroupDetails>
     }
   }
 
-  void chatColourUpdateFailed() {
+  void broupColourUpdateFailed() {
     chatDescriptionController.text = previousDescription;
     ShowToastComponent.showDialog(
         "Updating the bro colour has failed", context);
