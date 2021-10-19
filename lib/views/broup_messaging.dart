@@ -61,14 +61,14 @@ class _BroupMessagingState extends State<BroupMessaging>
   void initState() {
     super.initState();
     chat = widget.chat;
+    amountViewed = 1;
 
     if (chat.getBroupBros().isEmpty && chat.getParticipants().isNotEmpty) {
       getParticipants();
+      getMessages(amountViewed);
     }
 
     isLoading = false;
-    amountViewed = 1;
-    getMessages(amountViewed);
     if (chat.chatColor == null) {
       // It was opened via a notification and we don't have the whole object.
       // We retrieve it now
@@ -78,6 +78,7 @@ class _BroupMessagingState extends State<BroupMessaging>
           setState(() {
             chat = value;
             getParticipants();
+            getMessages(amountViewed);
           });
         }
       });
@@ -148,6 +149,7 @@ class _BroupMessagingState extends State<BroupMessaging>
   }
 
   messageReceivedSolo(var data) {
+    // TODO: @SKools this probably has to be changed.
     if (mounted) {
       if (chat.id != data["sender_id"]) {
         for (BroBros br0 in BroList.instance.getBros()) {
@@ -440,9 +442,20 @@ class _BroupMessagingState extends State<BroupMessaging>
             itemBuilder: (context, index) {
               return MessageTile(
                   message: messages[index],
+                  sender: getSender(messages[index].senderId),
                   myMessage: messages[index].senderId == Settings.instance.getBroId());
             })
         : Container();
+  }
+
+  String getSender(int senderId) {
+    String broName = "";
+    for (Bro bro in chat.getBroupBros()) {
+      if (bro.id == senderId) {
+        broName = bro.getFullName();
+      }
+    }
+    return broName;
   }
 
   void onTapEmojiTextField() {
@@ -699,9 +712,10 @@ class _BroupMessagingState extends State<BroupMessaging>
 
 class MessageTile extends StatefulWidget {
   final Message message;
+  final String sender;
   final bool myMessage;
 
-  MessageTile({Key key, this.message, this.myMessage}) : super(key: key);
+  MessageTile({Key key, this.message, this.sender, this.myMessage}) : super(key: key);
 
   @override
   _MessageTileState createState() => _MessageTileState();
@@ -735,11 +749,32 @@ class _MessageTileState extends State<MessageTile> {
                     child: Text(widget.message.body, style: simpleTextStyle()))
               ])
         : Container(
+            margin: EdgeInsets.only(top: 12),
             child: new Material(
             child: Column(children: [
+              widget.myMessage
+                  ? Container()
+                  : Container(
+                  child: Align(
+                  alignment: Alignment.bottomLeft,
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 12),
+                    child: RichText(
+                      text: TextSpan(
+                        children: [
+                          TextSpan(
+                            text: widget.sender,
+                            style:
+                            TextStyle(color: Colors.white70, fontSize: 16),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 12),
-                margin: EdgeInsets.only(top: 12),
                 width: MediaQuery.of(context).size.width,
                 alignment: widget.myMessage
                     ? Alignment.bottomRight
