@@ -1,4 +1,3 @@
-import 'package:brocast/objects/bro_bros.dart';
 import 'package:brocast/objects/chat.dart';
 
 class BroList {

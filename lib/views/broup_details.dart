@@ -14,6 +14,7 @@ import 'package:flutter_circle_color_picker/flutter_circle_color_picker.dart';
 
 import 'bro_profile.dart';
 import 'bro_settings.dart';
+import 'broup_messaging.dart';
 
 
 class BroupDetails extends StatefulWidget {
@@ -53,8 +54,6 @@ class _BroupDetailsState extends State<BroupDetails>
     amountInGroup = chat.getBroupBros().length;
     BackButtonInterceptor.add(myInterceptor);
     chatDescriptionController.text = chat.chatDescription;
-
-    print(chat.getBroupBros());
 
     initSockets();
     NotificationService.instance.setScreen(this);
@@ -115,9 +114,8 @@ class _BroupDetailsState extends State<BroupDetails>
   }
 
   void backButtonFunctionality() {
-    // TODO: @SKools I think this is wrong.
-    // Navigator.pushReplacement(context,
-    //     MaterialPageRoute(builder: (context) => BroMessaging(chat: chat)));
+    Navigator.pushReplacement(context,
+        MaterialPageRoute(builder: (context) => BroupMessaging(chat: chat)));
   }
 
   @override
@@ -137,13 +135,12 @@ class _BroupDetailsState extends State<BroupDetails>
   }
 
   void goToDifferentChat(BroBros chatBro) {
-    // TODO: @SKools I think this is wrong
-    // if (mounted) {
-    //   Navigator.pushReplacement(
-    //       context,
-    //       MaterialPageRoute(
-    //           builder: (context) => BroMessaging(chat: chatBro)));
-    // }
+    if (mounted) {
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => BroupMessaging(chat: chatBro)));
+    }
   }
 
   Widget appBarChatDetails() {
@@ -158,7 +155,7 @@ class _BroupDetailsState extends State<BroupDetails>
         title: Container(
             alignment: Alignment.centerLeft,
             child: Text(
-              "Chat details ${chat.chatName}",
+              "Broup details ${chat.chatName}",
               style:
                   TextStyle(color: getTextColor(chat.chatColor), fontSize: 20),
             )),
@@ -168,7 +165,7 @@ class _BroupDetailsState extends State<BroupDetails>
               itemBuilder: (context) => [
                     PopupMenuItem<int>(value: 0, child: Text("Profile")),
                     PopupMenuItem<int>(value: 1, child: Text("Settings")),
-                    PopupMenuItem<int>(value: 2, child: Text("Back to chat")),
+                    PopupMenuItem<int>(value: 2, child: Text("Back to broup")),
                   ])
         ]);
   }
@@ -184,11 +181,10 @@ class _BroupDetailsState extends State<BroupDetails>
             context, MaterialPageRoute(builder: (context) => BroSettings()));
         break;
       case 2:
-        // TODO: @SKools I think this is wrong
-        // Navigator.pushReplacement(
-        //     context,
-        //     MaterialPageRoute(
-        //         builder: (context) => BroMessaging(chat: chat)));
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (context) => BroupMessaging(chat: chat)));
         break;
     }
   }
@@ -322,7 +318,7 @@ class _BroupDetailsState extends State<BroupDetails>
                       style: simpleTextStyle(),
                       textAlign: TextAlign.center,
                       decoration:
-                          textFieldInputDecoration("No chat description yet"),
+                          textFieldInputDecoration("No broup description yet"),
                     ),
                   ),
                   SizedBox(height: 20),
@@ -428,7 +424,7 @@ class BroTile extends StatefulWidget {
 
 class _BroTileState extends State<BroTile> {
   selectBro(BuildContext context) {
-    if (widget.bro.id == -1) {
+    if (widget.bro.id == Settings.instance.getBroId()) {
       print("selected myself");
     } else {
       if (widget.bro is BroAdded) {

@@ -52,7 +52,7 @@ class Settings {
 
   setBroName(String broName) {
     if (this.bromotion.isNotEmpty) {
-      me = new BroAdded(-1, broName + " " + this.bromotion);
+      me = new BroAdded(this.broId, broName + " " + this.bromotion);
     }
     this.broName = broName;
   }
@@ -63,7 +63,7 @@ class Settings {
 
   setBromotion(String bromotion) {
     if (this.broName.isNotEmpty) {
-      me = new BroAdded(-1, this.broName + " " + bromotion);
+      me = new BroAdded(this.broId, this.broName + " " + bromotion);
     }
     this.bromotion = bromotion;
   }

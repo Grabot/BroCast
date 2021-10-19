@@ -83,8 +83,8 @@ class _BroupMessagingState extends State<BroupMessaging>
       });
     }
     NotificationService.instance.setScreen(this);
-    // TODO: @SKools add the broup functionality
-    // joinRoom(Settings.instance.getBroId(), chat.id);
+
+    joinBroupRoom(Settings.instance.getBroId(), chat.id);
     WidgetsBinding.instance.addObserver(this);
     BackButtonInterceptor.add(myInterceptor);
 
@@ -116,16 +116,12 @@ class _BroupMessagingState extends State<BroupMessaging>
     }
 
     if (remainingParticipants.length != 0) {
-      print("not everyone is found yet");
-      print(remainingParticipants);
-      print(foundParticipants);
       GetBroupBros getBroupBros = new GetBroupBros();
       getBroupBros.getBroupBros(
           Settings.instance.getToken(), remainingParticipants).then((value) {
         if (value != "an unknown error has occurred") {
           List<Bro> notAddedBros = value;
           chat.setBroupBros(foundParticipants + notAddedBros);
-          print(chat.getBroupBros());
         }
       });
     } else {
@@ -133,8 +129,9 @@ class _BroupMessagingState extends State<BroupMessaging>
     }
   }
 
-  joinRoom(int broId, int brosBroId) {
+  joinBroupRoom(int broId, int broupId) {
     if (SocketServices.instance.socket.connected) {
+      print("socket connected :)");
       SocketServices.instance.socket
           .on('message_event_send', (data) => messageReceived(data));
       SocketServices.instance.socket
@@ -142,9 +139,11 @@ class _BroupMessagingState extends State<BroupMessaging>
       SocketServices.instance.socket
           .on('message_event_read', (data) => messageRead(data));
       SocketServices.instance.socket.emit(
-        "join",
-        {"bro_id": broId, "bros_bro_id": brosBroId},
+        "join_broup",
+        {"bro_id": broId, "broup_id": broupId},
       );
+    } else {
+      print("socket NOT connected >:(");
     }
   }
 
@@ -173,6 +172,7 @@ class _BroupMessagingState extends State<BroupMessaging>
   }
 
   messageReceived(var data) {
+    print("message received!");
     if (mounted) {
       Message mes = new Message(
           data["id"],
@@ -186,7 +186,7 @@ class _BroupMessagingState extends State<BroupMessaging>
     }
   }
 
-  leaveRoom() {
+  leaveBroupRoom() {
     if (mounted) {
       if (SocketServices.instance.socket.connected) {
         SocketServices.instance.socket
@@ -196,8 +196,8 @@ class _BroupMessagingState extends State<BroupMessaging>
         SocketServices.instance.socket
             .off('message_event_read', (data) => print(data));
         SocketServices.instance.socket.emit(
-          "leave",
-          {"bro_id": Settings.instance.getBroId(), "bros_bro_id": chat.id},
+          "leave_broup",
+          {"bro_id": Settings.instance.getBroId(), "broup_id": chat.id},
         );
       }
     }
@@ -207,8 +207,7 @@ class _BroupMessagingState extends State<BroupMessaging>
   void dispose() {
     focusAppendText.dispose();
     focusEmojiTextField.dispose();
-    // TODO: @SKools add the broup functionality
-    // leaveRoom();
+    leaveBroupRoom();
     BackButtonInterceptor.remove(myInterceptor);
     super.dispose();
   }
@@ -406,8 +405,8 @@ class _BroupMessagingState extends State<BroupMessaging>
       // We send a response, indicating that we read the messages
       if (SocketServices.instance.socket.connected) {
         SocketServices.instance.socket.emit(
-          "message_read",
-          {"bro_id": Settings.instance.getBroId(), "bros_bro_id": chat.id},
+          "message_read_broup",
+          {"bro_id": Settings.instance.getBroId(), "broup_id": chat.id},
         );
       }
     }
@@ -418,6 +417,7 @@ class _BroupMessagingState extends State<BroupMessaging>
   }
 
   messageRead(var data) {
+    // TODO: @SKools the message read moet iets anders denk
     if (mounted) {
       for (Message message in this.messages) {
         message.isRead = true;
