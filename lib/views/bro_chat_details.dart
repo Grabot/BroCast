@@ -613,13 +613,13 @@ class _BroChatDetailsState extends State<BroChatDetails>
           content: new Text(
               "Are you sure you want to block this bro? The former bro will no longer be able to send you messages."),
           actions: <Widget>[
-            new FlatButton(
+            new TextButton(
               child: new Text("Cancel"),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
-            new FlatButton(
+            new TextButton(
               child: new Text("Block"),
               onPressed: () {
                 blockTheBro(true);
@@ -640,13 +640,13 @@ class _BroChatDetailsState extends State<BroChatDetails>
           content: new Text(
               "Are you sure you want to remove this chat? This bro and the messages will be removed from your bro list and the former bro can't send you messages anymore. \n(This action cannot be undone!)"),
           actions: <Widget>[
-            new FlatButton(
+            new TextButton(
               child: new Text("Cancel"),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
-            new FlatButton(
+            new TextButton(
               child: new Text("Remove"),
               onPressed: () {
                 removeTheBro();
@@ -667,13 +667,13 @@ class _BroChatDetailsState extends State<BroChatDetails>
           content: new Text(
               "Are you sure you want to report this bro? The most recent messages from this bro to you will be forwarded to Zwaar developers to assess possible deletion of the bro's account. This bro and the messages will be removed from your bro list and the former bro can't send you messages anymore. This former bro will not be notified of the report. \n(This action cannot be undone!)"),
           actions: <Widget>[
-            new FlatButton(
+            new TextButton(
               child: new Text("Cancel"),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
-            new FlatButton(
+            new TextButton(
               child: new Text("Report"),
               onPressed: () {
                 reportTheBro();

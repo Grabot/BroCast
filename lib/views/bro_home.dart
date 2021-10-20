@@ -338,17 +338,15 @@ class _BroTileState extends State<BroTile> {
             selectBro(context);
           },
           child: Container(
-              color: widget.chat.unreadMessages < 5
-                  ? widget.chat.unreadMessages < 4
+              color: widget.chat.unreadMessages < 4
                       ? widget.chat.unreadMessages < 3
                           ? widget.chat.unreadMessages < 2
                               ? widget.chat.unreadMessages < 1
-                                  ? widget.chat.chatColor.withOpacity(0.3)
-                                  : widget.chat.chatColor.withOpacity(0.4)
-                              : widget.chat.chatColor.withOpacity(0.5)
-                          : widget.chat.chatColor.withOpacity(0.6)
-                      : widget.chat.chatColor.withOpacity(0.7)
-                  : widget.chat.chatColor.withOpacity(0.8),
+                                  ? widget.chat.chatColor.withOpacity(0.6)
+                              : widget.chat.chatColor.withOpacity(0.7)
+                          : widget.chat.chatColor.withOpacity(0.8)
+                      : widget.chat.chatColor.withOpacity(0.9)
+                  : widget.chat.chatColor.withOpacity(1),
               padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -369,6 +367,21 @@ class _BroTileState extends State<BroTile> {
                                   style: TextStyle(
                                       color: Colors.white, fontSize: 20)),
                             ),
+                            widget.chat.alias != null && widget.chat.alias != ""
+                            ? Container(
+                              // All the padding and sizedboxes (and message bal) added up it's 103.
+                              // We need to make the width the total width of the screen minus 103 at least to not get an overflow.
+                              width: MediaQuery.of(context).size.width-110,
+                              padding: EdgeInsets.only(bottom: 10.0),
+                              child: Text(
+                                "- " + widget.chat.alias,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                    color: getTextColor(widget.chat.chatColor),
+                                    decoration: TextDecoration.underline,
+                                    fontSize: 16),
+                              ),
+                            ) : Container(),
                             widget.chat.chatDescription != ""
                                 ? Container(
                                     // All the padding and sizedboxes (and message bal) added up it's 103.
@@ -377,7 +390,7 @@ class _BroTileState extends State<BroTile> {
                                         MediaQuery.of(context).size.width - 110,
                                     child: Text(widget.chat.chatDescription,
                                         style: TextStyle(
-                                            color: Colors.white, fontSize: 12)),
+                                            color: getTextColor(widget.chat.chatColor), fontSize: 12)),
                                   )
                                 : Container(),
                           ],

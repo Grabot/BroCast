@@ -40,7 +40,7 @@ Color getTextColor(Color color) {
 
   // If the color is very bright we make the text colour black.
   // We set the limit high because we want it to be white mostly
-  if (luminance > 0.90) {
+  if (luminance > 0.70) {
     return Colors.black;
   } else {
     return Colors.white;

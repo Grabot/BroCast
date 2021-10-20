@@ -29,8 +29,10 @@ class BroupDetails extends StatefulWidget {
 class _BroupDetailsState extends State<BroupDetails>
     with WidgetsBindingObserver {
   TextEditingController chatDescriptionController = new TextEditingController();
+  TextEditingController chatAliasController = new TextEditingController();
 
   bool changeDescription = false;
+  bool changeAlias = false;
   bool changeColour = false;
   bool showNotification = true;
 
@@ -42,8 +44,10 @@ class _BroupDetailsState extends State<BroupDetails>
   Color previousColor;
 
   FocusNode focusNodeDescription = new FocusNode();
+  FocusNode focusNodeAlias = new FocusNode();
 
   String previousDescription = "";
+  String previousAlias = "";
 
   Broup chat;
 
@@ -54,6 +58,7 @@ class _BroupDetailsState extends State<BroupDetails>
     amountInGroup = chat.getBroupBros().length;
     BackButtonInterceptor.add(myInterceptor);
     chatDescriptionController.text = chat.chatDescription;
+    chatAliasController.text = chat.alias;
 
     initSockets();
     NotificationService.instance.setScreen(this);
@@ -80,6 +85,10 @@ class _BroupDetailsState extends State<BroupDetails>
     SocketServices.instance.socket
         .on('message_event_change_broup_details_success', (data) {
       broupDetailUpdateSuccess();
+    });
+    SocketServices.instance.socket
+        .on('message_event_change_broup_alias_success', (data) {
+      broupAliasUpdateSuccess();
     });
     SocketServices.instance.socket
         .on('message_event_change_broup_details_failed', (data) {
@@ -197,6 +206,14 @@ class _BroupDetailsState extends State<BroupDetails>
     });
   }
 
+  void onTapAliasField() {
+    previousAlias = chatAliasController.text;
+    focusNodeAlias.requestFocus();
+    setState(() {
+      changeAlias = true;
+    });
+  }
+
   void updateDescription() {
     if (previousDescription != chatDescriptionController.text) {
       print("going to update the description");
@@ -215,6 +232,26 @@ class _BroupDetailsState extends State<BroupDetails>
     } else {
       setState(() {
         changeDescription = false;
+      });
+    }
+  }
+
+  void updateAlias() {
+    if (previousAlias != chatAliasController.text) {
+      if (SocketServices.instance.socket.connected) {
+        SocketServices.instance.socket
+            .emit("message_event_change_broup_alias", {
+          "token": Settings.instance.getToken(),
+          "broup_id": chat.id,
+          "alias": chatAliasController.text
+        });
+      }
+      setState(() {
+        changeAlias = false;
+      });
+    } else {
+      setState(() {
+        changeAlias = false;
       });
     }
   }
@@ -246,9 +283,16 @@ class _BroupDetailsState extends State<BroupDetails>
   }
 
   void broupDetailUpdateSuccess() {
-    print("broup description has been successfully updated");
     previousDescription = chatDescriptionController.text;
     chat.chatDescription = chatDescriptionController.text;
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  void broupAliasUpdateSuccess() {
+    previousAlias = chatAliasController.text;
+    chat.alias = chatAliasController.text;
     if (mounted) {
       setState(() {});
     }
@@ -408,6 +452,41 @@ class _BroupDetailsState extends State<BroupDetails>
                           child: Text('Change color'),
                         ),
                   SizedBox(height: 20),
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    child: TextFormField(
+                      focusNode: focusNodeAlias,
+                      onTap: () {
+                        onTapAliasField();
+                      },
+                      controller: chatAliasController,
+                      style: simpleTextStyle(),
+                      textAlign: TextAlign.center,
+                      decoration: textFieldInputDecoration("No broup alias yet"),
+                    ),
+                  ),
+                  SizedBox(height: 20),
+                  changeAlias
+                      ? TextButton(
+                    style: ButtonStyle(
+                      foregroundColor:
+                      MaterialStateProperty.all<Color>(Colors.red),
+                    ),
+                    onPressed: () {
+                      updateAlias();
+                    },
+                    child: Text('Save broup alias'),
+                  )
+                      : TextButton(
+                    style: ButtonStyle(
+                      foregroundColor:
+                      MaterialStateProperty.all<Color>(Colors.blue),
+                    ),
+                    onPressed: () {
+                      onTapAliasField();
+                    },
+                    child: Text('Update broup alias'),
+                  ),
                 ]),
               ),
             ),

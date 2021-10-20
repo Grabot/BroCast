@@ -1,4 +1,3 @@
-import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:brocast/objects/bro_bros.dart';
 import 'package:brocast/objects/chat.dart';
@@ -61,8 +60,8 @@ class _BroProfileState extends State<BroProfile> with WidgetsBindingObserver {
       if (val == null || val.length == 0) {
         // couldn't get token for some reason
       } else {
-        String broName = val[0];
-        String bromotion = val[1];
+        // String broName = val[0];
+        // String bromotion = val[1];
         String password = val[2];
         if (broPassword.isEmpty || broPassword != password) {
           setState(() {
