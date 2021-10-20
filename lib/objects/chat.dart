@@ -7,6 +7,7 @@ class Chat {
   String roomName;
   String chatName;
   String chatDescription;
+  String alias;
   Color chatColor;
   int unreadMessages;
   bool blocked;

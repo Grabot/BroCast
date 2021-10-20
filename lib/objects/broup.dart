@@ -8,11 +8,12 @@ class Broup extends Chat {
   List<int> participants = [];
   List<Bro> broupBros = [];
 
-  Broup(int id, String broupName, String broupDescription, String broupColor,
+  Broup(int id, String broupName, String broupDescription, String alias, String broupColor,
       int unreadMessages, String lastActivity, String roomName, bool blocked, bool isBroup) {
     this.id = id;
     this.chatName = broupName;
     this.chatDescription = broupDescription;
+    this.alias = alias;
     if (broupColor != "") {
       this.chatColor = Color(int.parse("0xFF$broupColor"));
     }

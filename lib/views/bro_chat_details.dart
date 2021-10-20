@@ -29,8 +29,10 @@ class BroChatDetails extends StatefulWidget {
 class _BroChatDetailsState extends State<BroChatDetails>
     with WidgetsBindingObserver {
   TextEditingController chatDescriptionController = new TextEditingController();
+  TextEditingController chatAliasController = new TextEditingController();
 
   bool changeDescription = false;
+  bool changeAlias = false;
   bool changeColour = false;
   bool showNotification = true;
 
@@ -44,8 +46,10 @@ class _BroChatDetailsState extends State<BroChatDetails>
   Color previousColor;
 
   FocusNode focusNodeDescription = new FocusNode();
+  FocusNode focusNodeAlias = new FocusNode();
 
   String previousDescription = "";
+  String previousAlias = "";
 
   Chat chat;
 
@@ -55,6 +59,7 @@ class _BroChatDetailsState extends State<BroChatDetails>
     chat = widget.chat;
     BackButtonInterceptor.add(myInterceptor);
     chatDescriptionController.text = chat.chatDescription;
+    chatAliasController.text = chat.alias;
 
     initSockets();
     NotificationService.instance.setScreen(this);
@@ -85,6 +90,10 @@ class _BroChatDetailsState extends State<BroChatDetails>
     SocketServices.instance.socket
         .on('message_event_change_chat_details_success', (data) {
       chatDetailUpdateSuccess();
+    });
+    SocketServices.instance.socket
+        .on('message_event_change_chat_alias_success', (data) {
+      chatAliasUpdateSuccess();
     });
     SocketServices.instance.socket
         .on('message_event_change_chat_details_failed', (data) {
@@ -202,6 +211,14 @@ class _BroChatDetailsState extends State<BroChatDetails>
     });
   }
 
+  void onTapAliasField() {
+    previousAlias = chatAliasController.text;
+    focusNodeAlias.requestFocus();
+    setState(() {
+      changeAlias = true;
+    });
+  }
+
   void updateDescription() {
     if (previousDescription != chatDescriptionController.text) {
       if (SocketServices.instance.socket.connected) {
@@ -218,6 +235,26 @@ class _BroChatDetailsState extends State<BroChatDetails>
     } else {
       setState(() {
         changeDescription = false;
+      });
+    }
+  }
+
+  void updateAlias() {
+    if (previousAlias != chatAliasController.text) {
+      if (SocketServices.instance.socket.connected) {
+        SocketServices.instance.socket
+            .emit("message_event_change_chat_alias", {
+          "token": Settings.instance.getToken(),
+          "bros_bro_id": chat.id,
+          "alias": chatAliasController.text
+        });
+      }
+      setState(() {
+        changeAlias = false;
+      });
+    } else {
+      setState(() {
+        changeAlias = false;
       });
     }
   }
@@ -312,6 +349,14 @@ class _BroChatDetailsState extends State<BroChatDetails>
   void chatDetailUpdateSuccess() {
     previousDescription = chatDescriptionController.text;
     chat.chatDescription = chatDescriptionController.text;
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  void chatAliasUpdateSuccess() {
+    previousAlias = chatAliasController.text;
+    chat.alias = chatAliasController.text;
     if (mounted) {
       setState(() {});
     }
@@ -517,6 +562,41 @@ class _BroChatDetailsState extends State<BroChatDetails>
                       )
                   ),
                   SizedBox(height: 20),
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    child: TextFormField(
+                      focusNode: focusNodeAlias,
+                      onTap: () {
+                        onTapAliasField();
+                      },
+                      controller: chatAliasController,
+                      style: simpleTextStyle(),
+                      textAlign: TextAlign.center,
+                      decoration: textFieldInputDecoration("No chat alias yet"),
+                    ),
+                  ),
+                  SizedBox(height: 20),
+                  changeAlias
+                      ? TextButton(
+                    style: ButtonStyle(
+                      foregroundColor:
+                      MaterialStateProperty.all<Color>(Colors.red),
+                    ),
+                    onPressed: () {
+                      updateAlias();
+                    },
+                    child: Text('Save chat alias'),
+                  )
+                      : TextButton(
+                    style: ButtonStyle(
+                      foregroundColor:
+                      MaterialStateProperty.all<Color>(Colors.blue),
+                    ),
+                    onPressed: () {
+                      onTapAliasField();
+                    },
+                    child: Text('Update chat alias'),
+                  ),
                 ]),
               ),
             ),

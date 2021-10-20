@@ -29,6 +29,7 @@ class BlockBro {
             chatResponse["bros_bro_id"],
             chatResponse["chat_name"],
             chatResponse["chat_description"],
+            chatResponse["alias"],
             chatResponse["chat_colour"],
             chatResponse["unread_messages"],
             chatResponse["last_time_activity"],

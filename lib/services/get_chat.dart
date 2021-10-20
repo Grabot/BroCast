@@ -29,6 +29,7 @@ class GetChat {
             chat["bros_bro_id"],
             chat["chat_name"],
             chat["chat_description"],
+            chat["alias"],
             chat["chat_colour"],
             chat["unread_messages"],
             chat["last_time_activity"],
