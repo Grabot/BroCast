@@ -128,8 +128,22 @@ class _BroChatDetailsState extends State<BroChatDetails>
   }
 
   void backButtonFunctionality() {
-    Navigator.pushReplacement(context,
-        MaterialPageRoute(builder: (context) => BroMessaging(chat: chat)));
+    if (changeDescription) {
+      setState(() {
+        chatDescriptionController.text = previousDescription;
+        changeDescription = false;
+        FocusScope.of(context).unfocus();
+      });
+    } else if (changeAlias) {
+      setState(() {
+        chatAliasController.text = previousAlias;
+        changeAlias = false;
+        FocusScope.of(context).unfocus();
+      });
+    } else {
+      Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (context) => BroMessaging(chat: chat)));
+    }
   }
 
   @override
@@ -236,10 +250,12 @@ class _BroChatDetailsState extends State<BroChatDetails>
         });
       }
       setState(() {
+        FocusScope.of(context).unfocus();
         changeDescription = false;
       });
     } else {
       setState(() {
+        FocusScope.of(context).unfocus();
         changeDescription = false;
       });
     }
@@ -256,10 +272,12 @@ class _BroChatDetailsState extends State<BroChatDetails>
         });
       }
       setState(() {
+        FocusScope.of(context).unfocus();
         changeAlias = false;
       });
     } else {
       setState(() {
+        FocusScope.of(context).unfocus();
         changeAlias = false;
       });
     }
@@ -436,41 +454,49 @@ class _BroChatDetailsState extends State<BroChatDetails>
                       )),
                   SizedBox(height: 20),
                   Container(
-                    padding: EdgeInsets.symmetric(horizontal: 20),
-                    child: TextFormField(
-                      focusNode: focusNodeDescription,
-                      onTap: () {
-                        onTapDescriptionField();
-                      },
-                      controller: chatDescriptionController,
-                      style: simpleTextStyle(),
-                      textAlign: TextAlign.center,
-                      decoration:
-                          textFieldInputDecoration("No chat description yet"),
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    child: Row(
+                      children: [
+                        Container(
+                          // 20 padding on both sides, 5 sizedbox and 18 for button
+                          width: MediaQuery.of(context).size.width-45,
+                          child: TextFormField(
+                            focusNode: focusNodeAlias,
+                            onTap: () {
+                              onTapAliasField();
+                            },
+                            controller: chatAliasController,
+                            style: simpleTextStyle(),
+                            textAlign: TextAlign.center,
+                            decoration: textFieldInputDecoration("No chat alias yet"),
+                          ),
+                        ),
+                        SizedBox(width: 5),
+                        changeAlias
+                            ? Container(
+                          width: 20,
+                          child: IconButton(
+                              iconSize: 20.0,
+                              icon: Icon(Icons.check, color: Colors.white),
+                              onPressed: () {
+                                updateAlias();
+                              }
+                          ),
+                        )
+                            : Container(
+                          width: 20,
+                          child: IconButton(
+                              iconSize: 20.0,
+                              icon: Icon(Icons.edit, color: Colors.white),
+                              onPressed: () {
+                                onTapAliasField();
+                              }
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   SizedBox(height: 20),
-                  changeDescription
-                      ? TextButton(
-                          style: ButtonStyle(
-                            foregroundColor:
-                                MaterialStateProperty.all<Color>(Colors.red),
-                          ),
-                          onPressed: () {
-                            updateDescription();
-                          },
-                          child: Text('Save description'),
-                        )
-                      : TextButton(
-                          style: ButtonStyle(
-                            foregroundColor:
-                                MaterialStateProperty.all<Color>(Colors.blue),
-                          ),
-                          onPressed: () {
-                            onTapDescriptionField();
-                          },
-                          child: Text('Update description'),
-                        ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -491,34 +517,80 @@ class _BroChatDetailsState extends State<BroChatDetails>
                   ),
                   changeColour
                       ? CircleColorPicker(
-                          controller: circleColorPickerController,
-                          textStyle: simpleTextStyle(),
-                          onChanged: (colour) {
-                            setState(() => onColorChange(colour));
-                          },
-                        )
+                    controller: circleColorPickerController,
+                    textStyle: simpleTextStyle(),
+                    onChanged: (colour) {
+                      setState(() => onColorChange(colour));
+                    },
+                  )
                       : Container(),
                   changeColour
                       ? TextButton(
-                          style: ButtonStyle(
-                            foregroundColor:
-                                MaterialStateProperty.all<Color>(Colors.red),
-                          ),
-                          onPressed: () {
-                            saveColour();
-                          },
-                          child: Text('Save color'),
-                        )
+                    style: ButtonStyle(
+                      foregroundColor:
+                      MaterialStateProperty.all<Color>(Colors.red),
+                    ),
+                    onPressed: () {
+                      saveColour();
+                    },
+                    child: Text('Save color'),
+                  )
                       : TextButton(
-                          style: ButtonStyle(
-                            foregroundColor:
-                                MaterialStateProperty.all<Color>(Colors.blue),
+                    style: ButtonStyle(
+                      foregroundColor:
+                      MaterialStateProperty.all<Color>(Colors.blue),
+                    ),
+                    onPressed: () {
+                      updateColour();
+                    },
+                    child: Text('Change color'),
+                  ),
+                  SizedBox(height: 20),
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    child: Row(
+                      children: [
+                        Container(
+                          // 20 padding on both sides, 5 sizedbox and 18 for button
+                          width: MediaQuery.of(context).size.width-45,
+                          child: TextFormField(
+                            focusNode: focusNodeDescription,
+                            maxLines: null,
+                            onTap: () {
+                              onTapDescriptionField();
+                            },
+                            controller: chatDescriptionController,
+                            style: simpleTextStyle(),
+                            textAlign: TextAlign.center,
+                            decoration:
+                            textFieldInputDecoration("No chat description yet"),
                           ),
-                          onPressed: () {
-                            updateColour();
-                          },
-                          child: Text('Change color'),
                         ),
+                        SizedBox(width: 5),
+                        changeDescription
+                        ? Container(
+                          width: 20,
+                          child: IconButton(
+                            iconSize: 20.0,
+                            icon: Icon(Icons.check, color: Colors.white),
+                            onPressed: () {
+                              updateDescription();
+                            }
+                          ),
+                        )
+                        : Container(
+                          width: 20,
+                          child: IconButton(
+                            iconSize: 20.0,
+                            icon: Icon(Icons.edit, color: Colors.white),
+                            onPressed: () {
+                              onTapDescriptionField();
+                            }
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                   SizedBox(height: 10),
                   TextButton(
                       style: ButtonStyle(
@@ -590,41 +662,6 @@ class _BroChatDetailsState extends State<BroChatDetails>
                       )
                   ),
                   SizedBox(height: 20),
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 20),
-                    child: TextFormField(
-                      focusNode: focusNodeAlias,
-                      onTap: () {
-                        onTapAliasField();
-                      },
-                      controller: chatAliasController,
-                      style: simpleTextStyle(),
-                      textAlign: TextAlign.center,
-                      decoration: textFieldInputDecoration("No chat alias yet"),
-                    ),
-                  ),
-                  SizedBox(height: 20),
-                  changeAlias
-                      ? TextButton(
-                    style: ButtonStyle(
-                      foregroundColor:
-                      MaterialStateProperty.all<Color>(Colors.red),
-                    ),
-                    onPressed: () {
-                      updateAlias();
-                    },
-                    child: Text('Save chat alias'),
-                  )
-                      : TextButton(
-                    style: ButtonStyle(
-                      foregroundColor:
-                      MaterialStateProperty.all<Color>(Colors.blue),
-                    ),
-                    onPressed: () {
-                      onTapAliasField();
-                    },
-                    child: Text('Update chat alias'),
-                  ),
                 ]),
               ),
             ),

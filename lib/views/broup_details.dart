@@ -123,8 +123,22 @@ class _BroupDetailsState extends State<BroupDetails>
   }
 
   void backButtonFunctionality() {
-    Navigator.pushReplacement(context,
-        MaterialPageRoute(builder: (context) => BroupMessaging(chat: chat)));
+    if (changeDescription) {
+      setState(() {
+        chatDescriptionController.text = previousDescription;
+        changeDescription = false;
+        FocusScope.of(context).unfocus();
+      });
+    } else if (changeAlias) {
+      setState(() {
+        chatAliasController.text = previousAlias;
+        changeAlias = false;
+        FocusScope.of(context).unfocus();
+      });
+    } else {
+      Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (context) => BroupMessaging(chat: chat)));
+    }
   }
 
   @override
@@ -233,10 +247,12 @@ class _BroupDetailsState extends State<BroupDetails>
         });
       }
       setState(() {
+        FocusScope.of(context).unfocus();
         changeDescription = false;
       });
     } else {
       setState(() {
+        FocusScope.of(context).unfocus();
         changeDescription = false;
       });
     }
@@ -253,10 +269,12 @@ class _BroupDetailsState extends State<BroupDetails>
         });
       }
       setState(() {
+        FocusScope.of(context).unfocus();
         changeAlias = false;
       });
     } else {
       setState(() {
+        FocusScope.of(context).unfocus();
         changeAlias = false;
       });
     }
@@ -381,139 +399,144 @@ class _BroupDetailsState extends State<BroupDetails>
                         "${chat.chatName}",
                         style: TextStyle(color: Colors.white, fontSize: 25),
                       )),
-                  SizedBox(height: 20),
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 20),
-                    child: TextFormField(
-                      focusNode: focusNodeDescription,
-                      onTap: () {
-                        onTapDescriptionField();
-                      },
-                      controller: chatDescriptionController,
-                      style: simpleTextStyle(),
-                      textAlign: TextAlign.center,
-                      decoration:
-                          textFieldInputDecoration("No broup description yet"),
-                    ),
-                  ),
-                  SizedBox(height: 20),
-                  changeDescription
-                      ? TextButton(
-                          style: ButtonStyle(
-                            foregroundColor:
-                                MaterialStateProperty.all<Color>(Colors.red),
-                          ),
-                          onPressed: () {
-                            updateDescription();
-                          },
-                          child: Text('Save description'),
-                        )
-                      : TextButton(
-                          style: ButtonStyle(
-                            foregroundColor:
-                                MaterialStateProperty.all<Color>(Colors.blue),
-                          ),
-                          onPressed: () {
-                            onTapDescriptionField();
-                          },
-                          child: Text('Update description'),
-                        ),
-                  SizedBox(height: 20),
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 30),
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      "" + amountInGroup.toString() + " participants",
-                      style: simpleTextStyle(),
-                    ),
-                  ),
-                  Container(
-                      alignment: Alignment.center,
-                      child: brosInBroupList()
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "Color:",
+              SizedBox(height: 20),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 10),
+                child: Row(
+                  children: [
+                    Container(
+                      // 20 padding on both sides, 5 sizedbox and 18 for button
+                      width: MediaQuery.of(context).size.width-45,
+                      child: TextFormField(
+                        focusNode: focusNodeAlias,
+                        onTap: () {
+                          onTapAliasField();
+                        },
+                        controller: chatAliasController,
                         style: simpleTextStyle(),
+                        textAlign: TextAlign.center,
+                        decoration: textFieldInputDecoration("No broup alias yet"),
                       ),
-                      SizedBox(width: 20),
-                      Container(
-                        height: 40,
-                        width: 40,
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                            color: chat.chatColor,
-                            borderRadius: BorderRadius.circular(40)),
+                    ),
+                    SizedBox(width: 5),
+                    changeAlias
+                    ? Container(
+                      width: 20,
+                      child: IconButton(
+                          iconSize: 20.0,
+                          icon: Icon(Icons.check, color: Colors.white),
+                          onPressed: () {
+                            updateAlias();
+                          }
+                      ),
+                    )
+                    : Container(
+                      width: 20,
+                      child: IconButton(
+                          iconSize: 20.0,
+                          icon: Icon(Icons.edit, color: Colors.white),
+                          onPressed: () {
+                            onTapAliasField();
+                          }
+                        ),
                       ),
                     ],
                   ),
-                  changeColour
-                      ? CircleColorPicker(
-                          controller: circleColorPickerController,
-                          textStyle: simpleTextStyle(),
-                          onChanged: (colour) {
-                            setState(() => onColorChange(colour));
-                          },
-                        )
-                      : Container(),
-                  changeColour
-                      ? TextButton(
-                          style: ButtonStyle(
-                            foregroundColor:
-                                MaterialStateProperty.all<Color>(Colors.red),
-                          ),
-                          onPressed: () {
-                            saveColour();
-                          },
-                          child: Text('Save color'),
-                        )
-                      : TextButton(
-                          style: ButtonStyle(
-                            foregroundColor:
-                                MaterialStateProperty.all<Color>(Colors.blue),
-                          ),
-                          onPressed: () {
-                            updateColour();
-                          },
-                          child: Text('Change color'),
-                        ),
-                  SizedBox(height: 20),
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 20),
-                    child: TextFormField(
-                      focusNode: focusNodeAlias,
-                      onTap: () {
-                        onTapAliasField();
-                      },
-                      controller: chatAliasController,
+                ),
+                SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Color:",
                       style: simpleTextStyle(),
-                      textAlign: TextAlign.center,
-                      decoration: textFieldInputDecoration("No broup alias yet"),
                     ),
+                    SizedBox(width: 20),
+                    Container(
+                      height: 40,
+                      width: 40,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                          color: chat.chatColor,
+                          borderRadius: BorderRadius.circular(40)),
+                    ),
+                  ],
+                ),
+                changeColour
+                ? CircleColorPicker(
+                  controller: circleColorPickerController,
+                  textStyle: simpleTextStyle(),
+                  onChanged: (colour) {
+                    setState(() => onColorChange(colour));
+                  },
+                )
+                : Container(),
+                changeColour
+                ? TextButton(
+                  style: ButtonStyle(
+                    foregroundColor:
+                    MaterialStateProperty.all<Color>(Colors.red),
                   ),
-                  SizedBox(height: 20),
-                  changeAlias
-                      ? TextButton(
-                    style: ButtonStyle(
-                      foregroundColor:
-                      MaterialStateProperty.all<Color>(Colors.red),
+                  onPressed: () {
+                    saveColour();
+                  },
+                  child: Text('Save color'),
+                )
+                : TextButton(
+                  style: ButtonStyle(
+                    foregroundColor:
+                    MaterialStateProperty.all<Color>(Colors.blue),
+                  ),
+                  onPressed: () {
+                    updateColour();
+                  },
+                  child: Text('Change color'),
+                ),
+                SizedBox(height: 20),
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 10),
+                  child: Row(
+                    children: [
+                      Container(
+                        // 20 padding on both sides, 5 sizedbox and 18 for button
+                        width: MediaQuery.of(context).size.width-45,
+                        child: TextFormField(
+                          focusNode: focusNodeDescription,
+                          maxLines: null,
+                          onTap: () {
+                            onTapDescriptionField();
+                          },
+                          controller: chatDescriptionController,
+                          style: simpleTextStyle(),
+                          textAlign: TextAlign.center,
+                          decoration:
+                          textFieldInputDecoration("No broup description yet"),
+                        ),
+                      ),
+                      SizedBox(width: 5),
+                      changeDescription
+                        ? Container(
+                          width: 20,
+                          child: IconButton(
+                              iconSize: 20.0,
+                              icon: Icon(Icons.check, color: Colors.white),
+                              onPressed: () {
+                                updateDescription();
+                              }
+                            ),
+                          )
+                        : Container(
+                          width: 20,
+                          child: IconButton(
+                            iconSize: 20.0,
+                            icon: Icon(Icons.edit, color: Colors.white),
+                            onPressed: () {
+                              onTapDescriptionField();
+                            }
+                          ),
+                        ),
+                      ],
                     ),
-                    onPressed: () {
-                      updateAlias();
-                    },
-                    child: Text('Save broup alias'),
-                  )
-                      : TextButton(
-                    style: ButtonStyle(
-                      foregroundColor:
-                      MaterialStateProperty.all<Color>(Colors.blue),
-                    ),
-                    onPressed: () {
-                      onTapAliasField();
-                    },
-                    child: Text('Update broup alias'),
                   ),
                 ]),
               ),
