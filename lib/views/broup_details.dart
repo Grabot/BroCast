@@ -444,54 +444,52 @@ class _BroupDetailsState extends State<BroupDetails>
                   ),
                 ),
                 SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      "Color:",
-                      style: simpleTextStyle(),
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 24),
+                  child: InkWell(
+                    onTap: () {
+                      updateColour();
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "Color:",
+                          style: simpleTextStyle(),
+                        ),
+                        SizedBox(width: 20),
+                        Container(
+                          height: 40,
+                          width: 40,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                              color: chat.chatColor,
+                              borderRadius: BorderRadius.circular(40)),
+                        ),
+                      ],
                     ),
-                    SizedBox(width: 20),
-                    Container(
-                      height: 40,
-                      width: 40,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                          color: chat.chatColor,
-                          borderRadius: BorderRadius.circular(40)),
-                    ),
-                  ],
+                  ),
                 ),
                 changeColour
-                ? CircleColorPicker(
-                  controller: circleColorPickerController,
-                  textStyle: simpleTextStyle(),
-                  onChanged: (colour) {
-                    setState(() => onColorChange(colour));
-                  },
+                ? Column(
+                  children:[
+                    CircleColorPicker(
+                      controller: circleColorPickerController,
+                      textStyle: simpleTextStyle(),
+                      onChanged: (colour) {
+                        setState(() => onColorChange(colour));
+                      },
+                    ),
+                    IconButton(
+                        iconSize: 30.0,
+                        icon: Icon(Icons.check, color: Colors.green),
+                        onPressed: () {
+                          saveColour();
+                        }
+                    ),
+                  ]
                 )
                 : Container(),
-                changeColour
-                ? TextButton(
-                  style: ButtonStyle(
-                    foregroundColor:
-                    MaterialStateProperty.all<Color>(Colors.red),
-                  ),
-                  onPressed: () {
-                    saveColour();
-                  },
-                  child: Text('Save color'),
-                )
-                : TextButton(
-                  style: ButtonStyle(
-                    foregroundColor:
-                    MaterialStateProperty.all<Color>(Colors.blue),
-                  ),
-                  onPressed: () {
-                    updateColour();
-                  },
-                  child: Text('Change color'),
-                ),
                 SizedBox(height: 20),
                 Container(
                   padding: EdgeInsets.symmetric(horizontal: 10),
@@ -538,6 +536,7 @@ class _BroupDetailsState extends State<BroupDetails>
                       ],
                     ),
                   ),
+                  SizedBox(height: 200),
                 ]),
               ),
             ),
