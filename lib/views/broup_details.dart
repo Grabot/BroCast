@@ -161,13 +161,19 @@ class _BroupDetailsState extends State<BroupDetails>
             }),
         backgroundColor:
             chat.chatColor != null ? chat.chatColor : Color(0xff145C9E),
-        title: Container(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              "Broup details ${chat.chatName}",
-              style:
-                  TextStyle(color: getTextColor(chat.chatColor), fontSize: 20),
-            )),
+        title: Column(
+            children: [
+              chat.alias != null && chat.alias.isNotEmpty
+                  ? Container(
+                  child: Text(chat.alias,
+                      style: TextStyle(
+                          color: getTextColor(chat.chatColor), fontSize: 20)))
+                  : Container(
+                  child: Text(chat.chatName,
+                      style: TextStyle(
+                          color: getTextColor(chat.chatColor), fontSize: 20))),
+            ]
+        ),
         actions: [
           PopupMenuButton<int>(
               onSelected: (item) => onSelectChat(context, item),
@@ -291,6 +297,7 @@ class _BroupDetailsState extends State<BroupDetails>
   }
 
   void broupAliasUpdateSuccess() {
+    print("alias update successfull");
     previousAlias = chatAliasController.text;
     chat.alias = chatAliasController.text;
     if (mounted) {

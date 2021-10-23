@@ -62,13 +62,16 @@ class _BroupMessagingState extends State<BroupMessaging>
     super.initState();
     chat = widget.chat;
     amountViewed = 1;
+    isLoading = false;
 
-    if (chat.getBroupBros().isEmpty && chat.getParticipants().isNotEmpty) {
+    if (chat.getBroupBros().isNotEmpty && chat.getParticipants().isNotEmpty) {
+      getMessages(amountViewed);
+    }
+    else if (chat.getBroupBros().isEmpty && chat.getParticipants().isNotEmpty) {
       getParticipants();
       getMessages(amountViewed);
     }
 
-    isLoading = false;
     if (chat.chatColor == null) {
       // It was opened via a notification and we don't have the whole object.
       // We retrieve it now
@@ -99,7 +102,7 @@ class _BroupMessagingState extends State<BroupMessaging>
   }
 
   getParticipants() {
-    List<int> remainingParticipants = chat.getParticipants();
+    List<int> remainingParticipants = new List<int>.from(chat.getParticipants());
     List<Bro> foundParticipants = [];
 
     foundParticipants.add(Settings.instance.getMe());
@@ -509,15 +512,15 @@ class _BroupMessagingState extends State<BroupMessaging>
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(chat.chatName,
-                        style: TextStyle(
-                            color: getTextColor(chat.chatColor), fontSize: 20)),
-                    chat.chatDescription != ""
-                        ? Text(chat.chatDescription,
+                    chat.alias != null && chat.alias.isNotEmpty
+                        ? Container(
+                        child: Text(chat.alias,
                             style: TextStyle(
-                                color: getTextColor(chat.chatColor),
-                                fontSize: 12))
-                        : Container(),
+                                color: getTextColor(chat.chatColor), fontSize: 20)))
+                        : Container(
+                        child: Text(chat.chatName,
+                            style: TextStyle(
+                                color: getTextColor(chat.chatColor), fontSize: 20))),
                   ],
                 ))),
         actions: [

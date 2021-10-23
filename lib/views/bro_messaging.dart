@@ -449,15 +449,15 @@ class _BroMessagingState extends State<BroMessaging>
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(chat.chatName,
-                        style: TextStyle(
-                            color: getTextColor(chat.chatColor), fontSize: 20)),
-                    chat.chatDescription != ""
-                        ? Text(chat.chatDescription,
+                    chat.alias != null && chat.alias.isNotEmpty
+                        ? Container(
+                        child: Text(chat.alias,
                             style: TextStyle(
-                                color: getTextColor(chat.chatColor),
-                                fontSize: 12))
-                        : Container(),
+                                color: getTextColor(chat.chatColor), fontSize: 20)))
+                        : Container(
+                        child: Text(chat.chatName,
+                            style: TextStyle(
+                                color: getTextColor(chat.chatColor), fontSize: 20))),
                   ],
                 ))),
         actions: [

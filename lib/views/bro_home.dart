@@ -362,26 +362,14 @@ class _BroTileState extends State<BroTile> {
                               // All the padding and sizedboxes (and message bal) added up it's 103.
                               // We need to make the width the total width of the screen minus 103 at least to not get an overflow.
                               width: MediaQuery.of(context).size.width - 110,
-                              child: Text(widget.chat.chatName,
+                              child: Text(
+                                  widget.chat.alias != null && widget.chat.alias.isNotEmpty
+                                      ? widget.chat.alias
+                                      : widget.chat.chatName,
                                   overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
                                       color: Colors.white, fontSize: 20)),
                             ),
-                            widget.chat.alias != null && widget.chat.alias != ""
-                            ? Container(
-                              // All the padding and sizedboxes (and message bal) added up it's 103.
-                              // We need to make the width the total width of the screen minus 103 at least to not get an overflow.
-                              width: MediaQuery.of(context).size.width-110,
-                              padding: EdgeInsets.only(bottom: 10.0),
-                              child: Text(
-                                "- " + widget.chat.alias,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                    color: getTextColor(widget.chat.chatColor),
-                                    decoration: TextDecoration.underline,
-                                    fontSize: 16),
-                              ),
-                            ) : Container(),
                             widget.chat.chatDescription != ""
                                 ? Container(
                                     // All the padding and sizedboxes (and message bal) added up it's 103.
