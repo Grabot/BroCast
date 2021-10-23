@@ -354,7 +354,28 @@ class _BroupDetailsState extends State<BroupDetails>
                       alignment: Alignment.center,
                       child:
                           Image.asset("assets/images/brocast_transparent.png")),
-                  Container(
+                  chat.alias != null && chat.alias.isNotEmpty
+                      ? Column(
+                      children: [
+                        Container(
+                            padding: EdgeInsets.symmetric(horizontal: 24),
+                            alignment: Alignment.center,
+                            child: Text(
+                              "${chat.alias}",
+                              style: TextStyle(color: Colors.white, fontSize: 25),
+                            )),
+                        SizedBox(height: 10),
+                        Container(
+                            padding: EdgeInsets.symmetric(horizontal: 24),
+                            alignment: Alignment.center,
+                            child: Text(
+                              "${chat.chatName}",
+                              style: TextStyle(color: Colors.white, fontSize: 16),
+                            ))
+                      ]
+                  )
+                  : Container(
+                      padding: EdgeInsets.symmetric(horizontal: 24),
                       alignment: Alignment.center,
                       child: Text(
                         "${chat.chatName}",
