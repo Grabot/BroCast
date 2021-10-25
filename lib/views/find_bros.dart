@@ -386,18 +386,28 @@ class BroTileSearch extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
       child: Row(
         children: [
-          Text(bro.getFullName(), style: simpleTextStyle()),
+          Container(
+              width: MediaQuery.of(context).size.width - 110,
+              child: Text(
+                  bro.getFullName(),
+                  overflow: TextOverflow.ellipsis,
+                  style: simpleTextStyle()
+              )
+          ),
           Spacer(),
-          GestureDetector(
-            onTap: () {
-              addBro(context);
-            },
-            child: Container(
-                decoration: BoxDecoration(
-                    color: Colors.blue,
-                    borderRadius: BorderRadius.circular(30)),
-                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                child: Text("Add")),
+          Container(
+            width: 62,
+            child: GestureDetector(
+              onTap: () {
+                addBro(context);
+              },
+              child: Container(
+                  decoration: BoxDecoration(
+                      color: Colors.blue,
+                      borderRadius: BorderRadius.circular(30)),
+                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  child: Text("Add")),
+            ),
           )
         ],
       ),

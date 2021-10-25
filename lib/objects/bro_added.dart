@@ -13,10 +13,21 @@ class BroAdded extends Bro {
     this.chatName = chatName;
     broColor =
         Color((math.Random().nextDouble() * 0xFFFFFF).toInt()).withOpacity(1.0);
+    admin = false;
   }
 
   @override
   String getFullName() {
     return "$chatName";
+  }
+
+  @override
+  bool isAdmin() {
+    return admin;
+  }
+
+  @override
+  setAdmin(bool admin) {
+    this.admin = admin;
   }
 }

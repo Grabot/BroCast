@@ -15,10 +15,21 @@ class BroNotAdded extends Bro {
     this.bromotion = bromotion;
     broColor =
         Color((math.Random().nextDouble() * 0xFFFFFF).toInt()).withOpacity(1.0);
+    admin = false;
   }
 
   @override
   String getFullName() {
     return "$broName $bromotion";
+  }
+
+  @override
+  bool isAdmin() {
+    return admin;
+  }
+
+  @override
+  setAdmin(bool admin) {
+    this.admin = admin;
   }
 }

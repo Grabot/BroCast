@@ -52,6 +52,10 @@ class GetBros {
             List<dynamic> broIds = br0["bro_ids"];
             List<int> broIdList = broIds.map((s) => s as int).toList();
             broup.setParticipants(broIdList);
+            List<dynamic> broAdminsIds = br0["bro_admin_ids"];
+            List<int> broAdminIdList = broAdminsIds.map((s) => s as int).toList();
+            broup.setAdmins(broAdminIdList);
+            print(broup.getAdmins());
             listWithBros.add(broup);
           } else {
             print("big problem");

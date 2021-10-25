@@ -103,7 +103,9 @@ class _BroupMessagingState extends State<BroupMessaging>
 
   getParticipants() {
     List<int> remainingParticipants = new List<int>.from(chat.getParticipants());
+    List<int> remainingAdmins = new List<int>.from(chat.getAdmins());
     List<Bro> foundParticipants = [];
+    List<Bro> foundAdmins = [];
 
     foundParticipants.add(Settings.instance.getMe());
     // This id has to be in the array, since you are in the group.
@@ -113,6 +115,10 @@ class _BroupMessagingState extends State<BroupMessaging>
       if (br0 is BroBros) {
         if (remainingParticipants.contains(br0.id)) {
           BroAdded broAdded = new BroAdded(br0.id, br0.chatName);
+          if (remainingAdmins.contains(br0.id)) {
+            broAdded.setAdmin(true);
+            remainingAdmins.remove(br0.id);
+          }
           foundParticipants.add(broAdded);
           remainingParticipants.remove(br0.id);
         }
@@ -125,11 +131,22 @@ class _BroupMessagingState extends State<BroupMessaging>
           Settings.instance.getToken(), remainingParticipants).then((value) {
         if (value != "an unknown error has occurred") {
           List<Bro> notAddedBros = value;
+          for (Bro br0 in notAddedBros) {
+            if (remainingAdmins.contains(br0.id)) {
+              br0.setAdmin(true);
+              remainingAdmins.remove(br0.id);
+            }
+          }
           chat.setBroupBros(foundParticipants + notAddedBros);
         }
       });
     } else {
       chat.setBroupBros(foundParticipants);
+    }
+
+    // We assume this won't happen
+    if (remainingParticipants.length != 0) {
+      print("big error with admins! Fix it!");
     }
   }
 

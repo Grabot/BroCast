@@ -6,6 +6,7 @@ import 'chat.dart';
 class Broup extends Chat {
 
   List<int> participants = [];
+  List<int> admins = [];
   List<Bro> broupBros = [];
 
   Broup(int id, String broupName, String broupDescription, String alias, String broupColor,
@@ -37,6 +38,14 @@ class Broup extends Chat {
 
   List<int> getParticipants() {
     return this.participants;
+  }
+
+  void setAdmins(List<int> admins) {
+    this.admins = admins;
+  }
+
+  List<int> getAdmins() {
+    return this.admins;
   }
 
   void setBroupBros(List<Bro> broupBros) {
