@@ -1,6 +1,6 @@
 import 'dart:ui';
 
-class Chat {
+abstract class Chat {
 
   int id;
   DateTime lastActivity;
@@ -14,4 +14,6 @@ class Chat {
   bool isBroup;
 
   Chat();
+
+  String getBroNameOrAlias();
 }

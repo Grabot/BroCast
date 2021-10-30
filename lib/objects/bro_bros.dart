@@ -24,4 +24,13 @@ class BroBros extends Chat {
     this.roomName = roomName;
     this.isBroup = isBroup;
   }
+
+  @override
+  String getBroNameOrAlias() {
+    if (this.alias != null && this.alias.isNotEmpty) {
+      return this.alias;
+    } else {
+      return this.chatName;
+    }
+  }
 }

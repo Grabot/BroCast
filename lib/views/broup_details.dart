@@ -351,11 +351,26 @@ class _BroupDetailsState extends State<BroupDetails>
     return chat.getBroupBros().isNotEmpty
         ? ListView.builder(
         shrinkWrap: true,
+        physics: NeverScrollableScrollPhysics(),
         itemCount: chat.getBroupBros().length,
         itemBuilder: (context, index) {
-          return BroTile(bro: chat.getBroupBros()[index]);
+          return getBroupBro(index);
         })
         : Container();
+  }
+
+  getBroupBro(int index) {
+    Bro bro = chat.getBroupBros()[index];
+    String broName = bro.getFullName();
+    for (Chat br0 in BroList.instance.getBros()) {
+      if (!br0.isBroup) {
+        if (bro.id == br0.id) {
+          // If he has added the bro and given it an alias, we take it over.
+          broName = br0.getBroNameOrAlias();
+        }
+      }
+    }
+    return BroTile(bro: bro, broName: broName);
   }
 
   @override
@@ -366,7 +381,6 @@ class _BroupDetailsState extends State<BroupDetails>
           child: Column(children: [
             Expanded(
               child: SingleChildScrollView(
-                reverse: true,
                 child: Column(children: [
                   Container(
                       alignment: Alignment.center,
@@ -536,7 +550,20 @@ class _BroupDetailsState extends State<BroupDetails>
                       ],
                     ),
                   ),
-                  SizedBox(height: 200),
+                  SizedBox(height: 50),
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 24),
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                        "" + chat.getParticipants().length.toString() + " Participants",
+                        style: simpleTextStyle()
+                    ),
+                  ),
+                  Container(
+                    alignment: Alignment.center,
+                    child: brosInBroupList()
+                  ),
+                  SizedBox(height: 40),
                 ]),
               ),
             ),
@@ -547,8 +574,9 @@ class _BroupDetailsState extends State<BroupDetails>
 
 class BroTile extends StatefulWidget {
   final Bro bro;
+  final String broName;
 
-  BroTile({Key key, this.bro}) : super(key: key);
+  BroTile({Key key, this.bro, this.broName}) : super(key: key);
 
   @override
   _BroTileState createState() => _BroTileState();
@@ -565,12 +593,14 @@ class _BroTileState extends State<BroTile> {
         print("selected a possibly future bro of this bro");
       }
     }
+    if (widget.bro.admin) {
+      print("THIS IS THE ADMIN");
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: MediaQuery.of(context).size.width,
       child: Material(
         child: InkWell(
             onTap: () {
@@ -579,7 +609,7 @@ class _BroTileState extends State<BroTile> {
             child: Container(
               padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
               child: Text(
-                  widget.bro.getFullName(),
+                  widget.broName,
                   style: simpleTextStyle()),
             )
         ),

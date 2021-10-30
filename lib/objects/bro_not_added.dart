@@ -8,6 +8,7 @@ class BroNotAdded extends Bro {
 
   String broName;
   String bromotion;
+  bool added;
 
   BroNotAdded(int id, String broName, String bromotion) {
     this.id = id;
@@ -16,6 +17,7 @@ class BroNotAdded extends Bro {
     broColor =
         Color((math.Random().nextDouble() * 0xFFFFFF).toInt()).withOpacity(1.0);
     admin = false;
+    added = false;
   }
 
   @override
@@ -32,4 +34,18 @@ class BroNotAdded extends Bro {
   setAdmin(bool admin) {
     this.admin = admin;
   }
+
+  @override
+  bool isAdded() {
+    return this.added;
+  }
+
+  @override
+  BroNotAdded copyBro({
+    int id, String broName, String bromotion
+  }) => BroNotAdded(
+    id ?? this.id,
+    broName ?? this.broName,
+    bromotion ?? this.bromotion,
+  );
 }

@@ -289,7 +289,7 @@ class _AddBroupState extends State<AddBroup> with WidgetsBindingObserver {
       },
       child: Container(
         width: MediaQuery.of(context).size.width,
-        color: shownBros[index].getBroBros().chatColor.withOpacity(0.3),
+        color: shownBros[index].getBroBros().chatColor.withOpacity(0.6),
         child: Row(
             children: [
               Container(
@@ -317,20 +317,18 @@ class _AddBroupState extends State<AddBroup> with WidgetsBindingObserver {
                               children: [
                                 Container(
                                   width: MediaQuery.of(context).size.width - 160,
-                                  child: Text(shownBros[index].getBroBros().chatName,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
-                                          color: Colors.white, fontSize: 20)),
+                                  child: shownBros[index].getBroBros().alias != null && shownBros[index].getBroBros().alias.isNotEmpty
+                                      ? Container(
+                                      child: Text(shownBros[index].getBroBros().alias,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
+                                              color: getTextColor(shownBros[index].getBroBros().chatColor), fontSize: 20)))
+                                      : Container(
+                                      child: Text(shownBros[index].getBroBros().chatName,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
+                                              color: getTextColor(shownBros[index].getBroBros().chatColor), fontSize: 20))),
                                 ),
-                                shownBros[index].getBroBros().chatDescription != ""
-                                    ? Container(
-                                  width:
-                                  MediaQuery.of(context).size.width - 160,
-                                  child: Text(shownBros[index].getBroBros().chatDescription,
-                                      style: TextStyle(
-                                          color: Colors.white, fontSize: 12)),
-                                )
-                                    : Container(),
                               ],
                             ),
                           ),
@@ -349,17 +347,17 @@ class _AddBroupState extends State<AddBroup> with WidgetsBindingObserver {
   void onChangedBroNameField(String typedText, String emojiField) {
     if (emojiField.isEmpty && typedText.isNotEmpty) {
       shownBros = bros.where((element) =>
-          element.getBroBros().chatName.toLowerCase()
+          element.getBroBros().getBroNameOrAlias().toLowerCase()
               .contains(typedText.toLowerCase())).toList();
     } else if (emojiField.isNotEmpty && typedText.isEmpty) {
       shownBros = bros.where((element) =>
-          element.getBroBros().chatName.toLowerCase()
+          element.getBroBros().getBroNameOrAlias().toLowerCase()
               .contains(emojiField)).toList();
     } else if (emojiField.isNotEmpty && typedText.isNotEmpty) {
       shownBros = bros.where((element) =>
-          element.getBroBros().chatName.toLowerCase()
+          element.getBroBros().getBroNameOrAlias().toLowerCase()
               .contains(typedText.toLowerCase()) &&
-              element.getBroBros().chatName.toLowerCase()
+              element.getBroBros().getBroNameOrAlias().toLowerCase()
                   .contains(emojiField)).toList();
     } else {
       // both empty

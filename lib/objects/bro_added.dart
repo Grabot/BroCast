@@ -14,6 +14,7 @@ class BroAdded extends Bro {
     broColor =
         Color((math.Random().nextDouble() * 0xFFFFFF).toInt()).withOpacity(1.0);
     admin = false;
+    added = true;
   }
 
   @override
@@ -30,4 +31,16 @@ class BroAdded extends Bro {
   setAdmin(bool admin) {
     this.admin = admin;
   }
+
+  @override
+  bool isAdded() {
+    return this.added;
+  }
+
+  BroAdded copyBro({
+    int id, String chatName
+  }) => BroAdded(
+    id ?? this.id,
+    chatName ?? this.chatName,
+  );
 }

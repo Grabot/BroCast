@@ -105,10 +105,15 @@ class _BroupMessagingState extends State<BroupMessaging>
     List<int> remainingParticipants = new List<int>.from(chat.getParticipants());
     List<int> remainingAdmins = new List<int>.from(chat.getAdmins());
     List<Bro> foundParticipants = [];
-    List<Bro> foundAdmins = [];
 
-    foundParticipants.add(Settings.instance.getMe());
-    // This id has to be in the array, since you are in the group.
+    // I have to be in the array or participants, since I am in this broup.
+    Bro me = Settings.instance.getMe();
+    Bro meBroup = me.copyBro();
+    if (remainingAdmins.contains(meBroup.id)) {
+      meBroup.setAdmin(true);
+      remainingAdmins.remove(meBroup.id);
+    }
+    foundParticipants.add(meBroup);
     remainingParticipants.remove(Settings.instance.getBroId());
 
     for (Chat br0 in BroList.instance.getBros()) {
@@ -141,6 +146,7 @@ class _BroupMessagingState extends State<BroupMessaging>
         }
       });
     } else {
+      print("It is here now");
       chat.setBroupBros(foundParticipants);
     }
 
@@ -470,9 +476,16 @@ class _BroupMessagingState extends State<BroupMessaging>
 
   String getSender(int senderId) {
     String broName = "";
+    for (Chat bro in BroList.instance.getBros()) {
+      if(!bro.isBroup) {
+        if (bro.id == senderId) {
+          return bro.getBroNameOrAlias();
+        }
+      }
+    }
     for (Bro bro in chat.getBroupBros()) {
       if (bro.id == senderId) {
-        broName = bro.getFullName();
+        return bro.getFullName();
       }
     }
     return broName;

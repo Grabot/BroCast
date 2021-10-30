@@ -55,4 +55,13 @@ class Broup extends Chat {
   List<Bro> getBroupBros() {
     return this.broupBros;
   }
+
+  @override
+  String getBroNameOrAlias() {
+    if (this.alias != null && this.alias.isNotEmpty) {
+      return this.alias;
+    } else {
+      return this.chatName;
+    }
+  }
 }
