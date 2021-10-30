@@ -606,12 +606,31 @@ class _BroTileState extends State<BroTile> {
             onTap: () {
               selectBro(context);
             },
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-              child: Text(
-                  widget.broName,
-                  style: simpleTextStyle()),
-            )
+            child: Row(
+              children: [
+                Container(
+                width: widget.bro.admin ? MediaQuery.of(context).size.width-84 : MediaQuery.of(context).size.width,
+                padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                child: Text(
+                    widget.broName,
+                    style: simpleTextStyle()),
+                ),
+                widget.bro.admin
+                  ? Container(
+                    width: 60,
+                    padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+                    decoration: BoxDecoration(
+                        border: Border.all(color: Colors.green)
+                    ),
+                    child: Text(
+                      "admin",
+                      style: TextStyle(color: Colors.green, fontSize: 16),
+                      textAlign: TextAlign.center,
+                    )
+                  )
+                  : Container(),
+              ]
+            ),
         ),
         color: Colors.transparent,
       ),

@@ -104,7 +104,11 @@ class _BroupMessagingState extends State<BroupMessaging>
   getParticipants() {
     List<int> remainingParticipants = new List<int>.from(chat.getParticipants());
     List<int> remainingAdmins = new List<int>.from(chat.getAdmins());
-    List<Bro> foundParticipants = [];
+    // List<Bro> foundParticipants = [];
+    // We will reform the list. First me, than the admins than the rest
+    List<Bro> broupMe = [];
+    List<Bro> foundBroupAdmins = [];
+    List<Bro> foundBroupNotAdmins = [];
 
     // I have to be in the array or participants, since I am in this broup.
     Bro me = Settings.instance.getMe();
@@ -113,7 +117,7 @@ class _BroupMessagingState extends State<BroupMessaging>
       meBroup.setAdmin(true);
       remainingAdmins.remove(meBroup.id);
     }
-    foundParticipants.add(meBroup);
+    broupMe.add(meBroup);
     remainingParticipants.remove(Settings.instance.getBroId());
 
     for (Chat br0 in BroList.instance.getBros()) {
@@ -123,8 +127,10 @@ class _BroupMessagingState extends State<BroupMessaging>
           if (remainingAdmins.contains(br0.id)) {
             broAdded.setAdmin(true);
             remainingAdmins.remove(br0.id);
+            foundBroupAdmins.add(broAdded);
+          } else {
+            foundBroupNotAdmins.add(broAdded);
           }
-          foundParticipants.add(broAdded);
           remainingParticipants.remove(br0.id);
         }
       }
@@ -140,19 +146,21 @@ class _BroupMessagingState extends State<BroupMessaging>
             if (remainingAdmins.contains(br0.id)) {
               br0.setAdmin(true);
               remainingAdmins.remove(br0.id);
+              foundBroupAdmins.add(br0);
+            } else {
+              foundBroupNotAdmins.add(br0);
             }
+            remainingParticipants.remove(br0.id);
           }
-          chat.setBroupBros(foundParticipants + notAddedBros);
+          // We assume this won't happen
+          if (remainingParticipants.length != 0) {
+            print("big error! Fix it!");
+          }
+          chat.setBroupBros(broupMe + foundBroupAdmins + foundBroupNotAdmins);
         }
       });
     } else {
-      print("It is here now");
-      chat.setBroupBros(foundParticipants);
-    }
-
-    // We assume this won't happen
-    if (remainingParticipants.length != 0) {
-      print("big error with admins! Fix it!");
+      chat.setBroupBros(broupMe + foundBroupAdmins + foundBroupNotAdmins);
     }
   }
 
@@ -529,17 +537,17 @@ class _BroupMessagingState extends State<BroupMessaging>
             }),
         backgroundColor:
             chat.chatColor != null ? chat.chatColor : Color(0xff145C9E),
-        title: Container(
-            alignment: Alignment.centerLeft,
-            color: Colors.transparent,
-            child: InkWell(
-                onTap: () {
-                  Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => BroupDetails(chat: chat)));
-                },
-                child: Column(
+        title: InkWell(
+          onTap: () {
+            Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => BroupDetails(chat: chat)));
+          },
+          child: Container(
+              alignment: Alignment.centerLeft,
+              color: Colors.transparent,
+              child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     chat.alias != null && chat.alias.isNotEmpty
@@ -552,7 +560,9 @@ class _BroupMessagingState extends State<BroupMessaging>
                             style: TextStyle(
                                 color: getTextColor(chat.chatColor), fontSize: 20))),
                   ],
-                ))),
+                )
+          ),
+        ),
         actions: [
           PopupMenuButton<int>(
               onSelected: (item) => onSelectChat(context, item),
