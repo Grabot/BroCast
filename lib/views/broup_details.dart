@@ -583,57 +583,138 @@ class BroTile extends StatefulWidget {
 }
 
 class _BroTileState extends State<BroTile> {
+
+  var _tapPosition;
+
   selectBro(BuildContext context) {
-    if (widget.bro.id == Settings.instance.getBroId()) {
-      print("selected myself");
-    } else {
-      if (widget.bro is BroAdded) {
-        print("selected a bro, who's a bro of this bro");
-      } else {
-        print("selected a possibly future bro of this bro");
-      }
-    }
-    if (widget.bro.admin) {
-      print("THIS IS THE ADMIN");
-    }
+    // TODO: @SKools create a menu like with the block or reporting
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
       child: Material(
-        child: InkWell(
-            onTap: () {
-              selectBro(context);
-            },
-            child: Row(
-              children: [
-                Container(
-                width: widget.bro.admin ? MediaQuery.of(context).size.width-84 : MediaQuery.of(context).size.width,
-                padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                child: Text(
-                    widget.broName,
-                    style: simpleTextStyle()),
-                ),
-                widget.bro.admin
-                  ? Container(
-                    width: 60,
-                    padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-                    decoration: BoxDecoration(
-                        border: Border.all(color: Colors.green)
-                    ),
-                    child: Text(
-                      "admin",
-                      style: TextStyle(color: Colors.green, fontSize: 16),
-                      textAlign: TextAlign.center,
+        child: GestureDetector(
+          onLongPress: _showBroupPopupMenu,
+          onTapDown: _storePosition,
+          child: InkWell(
+              onTap: () {
+                selectBro(context);
+              },
+              child: Row(
+                children: [
+                  Container(
+                  width: widget.bro.admin
+                      ? MediaQuery.of(context).size.width-84
+                      : MediaQuery.of(context).size.width,
+                  padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                  child: Text(
+                      widget.broName,
+                      style: simpleTextStyle()),
+                  ),
+                  widget.bro.admin
+                    ? Container(
+                      width: 60,
+                      padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+                      decoration: BoxDecoration(
+                          border: Border.all(color: Colors.green)
+                      ),
+                      child: Text(
+                        "admin",
+                        style: TextStyle(color: Colors.green, fontSize: 16),
+                        textAlign: TextAlign.center,
+                      )
                     )
-                  )
-                  : Container(),
-              ]
-            ),
+                    : Container(),
+                ]
+              ),
+          ),
         ),
         color: Colors.transparent,
       ),
+    );
+  }
+
+  void _showBroupPopupMenu() {
+    final RenderBox overlay = Overlay.of(context).context.findRenderObject();
+
+    showMenu(
+        context: context,
+        items: [
+          BroupParticipantPopup()
+        ],
+        position: RelativeRect.fromRect(
+            _tapPosition & const Size(40, 40),
+            Offset.zero & overlay.size
+        )
+    ).then((int delta) {
+      if (delta == null) return;
+      setState(() {
+        print("selected delta $delta");
+      });
+    });
+  }
+
+  void _storePosition(TapDownDetails details) {
+    _tapPosition = details.globalPosition;
+  }
+}
+
+class BroupParticipantPopup extends PopupMenuEntry<int> {
+
+  @override
+  bool represents(int n) => n == 1 || n == -1;
+
+  @override
+  BroupParticipantPopupState createState() => BroupParticipantPopupState();
+
+  @override
+  double get height => 1;
+}
+
+class BroupParticipantPopupState extends State<BroupParticipantPopup> {
+
+  void buttonMessage() {
+    // TODO: @Skools add functionality
+    Navigator.pop<int>(context, 1);
+  }
+
+  void buttonMakeAdmin() {
+    // TODO: @Skools add functionality
+    Navigator.pop<int>(context, 2);
+  }
+
+  void buttonRemove() {
+    // TODO: @Skools add functionality
+    Navigator.pop<int>(context, 3);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        TextButton(
+            onPressed: buttonMessage,
+            child: Text(
+              'Message',
+              style: TextStyle(color: Colors.black, fontSize: 16),
+            )
+        ),
+        TextButton(
+            onPressed: buttonMakeAdmin,
+            child: Text(
+              'Make Broup admin',
+              style: TextStyle(color: Colors.black, fontSize: 16),
+            )
+        ),
+        TextButton(
+            onPressed: buttonRemove,
+            child: Text(
+              'Remove',
+              style: TextStyle(color: Colors.black, fontSize: 16),
+            )
+        )
+      ],
     );
   }
 }

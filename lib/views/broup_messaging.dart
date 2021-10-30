@@ -160,6 +160,10 @@ class _BroupMessagingState extends State<BroupMessaging>
         }
       });
     } else {
+      // We assume this won't happen
+      if (remainingParticipants.length != 0) {
+        print("big error! Fix it!");
+      }
       chat.setBroupBros(broupMe + foundBroupAdmins + foundBroupNotAdmins);
     }
   }
