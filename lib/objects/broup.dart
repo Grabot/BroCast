@@ -68,6 +68,18 @@ class Broup extends Chat {
     return this.broupBros;
   }
 
+  void removeBro(int oldBro) {
+    if (this.participants.contains(oldBro)) {
+      this.participants.remove(oldBro);
+      for (Bro bro in broupBros) {
+        if (bro.id == oldBro) {
+          broupBros.remove(bro);
+          return;
+        }
+      }
+    }
+  }
+
   @override
   String getBroNameOrAlias() {
     if (this.alias != null && this.alias.isNotEmpty) {
