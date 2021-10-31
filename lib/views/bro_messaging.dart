@@ -105,11 +105,13 @@ class _BroMessagingState extends State<BroMessaging>
   messageReceivedSolo(var data) {
     if (mounted) {
       if (chat.id != data["sender_id"]) {
-        for (BroBros br0 in BroList.instance.getBros()) {
-          if (br0.id == data["sender_id"]) {
-            if (showNotification) {
-              NotificationService.instance
-                  .showNotification(br0.id, br0.chatName, "", data["body"]);
+        for (Chat br0 in BroList.instance.getBros()) {
+          if (!br0.isBroup) {
+            if (br0.id == data["sender_id"]) {
+              if (showNotification) {
+                NotificationService.instance
+                    .showNotification(br0.id, br0.chatName, "", data["body"]);
+              }
             }
           }
         }

@@ -48,6 +48,18 @@ class Broup extends Chat {
     return this.admins;
   }
 
+  void addAdmin(int newAdmin) {
+    if (!this.admins.contains(newAdmin)) {
+      this.admins.add(newAdmin);
+    }
+  }
+
+  void dismissAdmin(int oldAdmin) {
+    if (this.admins.contains(oldAdmin)) {
+      this.admins.remove(oldAdmin);
+    }
+  }
+
   void setBroupBros(List<Bro> broupBros) {
     this.broupBros = broupBros;
   }

@@ -1,6 +1,7 @@
+import 'dart:convert';
+
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:brocast/objects/bro.dart';
-import 'package:brocast/objects/bro_added.dart';
 import 'package:brocast/objects/bro_bros.dart';
 import 'package:brocast/objects/broup.dart';
 import 'package:brocast/objects/chat.dart';
@@ -12,6 +13,7 @@ import 'package:brocast/utils/utils.dart';
 import "package:flutter/material.dart";
 import 'package:flutter_circle_color_picker/flutter_circle_color_picker.dart';
 
+import 'bro_messaging.dart';
 import 'bro_profile.dart';
 import 'bro_settings.dart';
 import 'broup_messaging.dart';
@@ -87,30 +89,52 @@ class _BroupDetailsState extends State<BroupDetails>
       broupDetailUpdateSuccess();
     });
     SocketServices.instance.socket
+        .on('message_event_change_broup_details_failed', (data) {
+      broupDetailUpdateFailed();
+    });
+    SocketServices.instance.socket
         .on('message_event_change_broup_alias_success', (data) {
       broupAliasUpdateSuccess();
     });
     SocketServices.instance.socket
-        .on('message_event_change_broup_details_failed', (data) {
-      broupDetailUpdateFailed();
+        .on('message_event_change_broup_alias_failed', (data) {
+      broupAliasUpdateSuccess();
     });
     SocketServices.instance.socket
         .on('message_event_change_broup_colour_success', (data) {
       broupColourUpdateSuccess();
     });
-    SocketServices.instance.socket.on('message_event_change_broup_colour_failed',
-        (data) {
-          broupColourUpdateFailed();
+    SocketServices.instance.socket
+        .on('message_event_change_broup_colour_failed',(data) {
+      broupColourUpdateFailed();
+    });
+    SocketServices.instance.socket
+        .on('message_event_change_broup_add_admin_success', (data) {
+      broupAddAdminSuccess(data);
+    });
+    SocketServices.instance.socket
+        .on('message_event_change_broup_add_admin_failed', (data) {
+      broupAddAdminFailed();
+    });
+    SocketServices.instance.socket
+        .on('message_event_change_broup_dismiss_admin_success', (data) {
+      broupDismissAdminSuccess(data);
+    });
+    SocketServices.instance.socket
+        .on('message_event_change_broup_dismiss_admin_failed', (data) {
+      broupDismissAdminFailed();
     });
   }
 
   messageReceivedSolo(var data) {
     if (mounted) {
-      for (BroBros br0 in BroList.instance.getBros()) {
-        if (br0.id == data["sender_id"]) {
-          if (showNotification) {
-            NotificationService.instance
-                .showNotification(br0.id, br0.chatName, "", data["body"]);
+      for (Chat br0 in BroList.instance.getBros()) {
+        if (!br0.isBroup) {
+          if (br0.id == data["sender_id"]) {
+            if (showNotification) {
+              NotificationService.instance
+                  .showNotification(br0.id, br0.chatName, "", data["body"]);
+            }
           }
         }
       }
@@ -323,6 +347,14 @@ class _BroupDetailsState extends State<BroupDetails>
     }
   }
 
+  void broupAliasUpdateFailed() {
+    chatAliasController.text = previousAlias;
+    if (mounted) {
+      ShowToastComponent.showDialog(
+          "Updating the bro alias has failed", context);
+    }
+  }
+
   void broupDetailUpdateFailed() {
     currentColor = previousColor;
     circleColorPickerController.color = previousColor;
@@ -337,10 +369,71 @@ class _BroupDetailsState extends State<BroupDetails>
     }
   }
 
+  void broupAddAdminSuccess(var data) {
+    if (data.containsKey("result")) {
+      bool result = data["result"];
+      if (result) {
+        for (Bro bro in chat.getBroupBros()) {
+          if (bro.id == data["new_admin"]) {
+            bro.setAdmin(true);
+            chat.addAdmin(data["new_admin"]);
+          }
+        }
+        if (mounted) {
+          setState(() {
+          });
+        }
+      } else {
+        broupAddAdminFailed();
+      }
+    } else {
+      broupAddAdminFailed();
+    }
+  }
+
+  void broupAddAdminFailed() {
+    if (mounted) {
+      ShowToastComponent.showDialog(
+          "Adding the bro as admin has failed", context);
+    }
+  }
+
+  void broupDismissAdminSuccess(var data) {
+    if (data.containsKey("result")) {
+      bool result = data["result"];
+      if (result) {
+        for (Bro bro in chat.getBroupBros()) {
+          if (bro.id == data["old_admin"]) {
+            bro.setAdmin(false);
+            chat.dismissAdmin(data["old_admin"]);
+          }
+        }
+        if (mounted) {
+          setState(() {
+          });
+        }
+      } else {
+        broupAddAdminFailed();
+      }
+    } else {
+      broupAddAdminFailed();
+    }
+  }
+
+  void broupDismissAdminFailed() {
+    print("dismiss FAILED");
+    if (mounted) {
+      ShowToastComponent.showDialog(
+          "Dismissing the bro from his admin role has failed", context);
+    }
+  }
+
   void broupColourUpdateFailed() {
     chatDescriptionController.text = previousDescription;
-    ShowToastComponent.showDialog(
-        "Updating the bro colour has failed", context);
+    if (mounted) {
+      ShowToastComponent.showDialog(
+          "Updating the bro colour has failed", context);
+    }
   }
 
   onColorChange(Color colour) {
@@ -370,7 +463,7 @@ class _BroupDetailsState extends State<BroupDetails>
         }
       }
     }
-    return BroTile(bro: bro, broName: broName);
+    return BroTile(bro: bro, broName: broName, broupId: chat.id);
   }
 
   @override
@@ -575,8 +668,14 @@ class _BroupDetailsState extends State<BroupDetails>
 class BroTile extends StatefulWidget {
   final Bro bro;
   final String broName;
+  final int broupId;
 
-  BroTile({Key key, this.bro, this.broName}) : super(key: key);
+  BroTile({
+    Key key,
+    this.bro,
+    this.broName,
+    this.broupId
+  }) : super(key: key);
 
   @override
   _BroTileState createState() => _BroTileState();
@@ -636,23 +735,60 @@ class _BroTileState extends State<BroTile> {
   }
 
   void _showBroupPopupMenu() {
-    final RenderBox overlay = Overlay.of(context).context.findRenderObject();
+    if (widget.bro.id != Settings.instance.getBroId()) {
+      final RenderBox overlay = Overlay.of(context).context.findRenderObject();
 
-    showMenu(
-        context: context,
-        items: [
-          BroupParticipantPopup()
-        ],
-        position: RelativeRect.fromRect(
-            _tapPosition & const Size(40, 40),
-            Offset.zero & overlay.size
-        )
-    ).then((int delta) {
-      if (delta == null) return;
-      setState(() {
-        print("selected delta $delta");
+      showMenu(
+          context: context,
+          items: [
+            BroupParticipantPopup(broName: widget.broName, admin:widget.bro.admin)
+          ],
+          position: RelativeRect.fromRect(
+              _tapPosition & const Size(40, 40),
+              Offset.zero & overlay.size
+          )
+      ).then((int delta) {
+        if (delta == null) return;
+        if (delta == 1) {
+          // The Bro object is not the chat between the bros,
+          // we will loop through our bro chats to find the correct one
+          for (Chat br0 in BroList.instance.getBros()) {
+            if (!br0.isBroup) {
+              if (br0.id == widget.bro.id) {
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => BroMessaging(chat: br0)));
+              }
+            }
+          }
+          return;
+        } else if (delta == 2) {
+          if (SocketServices.instance.socket.connected) {
+            SocketServices.instance.socket
+                .emit("message_event_change_broup_add_admin", {
+              "token": Settings.instance.getToken(),
+              "broup_id": widget.broupId,
+              "bro_id": widget.bro.id
+            });
+          }
+        } else if (delta == 3) {
+          if (SocketServices.instance.socket.connected) {
+            SocketServices.instance.socket
+                .emit("message_event_change_broup_dismiss_admin", {
+              "token": Settings.instance.getToken(),
+              "broup_id": widget.broupId,
+              "bro_id": widget.bro.id
+            });
+          }
+        } else if (delta == 4) {
+          // remove from broup
+        }
+        setState(() {
+          print("selected delta $delta");
+        });
       });
-    });
+    }
   }
 
   void _storePosition(TapDownDetails details) {
@@ -661,6 +797,11 @@ class _BroTileState extends State<BroTile> {
 }
 
 class BroupParticipantPopup extends PopupMenuEntry<int> {
+
+  final String broName;
+  final bool admin;
+
+  BroupParticipantPopup({Key key, this.broName, this.admin}) : super(key: key);
 
   @override
   bool represents(int n) => n == 1 || n == -1;
@@ -675,18 +816,20 @@ class BroupParticipantPopup extends PopupMenuEntry<int> {
 class BroupParticipantPopupState extends State<BroupParticipantPopup> {
 
   void buttonMessage() {
-    // TODO: @Skools add functionality
     Navigator.pop<int>(context, 1);
   }
 
   void buttonMakeAdmin() {
-    // TODO: @Skools add functionality
     Navigator.pop<int>(context, 2);
+  }
+
+  void buttonDismissAdmin() {
+    Navigator.pop<int>(context, 3);
   }
 
   void buttonRemove() {
     // TODO: @Skools add functionality
-    Navigator.pop<int>(context, 3);
+    Navigator.pop<int>(context, 4);
   }
 
   @override
@@ -696,22 +839,29 @@ class BroupParticipantPopupState extends State<BroupParticipantPopup> {
         TextButton(
             onPressed: buttonMessage,
             child: Text(
-              'Message',
-              style: TextStyle(color: Colors.black, fontSize: 16),
+              'Message ${widget.broName}',
+              style: TextStyle(color: Colors.black, fontSize: 14),
             )
         ),
-        TextButton(
-            onPressed: buttonMakeAdmin,
-            child: Text(
-              'Make Broup admin',
-              style: TextStyle(color: Colors.black, fontSize: 16),
-            )
+        widget.admin ? TextButton(
+          onPressed: buttonDismissAdmin,
+          child: Text(
+            'Dismiss as admin',
+            style: TextStyle(color: Colors.black, fontSize: 14),
+          )
+        )
+        : TextButton(
+          onPressed: buttonMakeAdmin,
+          child: Text(
+            'Make Broup admin',
+            style: TextStyle(color: Colors.black, fontSize: 14),
+          )
         ),
         TextButton(
             onPressed: buttonRemove,
             child: Text(
-              'Remove',
-              style: TextStyle(color: Colors.black, fontSize: 16),
+              'Remove ${widget.broName}',
+              style: TextStyle(color: Colors.black, fontSize: 14),
             )
         )
       ],
