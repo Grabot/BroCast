@@ -611,16 +611,21 @@ class _BroupDetailsState extends State<BroupDetails>
     if (data.containsKey("result")) {
       bool result = data["result"];
       if (result) {
-        for (Bro bro in chat.getBroupBros()) {
-          if (bro.id == data["old_bro"]) {
-            chat.dismissAdmin(data["old_bro"]);
-            chat.removeBro(data["old_bro"]);
-            break;
+        if (data["old_bro"] == Settings.instance.getBroId()) {
+          // We have successfully left the Broup
+          Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (context) => BroCastHome()));
+        } else {
+          for (Bro bro in chat.getBroupBros()) {
+            if (bro.id == data["old_bro"]) {
+              chat.dismissAdmin(data["old_bro"]);
+              chat.removeBro(data["old_bro"]);
+              break;
+            }
           }
-        }
-        if (mounted) {
-          setState(() {
-          });
+          if (mounted) {
+            setState(() {});
+          }
         }
       } else {
         broupRemoveBroFailed();
@@ -908,12 +913,116 @@ class _BroupDetailsState extends State<BroupDetails>
                     alignment: Alignment.center,
                     child: brosInBroupList()
                   ),
-                  SizedBox(height: 40),
+                  SizedBox(height: 10),
+                  TextButton(
+                      style: ButtonStyle(
+                        foregroundColor:
+                        MaterialStateProperty.all<Color>(Colors.red),
+                      ),
+                      onPressed: () {
+                        // TODO: @SKools add functionality
+                        print("blocked button");
+                      },
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                                Icons.volume_mute,
+                                color: Colors.red
+                            ),
+                            SizedBox(width: 20),
+                            Text(
+                              'Mute Broup',
+                              style: simpleTextStyle(),
+                            ),
+                          ]
+                      )
+                  ),
+                  SizedBox(height: 10),
+                  TextButton(
+                      style: ButtonStyle(
+                        foregroundColor:
+                        MaterialStateProperty.all<Color>(Colors.red),
+                      ),
+                      onPressed: () {
+                        showDialogExitBroup(context, chat.chatName);
+                      },
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.exit_to_app, color: Colors.red),
+                            SizedBox(width: 20),
+                            Text(
+                              'Exit Broup',
+                              style: simpleTextStyle(),
+                            ),
+                          ]
+                      )
+                  ),
+                  SizedBox(height: 10),
+                  TextButton(
+                      style: ButtonStyle(
+                        foregroundColor:
+                        MaterialStateProperty.all<Color>(Colors.red),
+                      ),
+                      onPressed: () {
+                        // TODO: @SKools add functionality
+                        print("report button");
+                      },
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.thumb_down, color: Colors.red),
+                            SizedBox(width: 20),
+                            Text(
+                              'Report Broup',
+                              style: simpleTextStyle(),
+                            ),
+                          ]
+                      )
+                  ),
+                  SizedBox(height: 20),
                 ]),
               ),
             ),
           ]),
         ));
+  }
+
+  void exitBroup() {
+    SocketServices.instance.socket
+        .emit("message_event_change_broup_remove_bro", {
+      "token": Settings.instance.getToken(),
+      "broup_id": chat.id,
+      "bro_id": Settings.instance.getBroId()
+    });
+  }
+
+  void showDialogExitBroup(BuildContext context, String broupName) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: new Text("Exit Broup $broupName!"),
+          content: new Text(
+              "Are you sure you want to leave this broup?"),
+          actions: <Widget>[
+            new TextButton(
+              child: new Text("Cancel"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            new TextButton(
+              child: new Text("Exit Broup"),
+              onPressed: () {
+                exitBroup();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 }
 

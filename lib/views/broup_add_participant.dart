@@ -52,7 +52,13 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> with WidgetsB
       shownBros.clear();
       for (Chat myBro in broBros) {
         if (!myBro.isBroup) {
-          BroupAddBro broupAddBro = new BroupAddBro(false, myBro);
+          bool inBroup = false;
+          for (int participantId in chat.getParticipants()) {
+            if (participantId == myBro.id) {
+              inBroup = true;
+            }
+          }
+          BroupAddBro broupAddBro = new BroupAddBro(false, inBroup, myBro);
           bros.add(broupAddBro);
         }
       }
@@ -283,6 +289,14 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> with WidgetsB
                                           style: TextStyle(
                                               color: getTextColor(shownBros[index].getBroBros().chatColor), fontSize: 20))),
                                 ),
+                                shownBros[index].alreadyInBroup
+                                    ? Container(
+                                      child: Text(
+                                          "Already in Broup",
+                                        style: TextStyle(color: getTextColor(shownBros[index].getBroBros().chatColor).withOpacity(0.6), fontSize: 12),
+                                      )
+                                    )
+                                    : Container()
                               ],
                             ),
                           ),
@@ -299,7 +313,9 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> with WidgetsB
   }
 
   void selectBro(BroupAddBro broAddBroup) {
-    showDialogAddParticipant(context, broAddBroup.broBros);
+    if (!broAddBroup.alreadyInBroup) {
+      showDialogAddParticipant(context, broAddBroup.broBros);
+    }
   }
 
   void onTapTextField() {
@@ -430,15 +446,25 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> with WidgetsB
 class BroupAddBro {
 
   bool selected;
+  bool alreadyInBroup;
   Chat broBros;
 
-  BroupAddBro(bool selected, Chat broBros) {
+  BroupAddBro(bool selected, bool alreadyInBroup, Chat broBros) {
     this.selected = selected;
+    this.alreadyInBroup = alreadyInBroup;
     this.broBros = broBros;
   }
 
   getBroBros() {
     return this.broBros;
+  }
+
+  isAlreadyInBroup() {
+    return this.alreadyInBroup;
+  }
+
+  setAlreadyInBroup(bool alreadyInBroup) {
+    this.alreadyInBroup = alreadyInBroup;
   }
 
   isSelected() {
