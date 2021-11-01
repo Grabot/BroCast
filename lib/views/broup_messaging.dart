@@ -38,6 +38,7 @@ class _BroupMessagingState extends State<BroupMessaging>
     with WidgetsBindingObserver {
   bool isLoading;
   GetMessages get = new GetMessages();
+  GetChat getChat = new GetChat();
 
   bool showEmojiKeyboard = false;
 
@@ -63,7 +64,6 @@ class _BroupMessagingState extends State<BroupMessaging>
     chat = widget.chat;
     amountViewed = 1;
     isLoading = false;
-
     if (chat.getBroupBros().isNotEmpty && chat.getParticipants().isNotEmpty) {
       getMessages(amountViewed);
     }
@@ -75,8 +75,7 @@ class _BroupMessagingState extends State<BroupMessaging>
     if (chat.chatColor == null) {
       // It was opened via a notification and we don't have the whole object.
       // We retrieve it now
-      GetChat getChat = new GetChat();
-      getChat.getChat(Settings.instance.getBroId(), chat.id).then((value) {
+      getChat.getBroup(Settings.instance.getBroId(), chat.id).then((value) {
         if (value != "an unknown error has occurred") {
           setState(() {
             chat = value;
@@ -91,6 +90,7 @@ class _BroupMessagingState extends State<BroupMessaging>
     joinBroupRoom(Settings.instance.getBroId(), chat.id);
     WidgetsBinding.instance.addObserver(this);
     BackButtonInterceptor.add(myInterceptor);
+    initSockets();
 
     messageScrollController.addListener(() {
       if (messageScrollController.position.atEdge) {
@@ -99,6 +99,38 @@ class _BroupMessagingState extends State<BroupMessaging>
         }
       }
     });
+  }
+
+  void initSockets() {
+    if (SocketServices.instance.socket.connected) {
+      print("socket init connected :)");
+      SocketServices.instance.socket.on('message_event_broup_changed', (data) {
+        changeToBroup();
+      });
+    }
+  }
+
+  void changeToBroup() {
+    if (mounted) {
+      print("there was a change to a broup");
+      setState(() {
+        amountViewed = 1;
+        getChat.getBroup(Settings.instance.getToken(), chat.id).then((value) {
+          print("gotten the chat");
+          print(value);
+          print(Settings.instance.getBroId());
+          print(chat.id);
+          if (value != "an unknown error has occurred") {
+            setState(() {
+              print("setting the chat");
+              chat = value;
+              getParticipants();
+              getMessages(amountViewed);
+            });
+          }
+        });
+      });
+    }
   }
 
   getParticipants() {
@@ -160,6 +192,8 @@ class _BroupMessagingState extends State<BroupMessaging>
             print("big error! Fix it!");
           }
           chat.setBroupBros(broupMe + foundBroupAdmins + foundBroupNotAdmins);
+          setState(() {
+          });
         }
       });
     } else {
@@ -168,6 +202,20 @@ class _BroupMessagingState extends State<BroupMessaging>
         print("big error! Fix it!");
       }
       chat.setBroupBros(broupMe + foundBroupAdmins + foundBroupNotAdmins);
+      setState(() {
+      });
+    }
+  }
+
+  void broupColourUpdateSuccess(var data) {
+    if (mounted) {
+      if (data.containsKey("result")) {
+        bool result = data["result"];
+        if (result) {
+          chat.chatColor = Color(int.parse("0xFF${data["colour"]}"));
+          setState(() {});
+        }
+      }
     }
   }
 
@@ -180,6 +228,10 @@ class _BroupMessagingState extends State<BroupMessaging>
           .on('message_event_send_solo', (data) => messageReceivedSolo(data));
       SocketServices.instance.socket
           .on('message_event_read', (data) => messageRead(data));
+      SocketServices.instance.socket
+          .on('message_event_change_broup_colour_success', (data) {
+        broupColourUpdateSuccess(data);
+      });
       SocketServices.instance.socket.emit(
         "join_broup",
         {"bro_id": broId, "broup_id": broupId},
@@ -234,12 +286,6 @@ class _BroupMessagingState extends State<BroupMessaging>
   leaveBroupRoom() {
     if (mounted) {
       if (SocketServices.instance.socket.connected) {
-        SocketServices.instance.socket
-            .off('message_event_send', (data) => print(data));
-        SocketServices.instance.socket
-            .off('message_event_send_solo', (data) => print(data));
-        SocketServices.instance.socket
-            .off('message_event_read', (data) => print(data));
         SocketServices.instance.socket.emit(
           "leave_broup",
           {"bro_id": Settings.instance.getBroId(), "broup_id": chat.id},
@@ -252,13 +298,21 @@ class _BroupMessagingState extends State<BroupMessaging>
   void dispose() {
     focusAppendText.dispose();
     focusEmojiTextField.dispose();
-    leaveBroupRoom();
+    if (SocketServices.instance.socket.connected) {
+      SocketServices.instance.socket
+          .off('message_event_send', (data) => print(data));
+      SocketServices.instance.socket
+          .off('message_event_send_solo', (data) => print(data));
+      SocketServices.instance.socket
+          .off('message_event_read', (data) => print(data));
+    }
     BackButtonInterceptor.remove(myInterceptor);
     super.dispose();
   }
 
   void goToDifferentChat(Chat chatBro) {
     if (mounted) {
+      leaveBroupRoom();
       Navigator.pushReplacement(
           context,
           MaterialPageRoute(
@@ -532,6 +586,7 @@ class _BroupMessagingState extends State<BroupMessaging>
         showEmojiKeyboard = false;
       });
     } else {
+      leaveBroupRoom();
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => BroCastHome()));
     }
@@ -586,10 +641,12 @@ class _BroupMessagingState extends State<BroupMessaging>
   void onSelectChat(BuildContext context, int item) {
     switch (item) {
       case 0:
+        leaveBroupRoom();
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => BroProfile()));
         break;
       case 1:
+        leaveBroupRoom();
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => BroSettings()));
         break;

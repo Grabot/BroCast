@@ -76,6 +76,14 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
     }
   }
 
+  void addedToBroup() {
+    if (mounted) {
+      setState(() {
+        searchBros(Settings.instance.getToken());
+      });
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -104,6 +112,9 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
           .on('message_event_send_solo', (data) => messageReceivedSolo(data));
       SocketServices.instance.socket.on('message_event_bro_added_you', (data) {
         broAddedYou();
+      });
+      SocketServices.instance.socket.on('message_event_added_to_broup', (data) {
+        addedToBroup();
       });
       SocketServices.instance.socket.emit(
         "join_solo",

@@ -89,7 +89,7 @@ class _BroChatDetailsState extends State<BroChatDetails>
         .on('message_event_send_solo', (data) => messageReceivedSolo(data));
     SocketServices.instance.socket
         .on('message_event_change_chat_details_success', (data) {
-      chatDetailUpdateSuccess();
+      chatDetailUpdateSuccess(data);
     });
     SocketServices.instance.socket
         .on('message_event_change_chat_alias_success', (data) {
@@ -101,7 +101,7 @@ class _BroChatDetailsState extends State<BroChatDetails>
     });
     SocketServices.instance.socket
         .on('message_event_change_chat_colour_success', (data) {
-      chatColourUpdateSuccess();
+      chatColourUpdateSuccess(data);
     });
     SocketServices.instance.socket.on('message_event_change_chat_colour_failed',
         (data) {
@@ -372,16 +372,21 @@ class _BroChatDetailsState extends State<BroChatDetails>
     }
   }
 
-  void chatDetailUpdateSuccess() {
-    previousDescription = chatDescriptionController.text;
-    chat.chatDescription = chatDescriptionController.text;
+  void chatDetailUpdateSuccess(var data) {
     if (mounted) {
-      setState(() {});
+      if (data.containsKey("result")) {
+        bool result = data["result"];
+        if (result) {
+          chat.chatDescription = data["description"];
+          chatDescriptionController.text = data["description"];
+          previousDescription = "";
+          setState(() {});
+        }
+      }
     }
   }
 
   void chatAliasUpdateSuccess() {
-    print("alias update successfull");
     previousAlias = chatAliasController.text;
     chat.alias = chatAliasController.text;
     if (mounted) {
@@ -395,11 +400,17 @@ class _BroChatDetailsState extends State<BroChatDetails>
     ShowToastComponent.showDialog("Updating the bro chat has failed", context);
   }
 
-  void chatColourUpdateSuccess() {
-    chat.chatColor = currentColor;
-    previousColor = currentColor;
+  void chatColourUpdateSuccess(var data) {
     if (mounted) {
-      setState(() {});
+      if (data.containsKey("result")) {
+        bool result = data["result"];
+        if (result) {
+          chat.chatColor = Color(int.parse("0xFF${data["colour"]}"));
+          currentColor = Color(int.parse("0xFF${data["colour"]}"));
+          previousColor = Color(int.parse("0xFF${data["colour"]}"));
+          setState(() {});
+        }
+      }
     }
   }
 

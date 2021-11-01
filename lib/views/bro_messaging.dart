@@ -54,7 +54,6 @@ class _BroMessagingState extends State<BroMessaging>
   void initState() {
     super.initState();
     chat = widget.chat;
-    print("opened chat with room name ${chat.roomName}");
     isLoading = false;
     amountViewed = 1;
     getMessages(amountViewed);
@@ -93,6 +92,10 @@ class _BroMessagingState extends State<BroMessaging>
           .on('message_event_send_solo', (data) => messageReceivedSolo(data));
       SocketServices.instance.socket
           .on('message_event_read', (data) => messageRead(data));
+      SocketServices.instance.socket
+          .on('message_event_change_chat_colour_success', (data) {
+        chatColourUpdateSuccess(data);
+      });
       SocketServices.instance.socket.emit(
         "join",
         {"bro_id": broId, "bros_bro_id": brosBroId},
@@ -143,12 +146,6 @@ class _BroMessagingState extends State<BroMessaging>
   leaveRoom() {
     if (mounted) {
       if (SocketServices.instance.socket.connected) {
-        SocketServices.instance.socket
-            .off('message_event_send', (data) => print(data));
-        SocketServices.instance.socket
-            .off('message_event_send_solo', (data) => print(data));
-        SocketServices.instance.socket
-            .off('message_event_read', (data) => print(data));
         SocketServices.instance.socket.emit(
           "leave",
           {"bro_id": Settings.instance.getBroId(), "bros_bro_id": chat.id},
@@ -157,17 +154,37 @@ class _BroMessagingState extends State<BroMessaging>
     }
   }
 
+  void chatColourUpdateSuccess(var data) {
+    if (mounted) {
+      if (data.containsKey("result")) {
+        bool result = data["result"];
+        if (result) {
+          chat.chatColor = Color(int.parse("0xFF${data["colour"]}"));
+          setState(() {});
+        }
+      }
+    }
+  }
+
   @override
   void dispose() {
     focusAppendText.dispose();
     focusEmojiTextField.dispose();
-    leaveRoom();
+    if (SocketServices.instance.socket.connected) {
+      SocketServices.instance.socket
+          .off('message_event_send', (data) => print(data));
+      SocketServices.instance.socket
+          .off('message_event_send_solo', (data) => print(data));
+      SocketServices.instance.socket
+          .off('message_event_read', (data) => print(data));
+    }
     BackButtonInterceptor.remove(myInterceptor);
     super.dispose();
   }
 
   void goToDifferentChat(Chat chatBro) {
     if (mounted) {
+      leaveRoom();
       Navigator.pushReplacement(
           context,
           MaterialPageRoute(
@@ -422,6 +439,7 @@ class _BroMessagingState extends State<BroMessaging>
         showEmojiKeyboard = false;
       });
     } else {
+      leaveRoom();
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => BroCastHome()));
     }
@@ -474,10 +492,12 @@ class _BroMessagingState extends State<BroMessaging>
   void onSelectChat(BuildContext context, int item) {
     switch (item) {
       case 0:
+        leaveRoom();
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => BroProfile()));
         break;
       case 1:
+        leaveRoom();
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => BroSettings()));
         break;
