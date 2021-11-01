@@ -260,15 +260,15 @@ class _FindBrosState extends State<FindBros> with WidgetsBindingObserver {
       body: Container(
         child: Column(
           children: [
-            Container(
-              height: 80,
-              child: InkWell(
-                onTap: () {
-                  addGroup();
-                },
+            InkWell(
+              onTap: () {
+                addGroup();
+              },
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 24),
+                height: 80,
                 child: Row(
                   children: [
-                    SizedBox(width: 20),
                     Container(
                       decoration: BoxDecoration(
                           color: Colors.green,

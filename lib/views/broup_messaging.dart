@@ -26,7 +26,7 @@ import 'bro_settings.dart';
 import 'broup_details.dart';
 
 class BroupMessaging extends StatefulWidget {
-  final Chat chat;
+  final Broup chat;
 
   BroupMessaging({Key key, this.chat}) : super(key: key);
 
@@ -116,6 +116,9 @@ class _BroupMessagingState extends State<BroupMessaging>
     if (remainingAdmins.contains(meBroup.id)) {
       meBroup.setAdmin(true);
       remainingAdmins.remove(meBroup.id);
+      chat.setAmIAdmin(true);
+    } else {
+      chat.setAmIAdmin(false);
     }
     broupMe.add(meBroup);
     remainingParticipants.remove(Settings.instance.getBroId());

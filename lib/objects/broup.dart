@@ -9,6 +9,8 @@ class Broup extends Chat {
   List<int> admins = [];
   List<Bro> broupBros = [];
 
+  bool meAdmin = false;
+
   Broup(int id, String broupName, String broupDescription, String alias, String broupColor,
       int unreadMessages, String lastActivity, String roomName, bool blocked, bool isBroup) {
     this.id = id;
@@ -66,6 +68,14 @@ class Broup extends Chat {
 
   List<Bro> getBroupBros() {
     return this.broupBros;
+  }
+
+  void setAmIAdmin(bool meAdmin) {
+    this.meAdmin = meAdmin;
+  }
+
+  bool amIAdmin() {
+    return meAdmin;
   }
 
   void removeBro(int oldBro) {

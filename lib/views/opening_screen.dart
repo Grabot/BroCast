@@ -1,5 +1,5 @@
 import 'package:brocast/constants/base_url.dart';
-import 'package:brocast/objects/bro_bros.dart';
+import 'package:brocast/objects/chat.dart';
 import 'package:brocast/services/auth.dart';
 import 'package:brocast/services/notification_service.dart';
 import 'package:brocast/services/settings.dart';
@@ -109,7 +109,7 @@ class _OpeningScreenState extends State<OpeningScreen> {
     });
   }
 
-  void goToDifferentChat(BroBros chatBro) {
+  void goToDifferentChat(Chat chatBro) {
     // not doing it here, first log in.
   }
 

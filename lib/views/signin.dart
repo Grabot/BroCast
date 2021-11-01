@@ -1,7 +1,6 @@
 import 'dart:io';
-
 import 'package:back_button_interceptor/back_button_interceptor.dart';
-import 'package:brocast/objects/bro_bros.dart';
+import 'package:brocast/objects/chat.dart';
 import 'package:brocast/services/auth.dart';
 import 'package:brocast/services/notification_service.dart';
 import 'package:brocast/services/settings.dart';
@@ -61,7 +60,7 @@ class _SignInState extends State<SignIn> {
     super.initState();
   }
 
-  void goToDifferentChat(BroBros chatBro) {
+  void goToDifferentChat(Chat chatBro) {
     // not doing it here, first log in.
   }
 

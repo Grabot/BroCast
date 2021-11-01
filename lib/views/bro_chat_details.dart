@@ -164,7 +164,7 @@ class _BroChatDetailsState extends State<BroChatDetails>
     super.dispose();
   }
 
-  void goToDifferentChat(BroBros chatBro) {
+  void goToDifferentChat(Chat chatBro) {
     if (mounted) {
       Navigator.pushReplacement(
           context,

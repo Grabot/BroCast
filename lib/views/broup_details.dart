@@ -1,6 +1,5 @@
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:brocast/objects/bro.dart';
-import 'package:brocast/objects/bro_bros.dart';
 import 'package:brocast/objects/broup.dart';
 import 'package:brocast/objects/chat.dart';
 import 'package:brocast/services/notification_service.dart';
@@ -8,6 +7,7 @@ import 'package:brocast/services/settings.dart';
 import 'package:brocast/services/socket_services.dart';
 import 'package:brocast/utils/bro_list.dart';
 import 'package:brocast/utils/utils.dart';
+import 'package:brocast/views/broup_add_participant.dart';
 import "package:flutter/material.dart";
 import 'package:flutter_circle_color_picker/flutter_circle_color_picker.dart';
 
@@ -187,7 +187,7 @@ class _BroupDetailsState extends State<BroupDetails>
     super.dispose();
   }
 
-  void goToDifferentChat(BroBros chatBro) {
+  void goToDifferentChat(Chat chatBro) {
     if (mounted) {
       Navigator.pushReplacement(
           context,
@@ -451,10 +451,10 @@ class _BroupDetailsState extends State<BroupDetails>
           });
         }
       } else {
-        broupAddAdminFailed();
+        broupRemoveBroFailed();
       }
     } else {
-      broupAddAdminFailed();
+      broupRemoveBroFailed();
     }
   }
 
@@ -501,6 +501,12 @@ class _BroupDetailsState extends State<BroupDetails>
       }
     }
     return BroTile(bro: bro, broName: broName, broupId: chat.id);
+  }
+
+  addParticipant() {
+    Navigator.pushReplacement(
+        context, MaterialPageRoute(
+            builder: (context) => BroupAddParticipant(chat: chat)));
   }
 
   @override
@@ -689,6 +695,43 @@ class _BroupDetailsState extends State<BroupDetails>
                         style: simpleTextStyle()
                     ),
                   ),
+                  SizedBox(height: 10),
+                  chat.amIAdmin()
+                    ? InkWell(
+                      onTap: () {
+                        addParticipant();
+                      },
+                      child: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 24, vertical: 6),
+                        child: Row(
+                            children: [
+                              Container(
+                                  height: 40,
+                                  width: 40,
+                                  decoration: BoxDecoration(
+                                      color: Colors.green,
+                                      borderRadius: BorderRadius.all(Radius.circular(40))
+                                  ),
+                                  child: IconButton(
+                                    onPressed: () {
+                                      addParticipant();
+                                    },
+                                    icon: Icon(
+                                        Icons.person_add,
+                                        color: Colors.white
+                                    ),
+                                  )
+                              ),
+                              SizedBox(width: 20),
+                              Text(
+                                "Add participants",
+                                style: TextStyle(color: Colors.grey, fontSize: 20),
+                              ),
+                            ]
+                          ),
+                        ),
+                    )
+                    : Container(),
                   Container(
                     alignment: Alignment.center,
                     child: brosInBroupList()
