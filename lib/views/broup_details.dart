@@ -82,9 +82,10 @@ class _BroupDetailsState extends State<BroupDetails>
         });
       }
     });
-
-    joinBroupRoom(Settings.instance.getBroId(), chat.id);
-    initSockets();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      joinBroupRoom(Settings.instance.getBroId(), chat.id);
+      initSockets();
+    });
     NotificationService.instance.setScreen(this);
 
     WidgetsBinding.instance.addObserver(this);
@@ -542,28 +543,27 @@ class _BroupDetailsState extends State<BroupDetails>
   }
 
   void broupAddAdminSuccess(var data) {
-    if (data.containsKey("result")) {
-      bool result = data["result"];
-      if (result) {
-        for (Bro bro in chat.getBroupBros()) {
-          if (bro.id == data["new_admin"]) {
-            bro.setAdmin(true);
-            chat.addAdmin(data["new_admin"]);
-            if (Settings.instance.getBroId() == data["new_admin"]) {
-              chat.setAmIAdmin(true);
+    if (mounted) {
+      if (data.containsKey("result")) {
+        bool result = data["result"];
+        if (result) {
+          for (Bro bro in chat.getBroupBros()) {
+            if (bro.id == data["new_admin"]) {
+              bro.setAdmin(true);
+              chat.addAdmin(data["new_admin"]);
+              if (Settings.instance.getBroId() == data["new_admin"]) {
+                chat.setAmIAdmin(true);
+              }
+              break;
             }
-            break;
           }
-        }
-        if (mounted) {
-          setState(() {
-          });
+          setState(() {});
+        } else {
+          broupAddAdminFailed();
         }
       } else {
         broupAddAdminFailed();
       }
-    } else {
-      broupAddAdminFailed();
     }
   }
 
@@ -575,28 +575,27 @@ class _BroupDetailsState extends State<BroupDetails>
   }
 
   void broupDismissAdminSuccess(var data) {
-    if (data.containsKey("result")) {
-      bool result = data["result"];
-      if (result) {
-        for (Bro bro in chat.getBroupBros()) {
-          if (bro.id == data["old_admin"]) {
-            bro.setAdmin(false);
-            chat.dismissAdmin(data["old_admin"]);
-            if (Settings.instance.getBroId() == data["old_admin"]) {
-              chat.setAmIAdmin(false);
+    if (mounted) {
+      if (data.containsKey("result")) {
+        bool result = data["result"];
+        if (result) {
+          for (Bro bro in chat.getBroupBros()) {
+            if (bro.id == data["old_admin"]) {
+              bro.setAdmin(false);
+              chat.dismissAdmin(data["old_admin"]);
+              if (Settings.instance.getBroId() == data["old_admin"]) {
+                chat.setAmIAdmin(false);
+              }
+              break;
             }
-            break;
           }
-        }
-        if (mounted) {
-          setState(() {
-          });
+          setState(() {});
+        } else {
+          broupAddAdminFailed();
         }
       } else {
         broupAddAdminFailed();
       }
-    } else {
-      broupAddAdminFailed();
     }
   }
 
@@ -608,30 +607,31 @@ class _BroupDetailsState extends State<BroupDetails>
   }
 
   void broupRemoveBroSuccess(var data) {
-    if (data.containsKey("result")) {
-      bool result = data["result"];
-      if (result) {
-        if (data["old_bro"] == Settings.instance.getBroId()) {
-          // We have successfully left the Broup
-          Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) => BroCastHome()));
-        } else {
-          for (Bro bro in chat.getBroupBros()) {
-            if (bro.id == data["old_bro"]) {
-              chat.dismissAdmin(data["old_bro"]);
-              chat.removeBro(data["old_bro"]);
-              break;
+    if (mounted) {
+      if (data.containsKey("result")) {
+        bool result = data["result"];
+        if (result) {
+          if (data["old_bro"] == Settings.instance.getBroId()) {
+            // We have successfully left the Broup
+            Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => BroCastHome()));
+          } else {
+            for (Bro bro in chat.getBroupBros()) {
+              if (bro.id == data["old_bro"]) {
+                chat.dismissAdmin(data["old_bro"]);
+                chat.removeBro(data["old_bro"]);
+                break;
+              }
             }
-          }
-          if (mounted) {
             setState(() {});
           }
+        } else {
+          broupRemoveBroFailed();
         }
       } else {
         broupRemoveBroFailed();
       }
-    } else {
-      broupRemoveBroFailed();
     }
   }
 
