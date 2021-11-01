@@ -87,7 +87,6 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
-    joinRoomSolo(Settings.instance.getBroId());
     NotificationService.instance.setScreen(this);
 
     // This is called after the build is done.
@@ -101,6 +100,7 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
                 builder: (context) => BroMessaging(chat: chatBro)));
       } else {
         searchBros(Settings.instance.getToken());
+        joinRoomSolo(Settings.instance.getBroId());
       }
     });
     WidgetsBinding.instance.addObserver(this);

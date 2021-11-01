@@ -64,29 +64,19 @@ class _BroupMessagingState extends State<BroupMessaging>
     chat = widget.chat;
     amountViewed = 1;
     isLoading = false;
-    if (chat.getBroupBros().isNotEmpty && chat.getParticipants().isNotEmpty) {
-      getMessages(amountViewed);
-    }
-    else if (chat.getBroupBros().isEmpty && chat.getParticipants().isNotEmpty) {
-      getParticipants();
-      getMessages(amountViewed);
-    }
 
-    if (chat.chatColor == null) {
-      // It was opened via a notification and we don't have the whole object.
-      // We retrieve it now
-      getChat.getBroup(Settings.instance.getBroId(), chat.id).then((value) {
-        if (value != "an unknown error has occurred") {
-          setState(() {
-            chat = value;
-            getParticipants();
-            getMessages(amountViewed);
-          });
-        }
-      });
-    }
+    // We retrieve the broup again in case there were changes.
+    getChat.getBroup(Settings.instance.getToken(), chat.id).then((value) {
+      if (value != "an unknown error has occurred") {
+        setState(() {
+          chat = value;
+          getParticipants();
+          getMessages(amountViewed);
+        });
+      }
+    });
+
     NotificationService.instance.setScreen(this);
-
     joinBroupRoom(Settings.instance.getBroId(), chat.id);
     WidgetsBinding.instance.addObserver(this);
     BackButtonInterceptor.add(myInterceptor);
@@ -112,17 +102,11 @@ class _BroupMessagingState extends State<BroupMessaging>
 
   void changeToBroup() {
     if (mounted) {
-      print("there was a change to a broup");
       setState(() {
         amountViewed = 1;
         getChat.getBroup(Settings.instance.getToken(), chat.id).then((value) {
-          print("gotten the chat");
-          print(value);
-          print(Settings.instance.getBroId());
-          print(chat.id);
           if (value != "an unknown error has occurred") {
             setState(() {
-              print("setting the chat");
               chat = value;
               getParticipants();
               getMessages(amountViewed);

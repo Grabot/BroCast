@@ -64,17 +64,28 @@ class _BroupDetailsState extends State<BroupDetails>
     chat = widget.chat;
     amountInGroup = chat.getBroupBros().length;
     BackButtonInterceptor.add(myInterceptor);
-    chatDescriptionController.text = chat.chatDescription;
-    chatAliasController.text = chat.alias;
+
+    // We retrieve the broup again in case there were changes.
+    getChat.getBroup(Settings.instance.getToken(), chat.id).then((value) {
+      if (value != "an unknown error has occurred") {
+        chat = value;
+        getParticipants();
+        chatDescriptionController.text = chat.chatDescription;
+        chatAliasController.text = chat.alias;
+
+        circleColorPickerController = CircleColorPickerController(
+          initialColor: chat.chatColor,
+        );
+        currentColor = chat.chatColor;
+        setState(() {
+        });
+      }
+    });
 
     joinBroupRoom(Settings.instance.getBroId(), chat.id);
     initSockets();
     NotificationService.instance.setScreen(this);
 
-    circleColorPickerController = CircleColorPickerController(
-      initialColor: chat.chatColor,
-    );
-    currentColor = chat.chatColor;
     WidgetsBinding.instance.addObserver(this);
   }
 
