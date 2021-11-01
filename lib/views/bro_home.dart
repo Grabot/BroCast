@@ -280,7 +280,7 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
                 child: Container(
                     color: Color(0x8b2d69a3),
                     width: MediaQuery.of(context).size.width,
-                    height: 40,
+                    height: 50,
                     alignment: Alignment.center,
                     child: Text(
                       "Hey ${Settings.instance.getBroName()} ${Settings.instance.getBromotion()}!",

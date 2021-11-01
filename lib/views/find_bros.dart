@@ -214,7 +214,7 @@ class _FindBrosState extends State<FindBros> with WidgetsBindingObserver {
               backButtonFunctionality();
             }),
         title: Container(
-            alignment: Alignment.centerLeft, child: Text("Create new Broup")),
+            alignment: Alignment.centerLeft, child: Text("Add new bros")),
         actions: [
           PopupMenuButton<int>(
               onSelected: (item) => onSelect(context, item),

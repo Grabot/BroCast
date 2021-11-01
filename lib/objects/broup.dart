@@ -78,6 +78,28 @@ class Broup extends Chat {
     return meAdmin;
   }
 
+  String getchatDescription() {
+    return this.chatDescription;
+  }
+
+  void setChatDescription(String description) {
+    this.chatDescription = description;
+  }
+
+  String getChatName() {
+    return this.chatName;
+  }
+
+  void setChatName(String chatName) {
+    this.chatName = chatName;
+  }
+
+  void addBro(Bro addBro) {
+    if (!this.broupBros.contains(addBro)) {
+      this.broupBros.add(addBro);
+    }
+  }
+
   void removeBro(int oldBro) {
     if (this.participants.contains(oldBro)) {
       this.participants.remove(oldBro);

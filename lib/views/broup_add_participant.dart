@@ -1,6 +1,11 @@
 import 'package:back_button_interceptor/back_button_interceptor.dart';
+import 'package:brocast/objects/bro_added.dart';
+import 'package:brocast/objects/bro_bros.dart';
 import 'package:brocast/objects/broup.dart';
 import 'package:brocast/objects/chat.dart';
+import 'package:brocast/services/notification_service.dart';
+import 'package:brocast/services/settings.dart';
+import 'package:brocast/services/socket_services.dart';
 import 'package:brocast/utils/bro_list.dart';
 import 'package:brocast/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
@@ -23,11 +28,14 @@ class BroupAddParticipant extends StatefulWidget {
 class _BroupAddParticipantState extends State<BroupAddParticipant> with WidgetsBindingObserver {
 
   bool showEmojiKeyboard = false;
+  bool showNotification = true;
 
   List<BroupAddBro> bros = [];
   List<BroupAddBro> shownBros = [];
 
   Broup chat;
+
+  BroAdded broToBeAddedToBroup;
 
   TextEditingController bromotionController = new TextEditingController();
   TextEditingController broNameController = new TextEditingController();
@@ -36,6 +44,7 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> with WidgetsB
   void initState() {
     super.initState();
     chat = widget.chat;
+    broToBeAddedToBroup = null;
     bromotionController.addListener(bromotionListener);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       List<Chat> broBros = BroList.instance.getBros();
@@ -51,8 +60,78 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> with WidgetsB
         shownBros = bros;
       });
     });
+    initSockets();
     WidgetsBinding.instance.addObserver(this);
     BackButtonInterceptor.add(myInterceptor);
+  }
+
+  void initSockets() {
+    SocketServices.instance.socket
+        .on('message_event_send_solo', (data) => messageReceivedSolo(data));
+    SocketServices.instance.socket.on('message_event_add_bro_to_broup_success', (data) {
+      broWasAddedToBroup(data);
+    });
+    SocketServices.instance.socket.on('message_event_add_bro_to_broup_failed', (data) {
+      addingBroToBroupFailed();
+    });
+  }
+
+  broWasAddedToBroup(var data) {
+    if (mounted) {
+      if (data.containsKey("result")) {
+        bool result = data["result"];
+        if (result) {
+          var newChat = data["chat"];
+
+          List<dynamic> broIds = newChat["bro_ids"];
+          List<int> broIdList = broIds.map((s) => s as int).toList();
+          chat.setParticipants(broIdList);
+
+          chat.setChatName(newChat["broup_name"]);
+
+          if (broToBeAddedToBroup != null) {
+            chat.addBro(broToBeAddedToBroup);
+            Navigator.pushReplacement(
+                context, MaterialPageRoute(
+                builder: (context) => BroupDetails(chat: chat)));
+          } else {
+            print("error while adding bro to broup! This should not happen!");
+          }
+        }
+      }
+    }
+  }
+
+  addingBroToBroupFailed() {
+    broToBeAddedToBroup = null;
+    if (mounted) {
+      ShowToastComponent.showDialog(
+          "Adding bro to the broup has failed", context);
+    }
+  }
+
+  messageReceivedSolo(var data) {
+    if (mounted) {
+      for (Chat br0 in BroList.instance.getBros()) {
+        if (!br0.isBroup) {
+          if (br0.id == data["sender_id"]) {
+            if (showNotification) {
+              NotificationService.instance
+                  .showNotification(br0.id, br0.chatName, "", data["body"]);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      showNotification = true;
+    } else {
+      showNotification = false;
+    }
   }
 
   bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
@@ -220,7 +299,7 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> with WidgetsB
   }
 
   void selectBro(BroupAddBro broAddBroup) {
-    print("selected a bro");
+    showDialogAddParticipant(context, broAddBroup.broBros);
   }
 
   void onTapTextField() {
@@ -304,6 +383,47 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> with WidgetsB
           ),
         ),
       );
+  }
+
+  void showDialogAddParticipant(BuildContext context, BroBros broBros) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: new Text(
+              "Add ${broBros.getBroNameOrAlias()} to the broup?",
+            style: TextStyle(color: Colors.black, fontSize: 20)),
+          actions: <Widget>[
+            new TextButton(
+              child: new Text("Cancel"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            new TextButton(
+              child: new Text("Ok"),
+              onPressed: () {
+                addTheBro(broBros);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void addTheBro(BroBros broBros) {
+      if (SocketServices.instance.socket.connected) {
+      broToBeAddedToBroup = new BroAdded(broBros.id, broBros.chatName);
+      SocketServices.instance.socket.emit("message_event_add_bro_to_broup",
+          {
+            'token': Settings.instance.getToken(),
+            'broup_id': chat.id,
+            'bro_id': broBros.id
+          }
+      );
+    }
+    Navigator.of(context).pop();
   }
 }
 
