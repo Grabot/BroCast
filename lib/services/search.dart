@@ -6,7 +6,7 @@ import 'package:brocast/objects/bro_not_added.dart';
 import 'package:http/http.dart' as http;
 
 class Search {
-  Future searchBro(String broName, String bromotion) async {
+  Future searchBro(String token, String broName, String bromotion) async {
     String urlSearch = baseUrl + 'search';
     Uri uriRegister = Uri.parse(urlSearch);
 
@@ -20,7 +20,11 @@ class Search {
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode(
-          <String, String>{'bro_name': broName, 'bromotion': bromotion}),
+          <String, String>{
+            'token': token,
+            'bro_name': broName,
+            'bromotion': bromotion
+          }),
     );
     Map<String, dynamic> registerResponse = jsonDecode(responsePost.body);
     if (registerResponse.containsKey("result")) {

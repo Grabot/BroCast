@@ -36,6 +36,7 @@ class GetChat {
             chat["last_time_activity"],
             chat["room_name"],
             chat["blocked"],
+            chat["mute"],
             false);
         return broBros;
       }
@@ -72,6 +73,7 @@ class GetChat {
             chat["unread_messages"],
             chat["last_time_activity"],
             chat["room_name"],
+            false,
             chat["mute"],
             true);
         List<dynamic> broIds = chat["bro_ids"];

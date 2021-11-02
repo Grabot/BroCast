@@ -11,6 +11,7 @@ abstract class Chat {
   Color chatColor;
   int unreadMessages;
   bool blocked;
+  bool mute;
   bool isBroup;
 
   Chat();

@@ -35,6 +35,7 @@ class GetBros {
                 br0["last_time_activity"],
                 br0["room_name"],
                 br0["blocked"],
+                br0["mute"],
                 false);
             listWithBros.add(broBros);
           } else if (br0.containsKey("broup_name")) {
@@ -47,6 +48,7 @@ class GetBros {
                 br0["unread_messages"],
                 br0["last_time_activity"],
                 br0["room_name"],
+                false,
                 br0["mute"],
                 true);
             List<dynamic> broIds = br0["bro_ids"];

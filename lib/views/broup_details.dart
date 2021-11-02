@@ -15,7 +15,6 @@ import 'package:brocast/utils/utils.dart';
 import 'package:brocast/views/broup_add_participant.dart';
 import "package:flutter/material.dart";
 import 'package:flutter_circle_color_picker/flutter_circle_color_picker.dart';
-
 import 'bro_home.dart';
 import 'bro_messaging.dart';
 import 'bro_profile.dart';
@@ -273,6 +272,12 @@ class _BroupDetailsState extends State<BroupDetails>
       SocketServices.instance.socket.on('message_event_add_bro_failed', (data) {
         broAddingFailed();
       });
+      SocketServices.instance.socket.on('message_event_change_broup_mute_success', (data) {
+        broupWasMuted(data);
+      });
+      SocketServices.instance.socket.on('message_event_change_broup_mute_failed', (data) {
+        broupMutingFailed();
+      });
     }
   }
 
@@ -287,6 +292,26 @@ class _BroupDetailsState extends State<BroupDetails>
     if (mounted) {
       ShowToastComponent.showDialog(
           "Bro could not be added at this time", context);
+    }
+  }
+
+  broupWasMuted(var data) {
+    if (mounted) {
+      if (data.containsKey("result")) {
+        bool result = data["result"];
+        if (result) {
+          setState(() {
+            chat.mute = data["mute"];
+          });
+        }
+      }
+    }
+  }
+
+  broupMutingFailed() {
+    if (mounted) {
+      ShowToastComponent.showDialog(
+          "Broup muting failed at this time.", context);
     }
   }
 
@@ -469,12 +494,10 @@ class _BroupDetailsState extends State<BroupDetails>
   }
 
   updateColour() {
-    if (!chat.blocked) {
-      previousColor = currentColor;
-      setState(() {
-        changeColour = true;
-      });
-    }
+    previousColor = currentColor;
+    setState(() {
+      changeColour = true;
+    });
   }
 
   saveColour() {
@@ -917,14 +940,35 @@ class _BroupDetailsState extends State<BroupDetails>
                     child: brosInBroupList()
                   ),
                   SizedBox(height: 10),
-                  TextButton(
+                  chat.mute ? TextButton(
                       style: ButtonStyle(
                         foregroundColor:
                         MaterialStateProperty.all<Color>(Colors.red),
                       ),
                       onPressed: () {
-                        // TODO: @SKools add functionality
-                        print("blocked button");
+                        showDialogUnMuteBroup(context, chat.getBroNameOrAlias());
+                      },
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                                Icons.volume_up,
+                                color: Colors.grey
+                            ),
+                            SizedBox(width: 20),
+                            Text(
+                              'Unmute Broup',
+                              style: simpleTextStyle(),
+                            ),
+                          ]
+                      )
+                  ) : TextButton(
+                      style: ButtonStyle(
+                        foregroundColor:
+                        MaterialStateProperty.all<Color>(Colors.red),
+                      ),
+                      onPressed: () {
+                        showDialogMuteBroup(context, chat.getBroNameOrAlias());
                       },
                       child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -1069,6 +1113,113 @@ class _BroupDetailsState extends State<BroupDetails>
           ShowToastComponent.showDialog("There was an error with the server, we apologize for the inconvenience.", context);
         }
       }
+    });
+    Navigator.of(context).pop();
+  }
+
+  void showDialogUnMuteBroup(BuildContext context, String broupName) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: new Text("Unmute notifications?"),
+            actions: <Widget>[
+              new TextButton(
+                child: new Text("Cancel"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              new TextButton(
+                child: new Text("Unmute"),
+                onPressed: () {
+                  unmuteTheBroup();
+                },
+              ),
+            ],
+          );
+        });
+  }
+
+  void showDialogMuteBroup(BuildContext context, String broupName) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          int selectedRadio = 0;
+          return AlertDialog(
+            title: new Text("Mute notifications for..."),
+            content: StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: List<Widget>.generate(3, (int index) {
+                    return InkWell(
+                      onTap: () {
+                        setState(() => selectedRadio = index);
+                      },
+                      child: Row(
+                        children: [
+                          Radio<int>(
+                            value: index,
+                            groupValue: selectedRadio,
+                            onChanged: (int value) {
+                              setState(() => selectedRadio = value);
+                            }
+                        ),
+                        index == 0 ? Container(
+                          child: Text("8 hours")
+                        ) : Container(),
+                        index == 1 ? Container(
+                          child: Text("1 week")
+                        ) : Container(),
+                        index == 2 ? Container(
+                          child: Text("Indefinitely")
+                        ) : Container(),
+                      ]
+                      ),
+                    );
+                  }),
+                );
+              },
+            ),
+            actions: <Widget>[
+              new TextButton(
+                child: new Text("Cancel"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              new TextButton(
+                child: new Text("Mute"),
+                onPressed: () {
+                  muteTheBroup(selectedRadio);
+                },
+              ),
+            ],
+          );
+        });
+  }
+
+  void unmuteTheBroup() {
+    print("Unmuting the broup");
+    SocketServices.instance.socket
+        .emit("message_event_change_broup_mute", {
+      "token": Settings.instance.getToken(),
+      "broup_id": chat.id,
+      "bro_id": Settings.instance.getBroId(),
+      "mute": -1
+    });
+    Navigator.of(context).pop();
+  }
+
+  void muteTheBroup(int selectedRadio) {
+    print("Muting the broup $selectedRadio");
+    SocketServices.instance.socket
+        .emit("message_event_change_broup_mute", {
+      "token": Settings.instance.getToken(),
+      "broup_id": chat.id,
+      "bro_id": Settings.instance.getBroId(),
+      "mute": selectedRadio
     });
     Navigator.of(context).pop();
   }
