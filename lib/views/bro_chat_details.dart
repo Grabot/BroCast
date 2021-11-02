@@ -610,7 +610,7 @@ class _BroChatDetailsState extends State<BroChatDetails>
                       ),
                       onPressed: () {
                         chat.blocked ?
-                        blockTheBro(false) : showDialogBlock(context, chat.chatName);
+                        blockTheBro(false) : showDialogBlock(context, chat.getBroNameOrAlias());
                       },
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -637,7 +637,7 @@ class _BroChatDetailsState extends State<BroChatDetails>
                         MaterialStateProperty.all<Color>(Colors.red),
                       ),
                       onPressed: () {
-                        showDialogRemove(context, chat.chatName);
+                        showDialogRemove(context, chat.getBroNameOrAlias());
                       },
                       child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -658,7 +658,7 @@ class _BroChatDetailsState extends State<BroChatDetails>
                         MaterialStateProperty.all<Color>(Colors.red),
                       ),
                       onPressed: () {
-                        showDialogReport(context, chat.chatName);
+                        showDialogReport(context, chat.getBroNameOrAlias());
                       },
                       child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,

@@ -227,6 +227,8 @@ class _BroupMessagingState extends State<BroupMessaging>
 
   messageReceivedSolo(var data) {
     // TODO: @SKools this probably has to be changed.
+    print(data);
+    print("message received solo");
     if (mounted) {
       if (chat.id != data["sender_id"]) {
         for (Chat br0 in BroList.instance.getBros()) {
@@ -253,7 +255,7 @@ class _BroupMessagingState extends State<BroupMessaging>
   }
 
   messageReceived(var data) {
-    print("message received!");
+    print("message received regular!");
     if (mounted) {
       Message mes = new Message(
           data["id"],
@@ -500,10 +502,12 @@ class _BroupMessagingState extends State<BroupMessaging>
   }
 
   messageRead(var data) {
-    // TODO: @SKools the message read moet iets anders denk
     if (mounted) {
+      var timeLastRead = DateTime.parse(data + 'Z').toLocal();
       for (Message message in this.messages) {
-        message.isRead = true;
+        if (message.timestamp != null && timeLastRead.isAfter(message.timestamp)) {
+          message.isRead = true;
+        }
       }
       setState(() {
         this.messages = this.messages;

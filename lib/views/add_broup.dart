@@ -105,7 +105,7 @@ class _AddBroupState extends State<AddBroup> with WidgetsBindingObserver {
           if (br0.id == data["sender_id"]) {
             if (showNotification) {
               NotificationService.instance
-                  .showNotification(br0.id, br0.chatName, "", data["body"]);
+                  .showNotification(br0.id, br0.getBroNameOrAlias(), "", data["body"]);
             }
           }
         }
@@ -299,7 +299,7 @@ class _AddBroupState extends State<AddBroup> with WidgetsBindingObserver {
                       children: [
                         Container(
                           width: MediaQuery.of(context).size.width - 40,
-                          child: Text(participant.chatName,
+                          child: Text(participant.getBroNameOrAlias(),
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(
                                   color: Colors.white, fontSize: 20)),

@@ -7,6 +7,7 @@ import 'package:brocast/objects/chat.dart';
 import 'package:brocast/services/get_broup_bros.dart';
 import 'package:brocast/services/get_chat.dart';
 import 'package:brocast/services/notification_service.dart';
+import 'package:brocast/services/report_bro.dart';
 import 'package:brocast/services/settings.dart';
 import 'package:brocast/services/socket_services.dart';
 import 'package:brocast/utils/bro_list.dart';
@@ -59,6 +60,8 @@ class _BroupDetailsState extends State<BroupDetails>
 
   Broup chat;
 
+  ReportBro reportBro;
+
   @override
   void initState() {
     super.initState();
@@ -87,8 +90,8 @@ class _BroupDetailsState extends State<BroupDetails>
       initSockets();
     });
     NotificationService.instance.setScreen(this);
-
     WidgetsBinding.instance.addObserver(this);
+    reportBro = new ReportBro();
   }
 
   @override
@@ -966,8 +969,7 @@ class _BroupDetailsState extends State<BroupDetails>
                         MaterialStateProperty.all<Color>(Colors.red),
                       ),
                       onPressed: () {
-                        // TODO: @SKools add functionality
-                        print("report button");
+                        showDialogReport(context, chat.getBroNameOrAlias());
                       },
                       child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -1023,6 +1025,52 @@ class _BroupDetailsState extends State<BroupDetails>
         );
       },
     );
+  }
+
+  void showDialogReport(BuildContext context, String chatName) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: new Text("Report broup $chatName!"),
+          content: new Text(
+              "Are you sure you want to report this broup? The most recent messages from this broup will be forwarded to Zwaar developers to assess possible deletion of the broup. This broup and the messages will be removed from your bro list and the former broup can't send you messages anymore. This former broup will not be notified of the report. \n(This action cannot be undone!)"),
+          actions: <Widget>[
+            new TextButton(
+              child: new Text("Cancel"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            new TextButton(
+              child: new Text("Report"),
+              onPressed: () {
+                reportTheBroup();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void reportTheBroup() {
+    reportBro.reportBroup(
+        Settings.instance.getToken(),
+        chat.id
+    ).then((val) {
+      if (val) {
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => BroCastHome()));
+      } else {
+        if (val == "an unknown error has occurred") {
+          ShowToastComponent.showDialog("An unknown error has occurred", context);
+        } else {
+          ShowToastComponent.showDialog("There was an error with the server, we apologize for the inconvenience.", context);
+        }
+      }
+    });
+    Navigator.of(context).pop();
   }
 }
 

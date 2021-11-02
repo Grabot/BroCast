@@ -47,7 +47,7 @@ class GetBros {
                 br0["unread_messages"],
                 br0["last_time_activity"],
                 br0["room_name"],
-                br0["blocked"],
+                br0["mute"],
                 true);
             List<dynamic> broIds = br0["bro_ids"];
             List<int> broIdList = broIds.map((s) => s as int).toList();

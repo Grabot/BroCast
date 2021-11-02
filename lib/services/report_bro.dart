@@ -28,4 +28,29 @@ class ReportBro {
     }
     return "an unknown error has occurred";
   }
+
+  Future reportBroup(String token, int broupId) async {
+    String urlReportBroup = baseUrl_v1_2 + 'report/broup';
+    Uri uriReportBroup = Uri.parse(urlReportBroup);
+
+    http.Response responsePost = await http.post(
+      uriReportBroup,
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        'token': token,
+        'broup_id': broupId.toString()
+      }),
+    );
+
+    Map<String, dynamic> reportBroupResponse = jsonDecode(responsePost.body);
+    if (reportBroupResponse.containsKey("result")) {
+      bool result = reportBroupResponse["result"];
+      if (result) {
+        return true;
+      }
+    }
+    return "an unknown error has occurred";
+  }
 }

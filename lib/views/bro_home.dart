@@ -127,7 +127,11 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
 
   messageReceivedSolo(var data) {
     if (mounted) {
-      updateMessages(data["sender_id"]);
+      if (data.containsKey("broup_id")) {
+        updateMessagesBroup(data["broup_id"]);
+      } else {
+        updateMessages(data["sender_id"]);
+      }
 
       for (Chat br0 in BroList.instance.getBros()) {
         if (!br0.isBroup) {
@@ -142,12 +146,30 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
     }
   }
 
+  updateMessagesBroup(int broupId) {
+    if (mounted) {
+      for (Chat br0 in bros) {
+        if (br0.isBroup) {
+          if (br0.id == broupId) {
+            br0.unreadMessages += 1;
+            br0.lastActivity = DateTime.now();
+          }
+        }
+      }
+      setState(() {
+        bros.sort((b, a) => a.lastActivity.compareTo(b.lastActivity));
+      });
+    }
+  }
+
   updateMessages(int senderId) {
     if (mounted) {
-      for (BroBros br0 in bros) {
-        if (senderId == br0.id) {
-          br0.unreadMessages += 1;
-          br0.lastActivity = DateTime.now();
+      for (Chat br0 in bros) {
+        if (!br0.isBroup) {
+          if (senderId == br0.id) {
+            br0.unreadMessages += 1;
+            br0.lastActivity = DateTime.now();
+          }
         }
       }
 
