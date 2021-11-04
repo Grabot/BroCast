@@ -947,45 +947,29 @@ class _BroupDetailsState extends State<BroupDetails>
                     child: brosInBroupList()
                   ),
                   SizedBox(height: 10),
-                  chat.mute ? TextButton(
+                  TextButton(
                       style: ButtonStyle(
                         foregroundColor:
                         MaterialStateProperty.all<Color>(Colors.red),
                       ),
                       onPressed: () {
-                        showDialogUnMuteBroup(context, chat.getBroNameOrAlias());
+                        chat.mute
+                            ? showDialogUnMuteBroup(context)
+                            : showDialogMuteBroup(context);
                       },
                       child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Icon(
-                                Icons.volume_up,
-                                color: Colors.grey
+                                chat.mute ? Icons.volume_up : Icons.volume_mute,
+                                color: chat.mute ? Colors.grey : Colors.red
                             ),
                             SizedBox(width: 20),
-                            Text(
+                            chat.mute
+                                ? Text(
                               'Unmute Broup',
                               style: simpleTextStyle(),
-                            ),
-                          ]
-                      )
-                  ) : TextButton(
-                      style: ButtonStyle(
-                        foregroundColor:
-                        MaterialStateProperty.all<Color>(Colors.red),
-                      ),
-                      onPressed: () {
-                        showDialogMuteBroup(context, chat.getBroNameOrAlias());
-                      },
-                      child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                                Icons.volume_mute,
-                                color: Colors.red
-                            ),
-                            SizedBox(width: 20),
-                            Text(
+                            ) : Text(
                               'Mute Broup',
                               style: simpleTextStyle(),
                             ),
@@ -1124,7 +1108,7 @@ class _BroupDetailsState extends State<BroupDetails>
     Navigator.of(context).pop();
   }
 
-  void showDialogUnMuteBroup(BuildContext context, String broupName) {
+  void showDialogUnMuteBroup(BuildContext context) {
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -1148,7 +1132,7 @@ class _BroupDetailsState extends State<BroupDetails>
         });
   }
 
-  void showDialogMuteBroup(BuildContext context, String broupName) {
+  void showDialogMuteBroup(BuildContext context) {
     showDialog(
         context: context,
         builder: (BuildContext context) {

@@ -108,6 +108,12 @@ class _BroChatDetailsState extends State<BroChatDetails>
         (data) {
       chatColourUpdateFailed();
     });
+    SocketServices.instance.socket.on('message_event_change_chat_mute_success', (data) {
+      chatWasMuted(data);
+    });
+    SocketServices.instance.socket.on('message_event_change_chat_mute_failed', (data) {
+      chatMutingFailed();
+    });
   }
 
   messageReceivedSolo(var data) {
@@ -116,6 +122,7 @@ class _BroChatDetailsState extends State<BroChatDetails>
         if (!br0.isBroup) {
           if (br0.id == data["sender_id"]) {
             if (showNotification) {
+              // TODO: @Skools fix notification when screen is open. showNotifications is changed with a broup bool (also other screens)
               NotificationService.instance
                   .showNotification(br0.id, br0.chatName, "", data["body"]);
             }
@@ -423,13 +430,35 @@ class _BroChatDetailsState extends State<BroChatDetails>
   }
 
   void chatColourUpdateFailed() {
-    chatDescriptionController.text = previousDescription;
-    ShowToastComponent.showDialog(
-        "Updating the bro colour has failed", context);
+    if (mounted) {
+      chatDescriptionController.text = previousDescription;
+      ShowToastComponent.showDialog(
+          "Updating the bro colour has failed", context);
+    }
   }
 
   onColorChange(Color colour) {
     currentColor = colour;
+  }
+
+  chatWasMuted(var data) {
+    if (mounted) {
+      if (data.containsKey("result")) {
+        bool result = data["result"];
+        if (result) {
+          setState(() {
+            chat.mute = data["mute"];
+          });
+        }
+      }
+    }
+  }
+
+  chatMutingFailed() {
+    if (mounted) {
+      ShowToastComponent.showDialog(
+          "Chat muting failed at this time.", context);
+    }
   }
 
   @override
@@ -610,6 +639,36 @@ class _BroChatDetailsState extends State<BroChatDetails>
                       ],
                     ),
                   ),
+                  SizedBox(height: 30),
+                  TextButton(
+                      style: ButtonStyle(
+                        foregroundColor:
+                        MaterialStateProperty.all<Color>(Colors.red),
+                      ),
+                      onPressed: () {
+                        chat.mute
+                            ? showDialogUnMuteChat(context)
+                            : showDialogMuteChat(context);
+                      },
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                                chat.mute ? Icons.volume_up : Icons.volume_mute,
+                                color: chat.mute ? Colors.grey : Colors.red
+                            ),
+                            SizedBox(width: 20),
+                            chat.mute
+                                ? Text(
+                              'Unmute Chat',
+                              style: simpleTextStyle(),
+                            ) : Text(
+                              'Mute Chat',
+                              style: simpleTextStyle(),
+                            ),
+                          ]
+                      )
+                  ),
                   SizedBox(height: 10),
                   TextButton(
                       style: ButtonStyle(
@@ -767,5 +826,115 @@ class _BroChatDetailsState extends State<BroChatDetails>
         );
       },
     );
+  }
+
+  void showDialogUnMuteChat(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: new Text("Unmute notifications?"),
+            actions: <Widget>[
+              new TextButton(
+                child: new Text("Cancel"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              new TextButton(
+                child: new Text("Unmute"),
+                onPressed: () {
+                  unmuteTheChat();
+                },
+              ),
+            ],
+          );
+        });
+  }
+
+  void showDialogMuteChat(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          int selectedRadio = 0;
+          return AlertDialog(
+            title: new Text("Mute notifications for..."),
+            content: StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: List<Widget>.generate(4, (int index) {
+                    return InkWell(
+                      onTap: () {
+                        setState(() => selectedRadio = index);
+                      },
+                      child: Row(
+                          children: [
+                            Radio<int>(
+                                value: index,
+                                groupValue: selectedRadio,
+                                onChanged: (int value) {
+                                  setState(() => selectedRadio = value);
+                                }
+                            ),
+                            index == 0 ? Container(
+                                child: Text("1 hour")
+                            ) : Container(),
+                            index == 1 ? Container(
+                                child: Text("8 hours")
+                            ) : Container(),
+                            index == 2 ? Container(
+                                child: Text("1 week")
+                            ) : Container(),
+                            index == 3 ? Container(
+                                child: Text("Indefinitely")
+                            ) : Container(),
+                          ]
+                      ),
+                    );
+                  }),
+                );
+              },
+            ),
+            actions: <Widget>[
+              new TextButton(
+                child: new Text("Cancel"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              new TextButton(
+                child: new Text("Mute"),
+                onPressed: () {
+                  muteTheChat(selectedRadio);
+                },
+              ),
+            ],
+          );
+        });
+  }
+
+  void unmuteTheChat() {
+    print("Unmuting the chat");
+    SocketServices.instance.socket
+        .emit("message_event_change_chat_mute", {
+      "token": Settings.instance.getToken(),
+      "bros_bro_id": chat.id,
+      "bro_id": Settings.instance.getBroId(),
+      "mute": -1
+    });
+    Navigator.of(context).pop();
+  }
+
+  void muteTheChat(int selectedRadio) {
+    print("Muting the chat $selectedRadio");
+    SocketServices.instance.socket
+        .emit("message_event_change_chat_mute", {
+      "token": Settings.instance.getToken(),
+      "bros_bro_id": chat.id,
+      "bro_id": Settings.instance.getBroId(),
+      "mute": selectedRadio
+    });
+    Navigator.of(context).pop();
   }
 }
