@@ -372,10 +372,17 @@ class _BroupDetailsState extends State<BroupDetails>
 
   void goToDifferentChat(Chat chatBro) {
     if (mounted) {
-      Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (context) => BroupMessaging(chat: chatBro)));
+      if (chatBro.isBroup) {
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (context) => BroupMessaging(chat: chatBro)));
+      } else {
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (context) => BroMessaging(chat: chatBro)));
+      }
     }
   }
 
@@ -1152,7 +1159,7 @@ class _BroupDetailsState extends State<BroupDetails>
               builder: (BuildContext context, StateSetter setState) {
                 return Column(
                   mainAxisSize: MainAxisSize.min,
-                  children: List<Widget>.generate(3, (int index) {
+                  children: List<Widget>.generate(4, (int index) {
                     return InkWell(
                       onTap: () {
                         setState(() => selectedRadio = index);
@@ -1167,13 +1174,16 @@ class _BroupDetailsState extends State<BroupDetails>
                             }
                         ),
                         index == 0 ? Container(
-                          child: Text("8 hours")
+                          child: Text("1 hour")
                         ) : Container(),
                         index == 1 ? Container(
-                          child: Text("1 week")
+                          child: Text("8 hours")
                         ) : Container(),
                         index == 2 ? Container(
-                          child: Text("Indefinitely")
+                          child: Text("1 week")
+                        ) : Container(),
+                        index == 3 ? Container(
+                            child: Text("Indefinitely")
                         ) : Container(),
                       ]
                       ),

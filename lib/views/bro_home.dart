@@ -49,23 +49,25 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
   }
 
   searchBros(String token) {
-    setState(() {
-      isSearching = true;
-    });
-
-    getBros.getBros(token).then((val) {
-      if (!(val is String)) {
-        setState(() {
-          bros = val;
-          BroList.instance.setBros(bros);
-        });
-      } else {
-        ShowToastComponent.showDialog(val.toString(), context);
-      }
+    if (mounted) {
       setState(() {
-        isSearching = false;
+        isSearching = true;
       });
-    });
+
+      getBros.getBros(token).then((val) {
+        if (!(val is String)) {
+          setState(() {
+            bros = val;
+            BroList.instance.setBros(bros);
+          });
+        } else {
+          ShowToastComponent.showDialog(val.toString(), context);
+        }
+        setState(() {
+          isSearching = false;
+        });
+      });
+    }
   }
 
   void broAddedYou() {
@@ -94,10 +96,18 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
       Chat chatBro = NotificationService.instance.getGoToBro();
       if (chatBro != null) {
         NotificationService.instance.resetGoToBro();
-        Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (context) => BroMessaging(chat: chatBro)));
+        NotificationService.instance.dismissAllNotifications();
+        if (chatBro.isBroup) {
+          Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => BroupMessaging(chat: chatBro)));
+        } else {
+          Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => BroMessaging(chat: chatBro)));
+        }
       } else {
         searchBros(Settings.instance.getToken());
         joinRoomSolo(Settings.instance.getBroId());
@@ -209,10 +219,17 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
 
   void goToDifferentChat(Chat chatBro) {
     if (mounted) {
-      Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (context) => BroMessaging(chat: chatBro)));
+      if (chatBro.isBroup) {
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (context) => BroupMessaging(chat: chatBro)));
+      } else {
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (context) => BroMessaging(chat: chatBro)));
+      }
     }
   }
 

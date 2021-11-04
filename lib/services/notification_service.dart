@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:brocast/objects/bro_bros.dart';
+import 'package:brocast/objects/broup.dart';
 import 'package:brocast/objects/chat.dart';
 import 'package:brocast/utils/bro_list.dart';
 import 'package:flutter/material.dart';
@@ -45,29 +46,44 @@ class NotificationService {
 
     AwesomeNotifications().actionStream.listen((receivedNotification) {
       Map<String, dynamic> broResult = receivedNotification.payload;
+      Chat chatNotify;
+      print("received notification");
+      print(broResult);
       if (broResult != null) {
-        String broId = broResult["id"];
-        String chatName = broResult["chat_name"];
-        if (broId != null && chatName != null) {
-          if (BroList.instance.getBros().isEmpty) {
-            Chat broNotify =
-                new BroBros(int.parse(broId), chatName, "", "", "", 0, null, "", false, false, false);
-            if (this.currentScreen != null) {
-              this.currentScreen.goToDifferentChat(broNotify);
-            } else {
-              this.goToChat = broNotify;
-            }
-          } else {
-            for (Chat br0 in BroList.instance.getBros()) {
-              if (br0.id == int.parse(broId)) {
-                if (this.currentScreen != null) {
-                  this.currentScreen.goToDifferentChat(br0);
-                } else {
-                  this.goToChat = br0;
-                }
+        if (broResult["broup"].toLowerCase() == 'true') {
+          // A broup
+          int broupId = int.parse(broResult["id"]);
+          chatNotify = new Broup(broupId, broResult["chat_name"], "", "", "", 0, null, "", false, false, true);
+          for (Chat br0 in BroList.instance.getBros()) {
+            if (br0.isBroup) {
+              if (br0.id == broupId) {
+                print("found a broup");
+                chatNotify = br0;
               }
             }
           }
+        } else {
+          // A normal chat.
+          int broId = int.parse(broResult["id"]);
+          chatNotify = new BroBros(broId, broResult["chat_name"], "", "", "", 0, null, "", false, false, false);
+          for (Chat br0 in BroList.instance.getBros()) {
+            if (!br0.isBroup) {
+              if (br0.id == broId) {
+                print("found a bro");
+                chatNotify = br0;
+              }
+            }
+          }
+        }
+      }
+      if (chatNotify != null) {
+        print("successfully found a chat");
+        if (this.currentScreen != null) {
+          print("we have a screen 'active' going there now");
+          this.currentScreen.goToDifferentChat(chatNotify);
+        } else {
+          print("we set the object and wait for the app to startup");
+          this.goToChat = chatNotify;
         }
       }
     });
@@ -86,7 +102,7 @@ class NotificationService {
   }
 
   Future<void> showNotification(
-      int broId, String chatName, String chatColour, String messageBody) async {
+      int id, String chatName, String messageBody, bool broup) async {
     await AwesomeNotifications().createNotification(
         content: NotificationContent(
             id: notificationId,
@@ -94,7 +110,7 @@ class NotificationService {
             title: "$chatName:",
             body: messageBody,
             color: Color(0xff6b6e97),
-            payload: {"id": broId.toString(), "chat_name": chatName}));
+            payload: {"id": id.toString(), "chat_name": chatName, "broup": broup.toString()}));
     notificationId += 1;
   }
 

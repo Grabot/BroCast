@@ -17,6 +17,7 @@ import 'package:intl/intl.dart';
 import 'bro_chat_details.dart';
 import 'bro_profile.dart';
 import 'bro_settings.dart';
+import 'broup_messaging.dart';
 
 class BroMessaging extends StatefulWidget {
   final Chat chat;
@@ -57,6 +58,7 @@ class _BroMessagingState extends State<BroMessaging>
     isLoading = false;
     amountViewed = 1;
     getMessages(amountViewed);
+    print("loaded the screen from a regular old brah");
     if (chat.chatColor == null) {
       // It was opened via a notification and we don't have the whole object.
       // We retrieve it now
@@ -184,11 +186,17 @@ class _BroMessagingState extends State<BroMessaging>
 
   void goToDifferentChat(Chat chatBro) {
     if (mounted) {
-      leaveRoom();
-      Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (context) => BroMessaging(chat: chatBro)));
+      if (chatBro.isBroup) {
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (context) => BroupMessaging(chat: chatBro)));
+      } else {
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (context) => BroMessaging(chat: chatBro)));
+      }
     }
   }
 

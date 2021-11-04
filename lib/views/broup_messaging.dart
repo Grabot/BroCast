@@ -66,9 +66,11 @@ class _BroupMessagingState extends State<BroupMessaging>
     isLoading = false;
 
     // We retrieve the broup again in case there were changes.
+    print("loaded the screen going to retrieve the object");
     getChat.getBroup(Settings.instance.getToken(), chat.id).then((value) {
       if (value != "an unknown error has occurred") {
         setState(() {
+          print("found the broup and going to set it.");
           chat = value;
           getParticipants();
           getMessages(amountViewed);
@@ -85,6 +87,7 @@ class _BroupMessagingState extends State<BroupMessaging>
     messageScrollController.addListener(() {
       if (messageScrollController.position.atEdge) {
         if (messageScrollController.position.pixels != 0) {
+          print("getting messages from scrolling");
           getMessages(amountViewed);
         }
       }
@@ -118,6 +121,7 @@ class _BroupMessagingState extends State<BroupMessaging>
   }
 
   getParticipants() {
+    print("getting participants.");
     List<int> remainingParticipants = new List<int>.from(chat.getParticipants());
     List<int> remainingAdmins = new List<int>.from(chat.getAdmins());
     // List<Bro> foundParticipants = [];
@@ -298,11 +302,17 @@ class _BroupMessagingState extends State<BroupMessaging>
 
   void goToDifferentChat(Chat chatBro) {
     if (mounted) {
-      leaveBroupRoom();
-      Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (context) => BroMessaging(chat: chatBro)));
+      if (chatBro.isBroup) {
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (context) => BroupMessaging(chat: chatBro)));
+      } else {
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (context) => BroMessaging(chat: chatBro)));
+      }
     }
   }
 
@@ -312,6 +322,7 @@ class _BroupMessagingState extends State<BroupMessaging>
   }
 
   getMessages(int page) {
+    print("getting messages, I hope I find some.");
     setState(() {
       isLoading = true;
     });

@@ -26,12 +26,22 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   if (broResult != null) {
     String messageBody = broResult["message_body"];
     Map<String, dynamic> chat = jsonDecode(broResult["chat"]);
-    int brosBroId = chat["bros_bro_id"];
-    String chatName = chat["chat_name"];
-    String chatColour = chat["chat_colour"];
-    if (Platform.isAndroid) {
-      NotificationService.instance
-          .showNotification(brosBroId, chatName, chatColour, messageBody);
+    if (chat.containsKey("broup_name")) {
+      // It's a broup
+      int broupId = chat["id"];
+      String chatName = chat["broup_name"];
+      if (Platform.isAndroid) {
+        NotificationService.instance.showNotification(
+            broupId, chatName, messageBody, true);
+      }
+    } else {
+      // It's a normal chat
+      int broId = chat["bros_bro_id"];
+      String chatName = chat["chat_name"];
+      if (Platform.isAndroid) {
+        NotificationService.instance.showNotification(
+            broId, chatName, messageBody, false);
+      }
     }
   }
 }

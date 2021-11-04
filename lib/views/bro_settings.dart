@@ -13,6 +13,7 @@ import "package:flutter/material.dart";
 
 import 'bro_messaging.dart';
 import 'bro_profile.dart';
+import 'broup_messaging.dart';
 
 class BroSettings extends StatefulWidget {
   BroSettings({Key key}) : super(key: key);
@@ -70,10 +71,17 @@ class _BroSettingsState extends State<BroSettings> with WidgetsBindingObserver {
 
   void goToDifferentChat(Chat chatBro) {
     if (mounted) {
-      Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (context) => BroMessaging(chat: chatBro)));
+      if (chatBro.isBroup) {
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (context) => BroupMessaging(chat: chatBro)));
+      } else {
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (context) => BroMessaging(chat: chatBro)));
+      }
     }
   }
 
