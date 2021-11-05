@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:brocast/objects/bro_bros.dart';
 import 'package:brocast/objects/chat.dart';
 import 'package:brocast/services/auth.dart';
@@ -14,6 +15,7 @@ import 'package:brocast/utils/utils.dart';
 import 'package:brocast/views/bro_messaging.dart';
 import 'package:brocast/views/find_bros.dart';
 import 'package:brocast/views/signin.dart';
+import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -34,16 +36,22 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
 
   bool isSearching = false;
   List<Chat> bros = [];
+  List<Chat> shownBros = [];
 
+  bool showEmojiKeyboard = false;
   bool showNotification = true;
+  bool searchMode = false;
+
+  TextEditingController bromotionController = new TextEditingController();
+  TextEditingController broNameController = new TextEditingController();
 
   Widget broList() {
-    return bros.isNotEmpty
+    return shownBros.isNotEmpty
         ? ListView.builder(
             shrinkWrap: true,
-            itemCount: bros.length,
+            itemCount: shownBros.length,
             itemBuilder: (context, index) {
-              return BroTile(chat: bros[index]);
+              return BroTile(chat: shownBros[index]);
             })
         : Container();
   }
@@ -59,6 +67,7 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
           setState(() {
             bros = val;
             BroList.instance.setBros(bros);
+            shownBros = bros;
           });
         } else {
           ShowToastComponent.showDialog(val.toString(), context);
@@ -68,6 +77,48 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
         });
       });
     }
+  }
+
+  void onTapEmojiField() {
+    if (!showEmojiKeyboard) {
+      // We add a quick delay, this is to ensure that the keyboard is gone at this point.
+      Future.delayed(Duration(milliseconds: 100)).then((value) {
+        setState(() {
+          showEmojiKeyboard = true;
+        });
+      });
+    }
+  }
+
+  void onTapTextField() {
+    if (showEmojiKeyboard) {
+      setState(() {
+        showEmojiKeyboard = false;
+      });
+    }
+  }
+
+  void onChangedBroNameField(String typedText, String emojiField) {
+    if (emojiField.isEmpty && typedText.isNotEmpty) {
+      shownBros = bros.where((element) =>
+          element.getBroNameOrAlias().toLowerCase()
+              .contains(typedText.toLowerCase())).toList();
+    } else if (emojiField.isNotEmpty && typedText.isEmpty) {
+      shownBros = bros.where((element) =>
+          element.getBroNameOrAlias().toLowerCase()
+              .contains(emojiField)).toList();
+    } else if (emojiField.isNotEmpty && typedText.isNotEmpty) {
+      shownBros = bros.where((element) =>
+      element.getBroNameOrAlias().toLowerCase()
+          .contains(typedText.toLowerCase()) &&
+          element.getBroNameOrAlias().toLowerCase()
+              .contains(emojiField)).toList();
+    } else {
+      // both empty
+      shownBros = bros;
+    }
+    setState(() {
+    });
   }
 
   void broAddedYou() {
@@ -89,6 +140,8 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
+    BackButtonInterceptor.add(myInterceptor);
+    bromotionController.addListener(bromotionListener);
     NotificationService.instance.setScreen(this);
 
     // This is called after the build is done.
@@ -114,6 +167,44 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
       }
     });
     WidgetsBinding.instance.addObserver(this);
+  }
+
+  bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
+    return backButtonFunctionality();
+  }
+
+  bool backButtonFunctionality() {
+    if (mounted) {
+      if (showEmojiKeyboard) {
+        setState(() {
+          showEmojiKeyboard = false;
+        });
+        return true;
+      } else if (searchMode) {
+        onChangedBroNameField("", "");
+        bromotionController.text = "";
+        broNameController.text = "";
+        setState(() {
+          searchMode = false;
+        });
+        return true;
+      } else {
+        return false;
+      }
+    }
+    return false;
+  }
+
+  bromotionListener() {
+    bromotionController.selection =
+        TextSelection.fromPosition(TextPosition(offset: 0));
+    String fullText = bromotionController.text;
+    String lastEmoji = fullText.characters.skip(1).string;
+    if (lastEmoji != "") {
+      String newText = bromotionController.text.replaceFirst(lastEmoji, "");
+      bromotionController.text = newText;
+    }
+    onChangedBroNameField(broNameController.text, bromotionController.text);
   }
 
   joinRoomSolo(int broId) {
@@ -308,9 +399,30 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
 
   Widget appBarHome(BuildContext context) {
     return AppBar(
+        leading: searchMode ? IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.white),
+            onPressed: () {
+              backButtonFunctionality();
+            }
+        ) : Container(),
         title:
             Container(alignment: Alignment.centerLeft, child: Text("Brocast")),
         actions: [
+          searchMode ? IconButton(
+            icon: Icon(Icons.search_off, color: Colors.white),
+            onPressed: () {
+              setState(() {
+                searchMode = false;
+              });
+            }
+          ) : IconButton(
+              icon: Icon(Icons.search, color: Colors.white),
+              onPressed: () {
+                setState(() {
+                  searchMode = true;
+                });
+              }
+          ),
           PopupMenuButton<int>(
               onSelected: (item) => onSelect(context, item),
               itemBuilder: (context) => [
@@ -413,8 +525,53 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
               color: Colors.transparent,
             ),
           ),
+          searchMode ? Container(
+            child: Row(
+                children: [
+                  Expanded(
+                    flex: 4,
+                    child: TextFormField(
+                      onTap: () {
+                        onTapTextField();
+                      },
+                      onChanged: (text) {
+                        onChangedBroNameField(text, bromotionController.text);
+                      },
+                      controller: broNameController,
+                      textAlign: TextAlign.center,
+                      style: simpleTextStyle(),
+                      decoration: textFieldInputDecoration("Bro name"),
+                    ),
+                  ),
+                  SizedBox(width: 50),
+                  Expanded(
+                    flex: 1,
+                    child: TextFormField(
+                      onTap: () {
+                        onTapEmojiField();
+                      },
+                      controller: bromotionController,
+                      style: simpleTextStyle(),
+                      textAlign: TextAlign.center,
+                      decoration: textFieldInputDecoration("😀"),
+                      readOnly: true,
+                      showCursor: true,
+                    ),
+                  ),
+                ]
+            ),
+          ) : Container(),
           Container(
             child: Expanded(child: broList()),
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: EmojiKeyboard(
+                bromotionController: bromotionController,
+                emojiKeyboardHeight: 300,
+                showEmojiKeyboard: showEmojiKeyboard,
+                darkMode: Settings.instance.getEmojiKeyboardDarkMode()
+            ),
           ),
         ])),
       ),
