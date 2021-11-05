@@ -69,7 +69,7 @@ class _BroupDetailsState extends State<BroupDetails>
     BackButtonInterceptor.add(myInterceptor);
 
     // We retrieve the broup again in case there were changes.
-    getChat.getBroup(Settings.instance.getToken(), chat.id).then((value) {
+    getChat.getBroup(Settings.instance.getBroId(), chat.id).then((value) {
       if (value != "an unknown error has occurred") {
         chat = value;
         getParticipants();
@@ -106,7 +106,7 @@ class _BroupDetailsState extends State<BroupDetails>
     if (mounted) {
       print("there was a change to a broup");
       setState(() {
-        getChat.getBroup(Settings.instance.getToken(), chat.id).then((value) {
+        getChat.getBroup(Settings.instance.getBroId(), chat.id).then((value) {
           print("gotten the chat");
           print(value);
           print(Settings.instance.getBroId());
@@ -323,7 +323,7 @@ class _BroupDetailsState extends State<BroupDetails>
             if (broup.id == data["broup_id"]) {
               if (showNotification && !broup.mute) {
                 NotificationService.instance
-                    .showNotification(broup.id, broup.getBroNameOrAlias(), data["body"], true);
+                    .showNotification(broup.id, broup.chatName, broup.alias, broup.getBroNameOrAlias(), data["body"], true);
               }
             }
           }
@@ -334,7 +334,7 @@ class _BroupDetailsState extends State<BroupDetails>
             if (br0.id == data["sender_id"]) {
               if (showNotification && !br0.mute) {
                 NotificationService.instance
-                    .showNotification(br0.id, br0.getBroNameOrAlias(), data["body"], false);
+                    .showNotification(br0.id, br0.chatName, br0.alias, br0.getBroNameOrAlias(), data["body"], false);
               }
             }
           }

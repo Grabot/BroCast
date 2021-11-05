@@ -66,17 +66,23 @@ class _BroupMessagingState extends State<BroupMessaging>
     isLoading = false;
 
     // We retrieve the broup again in case there were changes.
-    print("loaded the screen going to retrieve the object");
-    getChat.getBroup(Settings.instance.getToken(), chat.id).then((value) {
-      if (value != "an unknown error has occurred") {
-        setState(() {
-          print("found the broup and going to set it.");
-          chat = value;
-          getParticipants();
-          getMessages(amountViewed);
-        });
-      }
-    });
+
+    if (chat.chatColor != null) {
+      getMessages(amountViewed);
+    } else {
+      // If there is no colour, than it was probably opened with a notification
+      // In this case we don't have the whole object. We retrieve it here
+      getChat.getBroup(Settings.instance.getBroId(), chat.id).then((value) {
+        if (value != "an unknown error has occurred") {
+          setState(() {
+            print("found the broup and going to set it.");
+            chat = value;
+            getParticipants();
+            getMessages(amountViewed);
+          });
+        }
+      });
+    }
 
     NotificationService.instance.setScreen(this);
     joinBroupRoom(Settings.instance.getBroId(), chat.id);
@@ -107,7 +113,7 @@ class _BroupMessagingState extends State<BroupMessaging>
     if (mounted) {
       setState(() {
         amountViewed = 1;
-        getChat.getBroup(Settings.instance.getToken(), chat.id).then((value) {
+        getChat.getBroup(Settings.instance.getBroId(), chat.id).then((value) {
           if (value != "an unknown error has occurred") {
             setState(() {
               chat = value;
@@ -238,8 +244,7 @@ class _BroupMessagingState extends State<BroupMessaging>
               if (broup.id == data["broup_id"]) {
                 if (showNotification && !broup.mute) {
                   NotificationService.instance
-                      .showNotification(
-                      broup.id, broup.getBroNameOrAlias(), data["body"], true);
+                      .showNotification(broup.id, broup.chatName, broup.alias, broup.getBroNameOrAlias(), data["body"], true);
                 }
               }
             }
@@ -251,8 +256,7 @@ class _BroupMessagingState extends State<BroupMessaging>
             if (br0.id == data["sender_id"]) {
               if (showNotification && !br0.mute) {
                 NotificationService.instance
-                    .showNotification(
-                    br0.id, br0.getBroNameOrAlias(), data["body"], false);
+                    .showNotification(br0.id, br0.chatName, br0.alias, br0.getBroNameOrAlias(), data["body"], false);
               }
             }
           }

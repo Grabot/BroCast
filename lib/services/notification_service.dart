@@ -5,7 +5,10 @@ import 'package:brocast/objects/bro_bros.dart';
 import 'package:brocast/objects/broup.dart';
 import 'package:brocast/objects/chat.dart';
 import 'package:brocast/utils/bro_list.dart';
+import 'package:brocast/utils/shared.dart';
 import 'package:flutter/material.dart';
+
+import 'get_chat.dart';
 
 class NotificationService {
   static NotificationService _instance = new NotificationService._internal();
@@ -47,21 +50,17 @@ class NotificationService {
     AwesomeNotifications().actionStream.listen((receivedNotification) {
       Map<String, dynamic> broResult = receivedNotification.payload;
       Chat chatNotify;
-      print("received notification");
       print(broResult);
       if (broResult != null) {
-        if (broResult["broup"].toLowerCase() == 'true') {
-          // A broup
+        String boolString = broResult["broup"];
+        bool broup = boolString.toLowerCase() == 'true';
+        if (broup) {
+          // a broup
           int broupId = int.parse(broResult["id"]);
-          chatNotify = new Broup(broupId, broResult["chat_name"], "", "", "", 0, null, "", false, false, true);
-          for (Chat br0 in BroList.instance.getBros()) {
-            if (br0.isBroup) {
-              if (br0.id == broupId) {
-                print("found a broup");
-                chatNotify = br0;
-              }
-            }
-          }
+          String chatName = broResult["chat_name"];
+          String alias = broResult["alias"];
+          chatNotify = new Broup(broupId, chatName, "", alias, "", 0, null, "", false, false, true);
+          print("set a broup notification");
         } else {
           // A normal chat.
           int broId = int.parse(broResult["id"]);
@@ -101,16 +100,81 @@ class NotificationService {
     this.currentScreen = currentScreen;
   }
 
+  Future<void> showNotificationBroup(int id, String messageBody) async {
+    // Got a message from a broup
+    print("Got a message from a broup");
+    // First check if you have the list of bros in your memory
+    Chat broupToNotify;
+    for (Chat broup in BroList.instance.getBros()) {
+      if (broup.isBroup) {
+        if (broup.id == id) {
+          print("found the correct broup");
+          broupToNotify = broup;
+          await displayNotification(
+              broupToNotify.id,
+              broupToNotify.chatName,
+              broupToNotify.alias,
+              broupToNotify.getBroNameOrAlias(),
+              messageBody,
+              true
+          );
+          return;
+        }
+      }
+    }
+    if (broupToNotify == null) {
+      print("No broup was found, probably because the app was closed and it was not in memory.");
+      HelperFunction.getBroId().then((val) {
+        if (val == null || val == "") {
+          // We didn't have any id, we assume this won't happen
+        } else {
+          GetChat getChat = new GetChat();
+          getChat.getBroup(val, id).then((value) async {
+            if (value != "an unknown error has occurred") {
+              print("found the broup and going to set it.");
+              broupToNotify = value;
+              await displayNotification(
+                  broupToNotify.id,
+                  broupToNotify.chatName,
+                  broupToNotify.alias,
+                  broupToNotify.getBroNameOrAlias(),
+                  messageBody,
+                  true
+              );
+            }
+          });
+        }
+      });
+    }
+    // If we didn't find anything we don't show a notification, we assume this won't happen
+  }
+
   Future<void> showNotification(
-      int id, String chatName, String messageBody, bool broup) async {
+      int id, String chatName, String alias, String title, String messageBody, bool broup) async {
+    await displayNotification(
+        id,
+        chatName,
+        alias,
+        title,
+        messageBody,
+        broup
+    );
+  }
+
+  displayNotification(int id, String chatName, String alias, String title, String messageBody, bool broup) async {
     await AwesomeNotifications().createNotification(
         content: NotificationContent(
             id: notificationId,
             channelKey: "brocast_notification",
-            title: "$chatName:",
+            title: "$title:",
             body: messageBody,
             color: Color(0xff6b6e97),
-            payload: {"id": id.toString(), "chat_name": chatName, "broup": broup.toString()}));
+            payload: {
+              "id": id.toString(),
+              "chat_name": chatName,
+              "alias": alias,
+              "broup": broup.toString()
+            }));
     notificationId += 1;
   }
 

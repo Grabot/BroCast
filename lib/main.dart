@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:brocast/services/notification_service.dart';
@@ -26,23 +25,37 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   print("is there a notification!?");
   print(message);
   if (broResult != null) {
+    int id = int.parse(broResult["id"]);
     String messageBody = broResult["message_body"];
-    Map<String, dynamic> chat = jsonDecode(broResult["chat"]);
-    if (chat.containsKey("broup_name")) {
-      // It's a broup
-      int broupId = chat["id"];
-      String chatName = chat["broup_name"];
-      if (Platform.isAndroid) {
-        NotificationService.instance.showNotification(
-            broupId, chatName, messageBody, true);
-      }
-    } else {
-      // It's a normal chat
-      int broId = chat["bros_bro_id"];
-      String chatName = chat["chat_name"];
-      if (Platform.isAndroid) {
-        NotificationService.instance.showNotification(
-            broId, chatName, messageBody, false);
+    String broupBoolean = broResult["broup"];
+    bool broup = broupBoolean.toLowerCase() == 'true';
+    print("notification with the following information");
+    print(id);
+    print(messageBody);
+    print(broupBoolean);
+    if (Platform.isAndroid) {
+      if (broup) {
+        print("sending the notification to the broup");
+        if (broResult.containsKey("chat_name") && broResult.containsKey("alias")) {
+          String chatName = broResult["chat_name"];
+          String alias = broResult["alias"];
+          String title = chatName;
+          if (alias != null && alias != "") {
+            title = alias;
+          }
+          NotificationService.instance.showNotification(id, chatName, alias, title, messageBody, true);
+        } else {
+          print("We are not sure what the alias is yet, so we will retrieve it first.");
+          NotificationService.instance.showNotificationBroup(id, messageBody);
+        }
+      } else {
+        String chatName = broResult["chat_name"];
+        String alias = broResult["alias"];
+        String title = chatName;
+        if (alias != null && alias != "") {
+          title = alias;
+        }
+        NotificationService.instance.showNotification(id, chatName, alias, title, messageBody, false);
       }
     }
   }

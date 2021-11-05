@@ -8,8 +8,10 @@ class BroBros extends Chat {
     this.chatName = chatName;
     this.chatDescription = chatDescription;
     this.alias = alias;
-    if (chatColour != "") {
+    if (chatColour != null && chatColour != "") {
       this.chatColor = Color(int.parse("0xFF$chatColour"));
+    } else {
+      this.chatColor = null;
     }
     this.unreadMessages = unreadMessages;
     this.blocked = blocked;

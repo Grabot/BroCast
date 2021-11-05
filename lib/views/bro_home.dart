@@ -147,7 +147,7 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
               if (showNotification && !broup.mute) {
                 print("the show notification is true");
                 NotificationService.instance
-                    .showNotification(broup.id, broup.getBroNameOrAlias(), data["body"], true);
+                    .showNotification(broup.id, broup.chatName, broup.alias, broup.getBroNameOrAlias(), data["body"], true);
               }
             }
           }
@@ -160,7 +160,7 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
             if (br0.id == data["sender_id"]) {
               if (showNotification && !br0.mute) {
                 NotificationService.instance
-                    .showNotification(br0.id, br0.getBroNameOrAlias(), data["body"], false);
+                    .showNotification(br0.id, br0.chatName, br0.alias, br0.getBroNameOrAlias(), data["body"], false);
               }
             }
           }

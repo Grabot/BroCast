@@ -44,7 +44,7 @@ class GetChat {
     return "an unknown error has occurred";
   }
 
-  Future getBroup(String token, int broupId) async {
+  Future getBroup(int broId, int broupId) async {
     String urlGetBroup = baseUrl_v1_2 + 'get/broup';
     Uri uriGetBroup = Uri.parse(urlGetBroup);
 
@@ -54,7 +54,7 @@ class GetChat {
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode(<String, String>{
-        'token': token,
+        'bro_id': broId.toString(),
         'broup_id': broupId.toString(),
       }),
     );

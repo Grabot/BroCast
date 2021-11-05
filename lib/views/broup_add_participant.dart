@@ -124,7 +124,7 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> with WidgetsB
             if (broup.id == data["broup_id"]) {
               if (showNotification && !broup.mute) {
                 NotificationService.instance
-                    .showNotification(broup.id, broup.getBroNameOrAlias(), data["body"], true);
+                    .showNotification(broup.id, broup.chatName, broup.alias, broup.getBroNameOrAlias(), data["body"], true);
               }
             }
           }
@@ -135,7 +135,7 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> with WidgetsB
             if (br0.id == data["sender_id"]) {
               if (showNotification && !br0.mute) {
                 NotificationService.instance
-                    .showNotification(br0.id, br0.getBroNameOrAlias(), data["body"], false);
+                    .showNotification(br0.id, br0.chatName, br0.alias, br0.getBroNameOrAlias(), data["body"], false);
               }
             }
           }

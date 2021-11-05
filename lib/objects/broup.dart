@@ -17,8 +17,10 @@ class Broup extends Chat {
     this.chatName = broupName;
     this.chatDescription = broupDescription;
     this.alias = alias;
-    if (broupColor != "") {
+    if (broupColor != null && broupColor != "") {
       this.chatColor = Color(int.parse("0xFF$broupColor"));
+    } else {
+      this.chatColor = null;
     }
     this.unreadMessages = unreadMessages;
     this.blocked = blocked;

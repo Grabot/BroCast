@@ -57,16 +57,17 @@ class _BroMessagingState extends State<BroMessaging>
     chat = widget.chat;
     isLoading = false;
     amountViewed = 1;
-    getMessages(amountViewed);
-    print("loaded the screen from a regular old brah");
-    if (chat.chatColor == null) {
-      // It was opened via a notification and we don't have the whole object.
-      // We retrieve it now
+    if (chat.chatColor != null) {
+      getMessages(amountViewed);
+    } else {
+      // If there is no colour, than it was probably opened with a notification
+      // In this case we don't have the whole object. We retrieve it here
       GetChat getChat = new GetChat();
       getChat.getChat(Settings.instance.getBroId(), chat.id).then((value) {
         if (value != "an unknown error has occurred") {
           setState(() {
             chat = value;
+            getMessages(amountViewed);
           });
         }
       });
@@ -113,8 +114,7 @@ class _BroMessagingState extends State<BroMessaging>
             if (broup.id == data["broup_id"]) {
               if (showNotification && !broup.mute) {
                 NotificationService.instance
-                    .showNotification(
-                    broup.id, broup.getBroNameOrAlias(), data["body"], true);
+                    .showNotification(broup.id, broup.chatName, broup.alias, broup.getBroNameOrAlias(), data["body"], true);
               }
             }
           }
@@ -126,8 +126,7 @@ class _BroMessagingState extends State<BroMessaging>
               if (br0.id == data["sender_id"]) {
                 if (showNotification && !br0.mute) {
                   NotificationService.instance
-                      .showNotification(
-                      br0.id, br0.getBroNameOrAlias(), data["body"], false);
+                      .showNotification(br0.id, br0.chatName, br0.alias, br0.getBroNameOrAlias(), data["body"], false);
                 }
               }
             }
@@ -224,6 +223,10 @@ class _BroMessagingState extends State<BroMessaging>
     setState(() {
       isLoading = true;
     });
+    print("getting messages, quick test");
+    print(Settings.instance.getToken());
+    print(chat.id);
+    print(page);
     get.getMessages(Settings.instance.getToken(), chat.id, page).then((val) {
       if (!(val is String)) {
         List<Message> messes = val;
