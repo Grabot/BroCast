@@ -104,16 +104,10 @@ class _BroupDetailsState extends State<BroupDetails>
 
   void changeToBroup() {
     if (mounted) {
-      print("there was a change to a broup");
       setState(() {
         getChat.getBroup(Settings.instance.getBroId(), chat.id).then((value) {
-          print("gotten the chat");
-          print(value);
-          print(Settings.instance.getBroId());
-          print(chat.id);
           if (value != "an unknown error has occurred") {
             setState(() {
-              print("setting the chat");
               chat = value;
               getParticipants();
             });
@@ -201,13 +195,10 @@ class _BroupDetailsState extends State<BroupDetails>
 
   joinBroupRoom(int broId, int broupId) {
     if (SocketServices.instance.socket.connected) {
-      print("socket connected :)");
       SocketServices.instance.socket.emit(
         "join_broup",
         {"bro_id": broId, "broup_id": broupId},
       );
-    } else {
-      print("socket NOT connected >:(");
     }
   }
 
@@ -469,9 +460,7 @@ class _BroupDetailsState extends State<BroupDetails>
 
   void updateDescription() {
     if (previousDescription != chatDescriptionController.text) {
-      print("going to update the description");
       if (SocketServices.instance.socket.connected) {
-        print("socket is connected");
         SocketServices.instance.socket
             .emit("message_event_change_broup_details", {
           "token": Settings.instance.getToken(),
@@ -552,7 +541,6 @@ class _BroupDetailsState extends State<BroupDetails>
   }
 
   void broupAliasUpdateSuccess() {
-    print("alias update successfull");
     previousAlias = chatAliasController.text;
     chat.alias = chatAliasController.text;
     if (mounted) {
@@ -1208,7 +1196,6 @@ class _BroupDetailsState extends State<BroupDetails>
   }
 
   void unmuteTheBroup() {
-    print("Unmuting the broup");
     SocketServices.instance.socket
         .emit("message_event_change_broup_mute", {
       "token": Settings.instance.getToken(),
@@ -1220,7 +1207,6 @@ class _BroupDetailsState extends State<BroupDetails>
   }
 
   void muteTheBroup(int selectedRadio) {
-    print("Muting the broup $selectedRadio");
     SocketServices.instance.socket
         .emit("message_event_change_broup_mute", {
       "token": Settings.instance.getToken(),
@@ -1370,7 +1356,6 @@ class BroupParticipantPopupState extends State<BroupParticipantPopup> {
 }
 
 void buttonMessage(BuildContext context, Bro bro, bool alertDialog) {
-  print("pressed the message button");
   if (alertDialog) {
     Navigator.of(context).pop();
   } else {
@@ -1389,7 +1374,6 @@ void buttonMessage(BuildContext context, Bro bro, bool alertDialog) {
 }
 
 void buttonAddBro(BuildContext context, Bro bro, bool alertDialog) {
-  print("pressed the add bro button");
   if (alertDialog) {
     Navigator.of(context).pop();
   } else {
@@ -1434,7 +1418,6 @@ void buttonDismissAdmin(BuildContext context, Bro bro, int broupId, bool alertDi
 }
 
 void buttonRemove(BuildContext context, Bro bro, int broupId, bool alertDialog) {
-  print("removing bro ${bro.id} from broup $broupId");
   if (alertDialog) {
     Navigator.of(context).pop();
   } else {

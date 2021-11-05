@@ -22,20 +22,13 @@ void initializeFirebase() async {
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   Map<String, dynamic> broResult = message.data;
-  print("is there a notification!?");
-  print(message);
   if (broResult != null) {
     int id = int.parse(broResult["id"]);
     String messageBody = broResult["message_body"];
     String broupBoolean = broResult["broup"];
     bool broup = broupBoolean.toLowerCase() == 'true';
-    print("notification with the following information");
-    print(id);
-    print(messageBody);
-    print(broupBoolean);
     if (Platform.isAndroid) {
       if (broup) {
-        print("sending the notification to the broup");
         if (broResult.containsKey("chat_name") && broResult.containsKey("alias")) {
           String chatName = broResult["chat_name"];
           String alias = broResult["alias"];
@@ -45,7 +38,6 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
           }
           NotificationService.instance.showNotification(id, chatName, alias, title, messageBody, true);
         } else {
-          print("We are not sure what the alias is yet, so we will retrieve it first.");
           NotificationService.instance.showNotificationBroup(id, messageBody);
         }
       } else {

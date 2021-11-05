@@ -132,20 +132,81 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
           "bro_id": broId,
         },
       );
+      SocketServices.instance.socket.on('message_event_change_broup_mute_success', (data) {
+        broupWasMuted(data);
+      });
+      SocketServices.instance.socket.on('message_event_change_broup_mute_failed', (data) {
+        broupMutingFailed();
+      });
+      SocketServices.instance.socket.on('message_event_change_chat_mute_success', (data) {
+        chatWasMuted(data);
+      });
+      SocketServices.instance.socket.on('message_event_change_chat_mute_failed', (data) {
+        chatMutingFailed();
+      });
+    }
+  }
+
+  broupWasMuted(var data) {
+    if (mounted) {
+      if (data.containsKey("result")) {
+        bool result = data["result"];
+        if (result) {
+          for (Chat broup in BroList.instance.getBros()) {
+            if (broup.isBroup) {
+              if (broup.id == data["id"]) {
+                setState(() {
+                  broup.mute = data["mute"];
+                });
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  broupMutingFailed() {
+    if (mounted) {
+      ShowToastComponent.showDialog(
+          "Broup muting failed at this time.", context);
+    }
+  }
+
+  chatWasMuted(var data) {
+    if (mounted) {
+      if (data.containsKey("result")) {
+        bool result = data["result"];
+        if (result) {
+          for (Chat chat in BroList.instance.getBros()) {
+            if (!chat.isBroup) {
+              if (chat.id == data["id"]) {
+                setState(() {
+                  chat.mute = data["mute"];
+                });
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  chatMutingFailed() {
+    if (mounted) {
+      ShowToastComponent.showDialog(
+          "Chat muting failed at this time.", context);
     }
   }
 
   messageReceivedSolo(var data) {
     if (mounted) {
       if (data.containsKey("broup_id")) {
-        print("message received solo from a broup");
         updateMessagesBroup(data["broup_id"]);
         for (Chat broup in BroList.instance.getBros()) {
           if (broup.isBroup) {
             if (broup.id == data["broup_id"]) {
-              print("we have found the broup in our bro list");
               if (showNotification && !broup.mute) {
-                print("the show notification is true");
                 NotificationService.instance
                     .showNotification(broup.id, broup.chatName, broup.alias, broup.getBroNameOrAlias(), data["body"], true);
               }
@@ -153,7 +214,6 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
           }
         }
       } else {
-        print("message received solo from a normal guy");
         updateMessages(data["sender_id"]);
         for (Chat br0 in BroList.instance.getBros()) {
           if (!br0.isBroup) {
@@ -379,6 +439,9 @@ class BroTile extends StatefulWidget {
 }
 
 class _BroTileState extends State<BroTile> {
+
+  var _tapPosition;
+
   selectBro(BuildContext context) {
     NotificationService.instance.dismissAllNotifications();
     if (widget.chat is BroBros) {
@@ -399,6 +462,8 @@ class _BroTileState extends State<BroTile> {
     return Container(
       child: Material(
         child: InkWell(
+          onLongPress: _showChatDetailPopupMenu,
+          onTapDown: _storePosition,
           onTap: () {
             selectBro(context);
           },
@@ -412,13 +477,34 @@ class _BroTileState extends State<BroTile> {
                           : widget.chat.chatColor.withOpacity(0.8)
                       : widget.chat.chatColor.withOpacity(0.9)
                   : widget.chat.chatColor.withOpacity(1),
-              padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+              padding: EdgeInsets.only(top: 16, bottom: 16, right: 24, left: 4),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Row(
                     children: [
-                      SizedBox(width: 15),
+                      widget.chat.mute || widget.chat.blocked
+                      ? Container(
+                        width: 35,
+                          child: Column(
+                            children:
+                            [
+                              widget.chat.blocked ? Icon(
+                                Icons.block,
+                                color: getTextColor(widget.chat.chatColor).withOpacity(0.6)
+                              ) : Container(
+                                height: 20,
+                              ),
+                              widget.chat.mute ? Icon(
+                                  Icons.volume_off,
+                                  color: getTextColor(widget.chat.chatColor).withOpacity(0.6)
+                              ) : Container(
+                                height: 20,
+                              ),
+                            ]
+                          )
+                      )
+                      : SizedBox(width: 35),
                       Container(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -471,4 +557,241 @@ class _BroTileState extends State<BroTile> {
       ),
     );
   }
+
+  void showDialogUnMuteChat(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: new Text("Unmute notifications?"),
+            actions: <Widget>[
+              new TextButton(
+                child: new Text("Cancel"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              new TextButton(
+                child: new Text("Unmute"),
+                onPressed: () {
+                  unmuteTheChat();
+                },
+              ),
+            ],
+          );
+        });
+  }
+
+  void showDialogMuteChat(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          int selectedRadio = 0;
+          return AlertDialog(
+            title: new Text("Mute notifications for..."),
+            content: StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: List<Widget>.generate(4, (int index) {
+                    return InkWell(
+                      onTap: () {
+                        setState(() => selectedRadio = index);
+                      },
+                      child: Row(
+                          children: [
+                            Radio<int>(
+                                value: index,
+                                groupValue: selectedRadio,
+                                onChanged: (int value) {
+                                  setState(() => selectedRadio = value);
+                                }
+                            ),
+                            index == 0 ? Container(
+                                child: Text("1 hour")
+                            ) : Container(),
+                            index == 1 ? Container(
+                                child: Text("8 hours")
+                            ) : Container(),
+                            index == 2 ? Container(
+                                child: Text("1 week")
+                            ) : Container(),
+                            index == 3 ? Container(
+                                child: Text("Indefinitely")
+                            ) : Container(),
+                          ]
+                      ),
+                    );
+                  }),
+                );
+              },
+            ),
+            actions: <Widget>[
+              new TextButton(
+                child: new Text("Cancel"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              new TextButton(
+                child: new Text("Mute"),
+                onPressed: () {
+                  muteTheChat(selectedRadio);
+                },
+              ),
+            ],
+          );
+        });
+  }
+
+  void unmuteTheChat() {
+    if (widget.chat is BroBros) {
+      SocketServices.instance.socket
+          .emit("message_event_change_chat_mute", {
+        "token": Settings.instance.getToken(),
+        "bros_bro_id": widget.chat.id,
+        "bro_id": Settings.instance.getBroId(),
+        "mute": -1
+      });
+    } else {
+      SocketServices.instance.socket
+          .emit("message_event_change_broup_mute", {
+        "token": Settings.instance.getToken(),
+        "broup_id": widget.chat.id,
+        "bro_id": Settings.instance.getBroId(),
+        "mute": -1
+      });
+    }
+    Navigator.of(context).pop();
+  }
+
+  void muteTheChat(int selectedRadio) {
+    if (widget.chat is BroBros) {
+      SocketServices.instance.socket
+          .emit("message_event_change_chat_mute", {
+        "token": Settings.instance.getToken(),
+        "bros_bro_id": widget.chat.id,
+        "bro_id": Settings.instance.getBroId(),
+        "mute": selectedRadio
+      });
+    } else {
+      SocketServices.instance.socket
+          .emit("message_event_change_broup_mute", {
+        "token": Settings.instance.getToken(),
+        "broup_id": widget.chat.id,
+        "bro_id": Settings.instance.getBroId(),
+        "mute": selectedRadio
+      });
+    }
+    Navigator.of(context).pop();
+  }
+
+  void _showChatDetailPopupMenu() {
+    final RenderBox overlay = Overlay
+        .of(context)
+        .context
+        .findRenderObject();
+
+      showMenu(
+          context: context,
+          items: [
+            ChatDetailPopup(chat: widget.chat)
+          ],
+          position: RelativeRect.fromRect(
+              _tapPosition & const Size(40, 40),
+              Offset.zero & overlay.size
+          )
+      ).then((int delta) {
+        if (delta == 1) {
+          if (widget.chat.isBroup) {
+            Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => BroupMessaging(chat: widget.chat)));
+          } else {
+            Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => BroMessaging(chat: widget.chat)));
+          }
+        } else if (delta == 2) {
+          showDialogMuteChat(context);
+        } else if (delta == 3) {
+          showDialogUnMuteChat(context);
+        }
+        return;
+      });
+  }
+
+  void _storePosition(TapDownDetails details) {
+    _tapPosition = details.globalPosition;
+  }
+}
+class ChatDetailPopup extends PopupMenuEntry<int> {
+
+  final Chat chat;
+
+  ChatDetailPopup({Key key, this.chat}) : super(key: key);
+
+  @override
+  bool represents(int n) => n == 1 || n == -1;
+
+  @override
+  ChatDetailPopupState createState() => ChatDetailPopupState();
+
+  @override
+  double get height => 1;
+}
+
+class ChatDetailPopupState extends State<ChatDetailPopup> {
+
+  @override
+  Widget build(BuildContext context) {
+    return getPopupItems(context, widget.chat);
+  }
+}
+
+void buttonMessage(BuildContext context) {
+  Navigator.pop<int>(context, 1);
+}
+
+void buttonMute(BuildContext context) {
+  Navigator.pop<int>(context, 2);
+}
+
+void buttonUnmute(BuildContext context) {
+  Navigator.pop<int>(context, 3);
+}
+
+Widget getPopupItems(BuildContext context, Chat chat) {
+  return Column(
+    children: [
+      Container(
+        alignment: Alignment.centerLeft,
+        child: TextButton(
+            onPressed: () {
+              buttonMessage(context);
+            },
+            child: Text(
+              'Message ${chat.getBroNameOrAlias()}',
+              textAlign: TextAlign.left,
+              style: TextStyle(color: Colors.black, fontSize: 14),
+            )
+        ),
+      ),
+      Container(
+        alignment: Alignment.centerLeft,
+        child: TextButton(
+            onPressed: () {
+              chat.mute ? buttonUnmute(context) : buttonMute(context);
+            },
+            child: Text(
+              chat.mute ? 'Unmute chat' : 'Mute chat',
+              textAlign: TextAlign.left,
+              style: TextStyle(color: Colors.black, fontSize: 14),
+            )
+        ),
+      ),
+    ]
+  );
 }

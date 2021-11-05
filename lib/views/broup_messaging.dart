@@ -68,6 +68,7 @@ class _BroupMessagingState extends State<BroupMessaging>
     // We retrieve the broup again in case there were changes.
 
     if (chat.chatColor != null) {
+      getParticipants();
       getMessages(amountViewed);
     } else {
       // If there is no colour, than it was probably opened with a notification
@@ -75,7 +76,6 @@ class _BroupMessagingState extends State<BroupMessaging>
       getChat.getBroup(Settings.instance.getBroId(), chat.id).then((value) {
         if (value != "an unknown error has occurred") {
           setState(() {
-            print("found the broup and going to set it.");
             chat = value;
             getParticipants();
             getMessages(amountViewed);
@@ -93,7 +93,6 @@ class _BroupMessagingState extends State<BroupMessaging>
     messageScrollController.addListener(() {
       if (messageScrollController.position.atEdge) {
         if (messageScrollController.position.pixels != 0) {
-          print("getting messages from scrolling");
           getMessages(amountViewed);
         }
       }
@@ -102,7 +101,6 @@ class _BroupMessagingState extends State<BroupMessaging>
 
   void initSockets() {
     if (SocketServices.instance.socket.connected) {
-      print("socket init connected :)");
       SocketServices.instance.socket.on('message_event_broup_changed', (data) {
         changeToBroup();
       });
@@ -127,7 +125,6 @@ class _BroupMessagingState extends State<BroupMessaging>
   }
 
   getParticipants() {
-    print("getting participants.");
     List<int> remainingParticipants = new List<int>.from(chat.getParticipants());
     List<int> remainingAdmins = new List<int>.from(chat.getAdmins());
     // List<Bro> foundParticipants = [];
@@ -215,7 +212,6 @@ class _BroupMessagingState extends State<BroupMessaging>
 
   joinBroupRoom(int broId, int broupId) {
     if (SocketServices.instance.socket.connected) {
-      print("socket connected :)");
       SocketServices.instance.socket
           .on('message_event_send', (data) => messageReceived(data));
       SocketServices.instance.socket
@@ -230,8 +226,6 @@ class _BroupMessagingState extends State<BroupMessaging>
         "join_broup",
         {"bro_id": broId, "broup_id": broupId},
       );
-    } else {
-      print("socket NOT connected >:(");
     }
   }
 
@@ -275,7 +269,6 @@ class _BroupMessagingState extends State<BroupMessaging>
   }
 
   messageReceived(var data) {
-    print("message received regular!");
     if (mounted) {
       Message mes = new Message(
           data["id"],
@@ -338,7 +331,6 @@ class _BroupMessagingState extends State<BroupMessaging>
   }
 
   getMessages(int page) {
-    print("getting messages, I hope I find some.");
     setState(() {
       isLoading = true;
     });

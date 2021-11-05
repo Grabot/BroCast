@@ -223,10 +223,6 @@ class _BroMessagingState extends State<BroMessaging>
     setState(() {
       isLoading = true;
     });
-    print("getting messages, quick test");
-    print(Settings.instance.getToken());
-    print(chat.id);
-    print(page);
     get.getMessages(Settings.instance.getToken(), chat.id, page).then((val) {
       if (!(val is String)) {
         List<Message> messes = val;

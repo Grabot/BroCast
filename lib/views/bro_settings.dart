@@ -23,7 +23,8 @@ class BroSettings extends StatefulWidget {
 }
 
 class _BroSettingsState extends State<BroSettings> with WidgetsBindingObserver {
-  bool toggleSwitch = false;
+  bool toggleSwitchKeyboard = false;
+  bool toggleSwitchSound = false;
   bool showNotification = true;
 
   @override
@@ -33,13 +34,24 @@ class _BroSettingsState extends State<BroSettings> with WidgetsBindingObserver {
     HelperFunction.getKeyboardDarkMode().then((val) {
       if (val == null) {
         setState(() {
-          toggleSwitch = false;
+          toggleSwitchKeyboard = false;
           Settings.instance.setEmojiKeyboardDarkMode(false);
         });
       } else {
         setState(() {
-          toggleSwitch = val;
-          Settings.instance.setEmojiKeyboardDarkMode(toggleSwitch);
+          toggleSwitchKeyboard = val;
+          Settings.instance.setEmojiKeyboardDarkMode(toggleSwitchKeyboard);
+        });
+      }
+    });
+    HelperFunction.getSound().then((val) {
+      if (val == null) {
+        setState(() {
+          toggleSwitchSound = false;
+        });
+      } else {
+        setState(() {
+          toggleSwitchSound = val;
         });
       }
     });
@@ -122,7 +134,14 @@ class _BroSettingsState extends State<BroSettings> with WidgetsBindingObserver {
     HelperFunction.setKeyboardDarkMode(value);
     Settings.instance.setEmojiKeyboardDarkMode(value);
     setState(() {
-      toggleSwitch = value;
+      toggleSwitchKeyboard = value;
+    });
+  }
+
+  void toggledSound(value) {
+    HelperFunction.setSound(value);
+    setState(() {
+      toggleSwitchSound = value;
     });
   }
 
@@ -193,9 +212,23 @@ class _BroSettingsState extends State<BroSettings> with WidgetsBindingObserver {
                       Text("Emoji keyboard Dark Mode",
                           style: simpleTextStyle()),
                       Switch(
-                        value: toggleSwitch,
+                        value: toggleSwitchKeyboard,
                         onChanged: (value) {
                           toggledEmojiKeyboardDarkMode(value);
+                        },
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text("Turn off sound in notifications",
+                          style: simpleTextStyle()),
+                      Switch(
+                        value: toggleSwitchSound,
+                        onChanged: (value) {
+                          toggledSound(value);
                         },
                       ),
                     ],

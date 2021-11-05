@@ -68,9 +68,7 @@ class _FindBrosState extends State<FindBros> with WidgetsBindingObserver {
         for (Chat broup in BroList.instance.getBros()) {
           if (broup.isBroup) {
             if (broup.id == data["broup_id"]) {
-              print("we have found the broup in our bro list");
               if (showNotification && !broup.mute) {
-                print("the show notification is true");
                 NotificationService.instance
                     .showNotification(broup.id, broup.chatName, broup.alias, broup.getBroNameOrAlias(), data["body"], true);
               }

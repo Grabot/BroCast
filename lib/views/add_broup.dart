@@ -504,9 +504,6 @@ class _AddBroupState extends State<AddBroup> with WidgetsBindingObserver {
                       child: TextFormField(
                         controller: broupNameController,
                         key: broupValidator,
-                        onTap: () {
-                          print("tapped the broup name textfield");
-                        },
                         validator: (val) {
                           if (val.isEmpty || val.trimRight().isEmpty) {
                             return "Please provide a Broup name";

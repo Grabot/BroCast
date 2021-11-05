@@ -8,6 +8,7 @@ class HelperFunction {
   static String bromotionKey = "bromotion";
   static String broPasswordKey = "password";
   static String keyboardDarkMode = "keyboardDarkMode";
+  static String soundKey = "sound";
   static String eula = "eula";
 
   static Future<bool> setBroToken(String broToken) async {
@@ -23,6 +24,11 @@ class HelperFunction {
   static Future<bool> setKeyboardDarkMode(bool darkMode) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     return await preferences.setBool(keyboardDarkMode, darkMode);
+  }
+
+  static Future<bool> setSound(bool sound) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    return await preferences.setBool(soundKey, sound);
   }
 
   static Future<bool> setEULA(bool endUserLicenceAgreement) async {
@@ -67,6 +73,11 @@ class HelperFunction {
   static Future<bool> getEULA() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     return preferences.getBool(eula);
+  }
+
+  static Future<bool> getSound() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    return preferences.getBool(soundKey);
   }
 
   static Future<List<String>> getBroInformation() async {

@@ -927,7 +927,6 @@ class _BroChatDetailsState extends State<BroChatDetails>
   }
 
   void unmuteTheChat() {
-    print("Unmuting the chat");
     SocketServices.instance.socket
         .emit("message_event_change_chat_mute", {
       "token": Settings.instance.getToken(),
@@ -939,7 +938,6 @@ class _BroChatDetailsState extends State<BroChatDetails>
   }
 
   void muteTheChat(int selectedRadio) {
-    print("Muting the chat $selectedRadio");
     SocketServices.instance.socket
         .emit("message_event_change_chat_mute", {
       "token": Settings.instance.getToken(),
