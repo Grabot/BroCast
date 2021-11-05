@@ -138,17 +138,30 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
   messageReceivedSolo(var data) {
     if (mounted) {
       if (data.containsKey("broup_id")) {
+        print("message received solo from a broup");
         updateMessagesBroup(data["broup_id"]);
+        for (Chat broup in BroList.instance.getBros()) {
+          if (broup.isBroup) {
+            if (broup.id == data["broup_id"]) {
+              print("we have found the broup in our bro list");
+              if (showNotification && !broup.mute) {
+                print("the show notification is true");
+                NotificationService.instance
+                    .showNotification(broup.id, broup.getBroNameOrAlias(), data["body"], true);
+              }
+            }
+          }
+        }
       } else {
+        print("message received solo from a normal guy");
         updateMessages(data["sender_id"]);
-      }
-
-      for (Chat br0 in BroList.instance.getBros()) {
-        if (!br0.isBroup) {
-          if (br0.id == data["sender_id"]) {
-            if (showNotification) {
-              NotificationService.instance
-                  .showNotification(br0.id, br0.chatName, "", data["body"]);
+        for (Chat br0 in BroList.instance.getBros()) {
+          if (!br0.isBroup) {
+            if (br0.id == data["sender_id"]) {
+              if (showNotification && !br0.mute) {
+                NotificationService.instance
+                    .showNotification(br0.id, br0.getBroNameOrAlias(), data["body"], false);
+              }
             }
           }
         }

@@ -230,17 +230,29 @@ class _BroupMessagingState extends State<BroupMessaging>
   }
 
   messageReceivedSolo(var data) {
-    // TODO: @SKools this probably has to be changed.
-    print(data);
-    print("message received solo");
     if (mounted) {
-      if (chat.id != data["sender_id"]) {
+      if (data.containsKey("broup_id")) {
+        for (Chat broup in BroList.instance.getBros()) {
+          if (broup.isBroup) {
+            if (chat.id != data["broup_id"]) {
+              if (broup.id == data["broup_id"]) {
+                if (showNotification && !broup.mute) {
+                  NotificationService.instance
+                      .showNotification(
+                      broup.id, broup.getBroNameOrAlias(), data["body"], true);
+                }
+              }
+            }
+          }
+        }
+      } else {
         for (Chat br0 in BroList.instance.getBros()) {
           if (!br0.isBroup) {
             if (br0.id == data["sender_id"]) {
-              if (showNotification) {
+              if (showNotification && !br0.mute) {
                 NotificationService.instance
-                    .showNotification(br0.id, br0.chatName, "", data["body"]);
+                    .showNotification(
+                    br0.id, br0.getBroNameOrAlias(), data["body"], false);
               }
             }
           }

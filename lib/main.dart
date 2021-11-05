@@ -23,6 +23,8 @@ void initializeFirebase() async {
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   Map<String, dynamic> broResult = message.data;
+  print("is there a notification!?");
+  print(message);
   if (broResult != null) {
     String messageBody = broResult["message_body"];
     Map<String, dynamic> chat = jsonDecode(broResult["chat"]);
