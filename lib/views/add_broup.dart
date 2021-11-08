@@ -509,7 +509,7 @@ class _AddBroupState extends State<AddBroup> with WidgetsBindingObserver {
                             return "Please provide a Broup name";
                           }
                           if (broupParticipants.length <= 1) {
-                            return "Can't create broup with less than 3 bros";
+                            return "Can't create broup with less than 2 bros";
                           }
                           return null;
                         },
