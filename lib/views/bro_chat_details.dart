@@ -66,9 +66,9 @@ class _BroChatDetailsState extends State<BroChatDetails>
     NotificationService.instance.setScreen(this);
 
     circleColorPickerController = CircleColorPickerController(
-      initialColor: chat.chatColor,
+      initialColor: chat.getColor(),
     );
-    currentColor = chat.chatColor;
+    currentColor = chat.getColor();
     WidgetsBinding.instance.addObserver(this);
 
     blockBro = new BlockBro();
@@ -120,9 +120,9 @@ class _BroChatDetailsState extends State<BroChatDetails>
     if (mounted) {
       if (data.containsKey("broup_id")) {
         for (Chat broup in BroList.instance.getBros()) {
-          if (broup.isBroup) {
+          if (broup.isBroup()) {
             if (broup.id == data["broup_id"]) {
-              if (showNotification && !broup.mute) {
+              if (showNotification && !broup.isMuted()) {
                 NotificationService.instance
                     .showNotification(broup.id, broup.chatName, broup.alias, broup.getBroNameOrAlias(), data["body"], true);
               }
@@ -131,9 +131,9 @@ class _BroChatDetailsState extends State<BroChatDetails>
         }
       } else {
         for (Chat br0 in BroList.instance.getBros()) {
-          if (!br0.isBroup) {
+          if (!br0.isBroup()) {
             if (br0.id == data["sender_id"]) {
-              if (showNotification && !br0.mute) {
+              if (showNotification && !br0.isMuted()) {
                 NotificationService.instance
                     .showNotification(br0.id, br0.chatName, br0.alias, br0.getBroNameOrAlias(), data["body"], false);
               }
@@ -186,7 +186,7 @@ class _BroChatDetailsState extends State<BroChatDetails>
 
   void goToDifferentChat(Chat chatBro) {
     if (mounted) {
-      if (chatBro.isBroup) {
+      if (chatBro.isBroup()) {
         Navigator.pushReplacement(
             context,
             MaterialPageRoute(
@@ -203,23 +203,23 @@ class _BroChatDetailsState extends State<BroChatDetails>
   Widget appBarChatDetails() {
     return AppBar(
         leading: IconButton(
-            icon: Icon(Icons.arrow_back, color: getTextColor(chat.chatColor)),
+            icon: Icon(Icons.arrow_back, color: getTextColor(chat.getColor())),
             onPressed: () {
               backButtonFunctionality();
             }),
         backgroundColor:
-            chat.chatColor != null ? chat.chatColor : Color(0xff145C9E),
+            chat.getColor() != null ? chat.getColor() : Color(0xff145C9E),
         title: Column(
             children: [
               chat.alias != null && chat.alias.isNotEmpty
                   ? Container(
                   child: Text(chat.alias,
                       style: TextStyle(
-                          color: getTextColor(chat.chatColor), fontSize: 20)))
+                          color: getTextColor(chat.getColor()), fontSize: 20)))
                   : Container(
                   child: Text(chat.chatName,
                       style: TextStyle(
-                          color: getTextColor(chat.chatColor), fontSize: 20))),
+                          color: getTextColor(chat.getColor()), fontSize: 20))),
             ]
         ),
         actions: [
@@ -313,7 +313,7 @@ class _BroChatDetailsState extends State<BroChatDetails>
   }
 
   updateColour() {
-    if (!chat.blocked) {
+    if (!chat.isBlocked()) {
       previousColor = currentColor;
       setState(() {
         changeColour = true;
@@ -322,7 +322,7 @@ class _BroChatDetailsState extends State<BroChatDetails>
   }
 
   saveColour() {
-    if (currentColor != chat.chatColor) {
+    if (currentColor != chat.getColor()) {
       String newColour = currentColor.value.toRadixString(16).substring(2, 8);
       if (SocketServices.instance.socket.connected) {
         SocketServices.instance.socket
@@ -432,7 +432,7 @@ class _BroChatDetailsState extends State<BroChatDetails>
       if (data.containsKey("result")) {
         bool result = data["result"];
         if (result) {
-          chat.chatColor = Color(int.parse("0xFF${data["colour"]}"));
+          chat.chatColor = data["colour"];
           currentColor = Color(int.parse("0xFF${data["colour"]}"));
           previousColor = Color(int.parse("0xFF${data["colour"]}"));
           setState(() {});
@@ -578,7 +578,7 @@ class _BroChatDetailsState extends State<BroChatDetails>
                           width: 40,
                           alignment: Alignment.center,
                           decoration: BoxDecoration(
-                              color: chat.chatColor,
+                              color: chat.getColor(),
                               borderRadius: BorderRadius.circular(40)),
                           ),
                         ],
@@ -658,7 +658,7 @@ class _BroChatDetailsState extends State<BroChatDetails>
                         MaterialStateProperty.all<Color>(Colors.red),
                       ),
                       onPressed: () {
-                        chat.mute
+                        chat.isMuted()
                             ? showDialogUnMuteChat(context)
                             : showDialogMuteChat(context);
                       },
@@ -666,11 +666,11 @@ class _BroChatDetailsState extends State<BroChatDetails>
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Icon(
-                                chat.mute ? Icons.volume_up : Icons.volume_mute,
-                                color: chat.mute ? Colors.grey : Colors.red
+                                chat.isMuted() ? Icons.volume_up : Icons.volume_mute,
+                                color: chat.isMuted() ? Colors.grey : Colors.red
                             ),
                             SizedBox(width: 20),
-                            chat.mute
+                            chat.isMuted()
                                 ? Text(
                               'Unmute Chat',
                               style: simpleTextStyle(),
@@ -688,7 +688,7 @@ class _BroChatDetailsState extends State<BroChatDetails>
                         MaterialStateProperty.all<Color>(Colors.red),
                       ),
                       onPressed: () {
-                        chat.blocked ?
+                        chat.isBlocked() ?
                         blockTheBro(false) : showDialogBlock(context, chat.getBroNameOrAlias());
                       },
                       child: Row(
@@ -696,10 +696,10 @@ class _BroChatDetailsState extends State<BroChatDetails>
                         children: [
                           Icon(
                               Icons.block,
-                              color: chat.blocked ? Colors.grey : Colors.red
+                              color: chat.isBlocked() ? Colors.grey : Colors.red
                           ),
                           SizedBox(width: 20),
-                          chat.blocked ? Text(
+                          chat.isBlocked() ? Text(
                             'Unblock',
                             style: simpleTextStyle(),
                           ) : Text(

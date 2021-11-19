@@ -8,13 +8,18 @@ abstract class Chat {
   String chatName;
   String chatDescription;
   String alias;
-  Color chatColor;
+  String chatColor;
   int unreadMessages;
-  bool blocked;
-  bool mute;
-  bool isBroup;
+  int blocked;
+  int mute;
+  int broup;
 
   Chat();
 
   String getBroNameOrAlias();
+  Color getColor();
+
+  bool isBlocked();
+  bool isMuted();
+  bool isBroup();
 }

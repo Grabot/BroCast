@@ -67,7 +67,7 @@ class _BroupMessagingState extends State<BroupMessaging>
 
     // We retrieve the broup again in case there were changes.
 
-    if (chat.chatColor != null) {
+    if (chat.getColor() != null) {
       getParticipants();
       getMessages(amountViewed);
     } else {
@@ -203,7 +203,7 @@ class _BroupMessagingState extends State<BroupMessaging>
       if (data.containsKey("result")) {
         bool result = data["result"];
         if (result) {
-          chat.chatColor = Color(int.parse("0xFF${data["colour"]}"));
+          chat.chatColor = data["colour"];
           setState(() {});
         }
       }
@@ -233,10 +233,10 @@ class _BroupMessagingState extends State<BroupMessaging>
     if (mounted) {
       if (data.containsKey("broup_id")) {
         for (Chat broup in BroList.instance.getBros()) {
-          if (broup.isBroup) {
+          if (broup.isBroup()) {
             if (chat.id != data["broup_id"]) {
               if (broup.id == data["broup_id"]) {
-                if (showNotification && !broup.mute) {
+                if (showNotification && !broup.isMuted()) {
                   NotificationService.instance
                       .showNotification(broup.id, broup.chatName, broup.alias, broup.getBroNameOrAlias(), data["body"], true);
                 }
@@ -246,9 +246,9 @@ class _BroupMessagingState extends State<BroupMessaging>
         }
       } else {
         for (Chat br0 in BroList.instance.getBros()) {
-          if (!br0.isBroup) {
+          if (!br0.isBroup()) {
             if (br0.id == data["sender_id"]) {
-              if (showNotification && !br0.mute) {
+              if (showNotification && !br0.isMuted()) {
                 NotificationService.instance
                     .showNotification(br0.id, br0.chatName, br0.alias, br0.getBroNameOrAlias(), data["body"], false);
               }
@@ -311,7 +311,7 @@ class _BroupMessagingState extends State<BroupMessaging>
 
   void goToDifferentChat(Chat chatBro) {
     if (mounted) {
-      if (chatBro.isBroup) {
+      if (chatBro.isBroup()) {
         Navigator.pushReplacement(
             context,
             MaterialPageRoute(
@@ -555,7 +555,7 @@ class _BroupMessagingState extends State<BroupMessaging>
   String getSender(int senderId) {
     String broName = "";
     for (Chat bro in BroList.instance.getBros()) {
-      if(!bro.isBroup) {
+      if(!bro.isBroup()) {
         if (bro.id == senderId) {
           return bro.getBroNameOrAlias();
         }
@@ -602,12 +602,12 @@ class _BroupMessagingState extends State<BroupMessaging>
   Widget appBarChat() {
     return AppBar(
         leading: IconButton(
-            icon: Icon(Icons.arrow_back, color: getTextColor(chat.chatColor)),
+            icon: Icon(Icons.arrow_back, color: getTextColor(chat.getColor())),
             onPressed: () {
               backButtonFunctionality();
             }),
         backgroundColor:
-            chat.chatColor != null ? chat.chatColor : Color(0xff145C9E),
+            chat.getColor() != null ? chat.getColor() : Color(0xff145C9E),
         title: InkWell(
           onTap: () {
             Navigator.pushReplacement(
@@ -625,11 +625,11 @@ class _BroupMessagingState extends State<BroupMessaging>
                         ? Container(
                         child: Text(chat.alias,
                             style: TextStyle(
-                                color: getTextColor(chat.chatColor), fontSize: 20)))
+                                color: getTextColor(chat.getColor()), fontSize: 20)))
                         : Container(
                         child: Text(chat.chatName,
                             style: TextStyle(
-                                color: getTextColor(chat.chatColor), fontSize: 20))),
+                                color: getTextColor(chat.getColor()), fontSize: 20))),
                   ],
                 )
           ),
@@ -727,7 +727,7 @@ class _BroupMessagingState extends State<BroupMessaging>
                                     if (val.isEmpty || val.trimRight().isEmpty) {
                                       return "Can't send an empty message";
                                     }
-                                    if (chat.blocked) {
+                                    if (chat.isBlocked()) {
                                       return "Can't send messages to a blocked bro";
                                     }
                                     return null;

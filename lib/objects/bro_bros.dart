@@ -1,18 +1,16 @@
 import 'dart:ui';
+import 'package:flutter/material.dart';
 import 'chat.dart';
 
+
 class BroBros extends Chat {
-  BroBros(int id, String chatName, String chatDescription, String alias, String chatColour,
-      int unreadMessages, String lastActivity, String roomName, bool blocked, bool mute, bool isBroup) {
+  BroBros(int id, String chatName, String chatDescription, String alias, String chatColor,
+      int unreadMessages, String lastActivity, String roomName, int blocked, int mute, int broup) {
     this.id = id;
     this.chatName = chatName;
     this.chatDescription = chatDescription;
     this.alias = alias;
-    if (chatColour != null && chatColour != "") {
-      this.chatColor = Color(int.parse("0xFF$chatColour"));
-    } else {
-      this.chatColor = null;
-    }
+    this.chatColor = chatColor;
     this.unreadMessages = unreadMessages;
     this.blocked = blocked;
     this.mute = mute;
@@ -22,7 +20,15 @@ class BroBros extends Chat {
       this.lastActivity = DateTime.now();
     }
     this.roomName = roomName;
-    this.isBroup = isBroup;
+    this.broup = broup;
+  }
+
+  Color getColor() {
+    if (this.chatColor == null) {
+      return Colors.black;
+    } else {
+      return Color(int.parse("0xFF${this.chatColor}"));
+    }
   }
 
   @override
@@ -32,5 +38,20 @@ class BroBros extends Chat {
     } else {
       return this.chatName;
     }
+  }
+
+  @override
+  bool isBlocked() {
+    return this.blocked == 1;
+  }
+
+  @override
+  bool isBroup() {
+    return false;
+  }
+
+  @override
+  bool isMuted() {
+    return this.mute == 1;
   }
 }

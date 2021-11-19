@@ -70,13 +70,13 @@ class NotificationService {
           int broupId = int.parse(broResult["id"]);
           String chatName = broResult["chat_name"];
           String alias = broResult["alias"];
-          chatNotify = new Broup(broupId, chatName, "", alias, "", 0, null, "", false, false, true);
+          chatNotify = new Broup(broupId, chatName, "", alias, "", 0, null, "", 0, 0, 1);
         } else {
           // A normal chat.
           int broId = int.parse(broResult["id"]);
-          chatNotify = new BroBros(broId, broResult["chat_name"], "", "", "", 0, null, "", false, false, false);
+          chatNotify = new BroBros(broId, broResult["chat_name"], "", "", "", 0, null, "", 0, 0, 0);
           for (Chat br0 in BroList.instance.getBros()) {
-            if (!br0.isBroup) {
+            if (!br0.isBroup()) {
               if (br0.id == broId) {
                 chatNotify = br0;
               }
@@ -111,7 +111,7 @@ class NotificationService {
     // First check if you have the list of bros in your memory
     Chat broupToNotify;
     for (Chat broup in BroList.instance.getBros()) {
-      if (broup.isBroup) {
+      if (broup.isBroup()) {
         if (broup.id == id) {
           broupToNotify = broup;
           await displayNotification(

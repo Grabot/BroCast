@@ -66,9 +66,9 @@ class _FindBrosState extends State<FindBros> with WidgetsBindingObserver {
     if (mounted) {
       if (data.containsKey("broup_id")) {
         for (Chat broup in BroList.instance.getBros()) {
-          if (broup.isBroup) {
+          if (broup.isBroup()) {
             if (broup.id == data["broup_id"]) {
-              if (showNotification && !broup.mute) {
+              if (showNotification && !broup.isMuted()) {
                 NotificationService.instance
                     .showNotification(broup.id, broup.chatName, broup.alias, broup.getBroNameOrAlias(), data["body"], true);
               }
@@ -77,9 +77,9 @@ class _FindBrosState extends State<FindBros> with WidgetsBindingObserver {
         }
       } else {
         for (Chat br0 in BroList.instance.getBros()) {
-          if (!br0.isBroup) {
+          if (!br0.isBroup()) {
             if (br0.id == data["sender_id"]) {
-              if (showNotification && !br0.mute) {
+              if (showNotification && !br0.isMuted()) {
                 NotificationService.instance
                     .showNotification(br0.id, br0.chatName, br0.alias, br0.getBroNameOrAlias(), data["body"], false);
               }
@@ -167,7 +167,7 @@ class _FindBrosState extends State<FindBros> with WidgetsBindingObserver {
 
   void goToDifferentChat(Chat chatBro) {
     if (mounted) {
-      if (chatBro.isBroup) {
+      if (chatBro.isBroup()) {
         Navigator.pushReplacement(
             context,
             MaterialPageRoute(

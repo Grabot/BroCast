@@ -51,7 +51,7 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> with WidgetsB
       bros.clear();
       shownBros.clear();
       for (Chat myBro in broBros) {
-        if (!myBro.isBroup) {
+        if (!myBro.isBroup()) {
           bool inBroup = false;
           for (int participantId in chat.getParticipants()) {
             if (participantId == myBro.id) {
@@ -120,9 +120,9 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> with WidgetsB
     if (mounted) {
       if (data.containsKey("broup_id")) {
         for (Chat broup in BroList.instance.getBros()) {
-          if (broup.isBroup) {
+          if (broup.isBroup()) {
             if (broup.id == data["broup_id"]) {
-              if (showNotification && !broup.mute) {
+              if (showNotification && !broup.isMuted()) {
                 NotificationService.instance
                     .showNotification(broup.id, broup.chatName, broup.alias, broup.getBroNameOrAlias(), data["body"], true);
               }
@@ -131,9 +131,9 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> with WidgetsB
         }
       } else {
         for (Chat br0 in BroList.instance.getBros()) {
-          if (!br0.isBroup) {
+          if (!br0.isBroup()) {
             if (br0.id == data["sender_id"]) {
-              if (showNotification && !br0.mute) {
+              if (showNotification && !br0.isMuted()) {
                 NotificationService.instance
                     .showNotification(br0.id, br0.chatName, br0.alias, br0.getBroNameOrAlias(), data["body"], false);
               }
@@ -209,18 +209,18 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> with WidgetsB
   Widget appBarAddBroupParticipants() {
     return AppBar(
         leading: IconButton(
-            icon: Icon(Icons.arrow_back, color: getTextColor(chat.chatColor)),
+            icon: Icon(Icons.arrow_back, color: getTextColor(chat.getColor())),
             onPressed: () {
               backButtonFunctionality();
             }),
         backgroundColor:
-        chat.chatColor != null ? chat.chatColor : Color(0xff145C9E),
+        chat.getColor() != null ? chat.getColor() : Color(0xff145C9E),
         title: Column(
             children: [
                   Container(
                   child: Text("Add participants",
                       style: TextStyle(
-                          color: getTextColor(chat.chatColor), fontSize: 20)))
+                          color: getTextColor(chat.getColor()), fontSize: 20)))
 
             ]
         ),
@@ -272,7 +272,7 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> with WidgetsB
       },
       child: Container(
         width: MediaQuery.of(context).size.width,
-        color: shownBros[index].getBroBros().chatColor.withOpacity(0.6),
+        color: shownBros[index].getBroBros().getColor().withOpacity(0.6),
         child: Row(
             children: [
               SizedBox(width: 15),
@@ -295,18 +295,18 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> with WidgetsB
                                       child: Text(shownBros[index].getBroBros().alias,
                                           overflow: TextOverflow.ellipsis,
                                           style: TextStyle(
-                                              color: getTextColor(shownBros[index].getBroBros().chatColor), fontSize: 20)))
+                                              color: getTextColor(shownBros[index].getBroBros().getColor()), fontSize: 20)))
                                       : Container(
                                       child: Text(shownBros[index].getBroBros().chatName,
                                           overflow: TextOverflow.ellipsis,
                                           style: TextStyle(
-                                              color: getTextColor(shownBros[index].getBroBros().chatColor), fontSize: 20))),
+                                              color: getTextColor(shownBros[index].getBroBros().getColor()), fontSize: 20))),
                                 ),
                                 shownBros[index].alreadyInBroup
                                     ? Container(
                                       child: Text(
                                           "Already in Broup",
-                                        style: TextStyle(color: getTextColor(shownBros[index].getBroBros().chatColor).withOpacity(0.6), fontSize: 12),
+                                        style: TextStyle(color: getTextColor(shownBros[index].getBroBros().getColor()).withOpacity(0.6), fontSize: 12),
                                       )
                                     )
                                     : Container()

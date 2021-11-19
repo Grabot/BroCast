@@ -36,7 +36,7 @@ class BlockBro {
             chatResponse["room_name"],
             chatResponse["blocked"],
             chatResponse["mute"],
-            false);
+            0);
         return broBros;
       }
     }

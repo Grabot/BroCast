@@ -150,7 +150,7 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
       if (chatBro != null) {
         NotificationService.instance.resetGoToBro();
         NotificationService.instance.dismissAllNotifications();
-        if (chatBro.isBroup) {
+        if (chatBro.isBroup()) {
           Navigator.pushReplacement(
               context,
               MaterialPageRoute(
@@ -244,7 +244,7 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
         bool result = data["result"];
         if (result) {
           for (Chat broup in BroList.instance.getBros()) {
-            if (broup.isBroup) {
+            if (broup.isBroup()) {
               if (broup.id == data["id"]) {
                 setState(() {
                   broup.mute = data["mute"];
@@ -270,7 +270,7 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
         bool result = data["result"];
         if (result) {
           for (Chat chat in BroList.instance.getBros()) {
-            if (!chat.isBroup) {
+            if (!chat.isBroup()) {
               if (chat.id == data["id"]) {
                 setState(() {
                   chat.mute = data["mute"];
@@ -295,9 +295,9 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
       if (data.containsKey("broup_id")) {
         updateMessagesBroup(data["broup_id"]);
         for (Chat broup in BroList.instance.getBros()) {
-          if (broup.isBroup) {
+          if (broup.isBroup()) {
             if (broup.id == data["broup_id"]) {
-              if (showNotification && !broup.mute) {
+              if (showNotification && !broup.isMuted()) {
                 NotificationService.instance
                     .showNotification(broup.id, broup.chatName, broup.alias, broup.getBroNameOrAlias(), data["body"], true);
               }
@@ -307,9 +307,9 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
       } else {
         updateMessages(data["sender_id"]);
         for (Chat br0 in BroList.instance.getBros()) {
-          if (!br0.isBroup) {
+          if (!br0.isBroup()) {
             if (br0.id == data["sender_id"]) {
-              if (showNotification && !br0.mute) {
+              if (showNotification && !br0.isMuted()) {
                 NotificationService.instance
                     .showNotification(br0.id, br0.chatName, br0.alias, br0.getBroNameOrAlias(), data["body"], false);
               }
@@ -323,7 +323,7 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
   updateMessagesBroup(int broupId) {
     if (mounted) {
       for (Chat br0 in bros) {
-        if (br0.isBroup) {
+        if (br0.isBroup()) {
           if (br0.id == broupId) {
             br0.unreadMessages += 1;
             br0.lastActivity = DateTime.now();
@@ -339,7 +339,7 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
   updateMessages(int senderId) {
     if (mounted) {
       for (Chat br0 in bros) {
-        if (!br0.isBroup) {
+        if (!br0.isBroup()) {
           if (senderId == br0.id) {
             br0.unreadMessages += 1;
             br0.lastActivity = DateTime.now();
@@ -383,7 +383,7 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
 
   void goToDifferentChat(Chat chatBro) {
     if (mounted) {
-      if (chatBro.isBroup) {
+      if (chatBro.isBroup()) {
         Navigator.pushReplacement(
             context,
             MaterialPageRoute(
@@ -629,32 +629,32 @@ class _BroTileState extends State<BroTile> {
                       ? widget.chat.unreadMessages < 3
                           ? widget.chat.unreadMessages < 2
                               ? widget.chat.unreadMessages < 1
-                                  ? widget.chat.chatColor.withOpacity(0.6)
-                              : widget.chat.chatColor.withOpacity(0.7)
-                          : widget.chat.chatColor.withOpacity(0.8)
-                      : widget.chat.chatColor.withOpacity(0.9)
-                  : widget.chat.chatColor.withOpacity(1),
+                                  ? widget.chat.getColor().withOpacity(0.6)
+                              : widget.chat.getColor().withOpacity(0.7)
+                          : widget.chat.getColor().withOpacity(0.8)
+                      : widget.chat.getColor().withOpacity(0.9)
+                  : widget.chat.getColor().withOpacity(1),
               padding: EdgeInsets.only(top: 16, bottom: 16, right: 24, left: 4),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Row(
                     children: [
-                      widget.chat.mute || widget.chat.blocked
+                      widget.chat.isMuted() || widget.chat.isBlocked()
                       ? Container(
                         width: 35,
                           child: Column(
                             children:
                             [
-                              widget.chat.blocked ? Icon(
+                              widget.chat.isBlocked() ? Icon(
                                 Icons.block,
-                                color: getTextColor(widget.chat.chatColor).withOpacity(0.6)
+                                color: getTextColor(widget.chat.getColor()).withOpacity(0.6)
                               ) : Container(
                                 height: 20,
                               ),
-                              widget.chat.mute ? Icon(
+                              widget.chat.isMuted() ? Icon(
                                   Icons.volume_off,
-                                  color: getTextColor(widget.chat.chatColor).withOpacity(0.6)
+                                  color: getTextColor(widget.chat.getColor()).withOpacity(0.6)
                               ) : Container(
                                 height: 20,
                               ),
@@ -686,7 +686,7 @@ class _BroTileState extends State<BroTile> {
                                         MediaQuery.of(context).size.width - 110,
                                     child: Text(widget.chat.chatDescription,
                                         style: TextStyle(
-                                            color: getTextColor(widget.chat.chatColor), fontSize: 12)),
+                                            color: getTextColor(widget.chat.getColor()), fontSize: 12)),
                                   )
                                 : Container(),
                           ],
@@ -699,12 +699,12 @@ class _BroTileState extends State<BroTile> {
                       width: 40,
                       alignment: Alignment.center,
                       decoration: BoxDecoration(
-                          color: widget.chat.chatColor,
+                          color: widget.chat.getColor(),
                           borderRadius: BorderRadius.circular(40)),
                       child: Text(
                         widget.chat.unreadMessages.toString(),
                         style: TextStyle(
-                            color: getTextColor(widget.chat.chatColor),
+                            color: getTextColor(widget.chat.getColor()),
                             fontSize: 16),
                       )),
                 ],
@@ -860,7 +860,7 @@ class _BroTileState extends State<BroTile> {
           )
       ).then((int delta) {
         if (delta == 1) {
-          if (widget.chat.isBroup) {
+          if (widget.chat.isBroup()) {
             Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
@@ -940,10 +940,10 @@ Widget getPopupItems(BuildContext context, Chat chat) {
         alignment: Alignment.centerLeft,
         child: TextButton(
             onPressed: () {
-              chat.mute ? buttonUnmute(context) : buttonMute(context);
+              chat.isMuted() ? buttonUnmute(context) : buttonMute(context);
             },
             child: Text(
-              chat.mute ? 'Unmute chat' : 'Mute chat',
+              chat.isMuted() ? 'Unmute chat' : 'Mute chat',
               textAlign: TextAlign.left,
               style: TextStyle(color: Colors.black, fontSize: 14),
             )

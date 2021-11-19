@@ -34,9 +34,9 @@ class GetBros {
                 br0["unread_messages"],
                 br0["last_time_activity"],
                 br0["room_name"],
-                br0["blocked"],
-                br0["mute"],
-                false);
+                br0["blocked"] ? 1 : 0,
+                br0["mute"] ? 1 : 0,
+                0);
             listWithBros.add(broBros);
           } else if (br0.containsKey("broup_name")) {
             Broup broup = new Broup(
@@ -48,9 +48,9 @@ class GetBros {
                 br0["unread_messages"],
                 br0["last_time_activity"],
                 br0["room_name"],
-                false,
-                br0["mute"],
-                true);
+                0,
+                br0["mute"] ? 1 : 0,
+                1);
             List<dynamic> broIds = br0["bro_ids"];
             List<int> broIdList = broIds.map((s) => s as int).toList();
             broup.setParticipants(broIdList);
