@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:brocast/objects/bro_bros.dart';
 import 'package:brocast/objects/chat.dart';
 import 'package:brocast/services/get_bros.dart';
@@ -7,16 +6,15 @@ import 'package:brocast/services/reset_registration.dart';
 import 'package:brocast/services/settings.dart';
 import 'package:brocast/services/socket_services.dart';
 import 'package:brocast/utils/bro_list.dart';
-import 'package:brocast/utils/shared.dart';
 import 'package:brocast/utils/utils.dart';
 import 'package:brocast/views/bro_home.dart';
 import 'package:brocast/views/signin.dart';
 import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:back_button_interceptor/back_button_interceptor.dart';
-
 import 'bro_profile.dart';
 import 'bro_settings.dart';
+
 
 class AddBroup extends StatefulWidget {
   AddBroup(
@@ -231,12 +229,10 @@ class _AddBroupState extends State<AddBroup> with WidgetsBindingObserver {
         )));
         break;
       case 2:
-        HelperFunction.logOutBro().then((value) {
-          ResetRegistration resetRegistration = new ResetRegistration();
-          resetRegistration.removeRegistrationId(Settings.instance.getBroId());
-          Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) => SignIn()));
-        });
+        ResetRegistration resetRegistration = new ResetRegistration();
+        resetRegistration.removeRegistrationId(Settings.instance.getBroId());
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => SignIn()));
         break;
     }
   }

@@ -4,8 +4,19 @@ import 'chat.dart';
 
 
 class BroBros extends Chat {
-  BroBros(int id, String chatName, String? chatDescription, String? alias, String chatColor,
-      int unreadMessages, String lastActivity, String roomName, int blocked, int mute, int broup) {
+  BroBros(
+      int id,
+      String chatName,
+      String? chatDescription,
+      String? alias,
+      String chatColor,
+      int unreadMessages,
+      String lastActivity,
+      String roomName,
+      int blocked,
+      int mute,
+      int broup
+    ) {
     this.id = id;
     this.chatName = chatName;
     if (chatDescription == null) {

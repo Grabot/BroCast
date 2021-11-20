@@ -1,6 +1,7 @@
 import 'package:brocast/objects/bro_bros.dart';
 import 'package:brocast/objects/broup.dart';
 import 'package:brocast/objects/chat.dart';
+import 'package:brocast/objects/user.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
@@ -16,7 +17,9 @@ class Storage {
     return _instance;
   }
 
-  Storage._internal();
+  Storage._internal() {
+    database;
+  }
 
   Future<Database> get database async {
     if (based != null) return based;
@@ -51,7 +54,8 @@ class Storage {
             password TEXT,
             token TEXT,
             registrationId TEXT,
-            recheckBros INTEGER
+            recheckBros INTEGER,
+            keyboardDarkMode INTEGER
           );
           ''');
     await db.execute('''
@@ -71,6 +75,41 @@ class Storage {
             UNIQUE(chatId, isBroup) ON CONFLICT REPLACE
           );
           ''');
+  }
+
+  Future<int> addUser(User user) async {
+    Database database = await this.database;
+    return database.insert(
+      'User',
+      user.toDbMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+  Future<User?> selectUser() async {
+    print("selecting user");
+    Database database = await this.database;
+    // We just expect there to be 1.
+    String query = "SELECT * FROM User";
+    print(query);
+    List<Map<String, dynamic>> user = await database.rawQuery(query);
+    print(user);
+    if (user.length != 1) {
+      return null;
+    } else {
+      return User.fromDbMap(user[0]);
+    }
+  }
+
+  Future<int> updateUser(User user) async {
+    Database database = await this.database;
+    return database.update(
+      'User',
+      user.toDbMap(),
+      where: 'id = ?',
+      whereArgs: [user.id],
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
   }
 
   Future<int> addChat(Chat chat) async {

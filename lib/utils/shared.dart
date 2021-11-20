@@ -7,8 +7,6 @@ class HelperFunction {
   static String broNameKey = "broName";
   static String bromotionKey = "bromotion";
   static String broPasswordKey = "password";
-  static String keyboardDarkMode = "keyboardDarkMode";
-  static String soundKey = "sound";
   static String eula = "eula";
 
   static Future<bool> setBroToken(String broToken) async {
@@ -19,16 +17,6 @@ class HelperFunction {
   static Future<bool> setBroId(int broId) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     return await preferences.setInt(broIdKey, broId);
-  }
-
-  static Future<bool> setKeyboardDarkMode(bool darkMode) async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    return await preferences.setBool(keyboardDarkMode, darkMode);
-  }
-
-  static Future<bool> setSound(bool sound) async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    return await preferences.setBool(soundKey, sound);
   }
 
   static Future<bool> setEULA(bool endUserLicenceAgreement) async {
@@ -48,13 +36,6 @@ class HelperFunction {
     }
   }
 
-  static Future<bool> logOutBro() async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    await preferences.setString(broTokenKey, "");
-    await preferences.setInt(broIdKey, -1);
-    return await preferences.setStringList(broInformationKey, List.empty());
-  }
-
   static Future<String?> getBroToken() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     return preferences.getString(broTokenKey);
@@ -65,19 +46,9 @@ class HelperFunction {
     return preferences.getInt(broIdKey);
   }
 
-  static Future<bool?> getKeyboardDarkMode() async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    return preferences.getBool(keyboardDarkMode);
-  }
-
   static Future<bool?> getEULA() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     return preferences.getBool(eula);
-  }
-
-  static Future<bool?> getSound() async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    return preferences.getBool(soundKey);
   }
 
   static Future<List<String>?> getBroInformation() async {

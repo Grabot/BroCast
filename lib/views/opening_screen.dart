@@ -3,6 +3,7 @@ import 'package:brocast/services/auth.dart';
 import 'package:brocast/services/settings.dart';
 import 'package:brocast/services/socket_services.dart';
 import 'package:brocast/utils/shared.dart';
+import 'package:brocast/utils/storage.dart';
 import 'package:brocast/utils/utils.dart';
 import 'package:brocast/views/signin.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +23,9 @@ class _OpeningScreenState extends State<OpeningScreen> {
 
   @override
   void initState() {
+    // Initialize the database
+    Storage();
+
     HelperFunction.getEULA().then((val) {
       if (val == null || val == false) {
         // first time opening this app!
@@ -40,17 +44,7 @@ class _OpeningScreenState extends State<OpeningScreen> {
     setState(() {
       isLoading = true;
     });
-    // TODO: @Skools replace with storage?
-    HelperFunction.getKeyboardDarkMode().then((val) {
-      if (val == null) {
-        // no dark mode setting set yet.
-        Settings.instance.setEmojiKeyboardDarkMode(false);
-      } else {
-        setState(() {
-          Settings.instance.setEmojiKeyboardDarkMode(val);
-        });
-      }
-    });
+
     SocketServices.instance;
     HelperFunction.getBroToken().then((val) {
       if (val == null || val == "") {

@@ -5,6 +5,7 @@ import 'package:brocast/services/settings.dart';
 import 'package:brocast/services/socket_services.dart';
 import 'package:brocast/utils/bro_list.dart';
 import 'package:brocast/utils/shared.dart';
+import 'package:brocast/utils/storage.dart';
 import 'package:brocast/utils/utils.dart';
 import 'package:brocast/views/bro_home.dart';
 import 'package:brocast/views/signin.dart';
@@ -27,34 +28,15 @@ class _BroSettingsState extends State<BroSettings> with WidgetsBindingObserver {
   bool toggleSwitchSound = false;
   bool showNotification = true;
 
+  var storage;
+
   @override
   void initState() {
     super.initState();
 
-    HelperFunction.getKeyboardDarkMode().then((val) {
-      if (val == null) {
-        setState(() {
-          toggleSwitchKeyboard = false;
-          Settings.instance.setEmojiKeyboardDarkMode(false);
-        });
-      } else {
-        setState(() {
-          toggleSwitchKeyboard = val;
-          Settings.instance.setEmojiKeyboardDarkMode(toggleSwitchKeyboard);
-        });
-      }
-    });
-    HelperFunction.getSound().then((val) {
-      if (val == null) {
-        setState(() {
-          toggleSwitchSound = false;
-        });
-      } else {
-        setState(() {
-          toggleSwitchSound = val;
-        });
-      }
-    });
+    storage = Storage();
+
+    toggleSwitchKeyboard = Settings.instance.getEmojiKeyboardDarkMode();
     initSockets();
 
     WidgetsBinding.instance!.addObserver(this);
@@ -116,18 +98,20 @@ class _BroSettingsState extends State<BroSettings> with WidgetsBindingObserver {
     }
   }
 
-  void toggledEmojiKeyboardDarkMode(value) {
-    HelperFunction.setKeyboardDarkMode(value);
-    Settings.instance.setEmojiKeyboardDarkMode(value);
-    setState(() {
-      toggleSwitchKeyboard = value;
+  void toggledEmojiKeyboardDarkMode(darkValue) {
+    storage.selectUser().then((value) {
+      if (value != null) {
+        // This has to be true, otherwise he couldn't have logged in!
+        value.keyboardDarkMode = darkValue ? 1 : 0;
+        storage.updateUser(value).then((value) {
+          print("we have updated the darkmode setting!");
+          print(value);
+        });
+      }
     });
-  }
-
-  void toggledSound(value) {
-    HelperFunction.setSound(value);
+    Settings.instance.setEmojiKeyboardDarkMode(darkValue);
     setState(() {
-      toggleSwitchSound = value;
+      toggleSwitchKeyboard = darkValue;
     });
   }
 
@@ -175,12 +159,10 @@ class _BroSettingsState extends State<BroSettings> with WidgetsBindingObserver {
         )));
         break;
       case 1:
-        HelperFunction.logOutBro().then((value) {
-          ResetRegistration resetRegistration = new ResetRegistration();
-          resetRegistration.removeRegistrationId(Settings.instance.getBroId());
-          Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) => SignIn()));
-        });
+        ResetRegistration resetRegistration = new ResetRegistration();
+        resetRegistration.removeRegistrationId(Settings.instance.getBroId());
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => SignIn()));
         break;
     }
   }
@@ -208,20 +190,6 @@ class _BroSettingsState extends State<BroSettings> with WidgetsBindingObserver {
                         value: toggleSwitchKeyboard,
                         onChanged: (value) {
                           toggledEmojiKeyboardDarkMode(value);
-                        },
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text("Turn off sound in notifications",
-                          style: simpleTextStyle()),
-                      Switch(
-                        value: toggleSwitchSound,
-                        onChanged: (value) {
-                          toggledSound(value);
                         },
                       ),
                     ],

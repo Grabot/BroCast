@@ -11,7 +11,6 @@ import 'package:brocast/services/settings.dart';
 import 'package:brocast/services/socket_services.dart';
 import 'package:brocast/utils/bro_list.dart';
 import 'package:brocast/utils/locator.dart';
-import 'package:brocast/utils/shared.dart';
 import 'package:brocast/utils/storage.dart';
 import 'package:brocast/utils/utils.dart';
 import 'package:brocast/views/find_bros.dart';
@@ -61,12 +60,33 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
     storage = Storage();
     storage.database.then((value) {
       storage.fetchAllChats().then((value) {
-        print("fetched all");
-        print(value);
+        setState(() {
+          bros = value;
+          shownBros = bros;
+          BroList.instance.setBros(bros);
+        });
       });
     });
 
-    searchBros(Settings.instance.getToken());
+    storage.selectUser().then((value) {
+      if (value != null) {
+        Settings.instance.setEmojiKeyboardDarkMode(value.getKeyboardDarkMode());
+        Settings.instance.setBroId(value.id);
+        Settings.instance.setBroName(value.broName);
+        Settings.instance.setBromotion(value.bromotion);
+        Settings.instance.setToken(value.token);
+        print("Recheck? ${value.shouldRecheck()}");
+        if (value.shouldRecheck() && value.token != null && value.token!.isNotEmpty) {
+          searchBros(value.token!);
+          value.recheckBros = 0;
+          storage.updateUser(value).then((value) {
+            print("We have checked the bros, no need to do it again.");
+            print(value);
+          });
+        }
+      }
+    });
+
     joinRoomSolo(Settings.instance.getBroId());
 
     WidgetsBinding.instance!.addObserver(this);
@@ -452,13 +472,11 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
         }
         break;
       case 3:
-        HelperFunction.logOutBro().then((value) {
-          leaveRoomSolo();
-          ResetRegistration resetRegistration = new ResetRegistration();
-          resetRegistration.removeRegistrationId(Settings.instance.getBroId());
-          Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) => SignIn()));
-        });
+        leaveRoomSolo();
+        ResetRegistration resetRegistration = new ResetRegistration();
+        resetRegistration.removeRegistrationId(Settings.instance.getBroId());
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => SignIn()));
         break;
     }
   }

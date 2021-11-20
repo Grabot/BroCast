@@ -36,17 +36,21 @@ class _SignInState extends State<SignIn> {
   void initState() {
     BackButtonInterceptor.add(myInterceptor);
     bromotionController.addListener(bromotionListener);
-    // If credentials are stored we will automatically sign in, but we will also set it on the textfields just for usability reasons (in case logging in fails)
+    // If credentials are stored we will automatically sign in,
+    // but we will also set it on the text fields just for usability reasons
+    // (in case logging in fails)
     HelperFunction.getBroInformation().then((val) {
       if (val == null || val.length == 0) {
         setState(() {
           isLoading = false;
         });
-        // no token yet
       } else {
         String broName = val[0];
         String bromotion = val[1];
         String password = val[2];
+        print(broName);
+        print(bromotion);
+        print(password);
         broNameController.text = broName;
         bromotionController.text = bromotion;
         passwordController.text = password;

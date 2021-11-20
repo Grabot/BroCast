@@ -38,7 +38,6 @@ class NotificationUtil {
   }
 
   String? firebaseToken;
-  // var storage;
 
   Map<String, String> channelMap = {
     "id": androidChannelId,
@@ -250,6 +249,10 @@ class NotificationUtil {
 
   void showNotification(String title, String body, int broId, int isBroup) {
     _showNotification(title, body, broId, isBroup);
+  }
+
+  String getFirebaseToken() {
+    return this.firebaseToken == null ? "" : this.firebaseToken!;
   }
 }
 

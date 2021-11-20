@@ -9,7 +9,6 @@ class Settings {
 
   bool emojiKeyboardDarkMode = false;
   String token = "";
-  String password = "";
   int broId = -1;
   String broName = "";
   String bromotion = "";
@@ -32,14 +31,6 @@ class Settings {
 
   String getToken() {
     return this.token;
-  }
-
-  setPassword(String password) {
-    this.password = password;
-  }
-
-  String getPassword() {
-    return this.password;
   }
 
   setBroId(int broId) {

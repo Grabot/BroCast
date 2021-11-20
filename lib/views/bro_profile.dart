@@ -331,12 +331,10 @@ class _BroProfileState extends State<BroProfile> with WidgetsBindingObserver {
         )));
         break;
       case 1:
-        HelperFunction.logOutBro().then((value) {
-          ResetRegistration resetRegistration = new ResetRegistration();
-          resetRegistration.removeRegistrationId(Settings.instance.getBroId());
-          Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) => SignIn()));
-        });
+        ResetRegistration resetRegistration = new ResetRegistration();
+        resetRegistration.removeRegistrationId(Settings.instance.getBroId());
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => SignIn()));
         break;
     }
   }

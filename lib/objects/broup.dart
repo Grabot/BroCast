@@ -12,8 +12,19 @@ class Broup extends Chat {
 
   bool meAdmin = false;
 
-  Broup(int id, String broupName, String? broupDescription, String? alias, String chatColor,
-      int unreadMessages, String lastActivity, String roomName, int blocked, int mute, int broup) {
+  Broup(
+      int id,
+      String broupName,
+      String? broupDescription,
+      String? alias,
+      String chatColor,
+      int unreadMessages,
+      String lastActivity,
+      String roomName,
+      int blocked,
+      int mute,
+      int broup
+    ) {
     this.id = id;
     this.chatName = broupName;
     if (broupDescription == null) {
