@@ -3,11 +3,11 @@ import 'dart:ui';
 abstract class Chat {
 
   late int id;
-  late DateTime lastActivity; // TODO: @Skools turn into String?
+  late String lastActivity;
   late String roomName;
   late String chatName;
-  late String chatDescription; // TODO: @Skools check that it is never null and always emptystring if there is no description
-  late String alias; // TODO: @Skools check that it is never null and always emptystring if there is no alias
+  late String chatDescription;
+  late String alias;
   late String chatColor;
   late int unreadMessages;
   late int blocked;

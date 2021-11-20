@@ -22,9 +22,15 @@ class BroBros extends Chat {
     this.unreadMessages = unreadMessages;
     this.blocked = blocked;
     this.mute = mute;
-    this.lastActivity = DateTime.parse(lastActivity + 'Z').toLocal();
+    // We send the utc time, but to make sure flutter gets the same time
+    // we have to add the utc indicator for flutter DateTime
+    this.lastActivity = lastActivity + 'Z';
     this.roomName = roomName;
     this.broup = broup;
+  }
+
+  DateTime getLastActivity() {
+    return DateTime.parse(lastActivity + 'Z').toLocal();
   }
 
   Color getColor() {
