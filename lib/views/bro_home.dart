@@ -5,7 +5,6 @@ import 'package:brocast/objects/bro_bros.dart';
 import 'package:brocast/objects/chat.dart';
 import 'package:brocast/services/auth.dart';
 import 'package:brocast/services/get_bros.dart';
-import 'package:brocast/services/notification_service.dart';
 import 'package:brocast/services/reset_registration.dart';
 import 'package:brocast/services/settings.dart';
 import 'package:brocast/services/socket_services.dart';
@@ -142,30 +141,10 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
     super.initState();
     BackButtonInterceptor.add(myInterceptor);
     bromotionController.addListener(bromotionListener);
-    NotificationService.instance.setScreen(this);
 
-    // This is called after the build is done.
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Chat chatBro = NotificationService.instance.getGoToBro();
-      if (chatBro != null) {
-        NotificationService.instance.resetGoToBro();
-        NotificationService.instance.dismissAllNotifications();
-        if (chatBro.isBroup()) {
-          Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => BroupMessaging(chat: chatBro)));
-        } else {
-          Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => BroMessaging(chat: chatBro)));
-        }
-      } else {
-        searchBros(Settings.instance.getToken());
-        joinRoomSolo(Settings.instance.getBroId());
-      }
-    });
+    searchBros(Settings.instance.getToken());
+    joinRoomSolo(Settings.instance.getBroId());
+
     WidgetsBinding.instance.addObserver(this);
   }
 
@@ -298,8 +277,9 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
           if (broup.isBroup()) {
             if (broup.id == data["broup_id"]) {
               if (showNotification && !broup.isMuted()) {
-                NotificationService.instance
-                    .showNotification(broup.id, broup.chatName, broup.alias, broup.getBroNameOrAlias(), data["body"], true);
+                // TODO: @SKools fix the notification in this case (foreground notification?)
+                // NotificationService.instance
+                //     .showNotification(broup.id, broup.chatName, broup.alias, broup.getBroNameOrAlias(), data["body"], true);
               }
             }
           }
@@ -310,8 +290,9 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
           if (!br0.isBroup()) {
             if (br0.id == data["sender_id"]) {
               if (showNotification && !br0.isMuted()) {
-                NotificationService.instance
-                    .showNotification(br0.id, br0.chatName, br0.alias, br0.getBroNameOrAlias(), data["body"], false);
+                // TODO: @SKools fix the notification in this case (foreground notification?)
+                // NotificationService.instance
+                //     .showNotification(br0.id, br0.chatName, br0.alias, br0.getBroNameOrAlias(), data["body"], false);
               }
             }
           }
@@ -600,7 +581,6 @@ class _BroTileState extends State<BroTile> {
   var _tapPosition;
 
   selectBro(BuildContext context) {
-    NotificationService.instance.dismissAllNotifications();
     if (widget.chat is BroBros) {
       Navigator.pushReplacement(
           context,

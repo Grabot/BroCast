@@ -1,7 +1,6 @@
 import 'package:brocast/constants/base_url.dart';
 import 'package:brocast/objects/chat.dart';
 import 'package:brocast/services/auth.dart';
-import 'package:brocast/services/notification_service.dart';
 import 'package:brocast/services/settings.dart';
 import 'package:brocast/services/socket_services.dart';
 import 'package:brocast/utils/shared.dart';
@@ -24,7 +23,6 @@ class _OpeningScreenState extends State<OpeningScreen> {
 
   @override
   void initState() {
-    NotificationService.instance.setScreen(null);
     acceptEULA = false;
     HelperFunction.getEULA().then((val) {
       if (val == null || val == false) {

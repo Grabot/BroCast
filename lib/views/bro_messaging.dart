@@ -4,7 +4,6 @@ import 'package:brocast/objects/chat.dart';
 import 'package:brocast/objects/message.dart';
 import 'package:brocast/services/get_chat.dart';
 import 'package:brocast/services/get_messages.dart';
-import 'package:brocast/services/notification_service.dart';
 import 'package:brocast/services/settings.dart';
 import 'package:brocast/services/socket_services.dart';
 import 'package:brocast/utils/bro_list.dart';
@@ -72,7 +71,6 @@ class _BroMessagingState extends State<BroMessaging>
         }
       });
     }
-    NotificationService.instance.setScreen(this);
     joinRoom(Settings.instance.getBroId(), chat.id);
     WidgetsBinding.instance.addObserver(this);
     BackButtonInterceptor.add(myInterceptor);
@@ -113,8 +111,9 @@ class _BroMessagingState extends State<BroMessaging>
           if (broup.isBroup()) {
             if (broup.id == data["broup_id"]) {
               if (showNotification && !broup.isMuted()) {
-                NotificationService.instance
-                    .showNotification(broup.id, broup.chatName, broup.alias, broup.getBroNameOrAlias(), data["body"], true);
+                // TODO: @SKools fix the notification in this case (foreground notification?)
+                // NotificationService.instance
+                //     .showNotification(broup.id, broup.chatName, broup.alias, broup.getBroNameOrAlias(), data["body"], true);
               }
             }
           }
@@ -125,8 +124,9 @@ class _BroMessagingState extends State<BroMessaging>
             if (chat.id != data["sender_id"]) {
               if (br0.id == data["sender_id"]) {
                 if (showNotification && !br0.isMuted()) {
-                  NotificationService.instance
-                      .showNotification(br0.id, br0.chatName, br0.alias, br0.getBroNameOrAlias(), data["body"], false);
+                  // TODO: @SKools fix the notification in this case (foreground notification?)
+                  // NotificationService.instance
+                  //     .showNotification(br0.id, br0.chatName, br0.alias, br0.getBroNameOrAlias(), data["body"], false);
                 }
               }
             }
