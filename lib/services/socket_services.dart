@@ -5,7 +5,7 @@ class SocketServices {
   static SocketServices _instance = new SocketServices._internal();
 
   static get instance => _instance;
-  IO.Socket socket;
+  late IO.Socket socket;
 
   SocketServices._internal() {
     startSockConnection();

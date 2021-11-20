@@ -12,31 +12,31 @@ class Broup extends Chat {
 
   bool meAdmin = false;
 
-  Broup(int id, String broupName, String broupDescription, String alias, String chatColor,
+  Broup(int id, String broupName, String? broupDescription, String? alias, String chatColor,
       int unreadMessages, String lastActivity, String roomName, int blocked, int mute, int broup) {
     this.id = id;
     this.chatName = broupName;
-    this.chatDescription = broupDescription;
-    this.alias = alias;
+    if (broupDescription == null) {
+      this.chatDescription = "";
+    } else {
+      this.chatDescription = broupDescription;
+    }
+    if (alias == null) {
+      this.alias = "";
+    } else {
+      this.alias = alias;
+    }
     this.chatColor = chatColor;
     this.unreadMessages = unreadMessages;
     this.blocked = blocked;
     this.mute = mute;
-    if (lastActivity != null) {
-      this.lastActivity = DateTime.parse(lastActivity + 'Z').toLocal();
-    } else {
-      this.lastActivity = DateTime.now();
-    }
+    this.lastActivity = DateTime.parse(lastActivity + 'Z').toLocal();
     this.roomName = roomName;
     this.broup = broup;
   }
 
   Color getColor() {
-    if (this.chatColor == null) {
-      return Colors.black;
-    } else {
-      return Color(int.parse("0xFF${this.chatColor}"));
-    }
+    return Color(int.parse("0xFF${this.chatColor}"));
   }
 
   void setParticipants(List<int> participants) {
@@ -83,10 +83,6 @@ class Broup extends Chat {
     return meAdmin;
   }
 
-  String getchatDescription() {
-    return this.chatDescription;
-  }
-
   void setChatDescription(String description) {
     this.chatDescription = description;
   }
@@ -119,7 +115,7 @@ class Broup extends Chat {
 
   @override
   String getBroNameOrAlias() {
-    if (this.alias != null && this.alias.isNotEmpty) {
+    if (this.alias != "") {
       return this.alias;
     } else {
       return this.chatName;

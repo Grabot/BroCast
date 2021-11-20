@@ -14,7 +14,7 @@ class Settings {
   String broName = "";
   String bromotion = "";
 
-  Bro me;
+  Bro? me;
 
   Settings._internal();
 
@@ -76,7 +76,7 @@ class Settings {
     this.me = me;
   }
 
-  Bro getMe() {
+  Bro? getMe() {
     return this.me;
   }
 }

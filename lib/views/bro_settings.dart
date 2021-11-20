@@ -9,13 +9,14 @@ import 'package:brocast/utils/utils.dart';
 import 'package:brocast/views/bro_home.dart';
 import 'package:brocast/views/signin.dart';
 import "package:flutter/material.dart";
-
-import 'bro_messaging.dart';
 import 'bro_profile.dart';
-import 'broup_messaging.dart';
+
 
 class BroSettings extends StatefulWidget {
-  BroSettings({Key key}) : super(key: key);
+  BroSettings(
+      {
+        required Key key
+      }) : super(key: key);
 
   @override
   _BroSettingsState createState() => _BroSettingsState();
@@ -56,7 +57,7 @@ class _BroSettingsState extends State<BroSettings> with WidgetsBindingObserver {
     });
     initSockets();
 
-    WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance!.addObserver(this);
     BackButtonInterceptor.add(myInterceptor);
   }
 
@@ -91,22 +92,6 @@ class _BroSettingsState extends State<BroSettings> with WidgetsBindingObserver {
             }
           }
         }
-      }
-    }
-  }
-
-  void goToDifferentChat(Chat chatBro) {
-    if (mounted) {
-      if (chatBro.isBroup()) {
-        Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (context) => BroupMessaging(chat: chatBro)));
-      } else {
-        Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (context) => BroMessaging(chat: chatBro)));
       }
     }
   }
@@ -148,39 +133,46 @@ class _BroSettingsState extends State<BroSettings> with WidgetsBindingObserver {
 
   void backButtonFunctionality() {
     Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => BroCastHome()));
+        context, MaterialPageRoute(builder: (context) => BroCastHome(
+      key: UniqueKey()
+    )));
   }
 
-  Widget appBarSettings(BuildContext context) {
-    return AppBar(
-        leading: IconButton(
-            icon: Icon(Icons.arrow_back, color: Colors.white),
-            onPressed: () {
-              backButtonFunctionality();
-            }),
-        title:
-            Container(alignment: Alignment.centerLeft, child: Text("Settings")),
-        actions: [
-          PopupMenuButton<int>(
-              onSelected: (item) => onSelect(context, item),
-              itemBuilder: (context) => [
-                    PopupMenuItem<int>(value: 0, child: Text("Profile")),
-                    PopupMenuItem<int>(
-                        value: 1,
-                        child: Row(children: [
-                          Icon(Icons.logout, color: Colors.black),
-                          SizedBox(width: 8),
-                          Text("Log Out")
-                        ]))
-                  ])
-        ]);
+  PreferredSize appBarSettings(BuildContext context) {
+    return PreferredSize(
+      preferredSize: const Size.fromHeight(100),
+      child: AppBar(
+          leading: IconButton(
+              icon: Icon(Icons.arrow_back, color: Colors.white),
+              onPressed: () {
+                backButtonFunctionality();
+              }),
+          title:
+              Container(alignment: Alignment.centerLeft, child: Text("Settings")),
+          actions: [
+            PopupMenuButton<int>(
+                onSelected: (item) => onSelect(context, item),
+                itemBuilder: (context) => [
+                      PopupMenuItem<int>(value: 0, child: Text("Profile")),
+                      PopupMenuItem<int>(
+                          value: 1,
+                          child: Row(children: [
+                            Icon(Icons.logout, color: Colors.black),
+                            SizedBox(width: 8),
+                            Text("Log Out")
+                          ]))
+                    ])
+          ]),
+    );
   }
 
   void onSelect(BuildContext context, int item) {
     switch (item) {
       case 0:
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => BroProfile()));
+            context, MaterialPageRoute(builder: (context) => BroProfile(
+          key: UniqueKey()
+        )));
         break;
       case 1:
         HelperFunction.logOutBro().then((value) {

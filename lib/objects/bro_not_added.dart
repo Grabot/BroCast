@@ -6,11 +6,15 @@ import 'bro.dart';
 
 class BroNotAdded extends Bro {
 
-  String broName;
-  String bromotion;
-  bool added;
+  late String broName;
+  late String bromotion;
+  late bool added;
 
-  BroNotAdded(int id, String broName, String bromotion) {
+  BroNotAdded(
+      int id,
+      String broName,
+      String bromotion
+      ) {
     this.id = id;
     this.broName = broName;
     this.bromotion = bromotion;
@@ -42,7 +46,9 @@ class BroNotAdded extends Bro {
 
   @override
   BroNotAdded copyBro({
-    int id, String broName, String bromotion
+    int? id,
+    String? broName,
+    String? bromotion
   }) => BroNotAdded(
     id ?? this.id,
     broName ?? this.broName,

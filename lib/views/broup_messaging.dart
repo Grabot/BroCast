@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:brocast/objects/bro.dart';
 import 'package:brocast/objects/bro_added.dart';
@@ -18,16 +17,19 @@ import 'package:brocast/views/bro_home.dart';
 import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-
-import 'bro_messaging.dart';
 import 'bro_profile.dart';
 import 'bro_settings.dart';
 import 'broup_details.dart';
 
+
 class BroupMessaging extends StatefulWidget {
   final Broup chat;
 
-  BroupMessaging({Key key, this.chat}) : super(key: key);
+  BroupMessaging(
+      {
+        required Key key,
+        required this.chat
+      }) : super(key: key);
 
   @override
   _BroupMessagingState createState() => _BroupMessagingState();
@@ -35,7 +37,7 @@ class BroupMessaging extends StatefulWidget {
 
 class _BroupMessagingState extends State<BroupMessaging>
     with WidgetsBindingObserver {
-  bool isLoading;
+  bool isLoading = false;
   GetMessages get = new GetMessages();
   GetChat getChat = new GetChat();
 
@@ -54,37 +56,20 @@ class _BroupMessagingState extends State<BroupMessaging>
   // SocketServices socket;
   List<Message> messages = [];
 
-  Broup chat;
+  late Broup chat;
 
-  int amountViewed;
+  int amountViewed = 1;
   @override
   void initState() {
     super.initState();
     chat = widget.chat;
-    amountViewed = 1;
-    isLoading = false;
 
-    // We retrieve the broup again in case there were changes.
-
-    if (chat.getColor() != null) {
-      getParticipants();
-      getMessages(amountViewed);
-    } else {
-      // If there is no colour, than it was probably opened with a notification
-      // In this case we don't have the whole object. We retrieve it here
-      getChat.getBroup(Settings.instance.getBroId(), chat.id).then((value) {
-        if (value != "an unknown error has occurred") {
-          setState(() {
-            chat = value;
-            getParticipants();
-            getMessages(amountViewed);
-          });
-        }
-      });
-    }
+    // TODO: @Skools make sure that there is always a Broup here (db storage?)
+    getParticipants();
+    getMessages(amountViewed);
 
     joinBroupRoom(Settings.instance.getBroId(), chat.id);
-    WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance!.addObserver(this);
     BackButtonInterceptor.add(myInterceptor);
     initSockets();
 
@@ -309,22 +294,6 @@ class _BroupMessagingState extends State<BroupMessaging>
     super.dispose();
   }
 
-  void goToDifferentChat(Chat chatBro) {
-    if (mounted) {
-      if (chatBro.isBroup()) {
-        Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (context) => BroupMessaging(chat: chatBro)));
-      } else {
-        Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (context) => BroMessaging(chat: chatBro)));
-      }
-    }
-  }
-
   bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
     backButtonFunctionality();
     return true;
@@ -458,7 +427,7 @@ class _BroupMessagingState extends State<BroupMessaging>
   }
 
   sendMessageBroup() {
-    if (formKey.currentState.validate()) {
+    if (formKey.currentState!.validate()) {
       String message = broMessageController.text;
       String textMessage = appendTextMessageController.text;
       // We add the message already as being send.
@@ -545,6 +514,7 @@ class _BroupMessagingState extends State<BroupMessaging>
             controller: messageScrollController,
             itemBuilder: (context, index) {
               return MessageTile(
+                  key: UniqueKey(),
                   message: messages[index],
                   sender: getSender(messages[index].senderId),
                   myMessage: messages[index].senderId == Settings.instance.getBroId());
@@ -595,54 +565,62 @@ class _BroupMessagingState extends State<BroupMessaging>
     } else {
       leaveBroupRoom();
       Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => BroCastHome()));
+          context, MaterialPageRoute(builder: (context) => BroCastHome(
+        key: UniqueKey()
+      )));
     }
   }
 
-  Widget appBarChat() {
-    return AppBar(
-        leading: IconButton(
-            icon: Icon(Icons.arrow_back, color: getTextColor(chat.getColor())),
-            onPressed: () {
-              backButtonFunctionality();
-            }),
-        backgroundColor:
-            chat.getColor() != null ? chat.getColor() : Color(0xff145C9E),
-        title: InkWell(
-          onTap: () {
-            Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => BroupDetails(chat: chat)));
-          },
-          child: Container(
-              alignment: Alignment.centerLeft,
-              color: Colors.transparent,
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    chat.alias != null && chat.alias.isNotEmpty
-                        ? Container(
-                        child: Text(chat.alias,
-                            style: TextStyle(
-                                color: getTextColor(chat.getColor()), fontSize: 20)))
-                        : Container(
-                        child: Text(chat.chatName,
-                            style: TextStyle(
-                                color: getTextColor(chat.getColor()), fontSize: 20))),
-                  ],
-                )
+  PreferredSize appBarChat() {
+    return PreferredSize(
+      preferredSize: const Size.fromHeight(100),
+      child: AppBar(
+          leading: IconButton(
+              icon: Icon(Icons.arrow_back, color: getTextColor(chat.getColor())),
+              onPressed: () {
+                backButtonFunctionality();
+              }),
+          backgroundColor:
+              chat.getColor() != null ? chat.getColor() : Color(0xff145C9E),
+          title: InkWell(
+            onTap: () {
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => BroupDetails(
+                          key: UniqueKey(),
+                          chat: chat
+                      )));
+            },
+            child: Container(
+                alignment: Alignment.centerLeft,
+                color: Colors.transparent,
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      chat.alias != null && chat.alias.isNotEmpty
+                          ? Container(
+                          child: Text(chat.alias,
+                              style: TextStyle(
+                                  color: getTextColor(chat.getColor()), fontSize: 20)))
+                          : Container(
+                          child: Text(chat.chatName,
+                              style: TextStyle(
+                                  color: getTextColor(chat.getColor()), fontSize: 20))),
+                    ],
+                  )
+            ),
           ),
-        ),
-        actions: [
-          PopupMenuButton<int>(
-              onSelected: (item) => onSelectChat(context, item),
-              itemBuilder: (context) => [
-                    PopupMenuItem<int>(value: 0, child: Text("Profile")),
-                    PopupMenuItem<int>(value: 1, child: Text("Settings")),
-                    PopupMenuItem<int>(value: 2, child: Text("Broup details")),
-                  ])
-        ]);
+          actions: [
+            PopupMenuButton<int>(
+                onSelected: (item) => onSelectChat(context, item),
+                itemBuilder: (context) => [
+                      PopupMenuItem<int>(value: 0, child: Text("Profile")),
+                      PopupMenuItem<int>(value: 1, child: Text("Settings")),
+                      PopupMenuItem<int>(value: 2, child: Text("Broup details")),
+                    ])
+          ]),
+    );
   }
 
   void onSelectChat(BuildContext context, int item) {
@@ -650,18 +628,25 @@ class _BroupMessagingState extends State<BroupMessaging>
       case 0:
         leaveBroupRoom();
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => BroProfile()));
+            context, MaterialPageRoute(builder: (context) => BroProfile(
+          key: UniqueKey()
+        )));
         break;
       case 1:
         leaveBroupRoom();
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => BroSettings()));
+            context, MaterialPageRoute(builder: (context) => BroSettings(
+          key: UniqueKey()
+        )));
         break;
       case 2:
         Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-                builder: (context) => BroupDetails(chat: chat)));
+                builder: (context) => BroupDetails(
+                    key: UniqueKey(),
+                    chat: chat
+                )));
         break;
     }
   }
@@ -724,7 +709,7 @@ class _BroupMessagingState extends State<BroupMessaging>
                                 child: TextFormField(
                                   focusNode: focusEmojiTextField,
                                   validator: (val) {
-                                    if (val.isEmpty || val.trimRight().isEmpty) {
+                                    if (val == null || val.isEmpty || val.trimRight().isEmpty) {
                                       return "Can't send an empty message";
                                     }
                                     if (chat.isBlocked()) {
@@ -831,7 +816,13 @@ class MessageTile extends StatefulWidget {
   final String sender;
   final bool myMessage;
 
-  MessageTile({Key key, this.message, this.sender, this.myMessage}) : super(key: key);
+  MessageTile(
+      {
+        required Key key,
+        required this.message,
+        required this.sender,
+        required this.myMessage
+      }) : super(key: key);
 
   @override
   _MessageTileState createState() => _MessageTileState();

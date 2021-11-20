@@ -4,14 +4,14 @@ import 'dart:io';
 import 'package:brocast/constants/base_url.dart';
 import 'package:brocast/services/settings.dart';
 import 'package:brocast/utils/shared.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:http/http.dart' as http;
 
 class Auth {
+  // TODO: @Skools check the timeout fix
   Future signUp(String broName, String bromotion, String password) async {
-    await Firebase.initializeApp();
-    String registrationId = await FirebaseMessaging.instance.getToken();
+    // TODO: @Skools make sure firebase initialization is fixed
+    // await Firebase.initializeApp();
+    // String registrationId = await FirebaseMessaging.instance.getToken();
 
     String urlRegister = baseUrl_v1_1 + 'register';
     Uri uriRegister = Uri.parse(urlRegister);
@@ -31,18 +31,18 @@ class Auth {
         'bro_name': broName,
         'bromotion': bromotion,
         'password': password,
-        'registration_id': registrationId,
+        'registration_id': "", // TODO: @SKools fix registration
         'device_type': deviceType
       }),
     )
         .timeout(
       Duration(seconds: 5),
       onTimeout: () {
-        return null;
+        return new http.Response("", 404);
       },
     );
 
-    if (responsePost == null) {
+    if (responsePost.body.isEmpty) {
       return "Could not connect to the server";
     } else {
       Map<String, dynamic> registerResponse = jsonDecode(responsePost.body);
@@ -73,8 +73,9 @@ class Auth {
 
   Future signIn(
       String broName, String bromotion, String password, String token) async {
-    await Firebase.initializeApp();
-    String registrationId = await FirebaseMessaging.instance.getToken();
+    // TODO: @Skools make sure firebase initialization is fixed
+    // await Firebase.initializeApp();
+    // String registrationId = await FirebaseMessaging.instance.getToken();
 
     String urlLogin = baseUrl_v1_1 + 'login';
     Uri uriLogin = Uri.parse(urlLogin);
@@ -95,18 +96,18 @@ class Auth {
         'bromotion': bromotion,
         'password': password,
         'token': token,
-        'registration_id': registrationId,
+        'registration_id': "", // TODO: @Skools firebase stuff
         'device_type': deviceType
       }),
     )
         .timeout(
       Duration(seconds: 5),
       onTimeout: () {
-        return null;
+        return new http.Response("", 404);
       },
     );
 
-    if (responsePost == null) {
+    if (responsePost.body.isEmpty) {
       return "Could not connect to the server";
     } else {
       Map<String, dynamic> registerResponse;

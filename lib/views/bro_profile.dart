@@ -10,13 +10,14 @@ import 'package:brocast/views/bro_home.dart';
 import 'package:brocast/views/signin.dart';
 import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
 import "package:flutter/material.dart";
-
-import 'bro_messaging.dart';
 import 'bro_settings.dart';
-import 'broup_messaging.dart';
+
 
 class BroProfile extends StatefulWidget {
-  BroProfile({Key key}) : super(key: key);
+  BroProfile(
+      {
+        required Key key
+      }) : super(key: key);
 
   @override
   _BroProfileState createState() => _BroProfileState();
@@ -31,9 +32,9 @@ class _BroProfileState extends State<BroProfile> with WidgetsBindingObserver {
   bool changePassword = false;
   bool showNotification = true;
 
-  String broName;
-  String bromotion;
-  String broPassword;
+  late String broName;
+  late String bromotion;
+  late String broPassword;
 
   FocusNode focusNodeBromotion = new FocusNode();
   FocusNode focusNodePassword = new FocusNode();
@@ -71,7 +72,7 @@ class _BroProfileState extends State<BroProfile> with WidgetsBindingObserver {
         }
       }
     });
-    WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance!.addObserver(this);
     BackButtonInterceptor.add(myInterceptor);
   }
 
@@ -122,22 +123,6 @@ class _BroProfileState extends State<BroProfile> with WidgetsBindingObserver {
             }
           }
         }
-      }
-    }
-  }
-
-  void goToDifferentChat(Chat chatBro) {
-    if (mounted) {
-      if (chatBro.isBroup()) {
-        Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (context) => BroupMessaging(chat: chatBro)));
-      } else {
-        Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (context) => BroMessaging(chat: chatBro)));
       }
     }
   }
@@ -226,7 +211,7 @@ class _BroProfileState extends State<BroProfile> with WidgetsBindingObserver {
 
   void onSavePassword() {
     if (mounted) {
-      if (passwordFormValidator.currentState.validate()) {
+      if (passwordFormValidator.currentState!.validate()) {
         if (SocketServices.instance.socket.connected) {
           SocketServices.instance.socket.emit("password_change", {
             "token": Settings.instance.getToken(),
@@ -242,7 +227,7 @@ class _BroProfileState extends State<BroProfile> with WidgetsBindingObserver {
 
   void onSaveBromotion() {
     if (mounted) {
-      if (bromotionValidator.currentState.validate()) {
+      if (bromotionValidator.currentState!.validate()) {
         if (SocketServices.instance.socket.connected) {
           SocketServices.instance.socket.emit("bromotion_change", {
             "token": Settings.instance.getToken(),
@@ -294,7 +279,9 @@ class _BroProfileState extends State<BroProfile> with WidgetsBindingObserver {
       SocketServices.instance.socket
           .off('message_event_password_change', (data) => print(data));
       Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => BroCastHome()));
+          context, MaterialPageRoute(builder: (context) => BroCastHome(
+        key: UniqueKey()
+      )));
     }
   }
 
@@ -307,36 +294,41 @@ class _BroProfileState extends State<BroProfile> with WidgetsBindingObserver {
     }
   }
 
-  Widget appBarProfile(BuildContext context) {
-    return AppBar(
-        leading: IconButton(
-            icon: Icon(Icons.arrow_back, color: Colors.white),
-            onPressed: () {
-              backButtonFunctionality();
-            }),
-        title:
-            Container(alignment: Alignment.centerLeft, child: Text("Profile")),
-        actions: [
-          PopupMenuButton<int>(
-              onSelected: (item) => onSelect(context, item),
-              itemBuilder: (context) => [
-                    PopupMenuItem<int>(value: 0, child: Text("Settings")),
-                    PopupMenuItem<int>(
-                        value: 1,
-                        child: Row(children: [
-                          Icon(Icons.logout, color: Colors.black),
-                          SizedBox(width: 8),
-                          Text("Log Out")
-                        ]))
-                  ])
-        ]);
+  PreferredSize appBarProfile(BuildContext context) {
+    return PreferredSize(
+      preferredSize: const Size.fromHeight(100),
+      child: AppBar(
+          leading: IconButton(
+              icon: Icon(Icons.arrow_back, color: Colors.white),
+              onPressed: () {
+                backButtonFunctionality();
+              }),
+          title:
+              Container(alignment: Alignment.centerLeft, child: Text("Profile")),
+          actions: [
+            PopupMenuButton<int>(
+                onSelected: (item) => onSelect(context, item),
+                itemBuilder: (context) => [
+                      PopupMenuItem<int>(value: 0, child: Text("Settings")),
+                      PopupMenuItem<int>(
+                          value: 1,
+                          child: Row(children: [
+                            Icon(Icons.logout, color: Colors.black),
+                            SizedBox(width: 8),
+                            Text("Log Out")
+                          ]))
+                    ])
+          ]),
+    );
   }
 
   void onSelect(BuildContext context, int item) {
     switch (item) {
       case 0:
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => BroSettings()));
+            context, MaterialPageRoute(builder: (context) => BroSettings(
+          key: UniqueKey()
+        )));
         break;
       case 1:
         HelperFunction.logOutBro().then((value) {

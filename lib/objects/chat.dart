@@ -2,17 +2,17 @@ import 'dart:ui';
 
 abstract class Chat {
 
-  int id;
-  DateTime lastActivity;
-  String roomName;
-  String chatName;
-  String chatDescription;
-  String alias;
-  String chatColor;
-  int unreadMessages;
-  int blocked;
-  int mute;
-  int broup;
+  late int id;
+  late DateTime lastActivity; // TODO: @Skools turn into String?
+  late String roomName;
+  late String chatName;
+  late String chatDescription; // TODO: @Skools check that it is never null and always emptystring if there is no description
+  late String alias; // TODO: @Skools check that it is never null and always emptystring if there is no alias
+  late String chatColor;
+  late int unreadMessages;
+  late int blocked;
+  late int mute;
+  late int broup;
 
   Chat();
 

@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:back_button_interceptor/back_button_interceptor.dart';
-import 'package:brocast/objects/chat.dart';
 import 'package:brocast/services/auth.dart';
 import 'package:brocast/services/settings.dart';
 import 'package:brocast/utils/shared.dart';
@@ -9,6 +8,7 @@ import 'package:brocast/views/bro_home.dart';
 import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
 
 class SignIn extends StatefulWidget {
   @override
@@ -19,9 +19,11 @@ class _SignInState extends State<SignIn> {
   bool isLoading = false;
   bool showEmojiKeyboard = false;
 
-  bool signUpMode;
+  bool signUpMode = false;
 
   Auth auth = new Auth();
+
+  DateTime? lastPressed;
 
   final formKey = GlobalKey<FormState>();
   TextEditingController broNameController = new TextEditingController();
@@ -34,7 +36,6 @@ class _SignInState extends State<SignIn> {
   void initState() {
     BackButtonInterceptor.add(myInterceptor);
     bromotionController.addListener(bromotionListener);
-    signUpMode = false;
     // If credentials are stored we will automatically sign in, but we will also set it on the textfields just for usability reasons (in case logging in fails)
     HelperFunction.getBroInformation().then((val) {
       if (val == null || val.length == 0) {
@@ -56,10 +57,6 @@ class _SignInState extends State<SignIn> {
       emojiKeyboardDarkMode = Settings.instance.getEmojiKeyboardDarkMode();
     });
     super.initState();
-  }
-
-  void goToDifferentChat(Chat chatBro) {
-    // not doing it here, first log in.
   }
 
   bromotionListener() {
@@ -110,7 +107,7 @@ class _SignInState extends State<SignIn> {
   }
 
   signInForm() {
-    if (formKey.currentState.validate()) {
+    if (formKey.currentState!.validate()) {
       if (signUpMode) {
         signUp();
       } else {
@@ -135,7 +132,9 @@ class _SignInState extends State<SignIn> {
     auth.signUp(broNameSignup, bromotionSignup, passwordSignup).then((val) {
       if (val.toString() == "") {
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => BroCastHome()));
+            context, MaterialPageRoute(builder: (context) => BroCastHome(
+            key: UniqueKey()
+        )));
       } else {
         ShowToastComponent.showDialog(val.toString(), context);
       }
@@ -154,7 +153,9 @@ class _SignInState extends State<SignIn> {
     auth.signIn(broName, bromotion, password, "").then((val) {
       if (val.toString() == "") {
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => BroCastHome()));
+            context, MaterialPageRoute(builder: (context) => BroCastHome(
+            key: UniqueKey()
+        )));
       } else {
         ShowToastComponent.showDialog(val.toString(), context);
         setState(() {
@@ -176,8 +177,6 @@ class _SignInState extends State<SignIn> {
     }
   }
 
-  DateTime lastPressed;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -197,7 +196,7 @@ class _SignInState extends State<SignIn> {
             final now = DateTime.now();
             final maxDuration = Duration(seconds: 2);
             final isWarning = lastPressed == null ||
-                now.difference(lastPressed) > maxDuration;
+                now.difference(lastPressed!) > maxDuration;
 
             if (isWarning) {
               lastPressed = DateTime.now();
@@ -245,7 +244,7 @@ class _SignInState extends State<SignIn> {
                                       }
                                     },
                                     validator: (val) {
-                                      return val.isEmpty
+                                      return val == null || val.isEmpty
                                           ? "Please provide a bro name"
                                           : null;
                                     },
@@ -266,7 +265,7 @@ class _SignInState extends State<SignIn> {
                                       }
                                     },
                                     validator: (val) {
-                                      return val.trim().isEmpty
+                                      return val == null || val.trim().isEmpty
                                           ? "😢?😄!"
                                           : null;
                                     },
@@ -290,7 +289,7 @@ class _SignInState extends State<SignIn> {
                                   },
                                   obscureText: true,
                                   validator: (val) {
-                                    return val.isEmpty
+                                    return val == null || val.isEmpty
                                         ? "Please provide a password"
                                         : null;
                                   },

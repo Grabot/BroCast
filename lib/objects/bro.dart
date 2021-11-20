@@ -1,10 +1,10 @@
 import 'dart:ui';
 
 abstract class Bro {
-  int id;
-  Color broColor;
-  bool admin;
-  bool added;
+  late int id;
+  late Color broColor;
+  late bool admin;
+  late bool added;
 
   Bro();
 

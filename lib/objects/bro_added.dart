@@ -6,7 +6,7 @@ import 'bro.dart';
 
 class BroAdded extends Bro {
 
-  String chatName;
+  late String chatName;
 
   BroAdded(int id, String chatName) {
     this.id = id;
@@ -38,7 +38,8 @@ class BroAdded extends Bro {
   }
 
   BroAdded copyBro({
-    int id, String chatName
+    int? id,
+    String? chatName
   }) => BroAdded(
     id ?? this.id,
     chatName ?? this.chatName,

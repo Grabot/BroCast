@@ -1,5 +1,4 @@
 import 'package:brocast/constants/base_url.dart';
-import 'package:brocast/objects/chat.dart';
 import 'package:brocast/services/auth.dart';
 import 'package:brocast/services/settings.dart';
 import 'package:brocast/services/socket_services.dart';
@@ -8,8 +7,8 @@ import 'package:brocast/utils/utils.dart';
 import 'package:brocast/views/signin.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
-
 import 'bro_home.dart';
+
 
 class OpeningScreen extends StatefulWidget {
   @override
@@ -18,12 +17,11 @@ class OpeningScreen extends StatefulWidget {
 
 class _OpeningScreenState extends State<OpeningScreen> {
   bool isLoading = false;
-  bool acceptEULA;
+  bool acceptEULA = false;
   Auth auth = new Auth();
 
   @override
   void initState() {
-    acceptEULA = false;
     HelperFunction.getEULA().then((val) {
       if (val == null || val == false) {
         // first time opening this app!
@@ -42,6 +40,7 @@ class _OpeningScreenState extends State<OpeningScreen> {
     setState(() {
       isLoading = true;
     });
+    // TODO: @Skools replace with storage?
     HelperFunction.getKeyboardDarkMode().then((val) {
       if (val == null) {
         // no dark mode setting set yet.
@@ -71,7 +70,9 @@ class _OpeningScreenState extends State<OpeningScreen> {
     auth.signIn("", "", "", token).then((val) {
       if (val.toString() == "") {
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => BroCastHome()));
+            context, MaterialPageRoute(builder: (context) => BroCastHome(
+            key: UniqueKey()
+        )));
       } else {
         if (val == "The given credentials are not correct!") {
           // token didn't work, going to check if a username is given and try to log in using password username
@@ -99,16 +100,14 @@ class _OpeningScreenState extends State<OpeningScreen> {
     auth.signIn(broName, bromotion, password, "").then((val) {
       if (val.toString() == "") {
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => BroCastHome()));
+            context, MaterialPageRoute(builder: (context) => BroCastHome(
+            key: UniqueKey()
+        )));
       } else {
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => SignIn()));
       }
     });
-  }
-
-  void goToDifferentChat(Chat chatBro) {
-    // not doing it here, first log in.
   }
 
   void agreeAndContinue() {

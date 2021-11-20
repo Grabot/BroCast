@@ -23,7 +23,10 @@ import 'bro_settings.dart';
 import 'broup_messaging.dart';
 
 class BroCastHome extends StatefulWidget {
-  BroCastHome({Key key}) : super(key: key);
+  BroCastHome(
+      {
+        required Key key
+      }) : super(key: key);
 
   @override
   _BroCastHomeState createState() => _BroCastHomeState();
@@ -44,13 +47,18 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
   TextEditingController bromotionController = new TextEditingController();
   TextEditingController broNameController = new TextEditingController();
 
+  DateTime? lastPressed;
+
   Widget broList() {
     return shownBros.isNotEmpty
         ? ListView.builder(
             shrinkWrap: true,
             itemCount: shownBros.length,
             itemBuilder: (context, index) {
-              return BroTile(chat: shownBros[index]);
+              return BroTile(
+                key: UniqueKey(),
+                chat: shownBros[index]
+              );
             })
         : Container();
   }
@@ -145,7 +153,7 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
     searchBros(Settings.instance.getToken());
     joinRoomSolo(Settings.instance.getBroId());
 
-    WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance!.addObserver(this);
   }
 
   bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
@@ -349,7 +357,7 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
 
   @override
   void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
+    WidgetsBinding.instance!.removeObserver(this);
     super.dispose();
   }
 
@@ -362,74 +370,65 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
     }
   }
 
-  void goToDifferentChat(Chat chatBro) {
-    if (mounted) {
-      if (chatBro.isBroup()) {
-        Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (context) => BroupMessaging(chat: chatBro)));
-      } else {
-        Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (context) => BroMessaging(chat: chatBro)));
-      }
-    }
-  }
-
-  Widget appBarHome(BuildContext context) {
-    return AppBar(
-        leading: searchMode ? IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
-            onPressed: () {
-              backButtonFunctionality();
-            }
-        ) : Container(),
-        title:
-            Container(alignment: Alignment.centerLeft, child: Text("Brocast")),
-        actions: [
-          searchMode ? IconButton(
-            icon: Icon(Icons.search_off, color: Colors.white),
-            onPressed: () {
-              setState(() {
-                searchMode = false;
-              });
-            }
-          ) : IconButton(
-              icon: Icon(Icons.search, color: Colors.white),
+  PreferredSize appBarHome(BuildContext context) {
+    return PreferredSize(
+      preferredSize: const Size.fromHeight(100),
+      child: AppBar(
+          leading: searchMode ? IconButton(
+            icon: Icon(Icons.arrow_back, color: Colors.white),
+              onPressed: () {
+                backButtonFunctionality();
+              }
+          ) : Container(),
+          title:
+              Container(alignment: Alignment.centerLeft, child: Text("Brocast")),
+          actions: [
+            searchMode ? IconButton(
+              icon: Icon(Icons.search_off, color: Colors.white),
               onPressed: () {
                 setState(() {
-                  searchMode = true;
+                  searchMode = false;
                 });
               }
-          ),
-          PopupMenuButton<int>(
-              onSelected: (item) => onSelect(context, item),
-              itemBuilder: (context) => [
-                    PopupMenuItem<int>(value: 0, child: Text("Profile")),
-                    PopupMenuItem<int>(value: 1, child: Text("Settings")),
-                    PopupMenuItem<int>(value: 2, child: Text("Exit Brocast")),
-                    PopupMenuItem<int>(
-                        value: 3,
-                        child: Row(children: [
-                          Icon(Icons.logout, color: Colors.black),
-                          SizedBox(width: 8),
-                          Text("Log Out")
-                        ]))
-                  ])
-        ]);
+            ) : IconButton(
+                icon: Icon(Icons.search, color: Colors.white),
+                onPressed: () {
+                  setState(() {
+                    searchMode = true;
+                  });
+                }
+            ),
+            PopupMenuButton<int>(
+                onSelected: (item) => onSelect(context, item),
+                itemBuilder: (context) => [
+                      PopupMenuItem<int>(value: 0, child: Text("Profile")),
+                      PopupMenuItem<int>(value: 1, child: Text("Settings")),
+                      PopupMenuItem<int>(value: 2, child: Text("Exit Brocast")),
+                      PopupMenuItem<int>(
+                          value: 3,
+                          child: Row(children: [
+                            Icon(Icons.logout, color: Colors.black),
+                            SizedBox(width: 8),
+                            Text("Log Out")
+                          ]))
+                    ])
+          ]),
+    );
   }
 
   void onSelect(BuildContext context, int item) {
     switch (item) {
       case 0:
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => BroProfile()));
+            context, MaterialPageRoute(builder: (context) => BroProfile(
+          key: UniqueKey()
+        )));
         break;
       case 1:
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => BroSettings()));
+            context, MaterialPageRoute(builder: (context) => BroSettings(
+          key: UniqueKey()
+        )));
         break;
       case 2:
         leaveRoomSolo();
@@ -452,8 +451,6 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
     }
   }
 
-  DateTime lastPressed;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -463,7 +460,7 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
           final now = DateTime.now();
           final maxDuration = Duration(seconds: 2);
           final isWarning =
-              lastPressed == null || now.difference(lastPressed) > maxDuration;
+              lastPressed == null || now.difference(lastPressed!) > maxDuration;
 
           if (isWarning) {
             lastPressed = DateTime.now();
@@ -491,7 +488,9 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
               child: InkWell(
                 onTap: () {
                   Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (context) => BroProfile()));
+                      MaterialPageRoute(builder: (context) => BroProfile(
+                        key: UniqueKey()
+                      )));
                 },
                 child: Container(
                     color: Color(0x8b2d69a3),
@@ -560,7 +559,9 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
         child: Icon(Icons.person_add),
         onPressed: () {
           Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) => FindBros()));
+              context, MaterialPageRoute(builder: (context) => FindBros(
+            key: UniqueKey()
+          )));
         },
       ),
     );
@@ -570,7 +571,11 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
 class BroTile extends StatefulWidget {
   final Chat chat;
 
-  BroTile({Key key, this.chat}) : super(key: key);
+  BroTile(
+      {
+        required Key key,
+        required this.chat
+      }) : super(key: key);
 
   @override
   _BroTileState createState() => _BroTileState();
@@ -581,16 +586,17 @@ class _BroTileState extends State<BroTile> {
   var _tapPosition;
 
   selectBro(BuildContext context) {
+    // TODO: @Skools fix transition, not correct type?!?!
     if (widget.chat is BroBros) {
-      Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (context) => BroMessaging(chat: widget.chat)));
+      // Navigator.pushReplacement(
+      //     context,
+      //     MaterialPageRoute(
+      //         builder: (context) => BroMessaging(chat: widget.chat)));
     } else {
-      Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (context) => BroupMessaging(chat: widget.chat)));
+      // Navigator.pushReplacement(
+      //     context,
+      //     MaterialPageRoute(
+      //         builder: (context) => BroupMessaging(chat: widget.chat)));
     }
   }
 
@@ -740,8 +746,10 @@ class _BroTileState extends State<BroTile> {
                             Radio<int>(
                                 value: index,
                                 groupValue: selectedRadio,
-                                onChanged: (int value) {
-                                  setState(() => selectedRadio = value);
+                                onChanged: (int? value) {
+                                  if (value != null) {
+                                    setState(() => selectedRadio = value);
+                                  }
                                 }
                             ),
                             index == 0 ? Container(
@@ -825,39 +833,43 @@ class _BroTileState extends State<BroTile> {
 
   void _showChatDetailPopupMenu() {
     final RenderBox overlay = Overlay
-        .of(context)
+        .of(context)!
         .context
-        .findRenderObject();
+        .findRenderObject() as RenderBox;
 
-      showMenu(
-          context: context,
-          items: [
-            ChatDetailPopup(chat: widget.chat)
-          ],
-          position: RelativeRect.fromRect(
-              _tapPosition & const Size(40, 40),
-              Offset.zero & overlay.size
+    showMenu(
+        context: context,
+        items: [
+          ChatDetailPopup(
+            key: UniqueKey(),
+            chat: widget.chat
           )
-      ).then((int delta) {
-        if (delta == 1) {
-          if (widget.chat.isBroup()) {
-            Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => BroupMessaging(chat: widget.chat)));
-          } else {
-            Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => BroMessaging(chat: widget.chat)));
-          }
-        } else if (delta == 2) {
-          showDialogMuteChat(context);
-        } else if (delta == 3) {
-          showDialogUnMuteChat(context);
-        }
-        return;
-      });
+        ],
+        position: RelativeRect.fromRect(
+            _tapPosition & const Size(40, 40),
+            Offset.zero & overlay.size
+        )
+    ).then((int? delta) {
+      if (delta == 1) {
+        // TODO: @Skools fix transition, not correct type?!?!
+        // if (widget.chat.isBroup()) {
+        //   Navigator.pushReplacement(
+        //       context,
+        //       MaterialPageRoute(
+        //           builder: (context) => BroupMessaging(chat: widget.chat)));
+        // } else {
+        //   Navigator.pushReplacement(
+        //       context,
+        //       MaterialPageRoute(
+        //           builder: (context) => BroMessaging(chat: widget.chat)));
+        // }
+      } else if (delta == 2) {
+        showDialogMuteChat(context);
+      } else if (delta == 3) {
+        showDialogUnMuteChat(context);
+      }
+      return;
+    });
   }
 
   void _storePosition(TapDownDetails details) {
@@ -868,10 +880,13 @@ class ChatDetailPopup extends PopupMenuEntry<int> {
 
   final Chat chat;
 
-  ChatDetailPopup({Key key, this.chat}) : super(key: key);
+  ChatDetailPopup({
+    required Key key,
+    required this.chat
+  }) : super(key: key);
 
   @override
-  bool represents(int n) => n == 1 || n == -1;
+  bool represents(int? n) => n == 1 || n == -1;
 
   @override
   ChatDetailPopupState createState() => ChatDetailPopupState();

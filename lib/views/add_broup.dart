@@ -19,7 +19,10 @@ import 'bro_profile.dart';
 import 'bro_settings.dart';
 
 class AddBroup extends StatefulWidget {
-  AddBroup({Key key}) : super(key: key);
+  AddBroup(
+      {
+        required Key key
+      }) : super(key: key);
 
   @override
   _AddBroupState createState() => _AddBroupState();
@@ -49,7 +52,7 @@ class _AddBroupState extends State<AddBroup> with WidgetsBindingObserver {
     super.initState();
     bromotionController.addListener(bromotionListener);
     initSockets();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
       List<Chat> broBros = BroList.instance.getBros();
       if (broBros.isEmpty) {
         searchBros(Settings.instance.getToken());
@@ -68,7 +71,7 @@ class _AddBroupState extends State<AddBroup> with WidgetsBindingObserver {
         });
       }
     });
-    WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance!.addObserver(this);
     BackButtonInterceptor.add(myInterceptor);
   }
 
@@ -86,7 +89,7 @@ class _AddBroupState extends State<AddBroup> with WidgetsBindingObserver {
   broupWasAdded() {
     if (mounted) {
       Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => BroCastHome()));
+          context, MaterialPageRoute(builder: (context) => BroCastHome(key: UniqueKey())));
     }
   }
 
@@ -161,30 +164,34 @@ class _AddBroupState extends State<AddBroup> with WidgetsBindingObserver {
     return true;
   }
 
-  Widget appBarFindBros(BuildContext context) {
-    return AppBar(
-        leading: IconButton(
-            icon: Icon(Icons.arrow_back, color: Colors.white),
-            onPressed: () {
-              backButtonFunctionality();
-            }),
-        title: Container(
-            alignment: Alignment.centerLeft, child: Text("Create new Broup")),
-        actions: [
-          PopupMenuButton<int>(
-              onSelected: (item) => onSelect(context, item),
-              itemBuilder: (context) => [
-                    PopupMenuItem<int>(value: 0, child: Text("Profile")),
-                    PopupMenuItem<int>(value: 1, child: Text("Settings")),
-                    PopupMenuItem<int>(
-                        value: 2,
-                        child: Row(children: [
-                          Icon(Icons.logout, color: Colors.black),
-                          SizedBox(width: 8),
-                          Text("Log Out")
-                        ]))
-                  ])
-        ]);
+  PreferredSize appBarFindBros(BuildContext context) {
+    // TODO: @Skools check app bar size, does it still look normal?
+    return PreferredSize(
+      preferredSize: const Size.fromHeight(100),
+      child: AppBar(
+          leading: IconButton(
+              icon: Icon(Icons.arrow_back, color: Colors.white),
+              onPressed: () {
+                backButtonFunctionality();
+              }),
+          title: Container(
+              alignment: Alignment.centerLeft, child: Text("Create new Broup")),
+          actions: [
+            PopupMenuButton<int>(
+                onSelected: (item) => onSelect(context, item),
+                itemBuilder: (context) => [
+                      PopupMenuItem<int>(value: 0, child: Text("Profile")),
+                      PopupMenuItem<int>(value: 1, child: Text("Settings")),
+                      PopupMenuItem<int>(
+                          value: 2,
+                          child: Row(children: [
+                            Icon(Icons.logout, color: Colors.black),
+                            SizedBox(width: 8),
+                            Text("Log Out")
+                          ]))
+                    ])
+          ]),
+    );
   }
 
   bromotionListener() {
@@ -206,7 +213,7 @@ class _AddBroupState extends State<AddBroup> with WidgetsBindingObserver {
       });
     } else {
       Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => BroCastHome()));
+          context, MaterialPageRoute(builder: (context) => BroCastHome(key: UniqueKey())));
     }
   }
 
@@ -214,11 +221,15 @@ class _AddBroupState extends State<AddBroup> with WidgetsBindingObserver {
     switch (item) {
       case 0:
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => BroProfile()));
+            context, MaterialPageRoute(builder: (context) => BroProfile(
+          key: UniqueKey()
+        )));
         break;
       case 1:
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => BroSettings()));
+            context, MaterialPageRoute(builder: (context) => BroSettings(
+          key: UniqueKey()
+        )));
         break;
       case 2:
         HelperFunction.logOutBro().then((value) {
@@ -367,7 +378,7 @@ class _AddBroupState extends State<AddBroup> with WidgetsBindingObserver {
                   checkColor: Colors.white,
                   fillColor: MaterialStateProperty.resolveWith(getColor),
                   value: shownBros[index].isSelected(),
-                  onChanged: (bool value) {
+                  onChanged: (bool? value) {
                     selectBro(shownBros[index]);
                   },
                 ),
@@ -460,7 +471,7 @@ class _AddBroupState extends State<AddBroup> with WidgetsBindingObserver {
     for (Chat partici in broupParticipants) {
       participants.add(partici.id);
     }
-    if (broupValidator.currentState.validate()) {
+    if (broupValidator.currentState!.validate()) {
       if (SocketServices.instance.socket.connected) {
         SocketServices.instance.socket.emit("message_event_add_broup",
             {
@@ -506,7 +517,7 @@ class _AddBroupState extends State<AddBroup> with WidgetsBindingObserver {
                         controller: broupNameController,
                         key: broupValidator,
                         validator: (val) {
-                          if (val.isEmpty || val.trimRight().isEmpty) {
+                          if (val == null || val.isEmpty || val.trimRight().isEmpty) {
                             return "Please provide a Broup name";
                           }
                           if (broupParticipants.length <= 1) {
@@ -608,8 +619,8 @@ class _AddBroupState extends State<AddBroup> with WidgetsBindingObserver {
 
 class BroAddBroup {
 
-  bool selected;
-  Chat broBros;
+  late bool selected;
+  late Chat broBros;
 
   BroAddBroup(bool selected, Chat broBros) {
     this.selected = selected;

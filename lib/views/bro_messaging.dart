@@ -16,12 +16,15 @@ import 'package:intl/intl.dart';
 import 'bro_chat_details.dart';
 import 'bro_profile.dart';
 import 'bro_settings.dart';
-import 'broup_messaging.dart';
 
 class BroMessaging extends StatefulWidget {
   final Chat chat;
 
-  BroMessaging({Key key, this.chat}) : super(key: key);
+  BroMessaging(
+      {
+        required Key key,
+        required this.chat
+      }) : super(key: key);
 
   @override
   _BroMessagingState createState() => _BroMessagingState();
@@ -29,10 +32,11 @@ class BroMessaging extends StatefulWidget {
 
 class _BroMessagingState extends State<BroMessaging>
     with WidgetsBindingObserver {
-  bool isLoading;
+  bool isLoading = false;
   GetMessages get = new GetMessages();
 
   bool showEmojiKeyboard = false;
+  int amountViewed = 1;
 
   FocusNode focusAppendText = FocusNode();
   FocusNode focusEmojiTextField = FocusNode();
@@ -44,18 +48,14 @@ class _BroMessagingState extends State<BroMessaging>
       new TextEditingController();
   final formKey = GlobalKey<FormState>();
 
-  // SocketServices socket;
   List<Message> messages = [];
 
-  Chat chat;
+  late Chat chat;
 
-  int amountViewed;
   @override
   void initState() {
     super.initState();
     chat = widget.chat;
-    isLoading = false;
-    amountViewed = 1;
     if (chat.getColor() != null) {
       getMessages(amountViewed);
     } else {
@@ -72,7 +72,7 @@ class _BroMessagingState extends State<BroMessaging>
       });
     }
     joinRoom(Settings.instance.getBroId(), chat.id);
-    WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance!.addObserver(this);
     BackButtonInterceptor.add(myInterceptor);
 
     messageScrollController.addListener(() {
@@ -196,22 +196,6 @@ class _BroMessagingState extends State<BroMessaging>
     }
     BackButtonInterceptor.remove(myInterceptor);
     super.dispose();
-  }
-
-  void goToDifferentChat(Chat chatBro) {
-    if (mounted) {
-      if (chatBro.isBroup()) {
-        Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (context) => BroupMessaging(chat: chatBro)));
-      } else {
-        Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (context) => BroMessaging(chat: chatBro)));
-      }
-    }
   }
 
   bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
@@ -347,7 +331,7 @@ class _BroMessagingState extends State<BroMessaging>
   }
 
   sendMessage() {
-    if (formKey.currentState.validate()) {
+    if (formKey.currentState!.validate()) {
       String message = broMessageController.text;
       String textMessage = appendTextMessageController.text;
       // We add the message already as being send.
@@ -431,8 +415,10 @@ class _BroMessagingState extends State<BroMessaging>
             controller: messageScrollController,
             itemBuilder: (context, index) {
               return MessageTile(
-                  message: messages[index],
-                  myMessage: messages[index].recipientId == chat.id);
+                key: UniqueKey(),
+                message: messages[index],
+                myMessage: messages[index].recipientId == chat.id
+              );
             })
         : Container();
   }
@@ -463,53 +449,61 @@ class _BroMessagingState extends State<BroMessaging>
     } else {
       leaveRoom();
       Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => BroCastHome()));
+          context, MaterialPageRoute(builder: (context) => BroCastHome(
+        key: UniqueKey()
+      )));
     }
   }
 
-  Widget appBarChat() {
-    return AppBar(
-        leading: IconButton(
-            icon: Icon(Icons.arrow_back, color: getTextColor(chat.getColor())),
-            onPressed: () {
-              backButtonFunctionality();
-            }),
-        backgroundColor:
-            chat.getColor() != null ? chat.getColor() : Color(0xff145C9E),
-        title: InkWell(
-          onTap: () {
-            Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => BroChatDetails(chat: chat)));
-          },
-          child: Container(
-              alignment: Alignment.centerLeft,
-              color: Colors.transparent,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  chat.alias != null && chat.alias.isNotEmpty
-                      ? Container(
-                      child: Text(chat.alias,
-                          style: TextStyle(
-                              color: getTextColor(chat.getColor()), fontSize: 20)))
-                      : Container(
-                      child: Text(chat.chatName,
-                          style: TextStyle(
-                              color: getTextColor(chat.getColor()), fontSize: 20))),
-                ],
-              )),
-        ),
-        actions: [
-          PopupMenuButton<int>(
-              onSelected: (item) => onSelectChat(context, item),
-              itemBuilder: (context) => [
-                    PopupMenuItem<int>(value: 0, child: Text("Profile")),
-                    PopupMenuItem<int>(value: 1, child: Text("Settings")),
-                    PopupMenuItem<int>(value: 2, child: Text("Chat details")),
-                  ])
-        ]);
+  PreferredSize appBarChat() {
+    return PreferredSize(
+      preferredSize: const Size.fromHeight(100),
+      child: AppBar(
+          leading: IconButton(
+              icon: Icon(Icons.arrow_back, color: getTextColor(chat.getColor())),
+              onPressed: () {
+                backButtonFunctionality();
+              }),
+          backgroundColor:
+              chat.getColor() != null ? chat.getColor() : Color(0xff145C9E),
+          title: InkWell(
+            onTap: () {
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => BroChatDetails(
+                        key: UniqueKey(),
+                        chat: chat
+                      )));
+            },
+            child: Container(
+                alignment: Alignment.centerLeft,
+                color: Colors.transparent,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    chat.alias != null && chat.alias.isNotEmpty
+                        ? Container(
+                        child: Text(chat.alias,
+                            style: TextStyle(
+                                color: getTextColor(chat.getColor()), fontSize: 20)))
+                        : Container(
+                        child: Text(chat.chatName,
+                            style: TextStyle(
+                                color: getTextColor(chat.getColor()), fontSize: 20))),
+                  ],
+                )),
+          ),
+          actions: [
+            PopupMenuButton<int>(
+                onSelected: (item) => onSelectChat(context, item),
+                itemBuilder: (context) => [
+                      PopupMenuItem<int>(value: 0, child: Text("Profile")),
+                      PopupMenuItem<int>(value: 1, child: Text("Settings")),
+                      PopupMenuItem<int>(value: 2, child: Text("Chat details")),
+                    ])
+          ]),
+    );
   }
 
   void onSelectChat(BuildContext context, int item) {
@@ -517,18 +511,25 @@ class _BroMessagingState extends State<BroMessaging>
       case 0:
         leaveRoom();
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => BroProfile()));
+            context, MaterialPageRoute(builder: (context) => BroProfile(
+          key: UniqueKey()
+        )));
         break;
       case 1:
         leaveRoom();
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => BroSettings()));
+            context, MaterialPageRoute(builder: (context) => BroSettings(
+          key: UniqueKey()
+        )));
         break;
       case 2:
         Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-                builder: (context) => BroChatDetails(chat: chat)));
+                builder: (context) => BroChatDetails(
+                  key: UniqueKey(),
+                  chat: chat
+                )));
         break;
     }
   }
@@ -591,7 +592,7 @@ class _BroMessagingState extends State<BroMessaging>
                                 child: TextFormField(
                                   focusNode: focusEmojiTextField,
                                   validator: (val) {
-                                    if (val.isEmpty || val.trimRight().isEmpty) {
+                                    if (val == null || val.isEmpty || val.trimRight().isEmpty) {
                                       return "Can't send an empty message";
                                     }
                                     if (chat.isBlocked()) {
@@ -697,7 +698,12 @@ class MessageTile extends StatefulWidget {
   final Message message;
   final bool myMessage;
 
-  MessageTile({Key key, this.message, this.myMessage}) : super(key: key);
+  MessageTile(
+      {
+        required Key key,
+        required this.message,
+        required this.myMessage
+      }) : super(key: key);
 
   @override
   _MessageTileState createState() => _MessageTileState();

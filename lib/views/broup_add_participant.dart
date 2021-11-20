@@ -9,15 +9,19 @@ import 'package:brocast/utils/bro_list.dart';
 import 'package:brocast/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 import 'bro_profile.dart';
 import 'bro_settings.dart';
 import 'broup_details.dart';
 
+
 class BroupAddParticipant extends StatefulWidget {
   final Broup chat;
 
-  BroupAddParticipant({Key key, this.chat}) : super(key: key);
+  BroupAddParticipant(
+      {
+        required Key key,
+        required this.chat
+      }) : super(key: key);
 
   @override
   _BroupAddParticipantState createState() => _BroupAddParticipantState();
@@ -32,9 +36,9 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> with WidgetsB
   List<BroupAddBro> bros = [];
   List<BroupAddBro> shownBros = [];
 
-  Broup chat;
+  late Broup chat;
 
-  BroAdded broToBeAddedToBroup;
+  BroAdded? broToBeAddedToBroup;
 
   TextEditingController bromotionController = new TextEditingController();
   TextEditingController broNameController = new TextEditingController();
@@ -43,9 +47,9 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> with WidgetsB
   void initState() {
     super.initState();
     chat = widget.chat;
-    broToBeAddedToBroup = null;
+
     bromotionController.addListener(bromotionListener);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
       List<Chat> broBros = BroList.instance.getBros();
       bros.clear();
       shownBros.clear();
@@ -66,7 +70,7 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> with WidgetsB
       });
     });
     initSockets();
-    WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance!.addObserver(this);
     BackButtonInterceptor.add(myInterceptor);
   }
 
@@ -95,10 +99,13 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> with WidgetsB
           chat.setChatName(newChat["broup_name"]);
 
           if (broToBeAddedToBroup != null) {
-            chat.addBro(broToBeAddedToBroup);
+            chat.addBro(broToBeAddedToBroup!);
             Navigator.pushReplacement(
                 context, MaterialPageRoute(
-                builder: (context) => BroupDetails(chat: chat)));
+                builder: (context) => BroupDetails(
+                  key: UniqueKey(),
+                  chat: chat
+                )));
           } else {
             print("error while adding bro to broup! This should not happen!");
           }
@@ -203,54 +210,67 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> with WidgetsB
       Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-              builder: (context) => BroupDetails(chat: chat)));
+              builder: (context) => BroupDetails(
+                key: UniqueKey(),
+                chat: chat
+              )));
     }
   }
 
-  Widget appBarAddBroupParticipants() {
-    return AppBar(
-        leading: IconButton(
-            icon: Icon(Icons.arrow_back, color: getTextColor(chat.getColor())),
-            onPressed: () {
-              backButtonFunctionality();
-            }),
-        backgroundColor:
-        chat.getColor() != null ? chat.getColor() : Color(0xff145C9E),
-        title: Column(
-            children: [
-                  Container(
-                  child: Text("Add participants",
-                      style: TextStyle(
-                          color: getTextColor(chat.getColor()), fontSize: 20)))
+  PreferredSize appBarAddBroupParticipants() {
+    return PreferredSize(
+      preferredSize: const Size.fromHeight(100),
+      child: AppBar(
+          leading: IconButton(
+              icon: Icon(Icons.arrow_back, color: getTextColor(chat.getColor())),
+              onPressed: () {
+                backButtonFunctionality();
+              }),
+          backgroundColor:
+          chat.getColor() != null ? chat.getColor() : Color(0xff145C9E),
+          title: Column(
+              children: [
+                    Container(
+                    child: Text("Add participants",
+                        style: TextStyle(
+                            color: getTextColor(chat.getColor()), fontSize: 20)))
 
-            ]
-        ),
-        actions: [
-          PopupMenuButton<int>(
-              onSelected: (item) => onSelectBroupAddParticipant(context, item),
-              itemBuilder: (context) => [
-                PopupMenuItem<int>(value: 0, child: Text("Profile")),
-                PopupMenuItem<int>(value: 1, child: Text("Settings")),
-                PopupMenuItem<int>(value: 2, child: Text("Back to broup details")),
-              ])
-        ]);
+              ]
+          ),
+          actions: [
+            PopupMenuButton<int>(
+                onSelected: (item) => onSelectBroupAddParticipant(context, item),
+                itemBuilder: (context) => [
+                  PopupMenuItem<int>(value: 0, child: Text("Profile")),
+                  PopupMenuItem<int>(value: 1, child: Text("Settings")),
+                  PopupMenuItem<int>(value: 2, child: Text("Back to broup details")),
+                ])
+          ]),
+    );
   }
 
   void onSelectBroupAddParticipant(BuildContext context, int item) {
     switch (item) {
       case 0:
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => BroProfile()));
+            context, MaterialPageRoute(builder: (context) => BroProfile(
+          key: UniqueKey()
+        )));
         break;
       case 1:
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => BroSettings()));
+            context, MaterialPageRoute(builder: (context) => BroSettings(
+          key: UniqueKey()
+        )));
         break;
       case 2:
         Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-                builder: (context) => BroupDetails(chat: chat)));
+                builder: (context) => BroupDetails(
+                  key: UniqueKey(),
+                  chat: chat
+                )));
         break;
     }
   }
@@ -328,7 +348,8 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> with WidgetsB
 
   void selectBro(BroupAddBro broAddBroup) {
     if (!broAddBroup.alreadyInBroup) {
-      showDialogAddParticipant(context, broAddBroup.broBros);
+      // TODO: @Skools type niet goed?! Check dit
+      // showDialogAddParticipant(context, broAddBroup.broBros);
     }
   }
 
@@ -459,9 +480,9 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> with WidgetsB
 
 class BroupAddBro {
 
-  bool selected;
-  bool alreadyInBroup;
-  Chat broBros;
+  late bool selected;
+  late bool alreadyInBroup;
+  late Chat broBros;
 
   BroupAddBro(bool selected, bool alreadyInBroup, Chat broBros) {
     this.selected = selected;

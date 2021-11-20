@@ -9,18 +9,19 @@ import 'package:brocast/utils/bro_list.dart';
 import 'package:brocast/utils/shared.dart';
 import 'package:brocast/utils/utils.dart';
 import 'package:brocast/views/bro_home.dart';
-import 'package:brocast/views/bro_messaging.dart';
 import 'package:brocast/views/signin.dart';
 import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
 import 'package:flutter/material.dart';
-
 import 'add_broup.dart';
 import 'bro_profile.dart';
 import 'bro_settings.dart';
-import 'broup_messaging.dart';
+
 
 class FindBros extends StatefulWidget {
-  FindBros({Key key}) : super(key: key);
+  FindBros(
+      {
+        required Key key
+      }) : super(key: key);
 
   @override
   _FindBrosState createState() => _FindBrosState();
@@ -45,7 +46,7 @@ class _FindBrosState extends State<FindBros> with WidgetsBindingObserver {
     super.initState();
     bromotionController.addListener(bromotionListener);
     initSockets();
-    WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance!.addObserver(this);
     BackButtonInterceptor.add(myInterceptor);
   }
 
@@ -104,7 +105,9 @@ class _FindBrosState extends State<FindBros> with WidgetsBindingObserver {
   broWasAdded() {
     if (mounted) {
       Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => BroCastHome()));
+          context, MaterialPageRoute(builder: (context) => BroCastHome(
+        key: UniqueKey()
+      )));
     }
   }
 
@@ -142,7 +145,7 @@ class _FindBrosState extends State<FindBros> with WidgetsBindingObserver {
 
   void addGroup() {
     Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => AddBroup()));
+        context, MaterialPageRoute(builder: (context) => AddBroup(key: UniqueKey())));
   }
 
   @override
@@ -165,24 +168,8 @@ class _FindBrosState extends State<FindBros> with WidgetsBindingObserver {
     }
   }
 
-  void goToDifferentChat(Chat chatBro) {
-    if (mounted) {
-      if (chatBro.isBroup()) {
-        Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (context) => BroupMessaging(chat: chatBro)));
-      } else {
-        Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (context) => BroMessaging(chat: chatBro)));
-      }
-    }
-  }
-
   searchBros() {
-    if (formFieldKey.currentState.validate()) {
+    if (formFieldKey.currentState!.validate()) {
       setState(() {
         isSearching = true;
       });
@@ -223,45 +210,54 @@ class _FindBrosState extends State<FindBros> with WidgetsBindingObserver {
       });
     } else {
       Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => BroCastHome()));
+          context, MaterialPageRoute(builder: (context) => BroCastHome(
+        key: UniqueKey()
+      )));
     }
   }
 
-  Widget appBarFindBros(BuildContext context) {
-    return AppBar(
-        leading: IconButton(
-            icon: Icon(Icons.arrow_back, color: Colors.white),
-            onPressed: () {
-              backButtonFunctionality();
-            }),
-        title: Container(
-            alignment: Alignment.centerLeft, child: Text("Add new bros")),
-        actions: [
-          PopupMenuButton<int>(
-              onSelected: (item) => onSelect(context, item),
-              itemBuilder: (context) => [
-                    PopupMenuItem<int>(value: 0, child: Text("Profile")),
-                    PopupMenuItem<int>(value: 1, child: Text("Settings")),
-                    PopupMenuItem<int>(
-                        value: 2,
-                        child: Row(children: [
-                          Icon(Icons.logout, color: Colors.black),
-                          SizedBox(width: 8),
-                          Text("Log Out")
-                        ]))
-                  ])
-        ]);
+  PreferredSize appBarFindBros(BuildContext context) {
+    return PreferredSize(
+      preferredSize: const Size.fromHeight(100),
+      child: AppBar(
+          leading: IconButton(
+              icon: Icon(Icons.arrow_back, color: Colors.white),
+              onPressed: () {
+                backButtonFunctionality();
+              }),
+          title: Container(
+              alignment: Alignment.centerLeft, child: Text("Add new bros")),
+          actions: [
+            PopupMenuButton<int>(
+                onSelected: (item) => onSelect(context, item),
+                itemBuilder: (context) => [
+                      PopupMenuItem<int>(value: 0, child: Text("Profile")),
+                      PopupMenuItem<int>(value: 1, child: Text("Settings")),
+                      PopupMenuItem<int>(
+                          value: 2,
+                          child: Row(children: [
+                            Icon(Icons.logout, color: Colors.black),
+                            SizedBox(width: 8),
+                            Text("Log Out")
+                          ]))
+                    ])
+          ]),
+    );
   }
 
   void onSelect(BuildContext context, int item) {
     switch (item) {
       case 0:
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => BroProfile()));
+            context, MaterialPageRoute(builder: (context) => BroProfile(
+            key: UniqueKey()
+        )));
         break;
       case 1:
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => BroSettings()));
+            context, MaterialPageRoute(builder: (context) => BroSettings(
+            key: UniqueKey()
+        )));
         break;
       case 2:
         HelperFunction.logOutBro().then((value) {
@@ -334,7 +330,7 @@ class _FindBrosState extends State<FindBros> with WidgetsBindingObserver {
                         onTapTextField();
                       },
                       validator: (val) {
-                        return val.isEmpty ? "Please provide a bro name" : null;
+                        return val == null || val.isEmpty ? "Please provide a bro name" : null;
                       },
                       controller: broNameController,
                       textAlign: TextAlign.center,

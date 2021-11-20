@@ -15,12 +15,16 @@ import 'bro_home.dart';
 import 'bro_messaging.dart';
 import 'bro_profile.dart';
 import 'bro_settings.dart';
-import 'broup_messaging.dart';
+
 
 class BroChatDetails extends StatefulWidget {
   final Chat chat;
 
-  BroChatDetails({Key key, this.chat}) : super(key: key);
+  BroChatDetails(
+      {
+        required Key key,
+        required this.chat
+      }) : super(key: key);
 
   @override
   _BroChatDetailsState createState() => _BroChatDetailsState();
@@ -36,14 +40,14 @@ class _BroChatDetailsState extends State<BroChatDetails>
   bool changeColour = false;
   bool showNotification = true;
 
-  CircleColorPickerController circleColorPickerController;
+  late CircleColorPickerController circleColorPickerController;
 
-  BlockBro blockBro;
-  ReportBro reportBro;
-  RemoveBro removeBro;
+  BlockBro blockBro = new BlockBro();
+  ReportBro reportBro = new ReportBro();
+  RemoveBro removeBro = new RemoveBro();
 
-  Color currentColor;
-  Color previousColor;
+  late Color currentColor;
+  Color? previousColor;
 
   FocusNode focusNodeDescription = new FocusNode();
   FocusNode focusNodeAlias = new FocusNode();
@@ -51,7 +55,7 @@ class _BroChatDetailsState extends State<BroChatDetails>
   String previousDescription = "";
   String previousAlias = "";
 
-  Chat chat;
+  late Chat chat;
 
   @override
   void initState() {
@@ -66,12 +70,9 @@ class _BroChatDetailsState extends State<BroChatDetails>
     circleColorPickerController = CircleColorPickerController(
       initialColor: chat.getColor(),
     );
-    currentColor = chat.getColor();
-    WidgetsBinding.instance.addObserver(this);
 
-    blockBro = new BlockBro();
-    reportBro = new ReportBro();
-    removeBro = new RemoveBro();
+    currentColor = chat.getColor();
+    WidgetsBinding.instance!.addObserver(this);
   }
 
   @override
@@ -164,7 +165,10 @@ class _BroChatDetailsState extends State<BroChatDetails>
       });
     } else {
       Navigator.pushReplacement(context,
-          MaterialPageRoute(builder: (context) => BroMessaging(chat: chat)));
+          MaterialPageRoute(builder: (context) => BroMessaging(
+            key: UniqueKey(),
+            chat: chat
+          )));
     }
   }
 
@@ -184,70 +188,64 @@ class _BroChatDetailsState extends State<BroChatDetails>
     super.dispose();
   }
 
-  void goToDifferentChat(Chat chatBro) {
-    if (mounted) {
-      if (chatBro.isBroup()) {
-        Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (context) => BroupMessaging(chat: chatBro)));
-      } else {
-        Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (context) => BroMessaging(chat: chatBro)));
-      }
-    }
-  }
-
-  Widget appBarChatDetails() {
-    return AppBar(
-        leading: IconButton(
-            icon: Icon(Icons.arrow_back, color: getTextColor(chat.getColor())),
-            onPressed: () {
-              backButtonFunctionality();
-            }),
-        backgroundColor:
-            chat.getColor() != null ? chat.getColor() : Color(0xff145C9E),
-        title: Column(
-            children: [
-              chat.alias != null && chat.alias.isNotEmpty
-                  ? Container(
-                  child: Text(chat.alias,
-                      style: TextStyle(
-                          color: getTextColor(chat.getColor()), fontSize: 20)))
-                  : Container(
-                  child: Text(chat.chatName,
-                      style: TextStyle(
-                          color: getTextColor(chat.getColor()), fontSize: 20))),
-            ]
-        ),
-        actions: [
-          PopupMenuButton<int>(
-              onSelected: (item) => onSelectChat(context, item),
-              itemBuilder: (context) => [
-                    PopupMenuItem<int>(value: 0, child: Text("Profile")),
-                    PopupMenuItem<int>(value: 1, child: Text("Settings")),
-                    PopupMenuItem<int>(value: 2, child: Text("Back to chat")),
-                  ])
-        ]);
+  PreferredSize appBarChatDetails() {
+    return PreferredSize(
+      preferredSize: const Size.fromHeight(100),
+      child: AppBar(
+          leading: IconButton(
+              icon: Icon(Icons.arrow_back, color: getTextColor(chat.getColor())),
+              onPressed: () {
+                backButtonFunctionality();
+              }),
+          backgroundColor:
+              chat.getColor() != null ? chat.getColor() : Color(0xff145C9E),
+          title: Column(
+              children: [
+                chat.alias != null && chat.alias.isNotEmpty
+                    ? Container(
+                    child: Text(chat.alias,
+                        style: TextStyle(
+                            color: getTextColor(chat.getColor()), fontSize: 20)))
+                    : Container(
+                    child: Text(chat.chatName,
+                        style: TextStyle(
+                            color: getTextColor(chat.getColor()), fontSize: 20))),
+              ]
+          ),
+          actions: [
+            PopupMenuButton<int>(
+                onSelected: (item) => onSelectChat(context, item),
+                itemBuilder: (context) => [
+                      PopupMenuItem<int>(value: 0, child: Text("Profile")),
+                      PopupMenuItem<int>(value: 1, child: Text("Settings")),
+                      PopupMenuItem<int>(value: 2, child: Text("Back to chat")),
+                    ])
+          ]),
+    );
   }
 
   void onSelectChat(BuildContext context, int item) {
     switch (item) {
       case 0:
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => BroProfile()));
+            context, MaterialPageRoute(builder: (context) => BroProfile(
+          key: UniqueKey()
+        )));
         break;
       case 1:
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => BroSettings()));
+            context, MaterialPageRoute(builder: (context) => BroSettings(
+          key: UniqueKey()
+        )));
         break;
       case 2:
         Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-                builder: (context) => BroMessaging(chat: chat)));
+                builder: (context) => BroMessaging(
+                  key: UniqueKey(),
+                  chat: chat
+                )));
         break;
     }
   }
@@ -345,7 +343,7 @@ class _BroChatDetailsState extends State<BroChatDetails>
     ).then((val) {
       if (val) {
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => BroCastHome()));
+            context, MaterialPageRoute(builder: (context) => BroCastHome(key: UniqueKey())));
       } else {
         if (val == "an unknown error has occurred") {
           ShowToastComponent.showDialog("An unknown error has occurred", context);
@@ -364,7 +362,7 @@ class _BroChatDetailsState extends State<BroChatDetails>
     ).then((val) {
       if (val) {
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => BroCastHome()));
+            context, MaterialPageRoute(builder: (context) => BroCastHome(key: UniqueKey())));
       } else {
         if (val == "an unknown error has occurred") {
           ShowToastComponent.showDialog("An unknown error has occurred", context);
@@ -422,8 +420,8 @@ class _BroChatDetailsState extends State<BroChatDetails>
   }
 
   void chatDetailUpdateFailed() {
-    currentColor = previousColor;
-    circleColorPickerController.color = previousColor;
+    currentColor = previousColor!;
+    circleColorPickerController.color = previousColor!;
     ShowToastComponent.showDialog("Updating the bro chat has failed", context);
   }
 
@@ -487,7 +485,7 @@ class _BroChatDetailsState extends State<BroChatDetails>
                       alignment: Alignment.center,
                       child:
                           Image.asset("assets/images/brocast_transparent.png")),
-                  chat.alias != null && chat.alias.isNotEmpty
+                  chat.alias.isNotEmpty
                   ? Column(
                     children: [
                       Container(
@@ -885,8 +883,10 @@ class _BroChatDetailsState extends State<BroChatDetails>
                             Radio<int>(
                                 value: index,
                                 groupValue: selectedRadio,
-                                onChanged: (int value) {
-                                  setState(() => selectedRadio = value);
+                                onChanged: (int? value) {
+                                  if (value != null) {
+                                    setState(() => selectedRadio = value);
+                                  }
                                 }
                             ),
                             index == 0 ? Container(

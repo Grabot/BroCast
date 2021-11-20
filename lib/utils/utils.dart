@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:toast/toast.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+
 
 InputDecoration textFieldInputDecoration(String hintText) {
   return InputDecoration(
@@ -21,11 +22,12 @@ TextStyle simpleTextStyle() {
 
 class ShowToastComponent {
   static showDialog(String msg, context) {
-    Toast.show(
-      msg,
-      context,
-      duration: Toast.LENGTH_LONG,
-      gravity: Toast.TOP,
+    Fluttertoast.showToast(
+      msg: msg,
+      toastLength: Toast.LENGTH_SHORT,
+      webBgColor: "#e74c3c",
+      textColor: Colors.black,
+      timeInSecForIosWeb: 5,
     );
   }
 }

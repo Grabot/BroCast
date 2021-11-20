@@ -36,7 +36,7 @@ class HelperFunction {
     return await preferences.setBool(eula, endUserLicenceAgreement);
   }
 
-  static Future<bool> setBroInformation(
+  static Future<bool?> setBroInformation(
       String broName, String bromotion, String broPassword) async {
     // We only update this information if a password is given.
     if (broPassword != null && broPassword != "") {
@@ -55,32 +55,32 @@ class HelperFunction {
     return await preferences.setStringList(broInformationKey, List.empty());
   }
 
-  static Future<String> getBroToken() async {
+  static Future<String?> getBroToken() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     return preferences.getString(broTokenKey);
   }
 
-  static Future<int> getBroId() async {
+  static Future<int?> getBroId() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     return preferences.getInt(broIdKey);
   }
 
-  static Future<bool> getKeyboardDarkMode() async {
+  static Future<bool?> getKeyboardDarkMode() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     return preferences.getBool(keyboardDarkMode);
   }
 
-  static Future<bool> getEULA() async {
+  static Future<bool?> getEULA() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     return preferences.getBool(eula);
   }
 
-  static Future<bool> getSound() async {
+  static Future<bool?> getSound() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     return preferences.getBool(soundKey);
   }
 
-  static Future<List<String>> getBroInformation() async {
+  static Future<List<String>?> getBroInformation() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     return preferences.getStringList(broInformationKey);
   }
