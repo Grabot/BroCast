@@ -165,9 +165,8 @@ class _AddBroupState extends State<AddBroup> with WidgetsBindingObserver {
   }
 
   PreferredSize appBarFindBros(BuildContext context) {
-    // TODO: @Skools check app bar size, does it still look normal?
     return PreferredSize(
-      preferredSize: const Size.fromHeight(100),
+      preferredSize: const Size.fromHeight(50),
       child: AppBar(
           leading: IconButton(
               icon: Icon(Icons.arrow_back, color: Colors.white),

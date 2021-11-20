@@ -219,7 +219,7 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> with WidgetsB
 
   PreferredSize appBarAddBroupParticipants() {
     return PreferredSize(
-      preferredSize: const Size.fromHeight(100),
+      preferredSize: const Size.fromHeight(50),
       child: AppBar(
           leading: IconButton(
               icon: Icon(Icons.arrow_back, color: getTextColor(chat.getColor())),

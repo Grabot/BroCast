@@ -385,7 +385,7 @@ class _BroupDetailsState extends State<BroupDetails>
 
   PreferredSize appBarChatDetails() {
     return PreferredSize(
-      preferredSize: const Size.fromHeight(100),
+      preferredSize: const Size.fromHeight(50),
       child: AppBar(
           leading: IconButton(
               icon: Icon(Icons.arrow_back, color: getTextColor(chat.getColor())),

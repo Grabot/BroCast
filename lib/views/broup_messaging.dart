@@ -359,6 +359,7 @@ class _BroupMessagingState extends State<BroupMessaging>
     }
 
     Message timeMessage = new Message(0, 0, 0, 0, timeMessageFirst, null, null);
+    timeMessage.informationTile = true;
     for (int i = 0; i < this.messages.length; i++) {
       DateTime current = this.messages[i].timestamp;
       DateTime dayMessage = DateTime(current.year, current.month, current.day);
@@ -376,6 +377,7 @@ class _BroupMessagingState extends State<BroupMessaging>
         }
         this.messages.insert(i, timeMessage);
         timeMessage = new Message(0, 0, 0, 0, timeMessageTile, null, null);
+        timeMessage.informationTile = true;
       }
     }
     this.messages.insert(this.messages.length, timeMessage);
@@ -384,7 +386,9 @@ class _BroupMessagingState extends State<BroupMessaging>
   updateDateTiles(Message message) {
     // If the day tiles need to be updated after sending a message it will be the today tile.
     if (this.messages.length == 0) {
-      this.messages.insert(0, new Message(0, 0, 0, 0, "Today", null, null));
+      Message timeMessage = new Message(0, 0, 0, 0, "Today", null, null);
+      timeMessage.informationTile = true;
+      this.messages.insert(0, timeMessage);
     } else {
       Message messageFirst = this.messages.first;
       DateTime dayFirst = DateTime(messageFirst.timestamp.year,
@@ -399,6 +403,7 @@ class _BroupMessagingState extends State<BroupMessaging>
         chatTimeTile = DateFormat.yMMMMd('en_US').format(dayMessage);
 
         Message timeMessage = new Message(0, 0, 0, 0, "Today", null, null);
+        timeMessage.informationTile = true;
         this.messages.insert(0, timeMessage);
       }
     }
@@ -573,7 +578,7 @@ class _BroupMessagingState extends State<BroupMessaging>
 
   PreferredSize appBarChat() {
     return PreferredSize(
-      preferredSize: const Size.fromHeight(100),
+      preferredSize: const Size.fromHeight(50),
       child: AppBar(
           leading: IconButton(
               icon: Icon(Icons.arrow_back, color: getTextColor(chat.getColor())),
@@ -839,8 +844,8 @@ class _MessageTileState extends State<MessageTile> {
 
   @override
   Widget build(BuildContext context) {
-    return widget.message.timestamp == null
-        ? // If the timestamp is null it is a date tile.
+    return widget.message.informationTile
+        ?
         Row(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,

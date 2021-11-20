@@ -1,7 +1,7 @@
 import 'dart:io';
-
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:brocast/objects/bro_bros.dart';
+import 'package:brocast/objects/broup.dart';
 import 'package:brocast/objects/chat.dart';
 import 'package:brocast/services/auth.dart';
 import 'package:brocast/services/get_bros.dart';
@@ -17,10 +17,10 @@ import 'package:brocast/views/signin.dart';
 import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
 import 'bro_profile.dart';
 import 'bro_settings.dart';
 import 'broup_messaging.dart';
+
 
 class BroCastHome extends StatefulWidget {
   BroCastHome(
@@ -372,7 +372,7 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
 
   PreferredSize appBarHome(BuildContext context) {
     return PreferredSize(
-      preferredSize: const Size.fromHeight(100),
+      preferredSize: const Size.fromHeight(50),
       child: AppBar(
           leading: searchMode ? IconButton(
             icon: Icon(Icons.arrow_back, color: Colors.white),
@@ -586,17 +586,22 @@ class _BroTileState extends State<BroTile> {
   var _tapPosition;
 
   selectBro(BuildContext context) {
-    // TODO: @Skools fix transition, not correct type?!?!
-    if (widget.chat is BroBros) {
-      // Navigator.pushReplacement(
-      //     context,
-      //     MaterialPageRoute(
-      //         builder: (context) => BroMessaging(chat: widget.chat)));
+    if (widget.chat.isBroup()) {
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => BroupMessaging(
+                  key: UniqueKey(),
+                  chat: widget.chat as Broup
+              )));
     } else {
-      // Navigator.pushReplacement(
-      //     context,
-      //     MaterialPageRoute(
-      //         builder: (context) => BroupMessaging(chat: widget.chat)));
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => BroMessaging(
+                  key: UniqueKey(),
+                  chat: widget.chat as BroBros
+              )));
     }
   }
 

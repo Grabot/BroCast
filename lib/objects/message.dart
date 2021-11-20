@@ -1,20 +1,21 @@
 class Message {
 
   late int id;
-  late int broBrosId;
+  int? broBrosId;
   late int senderId;
   late int recipientId;
   late String body;
   late String textMessage;
   late DateTime timestamp;
 
+  late bool informationTile;
   late bool isRead;
   late bool clicked;
 
-  Message(int id, int broBrosId, int senderId, int recipientId, String body,
+  Message(int id, int? broBrosId, int senderId, int recipientId, String body,
       String? textMessage, String? timestamp) {
     this.id = id;
-    this.broBrosId = broBrosId;
+    this.broBrosId = broBrosId; // TODO: @Skools wat doet dit? sender en recipient zijn genoeg lijkt mij
     this.senderId = senderId;
     this.recipientId = recipientId;
     this.body = body;
@@ -30,5 +31,6 @@ class Message {
     }
     isRead = false;
     clicked = false;
+    informationTile = false;
   }
 }

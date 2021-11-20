@@ -29,7 +29,7 @@ class GetMessages {
         for (var message in messageList) {
           Message mes = new Message(
               message["id"],
-              message["bro_bros_id"],
+              null,
               message["sender_id"],
               message["recipient_id"],
               message["body"],
