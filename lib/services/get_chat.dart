@@ -35,8 +35,8 @@ class GetChat {
             chat["unread_messages"],
             chat["last_time_activity"],
             chat["room_name"],
-            chat["blocked"],
-            chat["mute"],
+            chat["blocked"] ? 1 : 0,
+            chat["mute"] ? 1 : 0,
             0);
         return broBros;
       }
@@ -74,7 +74,7 @@ class GetChat {
             chat["last_time_activity"],
             chat["room_name"],
             0,
-            chat["mute"],
+            chat["mute"] ? 1 : 0,
             1);
         List<dynamic> broIds = chat["bro_ids"];
         List<int> broIdList = broIds.map((s) => s as int).toList();

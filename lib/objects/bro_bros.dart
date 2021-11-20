@@ -54,4 +54,31 @@ class BroBros extends Chat {
   bool isMuted() {
     return this.mute == 1;
   }
+
+  @override
+  setBlocked(bool blocked) {
+    if (blocked) {
+      this.blocked = 1;
+    } else {
+      this.blocked = 0;
+    }
+  }
+
+  @override
+  setBroup(bool broup) {
+    if (broup) {
+      this.broup = 1;
+    } else {
+      this.broup = 0;
+    }
+  }
+
+  @override
+  setMuted(bool muted) {
+    if (muted) {
+      this.mute = 1;
+    } else {
+      this.mute = 0;
+    }
+  }
 }

@@ -292,7 +292,7 @@ class _BroupDetailsState extends State<BroupDetails>
         bool result = data["result"];
         if (result) {
           setState(() {
-            chat.mute = data["mute"];
+            chat.setMuted(data["mute"]);
           });
         }
       }

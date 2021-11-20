@@ -34,8 +34,8 @@ class BlockBro {
             chatResponse["unread_messages"],
             chatResponse["last_time_activity"],
             chatResponse["room_name"],
-            chatResponse["blocked"],
-            chatResponse["mute"],
+            chatResponse["blocked"] ? 1 : 0,
+            chatResponse["mute"] ? 1 : 0,
             0);
         return broBros;
       }

@@ -476,30 +476,31 @@ class _BroMessagingState extends State<BroMessaging>
             }),
         backgroundColor:
             chat.getColor() != null ? chat.getColor() : Color(0xff145C9E),
-        title: Container(
-            alignment: Alignment.centerLeft,
-            color: Colors.transparent,
-            child: InkWell(
-                onTap: () {
-                  Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => BroChatDetails(chat: chat)));
-                },
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    chat.alias != null && chat.alias.isNotEmpty
-                        ? Container(
-                        child: Text(chat.alias,
-                            style: TextStyle(
-                                color: getTextColor(chat.getColor()), fontSize: 20)))
-                        : Container(
-                        child: Text(chat.chatName,
-                            style: TextStyle(
-                                color: getTextColor(chat.getColor()), fontSize: 20))),
-                  ],
-                ))),
+        title: InkWell(
+          onTap: () {
+            Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => BroChatDetails(chat: chat)));
+          },
+          child: Container(
+              alignment: Alignment.centerLeft,
+              color: Colors.transparent,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  chat.alias != null && chat.alias.isNotEmpty
+                      ? Container(
+                      child: Text(chat.alias,
+                          style: TextStyle(
+                              color: getTextColor(chat.getColor()), fontSize: 20)))
+                      : Container(
+                      child: Text(chat.chatName,
+                          style: TextStyle(
+                              color: getTextColor(chat.getColor()), fontSize: 20))),
+                ],
+              )),
+        ),
         actions: [
           PopupMenuButton<int>(
               onSelected: (item) => onSelectChat(context, item),

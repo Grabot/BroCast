@@ -247,7 +247,7 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
             if (broup.isBroup()) {
               if (broup.id == data["id"]) {
                 setState(() {
-                  broup.mute = data["mute"];
+                  broup.setMuted(data["mute"]);
                 });
               }
             }
@@ -273,7 +273,7 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
             if (!chat.isBroup()) {
               if (chat.id == data["id"]) {
                 setState(() {
-                  chat.mute = data["mute"];
+                  chat.setMuted(data["mute"]);
                 });
               }
             }

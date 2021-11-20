@@ -20,6 +20,9 @@ abstract class Chat {
   Color getColor();
 
   bool isBlocked();
+  setBlocked(bool blocked);
   bool isMuted();
+  setMuted(bool muted);
   bool isBroup();
+  setBroup(bool broup);
 }

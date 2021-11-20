@@ -459,7 +459,7 @@ class _BroChatDetailsState extends State<BroChatDetails>
         bool result = data["result"];
         if (result) {
           setState(() {
-            chat.mute = data["mute"];
+            chat.setMuted(data["mute"]);
           });
         }
       }
