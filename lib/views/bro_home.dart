@@ -70,18 +70,20 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
       });
 
       getBros.getBros(token).then((val) {
-        if (!(val is String)) {
+        if (mounted) {
+          if (!(val is String)) {
+            setState(() {
+              bros = val;
+              BroList.instance.setBros(bros);
+              shownBros = bros;
+            });
+          } else {
+            ShowToastComponent.showDialog(val.toString(), context);
+          }
           setState(() {
-            bros = val;
-            BroList.instance.setBros(bros);
-            shownBros = bros;
+            isSearching = false;
           });
-        } else {
-          ShowToastComponent.showDialog(val.toString(), context);
         }
-        setState(() {
-          isSearching = false;
-        });
       });
     }
   }

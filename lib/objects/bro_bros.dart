@@ -81,4 +81,35 @@ class BroBros extends Chat {
       this.mute = 0;
     }
   }
+
+  Map<String, dynamic> toDbMap() {
+    var map = Map<String, dynamic>();
+    map['chatId'] = id;
+    map['lastActivity'] = lastActivity;
+    map['chatName'] = chatName;
+    map['chatDescription'] = chatDescription;
+    map['alias'] = alias;
+    map['chatColor'] = chatColor;
+    map['roomName'] = roomName;
+    map['unreadMessages'] = unreadMessages;
+    map['blocked'] = blocked;
+    map['mute'] = mute;
+    map['isBroup'] = broup; // probably false, but set anyway
+    return map;
+  }
+
+
+  BroBros.fromDbMap(Map<String, dynamic> map) {
+    id = map['chatId'];
+    chatName = map['chatName'];
+    chatDescription = map['chatDescription'];
+    alias = map['alias'];
+    chatColor = map['chatColor'];
+    unreadMessages = map['unreadMessages'];
+    lastActivity = map['lastActivity'];
+    roomName = map['roomName'];
+    blocked = map['blocked'];
+    mute = map['mute'];
+    broup = map['isBroup']; // probably false, but get from map anyway
+  }
 }

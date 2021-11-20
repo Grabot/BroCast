@@ -25,4 +25,7 @@ abstract class Chat {
   setMuted(bool muted);
   bool isBroup();
   setBroup(bool broup);
+
+  Map<String, dynamic> toDbMap();
+  Chat.fromDbMap(Map<String, dynamic> map);
 }
