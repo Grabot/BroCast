@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'bro.dart';
@@ -49,7 +50,7 @@ class Broup extends Chat {
   }
 
   DateTime getLastActivity() {
-    return DateTime.parse(lastActivity + 'Z').toLocal();
+    return DateTime.parse(lastActivity).toLocal();
   }
 
   Color getColor() {
@@ -195,6 +196,8 @@ class Broup extends Chat {
     map['blocked'] = blocked;
     map['mute'] = mute;
     map['isBroup'] = broup; // probably true, but set anyway
+    map['participants'] = jsonEncode(participants);
+    map['admins'] = jsonEncode(admins);
     return map;
   }
 
@@ -210,5 +213,12 @@ class Broup extends Chat {
     blocked = map['blocked'];
     mute = map['mute'];
     broup = map['isBroup']; // probably true, but get from map anyway
+
+    List<dynamic> broIds = jsonDecode(map['participants']);
+    List<int> broIdList = broIds.map((s) => s as int).toList();
+    this.participants = broIdList;
+    List<dynamic> broAdminsIds = jsonDecode(map['admins']);
+    List<int> broAdminIdList = broAdminsIds.map((s) => s as int).toList();
+    this.admins = broAdminIdList;
   }
 }

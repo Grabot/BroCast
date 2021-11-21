@@ -7,6 +7,7 @@ import 'package:brocast/services/get_messages.dart';
 import 'package:brocast/services/settings.dart';
 import 'package:brocast/services/socket_services.dart';
 import 'package:brocast/utils/bro_list.dart';
+import 'package:brocast/utils/storage.dart';
 import 'package:brocast/utils/utils.dart';
 import 'package:brocast/views/bro_home.dart';
 import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
@@ -51,11 +52,13 @@ class _BroMessagingState extends State<BroMessaging>
   List<Message> messages = [];
 
   late Chat chat;
+  late Storage storage;
 
   @override
   void initState() {
     super.initState();
     chat = widget.chat;
+    storage = Storage();
     if (chat.getColor() != null) {
       getMessages(amountViewed);
     } else {
@@ -395,6 +398,16 @@ class _BroMessagingState extends State<BroMessaging>
     updateDateTiles(message);
     setState(() {
       this.messages.insert(0, message);
+    });
+    // updateUserActivity(message.timestamp);
+  }
+
+  updateUserActivity() {
+    storage.selectChat(chat.id, chat.broup).then((currentChat) {
+      if (currentChat != null) {
+        // We assume it will succeed because otherwise we couldn't be here.
+        // currentChat.lastActivity
+      }
     });
   }
 

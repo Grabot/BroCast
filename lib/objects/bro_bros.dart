@@ -41,7 +41,7 @@ class BroBros extends Chat {
   }
 
   DateTime getLastActivity() {
-    return DateTime.parse(lastActivity + 'Z').toLocal();
+    return DateTime.parse(lastActivity).toLocal();
   }
 
   Color getColor() {

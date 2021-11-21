@@ -72,6 +72,8 @@ class Storage {
             blocked INTEGER,
             mute INTEGER,
             isBroup INTEGER,
+            participants TEXT,
+            admins TEXT,
             UNIQUE(chatId, isBroup) ON CONFLICT REPLACE
           );
           ''');

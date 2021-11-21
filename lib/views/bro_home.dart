@@ -58,15 +58,6 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
     bromotionController.addListener(bromotionListener);
 
     storage = Storage();
-    storage.database.then((value) {
-      storage.fetchAllChats().then((value) {
-        setState(() {
-          bros = value;
-          shownBros = bros;
-          BroList.instance.setBros(bros);
-        });
-      });
-    });
 
     storage.selectUser().then((value) {
       if (value != null) {
@@ -76,12 +67,25 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
         Settings.instance.setBromotion(value.bromotion);
         Settings.instance.setToken(value.token);
         print("Recheck? ${value.shouldRecheck()}");
-        if (value.shouldRecheck() && value.token != null && value.token!.isNotEmpty) {
-          searchBros(value.token!);
+        if (value.shouldRecheck() && value.token.isNotEmpty) {
+          searchBros(value.token);
           value.recheckBros = 0;
           storage.updateUser(value).then((value) {
             print("We have checked the bros, no need to do it again.");
             print(value);
+          });
+        } else {
+          storage.database.then((value) {
+            storage.fetchAllChats().then((value) {
+              bros = value;
+              bros.sort((b, a) => a.getLastActivity().compareTo(b.getLastActivity()));
+              shownBros = bros;
+              BroList.instance.setBros(bros);
+              if (mounted) {
+                setState(() {
+                });
+              }
+            });
           });
         }
       }
@@ -124,12 +128,12 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
               print(bro);
               storage.selectChat(bro.id, bro.broup).then((value) {
                 if (value == null) {
-                  print("chat not added yet! Adding now");
-                  storage.addChat(bro).then((value) {
-                    if (value == null) {
-                      print("somethign went wrong?");
+                  print("adding broup participants etc");
+                  storage.addChat(bro).then((vl) {
+                    if (vl == null) {
+                      print("something went wrong?");
                     } else {
-                      print("chat was saved! $value");
+                      print("chat was saved! $vl");
                     }
                   });
                 } else {

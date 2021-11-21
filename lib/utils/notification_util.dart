@@ -82,16 +82,16 @@ class NotificationUtil {
   }
 
   void notificationNavigate(int id, int isBroup) {
-    // TODO: @Skools fix storage (en navigatie, async stuff?)
     storage.selectChat(id, isBroup).then((value) {
       if (value != null) {
         Chat chat = value;
         print("found a chat");
         print(chat);
         if (chat.isBroup()) {
-          _navigationService.navigateTo(routes.BroupRoute, arguments: value);
+          print("navigate to the broup!");
+          _navigationService.navigateTo(routes.BroupRoute, arguments: chat);
         } else {
-          _navigationService.navigateTo(routes.BroRoute, arguments: value);
+          _navigationService.navigateTo(routes.BroRoute, arguments: chat);
         }
       } else {
         _navigationService.navigateTo(routes.HomeRoute);
@@ -108,16 +108,6 @@ class NotificationUtil {
       badge: true,
       sound: true,
     );
-  }
-
-  initialize() async {
-
-    // TODO: @Skools logging (voor ios?)
-    // Logger.root.level = Level.SEVERE;
-    // Logger.root.onRecord.listen((record) {
-    //   print('${record.level.name}: ${record.time}: ${record.message}');
-    // });
-
   }
 
   setupFirebase() async {

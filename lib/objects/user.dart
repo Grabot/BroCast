@@ -3,8 +3,8 @@ class User {
   late int id;
   late String broName;
   late String bromotion;
-  String? password;
-  String? token;
+  late String password;
+  late String token;
   String? registrationId;
   late int recheckBros;
   late int keyboardDarkMode;
@@ -13,8 +13,8 @@ class User {
       int id,
       String broName,
       String bromotion,
-      String? password,
-      String? token,
+      String password,
+      String token,
       String? registrationId,
       int recheckBros,
       int keyboardDarkMode
@@ -34,6 +34,7 @@ class User {
     map['id'] = id;
     map['broName'] = broName;
     map['bromotion'] = bromotion;
+    map['password'] = password;
     map['token'] = token;
     map['registrationId'] = registrationId;
     map['recheckBros'] = recheckBros;
@@ -45,6 +46,7 @@ class User {
     id = map['id'];
     broName = map['broName'];
     bromotion = map['bromotion'];
+    password = map['password'];
     token = map['token'];
     registrationId = map['registrationId'];
     recheckBros = map['recheckBros'];

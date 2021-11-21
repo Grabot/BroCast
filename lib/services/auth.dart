@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:brocast/constants/base_url.dart';
 import 'package:brocast/objects/user.dart';
-import 'package:brocast/services/settings.dart';
 import 'package:brocast/utils/notification_util.dart';
 import 'package:brocast/utils/shared.dart';
 import 'package:brocast/utils/storage.dart';
@@ -59,9 +58,7 @@ class Auth {
           String broName = registerResponse["bro"]["bro_name"];
           String bromotion = registerResponse["bro"]["bromotion"];
 
-          storeUser(broId, broName, bromotion, password, token);
-
-          setInformation(token, broId, broName, bromotion, password);
+          await storeUser(broId, broName, bromotion, password, token);
           return "";
         } else {
           return message;
@@ -124,8 +121,7 @@ class Auth {
           String broName = registerResponse["bro"]["bro_name"];
           String bromotion = registerResponse["bro"]["bromotion"];
 
-          storeUser(broId, broName, bromotion, password, token);
-          await setInformation(token, broId, broName, bromotion, password);
+          await storeUser(broId, broName, bromotion, password, token);
           return "";
         } else {
           return message;
@@ -133,10 +129,6 @@ class Auth {
       }
     }
     return "an unknown error has occurred";
-  }
-
-  signOff() {
-    setInformation("", 0, "", "", "");
   }
 
   setInformation(String token, int broId, String broName, String bromotion,
@@ -147,11 +139,11 @@ class Auth {
   }
 
   // TODO: @Skools move updating the settings to bro home?
-  storeUser(int broId, String broName, String bromotion, String password, String token) {
+  storeUser(int broId, String broName, String bromotion, String password, String token) async {
     String registrationId = notificationUtil.getFirebaseToken();
     User user = new User(broId, broName, bromotion, password, token, registrationId, 1, 0);
     var storage = Storage();
-    storage.selectUser().then((value) {
+    await storage.selectUser().then((value) async {
       if (value != null) {
         print("there seems to be a user, we only want 1 user, update?");
         if (value.broName == user.broName) {
@@ -161,11 +153,10 @@ class Auth {
           // We assume the bromotion didn't change
           // (would have updated when changed)
           // What could have changed is the token or the registration id
-          if ((value.password == null || value.password!.isEmpty)
-              && (user.password == null || user.password!.isEmpty)) {
+          if (value.password.isEmpty && user.password.isEmpty) {
             // No password is found at all, this is not possible for new users,
             // but it might be possible for users updating the app.
-            // The app should be in shared preferences, so we will retrieve it.
+            // The info should be in shared preferences, so we will retrieve it.
             HelperFunction.getBroInformation().then((val) {
               if (val == null || val.length == 0) {
                 // big problem if it comes here.
@@ -174,13 +165,11 @@ class Auth {
               }
             });
           }
-          if ((value.password == null || value.password!.isEmpty)
-              && user.password != null && user.password!.isNotEmpty) {
+          if (value.password.isEmpty && user.password.isNotEmpty) {
             value.password = user.password;
             print("changed password");
           }
-          if (user.token != null && user.token!.isNotEmpty
-              && value.token != user.token) {
+          if (user.token.isNotEmpty && value.token != user.token) {
             value.token = user.token;
             print("changed token");
           }
@@ -205,17 +194,23 @@ class Auth {
         }
       } else {
         // no user yet, probably first time logging in! save the user.
-        if (user.password == null || user.password!.isEmpty) {
+        if (user.password.isEmpty) {
           // This will not happen for new users, but it might happen for older users updating the app.
+          print("was password empty?");
           HelperFunction.getBroInformation().then((val) {
             if (val == null || val.length == 0) {
               // big problem if it comes here.
             } else {
+              user.broName = val[0];
+              user.bromotion = val[1];
               user.password = val[2];
             }
           });
         }
-        storage.addUser(user);
+        print("storing new user $user");
+        print(user.broName);
+        print(user.bromotion);
+        await storage.addUser(user);
       }
     });
 

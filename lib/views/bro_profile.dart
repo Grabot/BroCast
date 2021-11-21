@@ -1,10 +1,12 @@
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:brocast/objects/chat.dart';
+import 'package:brocast/objects/user.dart';
 import 'package:brocast/services/reset_registration.dart';
 import 'package:brocast/services/settings.dart';
 import 'package:brocast/services/socket_services.dart';
 import 'package:brocast/utils/bro_list.dart';
 import 'package:brocast/utils/shared.dart';
+import 'package:brocast/utils/storage.dart';
 import 'package:brocast/utils/utils.dart';
 import 'package:brocast/views/bro_home.dart';
 import 'package:brocast/views/signin.dart';
@@ -32,9 +34,7 @@ class _BroProfileState extends State<BroProfile> with WidgetsBindingObserver {
   bool changePassword = false;
   bool showNotification = true;
 
-  late String broName;
-  late String bromotion;
-  late String broPassword;
+  String broPassword = "";
 
   FocusNode focusNodeBromotion = new FocusNode();
   FocusNode focusNodePassword = new FocusNode();
@@ -43,35 +43,28 @@ class _BroProfileState extends State<BroProfile> with WidgetsBindingObserver {
   TextEditingController newPasswordController1 = new TextEditingController();
   TextEditingController newPasswordController2 = new TextEditingController();
 
+  late Storage storage;
+
+  late User currentUser;
+
   @override
   void initState() {
     super.initState();
     bromotionChangeController.addListener(bromotionListener);
     initSockets();
 
-    setState(() {
-      broName = Settings.instance.getBroName();
-      bromotion = Settings.instance.getBromotion();
-      bromotionChangeController.text = bromotion;
-      broPassword = Settings.instance.getPassword();
-      oldPasswordController.text = broPassword;
-    });
-    HelperFunction.getBroInformation().then((val) {
-      if (val == null || val.length == 0) {
-        // couldn't get token for some reason
-      } else {
-        // String broName = val[0];
-        // String bromotion = val[1];
-        String password = val[2];
-        if (broPassword.isEmpty || broPassword != password) {
-          setState(() {
-            // The password might not be saved in the settings,
-            // we retrieve it from the preferences
-            broPassword = password;
-          });
-        }
+    storage = Storage();
+
+    currentUser = new User(-1, "", "", "", "", "", 0, 0);
+    storage.selectUser().then((user) {
+      if (user != null) {
+        currentUser = user;
+        bromotionChangeController.text = user.bromotion;
+        oldPasswordController.text = user.password;
+        setState(() {});
       }
     });
+
     WidgetsBinding.instance!.addObserver(this);
     BackButtonInterceptor.add(myInterceptor);
   }
@@ -148,9 +141,10 @@ class _BroProfileState extends State<BroProfile> with WidgetsBindingObserver {
     if (mounted) {
       ShowToastComponent.showDialog("password changed successfully", context);
       broPassword = newPasswordController2.text;
-      Settings.instance.setPassword(broPassword);
-      HelperFunction.setBroInformation(broName, bromotion, broPassword);
-      setState(() {
+      currentUser.password = broPassword;
+      storage.updateUser(currentUser).then((value) {
+        print("we have updated the user!");
+        print(value);
         oldPasswordController.text = broPassword;
         newPasswordController1.text = "";
         newPasswordController2.text = "";
@@ -172,10 +166,11 @@ class _BroProfileState extends State<BroProfile> with WidgetsBindingObserver {
   void onChangeBromotionSuccess() {
     if (mounted) {
       ShowToastComponent.showDialog("bromotion changed successfully", context);
-      setState(() {
-        bromotion = bromotionChangeController.text;
-        Settings.instance.setBromotion(bromotion);
-        HelperFunction.setBroInformation(broName, bromotion, broPassword);
+      currentUser.bromotion = bromotionChangeController.text;
+      Settings.instance.setBromotion(currentUser.bromotion);
+      storage.updateUser(currentUser).then((value) {
+        print("we have updated the user!");
+        print(value);
       });
     }
   }
@@ -186,7 +181,7 @@ class _BroProfileState extends State<BroProfile> with WidgetsBindingObserver {
           "BroName bromotion combination exists, please pick a different bromotion",
           context);
       setState(() {
-        bromotionChangeController.text = bromotion;
+        bromotionChangeController.text = currentUser.bromotion;
       });
     }
   }
@@ -195,7 +190,7 @@ class _BroProfileState extends State<BroProfile> with WidgetsBindingObserver {
     if (mounted) {
       ShowToastComponent.showDialog("an unknown Error has occurred", context);
       setState(() {
-        bromotionChangeController.text = bromotion;
+        bromotionChangeController.text = currentUser.bromotion;
       });
     }
   }
@@ -356,7 +351,7 @@ class _BroProfileState extends State<BroProfile> with WidgetsBindingObserver {
                   Container(
                       alignment: Alignment.center,
                       child: Text(
-                        "$broName",
+                        "${currentUser.broName}",
                         style: TextStyle(color: Colors.white, fontSize: 25),
                       )),
                   SizedBox(height: 20),

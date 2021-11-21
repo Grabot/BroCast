@@ -1,8 +1,9 @@
 import 'dart:io';
 import 'package:back_button_interceptor/back_button_interceptor.dart';
+import 'package:brocast/objects/user.dart';
 import 'package:brocast/services/auth.dart';
 import 'package:brocast/services/settings.dart';
-import 'package:brocast/utils/shared.dart';
+import 'package:brocast/utils/storage.dart';
 import 'package:brocast/utils/utils.dart';
 import 'package:brocast/views/bro_home.dart';
 import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
@@ -32,6 +33,10 @@ class _SignInState extends State<SignIn> {
 
   bool emojiKeyboardDarkMode = false;
 
+  late Storage storage;
+
+  late User currentUser;
+
   @override
   void initState() {
     BackButtonInterceptor.add(myInterceptor);
@@ -39,21 +44,17 @@ class _SignInState extends State<SignIn> {
     // If credentials are stored we will automatically sign in,
     // but we will also set it on the text fields just for usability reasons
     // (in case logging in fails)
-    HelperFunction.getBroInformation().then((val) {
-      if (val == null || val.length == 0) {
-        setState(() {
-          isLoading = false;
-        });
-      } else {
-        String broName = val[0];
-        String bromotion = val[1];
-        String password = val[2];
-        print(broName);
-        print(bromotion);
-        print(password);
-        broNameController.text = broName;
-        bromotionController.text = bromotion;
-        passwordController.text = password;
+
+    storage = Storage();
+
+    currentUser = new User(-1, "", "", "", "", "", 0, 0);
+    storage.selectUser().then((user) {
+      if (user != null) {
+        currentUser = user;
+        broNameController.text = user.broName;
+        bromotionController.text = user.bromotion;
+        passwordController.text = user.password;
+        setState(() {});
       }
     });
 
@@ -385,7 +386,8 @@ class _SignInState extends State<SignIn> {
                       bromotionController: bromotionController,
                       emojiKeyboardHeight: 300,
                       showEmojiKeyboard: showEmojiKeyboard,
-                      darkMode: Settings.instance.getEmojiKeyboardDarkMode()),
+                      darkMode: emojiKeyboardDarkMode
+                  )
                 ),
               ]),
             ),

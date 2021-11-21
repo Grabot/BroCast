@@ -62,7 +62,7 @@ class GetBros {
             print("big problem");
           }
         }
-        listWithBros.sort((b, a) => a.lastActivity.compareTo(b.lastActivity));
+        listWithBros.sort((b, a) => a.getLastActivity().compareTo(b.getLastActivity()));
         return listWithBros;
       }
     }

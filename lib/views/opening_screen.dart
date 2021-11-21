@@ -1,4 +1,5 @@
 import 'package:brocast/constants/base_url.dart';
+import 'package:brocast/objects/user.dart';
 import 'package:brocast/services/auth.dart';
 import 'package:brocast/services/settings.dart';
 import 'package:brocast/services/socket_services.dart';
@@ -21,10 +22,11 @@ class _OpeningScreenState extends State<OpeningScreen> {
   bool acceptEULA = false;
   Auth auth = new Auth();
 
+  late Storage storage;
+
   @override
   void initState() {
-    // Initialize the database
-    Storage();
+    storage = Storage();
 
     HelperFunction.getEULA().then((val) {
       if (val == null || val == false) {
@@ -46,41 +48,42 @@ class _OpeningScreenState extends State<OpeningScreen> {
     });
 
     SocketServices.instance;
-    HelperFunction.getBroToken().then((val) {
-      if (val == null || val == "") {
+    storage.selectUser().then((user) async {
+      if (user != null) {
+        signIn(user);
+      } else {
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => SignIn()));
-      } else {
-        signIn(val.toString());
       }
     });
   }
 
-  signIn(String token) {
+  signIn(User user) {
     setState(() {
       isLoading = true;
     });
 
-    auth.signIn("", "", "", token).then((val) {
+    auth.signIn("", "", "", user.token).then((val) {
       if (val.toString() == "") {
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => BroCastHome(
-            key: UniqueKey()
-        )));
+        // TODO: @Skools do the login/navigation different?
+        if (mounted) {
+          Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (context) =>
+              BroCastHome(
+                  key: UniqueKey()
+              )));
+        }
       } else {
         if (val == "The given credentials are not correct!") {
           // token didn't work, going to check if a username is given and try to log in using password username
-          HelperFunction.getBroInformation().then((val) {
-            if (val == null || val.length == 0) {
+          if (user.broName.isNotEmpty && user.bromotion.isNotEmpty && user.password.isNotEmpty) {
+            signInName(user.broName, user.bromotion, user.password);
+          } else {
+            if (mounted) {
               Navigator.pushReplacement(
                   context, MaterialPageRoute(builder: (context) => SignIn()));
-            } else {
-              String broName = val[0];
-              String bromotion = val[1];
-              String broPassword = val[2];
-              signInName(broName, bromotion, broPassword);
             }
-          });
+          }
         } else {
           ShowToastComponent.showDialog(val.toString(), context);
           Navigator.pushReplacement(
