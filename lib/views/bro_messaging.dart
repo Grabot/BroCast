@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'package:back_button_interceptor/back_button_interceptor.dart';
+import 'package:brocast/objects/bro_bros.dart';
 import 'package:brocast/objects/chat.dart';
 import 'package:brocast/objects/message.dart';
-import 'package:brocast/services/get_chat.dart';
 import 'package:brocast/services/get_messages.dart';
 import 'package:brocast/services/settings.dart';
 import 'package:brocast/services/socket_services.dart';
@@ -19,7 +19,7 @@ import 'bro_profile.dart';
 import 'bro_settings.dart';
 
 class BroMessaging extends StatefulWidget {
-  final Chat chat;
+  final BroBros chat;
 
   BroMessaging(
       {
@@ -51,7 +51,7 @@ class _BroMessagingState extends State<BroMessaging>
 
   List<Message> messages = [];
 
-  late Chat chat;
+  late BroBros chat;
   late Storage storage;
 
   @override

@@ -10,6 +10,7 @@ import 'package:brocast/services/report_bro.dart';
 import 'package:brocast/services/settings.dart';
 import 'package:brocast/services/socket_services.dart';
 import 'package:brocast/utils/bro_list.dart';
+import 'package:brocast/utils/storage.dart';
 import 'package:brocast/utils/utils.dart';
 import 'package:brocast/views/broup_add_participant.dart';
 import "package:flutter/material.dart";
@@ -22,7 +23,7 @@ import 'broup_messaging.dart';
 
 
 class BroupDetails extends StatefulWidget {
-  final Chat chat;
+  final Broup chat;
 
   BroupDetails(
       {
@@ -62,12 +63,15 @@ class _BroupDetailsState extends State<BroupDetails>
 
   late Broup chat;
 
+  late Storage storage;
+
   ReportBro reportBro = new ReportBro();
 
   @override
   void initState() {
     super.initState();
-    chat = widget.chat as Broup; // TODO: @Skools voeg altijd de cast toe?! Ook voor BroBros dan
+    chat = widget.chat; // TODO: @Skools voeg altijd de cast toe?! Ook voor BroBros dan
+    storage = Storage();
     amountInGroup = chat.getBroupBros().length;
     BackButtonInterceptor.add(myInterceptor);
 
@@ -260,7 +264,7 @@ class _BroupDetailsState extends State<BroupDetails>
         changeToBroup();
       });
       SocketServices.instance.socket.on('message_event_add_bro_success', (data) {
-        broWasAdded();
+        broWasAdded(data);
       });
       SocketServices.instance.socket.on('message_event_add_bro_failed', (data) {
         broAddingFailed();
@@ -274,13 +278,31 @@ class _BroupDetailsState extends State<BroupDetails>
     }
   }
 
-  broWasAdded() {
-    if (mounted) {
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => BroCastHome(
-        key: UniqueKey()
-      )));
-    }
+  broWasAdded(data) {
+    BroBros broBros = new BroBros(
+        data["bros_bro_id"],
+        data["chat_name"],
+        data["chat_description"],
+        data["alias"],
+        data["chat_colour"],
+        data["unread_messages"],
+        data["last_time_activity"],
+        data["room_name"],
+        data["blocked"] ? 1 : 0,
+        data["mute"] ? 1 : 0,
+        0
+    );
+    BroList.instance.addBro(broBros);
+    storage.addChat(broBros).then((value) {
+      if (mounted) {
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) =>
+            BroCastHome(
+                key: UniqueKey()
+            )));
+        dispose();
+      }
+    });
   }
 
   broAddingFailed() {
@@ -1403,7 +1425,7 @@ void buttonMessage(BuildContext context, Bro bro, bool alertDialog) {
             MaterialPageRoute(
                 builder: (context) => BroMessaging(
                     key: UniqueKey(),
-                    chat: br0
+                    chat: br0 as BroBros
                 )));
       }
     }

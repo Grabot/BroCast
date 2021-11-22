@@ -104,7 +104,6 @@ class _BroupMessagingState extends State<BroupMessaging>
   }
 
   broWasAdded(data) {
-    print(data);
     BroBros broBros = new BroBros(
         data["bros_bro_id"],
         data["chat_name"],
@@ -126,6 +125,7 @@ class _BroupMessagingState extends State<BroupMessaging>
             BroCastHome(
                 key: UniqueKey()
             )));
+        dispose();
       }
     });
   }

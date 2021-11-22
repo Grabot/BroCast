@@ -18,7 +18,7 @@ import 'bro_settings.dart';
 
 
 class BroChatDetails extends StatefulWidget {
-  final Chat chat;
+  final BroBros chat;
 
   BroChatDetails(
       {
@@ -55,7 +55,7 @@ class _BroChatDetailsState extends State<BroChatDetails>
   String previousDescription = "";
   String previousAlias = "";
 
-  late Chat chat;
+  late BroBros chat;
 
   @override
   void initState() {
