@@ -9,11 +9,15 @@ import 'package:brocast/objects/message.dart';
 import 'package:brocast/services/get_broup_bros.dart';
 import 'package:brocast/services/get_chat.dart';
 import 'package:brocast/services/get_messages.dart';
+import 'package:brocast/services/navigation_service.dart';
 import 'package:brocast/services/settings.dart';
 import 'package:brocast/services/socket_services.dart';
 import 'package:brocast/utils/bro_list.dart';
+import 'package:brocast/utils/locator.dart';
+import 'package:brocast/utils/storage.dart';
 import 'package:brocast/utils/utils.dart';
 import 'package:brocast/views/bro_home.dart';
+import 'package:brocast/constants/route_paths.dart' as routes;
 import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -57,12 +61,15 @@ class _BroupMessagingState extends State<BroupMessaging>
   List<Message> messages = [];
 
   late Broup chat;
+  late Storage storage;
 
   int amountViewed = 1;
+
   @override
   void initState() {
     super.initState();
     chat = widget.chat;
+    storage = Storage();
 
     // TODO: @Skools make sure that there is always a Broup here (db storage?)
     getParticipants();
@@ -87,6 +94,46 @@ class _BroupMessagingState extends State<BroupMessaging>
       SocketServices.instance.socket.on('message_event_broup_changed', (data) {
         changeToBroup();
       });
+      SocketServices.instance.socket.on('message_event_add_bro_success', (data) {
+        broWasAdded(data);
+      });
+      SocketServices.instance.socket.on('message_event_add_bro_failed', (data) {
+        broAddingFailed();
+      });
+    }
+  }
+
+  broWasAdded(data) {
+    print(data);
+    BroBros broBros = new BroBros(
+        data["bros_bro_id"],
+        data["chat_name"],
+        data["chat_description"],
+        data["alias"],
+        data["chat_colour"],
+        data["unread_messages"],
+        data["last_time_activity"],
+        data["room_name"],
+        data["blocked"] ? 1 : 0,
+        data["mute"] ? 1 : 0,
+        0
+    );
+    BroList.instance.addBro(broBros);
+    storage.addChat(broBros).then((value) {
+      if (mounted) {
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) =>
+            BroCastHome(
+                key: UniqueKey()
+            )));
+      }
+    });
+  }
+
+  broAddingFailed() {
+    if (mounted) {
+      ShowToastComponent.showDialog(
+          "Bro could not be added at this time", context);
     }
   }
 
@@ -257,7 +304,6 @@ class _BroupMessagingState extends State<BroupMessaging>
     if (mounted) {
       Message mes = new Message(
           data["id"],
-          data["bro_bros_id"],
           data["sender_id"],
           data["broup_id"],
           data["body"],
@@ -346,8 +392,8 @@ class _BroupMessagingState extends State<BroupMessaging>
     DateTime today = DateTime(now.year, now.month, now.day);
     DateTime yesterday = DateTime(now.year, now.month, now.day - 1);
     Message messageFirst = this.messages.first;
-    DateTime dayFirst = DateTime(messageFirst.timestamp.year,
-        messageFirst.timestamp.month, messageFirst.timestamp.day);
+    DateTime dayFirst = DateTime(messageFirst.getTimeStamp().year,
+        messageFirst.getTimeStamp().month, messageFirst.getTimeStamp().day);
     String chatTimeTile = DateFormat.yMMMMd('en_US').format(dayFirst);
 
     String timeMessageFirst = DateFormat.yMMMMd('en_US').format(dayFirst);
@@ -358,10 +404,10 @@ class _BroupMessagingState extends State<BroupMessaging>
       timeMessageFirst = "Yesterday";
     }
 
-    Message timeMessage = new Message(0, 0, 0, 0, timeMessageFirst, null, null);
+    Message timeMessage = new Message(0, 0, 0, timeMessageFirst, "", DateTime.now().toUtc().toString());
     timeMessage.informationTile = true;
     for (int i = 0; i < this.messages.length; i++) {
-      DateTime current = this.messages[i].timestamp;
+      DateTime current = this.messages[i].getTimeStamp();
       DateTime dayMessage = DateTime(current.year, current.month, current.day);
       String currentDayMessage = DateFormat.yMMMMd('en_US').format(dayMessage);
 
@@ -376,7 +422,7 @@ class _BroupMessagingState extends State<BroupMessaging>
           timeMessageTile = "Yesterday";
         }
         this.messages.insert(i, timeMessage);
-        timeMessage = new Message(0, 0, 0, 0, timeMessageTile, null, null);
+        timeMessage = new Message(0, 0, 0, timeMessageTile, "", DateTime.now().toUtc().toString());
         timeMessage.informationTile = true;
       }
     }
@@ -386,23 +432,23 @@ class _BroupMessagingState extends State<BroupMessaging>
   updateDateTiles(Message message) {
     // If the day tiles need to be updated after sending a message it will be the today tile.
     if (this.messages.length == 0) {
-      Message timeMessage = new Message(0, 0, 0, 0, "Today", null, null);
+      Message timeMessage = new Message(0, 0, 0, "Today", "", DateTime.now().toUtc().toString());
       timeMessage.informationTile = true;
       this.messages.insert(0, timeMessage);
     } else {
       Message messageFirst = this.messages.first;
-      DateTime dayFirst = DateTime(messageFirst.timestamp.year,
-          messageFirst.timestamp.month, messageFirst.timestamp.day);
+      DateTime dayFirst = DateTime(messageFirst.getTimeStamp().year,
+          messageFirst.getTimeStamp().month, messageFirst.getTimeStamp().day);
       String chatTimeTile = DateFormat.yMMMMd('en_US').format(dayFirst);
 
-      DateTime current = message.timestamp;
+      DateTime current = message.getTimeStamp();
       DateTime dayMessage = DateTime(current.year, current.month, current.day);
       String currentDayMessage = DateFormat.yMMMMd('en_US').format(dayMessage);
 
       if (chatTimeTile != currentDayMessage) {
         chatTimeTile = DateFormat.yMMMMd('en_US').format(dayMessage);
 
-        Message timeMessage = new Message(0, 0, 0, 0, "Today", null, null);
+        Message timeMessage = new Message(0, 0, 0, "Today", "", DateTime.now().toUtc().toString());
         timeMessage.informationTile = true;
         this.messages.insert(0, timeMessage);
       }
@@ -445,7 +491,7 @@ class _BroupMessagingState extends State<BroupMessaging>
       }
       // We set the id to be "-1". For date tiles it is "0", these will be filtered.
       Message mes =
-          new Message(-1, 0, Settings.instance.getBroId(), chat.id, message, textMessage, timestampString);
+          new Message(-1, Settings.instance.getBroId(), chat.id, message, textMessage, timestampString);
       setState(() {
         this.messages.insert(0, mes);
       });
@@ -492,13 +538,36 @@ class _BroupMessagingState extends State<BroupMessaging>
     setState(() {
       this.messages.insert(0, message);
     });
+    updateUserActivity(message.timestamp);
+  }
+
+
+  updateUserActivity(String timestamp) {
+    storage.selectChat(chat.id, chat.broup).then((currentChat) {
+      if (currentChat != null) {
+        // We assume it will succeed because otherwise we couldn't be here.
+        // The chat object we have just received should be updated.
+        currentChat.lastActivity = timestamp;
+        storage.updateChat(chat).then((value) {
+          // chat updated
+        });
+      }
+    });
+    chat.lastActivity = timestamp;
+    for (Chat ch4t in BroList.instance.getBros()) {
+      if (ch4t.isBroup()) {
+        if (ch4t.id == chat.id) {
+          ch4t.lastActivity = timestamp;
+        }
+      }
+    }
   }
 
   messageRead(var data) {
     if (mounted) {
       var timeLastRead = DateTime.parse(data + 'Z').toLocal();
       for (Message message in this.messages) {
-        if (message.timestamp != null && timeLastRead.isAfter(message.timestamp)) {
+        if (timeLastRead.isAfter(message.getTimeStamp())) {
           message.isRead = true;
         }
       }
@@ -521,10 +590,23 @@ class _BroupMessagingState extends State<BroupMessaging>
               return MessageTile(
                   key: UniqueKey(),
                   message: messages[index],
-                  sender: getSender(messages[index].senderId),
+                  senderName: getSender(messages[index].senderId),
+                  senderId: messages[index].senderId,
+                  broAdded: getIsAdded(messages[index].senderId),
                   myMessage: messages[index].senderId == Settings.instance.getBroId());
             })
         : Container();
+  }
+
+  bool getIsAdded(int senderId) {
+    for (Chat bro in BroList.instance.getBros()) {
+      if(!bro.isBroup()) {
+        if (bro.id == senderId) {
+          return true;
+        }
+      }
+    }
+    return false;
   }
 
   String getSender(int senderId) {
@@ -818,14 +900,18 @@ class _BroupMessagingState extends State<BroupMessaging>
 
 class MessageTile extends StatefulWidget {
   final Message message;
-  final String sender;
+  final String senderName;
+  final int senderId;
+  final bool broAdded;
   final bool myMessage;
 
   MessageTile(
       {
         required Key key,
         required this.message,
-        required this.sender,
+        required this.senderName,
+        required this.senderId,
+        required this.broAdded,
         required this.myMessage
       }) : super(key: key);
 
@@ -834,6 +920,11 @@ class MessageTile extends StatefulWidget {
 }
 
 class _MessageTileState extends State<MessageTile> {
+
+  var _tapPosition;
+
+  final NavigationService _navigationService = locator<NavigationService>();
+
   selectMessage(BuildContext context) {
     if (widget.message.textMessage.isNotEmpty) {
       setState(() {
@@ -875,7 +966,7 @@ class _MessageTileState extends State<MessageTile> {
                       text: TextSpan(
                         children: [
                           TextSpan(
-                            text: widget.sender,
+                            text: widget.senderName,
                             style:
                             TextStyle(color: Colors.white70, fontSize: 16),
                           ),
@@ -895,6 +986,8 @@ class _MessageTileState extends State<MessageTile> {
                   customBorder: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(42),
                   ),
+                  onLongPress: _showMessageDetailPopupMenu,
+                  onTapDown: _storePosition,
                   onTap: () {
                     selectMessage(context);
                   },
@@ -947,7 +1040,7 @@ class _MessageTileState extends State<MessageTile> {
                         children: [
                           TextSpan(
                             text: DateFormat('HH:mm')
-                                .format(widget.message.timestamp),
+                                .format(widget.message.getTimeStamp()),
                             style:
                                 TextStyle(color: Colors.white54, fontSize: 12),
                           ),
@@ -973,4 +1066,123 @@ class _MessageTileState extends State<MessageTile> {
             color: Colors.transparent,
           ));
   }
+
+  void _showMessageDetailPopupMenu() {
+    if (!widget.myMessage) {
+      final RenderBox overlay = Overlay
+          .of(context)!
+          .context
+          .findRenderObject() as RenderBox;
+
+      showMenu(
+          context: context,
+          items: [
+            MessageDetailPopup(
+                key: UniqueKey(),
+                sender: widget.senderName,
+                broAdded: widget.broAdded
+            )
+          ],
+          position: RelativeRect.fromRect(
+              _tapPosition & const Size(40, 40),
+              Offset.zero & overlay.size
+          )
+      ).then((int? delta) {
+        if (delta == 1) {
+          bool broTransition = false;
+          for (Chat br0 in BroList.instance.getBros()) {
+            if (!br0.isBroup()) {
+              if (br0.id == widget.senderId) {
+                broTransition = true;
+                _navigationService.navigateTo(routes.BroRoute, arguments: br0);
+              }
+            }
+          }
+          if (!broTransition) {
+            _navigationService.navigateTo(routes.HomeRoute);
+          }
+        } else if (delta == 2) {
+          SocketServices.instance.socket.emit("message_event_add_bro",
+              {"token": Settings.instance.getToken(), "bros_bro_id": widget.senderId});
+          // TODO: @Skools maybe transition to home screen and do this in the singleton class?
+        }
+        return;
+      });
+    }
+  }
+
+  void _storePosition(TapDownDetails details) {
+    _tapPosition = details.globalPosition;
+  }
+}
+
+
+class MessageDetailPopup extends PopupMenuEntry<int> {
+
+  final String sender;
+  final bool broAdded;
+
+  MessageDetailPopup({
+    required Key key,
+    required this.sender,
+    required this.broAdded
+  }) : super(key: key);
+
+  @override
+  bool represents(int? n) => n == 1 || n == -1;
+
+  @override
+  MessageDetailPopupState createState() => MessageDetailPopupState();
+
+  @override
+  double get height => 1;
+}
+
+class MessageDetailPopupState extends State<MessageDetailPopup> {
+
+  @override
+  Widget build(BuildContext context) {
+    return getPopupItems(context, widget.sender, widget.broAdded);
+  }
+}
+
+void buttonMessage(BuildContext context) {
+  Navigator.pop<int>(context, 1);
+}
+
+void buttonAdd(BuildContext context) {
+  Navigator.pop<int>(context, 2);
+}
+
+
+Widget getPopupItems(BuildContext context, String sender, bool broAdded) {
+  return Column(
+      children: [
+        broAdded ? Container(
+          alignment: Alignment.centerLeft,
+          child: TextButton(
+              onPressed: () {
+                buttonMessage(context);
+              },
+              child: Text(
+                'Message $sender',
+                textAlign: TextAlign.left,
+                style: TextStyle(color: Colors.black, fontSize: 14),
+              )
+          ),
+        ) : Container(
+          alignment: Alignment.centerLeft,
+          child: TextButton(
+              onPressed: () {
+                buttonAdd(context);
+              },
+              child: Text(
+                'Add $sender',
+                textAlign: TextAlign.left,
+                style: TextStyle(color: Colors.black, fontSize: 14),
+              )
+          ),
+        ),
+      ]
+  );
 }

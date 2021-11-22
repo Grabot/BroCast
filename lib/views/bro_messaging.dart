@@ -59,21 +59,8 @@ class _BroMessagingState extends State<BroMessaging>
     super.initState();
     chat = widget.chat;
     storage = Storage();
-    if (chat.getColor() != null) {
-      getMessages(amountViewed);
-    } else {
-      // If there is no colour, than it was probably opened with a notification
-      // In this case we don't have the whole object. We retrieve it here
-      GetChat getChat = new GetChat();
-      getChat.getChat(Settings.instance.getBroId(), chat.id).then((value) {
-        if (value != "an unknown error has occurred") {
-          setState(() {
-            chat = value;
-            getMessages(amountViewed);
-          });
-        }
-      });
-    }
+
+    getMessages(amountViewed);
     joinRoom(Settings.instance.getBroId(), chat.id);
     WidgetsBinding.instance!.addObserver(this);
     BackButtonInterceptor.add(myInterceptor);
@@ -152,7 +139,6 @@ class _BroMessagingState extends State<BroMessaging>
     if (mounted) {
       Message mes = new Message(
           data["id"],
-          data["bro_bros_id"],
           data["sender_id"],
           data["recipient_id"],
           data["body"],
@@ -253,8 +239,8 @@ class _BroMessagingState extends State<BroMessaging>
     DateTime today = DateTime(now.year, now.month, now.day);
     DateTime yesterday = DateTime(now.year, now.month, now.day - 1);
     Message messageFirst = this.messages.first;
-    DateTime dayFirst = DateTime(messageFirst.timestamp.year,
-        messageFirst.timestamp.month, messageFirst.timestamp.day);
+    DateTime dayFirst = DateTime(messageFirst.getTimeStamp().year,
+        messageFirst.getTimeStamp().month, messageFirst.getTimeStamp().day);
     String chatTimeTile = DateFormat.yMMMMd('en_US').format(dayFirst);
 
     String timeMessageFirst = DateFormat.yMMMMd('en_US').format(dayFirst);
@@ -265,10 +251,10 @@ class _BroMessagingState extends State<BroMessaging>
       timeMessageFirst = "Yesterday";
     }
 
-    Message timeMessage = new Message(0, 0, 0, 0, timeMessageFirst, null, null);
+    Message timeMessage = new Message(0, 0, 0, timeMessageFirst, "", DateTime.now().toUtc().toString());
     timeMessage.informationTile = true;
     for (int i = 0; i < this.messages.length; i++) {
-      DateTime current = this.messages[i].timestamp;
+      DateTime current = this.messages[i].getTimeStamp();
       DateTime dayMessage = DateTime(current.year, current.month, current.day);
       String currentDayMessage = DateFormat.yMMMMd('en_US').format(dayMessage);
 
@@ -283,7 +269,7 @@ class _BroMessagingState extends State<BroMessaging>
           timeMessageTile = "Yesterday";
         }
         this.messages.insert(i, timeMessage);
-        timeMessage = new Message(0, 0, 0, 0, timeMessageTile, null, null);
+        timeMessage = new Message(0, 0, 0, timeMessageTile, "", DateTime.now().toUtc().toString());
         timeMessage.informationTile = true;
       }
     }
@@ -293,23 +279,23 @@ class _BroMessagingState extends State<BroMessaging>
   updateDateTiles(Message message) {
     // If the day tiles need to be updated after sending a message it will be the today tile.
     if (this.messages.length == 0) {
-      Message timeMessage = new Message(0, 0, 0, 0, "Today", null, null);
+      Message timeMessage = new Message(0, 0, 0, "Today", "", DateTime.now().toUtc().toString());
       timeMessage.informationTile = true;
       this.messages.insert(0, timeMessage);
     } else {
       Message messageFirst = this.messages.first;
-      DateTime dayFirst = DateTime(messageFirst.timestamp.year,
-          messageFirst.timestamp.month, messageFirst.timestamp.day);
+      DateTime dayFirst = DateTime(messageFirst.getTimeStamp().year,
+          messageFirst.getTimeStamp().month, messageFirst.getTimeStamp().day);
       String chatTimeTile = DateFormat.yMMMMd('en_US').format(dayFirst);
 
-      DateTime current = message.timestamp;
+      DateTime current = message.getTimeStamp();
       DateTime dayMessage = DateTime(current.year, current.month, current.day);
       String currentDayMessage = DateFormat.yMMMMd('en_US').format(dayMessage);
 
       if (chatTimeTile != currentDayMessage) {
         chatTimeTile = DateFormat.yMMMMd('en_US').format(dayMessage);
 
-        Message timeMessage = new Message(0, 0, 0, 0, "Today", null, null);
+        Message timeMessage = new Message(0, 0, 0, "Today", "", DateTime.now().toUtc().toString());
         timeMessage.informationTile = true;
         this.messages.insert(0, timeMessage);
       }
@@ -352,7 +338,7 @@ class _BroMessagingState extends State<BroMessaging>
       }
       // We set the id to be "-1". For date tiles it is "0", these will be filtered.
       Message mes =
-          new Message(-1, 0, 0, chat.id, message, textMessage, timestampString);
+          new Message(-1, 0, chat.id, message, textMessage, DateTime.now().toUtc().toString());
       setState(() {
         this.messages.insert(0, mes);
       });
@@ -399,16 +385,28 @@ class _BroMessagingState extends State<BroMessaging>
     setState(() {
       this.messages.insert(0, message);
     });
-    // updateUserActivity(message.timestamp);
+    updateUserActivity(message.timestamp);
   }
 
-  updateUserActivity() {
+  updateUserActivity(String timestamp) {
     storage.selectChat(chat.id, chat.broup).then((currentChat) {
       if (currentChat != null) {
         // We assume it will succeed because otherwise we couldn't be here.
-        // currentChat.lastActivity
+        // The chat object we have just received should be updated.
+        currentChat.lastActivity = timestamp;
+        storage.updateChat(chat).then((value) {
+          // chat updated
+        });
       }
     });
+    chat.lastActivity = timestamp;
+    for (Chat ch4t in BroList.instance.getBros()) {
+      if (ch4t.isBroup()) {
+        if (ch4t.id == chat.id) {
+          ch4t.lastActivity = timestamp;
+        }
+      }
+    }
   }
 
   messageRead(var data) {
@@ -820,7 +818,7 @@ class _MessageTileState extends State<MessageTile> {
                         children: [
                           TextSpan(
                             text: DateFormat('HH:mm')
-                                .format(widget.message.timestamp),
+                                .format(widget.message.getTimeStamp()),
                             style:
                                 TextStyle(color: Colors.white54, fontSize: 12),
                           ),

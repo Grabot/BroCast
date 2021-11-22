@@ -29,13 +29,12 @@ class GetMessages {
         for (var message in messageList) {
           Message mes = new Message(
               message["id"],
-              null,
               message["sender_id"],
               message["recipient_id"],
               message["body"],
               message["text_message"],
               message["timestamp"]);
-          if (timeLastRead.isAfter(mes.timestamp)) {
+          if (timeLastRead.isAfter(mes.getTimeStamp())) {
             mes.isRead = true;
           }
           listWithMessages.add(mes);
@@ -71,13 +70,12 @@ class GetMessages {
         for (var message in messageList) {
           Message mes = new Message(
               message["id"],
-              message["bro_bros_id"],
               message["sender_id"],
               message["sender_id"],
               message["body"],
               message["text_message"],
               message["timestamp"]);
-          if (timeLastRead.isAfter(mes.timestamp)) {
+          if (timeLastRead.isAfter(mes.getTimeStamp())) {
             mes.isRead = true;
           }
           listWithMessages.add(mes);

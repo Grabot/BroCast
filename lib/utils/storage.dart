@@ -89,13 +89,9 @@ class Storage {
   }
 
   Future<User?> selectUser() async {
-    print("selecting user");
     Database database = await this.database;
-    // We just expect there to be 1.
     String query = "SELECT * FROM User";
-    print(query);
     List<Map<String, dynamic>> user = await database.rawQuery(query);
-    print(user);
     if (user.length != 1) {
       return null;
     } else {
@@ -154,24 +150,24 @@ class Storage {
     }
   }
 
-  // TODO: @Skools fix update and delete with id and broup boolean
   Future<int> updateChat(Chat chat) async {
     Database database = await this.database;
     return database.update(
       'Chat',
       chat.toDbMap(),
-      where: 'chatId = ?',
-      whereArgs: [chat.id],
+      where: 'chatId = ? and isBroup = ?',
+      whereArgs: [chat.id, chat.broup],
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
 
-  Future<int> deleteChat(int chatId, bool broup) async {
+  // TODO: @Skools fix delete with id and broup boolean
+  Future<int> deleteChat(Chat chat) async {
     Database database = await this.database;
     return database.delete(
       'Chat',
-      where: 'chatId = ?',
-      whereArgs: [chatId],
+      where: 'chatId = ? and isBroup = ?',
+      whereArgs: [chat.id, chat.broup],
     );
   }
 }

@@ -16,4 +16,8 @@ class BroList {
   void setBros(List<Chat> bros) {
     this.bros = bros;
   }
+
+  void addBro(Chat chat) {
+    this.bros.add(chat);
+  }
 }
