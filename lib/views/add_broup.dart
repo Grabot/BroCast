@@ -29,6 +29,7 @@ class AddBroup extends StatefulWidget {
 class _AddBroupState extends State<AddBroup> with WidgetsBindingObserver {
 
   GetBros getBros = new GetBros();
+  Settings settings = Settings();
 
   final broupValidator = GlobalKey<FormFieldState>();
 
@@ -53,7 +54,7 @@ class _AddBroupState extends State<AddBroup> with WidgetsBindingObserver {
     WidgetsBinding.instance!.addPostFrameCallback((_) {
       List<Chat> broBros = BroList.instance.getBros();
       if (broBros.isEmpty) {
-        searchBros(Settings.instance.getToken());
+        searchBros(settings.getToken());
       } else {
         bros.clear();
         shownBros.clear();
@@ -74,8 +75,6 @@ class _AddBroupState extends State<AddBroup> with WidgetsBindingObserver {
   }
 
   void initSockets() {
-    SocketServices.instance.socket
-        .on('message_event_send_solo', (data) => messageReceivedSolo(data));
     SocketServices.instance.socket.on('message_event_add_broup_success', (data) {
       broupWasAdded();
     });
@@ -95,36 +94,6 @@ class _AddBroupState extends State<AddBroup> with WidgetsBindingObserver {
     if (mounted) {
       ShowToastComponent.showDialog(
           "Broup could not be created at this time", context);
-    }
-  }
-
-  messageReceivedSolo(var data) {
-    if (mounted) {
-      if (data.containsKey("broup_id")) {
-        for (Chat broup in BroList.instance.getBros()) {
-          if (broup.isBroup()) {
-            if (broup.id == data["broup_id"]) {
-              if (showNotification && !broup.isMuted()) {
-                // TODO: @SKools fix the notification in this case (foreground notification?)
-                // NotificationService.instance
-                //     .showNotification(broup.id, broup.chatName, broup.alias, broup.getBroNameOrAlias(), data["body"], true);
-              }
-            }
-          }
-        }
-      } else {
-        for (Chat br0 in BroList.instance.getBros()) {
-          if (!br0.isBroup()) {
-            if (br0.id == data["sender_id"]) {
-              if (showNotification && !br0.isMuted()) {
-                // TODO: @SKools fix the notification in this case (foreground notification?)
-                // NotificationService.instance
-                //     .showNotification(br0.id, br0.chatName, br0.alias, br0.getBroNameOrAlias(), data["body"], false);
-              }
-            }
-          }
-        }
-      }
     }
   }
 
@@ -230,7 +199,7 @@ class _AddBroupState extends State<AddBroup> with WidgetsBindingObserver {
         break;
       case 2:
         ResetRegistration resetRegistration = new ResetRegistration();
-        resetRegistration.removeRegistrationId(Settings.instance.getBroId());
+        resetRegistration.removeRegistrationId(settings.getBroId());
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => SignIn()));
         break;
@@ -470,7 +439,7 @@ class _AddBroupState extends State<AddBroup> with WidgetsBindingObserver {
       if (SocketServices.instance.socket.connected) {
         SocketServices.instance.socket.emit("message_event_add_broup",
             {
-              "token": Settings.instance.getToken(),
+              "token": settings.getToken(),
               "broup_name": broupNameController.text,
               "participants": jsonEncode(participants)
             }
@@ -603,7 +572,7 @@ class _AddBroupState extends State<AddBroup> with WidgetsBindingObserver {
                     bromotionController: bromotionController,
                     emojiKeyboardHeight: 300,
                     showEmojiKeyboard: showEmojiKeyboard,
-                    darkMode: Settings.instance.getEmojiKeyboardDarkMode()),
+                    darkMode: settings.getEmojiKeyboardDarkMode()),
               ),
             ],
           )

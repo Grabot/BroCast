@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:brocast/constants/base_url.dart';
 import 'package:brocast/objects/user.dart';
+import 'package:brocast/services/settings.dart';
 import 'package:brocast/utils/notification_util.dart';
 import 'package:brocast/utils/shared.dart';
 import 'package:brocast/utils/storage.dart';
@@ -11,6 +12,7 @@ import 'package:http/http.dart' as http;
 class Auth {
 
   NotificationUtil notificationUtil = new NotificationUtil();
+  Settings settings = Settings();
 
   Future signUp(String broName, String bromotion, String password) async {
 
@@ -187,6 +189,11 @@ class Auth {
           print(value);
           // The token will basically always change when logging in,
           // so we always update the current user.
+          settings.setEmojiKeyboardDarkMode(user.getKeyboardDarkMode());
+          settings.setBroId(user.id);
+          settings.setBroName(user.broName);
+          settings.setBromotion(user.bromotion);
+          settings.setToken(user.token);
           storage.updateUser(value).then((value) {
             print("we have updated the user!");
             print(value);
@@ -208,8 +215,11 @@ class Auth {
           });
         }
         print("storing new user $user");
-        print(user.broName);
-        print(user.bromotion);
+        settings.setEmojiKeyboardDarkMode(user.getKeyboardDarkMode());
+        settings.setBroId(user.id);
+        settings.setBroName(user.broName);
+        settings.setBromotion(user.bromotion);
+        settings.setToken(user.token);
         await storage.addUser(user);
       }
     });

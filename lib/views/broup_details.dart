@@ -38,6 +38,7 @@ class BroupDetails extends StatefulWidget {
 class _BroupDetailsState extends State<BroupDetails>
     with WidgetsBindingObserver {
 
+  Settings settings = Settings();
   GetChat getChat = new GetChat();
 
   TextEditingController chatDescriptionController = new TextEditingController();
@@ -76,7 +77,7 @@ class _BroupDetailsState extends State<BroupDetails>
     BackButtonInterceptor.add(myInterceptor);
 
     // We retrieve the broup again in case there were changes.
-    getChat.getBroup(Settings.instance.getBroId(), chat.id).then((value) {
+    getChat.getBroup(settings.getBroId(), chat.id).then((value) {
       if (value != "an unknown error has occurred") {
         chat = value;
         getParticipants();
@@ -92,7 +93,7 @@ class _BroupDetailsState extends State<BroupDetails>
       }
     });
     WidgetsBinding.instance!.addPostFrameCallback((_) {
-      joinBroupRoom(Settings.instance.getBroId(), chat.id);
+      joinBroupRoom(settings.getBroId(), chat.id);
       initSockets();
     });
 
@@ -111,7 +112,7 @@ class _BroupDetailsState extends State<BroupDetails>
   void changeToBroup() {
     if (mounted) {
       setState(() {
-        getChat.getBroup(Settings.instance.getBroId(), chat.id).then((value) {
+        getChat.getBroup(settings.getBroId(), chat.id).then((value) {
           if (value != "an unknown error has occurred") {
             setState(() {
               chat = value;
@@ -133,8 +134,9 @@ class _BroupDetailsState extends State<BroupDetails>
     List<Bro> foundBroupNotAdmins = [];
 
     // I have to be in the array or participants, since I am in this broup.
-    Bro me = Settings.instance.getMe();
-    Bro meBroup = me.copyBro();
+    Bro? me = settings.getMe();
+    // It's possible that this object is empty, but not in this view.
+    Bro meBroup = me!.copyBro();
     if (remainingAdmins.contains(meBroup.id)) {
       meBroup.setAdmin(true);
       remainingAdmins.remove(meBroup.id);
@@ -143,7 +145,7 @@ class _BroupDetailsState extends State<BroupDetails>
       chat.setAmIAdmin(false);
     }
     broupMe.add(meBroup);
-    remainingParticipants.remove(Settings.instance.getBroId());
+    remainingParticipants.remove(settings.getBroId());
 
     for (Chat br0 in BroList.instance.getBros()) {
       if (br0 is BroBros) {
@@ -164,7 +166,7 @@ class _BroupDetailsState extends State<BroupDetails>
     if (remainingParticipants.length != 0) {
       GetBroupBros getBroupBros = new GetBroupBros();
       getBroupBros.getBroupBros(
-          Settings.instance.getToken(), remainingParticipants).then((value) {
+          settings.getToken(), remainingParticipants).then((value) {
         if (value != "an unknown error has occurred") {
           List<Bro> notAddedBros = value;
           for (Bro br0 in notAddedBros) {
@@ -210,8 +212,6 @@ class _BroupDetailsState extends State<BroupDetails>
 
   void initSockets() {
     if (SocketServices.instance.socket.connected) {
-      SocketServices.instance.socket
-          .on('message_event_send_solo', (data) => messageReceivedSolo(data));
       SocketServices.instance.socket
           .on('message_event_change_broup_details_success', (data) {
         broupDetailUpdateSuccess(data);
@@ -329,36 +329,6 @@ class _BroupDetailsState extends State<BroupDetails>
     if (mounted) {
       ShowToastComponent.showDialog(
           "Broup muting failed at this time.", context);
-    }
-  }
-
-  messageReceivedSolo(var data) {
-    if (mounted) {
-      if (data.containsKey("broup_id")) {
-        for (Chat broup in BroList.instance.getBros()) {
-          if (broup.isBroup()) {
-            if (broup.id == data["broup_id"]) {
-              if (showNotification && !broup.isMuted()) {
-                // TODO: @SKools fix the notification in this case (foreground notification?)
-                // NotificationService.instance
-                //     .showNotification(broup.id, broup.chatName, broup.alias, broup.getBroNameOrAlias(), data["body"], true);
-              }
-            }
-          }
-        }
-      } else {
-        for (Chat br0 in BroList.instance.getBros()) {
-          if (!br0.isBroup()) {
-            if (br0.id == data["sender_id"]) {
-              if (showNotification && !br0.isMuted()) {
-                // TODO: @SKools fix the notification in this case (foreground notification?)
-                // NotificationService.instance
-                //     .showNotification(br0.id, br0.chatName, br0.alias, br0.getBroNameOrAlias(), data["body"], false);
-              }
-            }
-          }
-        }
-      }
     }
   }
 
@@ -488,7 +458,7 @@ class _BroupDetailsState extends State<BroupDetails>
       if (SocketServices.instance.socket.connected) {
         SocketServices.instance.socket
             .emit("message_event_change_broup_details", {
-          "token": Settings.instance.getToken(),
+          "token": settings.getToken(),
           "broup_id": chat.id,
           "description": chatDescriptionController.text
         });
@@ -510,7 +480,7 @@ class _BroupDetailsState extends State<BroupDetails>
       if (SocketServices.instance.socket.connected) {
         SocketServices.instance.socket
             .emit("message_event_change_broup_alias", {
-          "token": Settings.instance.getToken(),
+          "token": settings.getToken(),
           "broup_id": chat.id,
           "alias": chatAliasController.text
         });
@@ -540,7 +510,7 @@ class _BroupDetailsState extends State<BroupDetails>
       if (SocketServices.instance.socket.connected) {
         SocketServices.instance.socket
             .emit("message_event_change_broup_colour", {
-          "token": Settings.instance.getToken(),
+          "token": settings.getToken(),
           "broup_id": chat.id,
           "colour": newColour
         });
@@ -610,7 +580,7 @@ class _BroupDetailsState extends State<BroupDetails>
             if (bro.id == data["new_admin"]) {
               bro.setAdmin(true);
               chat.addAdmin(data["new_admin"]);
-              if (Settings.instance.getBroId() == data["new_admin"]) {
+              if (settings.getBroId() == data["new_admin"]) {
                 chat.setAmIAdmin(true);
               }
               break;
@@ -642,7 +612,7 @@ class _BroupDetailsState extends State<BroupDetails>
             if (bro.id == data["old_admin"]) {
               bro.setAdmin(false);
               chat.dismissAdmin(data["old_admin"]);
-              if (Settings.instance.getBroId() == data["old_admin"]) {
+              if (settings.getBroId() == data["old_admin"]) {
                 chat.setAmIAdmin(false);
               }
               break;
@@ -670,7 +640,7 @@ class _BroupDetailsState extends State<BroupDetails>
       if (data.containsKey("result")) {
         bool result = data["result"];
         if (result) {
-          if (data["old_bro"] == Settings.instance.getBroId()) {
+          if (data["old_bro"] == settings.getBroId()) {
             // We have successfully left the Broup
             Navigator.pushReplacement(
                 context,
@@ -1066,9 +1036,9 @@ class _BroupDetailsState extends State<BroupDetails>
   void exitBroup() {
     SocketServices.instance.socket
         .emit("message_event_change_broup_remove_bro", {
-      "token": Settings.instance.getToken(),
+      "token": settings.getToken(),
       "broup_id": chat.id,
-      "bro_id": Settings.instance.getBroId()
+      "bro_id": settings.getBroId()
     });
   }
 
@@ -1128,7 +1098,7 @@ class _BroupDetailsState extends State<BroupDetails>
 
   void reportTheBroup() {
     reportBro.reportBroup(
-        Settings.instance.getToken(),
+        settings.getToken(),
         chat.id
     ).then((val) {
       if (val) {
@@ -1238,9 +1208,9 @@ class _BroupDetailsState extends State<BroupDetails>
   void unmuteTheBroup() {
     SocketServices.instance.socket
         .emit("message_event_change_broup_mute", {
-      "token": Settings.instance.getToken(),
+      "token": settings.getToken(),
       "broup_id": chat.id,
-      "bro_id": Settings.instance.getBroId(),
+      "bro_id": settings.getBroId(),
       "mute": -1
     });
     Navigator.of(context).pop();
@@ -1249,9 +1219,9 @@ class _BroupDetailsState extends State<BroupDetails>
   void muteTheBroup(int selectedRadio) {
     SocketServices.instance.socket
         .emit("message_event_change_broup_mute", {
-      "token": Settings.instance.getToken(),
+      "token": settings.getToken(),
       "broup_id": chat.id,
-      "bro_id": Settings.instance.getBroId(),
+      "bro_id": settings.getBroId(),
       "mute": selectedRadio
     });
     Navigator.of(context).pop();
@@ -1278,18 +1248,20 @@ class BroTile extends StatefulWidget {
 
 class _BroTileState extends State<BroTile> {
 
+  Settings settings =  Settings();
+
   var _tapPosition;
 
   selectBro(BuildContext context) {
-    if (widget.bro.id != Settings.instance.getBroId()) {
+    if (widget.bro.id != settings.getBroId()) {
       showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
             actions: <Widget>[
               widget.userAdmin
-                  ? getPopupItemsAdmin(context, widget.broName, widget.bro, widget.broupId, true)
-                  : getPopupItemsNormal(context, widget.broName, widget.bro, widget.broupId, true)
+                  ? getPopupItemsAdmin(context, widget.broName, widget.bro, widget.broupId, true, settings.getToken())
+                  : getPopupItemsNormal(context, widget.broName, widget.bro, widget.broupId, true, settings.getToken())
             ]
           );
         }
@@ -1343,7 +1315,7 @@ class _BroTileState extends State<BroTile> {
   }
 
   void _showBroupPopupMenu() {
-    if (widget.bro.id != Settings.instance.getBroId()) {
+    if (widget.bro.id != settings.getBroId()) {
       final RenderBox overlay = Overlay
           .of(context)!
           .context
@@ -1403,11 +1375,13 @@ class BroupParticipantPopup extends PopupMenuEntry<int> {
 
 class BroupParticipantPopupState extends State<BroupParticipantPopup> {
 
+  Settings settings = Settings();
+
   @override
   Widget build(BuildContext context) {
     return widget.userAdmin
-        ? getPopupItemsAdmin(context, widget.broName, widget.bro, widget.broupId, false)
-        : getPopupItemsNormal(context, widget.broName, widget.bro, widget.broupId, false);
+        ? getPopupItemsAdmin(context, widget.broName, widget.bro, widget.broupId, false, settings.getToken())
+        : getPopupItemsNormal(context, widget.broName, widget.bro, widget.broupId, false, settings.getToken());
   }
 }
 
@@ -1432,7 +1406,7 @@ void buttonMessage(BuildContext context, Bro bro, bool alertDialog) {
   }
 }
 
-void buttonAddBro(BuildContext context, Bro bro, bool alertDialog) {
+void buttonAddBro(BuildContext context, Bro bro, bool alertDialog, String token) {
   if (alertDialog) {
     Navigator.of(context).pop();
   } else {
@@ -1440,11 +1414,11 @@ void buttonAddBro(BuildContext context, Bro bro, bool alertDialog) {
   }
   if (SocketServices.instance.socket.connected) {
     SocketServices.instance.socket.emit("message_event_add_bro",
-        {"token": Settings.instance.getToken(), "bros_bro_id": bro.id});
+        {"token": token, "bros_bro_id": bro.id});
   }
 }
 
-void buttonMakeAdmin(BuildContext context, Bro bro, int broupId, bool alertDialog) {
+void buttonMakeAdmin(BuildContext context, Bro bro, int broupId, bool alertDialog, String token) {
   if (alertDialog) {
     Navigator.of(context).pop();
   } else {
@@ -1453,14 +1427,14 @@ void buttonMakeAdmin(BuildContext context, Bro bro, int broupId, bool alertDialo
   if (SocketServices.instance.socket.connected) {
     SocketServices.instance.socket
         .emit("message_event_change_broup_add_admin", {
-      "token": Settings.instance.getToken(),
+      "token": token,
       "broup_id": broupId,
       "bro_id": bro.id
     });
   }
 }
 
-void buttonDismissAdmin(BuildContext context, Bro bro, int broupId, bool alertDialog) {
+void buttonDismissAdmin(BuildContext context, Bro bro, int broupId, bool alertDialog, String token) {
   if (alertDialog) {
     Navigator.of(context).pop();
   } else {
@@ -1469,14 +1443,14 @@ void buttonDismissAdmin(BuildContext context, Bro bro, int broupId, bool alertDi
   if (SocketServices.instance.socket.connected) {
     SocketServices.instance.socket
         .emit("message_event_change_broup_dismiss_admin", {
-      "token": Settings.instance.getToken(),
+      "token": token,
       "broup_id": broupId,
       "bro_id": bro.id
     });
   }
 }
 
-void buttonRemove(BuildContext context, Bro bro, int broupId, bool alertDialog) {
+void buttonRemove(BuildContext context, Bro bro, int broupId, bool alertDialog, String token) {
   if (alertDialog) {
     Navigator.of(context).pop();
   } else {
@@ -1484,13 +1458,13 @@ void buttonRemove(BuildContext context, Bro bro, int broupId, bool alertDialog) 
   }
   SocketServices.instance.socket
       .emit("message_event_change_broup_remove_bro", {
-    "token": Settings.instance.getToken(),
+    "token": token,
     "broup_id": broupId,
     "bro_id": bro.id
   });
 }
 
-Widget getPopupItemsAdmin(BuildContext context, String broName, Bro bro, int broupId, bool alertDialog) {
+Widget getPopupItemsAdmin(BuildContext context, String broName, Bro bro, int broupId, bool alertDialog, String token) {
   return Column(
     children: [
       bro is BroAdded
@@ -1511,7 +1485,7 @@ Widget getPopupItemsAdmin(BuildContext context, String broName, Bro bro, int bro
         alignment: Alignment.centerLeft,
         child: TextButton(
             onPressed: () {
-              buttonAddBro(context, bro, alertDialog);
+              buttonAddBro(context, bro, alertDialog, token);
             },
             child: Text(
               'Add $broName',
@@ -1524,7 +1498,7 @@ Widget getPopupItemsAdmin(BuildContext context, String broName, Bro bro, int bro
         alignment: Alignment.centerLeft,
         child: TextButton(
             onPressed:  () {
-              buttonDismissAdmin(context, bro, broupId, alertDialog);
+              buttonDismissAdmin(context, bro, broupId, alertDialog, token);
             },
             child: Text(
                 'Dismiss as admin',
@@ -1537,7 +1511,7 @@ Widget getPopupItemsAdmin(BuildContext context, String broName, Bro bro, int bro
             alignment: Alignment.centerLeft,
             child: TextButton(
             onPressed: () {
-                buttonMakeAdmin(context, bro, broupId, alertDialog);
+                buttonMakeAdmin(context, bro, broupId, alertDialog, token);
               },
               child: Text(
               'Make Broup admin',
@@ -1550,7 +1524,7 @@ Widget getPopupItemsAdmin(BuildContext context, String broName, Bro bro, int bro
           alignment: Alignment.centerLeft,
           child: TextButton(
             onPressed: () {
-              buttonRemove(context, bro, broupId, alertDialog);
+              buttonRemove(context, bro, broupId, alertDialog, token);
             },
             child: Text(
               'Remove $broName',
@@ -1562,7 +1536,7 @@ Widget getPopupItemsAdmin(BuildContext context, String broName, Bro bro, int bro
   );
 }
 
-Widget getPopupItemsNormal(BuildContext context, String broName, Bro bro, int broupId, bool alertDialog) {
+Widget getPopupItemsNormal(BuildContext context, String broName, Bro bro, int broupId, bool alertDialog, String token) {
   return Column(
     children: [
       bro is BroAdded
@@ -1583,7 +1557,7 @@ Widget getPopupItemsNormal(BuildContext context, String broName, Bro bro, int br
         alignment: Alignment.centerLeft,
         child: TextButton(
             onPressed: () {
-              buttonAddBro(context, bro, alertDialog);
+              buttonAddBro(context, bro, alertDialog, token);
             },
             child: Text(
               'Add $broName',

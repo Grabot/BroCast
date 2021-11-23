@@ -46,8 +46,15 @@ class Storage {
       int version,
       ) async {
     print("executing query");
-    await db.execute('''
-    CREATE TABLE USER (
+    createTableUser();
+    createTableChat();
+  }
+
+  createTableUser() async {
+    print("create table user");
+    Database database = await this.database;
+    await database.execute('''
+    CREATE TABLE User (
             id INTEGER PRIMARY KEY,
             broName TEXT,
             bromotion TEXT,
@@ -58,7 +65,12 @@ class Storage {
             keyboardDarkMode INTEGER
           );
           ''');
-    await db.execute('''
+  }
+
+  createTableChat() async {
+    print("create table chat");
+    Database database = await this.database;
+    await database.execute('''
           CREATE TABLE Chat (
             id INTEGER PRIMARY KEY,
             chatId INTEGER,
@@ -169,5 +181,13 @@ class Storage {
       where: 'chatId = ? and isBroup = ?',
       whereArgs: [chat.id, chat.broup],
     );
+  }
+
+  clearDatabase() async {
+    Database database = await this.database;
+    await database.execute("DROP TABLE IF EXISTS Chat");
+    await database.execute("DROP TABLE IF EXISTS User");
+    await createTableUser();
+    await createTableChat();
   }
 }

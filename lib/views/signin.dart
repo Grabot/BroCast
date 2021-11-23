@@ -23,6 +23,7 @@ class _SignInState extends State<SignIn> {
   bool signUpMode = false;
 
   Auth auth = new Auth();
+  Settings settings = Settings();
 
   DateTime? lastPressed;
 
@@ -59,7 +60,7 @@ class _SignInState extends State<SignIn> {
     });
 
     setState(() {
-      emojiKeyboardDarkMode = Settings.instance.getEmojiKeyboardDarkMode();
+      emojiKeyboardDarkMode = settings.getEmojiKeyboardDarkMode();
     });
     super.initState();
   }
@@ -136,6 +137,7 @@ class _SignInState extends State<SignIn> {
 
     auth.signUp(broNameSignup, bromotionSignup, passwordSignup).then((val) {
       if (val.toString() == "") {
+        print("navigate to bro home");
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => BroCastHome(
             key: UniqueKey()
@@ -157,6 +159,7 @@ class _SignInState extends State<SignIn> {
 
     auth.signIn(broName, bromotion, password, "").then((val) {
       if (val.toString() == "") {
+        print("navigate to bro home");
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => BroCastHome(
             key: UniqueKey()

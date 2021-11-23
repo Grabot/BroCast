@@ -44,6 +44,7 @@ class _BroupMessagingState extends State<BroupMessaging>
   bool isLoading = false;
   GetMessages get = new GetMessages();
   GetChat getChat = new GetChat();
+  Settings settings = Settings();
 
   bool showEmojiKeyboard = false;
 
@@ -71,11 +72,29 @@ class _BroupMessagingState extends State<BroupMessaging>
     chat = widget.chat;
     storage = Storage();
 
-    // TODO: @Skools make sure that there is always a Broup here (db storage?)
-    getParticipants();
-    getMessages(amountViewed);
+    // Check if user data is set.
+    if (settings.getBroId() == -1) {
+      // The user can directly go here (via notification) So we will retrieve and set the user data.
+      storage.selectUser().then((user) async {
+        if (user != null) {
+          // TODO: @Skools possibly improve? Don't retrieve if that has been done before?
+          settings.setEmojiKeyboardDarkMode(user.getKeyboardDarkMode());
+          settings.setBroId(user.id);
+          settings.setBroName(user.broName);
+          settings.setBromotion(user.bromotion);
+          settings.setToken(user.token);
+          getParticipants();
+          getMessages(amountViewed);
+          joinBroupRoom(settings.getBroId(), chat.id);
+        }
+      });
+    } else {
+      // Data is already set.
+      getParticipants();
+      getMessages(amountViewed);
+      joinBroupRoom(settings.getBroId(), chat.id);
+    }
 
-    joinBroupRoom(Settings.instance.getBroId(), chat.id);
     WidgetsBinding.instance!.addObserver(this);
     BackButtonInterceptor.add(myInterceptor);
     initSockets();
@@ -125,7 +144,6 @@ class _BroupMessagingState extends State<BroupMessaging>
             BroCastHome(
                 key: UniqueKey()
             )));
-        dispose();
       }
     });
   }
@@ -141,7 +159,7 @@ class _BroupMessagingState extends State<BroupMessaging>
     if (mounted) {
       setState(() {
         amountViewed = 1;
-        getChat.getBroup(Settings.instance.getBroId(), chat.id).then((value) {
+        getChat.getBroup(settings.getBroId(), chat.id).then((value) {
           if (value != "an unknown error has occurred") {
             setState(() {
               chat = value;
@@ -164,8 +182,9 @@ class _BroupMessagingState extends State<BroupMessaging>
     List<Bro> foundBroupNotAdmins = [];
 
     // I have to be in the array or participants, since I am in this broup.
-    Bro me = Settings.instance.getMe();
-    Bro meBroup = me.copyBro();
+    Bro? me = settings.getMe();
+    // This is always called after the object is filled
+    Bro meBroup = me!.copyBro();
     if (remainingAdmins.contains(meBroup.id)) {
       meBroup.setAdmin(true);
       remainingAdmins.remove(meBroup.id);
@@ -174,7 +193,7 @@ class _BroupMessagingState extends State<BroupMessaging>
       chat.setAmIAdmin(false);
     }
     broupMe.add(meBroup);
-    remainingParticipants.remove(Settings.instance.getBroId());
+    remainingParticipants.remove(settings.getBroId());
 
     for (Chat br0 in BroList.instance.getBros()) {
       if (br0 is BroBros) {
@@ -195,7 +214,7 @@ class _BroupMessagingState extends State<BroupMessaging>
     if (remainingParticipants.length != 0) {
       GetBroupBros getBroupBros = new GetBroupBros();
       getBroupBros.getBroupBros(
-          Settings.instance.getToken(), remainingParticipants).then((value) {
+          settings.getToken(), remainingParticipants).then((value) {
         if (value != "an unknown error has occurred") {
           List<Bro> notAddedBros = value;
           for (Bro br0 in notAddedBros) {
@@ -245,8 +264,6 @@ class _BroupMessagingState extends State<BroupMessaging>
       SocketServices.instance.socket
           .on('message_event_send', (data) => messageReceived(data));
       SocketServices.instance.socket
-          .on('message_event_send_solo', (data) => messageReceivedSolo(data));
-      SocketServices.instance.socket
           .on('message_event_read', (data) => messageRead(data));
       SocketServices.instance.socket
           .on('message_event_change_broup_colour_success', (data) {
@@ -256,38 +273,6 @@ class _BroupMessagingState extends State<BroupMessaging>
         "join_broup",
         {"bro_id": broId, "broup_id": broupId},
       );
-    }
-  }
-
-  messageReceivedSolo(var data) {
-    if (mounted) {
-      if (data.containsKey("broup_id")) {
-        for (Chat broup in BroList.instance.getBros()) {
-          if (broup.isBroup()) {
-            if (chat.id != data["broup_id"]) {
-              if (broup.id == data["broup_id"]) {
-                if (showNotification && !broup.isMuted()) {
-                  // TODO: @SKools fix the notification in this case (foreground notification?)
-                  // NotificationService.instance
-                  //     .showNotification(broup.id, broup.chatName, broup.alias, broup.getBroNameOrAlias(), data["body"], true);
-                }
-              }
-            }
-          }
-        }
-      } else {
-        for (Chat br0 in BroList.instance.getBros()) {
-          if (!br0.isBroup()) {
-            if (br0.id == data["sender_id"]) {
-              if (showNotification && !br0.isMuted()) {
-                // TODO: @SKools fix the notification in this case (foreground notification?)
-                // NotificationService.instance
-                //     .showNotification(br0.id, br0.chatName, br0.alias, br0.getBroNameOrAlias(), data["body"], false);
-              }
-            }
-          }
-        }
-      }
     }
   }
 
@@ -318,7 +303,7 @@ class _BroupMessagingState extends State<BroupMessaging>
       if (SocketServices.instance.socket.connected) {
         SocketServices.instance.socket.emit(
           "leave_broup",
-          {"bro_id": Settings.instance.getBroId(), "broup_id": chat.id},
+          {"bro_id": settings.getBroId(), "broup_id": chat.id},
         );
       }
     }
@@ -349,7 +334,7 @@ class _BroupMessagingState extends State<BroupMessaging>
     setState(() {
       isLoading = true;
     });
-    get.getMessagesBroup(Settings.instance.getToken(), chat.id, page).then((val) {
+    get.getMessagesBroup(settings.getToken(), chat.id, page).then((val) {
       if (!(val is String)) {
         List<Message> messes = val;
         if (messes.length != 0) {
@@ -491,7 +476,7 @@ class _BroupMessagingState extends State<BroupMessaging>
       }
       // We set the id to be "-1". For date tiles it is "0", these will be filtered.
       Message mes =
-          new Message(-1, Settings.instance.getBroId(), chat.id, message, textMessage, timestampString);
+          new Message(-1, settings.getBroId(), chat.id, message, textMessage, timestampString);
       setState(() {
         this.messages.insert(0, mes);
       });
@@ -499,7 +484,7 @@ class _BroupMessagingState extends State<BroupMessaging>
         SocketServices.instance.socket.emit(
           "message_broup",
           {
-            "bro_id": Settings.instance.getBroId(),
+            "bro_id": settings.getBroId(),
             "broup_id": chat.id,
             "message": message,
             "text_message": textMessage
@@ -520,7 +505,7 @@ class _BroupMessagingState extends State<BroupMessaging>
   }
 
   updateMessages(Message message) {
-    if (message.senderId == Settings.instance.getBroId()) {
+    if (message.senderId == settings.getBroId()) {
       // We added it immediately as a placeholder.
       // When we get it from the server we add it for real and remove the placeholder
       this.messages.removeAt(0);
@@ -530,7 +515,7 @@ class _BroupMessagingState extends State<BroupMessaging>
       if (SocketServices.instance.socket.connected) {
         SocketServices.instance.socket.emit(
           "message_read_broup",
-          {"bro_id": Settings.instance.getBroId(), "broup_id": chat.id},
+          {"bro_id": settings.getBroId(), "broup_id": chat.id},
         );
       }
     }
@@ -593,7 +578,7 @@ class _BroupMessagingState extends State<BroupMessaging>
                   senderName: getSender(messages[index].senderId),
                   senderId: messages[index].senderId,
                   broAdded: getIsAdded(messages[index].senderId),
-                  myMessage: messages[index].senderId == Settings.instance.getBroId());
+                  myMessage: messages[index].senderId == settings.getBroId());
             })
         : Container();
   }
@@ -887,7 +872,7 @@ class _BroupMessagingState extends State<BroupMessaging>
                   bromotionController: broMessageController,
                   emojiKeyboardHeight: 300,
                   showEmojiKeyboard: showEmojiKeyboard,
-                  darkMode: Settings.instance.getEmojiKeyboardDarkMode(),
+                  darkMode: settings.getEmojiKeyboardDarkMode(),
                 ),
               ),
             ],
@@ -924,6 +909,8 @@ class _MessageTileState extends State<MessageTile> {
   var _tapPosition;
 
   final NavigationService _navigationService = locator<NavigationService>();
+
+  Settings settings = Settings();
 
   selectMessage(BuildContext context) {
     if (widget.message.textMessage.isNotEmpty) {
@@ -1103,7 +1090,7 @@ class _MessageTileState extends State<MessageTile> {
           }
         } else if (delta == 2) {
           SocketServices.instance.socket.emit("message_event_add_bro",
-              {"token": Settings.instance.getToken(), "bros_bro_id": widget.senderId});
+              {"token": settings.getToken(), "bros_bro_id": widget.senderId});
           // TODO: @Skools maybe transition to home screen and do this in the singleton class?
         }
         return;

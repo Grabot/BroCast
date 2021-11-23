@@ -35,6 +35,7 @@ class BroCastHome extends StatefulWidget {
 class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
   GetBros getBros = new GetBros();
   Auth auth = new Auth();
+  Settings settings = Settings();
 
   bool isSearching = false;
   List<Chat> bros = [];
@@ -49,7 +50,7 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
 
   DateTime? lastPressed;
 
-  late Storage storage;
+  Storage storage = Storage();
 
   @override
   void initState() {
@@ -57,20 +58,22 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
     BackButtonInterceptor.add(myInterceptor);
     bromotionController.addListener(bromotionListener);
 
-    storage = Storage();
+    storage.selectUser().then((user) {
+      if (user != null) {
+        print("Recheck? ${user.shouldRecheck()}");
 
-    storage.selectUser().then((value) {
-      if (value != null) {
-        Settings.instance.setEmojiKeyboardDarkMode(value.getKeyboardDarkMode());
-        Settings.instance.setBroId(value.id);
-        Settings.instance.setBroName(value.broName);
-        Settings.instance.setBromotion(value.bromotion);
-        Settings.instance.setToken(value.token);
-        print("Recheck? ${value.shouldRecheck()}");
-        if (value.shouldRecheck() && value.token.isNotEmpty) {
-          searchBros(value.token);
-          value.recheckBros = 0;
-          storage.updateUser(value).then((value) {
+        settings.setEmojiKeyboardDarkMode(user.getKeyboardDarkMode());
+        settings.setBroId(user.id);
+        settings.setBroName(user.broName);
+        settings.setBromotion(user.bromotion);
+        settings.setToken(user.token);
+
+        joinRoomSolo(settings.getBroId());
+
+        if (user.shouldRecheck()) {
+          searchBros(user.token);
+          user.recheckBros = 0;
+          storage.updateUser(user).then((value) {
             print("We have checked the bros, no need to do it again.");
             print(value);
           });
@@ -90,8 +93,6 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
         }
       }
     });
-
-    joinRoomSolo(Settings.instance.getBroId());
 
     WidgetsBinding.instance!.addObserver(this);
   }
@@ -198,10 +199,25 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
     });
   }
 
-  void broAddedYou() {
+  // TODO: @Skools dit moet volgens mij op elk scherm mogelijk zijn. Naar een aparte socket class?
+  void broAddedYou(data) {
     if (mounted) {
-      setState(() {
-        searchBros(Settings.instance.getToken());
+      BroBros broBros = new BroBros(
+          data["bros_bro_id"],
+          data["chat_name"],
+          data["chat_description"],
+          data["alias"],
+          data["chat_colour"],
+          data["unread_messages"],
+          data["last_time_activity"],
+          data["room_name"],
+          data["blocked"] ? 1 : 0,
+          data["mute"] ? 1 : 0,
+          0
+      );
+      BroList.instance.addBro(broBros);
+      storage.addChat(broBros).then((value) {
+        setState(() {});
       });
     }
   }
@@ -209,7 +225,7 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
   void addedToBroup() {
     if (mounted) {
       setState(() {
-        searchBros(Settings.instance.getToken());
+        searchBros(settings.getToken());
       });
     }
   }
@@ -254,10 +270,8 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
 
   joinRoomSolo(int broId) {
     if (SocketServices.instance.socket.connected) {
-      SocketServices.instance.socket
-          .on('message_event_send_solo', (data) => messageReceivedSolo(data));
       SocketServices.instance.socket.on('message_event_bro_added_you', (data) {
-        broAddedYou();
+        broAddedYou(data);
       });
       SocketServices.instance.socket.on('message_event_added_to_broup', (data) {
         addedToBroup();
@@ -335,49 +349,6 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
     }
   }
 
-  messageReceivedSolo(var data) {
-    if (mounted) {
-      if (data.containsKey("broup_id")) {
-        updateMessagesBroup(data["broup_id"]);
-      } else {
-        updateMessages(data["sender_id"]);
-      }
-    }
-  }
-
-  updateMessagesBroup(int broupId) {
-    if (mounted) {
-      for (Chat br0 in bros) {
-        if (br0.isBroup()) {
-          if (br0.id == broupId) {
-            br0.unreadMessages += 1;
-            br0.lastActivity = DateTime.now().toUtc().toString();
-          }
-        }
-      }
-      setState(() {
-        bros.sort((b, a) => a.lastActivity.compareTo(b.lastActivity));
-      });
-    }
-  }
-
-  updateMessages(int senderId) {
-    if (mounted) {
-      for (Chat br0 in bros) {
-        if (!br0.isBroup()) {
-          if (senderId == br0.id) {
-            br0.unreadMessages += 1;
-            br0.lastActivity = DateTime.now().toUtc().toString();
-          }
-        }
-      }
-
-      setState(() {
-        bros.sort((b, a) => a.lastActivity.compareTo(b.lastActivity));
-      });
-    }
-  }
-
   leaveRoomSolo() {
     if (mounted) {
       if (SocketServices.instance.socket.connected) {
@@ -385,7 +356,7 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
             .off('message_event_send_solo', (data) => print(data));
         SocketServices.instance.socket.emit(
           "leave_solo",
-          {"bro_id": Settings.instance.getBroId()},
+          {"bro_id": settings.getBroId()},
         );
       }
     }
@@ -478,7 +449,7 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
       case 3:
         leaveRoomSolo();
         ResetRegistration resetRegistration = new ResetRegistration();
-        resetRegistration.removeRegistrationId(Settings.instance.getBroId());
+        resetRegistration.removeRegistrationId(settings.getBroId());
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => SignIn()));
         break;
@@ -532,7 +503,7 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
                     height: 50,
                     alignment: Alignment.center,
                     child: Text(
-                      "Hey ${Settings.instance.getBroName()} ${Settings.instance.getBromotion()}!",
+                      "Hey ${settings.getBroName()} ${settings.getBromotion()}!",
                       style: TextStyle(color: Colors.white, fontSize: 20),
                     )),
               ),
@@ -584,7 +555,7 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
                 bromotionController: bromotionController,
                 emojiKeyboardHeight: 300,
                 showEmojiKeyboard: showEmojiKeyboard,
-                darkMode: Settings.instance.getEmojiKeyboardDarkMode()
+                darkMode: settings.getEmojiKeyboardDarkMode()
             ),
           ),
         ])),
@@ -617,6 +588,7 @@ class BroTile extends StatefulWidget {
 
 class _BroTileState extends State<BroTile> {
 
+  Settings settings = Settings();
   final NavigationService _navigationService = locator<NavigationService>();
   var _tapPosition;
 
@@ -821,17 +793,17 @@ class _BroTileState extends State<BroTile> {
     if (widget.chat is BroBros) {
       SocketServices.instance.socket
           .emit("message_event_change_chat_mute", {
-        "token": Settings.instance.getToken(),
+        "token": settings.getToken(),
         "bros_bro_id": widget.chat.id,
-        "bro_id": Settings.instance.getBroId(),
+        "bro_id": settings.getBroId(),
         "mute": -1
       });
     } else {
       SocketServices.instance.socket
           .emit("message_event_change_broup_mute", {
-        "token": Settings.instance.getToken(),
+        "token": settings.getToken(),
         "broup_id": widget.chat.id,
-        "bro_id": Settings.instance.getBroId(),
+        "bro_id": settings.getBroId(),
         "mute": -1
       });
     }
@@ -842,17 +814,17 @@ class _BroTileState extends State<BroTile> {
     if (widget.chat is BroBros) {
       SocketServices.instance.socket
           .emit("message_event_change_chat_mute", {
-        "token": Settings.instance.getToken(),
+        "token": settings.getToken(),
         "bros_bro_id": widget.chat.id,
-        "bro_id": Settings.instance.getBroId(),
+        "bro_id": settings.getBroId(),
         "mute": selectedRadio
       });
     } else {
       SocketServices.instance.socket
           .emit("message_event_change_broup_mute", {
-        "token": Settings.instance.getToken(),
+        "token": settings.getToken(),
         "broup_id": widget.chat.id,
-        "bro_id": Settings.instance.getBroId(),
+        "bro_id": settings.getBroId(),
         "mute": selectedRadio
       });
     }

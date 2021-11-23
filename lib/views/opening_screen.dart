@@ -52,6 +52,7 @@ class _OpeningScreenState extends State<OpeningScreen> {
       if (user != null) {
         signIn(user);
       } else {
+        print("navigate to sign in");
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => SignIn()));
       }
@@ -67,6 +68,7 @@ class _OpeningScreenState extends State<OpeningScreen> {
       if (val.toString() == "") {
         // TODO: @Skools do the login/navigation different?
         if (mounted) {
+          print("navigate to the bro home!");
           Navigator.pushReplacement(
               context, MaterialPageRoute(builder: (context) =>
               BroCastHome(
@@ -80,11 +82,13 @@ class _OpeningScreenState extends State<OpeningScreen> {
             signInName(user.broName, user.bromotion, user.password);
           } else {
             if (mounted) {
+              print("navigate to sign in!");
               Navigator.pushReplacement(
                   context, MaterialPageRoute(builder: (context) => SignIn()));
             }
           }
         } else {
+          print("navigate to sign in!");
           ShowToastComponent.showDialog(val.toString(), context);
           Navigator.pushReplacement(
               context, MaterialPageRoute(builder: (context) => SignIn()));
@@ -96,11 +100,13 @@ class _OpeningScreenState extends State<OpeningScreen> {
   signInName(String broName, String bromotion, String password) {
     auth.signIn(broName, bromotion, password, "").then((val) {
       if (val.toString() == "") {
+        print("navigate to the bro home!");
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => BroCastHome(
             key: UniqueKey()
         )));
       } else {
+        print("navigate to sign in!");
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => SignIn()));
       }

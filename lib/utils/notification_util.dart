@@ -1,3 +1,5 @@
+import 'package:brocast/objects/bro_bros.dart';
+import 'package:brocast/objects/broup.dart';
 import 'package:brocast/objects/chat.dart';
 import 'package:brocast/services/navigation_service.dart';
 import 'package:brocast/utils/storage.dart';
@@ -89,11 +91,13 @@ class NotificationUtil {
         print(chat);
         if (chat.isBroup()) {
           print("navigate to the broup!");
-          _navigationService.navigateTo(routes.BroupRoute, arguments: chat);
+          _navigationService.navigateTo(routes.BroupRoute, arguments: chat as Broup);
         } else {
-          _navigationService.navigateTo(routes.BroRoute, arguments: chat);
+          print("navigate to the bro bros!");
+          _navigationService.navigateTo(routes.BroRoute, arguments: chat as BroBros);
         }
       } else {
+        print("navigate to the bro home!");
         _navigationService.navigateTo(routes.HomeRoute);
       }
     });

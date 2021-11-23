@@ -35,6 +35,7 @@ class _BroMessagingState extends State<BroMessaging>
     with WidgetsBindingObserver {
   bool isLoading = false;
   GetMessages get = new GetMessages();
+  Settings settings = Settings();
 
   bool showEmojiKeyboard = false;
   int amountViewed = 1;
@@ -60,8 +61,25 @@ class _BroMessagingState extends State<BroMessaging>
     chat = widget.chat;
     storage = Storage();
 
-    getMessages(amountViewed);
-    joinRoom(Settings.instance.getBroId(), chat.id);
+    // Check if user data is set.
+    if (settings.getBroId() == -1) {
+      // The user can directly go here (via notification) So we will retrieve and set the user data.
+      storage.selectUser().then((user) async {
+        if (user != null) {
+          // TODO: @Skools possibly improve? Don't retrieve if that has been done before?
+          settings.setEmojiKeyboardDarkMode(user.getKeyboardDarkMode());
+          settings.setBroId(user.id);
+          settings.setBroName(user.broName);
+          settings.setBromotion(user.bromotion);
+          settings.setToken(user.token);
+          getMessages(amountViewed);
+          joinRoom(settings.getBroId(), chat.id);
+        }
+      });
+    } else {
+      getMessages(amountViewed);
+      joinRoom(settings.getBroId(), chat.id);
+    }
     WidgetsBinding.instance!.addObserver(this);
     BackButtonInterceptor.add(myInterceptor);
 
@@ -80,8 +98,6 @@ class _BroMessagingState extends State<BroMessaging>
       SocketServices.instance.socket
           .on('message_event_send', (data) => messageReceived(data));
       SocketServices.instance.socket
-          .on('message_event_send_solo', (data) => messageReceivedSolo(data));
-      SocketServices.instance.socket
           .on('message_event_read', (data) => messageRead(data));
       SocketServices.instance.socket
           .on('message_event_change_chat_colour_success', (data) {
@@ -91,38 +107,6 @@ class _BroMessagingState extends State<BroMessaging>
         "join",
         {"bro_id": broId, "bros_bro_id": brosBroId},
       );
-    }
-  }
-
-  messageReceivedSolo(var data) {
-    if (mounted) {
-      if (data.containsKey("broup_id")) {
-        for (Chat broup in BroList.instance.getBros()) {
-          if (broup.isBroup()) {
-            if (broup.id == data["broup_id"]) {
-              if (showNotification && !broup.isMuted()) {
-                // TODO: @SKools fix the notification in this case (foreground notification?)
-                // NotificationService.instance
-                //     .showNotification(broup.id, broup.chatName, broup.alias, broup.getBroNameOrAlias(), data["body"], true);
-              }
-            }
-          }
-        }
-      } else {
-        for (Chat br0 in BroList.instance.getBros()) {
-          if (!br0.isBroup()) {
-            if (chat.id != data["sender_id"]) {
-              if (br0.id == data["sender_id"]) {
-                if (showNotification && !br0.isMuted()) {
-                  // TODO: @SKools fix the notification in this case (foreground notification?)
-                  // NotificationService.instance
-                  //     .showNotification(br0.id, br0.chatName, br0.alias, br0.getBroNameOrAlias(), data["body"], false);
-                }
-              }
-            }
-          }
-        }
-      }
     }
   }
 
@@ -153,7 +137,7 @@ class _BroMessagingState extends State<BroMessaging>
       if (SocketServices.instance.socket.connected) {
         SocketServices.instance.socket.emit(
           "leave",
-          {"bro_id": Settings.instance.getBroId(), "bros_bro_id": chat.id},
+          {"bro_id": settings.getBroId(), "bros_bro_id": chat.id},
         );
       }
     }
@@ -196,7 +180,7 @@ class _BroMessagingState extends State<BroMessaging>
     setState(() {
       isLoading = true;
     });
-    get.getMessages(Settings.instance.getToken(), chat.id, page).then((val) {
+    get.getMessages(settings.getToken(), chat.id, page).then((val) {
       if (!(val is String)) {
         List<Message> messes = val;
         if (messes.length != 0) {
@@ -346,7 +330,7 @@ class _BroMessagingState extends State<BroMessaging>
         SocketServices.instance.socket.emit(
           "message",
           {
-            "bro_id": Settings.instance.getBroId(),
+            "bro_id": settings.getBroId(),
             "bros_bro_id": chat.id,
             "message": message,
             "text_message": textMessage
@@ -377,7 +361,7 @@ class _BroMessagingState extends State<BroMessaging>
       if (SocketServices.instance.socket.connected) {
         SocketServices.instance.socket.emit(
           "message_read",
-          {"bro_id": Settings.instance.getBroId(), "bros_bro_id": chat.id},
+          {"bro_id": settings.getBroId(), "bros_bro_id": chat.id},
         );
       }
     }
@@ -699,7 +683,7 @@ class _BroMessagingState extends State<BroMessaging>
                   bromotionController: broMessageController,
                   emojiKeyboardHeight: 300,
                   showEmojiKeyboard: showEmojiKeyboard,
-                  darkMode: Settings.instance.getEmojiKeyboardDarkMode(),
+                  darkMode: settings.getEmojiKeyboardDarkMode(),
                 ),
               ),
             ],

@@ -3,9 +3,8 @@ import 'package:brocast/objects/bro.dart';
 import 'package:brocast/objects/bro_added.dart';
 
 class Settings {
-  static Settings _instance = new Settings._internal();
 
-  static get instance => _instance;
+  static final Settings _instance = Settings._internal();
 
   bool emojiKeyboardDarkMode = false;
   String token = "";
@@ -16,6 +15,10 @@ class Settings {
   Bro? me;
 
   Settings._internal();
+
+  factory Settings() {
+    return _instance;
+  }
 
   void setEmojiKeyboardDarkMode(bool darkMode) {
     this.emojiKeyboardDarkMode = darkMode;

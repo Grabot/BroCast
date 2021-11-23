@@ -30,6 +30,8 @@ class BroupAddParticipant extends StatefulWidget {
 
 class _BroupAddParticipantState extends State<BroupAddParticipant> with WidgetsBindingObserver {
 
+  Settings settings = Settings();
+
   bool showEmojiKeyboard = false;
   bool showNotification = true;
 
@@ -75,8 +77,6 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> with WidgetsB
   }
 
   void initSockets() {
-    SocketServices.instance.socket
-        .on('message_event_send_solo', (data) => messageReceivedSolo(data));
     SocketServices.instance.socket.on('message_event_add_bro_to_broup_success', (data) {
       broWasAddedToBroup(data);
     });
@@ -119,36 +119,6 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> with WidgetsB
     if (mounted) {
       ShowToastComponent.showDialog(
           "Adding bro to the broup has failed", context);
-    }
-  }
-
-  messageReceivedSolo(var data) {
-    if (mounted) {
-      if (data.containsKey("broup_id")) {
-        for (Chat broup in BroList.instance.getBros()) {
-          if (broup.isBroup()) {
-            if (broup.id == data["broup_id"]) {
-              if (showNotification && !broup.isMuted()) {
-                // TODO: @SKools fix the notification in this case (foreground notification?)
-                // NotificationService.instance
-                //     .showNotification(broup.id, broup.chatName, broup.alias, broup.getBroNameOrAlias(), data["body"], true);
-              }
-            }
-          }
-        }
-      } else {
-        for (Chat br0 in BroList.instance.getBros()) {
-          if (!br0.isBroup()) {
-            if (br0.id == data["sender_id"]) {
-              if (showNotification && !br0.isMuted()) {
-                // TODO: @SKools fix the notification in this case (foreground notification?)
-                // NotificationService.instance
-                //     .showNotification(br0.id, br0.chatName, br0.alias, br0.getBroNameOrAlias(), data["body"], false);
-              }
-            }
-          }
-        }
-      }
     }
   }
 
@@ -468,7 +438,7 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> with WidgetsB
       broToBeAddedToBroup = new BroAdded(broBros.id, broBros.chatName);
       SocketServices.instance.socket.emit("message_event_add_bro_to_broup",
           {
-            'token': Settings.instance.getToken(),
+            'token': settings.getToken(),
             'broup_id': chat.id,
             'bro_id': broBros.id
           }

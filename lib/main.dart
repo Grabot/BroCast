@@ -12,12 +12,12 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   Storage();
+  Settings();
   setupLocator();
 
   NotificationUtil notificationUtil = NotificationUtil();
   notificationUtil.firebaseBackgroundInitialization();
 
-  Settings.instance;
   runApp(MyApp());
 }
 

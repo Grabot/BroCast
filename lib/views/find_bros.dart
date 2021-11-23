@@ -1,5 +1,6 @@
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:brocast/objects/bro.dart';
+import 'package:brocast/objects/bro_bros.dart';
 import 'package:brocast/objects/chat.dart';
 import 'package:brocast/services/reset_registration.dart';
 import 'package:brocast/services/search.dart';
@@ -7,6 +8,7 @@ import 'package:brocast/services/settings.dart';
 import 'package:brocast/services/socket_services.dart';
 import 'package:brocast/utils/bro_list.dart';
 import 'package:brocast/utils/shared.dart';
+import 'package:brocast/utils/storage.dart';
 import 'package:brocast/utils/utils.dart';
 import 'package:brocast/views/bro_home.dart';
 import 'package:brocast/views/signin.dart';
@@ -29,6 +31,7 @@ class FindBros extends StatefulWidget {
 
 class _FindBrosState extends State<FindBros> with WidgetsBindingObserver {
   Search search = new Search();
+  Settings settings = Settings();
 
   bool isSearching = false;
   bool showNotification = true;
@@ -38,6 +41,8 @@ class _FindBrosState extends State<FindBros> with WidgetsBindingObserver {
 
   TextEditingController broNameController = new TextEditingController();
   TextEditingController bromotionController = new TextEditingController();
+
+  Storage storage = Storage();
 
   final formFieldKey = GlobalKey<FormFieldState>();
 
@@ -51,44 +56,12 @@ class _FindBrosState extends State<FindBros> with WidgetsBindingObserver {
   }
 
   void initSockets() {
-    SocketServices.instance.socket
-        .on('message_event_send_solo', (data) => messageReceivedSolo(data));
     SocketServices.instance.socket.on('message_event_add_bro_success', (data) {
-      broWasAdded();
+      broWasAdded(data);
     });
     SocketServices.instance.socket.on('message_event_add_bro_failed', (data) {
       broAddingFailed();
     });
-  }
-
-  messageReceivedSolo(var data) {
-    if (mounted) {
-      if (data.containsKey("broup_id")) {
-        for (Chat broup in BroList.instance.getBros()) {
-          if (broup.isBroup()) {
-            if (broup.id == data["broup_id"]) {
-              if (showNotification && !broup.isMuted()) {
-                // TODO: @SKools fix the notification in this case (foreground notification?)
-                // NotificationService.instance
-                //     .showNotification(broup.id, broup.chatName, broup.alias, broup.getBroNameOrAlias(), data["body"], true);
-              }
-            }
-          }
-        }
-      } else {
-        for (Chat br0 in BroList.instance.getBros()) {
-          if (!br0.isBroup()) {
-            if (br0.id == data["sender_id"]) {
-              if (showNotification && !br0.isMuted()) {
-                // TODO: @SKools fix the notification in this case (foreground notification?)
-                // NotificationService.instance
-                //     .showNotification(br0.id, br0.chatName, br0.alias, br0.getBroNameOrAlias(), data["body"], false);
-              }
-            }
-          }
-        }
-      }
-    }
   }
 
   bromotionListener() {
@@ -102,12 +75,28 @@ class _FindBrosState extends State<FindBros> with WidgetsBindingObserver {
     }
   }
 
-  broWasAdded() {
+  broWasAdded(data) {
     if (mounted) {
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => BroCastHome(
-        key: UniqueKey()
-      )));
+      BroBros broBros = new BroBros(
+          data["bros_bro_id"],
+          data["chat_name"],
+          data["chat_description"],
+          data["alias"],
+          data["chat_colour"],
+          data["unread_messages"],
+          data["last_time_activity"],
+          data["room_name"],
+          data["blocked"] ? 1 : 0,
+          data["mute"] ? 1 : 0,
+          0
+      );
+      BroList.instance.addBro(broBros);
+      storage.addChat(broBros).then((value) {
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => BroCastHome(
+            key: UniqueKey()
+        )));
+      });
     }
   }
 
@@ -177,7 +166,7 @@ class _FindBrosState extends State<FindBros> with WidgetsBindingObserver {
       String broNameSearch = broNameController.text.trimRight();
       String bromotionSearch = bromotionController.text;
 
-      search.searchBro(Settings.instance.getToken(), broNameSearch, bromotionSearch).then((val) {
+      search.searchBro(settings.getToken(), broNameSearch, bromotionSearch).then((val) {
         if (!(val is String)) {
           setState(() {
             bros = val;
@@ -198,7 +187,7 @@ class _FindBrosState extends State<FindBros> with WidgetsBindingObserver {
             shrinkWrap: true,
             itemCount: bros.length,
             itemBuilder: (context, index) {
-              return BroTileSearch(bros[index]);
+              return BroTileSearch(bros[index], settings.getToken());
             })
         : Container();
   }
@@ -261,7 +250,7 @@ class _FindBrosState extends State<FindBros> with WidgetsBindingObserver {
         break;
       case 2:
         ResetRegistration resetRegistration = new ResetRegistration();
-        resetRegistration.removeRegistrationId(Settings.instance.getBroId());
+        resetRegistration.removeRegistrationId(settings.getBroId());
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => SignIn()));
         break;
@@ -375,7 +364,7 @@ class _FindBrosState extends State<FindBros> with WidgetsBindingObserver {
                   bromotionController: bromotionController,
                   emojiKeyboardHeight: 300,
                   showEmojiKeyboard: showEmojiKeyboard,
-                  darkMode: Settings.instance.getEmojiKeyboardDarkMode()),
+                  darkMode: settings.getEmojiKeyboardDarkMode()),
             ),
           ],
         ),
@@ -386,13 +375,13 @@ class _FindBrosState extends State<FindBros> with WidgetsBindingObserver {
 
 class BroTileSearch extends StatelessWidget {
   final Bro bro;
-
-  BroTileSearch(this.bro);
+  final String token;
+  BroTileSearch(this.bro, this.token);
 
   addBro(BuildContext context) {
     if (SocketServices.instance.socket.connected) {
       SocketServices.instance.socket.emit("message_event_add_bro",
-          {"token": Settings.instance.getToken(), "bros_bro_id": bro.id});
+          {"token": token, "bros_bro_id": bro.id});
     }
   }
 

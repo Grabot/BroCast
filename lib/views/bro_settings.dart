@@ -27,6 +27,7 @@ class _BroSettingsState extends State<BroSettings> with WidgetsBindingObserver {
   bool toggleSwitchKeyboard = false;
   bool toggleSwitchSound = false;
   bool showNotification = true;
+  Settings settings = Settings();
 
   var storage;
 
@@ -36,46 +37,10 @@ class _BroSettingsState extends State<BroSettings> with WidgetsBindingObserver {
 
     storage = Storage();
 
-    toggleSwitchKeyboard = Settings.instance.getEmojiKeyboardDarkMode();
-    initSockets();
+    toggleSwitchKeyboard = settings.getEmojiKeyboardDarkMode();
 
     WidgetsBinding.instance!.addObserver(this);
     BackButtonInterceptor.add(myInterceptor);
-  }
-
-  void initSockets() {
-    SocketServices.instance.socket
-        .on('message_event_send_solo', (data) => messageReceivedSolo(data));
-  }
-
-  messageReceivedSolo(var data) {
-    if (mounted) {
-      if (data.containsKey("broup_id")) {
-        for (Chat broup in BroList.instance.getBros()) {
-          if (broup.isBroup()) {
-            if (broup.id == data["broup_id"]) {
-              if (showNotification && !broup.isMuted()) {
-                // TODO: @SKools fix the notification in this case (foreground notification?)
-                // NotificationService.instance
-                //     .showNotification(broup.id, broup.chatName, broup.alias, broup.getBroNameOrAlias(), data["body"], true);
-              }
-            }
-          }
-        }
-      } else {
-        for (Chat br0 in BroList.instance.getBros()) {
-          if (!br0.isBroup()) {
-            if (br0.id == data["sender_id"]) {
-              if (showNotification && !br0.isMuted()) {
-                // TODO: @SKools fix the notification in this case (foreground notification?)
-                // NotificationService.instance
-                //     .showNotification(br0.id, br0.chatName, br0.alias, br0.getBroNameOrAlias(), data["body"], false);
-              }
-            }
-          }
-        }
-      }
-    }
   }
 
   bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
@@ -109,7 +74,7 @@ class _BroSettingsState extends State<BroSettings> with WidgetsBindingObserver {
         });
       }
     });
-    Settings.instance.setEmojiKeyboardDarkMode(darkValue);
+    settings.setEmojiKeyboardDarkMode(darkValue);
     setState(() {
       toggleSwitchKeyboard = darkValue;
     });
@@ -160,7 +125,7 @@ class _BroSettingsState extends State<BroSettings> with WidgetsBindingObserver {
         break;
       case 1:
         ResetRegistration resetRegistration = new ResetRegistration();
-        resetRegistration.removeRegistrationId(Settings.instance.getBroId());
+        resetRegistration.removeRegistrationId(settings.getBroId());
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => SignIn()));
         break;

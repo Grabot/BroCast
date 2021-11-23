@@ -1,8 +1,12 @@
 import 'dart:convert';
 import 'package:brocast/constants/base_url.dart';
+import 'package:brocast/utils/storage.dart';
 import 'package:http/http.dart' as http;
 
 class ResetRegistration {
+
+  Storage storage = Storage();
+
   Future removeRegistrationId(int broId) async {
     String urlRemoveRegistration = baseUrl + 'remove/registration';
     Uri uriRemoveRegistration = Uri.parse(urlRemoveRegistration);
@@ -21,6 +25,8 @@ class ResetRegistration {
     if (registerResponse.containsKey("result")) {
       bool result = registerResponse["result"];
       if (result) {
+        // If it succeeded we will also empty out the db with all the chats and messages this user had received.
+        await storage.clearDatabase();
         return registerResponse["message"];
       }
     }

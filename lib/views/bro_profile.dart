@@ -5,7 +5,6 @@ import 'package:brocast/services/reset_registration.dart';
 import 'package:brocast/services/settings.dart';
 import 'package:brocast/services/socket_services.dart';
 import 'package:brocast/utils/bro_list.dart';
-import 'package:brocast/utils/shared.dart';
 import 'package:brocast/utils/storage.dart';
 import 'package:brocast/utils/utils.dart';
 import 'package:brocast/views/bro_home.dart';
@@ -28,6 +27,7 @@ class BroProfile extends StatefulWidget {
 class _BroProfileState extends State<BroProfile> with WidgetsBindingObserver {
   final passwordFormValidator = GlobalKey<FormState>();
   final bromotionValidator = GlobalKey<FormFieldState>();
+  Settings settings = Settings();
 
   bool showEmojiKeyboard = false;
   bool bromotionEnabled = false;
@@ -70,8 +70,6 @@ class _BroProfileState extends State<BroProfile> with WidgetsBindingObserver {
   }
 
   void initSockets() {
-    SocketServices.instance.socket
-        .on('message_event_send_solo', (data) => messageReceivedSolo(data));
     SocketServices.instance.socket.on('message_event_bromotion_change', (data) {
       if (data == "bromotion change successful") {
         onChangeBromotionSuccess();
@@ -88,36 +86,6 @@ class _BroProfileState extends State<BroProfile> with WidgetsBindingObserver {
         onChangePasswordFailed();
       }
     });
-  }
-
-  messageReceivedSolo(var data) {
-    if (mounted) {
-      if (data.containsKey("broup_id")) {
-        for (Chat broup in BroList.instance.getBros()) {
-          if (broup.isBroup()) {
-            if (broup.id == data["broup_id"]) {
-              if (showNotification && !broup.isMuted()) {
-                // TODO: @SKools fix the notification in this case (foreground notification?)
-                // NotificationService.instance
-                //     .showNotification(broup.id, broup.chatName, broup.alias, broup.getBroNameOrAlias(), data["body"], true);
-              }
-            }
-          }
-        }
-      } else {
-        for (Chat br0 in BroList.instance.getBros()) {
-          if (!br0.isBroup()) {
-            if (br0.id == data["sender_id"]) {
-              if (showNotification && !br0.isMuted()) {
-                // TODO: @SKools fix the notification in this case (foreground notification?)
-                // NotificationService.instance
-                //     .showNotification(br0.id, br0.chatName, br0.alias, br0.getBroNameOrAlias(), data["body"], false);
-              }
-            }
-          }
-        }
-      }
-    }
   }
 
   bromotionListener() {
@@ -167,7 +135,7 @@ class _BroProfileState extends State<BroProfile> with WidgetsBindingObserver {
     if (mounted) {
       ShowToastComponent.showDialog("bromotion changed successfully", context);
       currentUser.bromotion = bromotionChangeController.text;
-      Settings.instance.setBromotion(currentUser.bromotion);
+      settings.setBromotion(currentUser.bromotion);
       storage.updateUser(currentUser).then((value) {
         print("we have updated the user!");
         print(value);
@@ -209,7 +177,7 @@ class _BroProfileState extends State<BroProfile> with WidgetsBindingObserver {
       if (passwordFormValidator.currentState!.validate()) {
         if (SocketServices.instance.socket.connected) {
           SocketServices.instance.socket.emit("password_change", {
-            "token": Settings.instance.getToken(),
+            "token": settings.getToken(),
             "password": newPasswordController1.text
           });
         }
@@ -225,7 +193,7 @@ class _BroProfileState extends State<BroProfile> with WidgetsBindingObserver {
       if (bromotionValidator.currentState!.validate()) {
         if (SocketServices.instance.socket.connected) {
           SocketServices.instance.socket.emit("bromotion_change", {
-            "token": Settings.instance.getToken(),
+            "token": settings.getToken(),
             "bromotion": bromotionChangeController.text
           });
         }
@@ -327,7 +295,7 @@ class _BroProfileState extends State<BroProfile> with WidgetsBindingObserver {
         break;
       case 1:
         ResetRegistration resetRegistration = new ResetRegistration();
-        resetRegistration.removeRegistrationId(Settings.instance.getBroId());
+        resetRegistration.removeRegistrationId(settings.getBroId());
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => SignIn()));
         break;
@@ -494,7 +462,7 @@ class _BroProfileState extends State<BroProfile> with WidgetsBindingObserver {
                         bromotionController: bromotionChangeController,
                         emojiKeyboardHeight: 300,
                         showEmojiKeyboard: showEmojiKeyboard,
-                        darkMode: Settings.instance.getEmojiKeyboardDarkMode()),
+                        darkMode: settings.getEmojiKeyboardDarkMode()),
                   ),
                 ]),
               ),
