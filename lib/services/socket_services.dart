@@ -2,13 +2,17 @@ import 'package:brocast/constants/base_url.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 class SocketServices {
-  static SocketServices _instance = new SocketServices._internal();
 
-  static get instance => _instance;
   late IO.Socket socket;
+
+  static final SocketServices _instance = SocketServices._internal();
 
   SocketServices._internal() {
     startSockConnection();
+  }
+
+  factory SocketServices() {
+    return _instance;
   }
 
   startSockConnection() {
@@ -31,9 +35,7 @@ class SocketServices {
     socket.open();
   }
 
-  closeSockConnection() {
-    if (this.socket.connected) {
-      this.socket.close();
-    }
+  bool isConnected() {
+    return socket.connected;
   }
 }

@@ -1,10 +1,8 @@
 import 'package:back_button_interceptor/back_button_interceptor.dart';
-import 'package:brocast/objects/chat.dart';
 import 'package:brocast/objects/user.dart';
 import 'package:brocast/services/reset_registration.dart';
 import 'package:brocast/services/settings.dart';
 import 'package:brocast/services/socket_services.dart';
-import 'package:brocast/utils/bro_list.dart';
 import 'package:brocast/utils/storage.dart';
 import 'package:brocast/utils/utils.dart';
 import 'package:brocast/views/bro_home.dart';
@@ -27,7 +25,9 @@ class BroProfile extends StatefulWidget {
 class _BroProfileState extends State<BroProfile> with WidgetsBindingObserver {
   final passwordFormValidator = GlobalKey<FormState>();
   final bromotionValidator = GlobalKey<FormFieldState>();
+
   Settings settings = Settings();
+  SocketServices socket = SocketServices();
 
   bool showEmojiKeyboard = false;
   bool bromotionEnabled = false;
@@ -51,7 +51,7 @@ class _BroProfileState extends State<BroProfile> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     bromotionChangeController.addListener(bromotionListener);
-    initSockets();
+    // initSockets(); // TODO: @SKools move to singelton?
 
     storage = Storage();
 
@@ -70,22 +70,23 @@ class _BroProfileState extends State<BroProfile> with WidgetsBindingObserver {
   }
 
   void initSockets() {
-    SocketServices.instance.socket.on('message_event_bromotion_change', (data) {
-      if (data == "bromotion change successful") {
-        onChangeBromotionSuccess();
-      } else if (data == "broName bromotion combination taken") {
-        onChangeBromotionFailedExists();
-      } else {
-        onChangeBromotionFailedUnknown();
-      }
-    });
-    SocketServices.instance.socket.on('message_event_password_change', (data) {
-      if (data == "password change successful") {
-        onChangePasswordSuccess();
-      } else {
-        onChangePasswordFailed();
-      }
-    });
+    // TODO: @Skools move to singleton?
+    // SocketServices.instance.socket.on('message_event_bromotion_change', (data) {
+    //   if (data == "bromotion change successful") {
+    //     onChangeBromotionSuccess();
+    //   } else if (data == "broName bromotion combination taken") {
+    //     onChangeBromotionFailedExists();
+    //   } else {
+    //     onChangeBromotionFailedUnknown();
+    //   }
+    // });
+    // SocketServices.instance.socket.on('message_event_password_change', (data) {
+    //   if (data == "password change successful") {
+    //     onChangePasswordSuccess();
+    //   } else {
+    //     onChangePasswordFailed();
+    //   }
+    // });
   }
 
   bromotionListener() {
@@ -175,12 +176,13 @@ class _BroProfileState extends State<BroProfile> with WidgetsBindingObserver {
   void onSavePassword() {
     if (mounted) {
       if (passwordFormValidator.currentState!.validate()) {
-        if (SocketServices.instance.socket.connected) {
-          SocketServices.instance.socket.emit("password_change", {
-            "token": settings.getToken(),
-            "password": newPasswordController1.text
-          });
-        }
+        // TODO: @Skools move to singleton?
+        // if (SocketServices.instance.socket.connected) {
+        //   SocketServices.instance.socket.emit("password_change", {
+        //     "token": settings.getToken(),
+        //     "password": newPasswordController1.text
+        //   });
+        // }
         setState(() {
           changePassword = false;
         });
@@ -191,12 +193,13 @@ class _BroProfileState extends State<BroProfile> with WidgetsBindingObserver {
   void onSaveBromotion() {
     if (mounted) {
       if (bromotionValidator.currentState!.validate()) {
-        if (SocketServices.instance.socket.connected) {
-          SocketServices.instance.socket.emit("bromotion_change", {
-            "token": settings.getToken(),
-            "bromotion": bromotionChangeController.text
-          });
-        }
+        // TODO: @Skools move to singleton?
+        // if (SocketServices.instance.socket.connected) {
+        //   SocketServices.instance.socket.emit("bromotion_change", {
+        //     "token": settings.getToken(),
+        //     "bromotion": bromotionChangeController.text
+        //   });
+        // }
         setState(() {
           bromotionEnabled = false;
           showEmojiKeyboard = false;
@@ -237,10 +240,11 @@ class _BroProfileState extends State<BroProfile> with WidgetsBindingObserver {
         showEmojiKeyboard = false;
       });
     } else {
-      SocketServices.instance.socket
-          .off('message_event_bromotion_change', (data) => print(data));
-      SocketServices.instance.socket
-          .off('message_event_password_change', (data) => print(data));
+      // TODO: @Skools move to singleton?
+      // SocketServices.instance.socket
+      //     .off('message_event_bromotion_change', (data) => print(data));
+      // SocketServices.instance.socket
+      //     .off('message_event_password_change', (data) => print(data));
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => BroCastHome(
         key: UniqueKey()

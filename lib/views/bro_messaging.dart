@@ -36,6 +36,7 @@ class _BroMessagingState extends State<BroMessaging>
   bool isLoading = false;
   GetMessages get = new GetMessages();
   Settings settings = Settings();
+  SocketServices socket = SocketServices();
 
   bool showEmojiKeyboard = false;
   int amountViewed = 1;
@@ -94,20 +95,21 @@ class _BroMessagingState extends State<BroMessaging>
 
 
   joinRoom(int broId, int brosBroId) {
-    if (SocketServices.instance.socket.connected) {
-      SocketServices.instance.socket
-          .on('message_event_send', (data) => messageReceived(data));
-      SocketServices.instance.socket
-          .on('message_event_read', (data) => messageRead(data));
-      SocketServices.instance.socket
-          .on('message_event_change_chat_colour_success', (data) {
-        chatColourUpdateSuccess(data);
-      });
-      SocketServices.instance.socket.emit(
-        "join",
-        {"bro_id": broId, "bros_bro_id": brosBroId},
-      );
-    }
+    // TODO: @Skools move to singleton?
+    // if (SocketServices.instance.socket.connected) {
+    //   SocketServices.instance.socket
+    //       .on('message_event_send', (data) => messageReceived(data));
+    //   SocketServices.instance.socket
+    //       .on('message_event_read', (data) => messageRead(data));
+    //   SocketServices.instance.socket
+    //       .on('message_event_change_chat_colour_success', (data) {
+    //     chatColourUpdateSuccess(data);
+    //   });
+    //   SocketServices.instance.socket.emit(
+    //     "join",
+    //     {"bro_id": broId, "bros_bro_id": brosBroId},
+    //   );
+    // }
   }
 
   @override
@@ -134,12 +136,13 @@ class _BroMessagingState extends State<BroMessaging>
 
   leaveRoom() {
     if (mounted) {
-      if (SocketServices.instance.socket.connected) {
-        SocketServices.instance.socket.emit(
-          "leave",
-          {"bro_id": settings.getBroId(), "bros_bro_id": chat.id},
-        );
-      }
+      // TODO: @Skools move to singleton?
+      // if (SocketServices.instance.socket.connected) {
+      //   SocketServices.instance.socket.emit(
+      //     "leave",
+      //     {"bro_id": settings.getBroId(), "bros_bro_id": chat.id},
+      //   );
+      // }
     }
   }
 
@@ -159,14 +162,15 @@ class _BroMessagingState extends State<BroMessaging>
   void dispose() {
     focusAppendText.dispose();
     focusEmojiTextField.dispose();
-    if (SocketServices.instance.socket.connected) {
-      SocketServices.instance.socket
-          .off('message_event_send', (data) => print(data));
-      SocketServices.instance.socket
-          .off('message_event_send_solo', (data) => print(data));
-      SocketServices.instance.socket
-          .off('message_event_read', (data) => print(data));
-    }
+    // TODO: @Skools move to singleton?
+    // if (SocketServices.instance.socket.connected) {
+    //   SocketServices.instance.socket
+    //       .off('message_event_send', (data) => print(data));
+    //   SocketServices.instance.socket
+    //       .off('message_event_send_solo', (data) => print(data));
+    //   SocketServices.instance.socket
+    //       .off('message_event_read', (data) => print(data));
+    // }
     BackButtonInterceptor.remove(myInterceptor);
     super.dispose();
   }
@@ -326,17 +330,18 @@ class _BroMessagingState extends State<BroMessaging>
       setState(() {
         this.messages.insert(0, mes);
       });
-      if (SocketServices.instance.socket.connected) {
-        SocketServices.instance.socket.emit(
-          "message",
-          {
-            "bro_id": settings.getBroId(),
-            "bros_bro_id": chat.id,
-            "message": message,
-            "text_message": textMessage
-          },
-        );
-      }
+      // TODO: @Skools move to singleton?
+      // if (SocketServices.instance.socket.connected) {
+      //   SocketServices.instance.socket.emit(
+      //     "message",
+      //     {
+      //       "bro_id": settings.getBroId(),
+      //       "bros_bro_id": chat.id,
+      //       "message": message,
+      //       "text_message": textMessage
+      //     },
+      //   );
+      // }
       broMessageController.clear();
       appendTextMessageController.clear();
 
@@ -358,12 +363,13 @@ class _BroMessagingState extends State<BroMessaging>
     } else {
       // If we didn't send this message it is from the other person.
       // We send a response, indicating that we read the messages
-      if (SocketServices.instance.socket.connected) {
-        SocketServices.instance.socket.emit(
-          "message_read",
-          {"bro_id": settings.getBroId(), "bros_bro_id": chat.id},
-        );
-      }
+      // TODO: @Skools move to singleton?
+      // if (SocketServices.instance.socket.connected) {
+      //   SocketServices.instance.socket.emit(
+      //     "message_read",
+      //     {"bro_id": settings.getBroId(), "bros_bro_id": chat.id},
+      //   );
+      // }
     }
     updateDateTiles(message);
     setState(() {

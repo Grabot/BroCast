@@ -31,6 +31,7 @@ class BroupAddParticipant extends StatefulWidget {
 class _BroupAddParticipantState extends State<BroupAddParticipant> with WidgetsBindingObserver {
 
   Settings settings = Settings();
+  SocketServices socket = SocketServices();
 
   bool showEmojiKeyboard = false;
   bool showNotification = true;
@@ -71,19 +72,20 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> with WidgetsB
         shownBros = bros;
       });
     });
-    initSockets();
+    // initSockets(); // TODO: @Skools move to singelton?
     WidgetsBinding.instance!.addObserver(this);
     BackButtonInterceptor.add(myInterceptor);
   }
 
-  void initSockets() {
-    SocketServices.instance.socket.on('message_event_add_bro_to_broup_success', (data) {
-      broWasAddedToBroup(data);
-    });
-    SocketServices.instance.socket.on('message_event_add_bro_to_broup_failed', (data) {
-      addingBroToBroupFailed();
-    });
-  }
+  // void initSockets() {
+  //   // TODO: @Skools move to singleton?
+  //   SocketServices.instance.socket.on('message_event_add_bro_to_broup_success', (data) {
+  //     broWasAddedToBroup(data);
+  //   });
+  //   SocketServices.instance.socket.on('message_event_add_bro_to_broup_failed', (data) {
+  //     addingBroToBroupFailed();
+  //   });
+  // }
 
   broWasAddedToBroup(var data) {
     if (mounted) {
@@ -434,16 +436,17 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> with WidgetsB
   }
 
   void addTheBro(BroBros broBros) {
-      if (SocketServices.instance.socket.connected) {
-      broToBeAddedToBroup = new BroAdded(broBros.id, broBros.chatName);
-      SocketServices.instance.socket.emit("message_event_add_bro_to_broup",
-          {
-            'token': settings.getToken(),
-            'broup_id': chat.id,
-            'bro_id': broBros.id
-          }
-      );
-    }
+    // TODO: @Skools move to singleton?
+    // if (SocketServices.instance.socket.connected) {
+    //   broToBeAddedToBroup = new BroAdded(broBros.id, broBros.chatName);
+    //   SocketServices.instance.socket.emit("message_event_add_bro_to_broup",
+    //       {
+    //         'token': settings.getToken(),
+    //         'broup_id': chat.id,
+    //         'bro_id': broBros.id
+    //       }
+    //   );
+    // }
     Navigator.of(context).pop();
   }
 }

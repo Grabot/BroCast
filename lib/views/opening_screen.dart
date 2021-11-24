@@ -1,7 +1,6 @@
 import 'package:brocast/constants/base_url.dart';
 import 'package:brocast/objects/user.dart';
 import 'package:brocast/services/auth.dart';
-import 'package:brocast/services/settings.dart';
 import 'package:brocast/services/socket_services.dart';
 import 'package:brocast/utils/shared.dart';
 import 'package:brocast/utils/storage.dart';
@@ -21,6 +20,8 @@ class _OpeningScreenState extends State<OpeningScreen> {
   bool isLoading = false;
   bool acceptEULA = false;
   Auth auth = new Auth();
+  // TODO: @Skools, some socket initialization already?
+  SocketServices socket = SocketServices();
 
   late Storage storage;
 
@@ -47,7 +48,6 @@ class _OpeningScreenState extends State<OpeningScreen> {
       isLoading = true;
     });
 
-    SocketServices.instance;
     storage.selectUser().then((user) async {
       if (user != null) {
         signIn(user);

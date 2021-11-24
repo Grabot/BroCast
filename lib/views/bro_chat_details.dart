@@ -1,12 +1,10 @@
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:brocast/objects/bro_bros.dart';
-import 'package:brocast/objects/chat.dart';
 import 'package:brocast/services/block_bro.dart';
 import 'package:brocast/services/remove_bro.dart';
 import 'package:brocast/services/report_bro.dart';
 import 'package:brocast/services/settings.dart';
 import 'package:brocast/services/socket_services.dart';
-import 'package:brocast/utils/bro_list.dart';
 import 'package:brocast/utils/utils.dart';
 import "package:flutter/material.dart";
 import 'package:flutter_circle_color_picker/flutter_circle_color_picker.dart';
@@ -46,6 +44,7 @@ class _BroChatDetailsState extends State<BroChatDetails>
   ReportBro reportBro = new ReportBro();
   RemoveBro removeBro = new RemoveBro();
   Settings settings = Settings();
+  SocketServices socket = SocketServices();
 
   late Color currentColor;
   Color? previousColor;
@@ -66,7 +65,7 @@ class _BroChatDetailsState extends State<BroChatDetails>
     chatDescriptionController.text = chat.chatDescription;
     chatAliasController.text = chat.alias;
 
-    initSockets();
+    // initSockets(); // TODO: @Skools move to singleton
 
     circleColorPickerController = CircleColorPickerController(
       initialColor: chat.getColor(),
@@ -85,34 +84,34 @@ class _BroChatDetailsState extends State<BroChatDetails>
     }
   }
 
-  void initSockets() {
-    SocketServices.instance.socket
-        .on('message_event_change_chat_details_success', (data) {
-      chatDetailUpdateSuccess(data);
-    });
-    SocketServices.instance.socket
-        .on('message_event_change_chat_alias_success', (data) {
-      chatAliasUpdateSuccess();
-    });
-    SocketServices.instance.socket
-        .on('message_event_change_chat_details_failed', (data) {
-      chatDetailUpdateFailed();
-    });
-    SocketServices.instance.socket
-        .on('message_event_change_chat_colour_success', (data) {
-      chatColourUpdateSuccess(data);
-    });
-    SocketServices.instance.socket.on('message_event_change_chat_colour_failed',
-        (data) {
-      chatColourUpdateFailed();
-    });
-    SocketServices.instance.socket.on('message_event_change_chat_mute_success', (data) {
-      chatWasMuted(data);
-    });
-    SocketServices.instance.socket.on('message_event_change_chat_mute_failed', (data) {
-      chatMutingFailed();
-    });
-  }
+  // void initSockets() {
+  //   SocketServices.instance.socket
+  //       .on('message_event_change_chat_details_success', (data) {
+  //     chatDetailUpdateSuccess(data);
+  //   });
+  //   SocketServices.instance.socket
+  //       .on('message_event_change_chat_alias_success', (data) {
+  //     chatAliasUpdateSuccess();
+  //   });
+  //   SocketServices.instance.socket
+  //       .on('message_event_change_chat_details_failed', (data) {
+  //     chatDetailUpdateFailed();
+  //   });
+  //   SocketServices.instance.socket
+  //       .on('message_event_change_chat_colour_success', (data) {
+  //     chatColourUpdateSuccess(data);
+  //   });
+  //   SocketServices.instance.socket.on('message_event_change_chat_colour_failed',
+  //       (data) {
+  //     chatColourUpdateFailed();
+  //   });
+  //   SocketServices.instance.socket.on('message_event_change_chat_mute_success', (data) {
+  //     chatWasMuted(data);
+  //   });
+  //   SocketServices.instance.socket.on('message_event_change_chat_mute_failed', (data) {
+  //     chatMutingFailed();
+  //   });
+  // }
 
   bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
     backButtonFunctionality();
@@ -144,16 +143,17 @@ class _BroChatDetailsState extends State<BroChatDetails>
   @override
   void dispose() {
     BackButtonInterceptor.remove(myInterceptor);
-    SocketServices.instance.socket
-        .off('message_event_send_solo', (data) => print(data));
-    SocketServices.instance.socket.off(
-        'message_event_change_chat_details_success', (data) => print(data));
-    SocketServices.instance.socket
-        .off('message_event_change_chat_details_failed', (data) => print(data));
-    SocketServices.instance.socket
-        .off('message_event_change_chat_colour_success', (data) => print(data));
-    SocketServices.instance.socket
-        .off('message_event_change_chat_colour_failed', (data) => print(data));
+    // TODO: @Skools disposing in singleton?
+    // SocketServices.instance.socket
+    //     .off('message_event_send_solo', (data) => print(data));
+    // SocketServices.instance.socket.off(
+    //     'message_event_change_chat_details_success', (data) => print(data));
+    // SocketServices.instance.socket
+    //     .off('message_event_change_chat_details_failed', (data) => print(data));
+    // SocketServices.instance.socket
+    //     .off('message_event_change_chat_colour_success', (data) => print(data));
+    // SocketServices.instance.socket
+    //     .off('message_event_change_chat_colour_failed', (data) => print(data));
     super.dispose();
   }
 
@@ -237,13 +237,14 @@ class _BroChatDetailsState extends State<BroChatDetails>
 
   void updateDescription() {
     if (previousDescription != chatDescriptionController.text) {
-      if (SocketServices.instance.socket.connected) {
-        SocketServices.instance.socket
-            .emit("message_event_change_chat_details", {
-          "token": settings.getToken(),
-          "bros_bro_id": chat.id,
-          "description": chatDescriptionController.text
-        });
+      if (socket.isConnected()) {
+        // TODO: @Skools move to singleton?
+        // SocketServices.instance.socket
+        //     .emit("message_event_change_chat_details", {
+        //   "token": settings.getToken(),
+        //   "bros_bro_id": chat.id,
+        //   "description": chatDescriptionController.text
+        // });
       }
       setState(() {
         FocusScope.of(context).unfocus();
@@ -259,13 +260,14 @@ class _BroChatDetailsState extends State<BroChatDetails>
 
   void updateAlias() {
     if (previousAlias != chatAliasController.text) {
-      if (SocketServices.instance.socket.connected) {
-        SocketServices.instance.socket
-            .emit("message_event_change_chat_alias", {
-          "token": settings.getToken(),
-          "bros_bro_id": chat.id,
-          "alias": chatAliasController.text
-        });
+      if (socket.isConnected()) {
+        // TODO: @Skools move to singleton?
+        // SocketServices.instance.socket
+        //     .emit("message_event_change_chat_alias", {
+        //   "token": settings.getToken(),
+        //   "bros_bro_id": chat.id,
+        //   "alias": chatAliasController.text
+        // });
       }
       setState(() {
         FocusScope.of(context).unfocus();
@@ -291,13 +293,14 @@ class _BroChatDetailsState extends State<BroChatDetails>
   saveColour() {
     if (currentColor != chat.getColor()) {
       String newColour = currentColor.value.toRadixString(16).substring(2, 8);
-      if (SocketServices.instance.socket.connected) {
-        SocketServices.instance.socket
-            .emit("message_event_change_chat_colour", {
-          "token": settings.getToken(),
-          "bros_bro_id": chat.id,
-          "colour": newColour
-        });
+      if (socket.isConnected()) {
+        // TODO: @Skools move to singleton?
+        // SocketServices.instance.socket
+        //     .emit("message_event_change_chat_colour", {
+        //   "token": settings.getToken(),
+        //   "bros_bro_id": chat.id,
+        //   "colour": newColour
+        // });
       }
     }
     setState(() {
@@ -896,24 +899,26 @@ class _BroChatDetailsState extends State<BroChatDetails>
   }
 
   void unmuteTheChat() {
-    SocketServices.instance.socket
-        .emit("message_event_change_chat_mute", {
-      "token": settings.getToken(),
-      "bros_bro_id": chat.id,
-      "bro_id": settings.getBroId(),
-      "mute": -1
-    });
+    // TODO: @Skools move to singleton?
+    // SocketServices.instance.socket
+    //     .emit("message_event_change_chat_mute", {
+    //   "token": settings.getToken(),
+    //   "bros_bro_id": chat.id,
+    //   "bro_id": settings.getBroId(),
+    //   "mute": -1
+    // });
     Navigator.of(context).pop();
   }
 
   void muteTheChat(int selectedRadio) {
-    SocketServices.instance.socket
-        .emit("message_event_change_chat_mute", {
-      "token": settings.getToken(),
-      "bros_bro_id": chat.id,
-      "bro_id": settings.getBroId(),
-      "mute": selectedRadio
-    });
+    // TODO: @Skools move to singleton?
+    // SocketServices.instance.socket
+    //     .emit("message_event_change_chat_mute", {
+    //   "token": settings.getToken(),
+    //   "bros_bro_id": chat.id,
+    //   "bro_id": settings.getBroId(),
+    //   "mute": selectedRadio
+    // });
     Navigator.of(context).pop();
   }
 }

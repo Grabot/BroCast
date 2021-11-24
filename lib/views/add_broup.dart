@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:brocast/objects/bro_bros.dart';
 import 'package:brocast/objects/chat.dart';
 import 'package:brocast/services/get_bros.dart';
@@ -30,6 +29,7 @@ class _AddBroupState extends State<AddBroup> with WidgetsBindingObserver {
 
   GetBros getBros = new GetBros();
   Settings settings = Settings();
+  SocketServices socket = SocketServices();
 
   final broupValidator = GlobalKey<FormFieldState>();
 
@@ -50,7 +50,7 @@ class _AddBroupState extends State<AddBroup> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     bromotionController.addListener(bromotionListener);
-    initSockets();
+    // initSockets(); // TODO: @SKools change this to it's own singleton
     WidgetsBinding.instance!.addPostFrameCallback((_) {
       List<Chat> broBros = BroList.instance.getBros();
       if (broBros.isEmpty) {
@@ -74,14 +74,14 @@ class _AddBroupState extends State<AddBroup> with WidgetsBindingObserver {
     BackButtonInterceptor.add(myInterceptor);
   }
 
-  void initSockets() {
-    SocketServices.instance.socket.on('message_event_add_broup_success', (data) {
-      broupWasAdded();
-    });
-    SocketServices.instance.socket.on('message_event_add_broup_failed', (data) {
-      broupAddingFailed();
-    });
-  }
+  // void initSockets() {
+  //   SocketServices.instance.socket.on('message_event_add_broup_success', (data) {
+  //     broupWasAdded();
+  //   });
+  //   SocketServices.instance.socket.on('message_event_add_broup_failed', (data) {
+  //     broupAddingFailed();
+  //   });
+  // }
 
   broupWasAdded() {
     if (mounted) {
@@ -436,14 +436,15 @@ class _AddBroupState extends State<AddBroup> with WidgetsBindingObserver {
       participants.add(partici.id);
     }
     if (broupValidator.currentState!.validate()) {
-      if (SocketServices.instance.socket.connected) {
-        SocketServices.instance.socket.emit("message_event_add_broup",
-            {
-              "token": settings.getToken(),
-              "broup_name": broupNameController.text,
-              "participants": jsonEncode(participants)
-            }
-        );
+      if (socket.isConnected()) {
+        // TODO: @Skools move to singelton?
+        // SocketServices.instance.socket.emit("message_event_add_broup",
+        //     {
+        //       "token": settings.getToken(),
+        //       "broup_name": broupNameController.text,
+        //       "participants": jsonEncode(participants)
+        //     }
+        // );
       }
     }
   }

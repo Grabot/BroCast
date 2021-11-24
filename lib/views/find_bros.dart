@@ -50,19 +50,19 @@ class _FindBrosState extends State<FindBros> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     bromotionController.addListener(bromotionListener);
-    initSockets();
+    // initSockets(); // TODO: @SKools move to singleton?
     WidgetsBinding.instance!.addObserver(this);
     BackButtonInterceptor.add(myInterceptor);
   }
 
-  void initSockets() {
-    SocketServices.instance.socket.on('message_event_add_bro_success', (data) {
-      broWasAdded(data);
-    });
-    SocketServices.instance.socket.on('message_event_add_bro_failed', (data) {
-      broAddingFailed();
-    });
-  }
+  // void initSockets() {
+  //   SocketServices.instance.socket.on('message_event_add_bro_success', (data) {
+  //     broWasAdded(data);
+  //   });
+  //   SocketServices.instance.socket.on('message_event_add_bro_failed', (data) {
+  //     broAddingFailed();
+  //   });
+  // }
 
   bromotionListener() {
     bromotionController.selection =
@@ -110,12 +110,13 @@ class _FindBrosState extends State<FindBros> with WidgetsBindingObserver {
   @override
   void dispose() {
     BackButtonInterceptor.remove(myInterceptor);
-    SocketServices.instance.socket
-        .off('message_event_add_bro_success', (data) => print(data));
-    SocketServices.instance.socket
-        .off('message_event_add_bro_failed', (data) => print(data));
-    SocketServices.instance.socket
-        .off('message_event_send_solo', (data) => print(data));
+    // TODO: @Skools move to singleton?
+    // SocketServices.instance.socket
+    //     .off('message_event_add_bro_success', (data) => print(data));
+    // SocketServices.instance.socket
+    //     .off('message_event_add_bro_failed', (data) => print(data));
+    // SocketServices.instance.socket
+    //     .off('message_event_send_solo', (data) => print(data));
     super.dispose();
   }
 
@@ -379,10 +380,11 @@ class BroTileSearch extends StatelessWidget {
   BroTileSearch(this.bro, this.token);
 
   addBro(BuildContext context) {
-    if (SocketServices.instance.socket.connected) {
-      SocketServices.instance.socket.emit("message_event_add_bro",
-          {"token": token, "bros_bro_id": bro.id});
-    }
+    // TODO: @Skools move to singleton?
+    // if (SocketServices.instance.socket.connected) {
+    //   SocketServices.instance.socket.emit("message_event_add_bro",
+    //       {"token": token, "bros_bro_id": bro.id});
+    // }
   }
 
   @override

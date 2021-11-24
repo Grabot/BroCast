@@ -45,6 +45,7 @@ class _BroupMessagingState extends State<BroupMessaging>
   GetMessages get = new GetMessages();
   GetChat getChat = new GetChat();
   Settings settings = Settings();
+  SocketServices socket = SocketServices();
 
   bool showEmojiKeyboard = false;
 
@@ -109,17 +110,18 @@ class _BroupMessagingState extends State<BroupMessaging>
   }
 
   void initSockets() {
-    if (SocketServices.instance.socket.connected) {
-      SocketServices.instance.socket.on('message_event_broup_changed', (data) {
-        changeToBroup();
-      });
-      SocketServices.instance.socket.on('message_event_add_bro_success', (data) {
-        broWasAdded(data);
-      });
-      SocketServices.instance.socket.on('message_event_add_bro_failed', (data) {
-        broAddingFailed();
-      });
-    }
+    // TODO: @Skools move to singleton?
+    // if (SocketServices.instance.socket.connected) {
+    //   SocketServices.instance.socket.on('message_event_broup_changed', (data) {
+    //     changeToBroup();
+    //   });
+    //   SocketServices.instance.socket.on('message_event_add_bro_success', (data) {
+    //     broWasAdded(data);
+    //   });
+    //   SocketServices.instance.socket.on('message_event_add_bro_failed', (data) {
+    //     broAddingFailed();
+    //   });
+    // }
   }
 
   broWasAdded(data) {
@@ -260,20 +262,21 @@ class _BroupMessagingState extends State<BroupMessaging>
   }
 
   joinBroupRoom(int broId, int broupId) {
-    if (SocketServices.instance.socket.connected) {
-      SocketServices.instance.socket
-          .on('message_event_send', (data) => messageReceived(data));
-      SocketServices.instance.socket
-          .on('message_event_read', (data) => messageRead(data));
-      SocketServices.instance.socket
-          .on('message_event_change_broup_colour_success', (data) {
-        broupColourUpdateSuccess(data);
-      });
-      SocketServices.instance.socket.emit(
-        "join_broup",
-        {"bro_id": broId, "broup_id": broupId},
-      );
-    }
+    // TODO: @Skools move to singleton?
+    // if (SocketServices.instance.socket.connected) {
+    //   SocketServices.instance.socket
+    //       .on('message_event_send', (data) => messageReceived(data));
+    //   SocketServices.instance.socket
+    //       .on('message_event_read', (data) => messageRead(data));
+    //   SocketServices.instance.socket
+    //       .on('message_event_change_broup_colour_success', (data) {
+    //     broupColourUpdateSuccess(data);
+    //   });
+    //   SocketServices.instance.socket.emit(
+    //     "join_broup",
+    //     {"bro_id": broId, "broup_id": broupId},
+    //   );
+    // }
   }
 
   @override
@@ -300,12 +303,13 @@ class _BroupMessagingState extends State<BroupMessaging>
 
   leaveBroupRoom() {
     if (mounted) {
-      if (SocketServices.instance.socket.connected) {
-        SocketServices.instance.socket.emit(
-          "leave_broup",
-          {"bro_id": settings.getBroId(), "broup_id": chat.id},
-        );
-      }
+      // TODO: @Skools move to singleton?
+      // if (SocketServices.instance.socket.connected) {
+      //   SocketServices.instance.socket.emit(
+      //     "leave_broup",
+      //     {"bro_id": settings.getBroId(), "broup_id": chat.id},
+      //   );
+      // }
     }
   }
 
@@ -313,14 +317,15 @@ class _BroupMessagingState extends State<BroupMessaging>
   void dispose() {
     focusAppendText.dispose();
     focusEmojiTextField.dispose();
-    if (SocketServices.instance.socket.connected) {
-      SocketServices.instance.socket
-          .off('message_event_send', (data) => print(data));
-      SocketServices.instance.socket
-          .off('message_event_send_solo', (data) => print(data));
-      SocketServices.instance.socket
-          .off('message_event_read', (data) => print(data));
-    }
+    // TODO: @Skools move to singleton?
+    // if (SocketServices.instance.socket.connected) {
+    //   SocketServices.instance.socket
+    //       .off('message_event_send', (data) => print(data));
+    //   SocketServices.instance.socket
+    //       .off('message_event_send_solo', (data) => print(data));
+    //   SocketServices.instance.socket
+    //       .off('message_event_read', (data) => print(data));
+    // }
     BackButtonInterceptor.remove(myInterceptor);
     super.dispose();
   }
@@ -480,17 +485,18 @@ class _BroupMessagingState extends State<BroupMessaging>
       setState(() {
         this.messages.insert(0, mes);
       });
-      if (SocketServices.instance.socket.connected) {
-        SocketServices.instance.socket.emit(
-          "message_broup",
-          {
-            "bro_id": settings.getBroId(),
-            "broup_id": chat.id,
-            "message": message,
-            "text_message": textMessage
-          },
-        );
-      }
+      // TODO: @Skools move to singleton?
+      // if (SocketServices.instance.socket.connected) {
+      //   SocketServices.instance.socket.emit(
+      //     "message_broup",
+      //     {
+      //       "bro_id": settings.getBroId(),
+      //       "broup_id": chat.id,
+      //       "message": message,
+      //       "text_message": textMessage
+      //     },
+      //   );
+      // }
       broMessageController.clear();
       appendTextMessageController.clear();
 
@@ -512,12 +518,13 @@ class _BroupMessagingState extends State<BroupMessaging>
     } else {
       // If we didn't send this message it is from the other person.
       // We send a response, indicating that we read the messages
-      if (SocketServices.instance.socket.connected) {
-        SocketServices.instance.socket.emit(
-          "message_read_broup",
-          {"bro_id": settings.getBroId(), "broup_id": chat.id},
-        );
-      }
+      // TODO: @Skools move to singleton?
+      // if (SocketServices.instance.socket.connected) {
+      //   SocketServices.instance.socket.emit(
+      //     "message_read_broup",
+      //     {"bro_id": settings.getBroId(), "broup_id": chat.id},
+      //   );
+      // }
     }
     updateDateTiles(message);
     setState(() {
@@ -1089,8 +1096,9 @@ class _MessageTileState extends State<MessageTile> {
             _navigationService.navigateTo(routes.HomeRoute);
           }
         } else if (delta == 2) {
-          SocketServices.instance.socket.emit("message_event_add_bro",
-              {"token": settings.getToken(), "bros_bro_id": widget.senderId});
+          // TODO: @Skools move to singleton?
+          // SocketServices.instance.socket.emit("message_event_add_bro",
+          //     {"token": settings.getToken(), "bros_bro_id": widget.senderId});
           // TODO: @Skools maybe transition to home screen and do this in the singleton class?
         }
         return;

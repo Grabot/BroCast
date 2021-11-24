@@ -36,6 +36,7 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
   GetBros getBros = new GetBros();
   Auth auth = new Auth();
   Settings settings = Settings();
+  SocketServices socket = SocketServices();
 
   bool isSearching = false;
   List<Chat> bros = [];
@@ -269,32 +270,33 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
   }
 
   joinRoomSolo(int broId) {
-    if (SocketServices.instance.socket.connected) {
-      SocketServices.instance.socket.on('message_event_bro_added_you', (data) {
-        broAddedYou(data);
-      });
-      SocketServices.instance.socket.on('message_event_added_to_broup', (data) {
-        addedToBroup();
-      });
-      SocketServices.instance.socket.emit(
-        "join_solo",
-        {
-          "bro_id": broId,
-        },
-      );
-      SocketServices.instance.socket.on('message_event_change_broup_mute_success', (data) {
-        broupWasMuted(data);
-      });
-      SocketServices.instance.socket.on('message_event_change_broup_mute_failed', (data) {
-        broupMutingFailed();
-      });
-      SocketServices.instance.socket.on('message_event_change_chat_mute_success', (data) {
-        chatWasMuted(data);
-      });
-      SocketServices.instance.socket.on('message_event_change_chat_mute_failed', (data) {
-        chatMutingFailed();
-      });
-    }
+    // TODO: @Skools move to singleton?
+    // if (SocketServices.instance.socket.connected) {
+    //   SocketServices.instance.socket.on('message_event_bro_added_you', (data) {
+    //     broAddedYou(data);
+    //   });
+    //   SocketServices.instance.socket.on('message_event_added_to_broup', (data) {
+    //     addedToBroup();
+    //   });
+    //   SocketServices.instance.socket.emit(
+    //     "join_solo",
+    //     {
+    //       "bro_id": broId,
+    //     },
+    //   );
+    //   SocketServices.instance.socket.on('message_event_change_broup_mute_success', (data) {
+    //     broupWasMuted(data);
+    //   });
+    //   SocketServices.instance.socket.on('message_event_change_broup_mute_failed', (data) {
+    //     broupMutingFailed();
+    //   });
+    //   SocketServices.instance.socket.on('message_event_change_chat_mute_success', (data) {
+    //     chatWasMuted(data);
+    //   });
+    //   SocketServices.instance.socket.on('message_event_change_chat_mute_failed', (data) {
+    //     chatMutingFailed();
+    //   });
+    // }
   }
 
   broupWasMuted(var data) {
@@ -351,14 +353,15 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
 
   leaveRoomSolo() {
     if (mounted) {
-      if (SocketServices.instance.socket.connected) {
-        SocketServices.instance.socket
-            .off('message_event_send_solo', (data) => print(data));
-        SocketServices.instance.socket.emit(
-          "leave_solo",
-          {"bro_id": settings.getBroId()},
-        );
-      }
+      // TODO: @Skools move to singleton?
+      // if (SocketServices.instance.socket.connected) {
+      //   SocketServices.instance.socket
+      //       .off('message_event_send_solo', (data) => print(data));
+      //   SocketServices.instance.socket.emit(
+      //     "leave_solo",
+      //     {"bro_id": settings.getBroId()},
+      //   );
+      // }
     }
   }
 
@@ -439,7 +442,6 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
         break;
       case 2:
         leaveRoomSolo();
-        SocketServices.instance.closeSockConnection();
         if (Platform.isAndroid) {
           SystemNavigator.pop();
         } else {
@@ -482,7 +484,6 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
             return false;
           } else {
             leaveRoomSolo();
-            SocketServices.instance.closeSockConnection();
             return true;
           }
         },
@@ -790,43 +791,45 @@ class _BroTileState extends State<BroTile> {
   }
 
   void unmuteTheChat() {
+    // TODO: @Skools move to singleton?
     if (widget.chat is BroBros) {
-      SocketServices.instance.socket
-          .emit("message_event_change_chat_mute", {
-        "token": settings.getToken(),
-        "bros_bro_id": widget.chat.id,
-        "bro_id": settings.getBroId(),
-        "mute": -1
-      });
+      // SocketServices.instance.socket
+      //     .emit("message_event_change_chat_mute", {
+      //   "token": settings.getToken(),
+      //   "bros_bro_id": widget.chat.id,
+      //   "bro_id": settings.getBroId(),
+      //   "mute": -1
+      // });
     } else {
-      SocketServices.instance.socket
-          .emit("message_event_change_broup_mute", {
-        "token": settings.getToken(),
-        "broup_id": widget.chat.id,
-        "bro_id": settings.getBroId(),
-        "mute": -1
-      });
+      // SocketServices.instance.socket
+      //     .emit("message_event_change_broup_mute", {
+      //   "token": settings.getToken(),
+      //   "broup_id": widget.chat.id,
+      //   "bro_id": settings.getBroId(),
+      //   "mute": -1
+      // });
     }
     Navigator.of(context).pop();
   }
 
   void muteTheChat(int selectedRadio) {
     if (widget.chat is BroBros) {
-      SocketServices.instance.socket
-          .emit("message_event_change_chat_mute", {
-        "token": settings.getToken(),
-        "bros_bro_id": widget.chat.id,
-        "bro_id": settings.getBroId(),
-        "mute": selectedRadio
-      });
+      // TODO: @Skools move to singleton?
+      // SocketServices.instance.socket
+      //     .emit("message_event_change_chat_mute", {
+      //   "token": settings.getToken(),
+      //   "bros_bro_id": widget.chat.id,
+      //   "bro_id": settings.getBroId(),
+      //   "mute": selectedRadio
+      // });
     } else {
-      SocketServices.instance.socket
-          .emit("message_event_change_broup_mute", {
-        "token": settings.getToken(),
-        "broup_id": widget.chat.id,
-        "bro_id": settings.getBroId(),
-        "mute": selectedRadio
-      });
+      // SocketServices.instance.socket
+      //     .emit("message_event_change_broup_mute", {
+      //   "token": settings.getToken(),
+      //   "broup_id": widget.chat.id,
+      //   "bro_id": settings.getBroId(),
+      //   "mute": selectedRadio
+      // });
     }
     Navigator.of(context).pop();
   }

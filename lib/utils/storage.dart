@@ -173,7 +173,7 @@ class Storage {
     );
   }
 
-  // TODO: @Skools fix delete with id and broup boolean
+  // TODO: @Skools fix delete with id and broup boolean?
   Future<int> deleteChat(Chat chat) async {
     Database database = await this.database;
     return database.delete(
