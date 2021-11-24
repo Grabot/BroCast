@@ -23,11 +23,8 @@ class _OpeningScreenState extends State<OpeningScreen> {
   // TODO: @Skools, some socket initialization already?
   SocketServices socket = SocketServices();
 
-  late Storage storage;
-
   @override
   void initState() {
-    storage = Storage();
 
     HelperFunction.getEULA().then((val) {
       if (val == null || val == false) {
@@ -48,6 +45,7 @@ class _OpeningScreenState extends State<OpeningScreen> {
       isLoading = true;
     });
 
+    var storage = Storage();
     storage.selectUser().then((user) async {
       if (user != null) {
         signIn(user);

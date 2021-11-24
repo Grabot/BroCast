@@ -4,19 +4,14 @@ import 'package:brocast/utils/locator.dart';
 import 'package:brocast/utils/storage.dart';
 import 'package:brocast/views/opening_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:brocast/utils/notification_util.dart';
 import 'package:brocast/constants/route_paths.dart' as routes;
 import 'package:brocast/router.dart' as router;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  Storage();
   Settings();
   setupLocator();
-
-  NotificationUtil notificationUtil = NotificationUtil();
-  notificationUtil.firebaseBackgroundInitialization();
 
   runApp(MyApp());
 }

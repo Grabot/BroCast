@@ -17,9 +17,7 @@ class Storage {
     return _instance;
   }
 
-  Storage._internal() {
-    database;
-  }
+  Storage._internal();
 
   Future<Database> get database async {
     if (based != null) return based;

@@ -7,7 +7,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/services.dart';
 import 'package:brocast/constants/route_paths.dart' as routes;
-import 'package:logging/logging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:notification_permissions/notification_permissions.dart';
 import 'locator.dart';
@@ -25,14 +24,9 @@ class NotificationUtil {
   static final NotificationUtil _instance = NotificationUtil._internal();
   final NavigationService _navigationService = locator<NavigationService>();
 
-  var storage;
-
   NotificationUtil._internal() {
-    storage ??= Storage();
-
-    if (firebaseToken == null) {
-      setupFirebase();
-    }
+    firebaseBackgroundInitialization();
+    setupFirebase();
   }
 
   factory NotificationUtil() {
@@ -84,6 +78,7 @@ class NotificationUtil {
   }
 
   void notificationNavigate(int id, int isBroup) {
+    var storage = Storage();
     storage.selectChat(id, isBroup).then((value) {
       if (value != null) {
         Chat chat = value;
