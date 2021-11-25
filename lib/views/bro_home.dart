@@ -37,6 +37,7 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
   Auth auth = new Auth();
   Settings settings = Settings();
   SocketServices socket = SocketServices();
+  BroList broList = BroList();
 
   bool isSearching = false;
   List<Chat> bros = [];
@@ -88,7 +89,7 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
               bros = value;
               bros.sort((b, a) => a.getLastActivity().compareTo(b.getLastActivity()));
               shownBros = bros;
-              BroList.instance.setBros(bros);
+              broList.setBros(bros);
               if (mounted) {
                 setState(() {
                 });
@@ -103,14 +104,14 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
   }
 
   socketListener() {
-    bros = BroList.instance.getBros();
+    bros = broList.getBros();
     bros.sort((b, a) => a.getLastActivity().compareTo(b.getLastActivity()));
     setState(() {
       shownBros = bros;
     });
   }
 
-  Widget broList() {
+  Widget listOfBros() {
     return shownBros.isNotEmpty
         ? ListView.builder(
             shrinkWrap: true,
@@ -136,7 +137,7 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
             print("we have gotten bros, let's attempt to insert them into our database");
             print(val);
             bros = val;
-            BroList.instance.setBros(bros);
+            broList.setBros(bros);
             for (Chat bro in bros) {
               print("bro found");
               print(bro);
@@ -228,7 +229,7 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
           data["mute"] ? 1 : 0,
           0
       );
-      BroList.instance.addBro(broBros);
+      broList.addBro(broBros);
       storage.addChat(broBros).then((value) {
         setState(() {});
       });
@@ -316,7 +317,7 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
       if (data.containsKey("result")) {
         bool result = data["result"];
         if (result) {
-          for (Chat broup in BroList.instance.getBros()) {
+          for (Chat broup in broList.getBros()) {
             if (broup.isBroup()) {
               if (broup.id == data["id"]) {
                 setState(() {
@@ -342,7 +343,7 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
       if (data.containsKey("result")) {
         bool result = data["result"];
         if (result) {
-          for (Chat chat in BroList.instance.getBros()) {
+          for (Chat chat in broList.getBros()) {
             if (!chat.isBroup()) {
               if (chat.id == data["id"]) {
                 setState(() {
@@ -550,7 +551,7 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
             ),
           ) : Container(),
           Container(
-            child: Expanded(child: broList()),
+            child: Expanded(child: listOfBros()),
           ),
           Align(
             alignment: Alignment.bottomCenter,

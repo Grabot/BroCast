@@ -41,6 +41,7 @@ class _BroupDetailsState extends State<BroupDetails>
   Settings settings = Settings();
   GetChat getChat = new GetChat();
   SocketServices socket = SocketServices();
+  BroList broList = BroList();
 
   TextEditingController chatDescriptionController = new TextEditingController();
   TextEditingController chatAliasController = new TextEditingController();
@@ -148,7 +149,7 @@ class _BroupDetailsState extends State<BroupDetails>
     broupMe.add(meBroup);
     remainingParticipants.remove(settings.getBroId());
 
-    for (Chat br0 in BroList.instance.getBros()) {
+    for (Chat br0 in broList.getBros()) {
       if (br0 is BroBros) {
         if (remainingParticipants.contains(br0.id)) {
           BroAdded broAdded = new BroAdded(br0.id, br0.chatName);
@@ -282,6 +283,7 @@ class _BroupDetailsState extends State<BroupDetails>
   // }
 
   broWasAdded(data) {
+    // TODO: @Skools remove to background?
     BroBros broBros = new BroBros(
         data["bros_bro_id"],
         data["chat_name"],
@@ -295,7 +297,7 @@ class _BroupDetailsState extends State<BroupDetails>
         data["mute"] ? 1 : 0,
         0
     );
-    BroList.instance.addBro(broBros);
+    broList.addBro(broBros);
     storage.addChat(broBros).then((value) {
       if (mounted) {
         Navigator.pushReplacement(
@@ -707,7 +709,7 @@ class _BroupDetailsState extends State<BroupDetails>
   getBroupBro(int index) {
     Bro bro = chat.getBroupBros()[index];
     String broName = bro.getFullName();
-    for (Chat br0 in BroList.instance.getBros()) {
+    for (Chat br0 in broList.getBros()) {
       if (!br0.isBroup()) {
         if (bro.id == br0.id) {
           // If he has added the bro and given it an alias, we take it over.
@@ -1401,7 +1403,9 @@ void buttonMessage(BuildContext context, Bro bro, bool alertDialog) {
   } else {
     Navigator.pop<int>(context, 1);
   }
-  for (Chat br0 in BroList.instance.getBros()) {
+  // TODO: @Skools test this and maybe make it nice with a function callback?
+  BroList broList = BroList();
+  for (Chat br0 in broList.getBros()) {
     if (!br0.isBroup()) {
       if (br0.id == bro.id) {
         Navigator.pushReplacement(

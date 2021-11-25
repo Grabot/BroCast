@@ -1,19 +1,17 @@
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:brocast/objects/bro.dart';
 import 'package:brocast/objects/bro_bros.dart';
-import 'package:brocast/objects/chat.dart';
 import 'package:brocast/services/reset_registration.dart';
 import 'package:brocast/services/search.dart';
 import 'package:brocast/services/settings.dart';
-import 'package:brocast/services/socket_services.dart';
 import 'package:brocast/utils/bro_list.dart';
-import 'package:brocast/utils/shared.dart';
 import 'package:brocast/utils/storage.dart';
 import 'package:brocast/utils/utils.dart';
 import 'package:brocast/views/bro_home.dart';
 import 'package:brocast/views/signin.dart';
 import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
 import 'package:flutter/material.dart';
+
 import 'add_broup.dart';
 import 'bro_profile.dart';
 import 'bro_settings.dart';
@@ -32,6 +30,7 @@ class FindBros extends StatefulWidget {
 class _FindBrosState extends State<FindBros> with WidgetsBindingObserver {
   Search search = new Search();
   Settings settings = Settings();
+  BroList broList = BroList();
 
   bool isSearching = false;
   bool showNotification = true;
@@ -77,6 +76,7 @@ class _FindBrosState extends State<FindBros> with WidgetsBindingObserver {
 
   broWasAdded(data) {
     if (mounted) {
+      // TODO: @Skools move to background?
       BroBros broBros = new BroBros(
           data["bros_bro_id"],
           data["chat_name"],
@@ -90,7 +90,7 @@ class _FindBrosState extends State<FindBros> with WidgetsBindingObserver {
           data["mute"] ? 1 : 0,
           0
       );
-      BroList.instance.addBro(broBros);
+      broList.addBro(broBros);
       storage.addChat(broBros).then((value) {
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => BroCastHome(
@@ -182,7 +182,7 @@ class _FindBrosState extends State<FindBros> with WidgetsBindingObserver {
     }
   }
 
-  Widget broList() {
+  Widget listOfBros() {
     return bros.isNotEmpty
         ? ListView.builder(
             shrinkWrap: true,
@@ -358,7 +358,7 @@ class _FindBrosState extends State<FindBros> with WidgetsBindingObserver {
                 ],
               ),
             ),
-            Expanded(child: broList()),
+            Expanded(child: listOfBros()),
             Align(
               alignment: Alignment.bottomCenter,
               child: EmojiKeyboard(

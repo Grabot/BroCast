@@ -46,6 +46,7 @@ class _BroupMessagingState extends State<BroupMessaging>
   GetChat getChat = new GetChat();
   Settings settings = Settings();
   SocketServices socket = SocketServices();
+  BroList broList = BroList();
 
   bool showEmojiKeyboard = false;
 
@@ -125,6 +126,7 @@ class _BroupMessagingState extends State<BroupMessaging>
   }
 
   broWasAdded(data) {
+    // TODO: @Skools move to background?
     BroBros broBros = new BroBros(
         data["bros_bro_id"],
         data["chat_name"],
@@ -138,7 +140,7 @@ class _BroupMessagingState extends State<BroupMessaging>
         data["mute"] ? 1 : 0,
         0
     );
-    BroList.instance.addBro(broBros);
+    broList.addBro(broBros);
     storage.addChat(broBros).then((value) {
       if (mounted) {
         Navigator.pushReplacement(
@@ -197,8 +199,8 @@ class _BroupMessagingState extends State<BroupMessaging>
     broupMe.add(meBroup);
     remainingParticipants.remove(settings.getBroId());
 
-    for (Chat br0 in BroList.instance.getBros()) {
-      if (br0 is BroBros) {
+    for (Chat br0 in broList.getBros()) {
+      if (!br0.isBroup()) {
         if (remainingParticipants.contains(br0.id)) {
           BroAdded broAdded = new BroAdded(br0.id, br0.chatName);
           if (remainingAdmins.contains(br0.id)) {
@@ -546,7 +548,7 @@ class _BroupMessagingState extends State<BroupMessaging>
       }
     });
     chat.lastActivity = timestamp;
-    for (Chat ch4t in BroList.instance.getBros()) {
+    for (Chat ch4t in broList.getBros()) {
       if (ch4t.isBroup()) {
         if (ch4t.id == chat.id) {
           ch4t.lastActivity = timestamp;
@@ -591,7 +593,7 @@ class _BroupMessagingState extends State<BroupMessaging>
   }
 
   bool getIsAdded(int senderId) {
-    for (Chat bro in BroList.instance.getBros()) {
+    for (Chat bro in broList.getBros()) {
       if(!bro.isBroup()) {
         if (bro.id == senderId) {
           return true;
@@ -603,7 +605,7 @@ class _BroupMessagingState extends State<BroupMessaging>
 
   String getSender(int senderId) {
     String broName = "";
-    for (Chat bro in BroList.instance.getBros()) {
+    for (Chat bro in broList.getBros()) {
       if(!bro.isBroup()) {
         if (bro.id == senderId) {
           return bro.getBroNameOrAlias();
@@ -1084,7 +1086,9 @@ class _MessageTileState extends State<MessageTile> {
       ).then((int? delta) {
         if (delta == 1) {
           bool broTransition = false;
-          for (Chat br0 in BroList.instance.getBros()) {
+          // TODO: @Skools test this and possibly make nice with a function callback?
+          BroList broList = BroList();
+          for (Chat br0 in broList.getBros()) {
             if (!br0.isBroup()) {
               if (br0.id == widget.senderId) {
                 broTransition = true;

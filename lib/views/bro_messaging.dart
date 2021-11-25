@@ -37,6 +37,7 @@ class _BroMessagingState extends State<BroMessaging>
   GetMessages get = new GetMessages();
   Settings settings = Settings();
   SocketServices socket = SocketServices();
+  BroList broList = BroList();
 
   bool showEmojiKeyboard = false;
   int amountViewed = 1;
@@ -390,7 +391,7 @@ class _BroMessagingState extends State<BroMessaging>
       }
     });
     chat.lastActivity = timestamp;
-    for (Chat ch4t in BroList.instance.getBros()) {
+    for (Chat ch4t in broList.getBros()) {
       if (ch4t.isBroup()) {
         if (ch4t.id == chat.id) {
           ch4t.lastActivity = timestamp;

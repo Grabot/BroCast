@@ -32,6 +32,7 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> with WidgetsB
 
   Settings settings = Settings();
   SocketServices socket = SocketServices();
+  BroList broList = BroList();
 
   bool showEmojiKeyboard = false;
   bool showNotification = true;
@@ -53,7 +54,7 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> with WidgetsB
 
     bromotionController.addListener(bromotionListener);
     WidgetsBinding.instance!.addPostFrameCallback((_) {
-      List<Chat> broBros = BroList.instance.getBros();
+      List<Chat> broBros = broList.getBros();
       bros.clear();
       shownBros.clear();
       for (Chat myBro in broBros) {
@@ -247,7 +248,7 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> with WidgetsB
     }
   }
 
-  Widget broList() {
+  Widget listOfBros() {
     return shownBros.isNotEmpty
         ? ListView.builder(
         shrinkWrap: true,
@@ -397,7 +398,7 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> with WidgetsB
                     ]
                     ),
                   ),
-                  broList()
+                  listOfBros()
                 ],
                 ),
               ),

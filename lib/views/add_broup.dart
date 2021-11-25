@@ -30,13 +30,14 @@ class _AddBroupState extends State<AddBroup> with WidgetsBindingObserver {
   GetBros getBros = new GetBros();
   Settings settings = Settings();
   SocketServices socket = SocketServices();
+  BroList broList = BroList();
 
   final broupValidator = GlobalKey<FormFieldState>();
 
   bool showNotification = true;
 
-  List<BroAddBroup> bros = [];
-  List<BroAddBroup> shownBros = [];
+  List<BroAddBroup> brosAddBroup = [];
+  List<BroAddBroup> shownBrosAddBroup = [];
   List<BroBros> broupParticipants = [];
 
   TextEditingController bromotionController = new TextEditingController();
@@ -52,23 +53,19 @@ class _AddBroupState extends State<AddBroup> with WidgetsBindingObserver {
     bromotionController.addListener(bromotionListener);
     // initSockets(); // TODO: @SKools change this to it's own singleton
     WidgetsBinding.instance!.addPostFrameCallback((_) {
-      List<Chat> broBros = BroList.instance.getBros();
-      if (broBros.isEmpty) {
-        searchBros(settings.getToken());
-      } else {
-        bros.clear();
-        shownBros.clear();
-        broupParticipants.clear();
-        for (Chat myBro in broBros) {
-          if (!myBro.isBroup()) {
-            BroAddBroup broAddBroup = new BroAddBroup(false, myBro);
-            bros.add(broAddBroup);
-          }
+      List<Chat> chats = broList.getBros();
+      brosAddBroup.clear();
+      shownBrosAddBroup.clear();
+      broupParticipants.clear();
+      for (Chat myBro in chats) {
+        if (!myBro.isBroup()) {
+          BroAddBroup broAddBroup = new BroAddBroup(false, myBro);
+          brosAddBroup.add(broAddBroup);
         }
-        setState(() {
-          shownBros = bros;
-        });
       }
+      setState(() {
+        shownBrosAddBroup = brosAddBroup;
+      });
     });
     WidgetsBinding.instance!.addObserver(this);
     BackButtonInterceptor.add(myInterceptor);
@@ -110,9 +107,9 @@ class _AddBroupState extends State<AddBroup> with WidgetsBindingObserver {
     getBros.getBros(token).then((val) {
       if (!(val is String)) {
         setState(() {
-          bros = val;
-          shownBros = val;
-          BroList.instance.setBros(bros);
+          // bros = val;
+          // shownBros = val;
+          // broList.setBros(bros);
         });
       } else {
         ShowToastComponent.showDialog(val.toString(), context);
@@ -217,11 +214,11 @@ class _AddBroupState extends State<AddBroup> with WidgetsBindingObserver {
         : Container();
   }
 
-  Widget broList() {
-    return shownBros.isNotEmpty
+  Widget listOfBros() {
+    return shownBrosAddBroup.isNotEmpty
         ? ListView.builder(
         shrinkWrap: true,
-        itemCount: shownBros.length,
+        itemCount: shownBrosAddBroup.length,
         itemBuilder: (context, index) {
           return broTileAddBroup(index);
         })
@@ -235,7 +232,7 @@ class _AddBroupState extends State<AddBroup> with WidgetsBindingObserver {
 
   void updateParticipantsBroup() {
     broupParticipants.clear();
-    for (BroAddBroup broAddBroup in bros) {
+    for (BroAddBroup broAddBroup in brosAddBroup) {
       if (broAddBroup.isSelected()) {
         broupParticipants.add(broAddBroup.getBroBros());
       }
@@ -259,7 +256,7 @@ class _AddBroupState extends State<AddBroup> with WidgetsBindingObserver {
 
   void removeParticipant(Chat participant) {
     broupParticipants.remove(participant);
-    for (BroAddBroup broAddBroup in bros) {
+    for (BroAddBroup broAddBroup in brosAddBroup) {
       if (participant.id == broAddBroup.getBroBros().id) {
         broAddBroup.setSelected(false);
       }
@@ -329,11 +326,11 @@ class _AddBroupState extends State<AddBroup> with WidgetsBindingObserver {
   Widget broTileAddBroup(index) {
     return InkWell(
       onTap: () {
-        selectBro(shownBros[index]);
+        selectBro(shownBrosAddBroup[index]);
       },
       child: Container(
         width: MediaQuery.of(context).size.width,
-        color: shownBros[index].getBroBros().getColor().withOpacity(0.6),
+        color: shownBrosAddBroup[index].getBroBros().getColor().withOpacity(0.6),
         child: Row(
             children: [
               Container(
@@ -341,9 +338,9 @@ class _AddBroupState extends State<AddBroup> with WidgetsBindingObserver {
                 child: Checkbox(
                   checkColor: Colors.white,
                   fillColor: MaterialStateProperty.resolveWith(getColor),
-                  value: shownBros[index].isSelected(),
+                  value: shownBrosAddBroup[index].isSelected(),
                   onChanged: (bool? value) {
-                    selectBro(shownBros[index]);
+                    selectBro(shownBrosAddBroup[index]);
                   },
                 ),
               ),
@@ -361,17 +358,17 @@ class _AddBroupState extends State<AddBroup> with WidgetsBindingObserver {
                               children: [
                                 Container(
                                   width: MediaQuery.of(context).size.width - 160,
-                                  child: shownBros[index].getBroBros().alias != null && shownBros[index].getBroBros().alias.isNotEmpty
+                                  child: shownBrosAddBroup[index].getBroBros().alias != null && shownBrosAddBroup[index].getBroBros().alias.isNotEmpty
                                       ? Container(
-                                      child: Text(shownBros[index].getBroBros().alias,
+                                      child: Text(shownBrosAddBroup[index].getBroBros().alias,
                                           overflow: TextOverflow.ellipsis,
                                           style: TextStyle(
-                                              color: getTextColor(shownBros[index].getBroBros().getColor()), fontSize: 20)))
+                                              color: getTextColor(shownBrosAddBroup[index].getBroBros().getColor()), fontSize: 20)))
                                       : Container(
-                                      child: Text(shownBros[index].getBroBros().chatName,
+                                      child: Text(shownBrosAddBroup[index].getBroBros().chatName,
                                           overflow: TextOverflow.ellipsis,
                                           style: TextStyle(
-                                              color: getTextColor(shownBros[index].getBroBros().getColor()), fontSize: 20))),
+                                              color: getTextColor(shownBrosAddBroup[index].getBroBros().getColor()), fontSize: 20))),
                                 ),
                               ],
                             ),
@@ -390,22 +387,22 @@ class _AddBroupState extends State<AddBroup> with WidgetsBindingObserver {
 
   void onChangedBroNameField(String typedText, String emojiField) {
     if (emojiField.isEmpty && typedText.isNotEmpty) {
-      shownBros = bros.where((element) =>
+      shownBrosAddBroup = brosAddBroup.where((element) =>
           element.getBroBros().getBroNameOrAlias().toLowerCase()
               .contains(typedText.toLowerCase())).toList();
     } else if (emojiField.isNotEmpty && typedText.isEmpty) {
-      shownBros = bros.where((element) =>
+      shownBrosAddBroup = brosAddBroup.where((element) =>
           element.getBroBros().getBroNameOrAlias().toLowerCase()
               .contains(emojiField)).toList();
     } else if (emojiField.isNotEmpty && typedText.isNotEmpty) {
-      shownBros = bros.where((element) =>
+      shownBrosAddBroup = brosAddBroup.where((element) =>
           element.getBroBros().getBroNameOrAlias().toLowerCase()
               .contains(typedText.toLowerCase()) &&
               element.getBroBros().getBroNameOrAlias().toLowerCase()
                   .contains(emojiField)).toList();
     } else {
       // both empty
-      shownBros = bros;
+      shownBrosAddBroup = brosAddBroup;
     }
     setState(() {
     });
@@ -566,7 +563,7 @@ class _AddBroupState extends State<AddBroup> with WidgetsBindingObserver {
               SizedBox(
                   height: 10
               ),
-              Expanded(child: broList()),
+              Expanded(child: listOfBros()),
               Align(
                 alignment: Alignment.bottomCenter,
                 child: EmojiKeyboard(

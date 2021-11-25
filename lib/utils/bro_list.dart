@@ -1,13 +1,18 @@
 import 'package:brocast/objects/chat.dart';
 
 class BroList {
-  static BroList _instance = new BroList._internal();
+  static final BroList _instance = BroList._internal();
 
-  List<Chat> bros = [];
+  late List<Chat> bros;
 
-  static get instance => _instance;
+  BroList._internal() {
+    bros = [];
+  }
 
-  BroList._internal();
+  factory BroList() {
+    return _instance;
+  }
+
 
   List<Chat> getBros() {
     return this.bros;

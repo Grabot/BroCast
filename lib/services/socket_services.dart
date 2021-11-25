@@ -9,6 +9,7 @@ class SocketServices extends ChangeNotifier {
 
   late IO.Socket socket;
   late Storage storage;
+  late BroList broList;
 
   bool joinedSoloRoom = false;
 
@@ -16,6 +17,7 @@ class SocketServices extends ChangeNotifier {
 
   SocketServices._internal() {
     storage = Storage();
+    broList = BroList();
     startSockConnection();
   }
 
@@ -79,7 +81,7 @@ class SocketServices extends ChangeNotifier {
         data["mute"] ? 1 : 0,
         0
     );
-    BroList.instance.addBro(broBros);
+    broList.addBro(broBros);
     storage.addChat(broBros).then((value) {
       print("bro adding DONE");
       onChange();
