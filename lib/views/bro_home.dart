@@ -32,11 +32,11 @@ class BroCastHome extends StatefulWidget {
   _BroCastHomeState createState() => _BroCastHomeState();
 }
 
-class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
+class _BroCastHomeState extends State<BroCastHome> {
   GetBros getBros = new GetBros();
   Auth auth = new Auth();
   Settings settings = Settings();
-  SocketServices socket = SocketServices();
+  SocketServices socketServices = SocketServices();
   BroList broList = BroList();
 
   bool isSearching = false;
@@ -58,7 +58,8 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
     super.initState();
     BackButtonInterceptor.add(myInterceptor);
     bromotionController.addListener(bromotionListener);
-    socket.addListener(socketListener);
+    socketServices.checkConnection();
+    socketServices.addListener(socketListener);
 
     print("bro home init");
     storage.selectUser().then((user) {
@@ -74,7 +75,7 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
         // We should remain in the solo room throughout the app.
         // Only leave when minimizing or closing the app.
         print("join room initstate");
-        socket.joinRoomSolo(settings.getBroId());
+        socketServices.joinRoomSolo(settings.getBroId());
 
         if (user.shouldRecheck()) {
           searchBros(user.token);
@@ -99,8 +100,6 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
         }
       }
     });
-
-    WidgetsBinding.instance!.addObserver(this);
   }
 
   socketListener() {
@@ -134,22 +133,14 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
       getBros.getBros(token).then((val) {
         if (mounted) {
           if (!(val is String)) {
-            print("we have gotten bros, let's attempt to insert them into our database");
-            print(val);
             bros = val;
             broList.setBros(bros);
             for (Chat bro in bros) {
-              print("bro found");
-              print(bro);
               storage.selectChat(bro.id, bro.broup).then((value) {
                 if (value == null) {
-                  print("adding broup participants etc");
+                  print("adding broup participants");
                   storage.addChat(bro).then((vl) {
-                    if (vl == null) {
-                      print("something went wrong?");
-                    } else {
-                      print("chat was saved! $vl");
-                    }
+                    print("chat was saved! $vl");
                   });
                 } else {
                   print("chat was already added!");
@@ -367,20 +358,10 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
   @override
   void dispose() {
     print("calling dispose? HOME");
-    socket.removeListener(socketListener);
-    WidgetsBinding.instance!.removeObserver(this);
+    socketServices.removeListener(socketListener);
+    bromotionController.removeListener(bromotionListener);
+    BackButtonInterceptor.remove(myInterceptor);
     super.dispose();
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
-      // The application is visible and responding to user input.
-      print("join room app life cycle");
-      socket.joinRoomSolo(settings.getBroId());
-    } else {
-      socket.leaveRoomSolo(settings.getBroId());
-    }
   }
 
   PreferredSize appBarHome(BuildContext context) {
@@ -444,7 +425,7 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
         )));
         break;
       case 2:
-        socket.leaveRoomSolo(settings.getBroId());
+        socketServices.leaveRoomSolo(settings.getBroId());
         if (Platform.isAndroid) {
           SystemNavigator.pop();
         } else {
@@ -452,7 +433,7 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
         }
         break;
       case 3:
-        socket.leaveRoomSolo(settings.getBroId());
+        socketServices.leaveRoomSolo(settings.getBroId());
         ResetRegistration resetRegistration = new ResetRegistration();
         resetRegistration.removeRegistrationId(settings.getBroId());
         Navigator.pushReplacement(
@@ -486,7 +467,7 @@ class _BroCastHomeState extends State<BroCastHome> with WidgetsBindingObserver {
 
             return false;
           } else {
-            socket.leaveRoomSolo(settings.getBroId());
+            socketServices.leaveRoomSolo(settings.getBroId());
             return true;
           }
         },

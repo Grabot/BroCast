@@ -30,6 +30,7 @@ class SocketServices extends ChangeNotifier {
     String namespace = "sock";
     String socketUrl = baseUrl + namespace;
     socket = IO.io(socketUrl, <String, dynamic>{
+      'autoConnect': false,
       'transports': ['websocket'],
     });
 
@@ -50,8 +51,15 @@ class SocketServices extends ChangeNotifier {
     return socket.connected;
   }
 
+  void checkConnection() {
+    if (!isConnected()) {
+      startSockConnection();
+    }
+  }
+
   void joinRoomSolo(int broId) {
     if (!joinedSoloRoom) {
+      // After you have logged in you want to remain in the bro's solo room.
       print("joined the room");
       joinedSoloRoom = true;
       this.socket.emit(
@@ -63,11 +71,14 @@ class SocketServices extends ChangeNotifier {
       this.socket.on('message_event_bro_added_you', (data) {
         broAddedYou(data);
       });
+      this.socket.on('message_event_send_solo', (data) {
+        // TODO: @Skools do we still do a message_event_send_solo?
+        print(data);
+      });
     }
   }
 
   void broAddedYou(data) {
-    print("going to add a bro!");
     BroBros broBros = new BroBros(
         data["bros_bro_id"],
         data["chat_name"],
@@ -83,13 +94,13 @@ class SocketServices extends ChangeNotifier {
     );
     broList.addBro(broBros);
     storage.addChat(broBros).then((value) {
-      print("bro adding DONE");
       onChange();
     });
   }
 
   void leaveRoomSolo(int broId) {
     if (!joinedSoloRoom) {
+      print("left the room");
       joinedSoloRoom = false;
       this.socket.emit(
         "leave_solo",
@@ -97,6 +108,8 @@ class SocketServices extends ChangeNotifier {
           "bro_id": broId
         },
       );
+      this.socket.off('message_event_bro_added_you');
+      this.socket.off('message_event_send_solo');
     }
   }
 

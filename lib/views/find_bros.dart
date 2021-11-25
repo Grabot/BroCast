@@ -4,6 +4,7 @@ import 'package:brocast/objects/bro_bros.dart';
 import 'package:brocast/services/reset_registration.dart';
 import 'package:brocast/services/search.dart';
 import 'package:brocast/services/settings.dart';
+import 'package:brocast/services/socket_services.dart';
 import 'package:brocast/utils/bro_list.dart';
 import 'package:brocast/utils/storage.dart';
 import 'package:brocast/utils/utils.dart';
@@ -27,16 +28,18 @@ class FindBros extends StatefulWidget {
   _FindBrosState createState() => _FindBrosState();
 }
 
-class _FindBrosState extends State<FindBros> with WidgetsBindingObserver {
+class _FindBrosState extends State<FindBros> {
   Search search = new Search();
   Settings settings = Settings();
   BroList broList = BroList();
+  SocketServices socketServices = SocketServices();
 
   bool isSearching = false;
   bool showNotification = true;
-  List<Bro> bros = [];
+  List<Bro> brosToBeAdded = [];
 
   bool showEmojiKeyboard = false;
+  bool clickedNewBro = false;
 
   TextEditingController broNameController = new TextEditingController();
   TextEditingController bromotionController = new TextEditingController();
@@ -49,19 +52,19 @@ class _FindBrosState extends State<FindBros> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     bromotionController.addListener(bromotionListener);
-    // initSockets(); // TODO: @SKools move to singleton?
-    WidgetsBinding.instance!.addObserver(this);
+    socketServices.checkConnection();
     BackButtonInterceptor.add(myInterceptor);
+    initFindBrosSockets();
   }
 
-  // void initSockets() {
-  //   SocketServices.instance.socket.on('message_event_add_bro_success', (data) {
-  //     broWasAdded(data);
-  //   });
-  //   SocketServices.instance.socket.on('message_event_add_bro_failed', (data) {
-  //     broAddingFailed();
-  //   });
-  // }
+  void initFindBrosSockets() {
+    // The "message_event_bro_added_you" socket is handled in the background.
+    // The "message_event_add_bro_success" should be handled in this screen.
+    socketServices.socket.on('message_event_add_bro_success', (data) =>
+        youAddedABro(data));
+    socketServices.socket.on('message_event_add_bro_failed', (data) =>
+        broAddingFailed());
+  }
 
   bromotionListener() {
     bromotionController.selection =
@@ -74,49 +77,42 @@ class _FindBrosState extends State<FindBros> with WidgetsBindingObserver {
     }
   }
 
-  broWasAdded(data) {
-    if (mounted) {
-      // TODO: @Skools move to background?
-      BroBros broBros = new BroBros(
-          data["bros_bro_id"],
-          data["chat_name"],
-          data["chat_description"],
-          data["alias"],
-          data["chat_colour"],
-          data["unread_messages"],
-          data["last_time_activity"],
-          data["room_name"],
-          data["blocked"] ? 1 : 0,
-          data["mute"] ? 1 : 0,
-          0
-      );
-      broList.addBro(broBros);
-      storage.addChat(broBros).then((value) {
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => BroCastHome(
-            key: UniqueKey()
-        )));
-      });
-    }
+  youAddedABro(data) {
+    BroBros broBros = new BroBros(
+        data["bros_bro_id"],
+        data["chat_name"],
+        data["chat_description"],
+        data["alias"],
+        data["chat_colour"],
+        data["unread_messages"],
+        data["last_time_activity"],
+        data["room_name"],
+        data["blocked"] ? 1 : 0,
+        data["mute"] ? 1 : 0,
+        0
+    );
+    broList.addBro(broBros);
+    storage.addChat(broBros).then((value) {
+      clickedNewBro = false;
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => BroCastHome(
+          key: UniqueKey()
+      )));
+    });
   }
 
   broAddingFailed() {
-    if (mounted) {
-      ShowToastComponent.showDialog(
-          "Bro could not be added at this time", context);
-    }
+    clickedNewBro = false;
+    ShowToastComponent.showDialog(
+        "Bro could not be added at this time", context);
   }
 
   @override
   void dispose() {
     BackButtonInterceptor.remove(myInterceptor);
-    // TODO: @Skools move to singleton?
-    // SocketServices.instance.socket
-    //     .off('message_event_add_bro_success', (data) => print(data));
-    // SocketServices.instance.socket
-    //     .off('message_event_add_bro_failed', (data) => print(data));
-    // SocketServices.instance.socket
-    //     .off('message_event_send_solo', (data) => print(data));
+    bromotionController.removeListener(bromotionListener);
+    socketServices.socket.off('message_event_add_bro_success');
+    socketServices.socket.off('message_event_add_bro_failed');
     super.dispose();
   }
 
@@ -133,7 +129,7 @@ class _FindBrosState extends State<FindBros> with WidgetsBindingObserver {
     }
   }
 
-  void addGroup() {
+  void addBroup() {
     Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (context) => AddBroup(key: UniqueKey())));
   }
@@ -170,7 +166,7 @@ class _FindBrosState extends State<FindBros> with WidgetsBindingObserver {
       search.searchBro(settings.getToken(), broNameSearch, bromotionSearch).then((val) {
         if (!(val is String)) {
           setState(() {
-            bros = val;
+            brosToBeAdded = val;
           });
         } else {
           ShowToastComponent.showDialog(val.toString(), context);
@@ -183,14 +179,27 @@ class _FindBrosState extends State<FindBros> with WidgetsBindingObserver {
   }
 
   Widget listOfBros() {
-    return bros.isNotEmpty
+    return brosToBeAdded.isNotEmpty
         ? ListView.builder(
             shrinkWrap: true,
-            itemCount: bros.length,
+            itemCount: brosToBeAdded.length,
             itemBuilder: (context, index) {
-              return BroTileSearch(bros[index], settings.getToken());
+              return BroTileSearch(
+                  brosToBeAdded[index],
+                  settings.getToken(),
+                  addNewBro
+              );
             })
         : Container();
+  }
+
+  addNewBro(int addBroId) {
+    if (!clickedNewBro) {
+      clickedNewBro = true;
+      socketServices.socket.emit("message_event_add_bro",
+          {"token": settings.getToken(), "bros_bro_id": addBroId}
+      );
+    }
   }
 
   void backButtonFunctionality() {
@@ -267,7 +276,7 @@ class _FindBrosState extends State<FindBros> with WidgetsBindingObserver {
           children: [
             InkWell(
               onTap: () {
-                addGroup();
+                addBroup();
               },
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 24),
@@ -281,7 +290,7 @@ class _FindBrosState extends State<FindBros> with WidgetsBindingObserver {
                       ),
                       child: IconButton(
                         onPressed: () {
-                          addGroup();
+                          addBroup();
                         },
                         icon: Icon(
                             Icons.group_add,
@@ -377,14 +386,16 @@ class _FindBrosState extends State<FindBros> with WidgetsBindingObserver {
 class BroTileSearch extends StatelessWidget {
   final Bro bro;
   final String token;
-  BroTileSearch(this.bro, this.token);
+  final void Function(int) addNewBro;
 
-  addBro(BuildContext context) {
-    // TODO: @Skools move to singleton?
-    // if (SocketServices.instance.socket.connected) {
-    //   SocketServices.instance.socket.emit("message_event_add_bro",
-    //       {"token": token, "bros_bro_id": bro.id});
-    // }
+  BroTileSearch(
+      this.bro,
+      this.token,
+      this.addNewBro
+    );
+
+  addBro() {
+    addNewBro(bro.id);
   }
 
   @override
@@ -406,7 +417,7 @@ class BroTileSearch extends StatelessWidget {
             width: 62,
             child: GestureDetector(
               onTap: () {
-                addBro(context);
+                addBro();
               },
               child: Container(
                   decoration: BoxDecoration(
