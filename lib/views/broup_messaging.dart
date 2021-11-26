@@ -53,7 +53,6 @@ class _BroupMessagingState extends State<BroupMessaging>
   FocusNode focusAppendText = FocusNode();
   FocusNode focusEmojiTextField = FocusNode();
   bool appendingMessage = false;
-  bool showNotification = true;
 
   TextEditingController broMessageController = new TextEditingController();
   TextEditingController appendTextMessageController =
@@ -279,15 +278,6 @@ class _BroupMessagingState extends State<BroupMessaging>
     //     {"bro_id": broId, "broup_id": broupId},
     //   );
     // }
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
-      showNotification = true;
-    } else {
-      showNotification = false;
-    }
   }
 
   messageReceived(var data) {

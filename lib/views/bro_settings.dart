@@ -21,10 +21,9 @@ class BroSettings extends StatefulWidget {
   _BroSettingsState createState() => _BroSettingsState();
 }
 
-class _BroSettingsState extends State<BroSettings> with WidgetsBindingObserver {
+class _BroSettingsState extends State<BroSettings> {
   bool toggleSwitchKeyboard = false;
   bool toggleSwitchSound = false;
-  bool showNotification = true;
   Settings settings = Settings();
   SocketServices socketServices = SocketServices();
 
@@ -39,7 +38,6 @@ class _BroSettingsState extends State<BroSettings> with WidgetsBindingObserver {
 
     toggleSwitchKeyboard = settings.getEmojiKeyboardDarkMode();
 
-    WidgetsBinding.instance!.addObserver(this);
     BackButtonInterceptor.add(myInterceptor);
   }
 
@@ -52,15 +50,6 @@ class _BroSettingsState extends State<BroSettings> with WidgetsBindingObserver {
   void dispose() {
     BackButtonInterceptor.remove(myInterceptor);
     super.dispose();
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
-      showNotification = true;
-    } else {
-      showNotification = false;
-    }
   }
 
   void toggledEmojiKeyboardDarkMode(darkValue) {

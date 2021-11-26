@@ -35,7 +35,6 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> with WidgetsB
   BroList broList = BroList();
 
   bool showEmojiKeyboard = false;
-  bool showNotification = true;
 
   List<BroupAddBro> bros = [];
   List<BroupAddBro> shownBros = [];
@@ -122,15 +121,6 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> with WidgetsB
     if (mounted) {
       ShowToastComponent.showDialog(
           "Adding bro to the broup has failed", context);
-    }
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
-      showNotification = true;
-    } else {
-      showNotification = false;
     }
   }
 

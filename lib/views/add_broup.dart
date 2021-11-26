@@ -34,8 +34,6 @@ class _AddBroupState extends State<AddBroup> with WidgetsBindingObserver {
 
   final broupValidator = GlobalKey<FormFieldState>();
 
-  bool showNotification = true;
-
   List<BroAddBroup> brosAddBroup = [];
   List<BroAddBroup> shownBrosAddBroup = [];
   List<BroBros> broupParticipants = [];
@@ -91,15 +89,6 @@ class _AddBroupState extends State<AddBroup> with WidgetsBindingObserver {
     if (mounted) {
       ShowToastComponent.showDialog(
           "Broup could not be created at this time", context);
-    }
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
-      showNotification = true;
-    } else {
-      showNotification = false;
     }
   }
 

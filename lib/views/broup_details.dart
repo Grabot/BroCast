@@ -49,7 +49,6 @@ class _BroupDetailsState extends State<BroupDetails>
   bool changeDescription = false;
   bool changeAlias = false;
   bool changeColour = false;
-  bool showNotification = true;
 
   late int amountInGroup;
 
@@ -100,15 +99,6 @@ class _BroupDetailsState extends State<BroupDetails>
     });
 
     WidgetsBinding.instance!.addObserver(this);
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
-      showNotification = true;
-    } else {
-      showNotification = false;
-    }
   }
 
   void changeToBroup() {

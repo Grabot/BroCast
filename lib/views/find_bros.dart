@@ -35,7 +35,6 @@ class _FindBrosState extends State<FindBros> {
   SocketServices socketServices = SocketServices();
 
   bool isSearching = false;
-  bool showNotification = true;
   List<Bro> brosToBeAdded = [];
 
   bool showEmojiKeyboard = false;
@@ -132,15 +131,6 @@ class _FindBrosState extends State<FindBros> {
   void addBroup() {
     Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (context) => AddBroup(key: UniqueKey())));
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
-      showNotification = true;
-    } else {
-      showNotification = false;
-    }
   }
 
   void onTapEmojiField() {

@@ -36,7 +36,6 @@ class _BroChatDetailsState extends State<BroChatDetails>
   bool changeDescription = false;
   bool changeAlias = false;
   bool changeColour = false;
-  bool showNotification = true;
 
   late CircleColorPickerController circleColorPickerController;
 
@@ -73,15 +72,6 @@ class _BroChatDetailsState extends State<BroChatDetails>
 
     currentColor = chat.getColor();
     WidgetsBinding.instance!.addObserver(this);
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
-      showNotification = true;
-    } else {
-      showNotification = false;
-    }
   }
 
   // void initSockets() {
