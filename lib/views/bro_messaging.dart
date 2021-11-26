@@ -35,7 +35,7 @@ class _BroMessagingState extends State<BroMessaging> {
   bool isLoading = false;
   GetMessages get = new GetMessages();
   Settings settings = Settings();
-  SocketServices socket = SocketServices();
+  SocketServices socketServices = SocketServices();
   BroList broList = BroList();
 
   bool showEmojiKeyboard = false;
@@ -66,19 +66,19 @@ class _BroMessagingState extends State<BroMessaging> {
       // The user can directly go here (via notification) So we will retrieve and set the user data.
       storage.selectUser().then((user) async {
         if (user != null) {
-          // TODO: @Skools possibly improve? Don't retrieve if that has been done before?
+          // TODO: @Skools possibly improve? Don't retrieve it if that has been done before?
           settings.setEmojiKeyboardDarkMode(user.getKeyboardDarkMode());
           settings.setBroId(user.id);
           settings.setBroName(user.broName);
           settings.setBromotion(user.bromotion);
           settings.setToken(user.token);
           getMessages(amountViewed);
-          joinRoom(settings.getBroId(), chat.id);
+          initBroMessagingSocket(settings.getBroId(), chat.id);
         }
       });
     } else {
       getMessages(amountViewed);
-      joinRoom(settings.getBroId(), chat.id);
+      initBroMessagingSocket(settings.getBroId(), chat.id);
     }
     BackButtonInterceptor.add(myInterceptor);
 
@@ -91,58 +91,46 @@ class _BroMessagingState extends State<BroMessaging> {
     });
   }
 
-
-  joinRoom(int broId, int brosBroId) {
-    // TODO: @Skools move to singleton?
-    // if (SocketServices.instance.socket.connected) {
-    //   SocketServices.instance.socket
-    //       .on('message_event_send', (data) => messageReceived(data));
-    //   SocketServices.instance.socket
-    //       .on('message_event_read', (data) => messageRead(data));
-    //   SocketServices.instance.socket
-    //       .on('message_event_change_chat_colour_success', (data) {
-    //     chatColourUpdateSuccess(data);
-    //   });
-    //   SocketServices.instance.socket.emit(
-    //     "join",
-    //     {"bro_id": broId, "bros_bro_id": brosBroId},
-    //   );
-    // }
+  initBroMessagingSocket(int broId, int brosBroId) {
+    socketServices.socket.emit(
+      "join",
+      {"bro_id": broId, "bros_bro_id": brosBroId},
+    );
+    socketServices.socket
+        .on('message_event_send', (data) => messageReceived(data));
+    socketServices.socket
+        .on('message_event_read', (data) => messageRead(data));
+    socketServices.socket
+        .on('message_event_change_chat_colour_success', (data) {
+      chatColourUpdateSuccess(data);
+    });
   }
 
   messageReceived(var data) {
-    if (mounted) {
-      Message mes = new Message(
-          data["id"],
-          data["sender_id"],
-          data["recipient_id"],
-          data["body"],
-          data["text_message"],
-          data["timestamp"]);
-      updateMessages(mes);
-    }
+    Message mes = new Message(
+        data["id"],
+        data["sender_id"],
+        data["recipient_id"],
+        data["body"],
+        data["text_message"],
+        data["timestamp"]);
+    updateMessages(mes);
   }
 
   leaveRoom() {
-    if (mounted) {
-      // TODO: @Skools move to singleton?
-      // if (SocketServices.instance.socket.connected) {
-      //   SocketServices.instance.socket.emit(
-      //     "leave",
-      //     {"bro_id": settings.getBroId(), "bros_bro_id": chat.id},
-      //   );
-      // }
-    }
+    socketServices.socket.emit(
+      "leave",
+      {"bro_id": settings.getBroId(), "bros_bro_id": chat.id},
+    );
   }
 
   void chatColourUpdateSuccess(var data) {
-    if (mounted) {
-      if (data.containsKey("result")) {
-        bool result = data["result"];
-        if (result) {
-          chat.chatColor = data["colour"];
-          setState(() {});
-        }
+    // TODO: @Skools Probably move to background, update every screen
+    if (data.containsKey("result")) {
+      bool result = data["result"];
+      if (result) {
+        chat.chatColor = data["colour"];
+        setState(() {});
       }
     }
   }
@@ -151,15 +139,11 @@ class _BroMessagingState extends State<BroMessaging> {
   void dispose() {
     focusAppendText.dispose();
     focusEmojiTextField.dispose();
-    // TODO: @Skools move to singleton?
-    // if (SocketServices.instance.socket.connected) {
-    //   SocketServices.instance.socket
-    //       .off('message_event_send', (data) => print(data));
-    //   SocketServices.instance.socket
-    //       .off('message_event_send_solo', (data) => print(data));
-    //   SocketServices.instance.socket
-    //       .off('message_event_read', (data) => print(data));
-    // }
+    leaveRoom();
+    socketServices.socket.off('message_event_send');
+    socketServices.socket.off('message_event_read');
+    // TODO: @Skools Probably move to background, update every screen
+    // socketServices.socket.off('message_event_change_chat_colour_success');
     BackButtonInterceptor.remove(myInterceptor);
     super.dispose();
   }
@@ -319,18 +303,15 @@ class _BroMessagingState extends State<BroMessaging> {
       setState(() {
         this.messages.insert(0, mes);
       });
-      // TODO: @Skools move to singleton?
-      // if (SocketServices.instance.socket.connected) {
-      //   SocketServices.instance.socket.emit(
-      //     "message",
-      //     {
-      //       "bro_id": settings.getBroId(),
-      //       "bros_bro_id": chat.id,
-      //       "message": message,
-      //       "text_message": textMessage
-      //     },
-      //   );
-      // }
+      socketServices.socket.emit(
+        "message",
+        {
+          "bro_id": settings.getBroId(),
+          "bros_bro_id": chat.id,
+          "message": message,
+          "text_message": textMessage
+        },
+      );
       broMessageController.clear();
       appendTextMessageController.clear();
 
@@ -352,13 +333,10 @@ class _BroMessagingState extends State<BroMessaging> {
     } else {
       // If we didn't send this message it is from the other person.
       // We send a response, indicating that we read the messages
-      // TODO: @Skools move to singleton?
-      // if (SocketServices.instance.socket.connected) {
-      //   SocketServices.instance.socket.emit(
-      //     "message_read",
-      //     {"bro_id": settings.getBroId(), "bros_bro_id": chat.id},
-      //   );
-      // }
+      socketServices.socket.emit(
+        "message_read",
+        {"bro_id": settings.getBroId(), "bros_bro_id": chat.id},
+      );
     }
     updateDateTiles(message);
     setState(() {
@@ -389,14 +367,12 @@ class _BroMessagingState extends State<BroMessaging> {
   }
 
   messageRead(var data) {
-    if (mounted) {
-      for (Message message in this.messages) {
-        message.isRead = true;
-      }
-      setState(() {
-        this.messages = this.messages;
-      });
+    for (Message message in this.messages) {
+      message.isRead = true;
     }
+    setState(() {
+      this.messages = this.messages;
+    });
   }
 
   var messageScrollController = ScrollController();
@@ -442,7 +418,6 @@ class _BroMessagingState extends State<BroMessaging> {
         showEmojiKeyboard = false;
       });
     } else {
-      leaveRoom();
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => BroCastHome(
         key: UniqueKey()
@@ -504,14 +479,12 @@ class _BroMessagingState extends State<BroMessaging> {
   void onSelectChat(BuildContext context, int item) {
     switch (item) {
       case 0:
-        leaveRoom();
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => BroProfile(
           key: UniqueKey()
         )));
         break;
       case 1:
-        leaveRoom();
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => BroSettings(
           key: UniqueKey()
