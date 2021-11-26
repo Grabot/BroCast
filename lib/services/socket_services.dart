@@ -71,6 +71,9 @@ class SocketServices extends ChangeNotifier {
       this.socket.on('message_event_bro_added_you', (data) {
         broAddedYou(data);
       });
+      this.socket.on('message_event_chat_changed', (data) {
+        chatChanged(data);
+      });
       this.socket.on('message_event_send_solo', (data) {
         // TODO: @Skools do we still do a message_event_send_solo?
         print(data);
@@ -78,8 +81,25 @@ class SocketServices extends ChangeNotifier {
     }
   }
 
+  chatChanged(data) {
+    print("chat changed :)");
+    BroBros broBros = getBroBros(data);
+    broList.updateChat(broBros);
+    storage.updateChat(broBros).then((chat) {
+      notifyListeners();
+    });
+  }
+
   void broAddedYou(data) {
-    BroBros broBros = new BroBros(
+    BroBros broBros = getBroBros(data);
+    broList.addBro(broBros);
+    storage.addChat(broBros).then((value) {
+      notifyListeners();
+    });
+  }
+
+  BroBros getBroBros(data) {
+    return BroBros(
         data["bros_bro_id"],
         data["chat_name"],
         data["chat_description"],
@@ -92,10 +112,6 @@ class SocketServices extends ChangeNotifier {
         data["mute"] ? 1 : 0,
         0
     );
-    broList.addBro(broBros);
-    storage.addChat(broBros).then((value) {
-      onChange();
-    });
   }
 
   void leaveRoomSolo(int broId) {
@@ -111,9 +127,5 @@ class SocketServices extends ChangeNotifier {
       this.socket.off('message_event_bro_added_you');
       this.socket.off('message_event_send_solo');
     }
-  }
-
-  void onChange() {
-    notifyListeners();
   }
 }

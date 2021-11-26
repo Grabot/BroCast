@@ -25,4 +25,9 @@ class BroList {
   void addBro(Chat chat) {
     this.bros.add(chat);
   }
+
+  void updateChat(Chat chat) {
+    bros[bros.indexWhere((bro) =>
+          bro.id == chat.id && bro.broup == chat.broup)] = chat;
+  }
 }

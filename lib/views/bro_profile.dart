@@ -105,33 +105,28 @@ class _BroProfileState extends State<BroProfile> {
   }
 
   void onChangePasswordSuccess() {
-    if (mounted) {
-      ShowToastComponent.showDialog("password changed successfully", context);
-      broPassword = newPasswordController2.text;
-      currentUser.password = broPassword;
-      storage.updateUser(currentUser).then((value) {
-        print("we have updated the user!");
-        print(value);
-        oldPasswordController.text = broPassword;
-        newPasswordController1.text = "";
-        newPasswordController2.text = "";
-      });
-    }
+    ShowToastComponent.showDialog("password changed successfully", context);
+    broPassword = newPasswordController2.text;
+    currentUser.password = broPassword;
+    storage.updateUser(currentUser).then((value) {
+      print("we have updated the user!");
+      print(value);
+      oldPasswordController.text = broPassword;
+      newPasswordController1.text = "";
+      newPasswordController2.text = "";
+    });
   }
 
   void onChangePasswordFailed() {
-    if (mounted) {
-      ShowToastComponent.showDialog(
-          "changing password failed due to an unknown error.", context);
-      setState(() {
-        newPasswordController1.text = "";
-        newPasswordController2.text = "";
-      });
-    }
+    ShowToastComponent.showDialog(
+        "changing password failed due to an unknown error.", context);
+    setState(() {
+      newPasswordController1.text = "";
+      newPasswordController2.text = "";
+    });
   }
 
   void onChangeBromotionSuccess() {
-    if (mounted) {
       ShowToastComponent.showDialog("bromotion changed successfully", context);
       currentUser.bromotion = bromotionChangeController.text;
       settings.setBromotion(currentUser.bromotion);
@@ -139,75 +134,62 @@ class _BroProfileState extends State<BroProfile> {
         print("we have updated the user!");
         print(value);
       });
-    }
   }
 
   void onChangeBromotionFailedExists() {
-    if (mounted) {
-      ShowToastComponent.showDialog(
-          "BroName bromotion combination exists, please pick a different bromotion",
-          context);
-      setState(() {
-        bromotionChangeController.text = currentUser.bromotion;
-      });
-    }
+    ShowToastComponent.showDialog(
+        "BroName bromotion combination exists, please pick a different bromotion",
+        context);
+    setState(() {
+      bromotionChangeController.text = currentUser.bromotion;
+    });
   }
 
   void onChangeBromotionFailedUnknown() {
-    if (mounted) {
-      ShowToastComponent.showDialog("an unknown Error has occurred", context);
-      setState(() {
-        bromotionChangeController.text = currentUser.bromotion;
-      });
-    }
+    ShowToastComponent.showDialog("an unknown Error has occurred", context);
+    setState(() {
+      bromotionChangeController.text = currentUser.bromotion;
+    });
   }
 
   void onChangePassword() {
-    if (mounted) {
-      focusNodePassword.requestFocus();
-      setState(() {
-        changePassword = true;
-      });
-    }
+    focusNodePassword.requestFocus();
+    setState(() {
+      changePassword = true;
+    });
   }
 
   void onSavePassword() {
-    if (mounted) {
-      if (passwordFormValidator.currentState!.validate()) {
-        socketServices.socket.emit("password_change", {
-          "token": settings.getToken(),
-          "password": newPasswordController1.text
-        });
-        setState(() {
-          changePassword = false;
-        });
-      }
+    if (passwordFormValidator.currentState!.validate()) {
+      socketServices.socket.emit("password_change", {
+        "token": settings.getToken(),
+        "password": newPasswordController1.text
+      });
+      setState(() {
+        changePassword = false;
+      });
     }
   }
 
   void onSaveBromotion() {
-    if (mounted) {
-      if (bromotionValidator.currentState!.validate()) {
-        socketServices.socket.emit("bromotion_change", {
-          "token": settings.getToken(),
-          "bromotion": bromotionChangeController.text
-        });
-        setState(() {
-          bromotionEnabled = false;
-          showEmojiKeyboard = false;
-        });
-      }
+    if (bromotionValidator.currentState!.validate()) {
+      socketServices.socket.emit("bromotion_change", {
+        "token": settings.getToken(),
+        "bromotion": bromotionChangeController.text
+      });
+      setState(() {
+        bromotionEnabled = false;
+        showEmojiKeyboard = false;
+      });
     }
   }
 
   void onChangeBromotion() {
-    if (mounted) {
-      focusNodeBromotion.requestFocus();
-      setState(() {
-        bromotionEnabled = true;
-        showEmojiKeyboard = true;
-      });
-    }
+    focusNodeBromotion.requestFocus();
+    setState(() {
+      bromotionEnabled = true;
+      showEmojiKeyboard = true;
+    });
   }
 
   void onTapEmojiField() {
@@ -223,6 +205,7 @@ class _BroProfileState extends State<BroProfile> {
   @override
   void dispose() {
     BackButtonInterceptor.remove(myInterceptor);
+    bromotionChangeController.removeListener(bromotionListener);
     socketServices.socket.off('message_event_bromotion_change');
     socketServices.socket.off('message_event_password_change');
     super.dispose();
