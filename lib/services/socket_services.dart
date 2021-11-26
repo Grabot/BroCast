@@ -95,9 +95,11 @@ class SocketServices extends ChangeNotifier {
   }
 
   chatChanged(data) {
+    print("chat has changed!");
     BroBros broBros = getBroBros(data);
     broList.updateChat(broBros);
     storage.updateChat(broBros).then((chat) {
+      print("we have updated the chat");
       notifyListeners();
     });
   }

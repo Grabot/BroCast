@@ -143,7 +143,8 @@ class NotificationUtil {
 
   Future<void> initializeFirebaseService() async {
     await Firebase.initializeApp();
-    firebaseToken = await FirebaseMessaging.instance.getToken();
+    // TODO: @SKools fix later.
+    // firebaseToken = await FirebaseMessaging.instance.getToken();
 
     print("registration id: \n$firebaseToken");
     if (firebaseToken == null || firebaseToken == "") {

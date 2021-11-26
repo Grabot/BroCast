@@ -60,6 +60,8 @@ class _BroMessagingState extends State<BroMessaging> {
     super.initState();
     chat = widget.chat;
     storage = Storage();
+    socketServices.checkConnection();
+    socketServices.addListener(socketListener);
 
     // Check if user data is set.
     if (settings.getBroId() == -1) {
@@ -106,6 +108,27 @@ class _BroMessagingState extends State<BroMessaging> {
     });
   }
 
+  socketListener() {
+    // There was some update to the bro list.
+    // Check the list and see if the change was to this chat object.
+    for(Chat ch4t in broList.getBros()) {
+      if (!ch4t.isBroup()) {
+        if (ch4t.id == chat.id) {
+          // This is the chat object of the current chat.
+          if (ch4t.chatName != chat.chatName
+              || ch4t.chatColor != chat.chatColor) {
+            // If either the name colour has changed. We want to update the screen
+            // We know if it gets here that it is a BroBros object and that
+            // it is the same BroBros object as the current open chat
+            setState(() {
+              chat = ch4t as BroBros;
+            });
+          }
+        }
+      }
+    }
+  }
+
   messageReceived(var data) {
     Message mes = new Message(
         data["id"],
@@ -142,6 +165,7 @@ class _BroMessagingState extends State<BroMessaging> {
     leaveRoom();
     socketServices.socket.off('message_event_send');
     socketServices.socket.off('message_event_read');
+    socketServices.removeListener(socketListener);
     // TODO: @Skools Probably move to background, update every screen
     // socketServices.socket.off('message_event_change_chat_colour_success');
     BackButtonInterceptor.remove(myInterceptor);
@@ -434,8 +458,7 @@ class _BroMessagingState extends State<BroMessaging> {
               onPressed: () {
                 backButtonFunctionality();
               }),
-          backgroundColor:
-              chat.getColor() != null ? chat.getColor() : Color(0xff145C9E),
+          backgroundColor: chat.getColor(),
           title: InkWell(
             onTap: () {
               Navigator.pushReplacement(
@@ -449,20 +472,9 @@ class _BroMessagingState extends State<BroMessaging> {
             child: Container(
                 alignment: Alignment.centerLeft,
                 color: Colors.transparent,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    chat.alias != null && chat.alias.isNotEmpty
-                        ? Container(
-                        child: Text(chat.alias,
-                            style: TextStyle(
-                                color: getTextColor(chat.getColor()), fontSize: 20)))
-                        : Container(
-                        child: Text(chat.chatName,
-                            style: TextStyle(
-                                color: getTextColor(chat.getColor()), fontSize: 20))),
-                  ],
-                )),
+                child: Text(chat.getBroNameOrAlias(),
+                    style: TextStyle(
+                        color: getTextColor(chat.getColor()), fontSize: 20)))
           ),
           actions: [
             PopupMenuButton<int>(

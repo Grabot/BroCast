@@ -28,7 +28,7 @@ class BroupAddParticipant extends StatefulWidget {
 }
 
 
-class _BroupAddParticipantState extends State<BroupAddParticipant> with WidgetsBindingObserver {
+class _BroupAddParticipantState extends State<BroupAddParticipant> {
 
   Settings settings = Settings();
   SocketServices socket = SocketServices();
@@ -73,7 +73,7 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> with WidgetsB
       });
     });
     // initSockets(); // TODO: @Skools move to singelton?
-    WidgetsBinding.instance!.addObserver(this);
+
     BackButtonInterceptor.add(myInterceptor);
   }
 

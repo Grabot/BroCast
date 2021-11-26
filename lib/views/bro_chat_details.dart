@@ -1,10 +1,13 @@
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:brocast/objects/bro_bros.dart';
+import 'package:brocast/objects/chat.dart';
 import 'package:brocast/services/block_bro.dart';
 import 'package:brocast/services/remove_bro.dart';
 import 'package:brocast/services/report_bro.dart';
 import 'package:brocast/services/settings.dart';
 import 'package:brocast/services/socket_services.dart';
+import 'package:brocast/utils/bro_list.dart';
+import 'package:brocast/utils/storage.dart';
 import 'package:brocast/utils/utils.dart';
 import "package:flutter/material.dart";
 import 'package:flutter_circle_color_picker/flutter_circle_color_picker.dart';
@@ -28,8 +31,7 @@ class BroChatDetails extends StatefulWidget {
   _BroChatDetailsState createState() => _BroChatDetailsState();
 }
 
-class _BroChatDetailsState extends State<BroChatDetails>
-    with WidgetsBindingObserver {
+class _BroChatDetailsState extends State<BroChatDetails> {
   TextEditingController chatDescriptionController = new TextEditingController();
   TextEditingController chatAliasController = new TextEditingController();
 
@@ -43,7 +45,8 @@ class _BroChatDetailsState extends State<BroChatDetails>
   ReportBro reportBro = new ReportBro();
   RemoveBro removeBro = new RemoveBro();
   Settings settings = Settings();
-  SocketServices socket = SocketServices();
+  BroList broList = BroList();
+  SocketServices socketServices = SocketServices();
 
   late Color currentColor;
   Color? previousColor;
@@ -55,53 +58,44 @@ class _BroChatDetailsState extends State<BroChatDetails>
   String previousAlias = "";
 
   late BroBros chat;
+  late Storage storage;
 
   @override
   void initState() {
     super.initState();
     chat = widget.chat;
+    socketServices.checkConnection();
+    socketServices.addListener(socketListener);
     BackButtonInterceptor.add(myInterceptor);
     chatDescriptionController.text = chat.chatDescription;
     chatAliasController.text = chat.alias;
+    storage = Storage();
 
-    // initSockets(); // TODO: @Skools move to singleton
+    initBroChatDetailsSockets();
 
     circleColorPickerController = CircleColorPickerController(
       initialColor: chat.getColor(),
     );
 
     currentColor = chat.getColor();
-    WidgetsBinding.instance!.addObserver(this);
   }
 
-  // void initSockets() {
-  //   SocketServices.instance.socket
-  //       .on('message_event_change_chat_details_success', (data) {
-  //     chatDetailUpdateSuccess(data);
-  //   });
-  //   SocketServices.instance.socket
-  //       .on('message_event_change_chat_alias_success', (data) {
-  //     chatAliasUpdateSuccess();
-  //   });
-  //   SocketServices.instance.socket
-  //       .on('message_event_change_chat_details_failed', (data) {
-  //     chatDetailUpdateFailed();
-  //   });
-  //   SocketServices.instance.socket
-  //       .on('message_event_change_chat_colour_success', (data) {
-  //     chatColourUpdateSuccess(data);
-  //   });
-  //   SocketServices.instance.socket.on('message_event_change_chat_colour_failed',
-  //       (data) {
-  //     chatColourUpdateFailed();
-  //   });
-  //   SocketServices.instance.socket.on('message_event_change_chat_mute_success', (data) {
-  //     chatWasMuted(data);
-  //   });
-  //   SocketServices.instance.socket.on('message_event_change_chat_mute_failed', (data) {
-  //     chatMutingFailed();
-  //   });
-  // }
+  void initBroChatDetailsSockets() {
+    socketServices.socket
+        .on('message_event_change_chat_details_failed', (data) {
+      chatDetailUpdateFailed();
+    });
+    socketServices.socket.on('message_event_change_chat_colour_failed',
+        (data) {
+      chatColourUpdateFailed();
+    });
+    socketServices.socket.on('message_event_change_chat_mute_success', (data) {
+      chatWasMuted(data);
+    });
+    socketServices.socket.on('message_event_change_chat_mute_failed', (data) {
+      chatMutingFailed();
+    });
+  }
 
   bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
     backButtonFunctionality();
@@ -130,20 +124,45 @@ class _BroChatDetailsState extends State<BroChatDetails>
     }
   }
 
+  socketListener() {
+    // There was some update to the bro list.
+    // Check the list and see if the change was to this chat object.
+    for(Chat ch4t in broList.getBros()) {
+      if (!ch4t.isBroup()) {
+        if (ch4t.id == chat.id) {
+          // This is the chat object of the current chat.
+          if (ch4t.chatName != chat.chatName
+              || ch4t.chatColor != chat.chatColor
+              || ch4t.chatDescription != chat.chatDescription
+              || ch4t.alias != chat.alias) {
+            // If either the name colour has changed. We want to update the screen
+            // We know if it gets here that it is a BroBros object and that
+            // it is the same BroBros object as the current open chat
+            setState(() {
+              chat = ch4t as BroBros;
+              if (!focusNodeDescription.hasFocus) {
+                chatDescriptionController.text = ch4t.chatDescription;
+              } else {
+                previousDescription = ch4t.chatDescription;
+              }
+              currentColor = ch4t.getColor();
+              circleColorPickerController.color = ch4t.getColor();
+              chatAliasController.text = ch4t.alias;
+            });
+          }
+        }
+      }
+    }
+  }
+
   @override
   void dispose() {
     BackButtonInterceptor.remove(myInterceptor);
-    // TODO: @Skools disposing in singleton?
-    // SocketServices.instance.socket
-    //     .off('message_event_send_solo', (data) => print(data));
-    // SocketServices.instance.socket.off(
-    //     'message_event_change_chat_details_success', (data) => print(data));
-    // SocketServices.instance.socket
-    //     .off('message_event_change_chat_details_failed', (data) => print(data));
-    // SocketServices.instance.socket
-    //     .off('message_event_change_chat_colour_success', (data) => print(data));
-    // SocketServices.instance.socket
-    //     .off('message_event_change_chat_colour_failed', (data) => print(data));
+    socketServices.socket.off('message_event_change_chat_details_failed');
+    socketServices.socket.off('message_event_change_chat_colour_failed');
+    socketServices.socket.off('message_event_change_chat_mute_success');
+    socketServices.socket.off('message_event_change_chat_mute_failed');
+    socketServices.removeListener(socketListener);
     super.dispose();
   }
 
@@ -156,21 +175,10 @@ class _BroChatDetailsState extends State<BroChatDetails>
               onPressed: () {
                 backButtonFunctionality();
               }),
-          backgroundColor:
-              chat.getColor() != null ? chat.getColor() : Color(0xff145C9E),
-          title: Column(
-              children: [
-                chat.alias != null && chat.alias.isNotEmpty
-                    ? Container(
-                    child: Text(chat.alias,
-                        style: TextStyle(
-                            color: getTextColor(chat.getColor()), fontSize: 20)))
-                    : Container(
-                    child: Text(chat.chatName,
-                        style: TextStyle(
-                            color: getTextColor(chat.getColor()), fontSize: 20))),
-              ]
-          ),
+          backgroundColor: chat.getColor(),
+          title: Text(chat.getBroNameOrAlias(),
+            style: TextStyle(
+            color: getTextColor(chat.getColor()), fontSize: 20)),
           actions: [
             PopupMenuButton<int>(
                 onSelected: (item) => onSelectChat(context, item),
@@ -227,15 +235,12 @@ class _BroChatDetailsState extends State<BroChatDetails>
 
   void updateDescription() {
     if (previousDescription != chatDescriptionController.text) {
-      if (socket.isConnected()) {
-        // TODO: @Skools move to singleton?
-        // SocketServices.instance.socket
-        //     .emit("message_event_change_chat_details", {
-        //   "token": settings.getToken(),
-        //   "bros_bro_id": chat.id,
-        //   "description": chatDescriptionController.text
-        // });
-      }
+      socketServices.socket
+          .emit("message_event_change_chat_details", {
+        "token": settings.getToken(),
+        "bros_bro_id": chat.id,
+        "description": chatDescriptionController.text
+      });
       setState(() {
         FocusScope.of(context).unfocus();
         changeDescription = false;
@@ -250,15 +255,12 @@ class _BroChatDetailsState extends State<BroChatDetails>
 
   void updateAlias() {
     if (previousAlias != chatAliasController.text) {
-      if (socket.isConnected()) {
-        // TODO: @Skools move to singleton?
-        // SocketServices.instance.socket
-        //     .emit("message_event_change_chat_alias", {
-        //   "token": settings.getToken(),
-        //   "bros_bro_id": chat.id,
-        //   "alias": chatAliasController.text
-        // });
-      }
+      socketServices.socket
+          .emit("message_event_change_chat_alias", {
+        "token": settings.getToken(),
+        "bros_bro_id": chat.id,
+        "alias": chatAliasController.text
+      });
       setState(() {
         FocusScope.of(context).unfocus();
         changeAlias = false;
@@ -283,15 +285,12 @@ class _BroChatDetailsState extends State<BroChatDetails>
   saveColour() {
     if (currentColor != chat.getColor()) {
       String newColour = currentColor.value.toRadixString(16).substring(2, 8);
-      if (socket.isConnected()) {
-        // TODO: @Skools move to singleton?
-        // SocketServices.instance.socket
-        //     .emit("message_event_change_chat_colour", {
-        //   "token": settings.getToken(),
-        //   "bros_bro_id": chat.id,
-        //   "colour": newColour
-        // });
-      }
+      socketServices.socket
+          .emit("message_event_change_chat_colour", {
+        "token": settings.getToken(),
+        "bros_bro_id": chat.id,
+        "colour": newColour
+      });
     }
     setState(() {
       changeColour = false;
@@ -359,54 +358,16 @@ class _BroChatDetailsState extends State<BroChatDetails>
     }
   }
 
-  void chatDetailUpdateSuccess(var data) {
-    if (mounted) {
-      if (data.containsKey("result")) {
-        bool result = data["result"];
-        if (result) {
-          chat.chatDescription = data["description"];
-          chatDescriptionController.text = data["description"];
-          previousDescription = "";
-          setState(() {});
-        }
-      }
-    }
-  }
-
-  void chatAliasUpdateSuccess() {
-    previousAlias = chatAliasController.text;
-    chat.alias = chatAliasController.text;
-    if (mounted) {
-      setState(() {});
-    }
-  }
-
   void chatDetailUpdateFailed() {
     currentColor = previousColor!;
     circleColorPickerController.color = previousColor!;
     ShowToastComponent.showDialog("Updating the bro chat has failed", context);
   }
 
-  void chatColourUpdateSuccess(var data) {
-    if (mounted) {
-      if (data.containsKey("result")) {
-        bool result = data["result"];
-        if (result) {
-          chat.chatColor = data["colour"];
-          currentColor = Color(int.parse("0xFF${data["colour"]}"));
-          previousColor = Color(int.parse("0xFF${data["colour"]}"));
-          setState(() {});
-        }
-      }
-    }
-  }
-
   void chatColourUpdateFailed() {
-    if (mounted) {
-      chatDescriptionController.text = previousDescription;
-      ShowToastComponent.showDialog(
-          "Updating the bro colour has failed", context);
-    }
+    chatDescriptionController.text = previousDescription;
+    ShowToastComponent.showDialog(
+        "Updating the bro colour has failed", context);
   }
 
   onColorChange(Color colour) {
@@ -414,23 +375,20 @@ class _BroChatDetailsState extends State<BroChatDetails>
   }
 
   chatWasMuted(var data) {
-    if (mounted) {
-      if (data.containsKey("result")) {
-        bool result = data["result"];
-        if (result) {
-          setState(() {
-            chat.setMuted(data["mute"]);
-          });
-        }
+    if (data.containsKey("result")) {
+      bool result = data["result"];
+      if (result) {
+        chat.setMuted(data["mute"]);
+        storage.updateChat(chat).then((value) {
+          setState(() {});
+        });
       }
     }
   }
 
   chatMutingFailed() {
-    if (mounted) {
-      ShowToastComponent.showDialog(
-          "Chat muting failed at this time.", context);
-    }
+    ShowToastComponent.showDialog(
+        "Chat muting failed at this time.", context);
   }
 
   @override
@@ -889,26 +847,24 @@ class _BroChatDetailsState extends State<BroChatDetails>
   }
 
   void unmuteTheChat() {
-    // TODO: @Skools move to singleton?
-    // SocketServices.instance.socket
-    //     .emit("message_event_change_chat_mute", {
-    //   "token": settings.getToken(),
-    //   "bros_bro_id": chat.id,
-    //   "bro_id": settings.getBroId(),
-    //   "mute": -1
-    // });
+    socketServices.socket
+        .emit("message_event_change_chat_mute", {
+      "token": settings.getToken(),
+      "bros_bro_id": chat.id,
+      "bro_id": settings.getBroId(),
+      "mute": -1
+    });
     Navigator.of(context).pop();
   }
 
   void muteTheChat(int selectedRadio) {
-    // TODO: @Skools move to singleton?
-    // SocketServices.instance.socket
-    //     .emit("message_event_change_chat_mute", {
-    //   "token": settings.getToken(),
-    //   "bros_bro_id": chat.id,
-    //   "bro_id": settings.getBroId(),
-    //   "mute": selectedRadio
-    // });
+    socketServices.socket
+        .emit("message_event_change_chat_mute", {
+      "token": settings.getToken(),
+      "bros_bro_id": chat.id,
+      "bro_id": settings.getBroId(),
+      "mute": selectedRadio
+    });
     Navigator.of(context).pop();
   }
 }

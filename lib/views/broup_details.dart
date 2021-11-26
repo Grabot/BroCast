@@ -35,8 +35,7 @@ class BroupDetails extends StatefulWidget {
   _BroupDetailsState createState() => _BroupDetailsState();
 }
 
-class _BroupDetailsState extends State<BroupDetails>
-    with WidgetsBindingObserver {
+class _BroupDetailsState extends State<BroupDetails> {
 
   Settings settings = Settings();
   GetChat getChat = new GetChat();
@@ -97,8 +96,6 @@ class _BroupDetailsState extends State<BroupDetails>
       joinBroupRoom(settings.getBroId(), chat.id);
       // initSockets(); // TODO: @SKools move to singelton?
     });
-
-    WidgetsBinding.instance!.addObserver(this);
   }
 
   void changeToBroup() {

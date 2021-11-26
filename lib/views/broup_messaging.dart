@@ -39,8 +39,7 @@ class BroupMessaging extends StatefulWidget {
   _BroupMessagingState createState() => _BroupMessagingState();
 }
 
-class _BroupMessagingState extends State<BroupMessaging>
-    with WidgetsBindingObserver {
+class _BroupMessagingState extends State<BroupMessaging> {
   bool isLoading = false;
   GetMessages get = new GetMessages();
   GetChat getChat = new GetChat();
@@ -96,7 +95,6 @@ class _BroupMessagingState extends State<BroupMessaging>
       joinBroupRoom(settings.getBroId(), chat.id);
     }
 
-    WidgetsBinding.instance!.addObserver(this);
     BackButtonInterceptor.add(myInterceptor);
     initSockets();
 
