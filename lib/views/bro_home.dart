@@ -220,7 +220,7 @@ class _BroCastHomeState extends State<BroCastHome> {
           data["mute"] ? 1 : 0,
           0
       );
-      broList.addBro(broBros);
+      broList.addChat(broBros);
       storage.addChat(broBros).then((value) {
         setState(() {});
       });

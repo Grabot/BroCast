@@ -1,5 +1,6 @@
 import 'package:brocast/constants/base_url.dart';
 import 'package:brocast/objects/bro_bros.dart';
+import 'package:brocast/objects/broup.dart';
 import 'package:brocast/utils/bro_list.dart';
 import 'package:brocast/utils/storage.dart';
 import 'package:flutter/cupertino.dart';
@@ -74,6 +75,10 @@ class SocketServices extends ChangeNotifier {
       this.socket.on('message_event_chat_changed', (data) {
         chatChanged(data);
       });
+      this.socket.on('message_event_added_to_broup', (data) {
+        print("added to a broup!");
+        broAddedYouToABroup(data);
+      });
       this.socket.on('message_event_send_solo', (data) {
         // TODO: @Skools do we still do a message_event_send_solo?
         print(data);
@@ -81,8 +86,15 @@ class SocketServices extends ChangeNotifier {
     }
   }
 
+  broAddedYouToABroup(data) {
+    Broup broup = getBroup(data);
+    broList.addChat(broup);
+    storage.addChat(broup).then((value) {
+      notifyListeners();
+    });
+  }
+
   chatChanged(data) {
-    print("chat changed :)");
     BroBros broBros = getBroBros(data);
     broList.updateChat(broBros);
     storage.updateChat(broBros).then((chat) {
@@ -92,10 +104,33 @@ class SocketServices extends ChangeNotifier {
 
   void broAddedYou(data) {
     BroBros broBros = getBroBros(data);
-    broList.addBro(broBros);
+    broList.addChat(broBros);
     storage.addChat(broBros).then((value) {
       notifyListeners();
     });
+  }
+
+  Broup getBroup(data) {
+    Broup broup = new Broup(
+        data["id"],
+        data["broup_name"],
+        data["broup_description"],
+        data["alias"],
+        data["broup_colour"],
+        data["unread_messages"],
+        data["last_time_activity"],
+        data["room_name"],
+        0,
+        data["mute"] ? 1 : 0,
+        1);
+    List<dynamic> broIds = data["bro_ids"];
+    List<int> broIdList = broIds.map((s) => s as int).toList();
+    broup.setParticipants(broIdList);
+    List<dynamic> broAdminsIds = data["bro_admin_ids"];
+    List<int> broAdminIdList = broAdminsIds.map((s) => s as int).toList();
+    broup.setAdmins(broAdminIdList);
+    // TODO: @Skools retrieve Bro details here already?
+    return broup;
   }
 
   BroBros getBroBros(data) {

@@ -90,7 +90,7 @@ class _FindBrosState extends State<FindBros> {
         data["mute"] ? 1 : 0,
         0
     );
-    broList.addBro(broBros);
+    broList.addChat(broBros);
     storage.addChat(broBros).then((value) {
       clickedNewBro = false;
       Navigator.pushReplacement(

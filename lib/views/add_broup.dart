@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:brocast/objects/bro_bros.dart';
 import 'package:brocast/objects/chat.dart';
 import 'package:brocast/services/get_bros.dart';
@@ -25,11 +27,11 @@ class AddBroup extends StatefulWidget {
   _AddBroupState createState() => _AddBroupState();
 }
 
-class _AddBroupState extends State<AddBroup> with WidgetsBindingObserver {
+class _AddBroupState extends State<AddBroup> {
 
   GetBros getBros = new GetBros();
   Settings settings = Settings();
-  SocketServices socket = SocketServices();
+  SocketServices socketServices = SocketServices();
   BroList broList = BroList();
 
   final broupValidator = GlobalKey<FormFieldState>();
@@ -49,66 +51,52 @@ class _AddBroupState extends State<AddBroup> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     bromotionController.addListener(bromotionListener);
-    // initSockets(); // TODO: @SKools change this to it's own singleton
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
-      List<Chat> chats = broList.getBros();
-      brosAddBroup.clear();
-      shownBrosAddBroup.clear();
-      broupParticipants.clear();
-      for (Chat myBro in chats) {
-        if (!myBro.isBroup()) {
-          BroAddBroup broAddBroup = new BroAddBroup(false, myBro);
-          brosAddBroup.add(broAddBroup);
-        }
+    socketServices.checkConnection();
+    initAddBroupSockets();
+    List<Chat> chats = broList.getBros();
+    brosAddBroup.clear();
+    shownBrosAddBroup.clear();
+    broupParticipants.clear();
+    for (Chat myBro in chats) {
+      if (!myBro.isBroup()) {
+        BroAddBroup broAddBroup = new BroAddBroup(false, myBro);
+        brosAddBroup.add(broAddBroup);
       }
-      setState(() {
-        shownBrosAddBroup = brosAddBroup;
-      });
+    }
+    setState(() {
+      shownBrosAddBroup = brosAddBroup;
     });
-    WidgetsBinding.instance!.addObserver(this);
     BackButtonInterceptor.add(myInterceptor);
   }
 
-  // void initSockets() {
-  //   SocketServices.instance.socket.on('message_event_add_broup_success', (data) {
-  //     broupWasAdded();
-  //   });
-  //   SocketServices.instance.socket.on('message_event_add_broup_failed', (data) {
-  //     broupAddingFailed();
-  //   });
-  // }
+  void initAddBroupSockets() {
+    socketServices.socket.on('message_event_add_broup_success', (data) {
+      broupWasAdded();
+    });
+    socketServices.socket.on('message_event_add_broup_failed', (data) {
+      broupAddingFailed();
+    });
+  }
 
   broupWasAdded() {
-    if (mounted) {
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => BroCastHome(key: UniqueKey())));
-    }
+    // The broup was added with a different socket stream.
+    // If that was successful we get this message
+    // so we can go to the home screen to see the broup
+    Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (context) => BroCastHome(key: UniqueKey())));
   }
 
   broupAddingFailed() {
-    if (mounted) {
-      ShowToastComponent.showDialog(
-          "Broup could not be created at this time", context);
-    }
-  }
-
-  searchBros(String token) {
-    getBros.getBros(token).then((val) {
-      if (!(val is String)) {
-        setState(() {
-          // bros = val;
-          // shownBros = val;
-          // broList.setBros(bros);
-        });
-      } else {
-        ShowToastComponent.showDialog(val.toString(), context);
-      }
-    });
+    ShowToastComponent.showDialog(
+        "Broup could not be created at this time", context);
   }
 
   @override
   void dispose() {
     BackButtonInterceptor.remove(myInterceptor);
+    socketServices.socket.off('message_event_add_broup_success');
+    socketServices.socket.off('message_event_add_broup_failed');
+    bromotionController.removeListener(bromotionListener);
     super.dispose();
   }
 
@@ -226,9 +214,7 @@ class _AddBroupState extends State<AddBroup> with WidgetsBindingObserver {
         broupParticipants.add(broAddBroup.getBroBros());
       }
     }
-    setState(() {
-
-    });
+    setState(() {});
   }
 
   Color getColor(Set<MaterialState> states) {
@@ -422,16 +408,13 @@ class _AddBroupState extends State<AddBroup> with WidgetsBindingObserver {
       participants.add(partici.id);
     }
     if (broupValidator.currentState!.validate()) {
-      if (socket.isConnected()) {
-        // TODO: @Skools move to singelton?
-        // SocketServices.instance.socket.emit("message_event_add_broup",
-        //     {
-        //       "token": settings.getToken(),
-        //       "broup_name": broupNameController.text,
-        //       "participants": jsonEncode(participants)
-        //     }
-        // );
-      }
+        socketServices.socket.emit("message_event_add_broup",
+            {
+              "token": settings.getToken(),
+              "broup_name": broupNameController.text,
+              "participants": jsonEncode(participants)
+            }
+        );
     }
   }
 

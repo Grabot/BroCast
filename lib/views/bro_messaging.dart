@@ -31,8 +31,7 @@ class BroMessaging extends StatefulWidget {
   _BroMessagingState createState() => _BroMessagingState();
 }
 
-class _BroMessagingState extends State<BroMessaging>
-    with WidgetsBindingObserver {
+class _BroMessagingState extends State<BroMessaging> {
   bool isLoading = false;
   GetMessages get = new GetMessages();
   Settings settings = Settings();
@@ -81,7 +80,6 @@ class _BroMessagingState extends State<BroMessaging>
       getMessages(amountViewed);
       joinRoom(settings.getBroId(), chat.id);
     }
-    WidgetsBinding.instance!.addObserver(this);
     BackButtonInterceptor.add(myInterceptor);
 
     messageScrollController.addListener(() {

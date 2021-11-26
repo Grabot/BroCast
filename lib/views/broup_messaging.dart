@@ -139,7 +139,7 @@ class _BroupMessagingState extends State<BroupMessaging>
         data["mute"] ? 1 : 0,
         0
     );
-    broList.addBro(broBros);
+    broList.addChat(broBros);
     storage.addChat(broBros).then((value) {
       if (mounted) {
         Navigator.pushReplacement(

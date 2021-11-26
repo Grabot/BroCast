@@ -22,7 +22,7 @@ class BroList {
     this.bros = bros;
   }
 
-  void addBro(Chat chat) {
+  void addChat(Chat chat) {
     this.bros.add(chat);
   }
 
