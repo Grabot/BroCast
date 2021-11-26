@@ -1,15 +1,13 @@
 import 'package:back_button_interceptor/back_button_interceptor.dart';
-import 'package:brocast/objects/chat.dart';
 import 'package:brocast/services/reset_registration.dart';
 import 'package:brocast/services/settings.dart';
 import 'package:brocast/services/socket_services.dart';
-import 'package:brocast/utils/bro_list.dart';
-import 'package:brocast/utils/shared.dart';
 import 'package:brocast/utils/storage.dart';
 import 'package:brocast/utils/utils.dart';
 import 'package:brocast/views/bro_home.dart';
 import 'package:brocast/views/signin.dart';
 import "package:flutter/material.dart";
+import 'package:app_settings/app_settings.dart';
 import 'bro_profile.dart';
 
 
@@ -28,6 +26,7 @@ class _BroSettingsState extends State<BroSettings> with WidgetsBindingObserver {
   bool toggleSwitchSound = false;
   bool showNotification = true;
   Settings settings = Settings();
+  SocketServices socketServices = SocketServices();
 
   var storage;
 
@@ -36,6 +35,7 @@ class _BroSettingsState extends State<BroSettings> with WidgetsBindingObserver {
     super.initState();
 
     storage = Storage();
+    socketServices.checkConnection();
 
     toggleSwitchKeyboard = settings.getEmojiKeyboardDarkMode();
 
@@ -158,6 +158,15 @@ class _BroSettingsState extends State<BroSettings> with WidgetsBindingObserver {
                         },
                       ),
                     ],
+                  ),
+                  SizedBox(height: 20),
+                  TextButton(
+                    style: ButtonStyle(
+                      foregroundColor:
+                      MaterialStateProperty.all<Color>(Colors.blue),
+                    ),
+                    onPressed: AppSettings.openNotificationSettings,
+                    child: Text('Open notification Settings'),
                   ),
                   SizedBox(height: 300),
                 ]),
