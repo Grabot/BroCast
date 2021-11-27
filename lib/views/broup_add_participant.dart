@@ -7,6 +7,7 @@ import 'package:brocast/services/settings.dart';
 import 'package:brocast/services/socket_services.dart';
 import 'package:brocast/utils/bro_list.dart';
 import 'package:brocast/utils/utils.dart';
+import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'bro_profile.dart';
@@ -31,13 +32,12 @@ class BroupAddParticipant extends StatefulWidget {
 class _BroupAddParticipantState extends State<BroupAddParticipant> {
 
   Settings settings = Settings();
-  SocketServices socket = SocketServices();
-  BroList broList = BroList();
+  SocketServices socketServices = SocketServices();
 
   bool showEmojiKeyboard = false;
 
-  List<BroupAddBro> bros = [];
-  List<BroupAddBro> shownBros = [];
+  List<BroupAddBro> broupAddBros = [];
+  List<BroupAddBro> broupAddBrosShownBros = [];
 
   late Broup chat;
 
@@ -50,42 +50,50 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> {
   void initState() {
     super.initState();
     chat = widget.chat;
-
+    socketServices.checkConnection();
     bromotionController.addListener(bromotionListener);
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
-      List<Chat> broBros = broList.getBros();
-      bros.clear();
-      shownBros.clear();
-      for (Chat myBro in broBros) {
-        if (!myBro.isBroup()) {
-          bool inBroup = false;
-          for (int participantId in chat.getParticipants()) {
-            if (participantId == myBro.id) {
-              inBroup = true;
-            }
+
+    BroList broList = BroList();
+    List<Chat> broBros = broList.getBros();
+    broupAddBros.clear();
+    broupAddBrosShownBros.clear();
+    for (Chat myBro in broBros) {
+      if (!myBro.isBroup()) {
+        bool inBroup = false;
+        for (int participantId in chat.getParticipants()) {
+          if (participantId == myBro.id) {
+            inBroup = true;
           }
-          BroupAddBro broupAddBro = new BroupAddBro(false, inBroup, myBro);
-          bros.add(broupAddBro);
         }
+        BroupAddBro broupAddBro = new BroupAddBro(false, inBroup, myBro as BroBros);
+        broupAddBros.add(broupAddBro);
       }
-      setState(() {
-        shownBros = bros;
-      });
+    }
+    setState(() {
+      broupAddBrosShownBros = broupAddBros;
     });
-    // initSockets(); // TODO: @Skools move to singelton?
+
+    initAddParticipantSockets();
 
     BackButtonInterceptor.add(myInterceptor);
   }
 
-  // void initSockets() {
-  //   // TODO: @Skools move to singleton?
-  //   SocketServices.instance.socket.on('message_event_add_bro_to_broup_success', (data) {
-  //     broWasAddedToBroup(data);
-  //   });
-  //   SocketServices.instance.socket.on('message_event_add_bro_to_broup_failed', (data) {
-  //     addingBroToBroupFailed();
-  //   });
-  // }
+  void initAddParticipantSockets() {
+    socketServices.socket.on('message_event_add_bro_to_broup_success', (data) {
+      broWasAddedToBroup(data);
+    });
+    socketServices.socket.on('message_event_add_bro_to_broup_failed', (data) {
+      addingBroToBroupFailed();
+    });
+  }
+
+  @override
+  void dispose() {
+    BackButtonInterceptor.remove(myInterceptor);
+    socketServices.socket.off('message_event_add_bro_to_broup_success');
+    socketServices.socket.off('message_event_add_bro_to_broup_failed');
+    super.dispose();
+  }
 
   broWasAddedToBroup(var data) {
     if (mounted) {
@@ -143,22 +151,22 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> {
 
   void onChangedBroNameField(String typedText, String emojiField) {
     if (emojiField.isEmpty && typedText.isNotEmpty) {
-      shownBros = bros.where((element) =>
+      broupAddBrosShownBros = broupAddBros.where((element) =>
           element.getBroBros().getBroNameOrAlias().toLowerCase()
               .contains(typedText.toLowerCase())).toList();
     } else if (emojiField.isNotEmpty && typedText.isEmpty) {
-      shownBros = bros.where((element) =>
+      broupAddBrosShownBros = broupAddBros.where((element) =>
           element.getBroBros().getBroNameOrAlias().toLowerCase()
               .contains(emojiField)).toList();
     } else if (emojiField.isNotEmpty && typedText.isNotEmpty) {
-      shownBros = bros.where((element) =>
+      broupAddBrosShownBros = broupAddBros.where((element) =>
       element.getBroBros().getBroNameOrAlias().toLowerCase()
           .contains(typedText.toLowerCase()) &&
           element.getBroBros().getBroNameOrAlias().toLowerCase()
               .contains(emojiField)).toList();
     } else {
       // both empty
-      shownBros = bros;
+      broupAddBrosShownBros = broupAddBros;
     }
     setState(() {
     });
@@ -239,10 +247,10 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> {
   }
 
   Widget listOfBros() {
-    return shownBros.isNotEmpty
+    return broupAddBrosShownBros.isNotEmpty
         ? ListView.builder(
         shrinkWrap: true,
-        itemCount: shownBros.length,
+        itemCount: broupAddBrosShownBros.length,
         itemBuilder: (context, index) {
           return broTileAddBroup(index);
         })
@@ -252,11 +260,11 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> {
   Widget broTileAddBroup(index) {
     return InkWell(
       onTap: () {
-        selectBro(shownBros[index]);
+        selectBro(broupAddBrosShownBros[index]);
       },
       child: Container(
         width: MediaQuery.of(context).size.width,
-        color: shownBros[index].getBroBros().getColor().withOpacity(0.6),
+        color: broupAddBrosShownBros[index].getBroBros().getColor().withOpacity(0.6),
         child: Row(
             children: [
               SizedBox(width: 15),
@@ -274,23 +282,23 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> {
                               children: [
                                 Container(
                                   width: MediaQuery.of(context).size.width - 63,
-                                  child: shownBros[index].getBroBros().alias != null && shownBros[index].getBroBros().alias.isNotEmpty
+                                  child: broupAddBrosShownBros[index].getBroBros().alias != null && broupAddBrosShownBros[index].getBroBros().alias.isNotEmpty
                                       ? Container(
-                                      child: Text(shownBros[index].getBroBros().alias,
+                                      child: Text(broupAddBrosShownBros[index].getBroBros().alias,
                                           overflow: TextOverflow.ellipsis,
                                           style: TextStyle(
-                                              color: getTextColor(shownBros[index].getBroBros().getColor()), fontSize: 20)))
+                                              color: getTextColor(broupAddBrosShownBros[index].getBroBros().getColor()), fontSize: 20)))
                                       : Container(
-                                      child: Text(shownBros[index].getBroBros().chatName,
+                                      child: Text(broupAddBrosShownBros[index].getBroBros().chatName,
                                           overflow: TextOverflow.ellipsis,
                                           style: TextStyle(
-                                              color: getTextColor(shownBros[index].getBroBros().getColor()), fontSize: 20))),
+                                              color: getTextColor(broupAddBrosShownBros[index].getBroBros().getColor()), fontSize: 20))),
                                 ),
-                                shownBros[index].alreadyInBroup
+                                broupAddBrosShownBros[index].alreadyInBroup
                                     ? Container(
                                       child: Text(
                                           "Already in Broup",
-                                        style: TextStyle(color: getTextColor(shownBros[index].getBroBros().getColor()).withOpacity(0.6), fontSize: 12),
+                                        style: TextStyle(color: getTextColor(broupAddBrosShownBros[index].getBroBros().getColor()).withOpacity(0.6), fontSize: 12),
                                       )
                                     )
                                     : Container()
@@ -311,8 +319,7 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> {
 
   void selectBro(BroupAddBro broAddBroup) {
     if (!broAddBroup.alreadyInBroup) {
-      // TODO: @Skools type niet goed?! Check dit
-      // showDialogAddParticipant(context, broAddBroup.broBros);
+      showDialogAddParticipant(context, broAddBroup.broBros);
     }
   }
 
@@ -341,56 +348,60 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> {
       appBar: appBarAddBroupParticipants(),
       body: Container(
         child: Column(children: [
-          Expanded(
-            child: SingleChildScrollView(
-              child: Column(children: [
-                Container(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                      "Search for your bro",
-                      style: simpleTextStyle()
+          Container(
+            alignment: Alignment.centerLeft,
+            child: Text(
+                "Search for your bro",
+                style: simpleTextStyle()
+            ),
+          ),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 24, vertical: 0),
+            child: Row(
+              children: [
+                Expanded(
+                  flex: 4,
+                  child: TextFormField(
+                    onTap: () {
+                      onTapTextField();
+                    },
+                    onChanged: (text) {
+                      onChangedBroNameField(text, bromotionController.text);
+                    },
+                    controller: broNameController,
+                    textAlign: TextAlign.center,
+                    style: simpleTextStyle(),
+                    decoration: textFieldInputDecoration("Bro name"),
                   ),
                 ),
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 24, vertical: 0),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        flex: 4,
-                        child: TextFormField(
-                          onTap: () {
-                            onTapTextField();
-                          },
-                          onChanged: (text) {
-                            onChangedBroNameField(text, bromotionController.text);
-                          },
-                          controller: broNameController,
-                          textAlign: TextAlign.center,
-                          style: simpleTextStyle(),
-                          decoration: textFieldInputDecoration("Bro name"),
-                        ),
-                      ),
-                      SizedBox(width: 50),
-                      Expanded(
-                        flex: 1,
-                        child: TextFormField(
-                          onTap: () {
-                            onTapEmojiField();
-                          },
-                          controller: bromotionController,
-                          style: simpleTextStyle(),
-                          textAlign: TextAlign.center,
-                          decoration: textFieldInputDecoration("😀"),
-                          readOnly: true,
-                          showCursor: true,
-                        ),
-                      ),
-                    ]
-                    ),
+                SizedBox(width: 50),
+                Expanded(
+                  flex: 1,
+                  child: TextFormField(
+                    onTap: () {
+                      onTapEmojiField();
+                    },
+                    controller: bromotionController,
+                    style: simpleTextStyle(),
+                    textAlign: TextAlign.center,
+                    decoration: textFieldInputDecoration("😀"),
+                    readOnly: true,
+                    showCursor: true,
                   ),
-                  listOfBros()
-                ],
                 ),
+              ]
+              ),
+            ),
+            Container(
+              child: Expanded(child: listOfBros()),
+            ),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: EmojiKeyboard(
+                  bromotionController: bromotionController,
+                  emojiKeyboardHeight: 300,
+                  showEmojiKeyboard: showEmojiKeyboard,
+                  darkMode: settings.getEmojiKeyboardDarkMode()
               ),
             ),
           ],
@@ -427,17 +438,14 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> {
   }
 
   void addTheBro(BroBros broBros) {
-    // TODO: @Skools move to singleton?
-    // if (SocketServices.instance.socket.connected) {
-    //   broToBeAddedToBroup = new BroAdded(broBros.id, broBros.chatName);
-    //   SocketServices.instance.socket.emit("message_event_add_bro_to_broup",
-    //       {
-    //         'token': settings.getToken(),
-    //         'broup_id': chat.id,
-    //         'bro_id': broBros.id
-    //       }
-    //   );
-    // }
+    broToBeAddedToBroup = new BroAdded(broBros.id, broBros.chatName);
+    socketServices.socket.emit("message_event_add_bro_to_broup",
+        {
+          'token': settings.getToken(),
+          'broup_id': chat.id,
+          'bro_id': broBros.id
+        }
+    );
     Navigator.of(context).pop();
   }
 }
@@ -446,9 +454,9 @@ class BroupAddBro {
 
   late bool selected;
   late bool alreadyInBroup;
-  late Chat broBros;
+  late BroBros broBros;
 
-  BroupAddBro(bool selected, bool alreadyInBroup, Chat broBros) {
+  BroupAddBro(bool selected, bool alreadyInBroup, BroBros broBros) {
     this.selected = selected;
     this.alreadyInBroup = alreadyInBroup;
     this.broBros = broBros;
