@@ -20,12 +20,14 @@ class _OpeningScreenState extends State<OpeningScreen> {
   bool isLoading = false;
   bool acceptEULA = false;
   Auth auth = new Auth();
-  // TODO: @Skools, some socket initialization already?
-  SocketServices socket = SocketServices();
+  late Storage storage;
 
   @override
   void initState() {
 
+    // Initialize the db on startup
+    storage = Storage();
+    storage.database;
     HelperFunction.getEULA().then((val) {
       if (val == null || val == false) {
         // first time opening this app!
@@ -45,7 +47,6 @@ class _OpeningScreenState extends State<OpeningScreen> {
       isLoading = true;
     });
 
-    var storage = Storage();
     storage.selectUser().then((user) async {
       if (user != null) {
         signIn(user);

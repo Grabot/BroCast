@@ -44,14 +44,13 @@ class Storage {
       int version,
       ) async {
     print("executing query");
-    createTableUser();
-    createTableChat();
+    await createTableUser(db);
+    await createTableChat(db);
   }
 
-  createTableUser() async {
+  createTableUser(Database db) async {
     print("create table user");
-    Database database = await this.database;
-    await database.execute('''
+    await db.execute('''
     CREATE TABLE User (
             id INTEGER PRIMARY KEY,
             broName TEXT,
@@ -65,10 +64,9 @@ class Storage {
           ''');
   }
 
-  createTableChat() async {
+  createTableChat(Database db) async {
     print("create table chat");
-    Database database = await this.database;
-    await database.execute('''
+    await db.execute('''
           CREATE TABLE Chat (
             id INTEGER PRIMARY KEY,
             chatId INTEGER,
@@ -102,6 +100,8 @@ class Storage {
     Database database = await this.database;
     String query = "SELECT * FROM User";
     List<Map<String, dynamic>> user = await database.rawQuery(query);
+    print("user!");
+    print(user);
     if (user.length != 1) {
       return null;
     } else {
@@ -185,7 +185,8 @@ class Storage {
     Database database = await this.database;
     await database.execute("DROP TABLE IF EXISTS Chat");
     await database.execute("DROP TABLE IF EXISTS User");
-    await createTableUser();
-    await createTableChat();
+    Database db = await this.database;
+    await createTableUser(db);
+    await createTableChat(db);
   }
 }
