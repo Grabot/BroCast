@@ -79,9 +79,9 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> {
   }
 
   void initAddParticipantSockets() {
-    socketServices.socket.on('message_event_add_bro_to_broup_success', (data) {
-      broWasAddedToBroup(data);
-    });
+    // socketServices.socket.on('message_event_add_bro_to_broup_success', (data) {
+    //   broWasAddedToBroup(data);
+    // });
     socketServices.socket.on('message_event_add_bro_to_broup_failed', (data) {
       addingBroToBroupFailed();
     });
@@ -90,46 +90,41 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> {
   @override
   void dispose() {
     BackButtonInterceptor.remove(myInterceptor);
-    socketServices.socket.off('message_event_add_bro_to_broup_success');
     socketServices.socket.off('message_event_add_bro_to_broup_failed');
     super.dispose();
   }
 
-  broWasAddedToBroup(var data) {
-    if (mounted) {
-      if (data.containsKey("result")) {
-        bool result = data["result"];
-        if (result) {
-          var newChat = data["chat"];
-
-          List<dynamic> broIds = newChat["bro_ids"];
-          List<int> broIdList = broIds.map((s) => s as int).toList();
-          chat.setParticipants(broIdList);
-
-          chat.setChatName(newChat["broup_name"]);
-
-          if (broToBeAddedToBroup != null) {
-            chat.addBro(broToBeAddedToBroup!);
-            Navigator.pushReplacement(
-                context, MaterialPageRoute(
-                builder: (context) => BroupDetails(
-                  key: UniqueKey(),
-                  chat: chat
-                )));
-          } else {
-            print("error while adding bro to broup! This should not happen!");
-          }
-        }
-      }
-    }
-  }
+  // broWasAddedToBroup(var data) {
+  //   if (data.containsKey("result")) {
+  //     bool result = data["result"];
+  //     if (result) {
+  //       var newChat = data["chat"];
+  //
+  //       List<dynamic> broIds = newChat["bro_ids"];
+  //       List<int> broIdList = broIds.map((s) => s as int).toList();
+  //       chat.setParticipants(broIdList);
+  //
+  //       chat.setChatName(newChat["broup_name"]);
+  //
+  //       if (broToBeAddedToBroup != null) {
+  //         chat.addBro(broToBeAddedToBroup!);
+  //         Navigator.pushReplacement(
+  //             context, MaterialPageRoute(
+  //             builder: (context) => BroupDetails(
+  //               key: UniqueKey(),
+  //               chat: chat
+  //             )));
+  //       } else {
+  //         print("error while adding bro to broup! This should not happen!");
+  //       }
+  //     }
+  //   }
+  // }
 
   addingBroToBroupFailed() {
     broToBeAddedToBroup = null;
-    if (mounted) {
-      ShowToastComponent.showDialog(
-          "Adding bro to the broup has failed", context);
-    }
+    ShowToastComponent.showDialog(
+        "Adding bro to the broup has failed", context);
   }
 
   bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
