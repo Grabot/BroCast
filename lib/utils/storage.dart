@@ -171,7 +171,6 @@ class Storage {
     );
   }
 
-  // TODO: @Skools fix delete with id and broup boolean?
   Future<int> deleteChat(Chat chat) async {
     Database database = await this.database;
     return database.delete(
@@ -181,12 +180,17 @@ class Storage {
     );
   }
 
+  clearChatTable() async {
+    Database database = await this.database;
+    await database.execute("DROP TABLE IF EXISTS Chat");
+    await createTableChat(database);
+  }
+
   clearDatabase() async {
     Database database = await this.database;
     await database.execute("DROP TABLE IF EXISTS Chat");
     await database.execute("DROP TABLE IF EXISTS User");
-    Database db = await this.database;
-    await createTableUser(db);
-    await createTableChat(db);
+    await createTableUser(database);
+    await createTableChat(database);
   }
 }

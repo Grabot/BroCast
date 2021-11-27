@@ -76,6 +76,7 @@ class _BroCastHomeState extends State<BroCastHome> {
         // Only leave when minimizing or closing the app.
         print("join room initstate");
         socketServices.joinRoomSolo(settings.getBroId());
+        initBroHomeSockets();
 
         if (user.shouldRecheck()) {
           searchBros(user.token);
@@ -125,41 +126,34 @@ class _BroCastHomeState extends State<BroCastHome> {
   }
 
   searchBros(String token) {
-    if (mounted) {
-      setState(() {
-        isSearching = true;
-      });
+    setState(() {
+      isSearching = true;
+    });
 
-      getBros.getBros(token).then((val) {
-        if (mounted) {
-          if (!(val is String)) {
-            bros = val;
-            broList.setBros(bros);
-            for (Chat bro in bros) {
-              storage.selectChat(bro.id, bro.broup).then((value) {
-                if (value == null) {
-                  print("adding broup participants");
-                  storage.addChat(bro).then((vl) {
-                    print("chat was saved! $vl");
-                  });
-                } else {
-                  print("chat was already added!");
-                  print(bro);
-                }
-              });
-            }
-            setState(() {
-              shownBros = bros;
+    getBros.getBros(token).then((val) async {
+      if (mounted) {
+        if (!(val is String)) {
+          // We have retrieved all the bros and broups.
+          // We will remove the chat database and refill it.
+          await storage.clearChatTable();
+          bros = val;
+          broList.setBros(bros);
+          for (Chat bro in bros) {
+            storage.addChat(bro).then((vl) {
+              print("chat was saved! $vl");
             });
-          } else {
-            ShowToastComponent.showDialog(val.toString(), context);
           }
           setState(() {
-            isSearching = false;
+            shownBros = bros;
           });
+        } else {
+          ShowToastComponent.showDialog(val.toString(), context);
         }
-      });
-    }
+        setState(() {
+          isSearching = false;
+        });
+      }
+    });
   }
 
   void onTapEmojiField() {
@@ -204,37 +198,6 @@ class _BroCastHomeState extends State<BroCastHome> {
     });
   }
 
-  // TODO: @Skools dit moet volgens mij op elk scherm mogelijk zijn. Naar een aparte socket class?
-  void broAddedYou(data) {
-    if (mounted) {
-      BroBros broBros = new BroBros(
-          data["bros_bro_id"],
-          data["chat_name"],
-          data["chat_description"],
-          data["alias"],
-          data["chat_colour"],
-          data["unread_messages"],
-          data["last_time_activity"],
-          data["room_name"],
-          data["blocked"] ? 1 : 0,
-          data["mute"] ? 1 : 0,
-          0
-      );
-      broList.addChat(broBros);
-      storage.addChat(broBros).then((value) {
-        setState(() {});
-      });
-    }
-  }
-
-  void addedToBroup() {
-    if (mounted) {
-      setState(() {
-        searchBros(settings.getToken());
-      });
-    }
-  }
-
   bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
     return backButtonFunctionality();
   }
@@ -273,91 +236,69 @@ class _BroCastHomeState extends State<BroCastHome> {
     onChangedBroNameField(broNameController.text, bromotionController.text);
   }
 
-  // joinRoomSolo(int broId) {
-    // TODO: @Skools move to singleton?
-    // if (SocketServices.instance.socket.connected) {
-    //   SocketServices.instance.socket.on('message_event_bro_added_you', (data) {
-    //     broAddedYou(data);
-    //   });
-    //   SocketServices.instance.socket.on('message_event_added_to_broup', (data) {
-    //     addedToBroup();
-    //   });
-    //   SocketServices.instance.socket.emit(
-    //     "join_solo",
-    //     {
-    //       "bro_id": broId,
-    //     },
-    //   );
-    //   SocketServices.instance.socket.on('message_event_change_broup_mute_success', (data) {
-    //     broupWasMuted(data);
-    //   });
-    //   SocketServices.instance.socket.on('message_event_change_broup_mute_failed', (data) {
-    //     broupMutingFailed();
-    //   });
-    //   SocketServices.instance.socket.on('message_event_change_chat_mute_success', (data) {
-    //     chatWasMuted(data);
-    //   });
-    //   SocketServices.instance.socket.on('message_event_change_chat_mute_failed', (data) {
-    //     chatMutingFailed();
-    //   });
-    // }
+  initBroHomeSockets() {
+    // SocketServices.instance.socket.on('message_event_change_broup_mute_failed', (data) {
+    //   broupMutingFailed();
+    // });
+    // SocketServices.instance.socket.on('message_event_change_chat_mute_failed', (data) {
+    //   chatMutingFailed();
+    // });
+  }
+
+  // broupWasMuted(var data) {
+  //   if (mounted) {
+  //     if (data.containsKey("result")) {
+  //       bool result = data["result"];
+  //       if (result) {
+  //         for (Chat broup in broList.getBros()) {
+  //           if (broup.isBroup()) {
+  //             if (broup.id == data["id"]) {
+  //               setState(() {
+  //                 broup.setMuted(data["mute"]);
+  //               });
+  //             }
+  //           }
+  //         }
+  //       }
+  //     }
+  //   }
   // }
 
-  broupWasMuted(var data) {
-    if (mounted) {
-      if (data.containsKey("result")) {
-        bool result = data["result"];
-        if (result) {
-          for (Chat broup in broList.getBros()) {
-            if (broup.isBroup()) {
-              if (broup.id == data["id"]) {
-                setState(() {
-                  broup.setMuted(data["mute"]);
-                });
-              }
-            }
-          }
-        }
-      }
-    }
-  }
+  // broupMutingFailed() {
+  //   if (mounted) {
+  //     ShowToastComponent.showDialog(
+  //         "Broup muting failed at this time.", context);
+  //   }
+  // }
 
-  broupMutingFailed() {
-    if (mounted) {
-      ShowToastComponent.showDialog(
-          "Broup muting failed at this time.", context);
-    }
-  }
+  // chatWasMuted(var data) {
+  //   if (mounted) {
+  //     if (data.containsKey("result")) {
+  //       bool result = data["result"];
+  //       if (result) {
+  //         for (Chat chat in broList.getBros()) {
+  //           if (!chat.isBroup()) {
+  //             if (chat.id == data["id"]) {
+  //               setState(() {
+  //                 chat.setMuted(data["mute"]);
+  //               });
+  //             }
+  //           }
+  //         }
+  //       }
+  //     }
+  //   }
+  // }
 
-  chatWasMuted(var data) {
-    if (mounted) {
-      if (data.containsKey("result")) {
-        bool result = data["result"];
-        if (result) {
-          for (Chat chat in broList.getBros()) {
-            if (!chat.isBroup()) {
-              if (chat.id == data["id"]) {
-                setState(() {
-                  chat.setMuted(data["mute"]);
-                });
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-
-  chatMutingFailed() {
-    if (mounted) {
-      ShowToastComponent.showDialog(
-          "Chat muting failed at this time.", context);
-    }
-  }
+  // chatMutingFailed() {
+  //   if (mounted) {
+  //     ShowToastComponent.showDialog(
+  //         "Chat muting failed at this time.", context);
+  //   }
+  // }
 
   @override
   void dispose() {
-    print("calling dispose? HOME");
     socketServices.removeListener(socketListener);
     bromotionController.removeListener(bromotionListener);
     BackButtonInterceptor.remove(myInterceptor);
@@ -574,6 +515,7 @@ class BroTile extends StatefulWidget {
 class _BroTileState extends State<BroTile> {
 
   Settings settings = Settings();
+  SocketServices socketServices = SocketServices();
   final NavigationService _navigationService = locator<NavigationService>();
   var _tapPosition;
 
@@ -775,45 +717,43 @@ class _BroTileState extends State<BroTile> {
   }
 
   void unmuteTheChat() {
-    // TODO: @Skools move to singleton?
     if (widget.chat is BroBros) {
-      // SocketServices.instance.socket
-      //     .emit("message_event_change_chat_mute", {
-      //   "token": settings.getToken(),
-      //   "bros_bro_id": widget.chat.id,
-      //   "bro_id": settings.getBroId(),
-      //   "mute": -1
-      // });
+      socketServices.socket
+          .emit("message_event_change_chat_mute", {
+        "token": settings.getToken(),
+        "bros_bro_id": widget.chat.id,
+        "bro_id": settings.getBroId(),
+        "mute": -1
+      });
     } else {
-      // SocketServices.instance.socket
-      //     .emit("message_event_change_broup_mute", {
-      //   "token": settings.getToken(),
-      //   "broup_id": widget.chat.id,
-      //   "bro_id": settings.getBroId(),
-      //   "mute": -1
-      // });
+      socketServices.socket
+          .emit("message_event_change_broup_mute", {
+        "token": settings.getToken(),
+        "broup_id": widget.chat.id,
+        "bro_id": settings.getBroId(),
+        "mute": -1
+      });
     }
     Navigator.of(context).pop();
   }
 
   void muteTheChat(int selectedRadio) {
     if (widget.chat is BroBros) {
-      // TODO: @Skools move to singleton?
-      // SocketServices.instance.socket
-      //     .emit("message_event_change_chat_mute", {
-      //   "token": settings.getToken(),
-      //   "bros_bro_id": widget.chat.id,
-      //   "bro_id": settings.getBroId(),
-      //   "mute": selectedRadio
-      // });
+      socketServices.socket
+          .emit("message_event_change_chat_mute", {
+        "token": settings.getToken(),
+        "bros_bro_id": widget.chat.id,
+        "bro_id": settings.getBroId(),
+        "mute": selectedRadio
+      });
     } else {
-      // SocketServices.instance.socket
-      //     .emit("message_event_change_broup_mute", {
-      //   "token": settings.getToken(),
-      //   "broup_id": widget.chat.id,
-      //   "bro_id": settings.getBroId(),
-      //   "mute": selectedRadio
-      // });
+      socketServices.socket
+          .emit("message_event_change_broup_mute", {
+        "token": settings.getToken(),
+        "broup_id": widget.chat.id,
+        "bro_id": settings.getBroId(),
+        "mute": selectedRadio
+      });
     }
     Navigator.of(context).pop();
   }

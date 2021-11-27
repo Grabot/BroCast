@@ -89,19 +89,6 @@ class _BroupDetailsState extends State<BroupDetails> {
     initBroupDetailsSockets();
   }
 
-  void changeToBroup() {
-    setState(() {
-      getChat.getBroup(settings.getBroId(), chat.id).then((value) {
-        if (value != "an unknown error has occurred") {
-          setState(() {
-            chat = value;
-            getParticipants();
-          });
-        }
-      });
-    });
-  }
-
   getParticipants() {
     List<int> remainingParticipants = new List<int>.from(chat.getParticipants());
     List<int> remainingAdmins = new List<int>.from(chat.getAdmins());
@@ -217,10 +204,6 @@ class _BroupDetailsState extends State<BroupDetails> {
       broupRemoveBroFailed();
     });
     // TODO: @SKools check of deze nog nodig zijn
-    socketServices.socket.on('message_event_broup_changed', (data) {
-      changeToBroup();
-    });
-    // TODO: @SKools check of deze nog nodig zijn
     socketServices.socket.on('message_event_add_bro_success', (data) {
       broWasAdded(data);
     });
@@ -238,6 +221,35 @@ class _BroupDetailsState extends State<BroupDetails> {
     });
   }
 
+  void broupRemoveBroSuccess(var data) {
+    if (data.containsKey("result")) {
+      bool result = data["result"];
+      if (result) {
+        if (data["old_bro"] == settings.getBroId()) {
+          // We have successfully left the Broup
+          storage.deleteChat(chat).then((value) {
+            print("the broup is successfully removed!");
+            Navigator.pushReplacement(
+                context, MaterialPageRoute(builder: (context) => BroCastHome(key: UniqueKey())));
+          });
+        } else {
+          for (Bro bro in chat.getBroupBros()) {
+            if (bro.id == data["old_bro"]) {
+              chat.dismissAdmin(data["old_bro"]);
+              chat.removeBro(data["old_bro"]);
+              break;
+            }
+          }
+          setState(() {});
+        }
+      } else {
+        broupRemoveBroFailed();
+      }
+    } else {
+      broupRemoveBroFailed();
+    }
+  }
+
   socketListener() {
     print("something happened with the broup details sockets stuff");
     // There was some update to the bro list.
@@ -246,27 +258,22 @@ class _BroupDetailsState extends State<BroupDetails> {
       if (ch4t.isBroup()) {
         if (ch4t.id == chat.id) {
           // This is the chat object of the current chat.
-          if (ch4t.chatName != chat.chatName
-              || ch4t.chatColor != chat.chatColor
-              || ch4t.chatDescription != chat.chatDescription
-              || ch4t.alias != chat.alias) {
-            // If either the name colour has changed. We want to update the screen
-            // We know if it gets here that it is a BroBros object and that
-            // it is the same BroBros object as the current open chat
-            setState(() {
-              chat = ch4t as Broup;
-              if (!focusNodeDescription.hasFocus) {
-                print("description does NOT have focus");
-                chatDescriptionController.text = ch4t.chatDescription;
-              } else {
-                print("description has focus");
-                previousDescription = ch4t.chatDescription;
-              }
-              currentColor = ch4t.getColor();
-              circleColorPickerController.color = ch4t.getColor();
-              chatAliasController.text = ch4t.alias;
-            });
-          }
+          // We update the screen for any changes.
+          // We know if it gets here that it is a Broup object and that
+          // it is the same Broup object as the current open chat
+          setState(() {
+            chat = ch4t as Broup;
+            if (!focusNodeDescription.hasFocus) {
+              print("description does NOT have focus");
+              chatDescriptionController.text = ch4t.chatDescription;
+            } else {
+              print("description has focus");
+              previousDescription = ch4t.chatDescription;
+            }
+            currentColor = ch4t.getColor();
+            circleColorPickerController.color = ch4t.getColor();
+            chatAliasController.text = ch4t.alias;
+          });
         }
       }
     }
@@ -356,9 +363,7 @@ class _BroupDetailsState extends State<BroupDetails> {
     socketServices.socket.off('message_event_change_broup_add_admin_failed');
     socketServices.socket.off('message_event_change_broup_dismiss_admin_success');
     socketServices.socket.off('message_event_change_broup_dismiss_admin_failed');
-    socketServices.socket.off('message_event_change_broup_remove_bro_success');
     socketServices.socket.off('message_event_change_broup_remove_bro_failed');
-    socketServices.socket.off('message_event_broup_changed');
     socketServices.socket.off('message_event_add_bro_success');
     socketServices.socket.off('message_event_add_bro_failed');
     socketServices.socket.off('message_event_change_broup_mute_success');
@@ -561,35 +566,6 @@ class _BroupDetailsState extends State<BroupDetails> {
   void broupDismissAdminFailed() {
     ShowToastComponent.showDialog(
         "Dismissing the bro from his admin role has failed", context);
-  }
-
-  void broupRemoveBroSuccess(var data) {
-    if (data.containsKey("result")) {
-      bool result = data["result"];
-      if (result) {
-        if (data["old_bro"] == settings.getBroId()) {
-          // We have successfully left the Broup
-          Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => BroCastHome(
-                key: UniqueKey()
-              )));
-        } else {
-          for (Bro bro in chat.getBroupBros()) {
-            if (bro.id == data["old_bro"]) {
-              chat.dismissAdmin(data["old_bro"]);
-              chat.removeBro(data["old_bro"]);
-              break;
-            }
-          }
-          setState(() {});
-        }
-      } else {
-        broupRemoveBroFailed();
-      }
-    } else {
-      broupRemoveBroFailed();
-    }
   }
 
   void broupRemoveBroFailed() {
@@ -962,6 +938,7 @@ class _BroupDetailsState extends State<BroupDetails> {
       "broup_id": chat.id,
       "bro_id": settings.getBroId()
     });
+    Navigator.of(context).pop();
   }
 
   void showDialogExitBroup(BuildContext context, String broupName) {
@@ -1023,11 +1000,13 @@ class _BroupDetailsState extends State<BroupDetails> {
         settings.getToken(),
         chat.id
     ).then((val) {
-      if (val) {
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => BroCastHome(
-          key: UniqueKey()
-        )));
+      if (val is Broup) {
+        Broup broupToRemove = val;
+        storage.deleteChat(broupToRemove).then((value) {
+          print("the broup is successfully removed!");
+          Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (context) => BroCastHome(key: UniqueKey())));
+        });
       } else {
         if (val == "an unknown error has occurred") {
           ShowToastComponent.showDialog("An unknown error has occurred", context);
@@ -1336,9 +1315,9 @@ void buttonAddBro(BuildContext context, Bro bro, bool alertDialog, String token)
   } else {
     Navigator.pop<int>(context, 1);
   }
-  // TODO: @Skools TEST ADD BRO
-//   socketServices.socket.emit("message_event_add_bro",
-//       {"token": token, "bros_bro_id": bro.id});
+  SocketServices socketServices = SocketServices();
+  socketServices.socket.emit("message_event_add_bro",
+      {"token": token, "bros_bro_id": bro.id});
 }
 
 void buttonMakeAdmin(BuildContext context, Bro bro, int broupId, bool alertDialog, String token) {
@@ -1347,13 +1326,13 @@ void buttonMakeAdmin(BuildContext context, Bro bro, int broupId, bool alertDialo
   } else {
     Navigator.pop<int>(context, 2);
   }
-  // TODO: @Skools TEST ADD BRO ADMIN
-  // socketServices.socket
-  //     .emit("message_event_change_broup_add_admin", {
-  //   "token": token,
-  //   "broup_id": broupId,
-  //   "bro_id": bro.id
-  // });
+  SocketServices socketServices = SocketServices();
+  socketServices.socket
+      .emit("message_event_change_broup_add_admin", {
+    "token": token,
+    "broup_id": broupId,
+    "bro_id": bro.id
+  });
 }
 
 void buttonDismissAdmin(BuildContext context, Bro bro, int broupId, bool alertDialog, String token) {

@@ -86,6 +86,10 @@ class SocketServices extends ChangeNotifier {
     }
   }
 
+  chatWasMuted(data) {
+
+  }
+
   broAddedYouToABroup(data) {
     Broup broup = getBroup(data);
     broList.addChat(broup);

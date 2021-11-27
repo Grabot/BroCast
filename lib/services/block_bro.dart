@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 
 class BlockBro {
   Future blockBro(String token, int brosBroId, bool blocked) async {
+    print("going to block the bro!");
     String urlBlockBro = baseUrl_v1_1 + 'block/bro';
     Uri uriBlockBro = Uri.parse(urlBlockBro);
 

@@ -113,10 +113,6 @@ class _BroupMessagingState extends State<BroupMessaging> {
         {"bro_id": settings.getBroId(), "broup_id": chat.id},
       );
       // TODO: @SKools check deze
-      socketServices.socket.on('message_event_broup_changed', (data) {
-        changeToBroup();
-      });
-      // TODO: @SKools check deze
       socketServices.socket.on('message_event_add_bro_success', (data) {
         broWasAdded(data);
       });
@@ -187,23 +183,6 @@ class _BroupMessagingState extends State<BroupMessaging> {
     if (mounted) {
       ShowToastComponent.showDialog(
           "Bro could not be added at this time", context);
-    }
-  }
-
-  void changeToBroup() {
-    if (mounted) {
-      setState(() {
-        amountViewed = 1;
-        getChat.getBroup(settings.getBroId(), chat.id).then((value) {
-          if (value != "an unknown error has occurred") {
-            setState(() {
-              chat = value;
-              getParticipants();
-              getMessages(amountViewed);
-            });
-          }
-        });
-      });
     }
   }
 
@@ -316,7 +295,6 @@ class _BroupMessagingState extends State<BroupMessaging> {
       "leave_broup",
       {"bro_id": settings.getBroId(), "broup_id": chat.id},
     );
-    socketServices.socket.off('message_event_broup_changed');
     socketServices.socket.off('message_event_add_bro_success');
     socketServices.socket.off('message_event_add_bro_failed');
     socketServices.socket.off('message_event_send');

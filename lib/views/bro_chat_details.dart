@@ -134,7 +134,9 @@ class _BroChatDetailsState extends State<BroChatDetails> {
           if (ch4t.chatName != chat.chatName
               || ch4t.chatColor != chat.chatColor
               || ch4t.chatDescription != chat.chatDescription
-              || ch4t.alias != chat.alias) {
+              || ch4t.alias != chat.alias
+              || ch4t.mute != chat.mute
+              || ch4t.blocked != chat.blocked) {
             // If either the name colour has changed. We want to update the screen
             // We know if it gets here that it is a BroBros object and that
             // it is the same BroBros object as the current open chat
@@ -302,9 +304,13 @@ class _BroChatDetailsState extends State<BroChatDetails> {
         settings.getToken(),
         chat.id
     ).then((val) {
-      if (val) {
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => BroCastHome(key: UniqueKey())));
+      if (val is BroBros) {
+        BroBros broToRemove = val;
+        storage.deleteChat(broToRemove).then((value) {
+          print("the chat is successfully removed!");
+          Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (context) => BroCastHome(key: UniqueKey())));
+        });
       } else {
         if (val == "an unknown error has occurred") {
           ShowToastComponent.showDialog("An unknown error has occurred", context);
@@ -321,9 +327,14 @@ class _BroChatDetailsState extends State<BroChatDetails> {
         settings.getToken(),
         chat.id
     ).then((val) {
-      if (val) {
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => BroCastHome(key: UniqueKey())));
+      // De bro moet verwijderd worden!
+      if (val is BroBros) {
+        BroBros broToRemove = val;
+        storage.deleteChat(broToRemove).then((value) {
+          print("the chat is successfully removed!");
+          Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (context) => BroCastHome(key: UniqueKey())));
+        });
       } else {
         if (val == "an unknown error has occurred") {
           ShowToastComponent.showDialog("An unknown error has occurred", context);
@@ -344,6 +355,9 @@ class _BroChatDetailsState extends State<BroChatDetails> {
       if (val is BroBros) {
         setState(() {
           this.chat = val;
+          storage.updateChat(this.chat).then((value) {
+            setState(() {});
+          });
         });
       } else {
         if (val == "an unknown error has occurred") {
@@ -353,9 +367,7 @@ class _BroChatDetailsState extends State<BroChatDetails> {
         }
       }
     });
-    if (blocked) {
-      Navigator.of(context).pop();
-    }
+    Navigator.of(context).pop();
   }
 
   void chatDetailUpdateFailed() {
@@ -607,7 +619,7 @@ class _BroChatDetailsState extends State<BroChatDetails> {
                       ),
                       onPressed: () {
                         chat.isBlocked() ?
-                        blockTheBro(false) : showDialogBlock(context, chat.getBroNameOrAlias());
+                        showDialogUnBlockChat(context) : showDialogBlock(context, chat.getBroNameOrAlias());
                       },
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -775,6 +787,30 @@ class _BroChatDetailsState extends State<BroChatDetails> {
                 child: new Text("Unmute"),
                 onPressed: () {
                   unmuteTheChat();
+                },
+              ),
+            ],
+          );
+        });
+  }
+
+  void showDialogUnBlockChat(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: new Text("Unblock Bro?"),
+            actions: <Widget>[
+              new TextButton(
+                child: new Text("Cancel"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              new TextButton(
+                child: new Text("Unblock"),
+                onPressed: () {
+                  blockTheBro(false);
                 },
               ),
             ],
