@@ -139,7 +139,7 @@ class _BroupMessagingState extends State<BroupMessaging> {
     // There was some update to the bro list.
     // Check the list and see if the change was to this chat object.
     for(Chat ch4t in broList.getBros()) {
-      if (!ch4t.isBroup()) {
+      if (ch4t.isBroup()) {
         if (ch4t.id == chat.id) {
           // This is the chat object of the current chat.
           if (ch4t.chatName != chat.chatName
@@ -311,6 +311,7 @@ class _BroupMessagingState extends State<BroupMessaging> {
   void dispose() {
     focusAppendText.dispose();
     focusEmojiTextField.dispose();
+    socketServices.removeListener(socketListener);
     socketServices.socket.emit(
       "leave_broup",
       {"bro_id": settings.getBroId(), "broup_id": chat.id},

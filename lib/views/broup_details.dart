@@ -74,6 +74,8 @@ class _BroupDetailsState extends State<BroupDetails> {
     chat = widget.chat;
     storage = Storage();
     amountInGroup = chat.getBroupBros().length;
+    socketServices.checkConnection();
+    socketServices.addListener(socketListener);
     BackButtonInterceptor.add(myInterceptor);
 
     getParticipants();
@@ -179,24 +181,12 @@ class _BroupDetailsState extends State<BroupDetails> {
 
   void initBroupDetailsSockets() {
     socketServices.socket
-        .on('message_event_change_broup_details_success', (data) {
-      broupDetailUpdateSuccess(data);
-    });
-    socketServices.socket
         .on('message_event_change_broup_details_failed', (data) {
       broupDetailUpdateFailed();
     });
     socketServices.socket
-        .on('message_event_change_broup_alias_success', (data) {
-      broupAliasUpdateSuccess();
-    });
-    socketServices.socket
         .on('message_event_change_broup_alias_failed', (data) {
-      broupAliasUpdateSuccess();
-    });
-    socketServices.socket
-        .on('message_event_change_broup_colour_success', (data) {
-      broupColourUpdateSuccess(data);
+      broupAliasUpdateFailed();
     });
     socketServices.socket
         .on('message_event_change_broup_colour_failed', (data) {
@@ -226,21 +216,60 @@ class _BroupDetailsState extends State<BroupDetails> {
         .on('message_event_change_broup_remove_bro_failed', (data) {
       broupRemoveBroFailed();
     });
+    // TODO: @SKools check of deze nog nodig zijn
     socketServices.socket.on('message_event_broup_changed', (data) {
       changeToBroup();
     });
+    // TODO: @SKools check of deze nog nodig zijn
     socketServices.socket.on('message_event_add_bro_success', (data) {
       broWasAdded(data);
     });
+    // TODO: @SKools check of deze nog nodig zijn
     socketServices.socket.on('message_event_add_bro_failed', (data) {
       broAddingFailed();
     });
+    // TODO: @SKools check of deze nog nodig zijn
     socketServices.socket.on('message_event_change_broup_mute_success', (data) {
       broupWasMuted(data);
     });
+    // TODO: @SKools check of deze nog nodig zijn
     socketServices.socket.on('message_event_change_broup_mute_failed', (data) {
       broupMutingFailed();
     });
+  }
+
+  socketListener() {
+    print("something happened with the broup details sockets stuff");
+    // There was some update to the bro list.
+    // Check the list and see if the change was to this chat object.
+    for(Chat ch4t in broList.getBros()) {
+      if (ch4t.isBroup()) {
+        if (ch4t.id == chat.id) {
+          // This is the chat object of the current chat.
+          if (ch4t.chatName != chat.chatName
+              || ch4t.chatColor != chat.chatColor
+              || ch4t.chatDescription != chat.chatDescription
+              || ch4t.alias != chat.alias) {
+            // If either the name colour has changed. We want to update the screen
+            // We know if it gets here that it is a BroBros object and that
+            // it is the same BroBros object as the current open chat
+            setState(() {
+              chat = ch4t as Broup;
+              if (!focusNodeDescription.hasFocus) {
+                print("description does NOT have focus");
+                chatDescriptionController.text = ch4t.chatDescription;
+              } else {
+                print("description has focus");
+                previousDescription = ch4t.chatDescription;
+              }
+              currentColor = ch4t.getColor();
+              circleColorPickerController.color = ch4t.getColor();
+              chatAliasController.text = ch4t.alias;
+            });
+          }
+        }
+      }
+    }
   }
 
   broWasAdded(data) {
@@ -319,11 +348,9 @@ class _BroupDetailsState extends State<BroupDetails> {
   @override
   void dispose() {
     BackButtonInterceptor.remove(myInterceptor);
-    socketServices.socket.off('message_event_change_broup_details_success');
+    socketServices.removeListener(socketListener);
     socketServices.socket.off('message_event_change_broup_details_failed');
-    socketServices.socket.off('message_event_change_broup_alias_success');
     socketServices.socket.off('message_event_change_broup_alias_failed');
-    socketServices.socket.off('message_event_change_broup_colour_success');
     socketServices.socket.off('message_event_change_broup_colour_failed');
     socketServices.socket.off('message_event_change_broup_add_admin_success');
     socketServices.socket.off('message_event_change_broup_add_admin_failed');
@@ -468,24 +495,6 @@ class _BroupDetailsState extends State<BroupDetails> {
     });
   }
 
-  void broupDetailUpdateSuccess(var data) {
-    if (data.containsKey("result")) {
-      bool result = data["result"];
-      if (result) {
-        chat.chatDescription = data["description"];
-        chatDescriptionController.text = data["description"];
-        previousDescription = "";
-        setState(() {});
-      }
-    }
-  }
-
-  void broupAliasUpdateSuccess() {
-    previousAlias = chatAliasController.text;
-    chat.alias = chatAliasController.text;
-    setState(() {});
-  }
-
   void broupAliasUpdateFailed() {
     chatAliasController.text = previousAlias;
     ShowToastComponent.showDialog(
@@ -496,18 +505,6 @@ class _BroupDetailsState extends State<BroupDetails> {
     currentColor = previousColor!;
     circleColorPickerController.color = previousColor!;
     ShowToastComponent.showDialog("Updating the bro chat has failed", context);
-  }
-
-  void broupColourUpdateSuccess(var data) {
-    if (data.containsKey("result")) {
-      bool result = data["result"];
-      if (result) {
-        chat.chatColor = data["colour"];
-        currentColor = Color(int.parse("0xFF${data["colour"]}"));
-        previousColor = Color(int.parse("0xFF${data["colour"]}"));
-        setState(() {});
-      }
-    }
   }
 
   void broupAddAdminSuccess(var data) {

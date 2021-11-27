@@ -95,13 +95,24 @@ class SocketServices extends ChangeNotifier {
   }
 
   chatChanged(data) {
-    print("chat has changed!");
-    BroBros broBros = getBroBros(data);
-    broList.updateChat(broBros);
-    storage.updateChat(broBros).then((chat) {
-      print("we have updated the chat");
-      notifyListeners();
-    });
+    if (data.containsKey("chat_name")) {
+      print("chat has changed!");
+      BroBros broBros = getBroBros(data);
+      broList.updateChat(broBros);
+      storage.updateChat(broBros).then((chat) {
+        print("we have updated the chat");
+        notifyListeners();
+      });
+    } else if (data.containsKey("broup_name")) {
+      print("broup has changed!");
+      print(data);
+      Broup broup = getBroup(data);
+      broList.updateChat(broup);
+      storage.updateChat(broup).then((chat) {
+        print("we have updated the chat");
+        notifyListeners();
+      });
+    }
   }
 
   void broAddedYou(data) {
