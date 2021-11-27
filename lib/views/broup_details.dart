@@ -39,7 +39,7 @@ class _BroupDetailsState extends State<BroupDetails> {
 
   Settings settings = Settings();
   GetChat getChat = new GetChat();
-  SocketServices socket = SocketServices();
+  SocketServices socketServices = SocketServices();
   BroList broList = BroList();
 
   TextEditingController chatDescriptionController = new TextEditingController();
@@ -71,46 +71,33 @@ class _BroupDetailsState extends State<BroupDetails> {
   @override
   void initState() {
     super.initState();
-    chat = widget.chat; // TODO: @Skools voeg altijd de cast toe?! Ook voor BroBros dan
+    chat = widget.chat;
     storage = Storage();
     amountInGroup = chat.getBroupBros().length;
     BackButtonInterceptor.add(myInterceptor);
 
-    // We retrieve the broup again in case there were changes.
-    getChat.getBroup(settings.getBroId(), chat.id).then((value) {
-      if (value != "an unknown error has occurred") {
-        chat = value;
-        getParticipants();
-        chatDescriptionController.text = chat.chatDescription;
-        chatAliasController.text = chat.alias;
+    getParticipants();
+    chatDescriptionController.text = chat.chatDescription;
+    chatAliasController.text = chat.alias;
 
-        circleColorPickerController = CircleColorPickerController(
-          initialColor: chat.getColor(),
-        );
-        currentColor = chat.getColor();
-        setState(() {
-        });
-      }
-    });
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
-      joinBroupRoom(settings.getBroId(), chat.id);
-      // initSockets(); // TODO: @SKools move to singelton?
-    });
+    circleColorPickerController = CircleColorPickerController(
+      initialColor: chat.getColor(),
+    );
+    currentColor = chat.getColor();
+    initBroupDetailsSockets();
   }
 
   void changeToBroup() {
-    if (mounted) {
-      setState(() {
-        getChat.getBroup(settings.getBroId(), chat.id).then((value) {
-          if (value != "an unknown error has occurred") {
-            setState(() {
-              chat = value;
-              getParticipants();
-            });
-          }
-        });
+    setState(() {
+      getChat.getBroup(settings.getBroId(), chat.id).then((value) {
+        if (value != "an unknown error has occurred") {
+          setState(() {
+            chat = value;
+            getParticipants();
+          });
+        }
       });
-    }
+    });
   }
 
   getParticipants() {
@@ -190,84 +177,71 @@ class _BroupDetailsState extends State<BroupDetails> {
     }
   }
 
-  joinBroupRoom(int broId, int broupId) {
-    // TODO: @Skools move to singleton?
-    // if (SocketServices.instance.socket.connected) {
-    //   SocketServices.instance.socket.emit(
-    //     "join_broup",
-    //     {"bro_id": broId, "broup_id": broupId},
-    //   );
-    // }
+  void initBroupDetailsSockets() {
+    socketServices.socket
+        .on('message_event_change_broup_details_success', (data) {
+      broupDetailUpdateSuccess(data);
+    });
+    socketServices.socket
+        .on('message_event_change_broup_details_failed', (data) {
+      broupDetailUpdateFailed();
+    });
+    socketServices.socket
+        .on('message_event_change_broup_alias_success', (data) {
+      broupAliasUpdateSuccess();
+    });
+    socketServices.socket
+        .on('message_event_change_broup_alias_failed', (data) {
+      broupAliasUpdateSuccess();
+    });
+    socketServices.socket
+        .on('message_event_change_broup_colour_success', (data) {
+      broupColourUpdateSuccess(data);
+    });
+    socketServices.socket
+        .on('message_event_change_broup_colour_failed', (data) {
+      broupColourUpdateFailed();
+    });
+    socketServices.socket
+        .on('message_event_change_broup_add_admin_success', (data) {
+      broupAddAdminSuccess(data);
+    });
+    socketServices.socket
+        .on('message_event_change_broup_add_admin_failed', (data) {
+      broupAddAdminFailed();
+    });
+    socketServices.socket
+        .on('message_event_change_broup_dismiss_admin_success', (data) {
+      broupDismissAdminSuccess(data);
+    });
+    socketServices.socket
+        .on('message_event_change_broup_dismiss_admin_failed', (data) {
+      broupDismissAdminFailed();
+    });
+    socketServices.socket
+        .on('message_event_change_broup_remove_bro_success', (data) {
+      broupRemoveBroSuccess(data);
+    });
+    socketServices.socket
+        .on('message_event_change_broup_remove_bro_failed', (data) {
+      broupRemoveBroFailed();
+    });
+    socketServices.socket.on('message_event_broup_changed', (data) {
+      changeToBroup();
+    });
+    socketServices.socket.on('message_event_add_bro_success', (data) {
+      broWasAdded(data);
+    });
+    socketServices.socket.on('message_event_add_bro_failed', (data) {
+      broAddingFailed();
+    });
+    socketServices.socket.on('message_event_change_broup_mute_success', (data) {
+      broupWasMuted(data);
+    });
+    socketServices.socket.on('message_event_change_broup_mute_failed', (data) {
+      broupMutingFailed();
+    });
   }
-
-  // TODO: @Skools move to singleton?
-  // void initSockets() {
-  //   if (SocketServices.instance.socket.connected) {
-  //     SocketServices.instance.socket
-  //         .on('message_event_change_broup_details_success', (data) {
-  //       broupDetailUpdateSuccess(data);
-  //     });
-  //     SocketServices.instance.socket
-  //         .on('message_event_change_broup_details_failed', (data) {
-  //       broupDetailUpdateFailed();
-  //     });
-  //     SocketServices.instance.socket
-  //         .on('message_event_change_broup_alias_success', (data) {
-  //       broupAliasUpdateSuccess();
-  //     });
-  //     SocketServices.instance.socket
-  //         .on('message_event_change_broup_alias_failed', (data) {
-  //       broupAliasUpdateSuccess();
-  //     });
-  //     SocketServices.instance.socket
-  //         .on('message_event_change_broup_colour_success', (data) {
-  //       broupColourUpdateSuccess(data);
-  //     });
-  //     SocketServices.instance.socket
-  //         .on('message_event_change_broup_colour_failed', (data) {
-  //       broupColourUpdateFailed();
-  //     });
-  //     SocketServices.instance.socket
-  //         .on('message_event_change_broup_add_admin_success', (data) {
-  //       broupAddAdminSuccess(data);
-  //     });
-  //     SocketServices.instance.socket
-  //         .on('message_event_change_broup_add_admin_failed', (data) {
-  //       broupAddAdminFailed();
-  //     });
-  //     SocketServices.instance.socket
-  //         .on('message_event_change_broup_dismiss_admin_success', (data) {
-  //       broupDismissAdminSuccess(data);
-  //     });
-  //     SocketServices.instance.socket
-  //         .on('message_event_change_broup_dismiss_admin_failed', (data) {
-  //       broupDismissAdminFailed();
-  //     });
-  //     SocketServices.instance.socket
-  //         .on('message_event_change_broup_remove_bro_success', (data) {
-  //       broupRemoveBroSuccess(data);
-  //     });
-  //     SocketServices.instance.socket
-  //         .on('message_event_change_broup_remove_bro_failed', (data) {
-  //       broupRemoveBroFailed();
-  //     });
-  //     SocketServices.instance.socket.on('message_event_broup_changed', (data) {
-  //       changeToBroup();
-  //     });
-  //     SocketServices.instance.socket.on('message_event_add_bro_success', (data) {
-  //       broWasAdded(data);
-  //     });
-  //     SocketServices.instance.socket.on('message_event_add_bro_failed', (data) {
-  //       broAddingFailed();
-  //     });
-  //     SocketServices.instance.socket.on('message_event_change_broup_mute_success', (data) {
-  //       broupWasMuted(data);
-  //     });
-  //     SocketServices.instance.socket.on('message_event_change_broup_mute_failed', (data) {
-  //       broupMutingFailed();
-  //     });
-  //   }
-  // }
 
   broWasAdded(data) {
     // TODO: @Skools remove to background?
@@ -286,42 +260,33 @@ class _BroupDetailsState extends State<BroupDetails> {
     );
     broList.addChat(broBros);
     storage.addChat(broBros).then((value) {
-      if (mounted) {
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) =>
-            BroCastHome(
-                key: UniqueKey()
-            )));
-        dispose();
-      }
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) =>
+          BroCastHome(
+              key: UniqueKey()
+          )));
     });
   }
 
   broAddingFailed() {
-    if (mounted) {
-      ShowToastComponent.showDialog(
-          "Bro could not be added at this time", context);
-    }
+    ShowToastComponent.showDialog(
+        "Bro could not be added at this time", context);
   }
 
   broupWasMuted(var data) {
-    if (mounted) {
-      if (data.containsKey("result")) {
-        bool result = data["result"];
-        if (result) {
-          setState(() {
-            chat.setMuted(data["mute"]);
-          });
-        }
+    if (data.containsKey("result")) {
+      bool result = data["result"];
+      if (result) {
+        setState(() {
+          chat.setMuted(data["mute"]);
+        });
       }
     }
   }
 
   broupMutingFailed() {
-    if (mounted) {
-      ShowToastComponent.showDialog(
-          "Broup muting failed at this time.", context);
-    }
+    ShowToastComponent.showDialog(
+        "Broup muting failed at this time.", context);
   }
 
   bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
@@ -354,17 +319,23 @@ class _BroupDetailsState extends State<BroupDetails> {
   @override
   void dispose() {
     BackButtonInterceptor.remove(myInterceptor);
-    // TODO: @Skools move to singleton?
-    // SocketServices.instance.socket
-    //     .off('message_event_send_solo', (data) => print(data));
-    // SocketServices.instance.socket.off(
-    //     'message_event_change_chat_details_success', (data) => print(data));
-    // SocketServices.instance.socket
-    //     .off('message_event_change_chat_details_failed', (data) => print(data));
-    // SocketServices.instance.socket
-    //     .off('message_event_change_chat_colour_success', (data) => print(data));
-    // SocketServices.instance.socket
-    //     .off('message_event_change_chat_colour_failed', (data) => print(data));
+    socketServices.socket.off('message_event_change_broup_details_success');
+    socketServices.socket.off('message_event_change_broup_details_failed');
+    socketServices.socket.off('message_event_change_broup_alias_success');
+    socketServices.socket.off('message_event_change_broup_alias_failed');
+    socketServices.socket.off('message_event_change_broup_colour_success');
+    socketServices.socket.off('message_event_change_broup_colour_failed');
+    socketServices.socket.off('message_event_change_broup_add_admin_success');
+    socketServices.socket.off('message_event_change_broup_add_admin_failed');
+    socketServices.socket.off('message_event_change_broup_dismiss_admin_success');
+    socketServices.socket.off('message_event_change_broup_dismiss_admin_failed');
+    socketServices.socket.off('message_event_change_broup_remove_bro_success');
+    socketServices.socket.off('message_event_change_broup_remove_bro_failed');
+    socketServices.socket.off('message_event_broup_changed');
+    socketServices.socket.off('message_event_add_bro_success');
+    socketServices.socket.off('message_event_add_bro_failed');
+    socketServices.socket.off('message_event_change_broup_mute_success');
+    socketServices.socket.off('message_event_change_broup_mute_failed');
     super.dispose();
   }
 
@@ -377,21 +348,10 @@ class _BroupDetailsState extends State<BroupDetails> {
               onPressed: () {
                 backButtonFunctionality();
               }),
-          backgroundColor:
-              chat.getColor() != null ? chat.getColor() : Color(0xff145C9E),
-          title: Column(
-              children: [
-                chat.alias != null && chat.alias.isNotEmpty
-                    ? Container(
-                    child: Text(chat.alias,
-                        style: TextStyle(
-                            color: getTextColor(chat.getColor()), fontSize: 20)))
-                    : Container(
-                    child: Text(chat.chatName,
-                        style: TextStyle(
-                            color: getTextColor(chat.getColor()), fontSize: 20))),
-              ]
-          ),
+          backgroundColor: chat.getColor(),
+          title: Text(chat.getBroNameOrAlias(),
+              style: TextStyle(
+                  color: getTextColor(chat.getColor()), fontSize: 20)),
           actions: [
             PopupMenuButton<int>(
                 onSelected: (item) => onSelectChat(context, item),
@@ -448,15 +408,12 @@ class _BroupDetailsState extends State<BroupDetails> {
 
   void updateDescription() {
     if (previousDescription != chatDescriptionController.text) {
-      // TODO: @Skools move to singleton?
-      // if (SocketServices.instance.socket.connected) {
-      //   SocketServices.instance.socket
-      //       .emit("message_event_change_broup_details", {
-      //     "token": settings.getToken(),
-      //     "broup_id": chat.id,
-      //     "description": chatDescriptionController.text
-      //   });
-      // }
+        socketServices.socket
+            .emit("message_event_change_broup_details", {
+          "token": settings.getToken(),
+          "broup_id": chat.id,
+          "description": chatDescriptionController.text
+        });
       setState(() {
         FocusScope.of(context).unfocus();
         changeDescription = false;
@@ -471,15 +428,12 @@ class _BroupDetailsState extends State<BroupDetails> {
 
   void updateAlias() {
     if (previousAlias != chatAliasController.text) {
-      // TODO: @Skools move to singleton?
-      // if (SocketServices.instance.socket.connected) {
-      //   SocketServices.instance.socket
-      //       .emit("message_event_change_broup_alias", {
-      //     "token": settings.getToken(),
-      //     "broup_id": chat.id,
-      //     "alias": chatAliasController.text
-      //   });
-      // }
+      socketServices.socket
+          .emit("message_event_change_broup_alias", {
+        "token": settings.getToken(),
+        "broup_id": chat.id,
+        "alias": chatAliasController.text
+      });
       setState(() {
         FocusScope.of(context).unfocus();
         changeAlias = false;
@@ -502,15 +456,12 @@ class _BroupDetailsState extends State<BroupDetails> {
   saveColour() {
     if (currentColor != chat.getColor()) {
       String newColour = currentColor.value.toRadixString(16).substring(2, 8);
-      // TODO: @Skools move to singleton?
-      // if (SocketServices.instance.socket.connected) {
-      //   SocketServices.instance.socket
-      //       .emit("message_event_change_broup_colour", {
-      //     "token": settings.getToken(),
-      //     "broup_id": chat.id,
-      //     "colour": newColour
-      //   });
-      // }
+      socketServices.socket
+          .emit("message_event_change_broup_colour", {
+        "token": settings.getToken(),
+        "broup_id": chat.id,
+        "colour": newColour
+      });
     }
     setState(() {
       changeColour = false;
@@ -518,15 +469,13 @@ class _BroupDetailsState extends State<BroupDetails> {
   }
 
   void broupDetailUpdateSuccess(var data) {
-    if (mounted) {
-      if (data.containsKey("result")) {
-        bool result = data["result"];
-        if (result) {
-          chat.chatDescription = data["description"];
-          chatDescriptionController.text = data["description"];
-          previousDescription = "";
-          setState(() {});
-        }
+    if (data.containsKey("result")) {
+      bool result = data["result"];
+      if (result) {
+        chat.chatDescription = data["description"];
+        chatDescriptionController.text = data["description"];
+        previousDescription = "";
+        setState(() {});
       }
     }
   }
@@ -534,17 +483,13 @@ class _BroupDetailsState extends State<BroupDetails> {
   void broupAliasUpdateSuccess() {
     previousAlias = chatAliasController.text;
     chat.alias = chatAliasController.text;
-    if (mounted) {
-      setState(() {});
-    }
+    setState(() {});
   }
 
   void broupAliasUpdateFailed() {
     chatAliasController.text = previousAlias;
-    if (mounted) {
-      ShowToastComponent.showDialog(
-          "Updating the bro alias has failed", context);
-    }
+    ShowToastComponent.showDialog(
+        "Updating the bro alias has failed", context);
   }
 
   void broupDetailUpdateFailed() {
@@ -554,127 +499,111 @@ class _BroupDetailsState extends State<BroupDetails> {
   }
 
   void broupColourUpdateSuccess(var data) {
-    if (mounted) {
-      if (data.containsKey("result")) {
-        bool result = data["result"];
-        if (result) {
-          chat.chatColor = data["colour"];
-          currentColor = Color(int.parse("0xFF${data["colour"]}"));
-          previousColor = Color(int.parse("0xFF${data["colour"]}"));
-          setState(() {});
-        }
+    if (data.containsKey("result")) {
+      bool result = data["result"];
+      if (result) {
+        chat.chatColor = data["colour"];
+        currentColor = Color(int.parse("0xFF${data["colour"]}"));
+        previousColor = Color(int.parse("0xFF${data["colour"]}"));
+        setState(() {});
       }
     }
   }
 
   void broupAddAdminSuccess(var data) {
-    if (mounted) {
-      if (data.containsKey("result")) {
-        bool result = data["result"];
-        if (result) {
-          for (Bro bro in chat.getBroupBros()) {
-            if (bro.id == data["new_admin"]) {
-              bro.setAdmin(true);
-              chat.addAdmin(data["new_admin"]);
-              if (settings.getBroId() == data["new_admin"]) {
-                chat.setAmIAdmin(true);
-              }
-              break;
+    if (data.containsKey("result")) {
+      bool result = data["result"];
+      if (result) {
+        for (Bro bro in chat.getBroupBros()) {
+          if (bro.id == data["new_admin"]) {
+            bro.setAdmin(true);
+            chat.addAdmin(data["new_admin"]);
+            if (settings.getBroId() == data["new_admin"]) {
+              chat.setAmIAdmin(true);
             }
+            break;
           }
-          setState(() {});
-        } else {
-          broupAddAdminFailed();
         }
+        setState(() {});
       } else {
         broupAddAdminFailed();
       }
+    } else {
+      broupAddAdminFailed();
     }
   }
 
   void broupAddAdminFailed() {
-    if (mounted) {
-      ShowToastComponent.showDialog(
-          "Adding the bro as admin has failed", context);
-    }
+    ShowToastComponent.showDialog(
+        "Adding the bro as admin has failed", context);
   }
 
   void broupDismissAdminSuccess(var data) {
-    if (mounted) {
-      if (data.containsKey("result")) {
-        bool result = data["result"];
-        if (result) {
-          for (Bro bro in chat.getBroupBros()) {
-            if (bro.id == data["old_admin"]) {
-              bro.setAdmin(false);
-              chat.dismissAdmin(data["old_admin"]);
-              if (settings.getBroId() == data["old_admin"]) {
-                chat.setAmIAdmin(false);
-              }
-              break;
+    if (data.containsKey("result")) {
+      bool result = data["result"];
+      if (result) {
+        for (Bro bro in chat.getBroupBros()) {
+          if (bro.id == data["old_admin"]) {
+            bro.setAdmin(false);
+            chat.dismissAdmin(data["old_admin"]);
+            if (settings.getBroId() == data["old_admin"]) {
+              chat.setAmIAdmin(false);
             }
+            break;
           }
-          setState(() {});
-        } else {
-          broupAddAdminFailed();
         }
+        setState(() {});
       } else {
         broupAddAdminFailed();
       }
+    } else {
+      broupAddAdminFailed();
     }
   }
 
   void broupDismissAdminFailed() {
-    if (mounted) {
-      ShowToastComponent.showDialog(
-          "Dismissing the bro from his admin role has failed", context);
-    }
+    ShowToastComponent.showDialog(
+        "Dismissing the bro from his admin role has failed", context);
   }
 
   void broupRemoveBroSuccess(var data) {
-    if (mounted) {
-      if (data.containsKey("result")) {
-        bool result = data["result"];
-        if (result) {
-          if (data["old_bro"] == settings.getBroId()) {
-            // We have successfully left the Broup
-            Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => BroCastHome(
-                  key: UniqueKey()
-                )));
-          } else {
-            for (Bro bro in chat.getBroupBros()) {
-              if (bro.id == data["old_bro"]) {
-                chat.dismissAdmin(data["old_bro"]);
-                chat.removeBro(data["old_bro"]);
-                break;
-              }
-            }
-            setState(() {});
-          }
+    if (data.containsKey("result")) {
+      bool result = data["result"];
+      if (result) {
+        if (data["old_bro"] == settings.getBroId()) {
+          // We have successfully left the Broup
+          Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => BroCastHome(
+                key: UniqueKey()
+              )));
         } else {
-          broupRemoveBroFailed();
+          for (Bro bro in chat.getBroupBros()) {
+            if (bro.id == data["old_bro"]) {
+              chat.dismissAdmin(data["old_bro"]);
+              chat.removeBro(data["old_bro"]);
+              break;
+            }
+          }
+          setState(() {});
         }
       } else {
         broupRemoveBroFailed();
       }
+    } else {
+      broupRemoveBroFailed();
     }
   }
 
   void broupRemoveBroFailed() {
-    if (mounted) {
-      ShowToastComponent.showDialog(
-          "Removing the bro from the broup has failed", context);
-    }
+    ShowToastComponent.showDialog(
+        "Removing the bro from the broup has failed", context);
   }
 
   void broupColourUpdateFailed() {
     chatDescriptionController.text = previousDescription;
-    if (mounted) {
-      ShowToastComponent.showDialog(
-          "Updating the bro colour has failed", context);
-    }
+    ShowToastComponent.showDialog(
+        "Updating the bro colour has failed", context);
   }
 
   onColorChange(Color colour) {
@@ -1030,13 +959,12 @@ class _BroupDetailsState extends State<BroupDetails> {
   }
 
   void exitBroup() {
-    // TODO: @Skools move to singleton?
-    // SocketServices.instance.socket
-    //     .emit("message_event_change_broup_remove_bro", {
-    //   "token": settings.getToken(),
-    //   "broup_id": chat.id,
-    //   "bro_id": settings.getBroId()
-    // });
+    socketServices.socket
+        .emit("message_event_change_broup_remove_bro", {
+      "token": settings.getToken(),
+      "broup_id": chat.id,
+      "bro_id": settings.getBroId()
+    });
   }
 
   void showDialogExitBroup(BuildContext context, String broupName) {
@@ -1203,26 +1131,24 @@ class _BroupDetailsState extends State<BroupDetails> {
   }
 
   void unmuteTheBroup() {
-    // TODO: @Skools move to singleton?
-    // SocketServices.instance.socket
-    //     .emit("message_event_change_broup_mute", {
-    //   "token": settings.getToken(),
-    //   "broup_id": chat.id,
-    //   "bro_id": settings.getBroId(),
-    //   "mute": -1
-    // });
+    socketServices.socket
+        .emit("message_event_change_broup_mute", {
+      "token": settings.getToken(),
+      "broup_id": chat.id,
+      "bro_id": settings.getBroId(),
+      "mute": -1
+    });
     Navigator.of(context).pop();
   }
 
   void muteTheBroup(int selectedRadio) {
-    // TODO: @Skools move to singleton?
-    // SocketServices.instance.socket
-    //     .emit("message_event_change_broup_mute", {
-    //   "token": settings.getToken(),
-    //   "broup_id": chat.id,
-    //   "bro_id": settings.getBroId(),
-    //   "mute": selectedRadio
-    // });
+    socketServices.socket
+        .emit("message_event_change_broup_mute", {
+      "token": settings.getToken(),
+      "broup_id": chat.id,
+      "bro_id": settings.getBroId(),
+      "mute": selectedRadio
+    });
     Navigator.of(context).pop();
   }
 }
@@ -1413,11 +1339,9 @@ void buttonAddBro(BuildContext context, Bro bro, bool alertDialog, String token)
   } else {
     Navigator.pop<int>(context, 1);
   }
-  // TODO: @Skools move to singleton?
-  // if (SocketServices.instance.socket.connected) {
-  //   SocketServices.instance.socket.emit("message_event_add_bro",
-  //       {"token": token, "bros_bro_id": bro.id});
-  // }
+  // TODO: @Skools TEST ADD BRO
+//   socketServices.socket.emit("message_event_add_bro",
+//       {"token": token, "bros_bro_id": bro.id});
 }
 
 void buttonMakeAdmin(BuildContext context, Bro bro, int broupId, bool alertDialog, String token) {
@@ -1426,15 +1350,13 @@ void buttonMakeAdmin(BuildContext context, Bro bro, int broupId, bool alertDialo
   } else {
     Navigator.pop<int>(context, 2);
   }
-  // TODO: @Skools move to singleton?
-  // if (SocketServices.instance.socket.connected) {
-  //   SocketServices.instance.socket
-  //       .emit("message_event_change_broup_add_admin", {
-  //     "token": token,
-  //     "broup_id": broupId,
-  //     "bro_id": bro.id
-  //   });
-  // }
+  // TODO: @Skools TEST ADD BRO ADMIN
+  // socketServices.socket
+  //     .emit("message_event_change_broup_add_admin", {
+  //   "token": token,
+  //   "broup_id": broupId,
+  //   "bro_id": bro.id
+  // });
 }
 
 void buttonDismissAdmin(BuildContext context, Bro bro, int broupId, bool alertDialog, String token) {
