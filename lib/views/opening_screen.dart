@@ -44,7 +44,7 @@ class _OpeningScreenState extends State<OpeningScreen> {
 
   goToBroHome() async {
     // Ugly fix for now to ensure it won't call home twice
-    var duration = new Duration(milliseconds: 500);
+    var duration = new Duration(seconds: 1);
     return new Timer(duration, broHome);
   }
 

@@ -32,6 +32,7 @@ class BroupAddParticipant extends StatefulWidget {
 class _BroupAddParticipantState extends State<BroupAddParticipant> {
 
   Settings settings = Settings();
+  BroList broList = BroList();
   SocketServices socketServices = SocketServices();
 
   bool showEmojiKeyboard = false;
@@ -46,11 +47,14 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> {
   TextEditingController bromotionController = new TextEditingController();
   TextEditingController broNameController = new TextEditingController();
 
+  int newBroToAdd = -1;
+
   @override
   void initState() {
     super.initState();
     chat = widget.chat;
     socketServices.checkConnection();
+    socketServices.addListener(socketListener);
     bromotionController.addListener(bromotionListener);
 
     BroList broList = BroList();
@@ -78,10 +82,33 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> {
     BackButtonInterceptor.add(myInterceptor);
   }
 
+  socketListener() {
+    for(Chat ch4t in broList.getBros()) {
+      if (ch4t.isBroup()) {
+        if (ch4t.id == chat.id) {
+          // This is the chat object of the current chat.
+          // It's possible that someone else is adding a bro while the user is on this screen.
+          // We will do a quick check if the change is equal to what the user has just changed themselves.
+          List<int> ch4tParticipants = (ch4t as Broup).getParticipants();
+          List<int> newParticipants = new List<int>.from(ch4tParticipants);
+          newParticipants.removeWhere((bro) => chat.getParticipants().contains(bro));
+          print(newParticipants);
+          // newParticipants should be exactly one and equal to who the user tried to add.
+          if (newBroToAdd == newParticipants[0]) {
+            Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => BroupDetails(
+                        key: UniqueKey(),
+                        chat: ch4t
+                    )));
+          }
+        }
+      }
+    }
+  }
+
   void initAddParticipantSockets() {
-    // socketServices.socket.on('message_event_add_bro_to_broup_success', (data) {
-    //   broWasAddedToBroup(data);
-    // });
     socketServices.socket.on('message_event_add_bro_to_broup_failed', (data) {
       addingBroToBroupFailed();
     });
@@ -90,38 +117,13 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> {
   @override
   void dispose() {
     BackButtonInterceptor.remove(myInterceptor);
+    socketServices.removeListener(socketListener);
     socketServices.socket.off('message_event_add_bro_to_broup_failed');
     super.dispose();
   }
 
-  // broWasAddedToBroup(var data) {
-  //   if (data.containsKey("result")) {
-  //     bool result = data["result"];
-  //     if (result) {
-  //       var newChat = data["chat"];
-  //
-  //       List<dynamic> broIds = newChat["bro_ids"];
-  //       List<int> broIdList = broIds.map((s) => s as int).toList();
-  //       chat.setParticipants(broIdList);
-  //
-  //       chat.setChatName(newChat["broup_name"]);
-  //
-  //       if (broToBeAddedToBroup != null) {
-  //         chat.addBro(broToBeAddedToBroup!);
-  //         Navigator.pushReplacement(
-  //             context, MaterialPageRoute(
-  //             builder: (context) => BroupDetails(
-  //               key: UniqueKey(),
-  //               chat: chat
-  //             )));
-  //       } else {
-  //         print("error while adding bro to broup! This should not happen!");
-  //       }
-  //     }
-  //   }
-  // }
-
   addingBroToBroupFailed() {
+    newBroToAdd = -1;
     broToBeAddedToBroup = null;
     ShowToastComponent.showDialog(
         "Adding bro to the broup has failed", context);
@@ -434,6 +436,7 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> {
 
   void addTheBro(BroBros broBros) {
     broToBeAddedToBroup = new BroAdded(broBros.id, chat.id, broBros.chatName);
+    newBroToAdd = broBros.id;
     socketServices.socket.emit("message_event_add_bro_to_broup",
         {
           'token': settings.getToken(),

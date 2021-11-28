@@ -35,6 +35,10 @@ class BroList {
     this.bros.add(chat);
   }
 
+  Chat getChat(int chatId, int broup) {
+    return bros[bros.indexWhere((bro) => bro.id == chatId && bro.broup == broup)];
+  }
+
   void updateChat(Chat chat) {
     bros[bros.indexWhere((bro) =>
           bro.id == chat.id && bro.broup == chat.broup)] = chat;
@@ -115,7 +119,6 @@ class BroList {
             print("big error! Fix it!");
           }
           broup.setBroupBros(broupMe + foundBroupAdmins + foundBroupNotAdmins);
-          // return broup;
         }
       });
     } else {
@@ -124,9 +127,6 @@ class BroList {
         print("big error! Fix it!");
       }
       broup.setBroupBros(broupMe + foundBroupAdmins + foundBroupNotAdmins);
-      // return broup;
     }
-    // Test if the broup object is updated in the list.
-    // return broup;
   }
 }

@@ -1,4 +1,5 @@
 import 'package:brocast/constants/base_url.dart';
+import 'package:brocast/objects/bro.dart';
 import 'package:brocast/objects/bro_bros.dart';
 import 'package:brocast/objects/broup.dart';
 import 'package:brocast/services/settings.dart';
@@ -89,10 +90,6 @@ class SocketServices extends ChangeNotifier {
     }
   }
 
-  chatWasMuted(data) {
-
-  }
-
   broAddedYouToABroup(data) {
     Broup broup = getBroup(data);
     broList.addChat(broup);
@@ -101,7 +98,7 @@ class SocketServices extends ChangeNotifier {
     });
   }
 
-  chatChanged(data) {
+  chatChanged(data) async {
     if (data.containsKey("chat_name")) {
       print("chat has changed!");
       BroBros broBros = getBroBros(data);
@@ -114,7 +111,45 @@ class SocketServices extends ChangeNotifier {
       print("broup has changed!");
       print(data);
       Broup broup = getBroup(data);
+      print("first get a copy of the old broup so we can see if a bro was added or removed");
+      Broup oldBroup = broList.getChat(broup.id, broup.broup) as Broup;
+      print("length of old broup ${oldBroup.participants.length} and length of new broup ${broup.participants.length}");
       broList.updateChat(broup);
+      if (oldBroup.participants.length > broup.participants.length) {
+        // A bro was removed
+        List<int> removedBro = new List<int>.from(oldBroup.participants);
+        removedBro.removeWhere((broId) => broup.participants.contains(broId));
+        // There should always be 1 removed
+        print(removedBro);
+        for (int removedBroId in removedBro) {
+          print("removing bro id ${removedBroId.toString()} from broup with id ${broup.id.toString()}");
+          storage.deleteBro(removedBroId.toString(), broup.id.toString()).then((value) {
+            print("we have removed a bro from the db!");
+          });
+        }
+      }
+      List<int> addedBro = [];
+      if (oldBroup.participants.length < broup.participants.length) {
+        // A bro was added
+        addedBro = new List<int>.from(broup.participants);
+        addedBro.removeWhere((broId) => oldBroup.participants.contains(broId));
+        // There should always be 1 added
+        print(addedBro);
+      }
+      broList.getParticipants(broup, broup.getParticipants(), broup.getAdmins());
+      for (Bro bro in broup.getBroupBros()) {
+        if (addedBro.contains(bro.id)) {
+          // This bro is not yet in the db.
+          print("adding the bro ${bro.id}");
+          storage.addBro(bro).then((value) {
+            print("we have successfully added a bro");
+          });
+        } else {
+          storage.updateBro(bro).then((bro) {
+            print("we have updated a bro in the broup");
+          });
+        }
+      }
       storage.updateChat(broup).then((chat) {
         print("we have updated the chat");
         notifyListeners();

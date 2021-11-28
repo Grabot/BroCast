@@ -116,10 +116,10 @@ class Storage {
     );
   }
 
-  Future<Bro?> selectBro(int broId, int broupId) async {
-    print("selecting bro");
+  Future<Bro?> selectBro(String broId, String broupId) async {
     Database database = await this.database;
-    String query = "SELECT * FROM Bro where broId = " + broId.toString() + " and broupId = " + broupId.toString();
+    print("selecting bro");
+    String query = "SELECT * FROM Bro where broId = " + broId + " and broupId = " + broupId;
     print(query);
     List<Map<String, dynamic>> bro = await database.rawQuery(query);
     print(bro);
@@ -156,6 +156,15 @@ class Storage {
       where: 'broId = ? and broupId = ?',
       whereArgs: [bro.id],
       conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+  Future<int> deleteBro(String broId, String broupId) async {
+    Database database = await this.database;
+    return database.delete(
+      'Bro',
+      where: 'broId = ? and broupId = ?',
+      whereArgs: [broId, broupId],
     );
   }
 
