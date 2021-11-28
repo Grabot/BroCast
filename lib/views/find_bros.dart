@@ -221,14 +221,8 @@ class _FindBrosState extends State<FindBros> {
                 onSelected: (item) => onSelect(context, item),
                 itemBuilder: (context) => [
                       PopupMenuItem<int>(value: 0, child: Text("Profile")),
-                      PopupMenuItem<int>(value: 1, child: Text("Settings")),
-                      PopupMenuItem<int>(
-                          value: 2,
-                          child: Row(children: [
-                            Icon(Icons.logout, color: Colors.black),
-                            SizedBox(width: 8),
-                            Text("Log Out")
-                          ]))
+                      PopupMenuItem<int>(value: 1, child: Text("Settings"))
+                  // TODO: @SKools home?
                     ])
           ]),
     );
@@ -247,12 +241,6 @@ class _FindBrosState extends State<FindBros> {
             context, MaterialPageRoute(builder: (context) => BroSettings(
             key: UniqueKey()
         )));
-        break;
-      case 2:
-        ResetRegistration resetRegistration = new ResetRegistration();
-        resetRegistration.removeRegistrationId(settings.getBroId());
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => SignIn()));
         break;
     }
   }

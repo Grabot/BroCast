@@ -1,23 +1,18 @@
 import 'dart:async';
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:brocast/objects/bro.dart';
-import 'package:brocast/objects/bro_added.dart';
 import 'package:brocast/objects/bro_bros.dart';
 import 'package:brocast/objects/broup.dart';
 import 'package:brocast/objects/chat.dart';
 import 'package:brocast/objects/message.dart';
-import 'package:brocast/services/get_broup_bros.dart';
 import 'package:brocast/services/get_chat.dart';
 import 'package:brocast/services/get_messages.dart';
-import 'package:brocast/services/navigation_service.dart';
 import 'package:brocast/services/settings.dart';
 import 'package:brocast/services/socket_services.dart';
 import 'package:brocast/utils/bro_list.dart';
-import 'package:brocast/utils/locator.dart';
 import 'package:brocast/utils/storage.dart';
 import 'package:brocast/utils/utils.dart';
 import 'package:brocast/views/bro_home.dart';
-import 'package:brocast/constants/route_paths.dart' as routes;
 import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -505,7 +500,7 @@ class _BroupMessagingState extends State<BroupMessaging> {
 
 
   updateUserActivity(String timestamp) {
-    storage.selectChat(chat.id, chat.broup).then((currentChat) {
+    storage.selectChat(chat.id.toString(), chat.broup.toString()).then((currentChat) {
       if (currentChat != null) {
         // We assume it will succeed because otherwise we couldn't be here.
         // The chat object we have just received should be updated.
@@ -880,7 +875,6 @@ class _MessageTileState extends State<MessageTile> {
 
   var _tapPosition;
 
-  final NavigationService _navigationService = locator<NavigationService>();
   SocketServices socketServices = SocketServices();
 
   Settings settings = Settings();
@@ -1054,14 +1048,15 @@ class _MessageTileState extends State<MessageTile> {
           BroList broList = BroList();
           for (Chat br0 in broList.getBros()) {
             if (!br0.isBroup()) {
+              // TODO: @SKools FIX ROUTING!
               if (br0.id == widget.senderId) {
                 broTransition = true;
-                _navigationService.navigateTo(routes.BroRoute, arguments: br0);
+                // _navigationService.navigateTo(routes.BroRoute, arguments: br0);
               }
             }
           }
           if (!broTransition) {
-            _navigationService.navigateTo(routes.HomeRoute);
+            // _navigationService.navigateTo(routes.HomeRoute);
           }
         } else if (delta == 2) {
           socketServices.socket.emit("message_event_add_bro",

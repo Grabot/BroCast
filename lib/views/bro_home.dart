@@ -1,9 +1,7 @@
 import 'dart:io';
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:brocast/constants/route_paths.dart' as routes;
-import 'package:brocast/objects/bro.dart';
 import 'package:brocast/objects/bro_bros.dart';
-import 'package:brocast/objects/broup.dart';
 import 'package:brocast/objects/chat.dart';
 import 'package:brocast/services/auth.dart';
 import 'package:brocast/services/get_bros.dart';
@@ -382,7 +380,9 @@ class _BroCastHomeState extends State<BroCastHome> {
         ResetRegistration resetRegistration = new ResetRegistration();
         resetRegistration.removeRegistrationId(settings.getBroId());
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => SignIn()));
+            context, MaterialPageRoute(builder: (context) => SignIn(
+          key: UniqueKey()
+        )));
         break;
     }
   }
@@ -524,6 +524,7 @@ class _BroTileState extends State<BroTile> {
   var _tapPosition;
 
   selectBro(BuildContext context) {
+    // TODO: @Skools FIX ROUTING
     if (widget.chat.isBroup()) {
       _navigationService.navigateTo(routes.BroupRoute, arguments: widget.chat);
     } else {
@@ -782,10 +783,11 @@ class _BroTileState extends State<BroTile> {
         )
     ).then((int? delta) {
       if (delta == 1) {
+        // TODO: @Skools FIX ROUTING!
         if (widget.chat.isBroup()) {
-          _navigationService.navigateTo(routes.BroupRoute, arguments: widget.chat);
+          // _navigationService.navigateTo(routes.BroupRoute, arguments: widget.chat);
         } else {
-          _navigationService.navigateTo(routes.BroRoute, arguments: widget.chat);
+          // _navigationService.navigateTo(routes.BroRoute, arguments: widget.chat);
         }
       } else if (delta == 2) {
         showDialogMuteChat(context);

@@ -1,11 +1,9 @@
 import 'package:back_button_interceptor/back_button_interceptor.dart';
-import 'package:brocast/services/reset_registration.dart';
 import 'package:brocast/services/settings.dart';
 import 'package:brocast/services/socket_services.dart';
 import 'package:brocast/utils/storage.dart';
 import 'package:brocast/utils/utils.dart';
 import 'package:brocast/views/bro_home.dart';
-import 'package:brocast/views/signin.dart';
 import "package:flutter/material.dart";
 import 'package:app_settings/app_settings.dart';
 import 'bro_profile.dart';
@@ -92,13 +90,7 @@ class _BroSettingsState extends State<BroSettings> {
                 onSelected: (item) => onSelect(context, item),
                 itemBuilder: (context) => [
                       PopupMenuItem<int>(value: 0, child: Text("Profile")),
-                      PopupMenuItem<int>(
-                          value: 1,
-                          child: Row(children: [
-                            Icon(Icons.logout, color: Colors.black),
-                            SizedBox(width: 8),
-                            Text("Log Out")
-                          ]))
+                      PopupMenuItem<int>(value: 1, child: Text("Home"))
                     ])
           ]),
     );
@@ -113,10 +105,10 @@ class _BroSettingsState extends State<BroSettings> {
         )));
         break;
       case 1:
-        ResetRegistration resetRegistration = new ResetRegistration();
-        resetRegistration.removeRegistrationId(settings.getBroId());
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => SignIn()));
+            context, MaterialPageRoute(builder: (context) => BroCastHome(
+            key: UniqueKey()
+        )));
         break;
     }
   }

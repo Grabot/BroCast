@@ -175,7 +175,9 @@ class _AddBroupState extends State<AddBroup> {
         ResetRegistration resetRegistration = new ResetRegistration();
         resetRegistration.removeRegistrationId(settings.getBroId());
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => SignIn()));
+            context, MaterialPageRoute(builder: (context) => SignIn(
+          key: UniqueKey()
+        )));
         break;
     }
   }

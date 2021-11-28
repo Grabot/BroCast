@@ -1,15 +1,10 @@
-import 'package:brocast/objects/bro_bros.dart';
-import 'package:brocast/objects/broup.dart';
 import 'package:brocast/objects/chat.dart';
-import 'package:brocast/services/navigation_service.dart';
 import 'package:brocast/utils/storage.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/services.dart';
-import 'package:brocast/constants/route_paths.dart' as routes;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:notification_permissions/notification_permissions.dart';
-import 'locator.dart';
 
 
 const String androidChannelId = "custom_sound";
@@ -22,7 +17,6 @@ const MethodChannel _channel
 class NotificationUtil {
 
   static final NotificationUtil _instance = NotificationUtil._internal();
-  final NavigationService _navigationService = locator<NavigationService>();
 
   NotificationUtil._internal() {
     firebaseBackgroundInitialization();
@@ -79,21 +73,23 @@ class NotificationUtil {
 
   void notificationNavigate(int id, int isBroup) {
     var storage = Storage();
-    storage.selectChat(id, isBroup).then((value) {
+    // TODO: @Skools possibly pass string not ints.
+    storage.selectChat(id.toString(), isBroup.toString()).then((value) {
       if (value != null) {
         Chat chat = value;
         print("found a chat");
         print(chat);
         if (chat.isBroup()) {
+          // TODO: @Skools FIX ROUTING!
           print("navigate to the broup!");
-          _navigationService.navigateTo(routes.BroupRoute, arguments: chat as Broup);
+          // _navigationService.navigateTo(routes.BroupRoute, arguments: chat as Broup);
         } else {
           print("navigate to the bro bros!");
-          _navigationService.navigateTo(routes.BroRoute, arguments: chat as BroBros);
+          // _navigationService.navigateTo(routes.BroRoute, arguments: chat as BroBros);
         }
       } else {
         print("navigate to the bro home 3!");
-        _navigationService.navigateTo(routes.HomeRoute);
+        // _navigationService.navigateTo(routes.HomeRoute);
       }
     });
   }

@@ -200,10 +200,10 @@ class Storage {
     return List.empty();
   }
 
-  Future<Chat?> selectChat(int chatId, int isBroup) async {
+  Future<Chat?> selectChat(String chatId, String isBroup) async {
     print("selecting chat");
     Database database = await this.database;
-    String query = "SELECT * FROM Chat where chatId = " + chatId.toString() + " and isBroup = " + isBroup.toString();
+    String query = "SELECT * FROM Chat where chatId = " + chatId + " and isBroup = " + isBroup;
     print(query);
     List<Map<String, dynamic>> chat = await database.rawQuery(query);
     print(chat);

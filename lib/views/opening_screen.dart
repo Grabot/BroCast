@@ -1,9 +1,7 @@
+import 'dart:async';
 import 'package:brocast/constants/base_url.dart';
 import 'package:brocast/objects/user.dart';
 import 'package:brocast/services/auth.dart';
-import 'package:brocast/services/navigation_service.dart';
-import 'package:brocast/constants/route_paths.dart' as routes;
-import 'package:brocast/utils/locator.dart';
 import 'package:brocast/utils/shared.dart';
 import 'package:brocast/utils/storage.dart';
 import 'package:brocast/utils/utils.dart';
@@ -23,8 +21,6 @@ class _OpeningScreenState extends State<OpeningScreen> {
   bool acceptEULA = false;
   Auth auth = new Auth();
   late Storage storage;
-
-  final NavigationService _navigationService = locator<NavigationService>();
 
   @override
   void initState() {
@@ -46,6 +42,19 @@ class _OpeningScreenState extends State<OpeningScreen> {
     super.initState();
   }
 
+  goToBroHome() async {
+    // Ugly fix for now to ensure it won't call home twice
+    var duration = new Duration(milliseconds: 500);
+    return new Timer(duration, broHome);
+  }
+
+  broHome() {
+    Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (context) => BroCastHome(
+        key: UniqueKey()
+    )));
+  }
+
   void startUp() {
     setState(() {
       isLoading = true;
@@ -60,7 +69,9 @@ class _OpeningScreenState extends State<OpeningScreen> {
         });
         print("navigate to sign in");
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => SignIn()));
+            context, MaterialPageRoute(builder: (context) => SignIn(
+          key: UniqueKey()
+        )));
       }
     });
   }
@@ -74,12 +85,7 @@ class _OpeningScreenState extends State<OpeningScreen> {
           isLoading = false;
         });
         print("navigate to the bro home 1!");
-        _navigationService.navigateTo(routes.HomeRoute);
-        // Navigator.pushReplacement(
-        //     context, MaterialPageRoute(builder: (context) =>
-        //     BroCastHome(
-        //         key: UniqueKey()
-        //     )));
+        goToBroHome();
       } else {
         if (val == "The given credentials are not correct!") {
           // token didn't work, going to check if a username is given and try to log in using password username
@@ -89,14 +95,18 @@ class _OpeningScreenState extends State<OpeningScreen> {
             if (mounted) {
               print("navigate to sign in!");
               Navigator.pushReplacement(
-                  context, MaterialPageRoute(builder: (context) => SignIn()));
+                  context, MaterialPageRoute(builder: (context) => SignIn(
+                key: UniqueKey()
+              )));
             }
           }
         } else {
           print("navigate to sign in!");
           ShowToastComponent.showDialog(val.toString(), context);
           Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) => SignIn()));
+              context, MaterialPageRoute(builder: (context) => SignIn(
+            key: UniqueKey()
+          )));
         }
       }
     });
@@ -113,7 +123,9 @@ class _OpeningScreenState extends State<OpeningScreen> {
       } else {
         print("navigate to sign in!");
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => SignIn()));
+            context, MaterialPageRoute(builder: (context) => SignIn(
+          key: UniqueKey()
+        )));
       }
     });
   }

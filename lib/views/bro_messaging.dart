@@ -370,7 +370,7 @@ class _BroMessagingState extends State<BroMessaging> {
   }
 
   updateUserActivity(String timestamp) {
-    storage.selectChat(chat.id, chat.broup).then((currentChat) {
+    storage.selectChat(chat.id.toString(), chat.broup.toString()).then((currentChat) {
       if (currentChat != null) {
         // We assume it will succeed because otherwise we couldn't be here.
         // The chat object we have just received should be updated.

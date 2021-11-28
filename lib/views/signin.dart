@@ -12,6 +12,12 @@ import 'package:flutter/services.dart';
 
 
 class SignIn extends StatefulWidget {
+
+  SignIn(
+      {
+        required Key key
+      }) : super(key: key);
+
   @override
   _SignInState createState() => _SignInState();
 }
