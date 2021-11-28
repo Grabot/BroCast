@@ -1,4 +1,7 @@
+import 'package:brocast/objects/bro.dart';
+import 'package:brocast/objects/bro_added.dart';
 import 'package:brocast/objects/bro_bros.dart';
+import 'package:brocast/objects/bro_not_added.dart';
 import 'package:brocast/objects/broup.dart';
 import 'package:brocast/objects/chat.dart';
 import 'package:brocast/objects/user.dart';
@@ -46,6 +49,7 @@ class Storage {
     print("executing query");
     await createTableUser(db);
     await createTableChat(db);
+    await createTableBro(db);
   }
 
   createTableUser(Database db) async {
@@ -85,6 +89,60 @@ class Storage {
             UNIQUE(chatId, isBroup) ON CONFLICT REPLACE
           );
           ''');
+  }
+
+  createTableBro(Database db) async {
+    print("create table bro");
+    await db.execute('''
+          CREATE TABLE Bro (
+            id INTEGER PRIMARY KEY,
+            broId INTEGER,
+            broupId INTEGER,
+            admin INTEGER,
+            added INTEGER,
+            chatName TEXT,
+            broName TEXT,
+            bromotion TEXT
+          );
+          ''');
+  }
+
+  Future<int> addBro(Bro bro) async {
+    Database database = await this.database;
+    return database.insert(
+      'Bro',
+      bro.toDbMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+  Future<Bro?> selectBro(int broId, int broupId) async {
+    print("selecting bro");
+    Database database = await this.database;
+    String query = "SELECT * FROM Bro where broId = " + broId.toString() + " and broupId = " + broupId.toString();
+    print(query);
+    List<Map<String, dynamic>> bro = await database.rawQuery(query);
+    print(bro);
+    if (bro.length != 1) {
+      return null;
+    } else {
+      if (bro[0]["added"] == 1) {
+        return BroAdded.fromDbMap(bro[0]);
+      } else {
+        return BroNotAdded.fromDbMap(bro[0]);
+      }
+    }
+  }
+
+  Future<int> updateBro(Bro bro) async {
+    Database database = await this.database;
+    return database.update(
+      'Bro',
+      bro.toDbMap(),
+      where: 'broId = ? and broupId = ?',
+      whereArgs: [bro.id],
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
   }
 
   Future<int> addUser(User user) async {
@@ -183,14 +241,18 @@ class Storage {
   clearChatTable() async {
     Database database = await this.database;
     await database.execute("DROP TABLE IF EXISTS Chat");
+    await database.execute("DROP TABLE IF EXISTS Bro");
     await createTableChat(database);
+    await createTableBro(database);
   }
 
   clearDatabase() async {
     Database database = await this.database;
     await database.execute("DROP TABLE IF EXISTS Chat");
     await database.execute("DROP TABLE IF EXISTS User");
+    await database.execute("DROP TABLE IF EXISTS Bro");
     await createTableUser(database);
     await createTableChat(database);
+    await createTableBro(database);
   }
 }

@@ -1,7 +1,9 @@
 import 'package:brocast/constants/base_url.dart';
 import 'package:brocast/objects/user.dart';
 import 'package:brocast/services/auth.dart';
-import 'package:brocast/services/socket_services.dart';
+import 'package:brocast/services/navigation_service.dart';
+import 'package:brocast/constants/route_paths.dart' as routes;
+import 'package:brocast/utils/locator.dart';
 import 'package:brocast/utils/shared.dart';
 import 'package:brocast/utils/storage.dart';
 import 'package:brocast/utils/utils.dart';
@@ -21,6 +23,8 @@ class _OpeningScreenState extends State<OpeningScreen> {
   bool acceptEULA = false;
   Auth auth = new Auth();
   late Storage storage;
+
+  final NavigationService _navigationService = locator<NavigationService>();
 
   @override
   void initState() {
@@ -51,6 +55,9 @@ class _OpeningScreenState extends State<OpeningScreen> {
       if (user != null) {
         signIn(user);
       } else {
+        setState(() {
+          isLoading = false;
+        });
         print("navigate to sign in");
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => SignIn()));
@@ -59,21 +66,20 @@ class _OpeningScreenState extends State<OpeningScreen> {
   }
 
   signIn(User user) {
-    setState(() {
-      isLoading = true;
-    });
 
     auth.signIn("", "", "", user.token).then((val) {
       if (val.toString() == "") {
         // TODO: @Skools do the login/navigation different?
-        if (mounted) {
-          print("navigate to the bro home!");
-          Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) =>
-              BroCastHome(
-                  key: UniqueKey()
-              )));
-        }
+        setState(() {
+          isLoading = false;
+        });
+        print("navigate to the bro home 1!");
+        _navigationService.navigateTo(routes.HomeRoute);
+        // Navigator.pushReplacement(
+        //     context, MaterialPageRoute(builder: (context) =>
+        //     BroCastHome(
+        //         key: UniqueKey()
+        //     )));
       } else {
         if (val == "The given credentials are not correct!") {
           // token didn't work, going to check if a username is given and try to log in using password username
@@ -99,7 +105,7 @@ class _OpeningScreenState extends State<OpeningScreen> {
   signInName(String broName, String bromotion, String password) {
     auth.signIn(broName, bromotion, password, "").then((val) {
       if (val.toString() == "") {
-        print("navigate to the bro home!");
+        print("navigate to the bro home 2!");
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => BroCastHome(
             key: UniqueKey()

@@ -33,7 +33,8 @@ class Search {
         var broList = registerResponse["bro_list"];
         List<Bro> listWithBros = [];
         for (var br0 in broList) {
-          Bro bro = new BroNotAdded(br0["id"], br0["bro_name"], br0["bromotion"]);
+          // This bro will not be stored in the db, so we give it a -1 broupid
+          Bro bro = new BroNotAdded(br0["id"], -1, br0["bro_name"], br0["bromotion"]);
           listWithBros.add(bro);
         }
         return listWithBros;

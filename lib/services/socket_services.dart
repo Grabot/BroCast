@@ -1,6 +1,7 @@
 import 'package:brocast/constants/base_url.dart';
 import 'package:brocast/objects/bro_bros.dart';
 import 'package:brocast/objects/broup.dart';
+import 'package:brocast/services/settings.dart';
 import 'package:brocast/utils/bro_list.dart';
 import 'package:brocast/utils/storage.dart';
 import 'package:flutter/cupertino.dart';
@@ -11,6 +12,7 @@ class SocketServices extends ChangeNotifier {
   late IO.Socket socket;
   late Storage storage;
   late BroList broList;
+  late Settings settings;
 
   bool joinedSoloRoom = false;
 
@@ -19,6 +21,7 @@ class SocketServices extends ChangeNotifier {
   SocketServices._internal() {
     storage = Storage();
     broList = BroList();
+    settings = Settings();
     startSockConnection();
   }
 
@@ -147,6 +150,7 @@ class SocketServices extends ChangeNotifier {
     List<int> broAdminIdList = broAdminsIds.map((s) => s as int).toList();
     broup.setAdmins(broAdminIdList);
     // TODO: @Skools retrieve Bro details here already?
+    // broup = getParticipants(broup, broIdList, broAdminIdList);
     return broup;
   }
 

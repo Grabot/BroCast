@@ -1,10 +1,10 @@
-import 'dart:ui';
+
 
 abstract class Bro {
   late int id;
-  late Color broColor;
-  late bool admin;
-  late bool added;
+  late int broupId;
+  late int admin;
+  late int added;
 
   Bro();
 
@@ -14,4 +14,7 @@ abstract class Bro {
   setAdmin(bool admin);
 
   copyBro();
+
+  Map<String, dynamic> toDbMap();
+  Bro.fromDbMap(Map<String, dynamic> map);
 }

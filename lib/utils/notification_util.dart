@@ -92,7 +92,7 @@ class NotificationUtil {
           _navigationService.navigateTo(routes.BroRoute, arguments: chat as BroBros);
         }
       } else {
-        print("navigate to the bro home!");
+        print("navigate to the bro home 3!");
         _navigationService.navigateTo(routes.HomeRoute);
       }
     });

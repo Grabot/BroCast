@@ -1,6 +1,3 @@
-import 'dart:math' as math;
-
-import 'dart:ui';
 
 import 'bro.dart';
 
@@ -8,13 +5,16 @@ class BroAdded extends Bro {
 
   late String chatName;
 
-  BroAdded(int id, String chatName) {
+  BroAdded(
+      int id,
+      int broupId,
+      String chatName
+    ) {
     this.id = id;
+    this.broupId = broupId;
     this.chatName = chatName;
-    broColor =
-        Color((math.Random().nextDouble() * 0xFFFFFF).toInt()).withOpacity(1.0);
-    admin = false;
-    added = true;
+    admin = 0;
+    added = 1;
   }
 
   @override
@@ -24,24 +24,49 @@ class BroAdded extends Bro {
 
   @override
   bool isAdmin() {
-    return admin;
+    return admin == 1;
   }
 
   @override
   setAdmin(bool admin) {
-    this.admin = admin;
+    this.admin = admin ? 1 : 0;
   }
 
   @override
   bool isAdded() {
-    return this.added;
+    return added == 0;
   }
 
   BroAdded copyBro({
     int? id,
+    int? broupId,
     String? chatName
   }) => BroAdded(
     id ?? this.id,
+    broupId ?? this.broupId,
     chatName ?? this.chatName,
   );
+
+  @override
+  Map<String, dynamic> toDbMap() {
+    var map = Map<String, dynamic>();
+    map['broId'] = id;
+    map['broupId'] = broupId;
+    map['admin'] = admin;
+    map['added'] = added;
+    map['chatName'] = chatName;
+    map['broName'] = ""; // Only for BroNotAdded
+    map['bromotion'] = ""; // Only for BroNotAdded
+    return map;
+  }
+
+  BroAdded.fromDbMap(Map<String, dynamic> map) {
+    id = map['broId'];
+    broupId = map['broupId'];
+    admin = map['admin'];
+    added = map['added'];
+    chatName = map['chatName'];
+    // map['broName']; // Only for BroNotAdded
+    // map['bromotion']; // Only for BroNotAdded
+  }
 }

@@ -1,7 +1,9 @@
 import 'dart:io';
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:brocast/constants/route_paths.dart' as routes;
+import 'package:brocast/objects/bro.dart';
 import 'package:brocast/objects/bro_bros.dart';
+import 'package:brocast/objects/broup.dart';
 import 'package:brocast/objects/chat.dart';
 import 'package:brocast/services/auth.dart';
 import 'package:brocast/services/get_bros.dart';
@@ -131,6 +133,8 @@ class _BroCastHomeState extends State<BroCastHome> {
     });
 
     getBros.getBros(token).then((val) async {
+      // It's sometimes called twice. 'if mounted' is a Dirty solution for now.
+      // Possibly change the way the user logs in?
       if (mounted) {
         if (!(val is String)) {
           // We have retrieved all the bros and broups.

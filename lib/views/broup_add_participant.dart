@@ -433,7 +433,7 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> {
   }
 
   void addTheBro(BroBros broBros) {
-    broToBeAddedToBroup = new BroAdded(broBros.id, broBros.chatName);
+    broToBeAddedToBroup = new BroAdded(broBros.id, chat.id, broBros.chatName);
     socketServices.socket.emit("message_event_add_bro_to_broup",
         {
           'token': settings.getToken(),

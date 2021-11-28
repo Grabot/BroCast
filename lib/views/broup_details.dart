@@ -78,7 +78,8 @@ class _BroupDetailsState extends State<BroupDetails> {
     socketServices.addListener(socketListener);
     BackButtonInterceptor.add(myInterceptor);
 
-    getParticipants();
+    // TODO: @Skools check that the participants are already retrieved and stored in the db.
+    // getParticipants();
     chatDescriptionController.text = chat.chatDescription;
     chatAliasController.text = chat.alias;
 
@@ -89,82 +90,82 @@ class _BroupDetailsState extends State<BroupDetails> {
     initBroupDetailsSockets();
   }
 
-  getParticipants() {
-    List<int> remainingParticipants = new List<int>.from(chat.getParticipants());
-    List<int> remainingAdmins = new List<int>.from(chat.getAdmins());
-    // List<Bro> foundParticipants = [];
-    // We will reform the list. First me, than the admins than the rest
-    List<Bro> broupMe = [];
-    List<Bro> foundBroupAdmins = [];
-    List<Bro> foundBroupNotAdmins = [];
-
-    // I have to be in the array or participants, since I am in this broup.
-    Bro? me = settings.getMe();
-    // It's possible that this object is empty, but not in this view.
-    Bro meBroup = me!.copyBro();
-    if (remainingAdmins.contains(meBroup.id)) {
-      meBroup.setAdmin(true);
-      remainingAdmins.remove(meBroup.id);
-      chat.setAmIAdmin(true);
-    } else {
-      chat.setAmIAdmin(false);
-    }
-    broupMe.add(meBroup);
-    remainingParticipants.remove(settings.getBroId());
-
-    for (Chat br0 in broList.getBros()) {
-      if (br0 is BroBros) {
-        if (remainingParticipants.contains(br0.id)) {
-          BroAdded broAdded = new BroAdded(br0.id, br0.chatName);
-          if (remainingAdmins.contains(br0.id)) {
-            broAdded.setAdmin(true);
-            remainingAdmins.remove(br0.id);
-            foundBroupAdmins.add(broAdded);
-          } else {
-            foundBroupNotAdmins.add(broAdded);
-          }
-          remainingParticipants.remove(br0.id);
-        }
-      }
-    }
-
-    if (remainingParticipants.length != 0) {
-      GetBroupBros getBroupBros = new GetBroupBros();
-      getBroupBros.getBroupBros(
-          settings.getToken(), remainingParticipants).then((value) {
-        if (value != "an unknown error has occurred") {
-          List<Bro> notAddedBros = value;
-          for (Bro br0 in notAddedBros) {
-            if (remainingAdmins.contains(br0.id)) {
-              br0.setAdmin(true);
-              remainingAdmins.remove(br0.id);
-              foundBroupAdmins.add(br0);
-            } else {
-              foundBroupNotAdmins.add(br0);
-            }
-            remainingParticipants.remove(br0.id);
-          }
-          // We assume this won't happen
-          if (remainingParticipants.length != 0) {
-            print("big error! Fix it!");
-          }
-          chat.setBroupBros(broupMe + foundBroupAdmins + foundBroupNotAdmins);
-          amountInGroup = chat.getBroupBros().length;
-          setState(() {
-          });
-        }
-      });
-    } else {
-      // We assume this won't happen
-      if (remainingParticipants.length != 0) {
-        print("big error! Fix it!");
-      }
-      chat.setBroupBros(broupMe + foundBroupAdmins + foundBroupNotAdmins);
-      amountInGroup = chat.getBroupBros().length;
-      setState(() {
-      });
-    }
-  }
+  // getParticipants() {
+  //   List<int> remainingParticipants = new List<int>.from(chat.getParticipants());
+  //   List<int> remainingAdmins = new List<int>.from(chat.getAdmins());
+  //   // List<Bro> foundParticipants = [];
+  //   // We will reform the list. First me, than the admins than the rest
+  //   List<Bro> broupMe = [];
+  //   List<Bro> foundBroupAdmins = [];
+  //   List<Bro> foundBroupNotAdmins = [];
+  //
+  //   // I have to be in the array or participants, since I am in this broup.
+  //   Bro? me = settings.getMe();
+  //   // It's possible that this object is empty, but not in this view.
+  //   Bro meBroup = me!.copyBro();
+  //   if (remainingAdmins.contains(meBroup.id)) {
+  //     meBroup.setAdmin(true);
+  //     remainingAdmins.remove(meBroup.id);
+  //     chat.setAmIAdmin(true);
+  //   } else {
+  //     chat.setAmIAdmin(false);
+  //   }
+  //   broupMe.add(meBroup);
+  //   remainingParticipants.remove(settings.getBroId());
+  //
+  //   for (Chat br0 in broList.getBros()) {
+  //     if (br0 is BroBros) {
+  //       if (remainingParticipants.contains(br0.id)) {
+  //         BroAdded broAdded = new BroAdded(br0.id, br0.chatName);
+  //         if (remainingAdmins.contains(br0.id)) {
+  //           broAdded.setAdmin(true);
+  //           remainingAdmins.remove(br0.id);
+  //           foundBroupAdmins.add(broAdded);
+  //         } else {
+  //           foundBroupNotAdmins.add(broAdded);
+  //         }
+  //         remainingParticipants.remove(br0.id);
+  //       }
+  //     }
+  //   }
+  //
+  //   if (remainingParticipants.length != 0) {
+  //     GetBroupBros getBroupBros = new GetBroupBros();
+  //     getBroupBros.getBroupBros(
+  //         settings.getToken(), remainingParticipants).then((value) {
+  //       if (value != "an unknown error has occurred") {
+  //         List<Bro> notAddedBros = value;
+  //         for (Bro br0 in notAddedBros) {
+  //           if (remainingAdmins.contains(br0.id)) {
+  //             br0.setAdmin(true);
+  //             remainingAdmins.remove(br0.id);
+  //             foundBroupAdmins.add(br0);
+  //           } else {
+  //             foundBroupNotAdmins.add(br0);
+  //           }
+  //           remainingParticipants.remove(br0.id);
+  //         }
+  //         // We assume this won't happen
+  //         if (remainingParticipants.length != 0) {
+  //           print("big error! Fix it!");
+  //         }
+  //         chat.setBroupBros(broupMe + foundBroupAdmins + foundBroupNotAdmins);
+  //         amountInGroup = chat.getBroupBros().length;
+  //         setState(() {
+  //         });
+  //       }
+  //     });
+  //   } else {
+  //     // We assume this won't happen
+  //     if (remainingParticipants.length != 0) {
+  //       print("big error! Fix it!");
+  //     }
+  //     chat.setBroupBros(broupMe + foundBroupAdmins + foundBroupNotAdmins);
+  //     amountInGroup = chat.getBroupBros().length;
+  //     setState(() {
+  //     });
+  //   }
+  // }
 
   void initBroupDetailsSockets() {
     socketServices.socket
@@ -1184,7 +1185,7 @@ class _BroTileState extends State<BroTile> {
               child: Row(
                 children: [
                   Container(
-                  width: widget.bro.admin
+                  width: widget.bro.isAdmin()
                       ? MediaQuery.of(context).size.width-84
                       : MediaQuery.of(context).size.width,
                   padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
@@ -1192,7 +1193,7 @@ class _BroTileState extends State<BroTile> {
                       widget.broName,
                       style: simpleTextStyle()),
                   ),
-                  widget.bro.admin
+                  widget.bro.isAdmin()
                     ? Container(
                       width: 60,
                       padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
@@ -1397,7 +1398,7 @@ Widget getPopupItemsAdmin(BuildContext context, String broName, Bro bro, int bro
             )
         ),
       ),
-      bro.admin ? Container(
+      bro.isAdmin() ? Container(
         alignment: Alignment.centerLeft,
         child: TextButton(
             onPressed:  () {

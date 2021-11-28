@@ -22,7 +22,6 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: "Brocast",
       debugShowCheckedModeBanner: false,
-      initialRoute: routes.OpeningRoute,
       onGenerateRoute: router.generateRoute,
       navigatorKey: locator<NavigationService>().navigatorKey,
       theme: ThemeData(
