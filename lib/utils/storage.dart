@@ -134,6 +134,20 @@ class Storage {
     }
   }
 
+  Future<List<Bro>> fetchAllBrosOfBroup(String broupId) async {
+    Database database = await this.database;
+    String query = "SELECT * FROM Bro where broupId = " + broupId;
+    List<Map<String, dynamic>> bros = await database.rawQuery(query);
+    if (bros.isNotEmpty) {
+      return bros.map((map) =>
+      map['added'] == 1
+          ? BroAdded.fromDbMap(map)
+          : BroNotAdded.fromDbMap(map)
+      ).toList();
+    }
+    return List.empty();
+  }
+
   Future<int> updateBro(Bro bro) async {
     Database database = await this.database;
     return database.update(

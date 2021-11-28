@@ -1,7 +1,9 @@
 import 'dart:io';
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:brocast/constants/route_paths.dart' as routes;
+import 'package:brocast/objects/bro.dart';
 import 'package:brocast/objects/bro_bros.dart';
+import 'package:brocast/objects/broup.dart';
 import 'package:brocast/objects/chat.dart';
 import 'package:brocast/services/auth.dart';
 import 'package:brocast/services/get_bros.dart';
@@ -92,9 +94,14 @@ class _BroCastHomeState extends State<BroCastHome> {
               bros.sort((b, a) => a.getLastActivity().compareTo(b.getLastActivity()));
               shownBros = bros;
               broList.setBros(bros);
-              if (mounted) {
-                setState(() {
-                });
+              setState(() {
+              });
+              for (Chat broup in bros) {
+                if (broup.isBroup()) {
+                  storage.fetchAllBrosOfBroup(broup.id.toString()).then((value) {
+                    (broup as Broup).setBroupBros(value);
+                  });
+                }
               }
             });
           });
@@ -133,28 +140,39 @@ class _BroCastHomeState extends State<BroCastHome> {
     getBros.getBros(token).then((val) async {
       // It's sometimes called twice. 'if mounted' is a Dirty solution for now.
       // Possibly change the way the user logs in?
-      if (mounted) {
-        if (!(val is String)) {
-          // We have retrieved all the bros and broups.
-          // We will remove the chat database and refill it.
-          await storage.clearChatTable();
-          bros = val;
-          broList.setBros(bros);
-          for (Chat bro in bros) {
-            storage.addChat(bro).then((vl) {
-              print("chat was saved! $vl");
-            });
-          }
-          setState(() {
-            shownBros = bros;
-          });
-        } else {
-          ShowToastComponent.showDialog(val.toString(), context);
-        }
+      if (!(val is String)) {
+        // We have retrieved all the bros and broups.
+        // We will remove the chat database and refill it.
+        await storage.clearChatTable();
+        bros = val;
+        broList.setBros(bros);
+
         setState(() {
-          isSearching = false;
+          shownBros = bros;
         });
+
+        broList.getParticipantsInBroups();
+
+        for (Chat broup in bros) {
+          if (broup.isBroup()) {
+            for (Bro bro in (broup as Broup).getBroupBros()) {
+              storage.addBro(bro).then((value) {
+                print("bro was saved! $value");
+              });
+            }
+          }
+        }
+        for (Chat bro in bros) {
+          storage.addChat(bro).then((vl) {
+            print("chat was saved! $vl");
+          });
+        }
+      } else {
+        ShowToastComponent.showDialog(val.toString(), context);
       }
+      setState(() {
+        isSearching = false;
+      });
     });
   }
 
