@@ -63,6 +63,8 @@ class _BroMessagingState extends State<BroMessaging> {
     socketServices.checkConnection();
     socketServices.addListener(socketListener);
 
+    // TODO: @Skools retrieve chat from db (because we can)
+
     // Check if user data is set.
     if (settings.getBroId() == -1) {
       // The user can directly go here (via notification) So we will retrieve and set the user data.

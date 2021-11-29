@@ -148,13 +148,13 @@ class Storage {
     return List.empty();
   }
 
-  Future<int> updateBro(Bro bro) async {
+  Future<int> updateBro(Bro bro, String broupId) async {
     Database database = await this.database;
     return database.update(
       'Bro',
       bro.toDbMap(),
       where: 'broId = ? and broupId = ?',
-      whereArgs: [bro.id],
+      whereArgs: [bro.id, broupId],
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }

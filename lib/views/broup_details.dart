@@ -135,10 +135,6 @@ class _BroupDetailsState extends State<BroupDetails> {
       broupRemoveBroFailed();
     });
     // TODO: @SKools check of deze nog nodig zijn
-    socketServices.socket.on('message_event_add_bro_success', (data) {
-      broWasAdded(data);
-    });
-    // TODO: @SKools check of deze nog nodig zijn
     socketServices.socket.on('message_event_add_bro_failed', (data) {
       broAddingFailed();
     });
@@ -211,8 +207,19 @@ class _BroupDetailsState extends State<BroupDetails> {
     }
   }
 
+  addNewBro(int addBroId) {
+    print("the broup details want to listen to bro success events");
+    socketServices.socket.on('message_event_add_bro_success', (data) =>
+        broWasAdded(data));
+    print("We are now back in the details page with the add new bro button");
+    print(addBroId);
+    socketServices.socket.emit("message_event_add_bro",
+        {"token": settings.getToken(), "bros_bro_id": addBroId}
+    );
+  }
+
   broWasAdded(data) {
-    // TODO: @Skools remove to background?
+    print("a bro was added! Probably by you");
     BroBros broBros = new BroBros(
         data["bros_bro_id"],
         data["chat_name"],
@@ -228,6 +235,8 @@ class _BroupDetailsState extends State<BroupDetails> {
     );
     broList.addChat(broBros);
     storage.addChat(broBros).then((value) {
+      print("Going to update all the broup for this new bro");
+      broList.updateBroupBrosForBroBros(broBros);
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) =>
           BroCastHome(
@@ -519,7 +528,8 @@ class _BroupDetailsState extends State<BroupDetails> {
         bro: bro,
         broName: broName,
         broupId: chat.id,
-        userAdmin: meAdmin
+        userAdmin: meAdmin,
+        addNewBro: addNewBro
     );
   }
 
@@ -1042,13 +1052,15 @@ class BroTile extends StatefulWidget {
   final String broName;
   final int broupId;
   final bool userAdmin;
+  final void Function(int) addNewBro;
 
   BroTile({
     required Key key,
     required this.bro,
     required this.broName,
     required this.broupId,
-    required this.userAdmin
+    required this.userAdmin,
+    required this.addNewBro
   }) : super(key: key);
 
   @override
@@ -1069,8 +1081,8 @@ class _BroTileState extends State<BroTile> {
           return AlertDialog(
             actions: <Widget>[
               widget.userAdmin
-                  ? getPopupItemsAdmin(context, widget.broName, widget.bro, widget.broupId, true, settings.getToken())
-                  : getPopupItemsNormal(context, widget.broName, widget.bro, widget.broupId, true, settings.getToken())
+                  ? getPopupItemsAdmin(context, widget.broName, widget.bro, widget.broupId, true, settings.getToken(), widget.addNewBro)
+                  : getPopupItemsNormal(context, widget.broName, widget.bro, widget.broupId, true, settings.getToken(), widget.addNewBro)
             ]
           );
         }
@@ -1138,7 +1150,8 @@ class _BroTileState extends State<BroTile> {
                 broName: widget.broName,
                 bro:widget.bro,
                 broupId: widget.broupId,
-                userAdmin: widget.userAdmin
+                userAdmin: widget.userAdmin,
+                addNewBro: widget.addNewBro
             )
           ],
           position: RelativeRect.fromRect(
@@ -1162,6 +1175,7 @@ class BroupParticipantPopup extends PopupMenuEntry<int> {
   final Bro bro;
   final int broupId;
   final bool userAdmin;
+  final void Function(int) addNewBro;
 
   BroupParticipantPopup(
       {
@@ -1169,7 +1183,8 @@ class BroupParticipantPopup extends PopupMenuEntry<int> {
         required this.broName,
         required this.bro,
         required this.broupId,
-        required this.userAdmin
+        required this.userAdmin,
+        required this.addNewBro
       }) : super(key: key);
 
   @override
@@ -1189,8 +1204,8 @@ class BroupParticipantPopupState extends State<BroupParticipantPopup> {
   @override
   Widget build(BuildContext context) {
     return widget.userAdmin
-        ? getPopupItemsAdmin(context, widget.broName, widget.bro, widget.broupId, false, settings.getToken())
-        : getPopupItemsNormal(context, widget.broName, widget.bro, widget.broupId, false, settings.getToken());
+        ? getPopupItemsAdmin(context, widget.broName, widget.bro, widget.broupId, false, settings.getToken(), widget.addNewBro)
+        : getPopupItemsNormal(context, widget.broName, widget.bro, widget.broupId, false, settings.getToken(), widget.addNewBro);
   }
 }
 
@@ -1217,15 +1232,14 @@ void buttonMessage(BuildContext context, Bro bro, bool alertDialog) {
   }
 }
 
-void buttonAddBro(BuildContext context, Bro bro, bool alertDialog, String token) {
+void buttonAddBro(BuildContext context, Bro bro, bool alertDialog, String token, addNewBro) {
+  print("pressed the add Bro Button");
+  addNewBro(bro.id);
   if (alertDialog) {
     Navigator.of(context).pop();
   } else {
     Navigator.pop<int>(context, 1);
   }
-  SocketServices socketServices = SocketServices();
-  socketServices.socket.emit("message_event_add_bro",
-      {"token": token, "bros_bro_id": bro.id});
 }
 
 void buttonMakeAdmin(BuildContext context, Bro bro, int broupId, bool alertDialog, String token) {
@@ -1273,7 +1287,7 @@ void buttonRemove(BuildContext context, Bro bro, int broupId, bool alertDialog, 
   });
 }
 
-Widget getPopupItemsAdmin(BuildContext context, String broName, Bro bro, int broupId, bool alertDialog, String token) {
+Widget getPopupItemsAdmin(BuildContext context, String broName, Bro bro, int broupId, bool alertDialog, String token, addNewBro) {
   return Column(
     children: [
       bro is BroAdded
@@ -1294,7 +1308,7 @@ Widget getPopupItemsAdmin(BuildContext context, String broName, Bro bro, int bro
         alignment: Alignment.centerLeft,
         child: TextButton(
             onPressed: () {
-              buttonAddBro(context, bro, alertDialog, token);
+              buttonAddBro(context, bro, alertDialog, token, addNewBro);
             },
             child: Text(
               'Add $broName',
@@ -1345,7 +1359,7 @@ Widget getPopupItemsAdmin(BuildContext context, String broName, Bro bro, int bro
   );
 }
 
-Widget getPopupItemsNormal(BuildContext context, String broName, Bro bro, int broupId, bool alertDialog, String token) {
+Widget getPopupItemsNormal(BuildContext context, String broName, Bro bro, int broupId, bool alertDialog, String token, addNewBro) {
   return Column(
     children: [
       bro is BroAdded
@@ -1366,7 +1380,7 @@ Widget getPopupItemsNormal(BuildContext context, String broName, Bro bro, int br
         alignment: Alignment.centerLeft,
         child: TextButton(
             onPressed: () {
-              buttonAddBro(context, bro, alertDialog, token);
+              buttonAddBro(context, bro, alertDialog, token, addNewBro);
             },
             child: Text(
               'Add $broName',

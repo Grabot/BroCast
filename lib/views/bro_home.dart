@@ -78,7 +78,6 @@ class _BroCastHomeState extends State<BroCastHome> {
         // Only leave when minimizing or closing the app.
         print("join room initstate");
         socketServices.joinRoomSolo(settings.getBroId());
-        initBroHomeSockets();
 
         if (user.shouldRecheck()) {
           searchBros(user.token);
@@ -88,22 +87,26 @@ class _BroCastHomeState extends State<BroCastHome> {
             print(value);
           });
         } else {
-          storage.database.then((value) {
-            storage.fetchAllChats().then((value) {
-              bros = value;
-              bros.sort((b, a) => a.getLastActivity().compareTo(b.getLastActivity()));
-              shownBros = bros;
-              broList.setBros(bros);
-              setState(() {
-              });
-              for (Chat broup in bros) {
-                if (broup.isBroup()) {
-                  storage.fetchAllBrosOfBroup(broup.id.toString()).then((value) {
-                    (broup as Broup).setBroupBros(value);
-                  });
-                }
-              }
+          storage.fetchAllChats().then((value) {
+            bros = value;
+            bros.sort((b, a) => a.getLastActivity().compareTo(b.getLastActivity()));
+            shownBros = bros;
+            broList.setBros(bros);
+            setState(() {
             });
+            print("it should have a list of all it's bro's and broups! ${bros.length}");
+            for (Chat broup in bros) {
+              if (broup.isBroup()) {
+                print("found a broup! ${broup.chatName}");
+                storage.fetchAllBrosOfBroup(broup.id.toString()).then((value) {
+                  print("it should have found a bunch of bros");
+                  for(Bro bro in value) {
+                    print("bro id ${bro.id}");
+                  }
+                  (broup as Broup).setBroupBros(value);
+                });
+              }
+            }
           });
         }
       }
@@ -138,8 +141,6 @@ class _BroCastHomeState extends State<BroCastHome> {
     });
 
     getBros.getBros(token).then((val) async {
-      // It's sometimes called twice. 'if mounted' is a Dirty solution for now.
-      // Possibly change the way the user logs in?
       if (!(val is String)) {
         // We have retrieved all the bros and broups.
         // We will remove the chat database and refill it.
@@ -151,17 +152,8 @@ class _BroCastHomeState extends State<BroCastHome> {
           shownBros = bros;
         });
 
-        broList.getParticipantsInBroups();
+        socketServices.updateBroups();
 
-        for (Chat broup in bros) {
-          if (broup.isBroup()) {
-            for (Bro bro in (broup as Broup).getBroupBros()) {
-              storage.addBro(bro).then((value) {
-                print("bro was saved! $value");
-              });
-            }
-          }
-        }
         for (Chat bro in bros) {
           storage.addChat(bro).then((vl) {
             print("chat was saved! $vl");
@@ -255,67 +247,6 @@ class _BroCastHomeState extends State<BroCastHome> {
     }
     onChangedBroNameField(broNameController.text, bromotionController.text);
   }
-
-  initBroHomeSockets() {
-    // SocketServices.instance.socket.on('message_event_change_broup_mute_failed', (data) {
-    //   broupMutingFailed();
-    // });
-    // SocketServices.instance.socket.on('message_event_change_chat_mute_failed', (data) {
-    //   chatMutingFailed();
-    // });
-  }
-
-  // broupWasMuted(var data) {
-  //   if (mounted) {
-  //     if (data.containsKey("result")) {
-  //       bool result = data["result"];
-  //       if (result) {
-  //         for (Chat broup in broList.getBros()) {
-  //           if (broup.isBroup()) {
-  //             if (broup.id == data["id"]) {
-  //               setState(() {
-  //                 broup.setMuted(data["mute"]);
-  //               });
-  //             }
-  //           }
-  //         }
-  //       }
-  //     }
-  //   }
-  // }
-
-  // broupMutingFailed() {
-  //   if (mounted) {
-  //     ShowToastComponent.showDialog(
-  //         "Broup muting failed at this time.", context);
-  //   }
-  // }
-
-  // chatWasMuted(var data) {
-  //   if (mounted) {
-  //     if (data.containsKey("result")) {
-  //       bool result = data["result"];
-  //       if (result) {
-  //         for (Chat chat in broList.getBros()) {
-  //           if (!chat.isBroup()) {
-  //             if (chat.id == data["id"]) {
-  //               setState(() {
-  //                 chat.setMuted(data["mute"]);
-  //               });
-  //             }
-  //           }
-  //         }
-  //       }
-  //     }
-  //   }
-  // }
-
-  // chatMutingFailed() {
-  //   if (mounted) {
-  //     ShowToastComponent.showDialog(
-  //         "Chat muting failed at this time.", context);
-  //   }
-  // }
 
   @override
   void dispose() {

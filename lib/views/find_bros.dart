@@ -1,7 +1,6 @@
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:brocast/objects/bro.dart';
 import 'package:brocast/objects/bro_bros.dart';
-import 'package:brocast/services/reset_registration.dart';
 import 'package:brocast/services/search.dart';
 import 'package:brocast/services/settings.dart';
 import 'package:brocast/services/socket_services.dart';
@@ -9,7 +8,6 @@ import 'package:brocast/utils/bro_list.dart';
 import 'package:brocast/utils/storage.dart';
 import 'package:brocast/utils/utils.dart';
 import 'package:brocast/views/bro_home.dart';
-import 'package:brocast/views/signin.dart';
 import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
 import 'package:flutter/material.dart';
 
@@ -90,8 +88,10 @@ class _FindBrosState extends State<FindBros> {
         data["mute"] ? 1 : 0,
         0
     );
+    // Check all broups. If this user is in there it switches from not added to added.
     broList.addChat(broBros);
     storage.addChat(broBros).then((value) {
+      broList.updateBroupBrosForBroBros(broBros);
       clickedNewBro = false;
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => BroCastHome(

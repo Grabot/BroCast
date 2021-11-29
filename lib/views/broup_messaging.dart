@@ -68,6 +68,9 @@ class _BroupMessagingState extends State<BroupMessaging> {
     storage = Storage();
     socketServices.checkConnection();
     socketServices.addListener(socketListener);
+
+    // TODO: @Skools retrieve chat from db (because we can)
+
     // Check if user data is set.
     if (settings.getBroId() == -1) {
       // The user can directly go here (via notification) So we will retrieve and set the user data.
@@ -107,10 +110,6 @@ class _BroupMessagingState extends State<BroupMessaging> {
         {"bro_id": settings.getBroId(), "broup_id": chat.id},
       );
       // TODO: @SKools check deze
-      socketServices.socket.on('message_event_add_bro_success', (data) {
-        broWasAdded(data);
-      });
-      // TODO: @SKools check deze
       socketServices.socket.on('message_event_add_bro_failed', (data) {
         broAddingFailed();
       });
@@ -146,8 +145,19 @@ class _BroupMessagingState extends State<BroupMessaging> {
     }
   }
 
+  addNewBro(int addBroId) {
+    print("the broup details want to listen to bro success events");
+    socketServices.socket.on('message_event_add_bro_success', (data) =>
+        broWasAdded(data));
+    print("We are now back in the details page with the add new bro button");
+    print(addBroId);
+    socketServices.socket.emit("message_event_add_bro",
+        {"token": settings.getToken(), "bros_bro_id": addBroId}
+    );
+  }
+
   broWasAdded(data) {
-    // TODO: @Skools move to background?
+    print("bro was added broup?");
     BroBros broBros = new BroBros(
         data["bros_bro_id"],
         data["chat_name"],
@@ -163,21 +173,18 @@ class _BroupMessagingState extends State<BroupMessaging> {
     );
     broList.addChat(broBros);
     storage.addChat(broBros).then((value) {
-      if (mounted) {
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) =>
-            BroCastHome(
-                key: UniqueKey()
-            )));
-      }
+      broList.updateBroupBrosForBroBros(broBros);
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) =>
+          BroCastHome(
+              key: UniqueKey()
+          )));
     });
   }
 
   broAddingFailed() {
-    if (mounted) {
-      ShowToastComponent.showDialog(
-          "Bro could not be added at this time", context);
-    }
+    ShowToastComponent.showDialog(
+        "Bro could not be added at this time", context);
   }
 
   void broupColourUpdateSuccess(var data) {
@@ -470,7 +477,8 @@ class _BroupMessagingState extends State<BroupMessaging> {
                   senderName: getSender(messages[index].senderId),
                   senderId: messages[index].senderId,
                   broAdded: getIsAdded(messages[index].senderId),
-                  myMessage: messages[index].senderId == settings.getBroId());
+                  myMessage: messages[index].senderId == settings.getBroId(),
+                  addNewBro: addNewBro);
             })
         : Container();
   }
@@ -778,6 +786,7 @@ class MessageTile extends StatefulWidget {
   final int senderId;
   final bool broAdded;
   final bool myMessage;
+  final void Function(int) addNewBro;
 
   MessageTile(
       {
@@ -786,7 +795,8 @@ class MessageTile extends StatefulWidget {
         required this.senderName,
         required this.senderId,
         required this.broAdded,
-        required this.myMessage
+        required this.myMessage,
+        required this.addNewBro
       }) : super(key: key);
 
   @override
@@ -981,8 +991,7 @@ class _MessageTileState extends State<MessageTile> {
             // _navigationService.navigateTo(routes.HomeRoute);
           }
         } else if (delta == 2) {
-          socketServices.socket.emit("message_event_add_bro",
-              {"token": settings.getToken(), "bros_bro_id": widget.senderId});
+          widget.addNewBro(widget.senderId);
         }
         return;
       });
