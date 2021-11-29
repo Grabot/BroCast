@@ -74,9 +74,6 @@ class BroList {
     if (remainingAdmins.contains(meBroup.id)) {
       meBroup.setAdmin(true);
       remainingAdmins.remove(meBroup.id);
-      broup.setAmIAdmin(true);
-    } else {
-      broup.setAmIAdmin(false);
     }
     broupMe.add(meBroup);
     remainingParticipants.remove(settings.getBroId());

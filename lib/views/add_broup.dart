@@ -406,8 +406,8 @@ class _AddBroupState extends State<AddBroup> {
 
   void addBroup() {
     List<int> participants = [];
-    for (Chat partici in broupParticipants) {
-      participants.add(partici.id);
+    for (Chat participi in broupParticipants) {
+      participants.add(participi.id);
     }
     if (broupValidator.currentState!.validate()) {
         socketServices.socket.emit("message_event_add_broup",

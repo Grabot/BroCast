@@ -11,8 +11,6 @@ class Broup extends Chat {
   List<int> admins = [];
   List<Bro> broupBros = [];
 
-  bool meAdmin = false;
-
   Broup(
       int id,
       String broupName,
@@ -91,14 +89,6 @@ class Broup extends Chat {
 
   List<Bro> getBroupBros() {
     return this.broupBros;
-  }
-
-  void setAmIAdmin(bool meAdmin) {
-    this.meAdmin = meAdmin;
-  }
-
-  bool amIAdmin() {
-    return meAdmin;
   }
 
   void setChatDescription(String description) {

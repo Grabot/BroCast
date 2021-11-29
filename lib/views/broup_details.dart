@@ -4,7 +4,6 @@ import 'package:brocast/objects/bro_added.dart';
 import 'package:brocast/objects/bro_bros.dart';
 import 'package:brocast/objects/broup.dart';
 import 'package:brocast/objects/chat.dart';
-import 'package:brocast/services/get_broup_bros.dart';
 import 'package:brocast/services/get_chat.dart';
 import 'package:brocast/services/report_bro.dart';
 import 'package:brocast/services/settings.dart';
@@ -68,6 +67,8 @@ class _BroupDetailsState extends State<BroupDetails> {
 
   ReportBro reportBro = new ReportBro();
 
+  late bool meAdmin;
+
   @override
   void initState() {
     super.initState();
@@ -78,6 +79,8 @@ class _BroupDetailsState extends State<BroupDetails> {
     socketServices.addListener(socketListener);
     BackButtonInterceptor.add(myInterceptor);
 
+    checkMeAdmin();
+
     chatDescriptionController.text = chat.chatDescription;
     chatAliasController.text = chat.alias;
 
@@ -86,6 +89,16 @@ class _BroupDetailsState extends State<BroupDetails> {
     );
     currentColor = chat.getColor();
     initBroupDetailsSockets();
+  }
+
+  checkMeAdmin() {
+    meAdmin = false;
+    for (int adminId in chat.getAdmins()) {
+      if (adminId == settings.getBroId()) {
+        // We are admin
+        meAdmin = true;
+      }
+    }
   }
 
   void initBroupDetailsSockets() {
@@ -100,10 +113,6 @@ class _BroupDetailsState extends State<BroupDetails> {
     socketServices.socket
         .on('message_event_change_broup_colour_failed', (data) {
       broupColourUpdateFailed();
-    });
-    socketServices.socket
-        .on('message_event_change_broup_add_admin_success', (data) {
-      broupAddAdminSuccess(data);
     });
     socketServices.socket
         .on('message_event_change_broup_add_admin_failed', (data) {
@@ -183,18 +192,19 @@ class _BroupDetailsState extends State<BroupDetails> {
           // We update the screen for any changes.
           // We know if it gets here that it is a Broup object and that
           // it is the same Broup object as the current open chat
+          chat = ch4t as Broup;
+          if (!focusNodeDescription.hasFocus) {
+            print("description does NOT have focus");
+            chatDescriptionController.text = ch4t.chatDescription;
+          } else {
+            print("description has focus");
+            previousDescription = ch4t.chatDescription;
+          }
+          currentColor = ch4t.getColor();
+          circleColorPickerController.color = ch4t.getColor();
+          chatAliasController.text = ch4t.alias;
           setState(() {
-            chat = ch4t as Broup;
-            if (!focusNodeDescription.hasFocus) {
-              print("description does NOT have focus");
-              chatDescriptionController.text = ch4t.chatDescription;
-            } else {
-              print("description has focus");
-              previousDescription = ch4t.chatDescription;
-            }
-            currentColor = ch4t.getColor();
-            circleColorPickerController.color = ch4t.getColor();
-            chatAliasController.text = ch4t.alias;
+            checkMeAdmin();
           });
         }
       }
@@ -281,7 +291,6 @@ class _BroupDetailsState extends State<BroupDetails> {
     socketServices.socket.off('message_event_change_broup_details_failed');
     socketServices.socket.off('message_event_change_broup_alias_failed');
     socketServices.socket.off('message_event_change_broup_colour_failed');
-    socketServices.socket.off('message_event_change_broup_add_admin_success');
     socketServices.socket.off('message_event_change_broup_add_admin_failed');
     socketServices.socket.off('message_event_change_broup_dismiss_admin_success');
     socketServices.socket.off('message_event_change_broup_dismiss_admin_failed');
@@ -434,29 +443,6 @@ class _BroupDetailsState extends State<BroupDetails> {
     ShowToastComponent.showDialog("Updating the bro chat has failed", context);
   }
 
-  void broupAddAdminSuccess(var data) {
-    if (data.containsKey("result")) {
-      bool result = data["result"];
-      if (result) {
-        for (Bro bro in chat.getBroupBros()) {
-          if (bro.id == data["new_admin"]) {
-            bro.setAdmin(true);
-            chat.addAdmin(data["new_admin"]);
-            if (settings.getBroId() == data["new_admin"]) {
-              chat.setAmIAdmin(true);
-            }
-            break;
-          }
-        }
-        setState(() {});
-      } else {
-        broupAddAdminFailed();
-      }
-    } else {
-      broupAddAdminFailed();
-    }
-  }
-
   void broupAddAdminFailed() {
     ShowToastComponent.showDialog(
         "Adding the bro as admin has failed", context);
@@ -471,7 +457,7 @@ class _BroupDetailsState extends State<BroupDetails> {
             bro.setAdmin(false);
             chat.dismissAdmin(data["old_admin"]);
             if (settings.getBroId() == data["old_admin"]) {
-              chat.setAmIAdmin(false);
+              meAdmin = false;
             }
             break;
           }
@@ -533,7 +519,7 @@ class _BroupDetailsState extends State<BroupDetails> {
         bro: bro,
         broName: broName,
         broupId: chat.id,
-        userAdmin: chat.amIAdmin()
+        userAdmin: meAdmin
     );
   }
 
@@ -733,7 +719,7 @@ class _BroupDetailsState extends State<BroupDetails> {
                     ),
                   ),
                   SizedBox(height: 10),
-                  chat.amIAdmin()
+                  meAdmin
                     ? InkWell(
                       onTap: () {
                         addParticipant();
@@ -1263,15 +1249,13 @@ void buttonDismissAdmin(BuildContext context, Bro bro, int broupId, bool alertDi
   } else {
     Navigator.pop<int>(context, 3);
   }
-  // TODO: @Skools move to singleton?
-  // if (SocketServices.instance.socket.connected) {
-  //   SocketServices.instance.socket
-  //       .emit("message_event_change_broup_dismiss_admin", {
-  //     "token": token,
-  //     "broup_id": broupId,
-  //     "bro_id": bro.id
-  //   });
-  // }
+  SocketServices socketServices = SocketServices();
+  socketServices.socket
+      .emit("message_event_change_broup_dismiss_admin", {
+    "token": token,
+    "broup_id": broupId,
+    "bro_id": bro.id
+  });
 }
 
 void buttonRemove(BuildContext context, Bro bro, int broupId, bool alertDialog, String token) {

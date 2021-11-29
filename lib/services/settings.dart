@@ -14,7 +14,7 @@ class Settings {
 
   bool calledTwice = false;
 
-  Bro? me;
+  BroAdded? me;
 
   Settings._internal();
 
@@ -68,11 +68,11 @@ class Settings {
     return this.bromotion;
   }
 
-  setMe(Bro me) {
+  setMe(BroAdded me) {
     this.me = me;
   }
 
-  Bro? getMe() {
+  BroAdded? getMe() {
     return this.me;
   }
 }
