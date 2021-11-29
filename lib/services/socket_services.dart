@@ -117,8 +117,8 @@ class SocketServices extends ChangeNotifier {
         print("updating broup ${broup.id}");
         List<Bro> broupBros = [];
         broup as Broup;
-        // We assume this object is always filled an always in the participant list.
         broList.chatChangedCheckForAdded(broup.id, broup.getParticipants(), broup.getAdmins(), [], broupBros);
+        broList.chatCheckForDBRemoved(broup.id, broup.getParticipants());
         broup.setBroupBros(broupBros);
       }
     }
@@ -223,6 +223,8 @@ class SocketServices extends ChangeNotifier {
         },
       );
       this.socket.off('message_event_bro_added_you');
+      this.socket.off('message_event_added_to_broup');
+      this.socket.off('message_event_chat_changed');
       this.socket.off('message_event_send_solo');
     }
   }

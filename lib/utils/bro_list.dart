@@ -91,6 +91,36 @@ class BroList {
     }
   }
 
+  chatCheckForDBRemoved(int broupId, List<int> participants) {
+    storage.fetchAllBrosOfBroup(broupId.toString()).then((broupBros) {
+      // We assume all the bros are present in the list. But it's possible there are some extra bros in the db.
+      // When someone is removed from the db it is retrieved successfully and not shown, but the entry is still in the db.
+      // If we find some of those entries, we will remove them
+      for (Bro bro in broupBros) {
+        if (!participants.contains(bro.id)) {
+          storage.deleteBro(bro.id.toString(), bro.broupId.toString()).then((value) {
+            print("we had to remove a bro unfortunately.");
+          });
+        }
+      }
+    });
+  }
+
+  insertOrUpdateBro(Bro bro) {
+    storage.selectBro(bro.id.toString(), bro.broupId.toString()).then((value) {
+      if (value == null) {
+        storage.addBro(bro).then((value) {
+          print("we have added a bro to the db for the broup!");
+          print("broupid ${bro.broupId}");
+          print("bro id ${bro.id}");
+        });
+      } else {
+        storage.updateBro(bro, bro.broupId.toString()).then((value) {
+          print("we have updated a bro to the db for the broup!");
+        });
+      }
+    });
+  }
 
   chatChangedCheckForAdded(int broupId, List<int> newBroupP, List<int> newBroupA, List<int> oldBroupP, List<Bro> broupBros) {
     // bro's that were added
@@ -111,9 +141,7 @@ class BroList {
       meBroup.broupId = broupId;
       broupBros.add(meBroup);
       addedBro.remove(settings.getBroId());
-      storage.addBro(meBroup).then((value) {
-        print("we have added yourself to the db for the broup!");
-      });
+      insertOrUpdateBro(meBroup);
     }
 
     // We look in our list of bros to see if we find the added bros
@@ -127,9 +155,7 @@ class BroList {
             broAdded.setAdmin(true);
             remainingAdmins.remove(bro.id);
           }
-          storage.addBro(broAdded).then((value) {
-            print("we have added a bro from the db!");
-          });
+          insertOrUpdateBro(broAdded);
           broupBros.add(broAdded);
           addedBro.remove(bro.id);
         }
@@ -147,9 +173,7 @@ class BroList {
               broNotAdded.setAdmin(true);
               remainingAdmins.remove(broNotAdded.id);
             }
-            storage.addBro(broNotAdded).then((value) {
-              print("we have added a bro from the db!");
-            });
+            insertOrUpdateBro(broNotAdded);
             broupBros.add(broNotAdded);
             addedBro.remove(broNotAdded.id);
           }

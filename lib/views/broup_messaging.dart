@@ -109,10 +109,6 @@ class _BroupMessagingState extends State<BroupMessaging> {
         "join_broup",
         {"bro_id": settings.getBroId(), "broup_id": chat.id},
       );
-      // TODO: @SKools check deze
-      socketServices.socket.on('message_event_add_bro_failed', (data) {
-        broAddingFailed();
-      });
       socketServices.socket
           .on('message_event_send', (data) => messageReceived(data));
       socketServices.socket
@@ -146,10 +142,11 @@ class _BroupMessagingState extends State<BroupMessaging> {
   }
 
   addNewBro(int addBroId) {
-    print("the broup details want to listen to bro success events");
     socketServices.socket.on('message_event_add_bro_success', (data) =>
         broWasAdded(data));
-    print("We are now back in the details page with the add new bro button");
+    socketServices.socket.on('message_event_add_bro_failed', (data) {
+        broAddingFailed();
+    });
     print(addBroId);
     socketServices.socket.emit("message_event_add_bro",
         {"token": settings.getToken(), "bros_bro_id": addBroId}

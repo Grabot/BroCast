@@ -208,11 +208,11 @@ class _BroupDetailsState extends State<BroupDetails> {
   }
 
   addNewBro(int addBroId) {
-    print("the broup details want to listen to bro success events");
     socketServices.socket.on('message_event_add_bro_success', (data) =>
         broWasAdded(data));
-    print("We are now back in the details page with the add new bro button");
-    print(addBroId);
+    socketServices.socket.on('message_event_add_bro_failed', (data) {
+      broAddingFailed();
+    });
     socketServices.socket.emit("message_event_add_bro",
         {"token": settings.getToken(), "bros_bro_id": addBroId}
     );
