@@ -82,15 +82,6 @@ class BroBros extends Chat {
   }
 
   @override
-  setBroup(bool broup) {
-    if (broup) {
-      this.broup = 1;
-    } else {
-      this.broup = 0;
-    }
-  }
-
-  @override
   setMuted(bool muted) {
     if (muted) {
       this.mute = 1;
@@ -111,7 +102,7 @@ class BroBros extends Chat {
     map['unreadMessages'] = unreadMessages;
     map['blocked'] = blocked;
     map['mute'] = mute;
-    map['isBroup'] = broup; // probably false, but set anyway
+    map['isBroup'] = 0;
     return map;
   }
 
@@ -127,6 +118,6 @@ class BroBros extends Chat {
     roomName = map['roomName'];
     blocked = map['blocked'];
     mute = map['mute'];
-    broup = map['isBroup']; // probably false, but get from map anyway
+    broup = 0;
   }
 }

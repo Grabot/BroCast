@@ -75,7 +75,8 @@ class GetChat {
             chat["room_name"],
             0,
             chat["mute"] ? 1 : 0,
-            1);
+            1,
+            chat["left"] ? 1 : 0);
         List<dynamic> broIds = chat["bro_ids"];
         List<int> broIdList = broIds.map((s) => s as int).toList();
         broup.setParticipants(broIdList);

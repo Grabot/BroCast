@@ -11,6 +11,8 @@ class Broup extends Chat {
   List<int> admins = [];
   List<Bro> broupBros = [];
 
+  late int left;
+
   Broup(
       int id,
       String broupName,
@@ -22,7 +24,8 @@ class Broup extends Chat {
       String roomName,
       int blocked,
       int mute,
-      int broup
+      int broup,
+      int left
     ) {
     this.id = id;
     this.chatName = broupName;
@@ -45,6 +48,11 @@ class Broup extends Chat {
     this.lastActivity = lastActivity + 'Z';
     this.roomName = roomName;
     this.broup = broup;
+    this.left = left;
+  }
+
+  bool hasLeft() {
+    return left == 1;
   }
 
   DateTime getLastActivity() {
@@ -155,15 +163,6 @@ class Broup extends Chat {
   }
 
   @override
-  setBroup(bool broup) {
-    if (broup) {
-      this.broup = 1;
-    } else {
-      this.broup = 0;
-    }
-  }
-
-  @override
   setMuted(bool muted) {
     if (muted) {
       this.mute = 1;
@@ -172,7 +171,6 @@ class Broup extends Chat {
     }
   }
 
-  // TODO: @Skools add the participants?
   Map<String, dynamic> toDbMap() {
     var map = Map<String, dynamic>();
     map['chatId'] = id;
@@ -185,7 +183,8 @@ class Broup extends Chat {
     map['unreadMessages'] = unreadMessages;
     map['blocked'] = blocked;
     map['mute'] = mute;
-    map['isBroup'] = broup; // probably true, but set anyway
+    map['left'] = left;
+    map['isBroup'] = 1;
     map['participants'] = jsonEncode(participants);
     map['admins'] = jsonEncode(admins);
     return map;
@@ -202,7 +201,8 @@ class Broup extends Chat {
     roomName = map['roomName'];
     blocked = map['blocked'];
     mute = map['mute'];
-    broup = map['isBroup']; // probably true, but get from map anyway
+    left = map['left'];
+    broup = 1;
 
     List<dynamic> broIds = jsonDecode(map['participants']);
     List<int> broIdList = broIds.map((s) => s as int).toList();

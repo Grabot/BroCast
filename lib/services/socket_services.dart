@@ -105,9 +105,18 @@ class SocketServices extends ChangeNotifier {
     broList.chatChangedCheckForAdded(broup.id, broup.getParticipants(), broup.getAdmins(), [], broupBros);
     broup.setBroupBros(broupBros);
     print("length of broupbros after: ${broup.getBroupBros()}");
-    broList.addChat(broup);
-    storage.addChat(broup).then((value) {
-      notifyListeners();
+    storage.selectChat(broup.id.toString(), broup.broup.toString()).then((value) {
+      if (value == null) {
+        storage.addChat(broup).then((value) {
+          broList.addChat(broup);
+          notifyListeners();
+        });
+      } else {
+        storage.updateChat(broup).then((value) {
+          broList.updateChat(broup);
+          notifyListeners();
+        });
+      }
     });
   }
 
@@ -150,13 +159,6 @@ class SocketServices extends ChangeNotifier {
       print("length of broupBros of New broup (we expect it NOW to be the same as old broup and newbroup participants length): ${broup.getBroupBros().length}");
 
       broList.updateChat(broup);
-      // All the bro's should be in the db so we update all of them
-      // In case, for instance, if someone became admin
-      for (Bro bro in broup.getBroupBros()) {
-        storage.updateBro(bro, broup.id.toString()).then((bro) {
-          print("we have updated a bro in the broup");
-        });
-      }
       storage.updateChat(broup).then((chat) {
         print("we have updated the chat");
         notifyListeners();
@@ -186,7 +188,8 @@ class SocketServices extends ChangeNotifier {
         data["room_name"],
         0,
         data["mute"] ? 1 : 0,
-        1);
+        1,
+        data["left"] ? 1 : 0);
     List<dynamic> broIds = data["bro_ids"];
     List<int> broIdList = broIds.map((s) => s as int).toList();
     broup.setParticipants(broIdList);

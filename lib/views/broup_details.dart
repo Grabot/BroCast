@@ -127,10 +127,6 @@ class _BroupDetailsState extends State<BroupDetails> {
       broupDismissAdminFailed();
     });
     socketServices.socket
-        .on('message_event_change_broup_remove_bro_success', (data) {
-      broupRemoveBroSuccess(data);
-    });
-    socketServices.socket
         .on('message_event_change_broup_remove_bro_failed', (data) {
       broupRemoveBroFailed();
     });
@@ -146,35 +142,6 @@ class _BroupDetailsState extends State<BroupDetails> {
     socketServices.socket.on('message_event_change_broup_mute_failed', (data) {
       broupMutingFailed();
     });
-  }
-
-  void broupRemoveBroSuccess(var data) {
-    if (data.containsKey("result")) {
-      bool result = data["result"];
-      if (result) {
-        if (data["old_bro"] == settings.getBroId()) {
-          // We have successfully left the Broup
-          storage.deleteChat(chat).then((value) {
-            print("the broup is successfully removed!");
-            Navigator.pushReplacement(
-                context, MaterialPageRoute(builder: (context) => BroCastHome(key: UniqueKey())));
-          });
-        } else {
-          for (Bro bro in chat.getBroupBros()) {
-            if (bro.id == data["old_bro"]) {
-              chat.dismissAdmin(data["old_bro"]);
-              chat.removeBro(data["old_bro"]);
-              break;
-            }
-          }
-          setState(() {});
-        }
-      } else {
-        broupRemoveBroFailed();
-      }
-    } else {
-      broupRemoveBroFailed();
-    }
   }
 
   socketListener() {
@@ -583,266 +550,302 @@ class _BroupDetailsState extends State<BroupDetails> {
                         style: TextStyle(color: Colors.white, fontSize: 25),
                       )),
               SizedBox(height: 20),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 10),
-                child: Row(
+              chat.hasLeft() ? Container(
+                  padding: EdgeInsets.symmetric(horizontal: 24),
+                  alignment: Alignment.center,
+                  child: Text(
+                    "You're no longer a participant in this Broup",
+                    style: TextStyle(color: Colors.grey, fontSize: 16),
+                  ))
+              : Container(
+                child: Column(
                   children: [
                     Container(
-                      // 20 padding on both sides, 5 sizedbox and 18 for button
-                      width: MediaQuery.of(context).size.width-45,
-                      child: TextFormField(
-                        focusNode: focusNodeAlias,
-                        onTap: () {
-                          onTapAliasField();
-                        },
-                        controller: chatAliasController,
-                        style: simpleTextStyle(),
-                        textAlign: TextAlign.center,
-                        decoration: textFieldInputDecoration("No broup alias yet"),
-                      ),
-                    ),
-                    SizedBox(width: 5),
-                    changeAlias
-                    ? Container(
-                      width: 20,
-                      child: IconButton(
-                          iconSize: 20.0,
-                          icon: Icon(Icons.check, color: Colors.white),
-                          onPressed: () {
-                            updateAlias();
-                          }
-                      ),
-                    )
-                    : Container(
-                      width: 20,
-                      child: IconButton(
-                          iconSize: 20.0,
-                          icon: Icon(Icons.edit, color: Colors.white),
-                          onPressed: () {
-                            onTapAliasField();
-                          }
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(height: 20),
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 24),
-                  child: InkWell(
-                    onTap: () {
-                      updateColour();
-                    },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          "Color:",
-                          style: simpleTextStyle(),
-                        ),
-                        SizedBox(width: 20),
-                        Container(
-                          height: 40,
-                          width: 40,
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                              color: chat.getColor(),
-                              borderRadius: BorderRadius.circular(40)),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                changeColour
-                ? Column(
-                  children:[
-                    CircleColorPicker(
-                      controller: circleColorPickerController,
-                      textStyle: simpleTextStyle(),
-                      onChanged: (colour) {
-                        setState(() => onColorChange(colour));
-                      },
-                    ),
-                    IconButton(
-                        iconSize: 30.0,
-                        icon: Icon(Icons.check, color: Colors.green),
-                        onPressed: () {
-                          saveColour();
-                        }
-                    ),
-                  ]
-                )
-                : Container(),
-                SizedBox(height: 20),
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 10),
-                  child: Row(
-                    children: [
-                      Container(
-                        // 20 padding on both sides, 5 sizedbox and 18 for button
-                        width: MediaQuery.of(context).size.width-45,
-                        child: TextFormField(
-                          focusNode: focusNodeDescription,
-                          maxLines: null,
-                          onTap: () {
-                            onTapDescriptionField();
-                          },
-                          controller: chatDescriptionController,
-                          style: simpleTextStyle(),
-                          textAlign: TextAlign.center,
-                          decoration:
-                          textFieldInputDecoration("No broup description yet"),
-                        ),
-                      ),
-                      SizedBox(width: 5),
-                      changeDescription
-                        ? Container(
-                          width: 20,
-                          child: IconButton(
-                              iconSize: 20.0,
-                              icon: Icon(Icons.check, color: Colors.white),
-                              onPressed: () {
-                                updateDescription();
-                              }
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      child: Row(
+                        children: [
+                          Container(
+                            // 20 padding on both sides, 5 sizedbox and 18 for button
+                            width: MediaQuery.of(context).size.width-45,
+                            child: TextFormField(
+                              focusNode: focusNodeAlias,
+                              onTap: () {
+                                onTapAliasField();
+                              },
+                              controller: chatAliasController,
+                              style: simpleTextStyle(),
+                              textAlign: TextAlign.center,
+                              decoration: textFieldInputDecoration("No broup alias yet"),
+                            ),
+                          ),
+                          SizedBox(width: 5),
+                          changeAlias
+                          ? Container(
+                            width: 20,
+                            child: IconButton(
+                                iconSize: 20.0,
+                                icon: Icon(Icons.check, color: Colors.white),
+                                onPressed: () {
+                                  updateAlias();
+                                }
                             ),
                           )
-                        : Container(
-                          width: 20,
-                          child: IconButton(
-                            iconSize: 20.0,
-                            icon: Icon(Icons.edit, color: Colors.white),
-                            onPressed: () {
-                              onTapDescriptionField();
-                            }
-                          ),
+                          : Container(
+                            width: 20,
+                            child: IconButton(
+                                iconSize: 20.0,
+                                icon: Icon(Icons.edit, color: Colors.white),
+                                onPressed: () {
+                                  onTapAliasField();
+                                }
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(height: 50),
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 24),
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                        "" + amountInGroup.toString() + " Participants",
-                        style: simpleTextStyle()
-                    ),
-                  ),
-                  SizedBox(height: 10),
-                  meAdmin
-                    ? InkWell(
-                      onTap: () {
-                        addParticipant();
-                      },
-                      child: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 24, vertical: 6),
-                        child: Row(
+                      ),
+                      SizedBox(height: 20),
+                      Container(
+                        padding: EdgeInsets.symmetric(horizontal: 24),
+                        child: InkWell(
+                          onTap: () {
+                            updateColour();
+                          },
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Container(
-                                  height: 40,
-                                  width: 40,
-                                  decoration: BoxDecoration(
-                                      color: Colors.green,
-                                      borderRadius: BorderRadius.all(Radius.circular(40))
-                                  ),
-                                  child: IconButton(
-                                    onPressed: () {
-                                      addParticipant();
-                                    },
-                                    icon: Icon(
-                                        Icons.person_add,
-                                        color: Colors.white
-                                    ),
-                                  )
+                              Text(
+                                "Color:",
+                                style: simpleTextStyle(),
                               ),
                               SizedBox(width: 20),
-                              Text(
-                                "Add participants",
-                                style: TextStyle(color: Colors.grey, fontSize: 20),
+                              Container(
+                                height: 40,
+                                width: 40,
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                    color: chat.getColor(),
+                                    borderRadius: BorderRadius.circular(40)),
                               ),
-                            ]
+                            ],
                           ),
                         ),
-                    )
-                    : Container(),
-                  Container(
-                    alignment: Alignment.center,
-                    child: brosInBroupList()
-                  ),
-                  SizedBox(height: 10),
-                  TextButton(
-                      style: ButtonStyle(
-                        foregroundColor:
-                        MaterialStateProperty.all<Color>(Colors.red),
                       ),
-                      onPressed: () {
-                        chat.isMuted()
-                            ? showDialogUnMuteBroup(context)
-                            : showDialogMuteBroup(context);
-                      },
-                      child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                                chat.isMuted() ? Icons.volume_up : Icons.volume_mute,
-                                color: chat.isMuted() ? Colors.grey : Colors.red
-                            ),
-                            SizedBox(width: 20),
-                            chat.isMuted()
-                                ? Text(
-                              'Unmute Broup',
-                              style: simpleTextStyle(),
-                            ) : Text(
-                              'Mute Broup',
-                              style: simpleTextStyle(),
-                            ),
-                          ]
+                      changeColour
+                      ? Column(
+                        children:[
+                          CircleColorPicker(
+                            controller: circleColorPickerController,
+                            textStyle: simpleTextStyle(),
+                            onChanged: (colour) {
+                              setState(() => onColorChange(colour));
+                            },
+                          ),
+                          IconButton(
+                              iconSize: 30.0,
+                              icon: Icon(Icons.check, color: Colors.green),
+                              onPressed: () {
+                                saveColour();
+                              }
+                          ),
+                        ]
                       )
-                  ),
-                  SizedBox(height: 10),
-                  TextButton(
-                      style: ButtonStyle(
-                        foregroundColor:
-                        MaterialStateProperty.all<Color>(Colors.red),
+                      : Container(),
+                      SizedBox(height: 20),
+                      Container(
+                        padding: EdgeInsets.symmetric(horizontal: 10),
+                        child: Row(
+                          children: [
+                            Container(
+                              // 20 padding on both sides, 5 sizedbox and 18 for button
+                              width: MediaQuery.of(context).size.width-45,
+                              child: TextFormField(
+                                focusNode: focusNodeDescription,
+                                maxLines: null,
+                                onTap: () {
+                                  onTapDescriptionField();
+                                },
+                                controller: chatDescriptionController,
+                                style: simpleTextStyle(),
+                                textAlign: TextAlign.center,
+                                decoration:
+                                textFieldInputDecoration("No broup description yet"),
+                              ),
+                            ),
+                            SizedBox(width: 5),
+                            changeDescription
+                              ? Container(
+                                width: 20,
+                                child: IconButton(
+                                    iconSize: 20.0,
+                                    icon: Icon(Icons.check, color: Colors.white),
+                                    onPressed: () {
+                                      updateDescription();
+                                    }
+                                  ),
+                                )
+                              : Container(
+                                width: 20,
+                                child: IconButton(
+                                  iconSize: 20.0,
+                                  icon: Icon(Icons.edit, color: Colors.white),
+                                  onPressed: () {
+                                    onTapDescriptionField();
+                                  }
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: 50),
+                        Container(
+                          padding: EdgeInsets.symmetric(horizontal: 24),
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                              "" + amountInGroup.toString() + " Participants",
+                              style: simpleTextStyle()
+                          ),
+                        ),
+                        SizedBox(height: 10),
+                        meAdmin
+                          ? InkWell(
+                            onTap: () {
+                              addParticipant();
+                            },
+                            child: Container(
+                            padding: EdgeInsets.symmetric(horizontal: 24, vertical: 6),
+                              child: Row(
+                                  children: [
+                                    Container(
+                                        height: 40,
+                                        width: 40,
+                                        decoration: BoxDecoration(
+                                            color: Colors.green,
+                                            borderRadius: BorderRadius.all(Radius.circular(40))
+                                        ),
+                                        child: IconButton(
+                                          onPressed: () {
+                                            addParticipant();
+                                          },
+                                          icon: Icon(
+                                              Icons.person_add,
+                                              color: Colors.white
+                                          ),
+                                        )
+                                    ),
+                                    SizedBox(width: 20),
+                                    Text(
+                                      "Add participants",
+                                      style: TextStyle(color: Colors.grey, fontSize: 20),
+                                    ),
+                                  ]
+                                ),
+                              ),
+                          )
+                          : Container(),
+                        Container(
+                          alignment: Alignment.center,
+                          child: brosInBroupList()
+                        ),
+                        SizedBox(height: 10),
+                        TextButton(
+                            style: ButtonStyle(
+                              foregroundColor:
+                              MaterialStateProperty.all<Color>(Colors.red),
+                            ),
+                            onPressed: () {
+                              chat.isMuted()
+                                  ? showDialogUnMuteBroup(context)
+                                  : showDialogMuteBroup(context);
+                            },
+                            child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                      chat.isMuted() ? Icons.volume_up : Icons.volume_mute,
+                                      color: chat.isMuted() ? Colors.grey : Colors.red
+                                  ),
+                                  SizedBox(width: 20),
+                                  chat.isMuted()
+                                      ? Text(
+                                    'Unmute Broup',
+                                    style: simpleTextStyle(),
+                                  ) : Text(
+                                    'Mute Broup',
+                                    style: simpleTextStyle(),
+                                  ),
+                                ]
+                            )
+                        ),
+                        SizedBox(height: 10),
+                        TextButton(
+                            style: ButtonStyle(
+                              foregroundColor:
+                              MaterialStateProperty.all<Color>(Colors.red),
+                            ),
+                            onPressed: () {
+                              showDialogExitBroup(context, chat.chatName);
+                            },
+                            child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.exit_to_app, color: Colors.red),
+                                  SizedBox(width: 20),
+                                  Text(
+                                    'Leave Broup',
+                                    style: simpleTextStyle(),
+                                  ),
+                                ]
+                            )
+                        ),
+                        SizedBox(height: 10),
+                        ]
                       ),
-                      onPressed: () {
-                        showDialogExitBroup(context, chat.chatName);
-                      },
-                      child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(Icons.exit_to_app, color: Colors.red),
-                            SizedBox(width: 20),
-                            Text(
-                              'Exit Broup',
-                              style: simpleTextStyle(),
-                            ),
-                          ]
-                      )
-                  ),
-                  SizedBox(height: 10),
-                  TextButton(
-                      style: ButtonStyle(
-                        foregroundColor:
-                        MaterialStateProperty.all<Color>(Colors.red),
+                    ),
+                    chat.hasLeft() ? Container(
+                      child: TextButton(
+                          style: ButtonStyle(
+                            foregroundColor:
+                            MaterialStateProperty.all<Color>(Colors.red),
+                          ),
+                          onPressed: () {
+                            showDialogDelete(context, chat.getBroNameOrAlias());
+                          },
+                          child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.delete, color: Colors.red),
+                                SizedBox(width: 20),
+                                Text(
+                                  'Delete Broup',
+                                  style: simpleTextStyle(),
+                                ),
+                              ]
+                          )
                       ),
-                      onPressed: () {
-                        showDialogReport(context, chat.getBroNameOrAlias());
-                      },
-                      child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(Icons.thumb_down, color: Colors.red),
-                            SizedBox(width: 20),
-                            Text(
-                              'Report Broup',
-                              style: simpleTextStyle(),
-                            ),
-                          ]
-                      )
-                  ),
-                  SizedBox(height: 20),
-                ]),
+                    ) : Container(),
+                    TextButton(
+                        style: ButtonStyle(
+                          foregroundColor:
+                          MaterialStateProperty.all<Color>(Colors.red),
+                        ),
+                        onPressed: () {
+                          showDialogReport(context, chat.getBroNameOrAlias());
+                        },
+                        child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.thumb_down, color: Colors.red),
+                              SizedBox(width: 20),
+                              Text(
+                                'Report Broup',
+                                style: simpleTextStyle(),
+                              ),
+                            ]
+                        )
+                    ),
+                    SizedBox(height: 20),
+                  ]
+                ),
               ),
             ),
           ]),
@@ -864,7 +867,7 @@ class _BroupDetailsState extends State<BroupDetails> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: new Text("Exit Broup $broupName!"),
+          title: new Text("Leave Broup $broupName!"),
           content: new Text(
               "Are you sure you want to leave this broup?"),
           actions: <Widget>[
@@ -875,7 +878,7 @@ class _BroupDetailsState extends State<BroupDetails> {
               },
             ),
             new TextButton(
-              child: new Text("Exit Broup"),
+              child: new Text("Leave Broup"),
               onPressed: () {
                 exitBroup();
               },
@@ -903,6 +906,33 @@ class _BroupDetailsState extends State<BroupDetails> {
             ),
             new TextButton(
               child: new Text("Report"),
+              onPressed: () {
+                reportTheBroup();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void showDialogDelete(BuildContext context, String chatName) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: new Text("Delete broup $chatName!"),
+          content: new Text(
+              "Are you sure you want to delete this broup?"),
+          actions: <Widget>[
+            new TextButton(
+              child: new Text("Cancel"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            new TextButton(
+              child: new Text("Delete"),
               onPressed: () {
                 reportTheBroup();
               },

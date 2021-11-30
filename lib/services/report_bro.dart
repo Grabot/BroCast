@@ -75,7 +75,8 @@ class ReportBro {
             chatResponse["room_name"],
             0,
             chatResponse["mute"] ? 1 : 0,
-            1);
+            1,
+            chatResponse["left"] ? 1 : 0);
         return broup;
       }
     }

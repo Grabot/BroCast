@@ -24,7 +24,6 @@ abstract class Chat {
   bool isMuted();
   setMuted(bool muted);
   bool isBroup();
-  setBroup(bool broup);
   DateTime getLastActivity();
 
   Map<String, dynamic> toDbMap();

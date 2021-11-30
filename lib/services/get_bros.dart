@@ -50,7 +50,8 @@ class GetBros {
                 br0["room_name"],
                 0,
                 br0["mute"] ? 1 : 0,
-                1);
+                1,
+                br0["left"] ? 1 : 0);
             List<dynamic> broIds = br0["bro_ids"];
             List<int> broIdList = broIds.map((s) => s as int).toList();
             broup.setParticipants(broIdList);

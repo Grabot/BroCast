@@ -83,6 +83,7 @@ class Storage {
             unreadMessages INTEGER,
             blocked INTEGER,
             mute INTEGER,
+            left INTEGER,
             isBroup INTEGER,
             participants TEXT,
             admins TEXT,
