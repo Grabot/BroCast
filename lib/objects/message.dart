@@ -29,6 +29,10 @@ class Message {
     clicked = false;
   }
 
+  setBody(String body) {
+    this.body = body;
+  }
+
   DateTime getTimeStamp() {
     return DateTime.parse(timestamp).toLocal();
   }

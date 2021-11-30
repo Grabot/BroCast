@@ -34,7 +34,7 @@ class GetMessages {
               message["body"],
               message["text_message"],
               message["timestamp"],
-              0);
+              message["info"] ? 1 : 0);
           if (timeLastRead.isAfter(mes.getTimeStamp())) {
             mes.isRead = true;
           }

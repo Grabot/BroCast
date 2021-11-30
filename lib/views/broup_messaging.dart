@@ -72,6 +72,10 @@ class _BroupMessagingState extends State<BroupMessaging> {
     // Retrieve again from db to ensure up to date data.
     storage.selectChat(chat.id.toString(), chat.broup.toString()).then((value) {
       chat = value as Broup;
+      storage.fetchAllBrosOfBroup(chat.id.toString()).then((broupBros) {
+        broList.updateAliases(broupBros);
+        chat.setBroupBros(broupBros);
+      });
       if (settings.getBroId() == -1) {
         // The user can directly go here (via notification) So we will retrieve and set the user data.
         storage.selectUser().then((user) async {
@@ -250,10 +254,49 @@ class _BroupMessagingState extends State<BroupMessaging> {
       } else {
         ShowToastComponent.showDialog(val.toString(), context);
       }
+      updateInformationTiles();
       setState(() {
         isLoading = false;
       });
     });
+  }
+
+  updateSingleInformationTile(Message informationMessage) {
+    if (informationMessage.textMessage == "has been made admin") {
+      // We want to alter the admin message to include the correct bro
+      int newAdminId = informationMessage.senderId;
+      if (newAdminId == settings.getBroId()) {
+        informationMessage.setBody("You are admin!");
+      } else {
+        // Get the name of the bro who became admin
+        for (Bro broupBro in chat.getBroupBros()) {
+          if (broupBro.id == newAdminId) {
+            informationMessage.setBody(broupBro.getFullName() + " has been made admin!");
+          }
+        }
+      }
+    } else if (informationMessage.textMessage == "is no longer admin") {
+      // We want to alter the admin message to include the correct bro
+      int newAdminId = informationMessage.senderId;
+      if (newAdminId == settings.getBroId()) {
+        informationMessage.setBody("You are no longer an admin!");
+      } else {
+        // Get the name of the bro who became admin
+        for (Bro broupBro in chat.getBroupBros()) {
+          if (broupBro.id == newAdminId) {
+            informationMessage.setBody(broupBro.getFullName() + " is no longer an admin!");
+          }
+        }
+      }
+    }
+  }
+
+  updateInformationTiles() {
+    for (Message mes in this.messages) {
+      if (mes.isInformation()) {
+        updateSingleInformationTile(mes);
+      }
+    }
   }
 
   mergeMessages(List<Message> newMessages) {
@@ -402,7 +445,9 @@ class _BroupMessagingState extends State<BroupMessaging> {
   }
 
   updateMessages(Message message) {
-    if (message.senderId == settings.getBroId()) {
+    if (message.isInformation()) {
+      updateSingleInformationTile(message);
+    } else if (message.senderId == settings.getBroId()) {
       // We added it immediately as a placeholder.
       // When we get it from the server we add it for real and remove the placeholder
       this.messages.removeAt(0);

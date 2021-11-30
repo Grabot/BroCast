@@ -96,8 +96,8 @@ class _BroCastHomeState extends State<BroCastHome> {
             });
             for (Chat broup in bros) {
               if (broup.isBroup()) {
-                storage.fetchAllBrosOfBroup(broup.id.toString()).then((value) {
-                  (broup as Broup).setBroupBros(value);
+                storage.fetchAllBrosOfBroup(broup.id.toString()).then((broupBros) {
+                  (broup as Broup).setBroupBros(broupBros);
                 });
               }
             }

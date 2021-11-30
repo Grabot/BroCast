@@ -7,6 +7,8 @@ import 'package:brocast/objects/chat.dart';
 import 'package:brocast/services/get_broup_bros.dart';
 import 'package:brocast/services/settings.dart';
 import 'package:brocast/utils/storage.dart';
+import 'package:collection/collection.dart';
+
 
 class BroList {
   static final BroList _instance = BroList._internal();
@@ -201,5 +203,19 @@ class BroList {
       }
     }
     print("we've covered all Bro's length: ${remainingAdmins.length}");
+  }
+
+  updateAliases(List<Bro> broupBros) {
+    for (Chat bro in bros) {
+      if (!bro.isBroup()) {
+        Bro? check = broupBros.firstWhereOrNull((element) => bro.id == element.id);
+        if (check != null && check is BroAdded) {
+          // It's possible that you have given this bro an alias.
+          // We want to see this instead of the actual name,
+          // so update it on this object.
+          check.setFullName(bro.getBroNameOrAlias());
+        }
+      }
+    }
   }
 }

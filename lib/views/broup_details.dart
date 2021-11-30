@@ -67,7 +67,7 @@ class _BroupDetailsState extends State<BroupDetails> {
 
   ReportBro reportBro = new ReportBro();
 
-  late bool meAdmin;
+  bool meAdmin = false;
 
   @override
   void initState() {
@@ -82,7 +82,11 @@ class _BroupDetailsState extends State<BroupDetails> {
     // Retrieve again from db to ensure up to date data.
     storage.selectChat(chat.id.toString(), chat.broup.toString()).then((value) {
       chat = value as Broup;
-      checkMeAdmin();
+      storage.fetchAllBrosOfBroup(chat.id.toString()).then((broupBros) {
+        broList.updateAliases(broupBros);
+        chat.setBroupBros(broupBros);
+        checkMeAdmin();
+      });
     });
 
     chatDescriptionController.text = chat.chatDescription;
@@ -100,10 +104,30 @@ class _BroupDetailsState extends State<BroupDetails> {
     for (int adminId in chat.getAdmins()) {
       if (adminId == settings.getBroId()) {
         // We are admin
-        meAdmin = true;
+        setState(() {
+          meAdmin = true;
+        });
       }
     }
   }
+
+  // sendUpdateMessageBroup(String update) {
+  //   String timestampString = DateTime.now().toUtc().toString();
+  //   // The 'Z' indicates that it's UTC but we'll already add it in the message
+  //   if (timestampString.endsWith('Z')) {
+  //     timestampString =
+  //         timestampString.substring(0, timestampString.length - 1);
+  //   }
+  //
+  //   socketServices.socket.emit(
+  //     "message_broup_update",
+  //     {
+  //       "bro_id": settings.getBroId(),
+  //       "broup_id": chat.id,
+  //       "update": update,
+  //     },
+  //   );
+  // }
 
   void initBroupDetailsSockets() {
     socketServices.socket

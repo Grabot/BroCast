@@ -17,6 +17,10 @@ class BroAdded extends Bro {
     added = 1;
   }
 
+  setFullName(String chatName) {
+    this.chatName = chatName;
+  }
+
   @override
   String getFullName() {
     return "$chatName";

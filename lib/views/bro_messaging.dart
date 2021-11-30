@@ -140,7 +140,7 @@ class _BroMessagingState extends State<BroMessaging> {
         data["body"],
         data["text_message"],
         data["timestamp"],
-        0);
+        data["info"] ? 1 : 0);
     updateMessages(mes);
   }
 
