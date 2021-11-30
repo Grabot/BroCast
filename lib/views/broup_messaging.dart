@@ -109,6 +109,7 @@ class _BroupMessagingState extends State<BroupMessaging> {
   }
 
   void initBroupMessagingSocket() {
+    // TODO: @Skools don't join broup socket if it's blocked?
       socketServices.socket.emit(
         "join_broup",
         {"bro_id": settings.getBroId(), "broup_id": chat.id},
@@ -298,6 +299,19 @@ class _BroupMessagingState extends State<BroupMessaging> {
           }
         }
       }
+    } else if (informationMessage.textMessage == "has changed the chat colour") {
+      // We want to alter the admin message to include the correct bro
+      int newAdminId = informationMessage.senderId;
+      if (newAdminId == settings.getBroId()) {
+        informationMessage.setBody("You have changed the chat colour!");
+      } else {
+        // Get the name of the bro who became admin
+        for (Bro broupBro in chat.getBroupBros()) {
+          if (broupBro.id == newAdminId) {
+            informationMessage.setBody(broupBro.getFullName() + " has changed the chat colour!");
+          }
+        }
+      }
     }
   }
 
@@ -455,9 +469,9 @@ class _BroupMessagingState extends State<BroupMessaging> {
   }
 
   updateMessages(Message message) {
-    if (message.isInformation()) {
+    if (message.senderId == settings.getBroId()) {if (message.isInformation()) {
       updateSingleInformationTile(message);
-    } else if (message.senderId == settings.getBroId()) {
+    } else
       // We added it immediately as a placeholder.
       // When we get it from the server we add it for real and remove the placeholder
       this.messages.removeAt(0);

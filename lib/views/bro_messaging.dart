@@ -118,15 +118,12 @@ class _BroMessagingState extends State<BroMessaging> {
       if (!ch4t.isBroup()) {
         if (ch4t.id == chat.id) {
           // This is the chat object of the current chat.
-          if (ch4t.chatName != chat.chatName
-              || ch4t.chatColor != chat.chatColor) {
-            // If either the name colour has changed. We want to update the screen
-            // We know if it gets here that it is a BroBros object and that
-            // it is the same BroBros object as the current open chat
-            setState(() {
-              chat = ch4t as BroBros;
-            });
-          }
+          // If either the name colour has changed. We want to update the screen
+          // We know if it gets here that it is a BroBros object and that
+          // it is the same BroBros object as the current open chat
+          setState(() {
+            chat = ch4t as BroBros;
+          });
         }
       }
     }
@@ -198,10 +195,19 @@ class _BroMessagingState extends State<BroMessaging> {
       } else {
         ShowToastComponent.showDialog(val.toString(), context);
       }
+      updateInformationTiles();
       setState(() {
         isLoading = false;
       });
     });
+  }
+
+  updateInformationTiles() {
+    for (Message mes in this.messages) {
+      if (mes.isInformation()) {
+        updateSingleInformationTile(mes);
+      }
+    }
   }
 
   mergeMessages(List<Message> newMessages) {
@@ -349,8 +355,30 @@ class _BroMessagingState extends State<BroMessaging> {
     }
   }
 
+  updateSingleInformationTile(Message informationMessage) {
+    if (informationMessage.textMessage == "has changed the description") {
+      // We want to alter the admin message to include the correct bro
+      int newAdminId = informationMessage.senderId;
+      if (newAdminId == settings.getBroId()) {
+        informationMessage.setBody("You have changed the description!");
+      } else {
+        informationMessage.setBody(chat.getBroNameOrAlias() + " has changed the description!");
+      }
+    } else if (informationMessage.textMessage == "has changed the chat colour") {
+      // We want to alter the admin message to include the correct bro
+      int newAdminId = informationMessage.senderId;
+      if (newAdminId == settings.getBroId()) {
+        informationMessage.setBody("You have changed the chat colour!");
+      } else {
+        informationMessage.setBody(chat.getBroNameOrAlias() + " has changed the chat colour!");
+      }
+    }
+  }
+
   updateMessages(Message message) {
-    if (message.recipientId == chat.id) {
+    if (message.isInformation()) {
+      updateSingleInformationTile(message);
+    } else if (message.recipientId == chat.id) {
       // We added it immediately as a placeholder.
       // When we get it from the server we add it for real and remove the placeholder
       this.messages.removeAt(0);
