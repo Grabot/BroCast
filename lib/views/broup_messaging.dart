@@ -131,15 +131,12 @@ class _BroupMessagingState extends State<BroupMessaging> {
       if (ch4t.isBroup()) {
         if (ch4t.id == chat.id) {
           // This is the chat object of the current chat.
-          if (ch4t.chatName != chat.chatName
-              || ch4t.chatColor != chat.chatColor) {
-            // If either the name colour has changed. We want to update the screen
-            // We know if it gets here that it is a BroBros object and that
-            // it is the same BroBros object as the current open chat
-            setState(() {
-              chat = ch4t as Broup;
-            });
-          }
+          // If either the name colour has changed. We want to update the screen
+          // We know if it gets here that it is a BroBros object and that
+          // it is the same BroBros object as the current open chat
+          setState(() {
+            chat = ch4t as Broup;
+          });
         }
       }
     }
@@ -285,6 +282,19 @@ class _BroupMessagingState extends State<BroupMessaging> {
         for (Bro broupBro in chat.getBroupBros()) {
           if (broupBro.id == newAdminId) {
             informationMessage.setBody(broupBro.getFullName() + " is no longer an admin!");
+          }
+        }
+      }
+    } else if (informationMessage.textMessage == "has changed the description") {
+      // We want to alter the admin message to include the correct bro
+      int newAdminId = informationMessage.senderId;
+      if (newAdminId == settings.getBroId()) {
+        informationMessage.setBody("You have changed the description!");
+      } else {
+        // Get the name of the bro who became admin
+        for (Bro broupBro in chat.getBroupBros()) {
+          if (broupBro.id == newAdminId) {
+            informationMessage.setBody(broupBro.getFullName() + " has changed the description!");
           }
         }
       }
