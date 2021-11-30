@@ -70,7 +70,9 @@ class _BroChatDetailsState extends State<BroChatDetails> {
     chatDescriptionController.text = chat.chatDescription;
     chatAliasController.text = chat.alias;
     storage = Storage();
-
+    storage.selectChat(chat.id.toString(), chat.broup.toString()).then((value) {
+      chat = value as BroBros;
+    });
     initBroChatDetailsSockets();
 
     circleColorPickerController = CircleColorPickerController(

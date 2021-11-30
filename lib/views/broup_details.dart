@@ -79,7 +79,11 @@ class _BroupDetailsState extends State<BroupDetails> {
     socketServices.addListener(socketListener);
     BackButtonInterceptor.add(myInterceptor);
 
-    checkMeAdmin();
+    // Retrieve again from db to ensure up to date data.
+    storage.selectChat(chat.id.toString(), chat.broup.toString()).then((value) {
+      chat = value as Broup;
+      checkMeAdmin();
+    });
 
     chatDescriptionController.text = chat.chatDescription;
     chatAliasController.text = chat.alias;

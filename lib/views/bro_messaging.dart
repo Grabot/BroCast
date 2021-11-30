@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:brocast/objects/bro_bros.dart';
+import 'package:brocast/objects/broup.dart';
 import 'package:brocast/objects/chat.dart';
 import 'package:brocast/objects/message.dart';
 import 'package:brocast/services/get_messages.dart';
@@ -63,27 +64,27 @@ class _BroMessagingState extends State<BroMessaging> {
     socketServices.checkConnection();
     socketServices.addListener(socketListener);
 
-    // TODO: @Skools retrieve chat from db (because we can)
-
-    // Check if user data is set.
-    if (settings.getBroId() == -1) {
-      // The user can directly go here (via notification) So we will retrieve and set the user data.
-      storage.selectUser().then((user) async {
-        if (user != null) {
-          // TODO: @Skools possibly improve? Don't retrieve it if that has been done before?
-          settings.setEmojiKeyboardDarkMode(user.getKeyboardDarkMode());
-          settings.setBroId(user.id);
-          settings.setBroName(user.broName);
-          settings.setBromotion(user.bromotion);
-          settings.setToken(user.token);
-          getMessages(amountViewed);
-          initBroMessagingSocket(settings.getBroId(), chat.id);
-        }
-      });
-    } else {
-      getMessages(amountViewed);
-      initBroMessagingSocket(settings.getBroId(), chat.id);
-    }
+    storage.selectChat(chat.id.toString(), chat.broup.toString()).then((value) {
+      chat = value as BroBros;
+      // Check if user data is set.
+      if (settings.getBroId() == -1) {
+        // The user can directly go here (via notification) So we will retrieve and set the user data.
+        storage.selectUser().then((user) async {
+          if (user != null) {
+            settings.setEmojiKeyboardDarkMode(user.getKeyboardDarkMode());
+            settings.setBroId(user.id);
+            settings.setBroName(user.broName);
+            settings.setBromotion(user.bromotion);
+            settings.setToken(user.token);
+            getMessages(amountViewed);
+            initBroMessagingSocket(settings.getBroId(), chat.id);
+          }
+        });
+      } else {
+        getMessages(amountViewed);
+        initBroMessagingSocket(settings.getBroId(), chat.id);
+      }
+    });
     BackButtonInterceptor.add(myInterceptor);
 
     messageScrollController.addListener(() {

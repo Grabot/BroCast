@@ -69,29 +69,29 @@ class _BroupMessagingState extends State<BroupMessaging> {
     socketServices.checkConnection();
     socketServices.addListener(socketListener);
 
-    // TODO: @Skools retrieve chat from db (because we can)
+    // Retrieve again from db to ensure up to date data.
+    storage.selectChat(chat.id.toString(), chat.broup.toString()).then((value) {
+      chat = value as Broup;
+      if (settings.getBroId() == -1) {
+        // The user can directly go here (via notification) So we will retrieve and set the user data.
+        storage.selectUser().then((user) async {
+          if (user != null) {
+            settings.setEmojiKeyboardDarkMode(user.getKeyboardDarkMode());
+            settings.setBroId(user.id);
+            settings.setBroName(user.broName);
+            settings.setBromotion(user.bromotion);
+            settings.setToken(user.token);
 
-    // Check if user data is set.
-    if (settings.getBroId() == -1) {
-      // The user can directly go here (via notification) So we will retrieve and set the user data.
-      storage.selectUser().then((user) async {
-        if (user != null) {
-          // TODO: @Skools possibly improve? Don't retrieve if that has been done before?
-          settings.setEmojiKeyboardDarkMode(user.getKeyboardDarkMode());
-          settings.setBroId(user.id);
-          settings.setBroName(user.broName);
-          settings.setBromotion(user.bromotion);
-          settings.setToken(user.token);
-
-          getMessages(amountViewed);
-          initBroupMessagingSocket();
-        }
-      });
-    } else {
-      // Data is already set.
-      getMessages(amountViewed);
-      initBroupMessagingSocket();
-    }
+            getMessages(amountViewed);
+            initBroupMessagingSocket();
+          }
+        });
+      } else {
+        // Data is already set.
+        getMessages(amountViewed);
+        initBroupMessagingSocket();
+      }
+    });
 
     BackButtonInterceptor.add(myInterceptor);
 
