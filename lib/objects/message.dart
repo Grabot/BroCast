@@ -7,12 +7,12 @@ class Message {
   late String textMessage;
   late String timestamp;
 
-  late bool informationTile;
   late bool isRead;
   late bool clicked;
+  late int info;
 
   Message(int id, int senderId, int recipientId, String body,
-      String textMessage, String timestamp) {
+      String textMessage, String timestamp, int info) {
     this.id = id;
     this.senderId = senderId;
     this.recipientId = recipientId;
@@ -24,12 +24,16 @@ class Message {
       // The server has utc timestamp, but it's not formatted with the 'Z'.
       this.timestamp = timestamp + "Z";
     }
+    this.info = info;
     isRead = false;
     clicked = false;
-    informationTile = false;
   }
 
   DateTime getTimeStamp() {
     return DateTime.parse(timestamp).toLocal();
+  }
+
+  bool isInformation() {
+    return info == 1;
   }
 }

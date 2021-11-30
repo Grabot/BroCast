@@ -147,8 +147,15 @@ class Auth {
     var storage = Storage();
     await storage.selectUser().then((value) async {
       if (value != null) {
+
+        settings.setEmojiKeyboardDarkMode(user.getKeyboardDarkMode());
+        settings.setBroId(user.id);
+        settings.setBroName(user.broName);
+        settings.setBromotion(user.bromotion);
+        settings.setToken(user.token);
+
         print("there seems to be a user, we only want 1 user, update?");
-        if (value.broName == user.broName) {
+        if (value.broName == user.broName && value.bromotion == user.bromotion) {
           // The same bro logged in.
           // We assume the password didn't change
           // (can be null at this point because of token log in)
@@ -189,15 +196,14 @@ class Auth {
           print(value);
           // The token will basically always change when logging in,
           // so we always update the current user.
-          settings.setEmojiKeyboardDarkMode(user.getKeyboardDarkMode());
-          settings.setBroId(user.id);
-          settings.setBroName(user.broName);
-          settings.setBromotion(user.bromotion);
-          settings.setToken(user.token);
           storage.updateUser(value).then((value) {
             print("we have updated the user!");
             print(value);
           });
+        } else {
+          // A different user has logged in.
+          await storage.clearDatabase();
+          await storage.addUser(user);
         }
       } else {
         // no user yet, probably first time logging in! save the user.
@@ -215,11 +221,6 @@ class Auth {
           });
         }
         print("storing new user $user");
-        settings.setEmojiKeyboardDarkMode(user.getKeyboardDarkMode());
-        settings.setBroId(user.id);
-        settings.setBroName(user.broName);
-        settings.setBromotion(user.bromotion);
-        settings.setToken(user.token);
         await storage.addUser(user);
       }
     });

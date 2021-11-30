@@ -204,7 +204,8 @@ class _BroupMessagingState extends State<BroupMessaging> {
           data["broup_id"],
           data["body"],
           data["text_message"],
-          data["timestamp"]);
+          data["timestamp"],
+          data["info"] ? 1 : 0);
       updateMessages(mes);
     }
   }
@@ -291,8 +292,7 @@ class _BroupMessagingState extends State<BroupMessaging> {
       timeMessageFirst = "Yesterday";
     }
 
-    Message timeMessage = new Message(0, 0, 0, timeMessageFirst, "", DateTime.now().toUtc().toString());
-    timeMessage.informationTile = true;
+    Message timeMessage = new Message(0, 0, 0, timeMessageFirst, "", DateTime.now().toUtc().toString(), 1);
     for (int i = 0; i < this.messages.length; i++) {
       DateTime current = this.messages[i].getTimeStamp();
       DateTime dayMessage = DateTime(current.year, current.month, current.day);
@@ -309,8 +309,7 @@ class _BroupMessagingState extends State<BroupMessaging> {
           timeMessageTile = "Yesterday";
         }
         this.messages.insert(i, timeMessage);
-        timeMessage = new Message(0, 0, 0, timeMessageTile, "", DateTime.now().toUtc().toString());
-        timeMessage.informationTile = true;
+        timeMessage = new Message(0, 0, 0, timeMessageTile, "", DateTime.now().toUtc().toString(), 1);
       }
     }
     this.messages.insert(this.messages.length, timeMessage);
@@ -319,8 +318,7 @@ class _BroupMessagingState extends State<BroupMessaging> {
   updateDateTiles(Message message) {
     // If the day tiles need to be updated after sending a message it will be the today tile.
     if (this.messages.length == 0) {
-      Message timeMessage = new Message(0, 0, 0, "Today", "", DateTime.now().toUtc().toString());
-      timeMessage.informationTile = true;
+      Message timeMessage = new Message(0, 0, 0, "Today", "", DateTime.now().toUtc().toString(), 1);
       this.messages.insert(0, timeMessage);
     } else {
       Message messageFirst = this.messages.first;
@@ -335,8 +333,7 @@ class _BroupMessagingState extends State<BroupMessaging> {
       if (chatTimeTile != currentDayMessage) {
         chatTimeTile = DateFormat.yMMMMd('en_US').format(dayMessage);
 
-        Message timeMessage = new Message(0, 0, 0, "Today", "", DateTime.now().toUtc().toString());
-        timeMessage.informationTile = true;
+        Message timeMessage = new Message(0, 0, 0, "Today", "", DateTime.now().toUtc().toString(), 1);
         this.messages.insert(0, timeMessage);
       }
     }
@@ -378,7 +375,7 @@ class _BroupMessagingState extends State<BroupMessaging> {
       }
       // We set the id to be "-1". For date tiles it is "0", these will be filtered.
       Message mes =
-          new Message(-1, settings.getBroId(), chat.id, message, textMessage, timestampString);
+          new Message(-1, settings.getBroId(), chat.id, message, textMessage, timestampString, 0);
       setState(() {
         this.messages.insert(0, mes);
       });
@@ -818,7 +815,7 @@ class _MessageTileState extends State<MessageTile> {
 
   @override
   Widget build(BuildContext context) {
-    return widget.message.informationTile
+    return widget.message.isInformation()
         ?
         Row(
             mainAxisSize: MainAxisSize.min,
@@ -928,7 +925,7 @@ class _MessageTileState extends State<MessageTile> {
                                 TextStyle(color: Colors.white54, fontSize: 12),
                           ),
                           widget.myMessage
-                              ? widget.message.id != 0
+                              ? widget.message.id != -1
                                   ? WidgetSpan(
                                       child: Icon(Icons.done_all,
                                           color: widget.message.isRead
