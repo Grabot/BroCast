@@ -15,6 +15,7 @@ import 'package:brocast/utils/bro_list.dart';
 import 'package:brocast/utils/locator.dart';
 import 'package:brocast/utils/storage.dart';
 import 'package:brocast/utils/utils.dart';
+import 'package:brocast/views/add_broup.dart';
 import 'package:brocast/views/find_bros.dart';
 import 'package:brocast/views/signin.dart';
 import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
@@ -293,9 +294,11 @@ class _BroCastHomeState extends State<BroCastHome> {
                 itemBuilder: (context) => [
                       PopupMenuItem<int>(value: 0, child: Text("Profile")),
                       PopupMenuItem<int>(value: 1, child: Text("Settings")),
-                      PopupMenuItem<int>(value: 2, child: Text("Exit Brocast")),
+                      PopupMenuItem<int>(value: 2, child: Text("Find a new Bro")),
+                      PopupMenuItem<int>(value: 3, child: Text("Add new Broup")),
+                      PopupMenuItem<int>(value: 4, child: Text("Exit Brocast")),
                       PopupMenuItem<int>(
-                          value: 3,
+                          value: 5,
                           child: Row(children: [
                             Icon(Icons.logout, color: Colors.black),
                             SizedBox(width: 8),
@@ -321,6 +324,18 @@ class _BroCastHomeState extends State<BroCastHome> {
         )));
         break;
       case 2:
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => FindBros(
+            key: UniqueKey()
+        )));
+        break;
+      case 3:
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => AddBroup(
+            key: UniqueKey()
+        )));
+        break;
+      case 4:
         socketServices.leaveRoomSolo(settings.getBroId());
         if (Platform.isAndroid) {
           SystemNavigator.pop();
@@ -328,7 +343,7 @@ class _BroCastHomeState extends State<BroCastHome> {
           exit(0);
         }
         break;
-      case 3:
+      case 5:
         socketServices.leaveRoomSolo(settings.getBroId());
         ResetRegistration resetRegistration = new ResetRegistration();
         resetRegistration.removeRegistrationId(settings.getBroId());

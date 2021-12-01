@@ -45,6 +45,8 @@ class _FindBrosState extends State<FindBros> {
 
   final formFieldKey = GlobalKey<FormFieldState>();
 
+  String searchedBroNothingFound = "";
+
   @override
   void initState() {
     super.initState();
@@ -146,6 +148,7 @@ class _FindBrosState extends State<FindBros> {
 
   searchBros() {
     if (formFieldKey.currentState!.validate()) {
+      searchedBroNothingFound = "";
       setState(() {
         isSearching = true;
       });
@@ -157,6 +160,9 @@ class _FindBrosState extends State<FindBros> {
         if (!(val is String)) {
           setState(() {
             brosToBeAdded = val;
+            if (brosToBeAdded.length == 0) {
+              searchedBroNothingFound = broNameSearch;
+            }
           });
         } else {
           ShowToastComponent.showDialog(val.toString(), context);
@@ -345,6 +351,11 @@ class _FindBrosState extends State<FindBros> {
                 ],
               ),
             ),
+            brosToBeAdded.length == 0 && searchedBroNothingFound.isNotEmpty ? Container(
+              child: Text(
+                "nothing found for $searchedBroNothingFound",
+                style: simpleTextStyle())
+            ) : Container(),
             Expanded(child: listOfBros()),
             Align(
               alignment: Alignment.bottomCenter,
