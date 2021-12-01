@@ -138,27 +138,31 @@ class _BroCastHomeState extends State<BroCastHome> {
       if (!(val is String)) {
         // We have retrieved all the bros and broups.
         // We will remove the chat database and refill it.
-        
-        bros = val;
-        broList.setBros(bros);
-        setState(() {
-          shownBros = bros;
-        });
-
-        for (Chat chat in broList.getBros()) {
-          storage.selectChat(chat.id.toString(), chat.broup.toString()).then((value) {
-            if (value == null) {
-              storage.addChat(chat).then((value) {
-                print("we have added another chat that was added since you were away");
-              });
-            } else {
-              storage.updateChat(chat).then((value) {
-                print("a chat was updated!");
-              });
-            }
+        // TODO: @Skools check to see if this can be removed at some point.
+        if (mounted) {
+          bros = val;
+          broList.setBros(bros);
+          setState(() {
+            shownBros = bros;
           });
+
+          for (Chat chat in broList.getBros()) {
+            storage.selectChat(chat.id.toString(), chat.broup.toString()).then((
+                value) {
+              if (value == null) {
+                storage.addChat(chat).then((value) {
+                  print(
+                      "we have added another chat that was added since you were away");
+                });
+              } else {
+                storage.updateChat(chat).then((value) {
+                  print("a chat was updated!");
+                });
+              }
+            });
+          }
+          socketServices.updateBroups();
         }
-        socketServices.updateBroups();
       } else {
         ShowToastComponent.showDialog(val.toString(), context);
       }

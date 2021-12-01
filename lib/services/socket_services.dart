@@ -155,9 +155,9 @@ class SocketServices extends ChangeNotifier {
       broList.chatChangedCheckForRemoved(broup, oldBroup, broupBros);
       broList.chatChangedCheckForAdded(broup.id, broup.getParticipants(), broup.getAdmins(), oldBroup.getParticipants(), broupBros);
       broList.updateBroupBrosAdmins(broupBros, broup.getAdmins());
+      broList.updateAliases(broupBros);
       broup.setBroupBros(broupBros);
       print("length of broupBros of New broup (we expect it NOW to be the same as old broup and newbroup participants length): ${broup.getBroupBros().length}");
-
       broList.updateChat(broup);
       storage.updateChat(broup).then((chat) {
         print("we have updated the chat");

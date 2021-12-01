@@ -189,6 +189,7 @@ class BroList {
   }
 
   updateBroupBrosAdmins(List<Bro> broupBros, List<int> admins) {
+    print("updating broup bro admins");
     List<int> remainingAdmins = new List<int>.from(admins);
     for (Bro bro in broupBros) {
       // We want to see who is admin and who isn't.
@@ -201,6 +202,7 @@ class BroList {
         bro.setAdmin(true);
         remainingAdmins.remove(bro.id);
       }
+      insertOrUpdateBro(bro);
     }
     print("we've covered all Bro's length: ${remainingAdmins.length}");
   }
@@ -213,7 +215,10 @@ class BroList {
           // It's possible that you have given this bro an alias.
           // We want to see this instead of the actual name,
           // so update it on this object.
-          check.setFullName(bro.getBroNameOrAlias());
+          if (check.getFullName() != bro.getBroNameOrAlias()) {
+            check.setFullName(bro.getBroNameOrAlias());
+            insertOrUpdateBro(check);
+          }
         }
       }
     }

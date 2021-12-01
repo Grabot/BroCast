@@ -118,11 +118,6 @@ class _BroupMessagingState extends State<BroupMessaging> {
           .on('message_event_send', (data) => messageReceived(data));
       socketServices.socket
           .on('message_event_read', (data) => messageRead(data));
-      // TODO: @SKools check deze
-      socketServices.socket
-          .on('message_event_change_broup_colour_success', (data) {
-        broupColourUpdateSuccess(data);
-      });
   }
 
   socketListener() {
@@ -186,18 +181,6 @@ class _BroupMessagingState extends State<BroupMessaging> {
         "Bro could not be added at this time", context);
   }
 
-  void broupColourUpdateSuccess(var data) {
-    if (mounted) {
-      if (data.containsKey("result")) {
-        bool result = data["result"];
-        if (result) {
-          chat.chatColor = data["colour"];
-          setState(() {});
-        }
-      }
-    }
-  }
-
   messageReceived(var data) {
     if (mounted) {
       Message mes = new Message(
@@ -225,7 +208,6 @@ class _BroupMessagingState extends State<BroupMessaging> {
     socketServices.socket.off('message_event_add_bro_failed');
     socketServices.socket.off('message_event_send');
     socketServices.socket.off('message_event_read');
-    socketServices.socket.off('message_event_change_broup_colour_success');
     BackButtonInterceptor.remove(myInterceptor);
     super.dispose();
   }
@@ -252,75 +234,10 @@ class _BroupMessagingState extends State<BroupMessaging> {
       } else {
         ShowToastComponent.showDialog(val.toString(), context);
       }
-      updateInformationTiles();
       setState(() {
         isLoading = false;
       });
     });
-  }
-
-  updateSingleInformationTile(Message informationMessage) {
-    if (informationMessage.textMessage == "has been made admin") {
-      // We want to alter the admin message to include the correct bro
-      int newAdminId = informationMessage.senderId;
-      if (newAdminId == settings.getBroId()) {
-        informationMessage.setBody("You are admin!");
-      } else {
-        // Get the name of the bro who became admin
-        for (Bro broupBro in chat.getBroupBros()) {
-          if (broupBro.id == newAdminId) {
-            informationMessage.setBody(broupBro.getFullName() + " has been made admin!");
-          }
-        }
-      }
-    } else if (informationMessage.textMessage == "is no longer admin") {
-      // We want to alter the admin message to include the correct bro
-      int newAdminId = informationMessage.senderId;
-      if (newAdminId == settings.getBroId()) {
-        informationMessage.setBody("You are no longer an admin!");
-      } else {
-        // Get the name of the bro who became admin
-        for (Bro broupBro in chat.getBroupBros()) {
-          if (broupBro.id == newAdminId) {
-            informationMessage.setBody(broupBro.getFullName() + " is no longer an admin!");
-          }
-        }
-      }
-    } else if (informationMessage.textMessage == "has changed the description") {
-      // We want to alter the admin message to include the correct bro
-      int newAdminId = informationMessage.senderId;
-      if (newAdminId == settings.getBroId()) {
-        informationMessage.setBody("You have changed the description!");
-      } else {
-        // Get the name of the bro who became admin
-        for (Bro broupBro in chat.getBroupBros()) {
-          if (broupBro.id == newAdminId) {
-            informationMessage.setBody(broupBro.getFullName() + " has changed the description!");
-          }
-        }
-      }
-    } else if (informationMessage.textMessage == "has changed the chat colour") {
-      // We want to alter the admin message to include the correct bro
-      int newAdminId = informationMessage.senderId;
-      if (newAdminId == settings.getBroId()) {
-        informationMessage.setBody("You have changed the chat colour!");
-      } else {
-        // Get the name of the bro who became admin
-        for (Bro broupBro in chat.getBroupBros()) {
-          if (broupBro.id == newAdminId) {
-            informationMessage.setBody(broupBro.getFullName() + " has changed the chat colour!");
-          }
-        }
-      }
-    }
-  }
-
-  updateInformationTiles() {
-    for (Message mes in this.messages) {
-      if (mes.isInformation()) {
-        updateSingleInformationTile(mes);
-      }
-    }
   }
 
   mergeMessages(List<Message> newMessages) {
@@ -469,19 +386,20 @@ class _BroupMessagingState extends State<BroupMessaging> {
   }
 
   updateMessages(Message message) {
-    if (message.senderId == settings.getBroId()) {if (message.isInformation()) {
-      updateSingleInformationTile(message);
-    } else
+    print("received a message!");
+    if (!message.isInformation() && message.senderId == settings.getBroId()) {
       // We added it immediately as a placeholder.
       // When we get it from the server we add it for real and remove the placeholder
       this.messages.removeAt(0);
     } else {
       // If we didn't send this message it is from the other person.
       // We send a response, indicating that we read the messages
-      socketServices.socket.emit(
-        "message_read_broup",
-        {"bro_id": settings.getBroId(), "broup_id": chat.id},
-      );
+      if (!message.isInformation()) {
+        socketServices.socket.emit(
+          "message_read_broup",
+          {"bro_id": settings.getBroId(), "broup_id": chat.id},
+        );
+      }
     }
     updateDateTiles(message);
     setState(() {

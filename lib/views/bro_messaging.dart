@@ -195,19 +195,10 @@ class _BroMessagingState extends State<BroMessaging> {
       } else {
         ShowToastComponent.showDialog(val.toString(), context);
       }
-      updateInformationTiles();
       setState(() {
         isLoading = false;
       });
     });
-  }
-
-  updateInformationTiles() {
-    for (Message mes in this.messages) {
-      if (mes.isInformation()) {
-        updateSingleInformationTile(mes);
-      }
-    }
   }
 
   mergeMessages(List<Message> newMessages) {
@@ -355,40 +346,20 @@ class _BroMessagingState extends State<BroMessaging> {
     }
   }
 
-  updateSingleInformationTile(Message informationMessage) {
-    if (informationMessage.textMessage == "has changed the description") {
-      // We want to alter the admin message to include the correct bro
-      int newAdminId = informationMessage.senderId;
-      if (newAdminId == settings.getBroId()) {
-        informationMessage.setBody("You have changed the description!");
-      } else {
-        informationMessage.setBody(chat.getBroNameOrAlias() + " has changed the description!");
-      }
-    } else if (informationMessage.textMessage == "has changed the chat colour") {
-      // We want to alter the admin message to include the correct bro
-      int newAdminId = informationMessage.senderId;
-      if (newAdminId == settings.getBroId()) {
-        informationMessage.setBody("You have changed the chat colour!");
-      } else {
-        informationMessage.setBody(chat.getBroNameOrAlias() + " has changed the chat colour!");
-      }
-    }
-  }
-
   updateMessages(Message message) {
-    if (message.isInformation()) {
-      updateSingleInformationTile(message);
-    } else if (message.recipientId == chat.id) {
+    if (!message.isInformation() && message.recipientId == chat.id) {
       // We added it immediately as a placeholder.
       // When we get it from the server we add it for real and remove the placeholder
       this.messages.removeAt(0);
     } else {
       // If we didn't send this message it is from the other person.
       // We send a response, indicating that we read the messages
-      socketServices.socket.emit(
-        "message_read",
-        {"bro_id": settings.getBroId(), "bros_bro_id": chat.id},
-      );
+      if (!message.isInformation()) {
+        socketServices.socket.emit(
+          "message_read",
+          {"bro_id": settings.getBroId(), "bros_bro_id": chat.id},
+        );
+      }
     }
     updateDateTiles(message);
     setState(() {
