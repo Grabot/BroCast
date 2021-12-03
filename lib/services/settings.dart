@@ -1,5 +1,4 @@
 // A class to store anything that might be useful at any point in the app.
-import 'package:brocast/objects/bro.dart';
 import 'package:brocast/objects/bro_added.dart';
 
 class Settings {

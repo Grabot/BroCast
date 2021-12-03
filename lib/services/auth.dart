@@ -11,7 +11,6 @@ import 'package:http/http.dart' as http;
 
 class Auth {
 
-  NotificationUtil notificationUtil = new NotificationUtil();
   Settings settings = Settings();
 
   Future signUp(String broName, String bromotion, String password) async {
@@ -140,8 +139,8 @@ class Auth {
     await HelperFunction.setBroInformation(broName, bromotion, password);
   }
 
-  // TODO: @Skools move updating the settings to bro home?
   storeUser(int broId, String broName, String bromotion, String password, String token) async {
+    NotificationUtil notificationUtil = NotificationUtil();
     String registrationId = notificationUtil.getFirebaseToken();
     User user = new User(broId, broName, bromotion, password, token, registrationId, 1, 0);
     var storage = Storage();

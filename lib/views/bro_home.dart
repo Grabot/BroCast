@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:brocast/constants/route_paths.dart' as routes;
-import 'package:brocast/objects/bro.dart';
 import 'package:brocast/objects/bro_bros.dart';
 import 'package:brocast/objects/broup.dart';
 import 'package:brocast/objects/chat.dart';

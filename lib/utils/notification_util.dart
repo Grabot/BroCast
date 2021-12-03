@@ -19,7 +19,6 @@ class NotificationUtil {
   static final NotificationUtil _instance = NotificationUtil._internal();
 
   NotificationUtil._internal() {
-    firebaseBackgroundInitialization();
     setupFirebase();
   }
 
@@ -73,7 +72,6 @@ class NotificationUtil {
 
   void notificationNavigate(int id, int isBroup) {
     var storage = Storage();
-    // TODO: @Skools possibly pass string not ints.
     storage.selectChat(id.toString(), isBroup.toString()).then((value) {
       if (value != null) {
         Chat chat = value;
@@ -138,9 +136,8 @@ class NotificationUtil {
   }
 
   Future<void> initializeFirebaseService() async {
-    await Firebase.initializeApp();
-    // TODO: @SKools fix later.
-    // firebaseToken = await FirebaseMessaging.instance.getToken();
+    FirebaseMessaging.instance;
+    firebaseToken = await FirebaseMessaging.instance.getToken();
 
     print("registration id: \n$firebaseToken");
     if (firebaseToken == null || firebaseToken == "") {
@@ -212,11 +209,6 @@ class NotificationUtil {
     }
   }
 
-  void firebaseBackgroundInitialization() async {
-    await Firebase.initializeApp();
-    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-  }
-
   Future<void> _showNotification(String title, String body, int broId, int isBroup) async {
 
     print("message title $title");
@@ -240,8 +232,4 @@ class NotificationUtil {
   String getFirebaseToken() {
     return this.firebaseToken == null ? "" : this.firebaseToken!;
   }
-}
-
-Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  // Wat te doen hier? message al getoont en alleen nodig bij open doen
 }

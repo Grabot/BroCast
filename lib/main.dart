@@ -1,11 +1,11 @@
+import 'package:brocast/router.dart' as router;
 import 'package:brocast/services/navigation_service.dart';
 import 'package:brocast/services/settings.dart';
 import 'package:brocast/utils/locator.dart';
-import 'package:brocast/utils/storage.dart';
 import 'package:brocast/views/opening_screen.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:brocast/constants/route_paths.dart' as routes;
-import 'package:brocast/router.dart' as router;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -13,7 +13,18 @@ void main() async {
   Settings();
   setupLocator();
 
+  firebaseBackgroundInitialization();
+
   runApp(MyApp());
+}
+
+void firebaseBackgroundInitialization() async {
+  await Firebase.initializeApp();
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+}
+
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  // Wat te doen hier? message al getoont en alleen nodig bij open doen
 }
 
 class MyApp extends StatelessWidget {

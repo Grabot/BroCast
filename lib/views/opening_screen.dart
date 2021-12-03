@@ -19,15 +19,15 @@ class OpeningScreen extends StatefulWidget {
 class _OpeningScreenState extends State<OpeningScreen> {
   bool isLoading = false;
   bool acceptEULA = false;
-  Auth auth = new Auth();
+  // Auth auth = new Auth();
   late Storage storage;
 
   @override
   void initState() {
 
+    print("opening screen init");
     // Initialize the db on startup
     storage = Storage();
-    storage.database;
     HelperFunction.getEULA().then((val) {
       if (val == null || val == false) {
         // first time opening this app!
@@ -44,7 +44,7 @@ class _OpeningScreenState extends State<OpeningScreen> {
 
   goToBroHome() async {
     // Ugly fix for now to ensure it won't call home twice
-    var duration = new Duration(seconds: 2);
+    var duration = new Duration(milliseconds: 1);
     return new Timer(duration, broHome);
   }
 
@@ -77,10 +77,9 @@ class _OpeningScreenState extends State<OpeningScreen> {
   }
 
   signIn(User user) {
-
+    Auth auth = Auth();
     auth.signIn("", "", "", user.token).then((val) {
       if (val.toString() == "") {
-        // TODO: @Skools do the login/navigation different?
         setState(() {
           isLoading = false;
         });
@@ -113,6 +112,7 @@ class _OpeningScreenState extends State<OpeningScreen> {
   }
 
   signInName(String broName, String bromotion, String password) {
+    Auth auth = Auth();
     auth.signIn(broName, bromotion, password, "").then((val) {
       if (val.toString() == "") {
         print("navigate to the bro home 2!");
