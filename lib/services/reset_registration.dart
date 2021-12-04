@@ -26,7 +26,6 @@ class ResetRegistration {
       bool result = registerResponse["result"];
       if (result) {
         // If it succeeded we will also empty out the db with all the chats and messages this user had received.
-        await storage.clearDatabase();
         return registerResponse["message"];
       }
     }

@@ -85,12 +85,15 @@ class _BroCastHomeState extends State<BroCastHome> {
   setUser() {
     storage.selectUser().then((user) async {
       if (user != null) {
+        print("going to set the user stuff!");
         settings.setEmojiKeyboardDarkMode(user.getKeyboardDarkMode());
         settings.setBroId(user.id);
         settings.setBroName(user.broName);
         settings.setBromotion(user.bromotion);
         settings.setToken(user.token);
-        setState(() {});
+        if (mounted) {
+          setState(() {});
+        }
       }
     });
   }
@@ -436,7 +439,6 @@ class _BroTileState extends State<BroTile> {
   var _tapPosition;
 
   selectBro(BuildContext context) {
-    // TODO: @Skools FIX ROUTING
     if (widget.chat.isBroup()) {
       _navigationService.navigateTo(routes.BroupRoute, arguments: widget.chat);
     } else {
@@ -501,13 +503,21 @@ class _BroTileState extends State<BroTile> {
                               // We need to make the width the total width of the screen minus 103 at least to not get an overflow.
                               width: MediaQuery.of(context).size.width - 110,
                               child: Text(
-                                  widget.chat.alias != null && widget.chat.alias.isNotEmpty
-                                      ? widget.chat.alias
-                                      : widget.chat.chatName,
+                                  widget.chat.getBroNameOrAlias(),
                                   overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
                                       color: Colors.white, fontSize: 20)),
                             ),
+                            widget.chat.alias != ""
+                                ? Container(
+                              // If there is an alias, we want to show the name of the bro as well.
+                              // We will do that in smaller letters underneath
+                              width: MediaQuery.of(context).size.width - 110,
+                              child: Text("     -" + widget.chat.chatName,
+                                  style: TextStyle(
+                                      color: getTextColor(widget.chat.getColor()), fontSize: 10)),
+                            )
+                                : Container(),
                             widget.chat.chatDescription != ""
                                 ? Container(
                                     // All the padding and sizedboxes (and message bal) added up it's 103.
@@ -695,11 +705,10 @@ class _BroTileState extends State<BroTile> {
         )
     ).then((int? delta) {
       if (delta == 1) {
-        // TODO: @Skools FIX ROUTING!
         if (widget.chat.isBroup()) {
-          // _navigationService.navigateTo(routes.BroupRoute, arguments: widget.chat);
+          _navigationService.navigateTo(routes.BroupRoute, arguments: widget.chat);
         } else {
-          // _navigationService.navigateTo(routes.BroRoute, arguments: widget.chat);
+          _navigationService.navigateTo(routes.BroRoute, arguments: widget.chat);
         }
       } else if (delta == 2) {
         showDialogMuteChat(context);
