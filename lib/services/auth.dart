@@ -123,6 +123,7 @@ class Auth {
           String bromotion = registerResponse["bro"]["bromotion"];
 
           await storeUser(broId, broName, bromotion, password, token);
+          print("awaited the store user");
           return "";
         } else {
           return message;

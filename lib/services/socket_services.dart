@@ -17,23 +17,25 @@ class SocketServices extends ChangeNotifier {
   late IO.Socket socket;
   late Storage storage;
   late BroList broList;
-  late Settings settings;
-  late GetBroupBros getBroupBros;
 
   bool joinedSoloRoom = false;
 
   static final SocketServices _instance = SocketServices._internal();
 
   SocketServices._internal() {
-    storage = Storage();
-    broList = BroList();
-    settings = Settings();
-    getBroupBros = GetBroupBros();
     startSockConnection();
   }
 
   factory SocketServices() {
     return _instance;
+  }
+
+  setStorageInstance(Storage storage) {
+    this.storage = storage;
+  }
+
+  setBroListInstance(BroList broList) {
+    this.broList = broList;
   }
 
   startSockConnection() {

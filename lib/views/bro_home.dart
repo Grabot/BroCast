@@ -36,9 +36,8 @@ class BroCastHome extends StatefulWidget {
 
 class _BroCastHomeState extends State<BroCastHome> {
   GetBros getBros = new GetBros();
-  Auth auth = new Auth();
   Settings settings = Settings();
-  SocketServices socketServices = SocketServices();
+  late SocketServices socketServices;
   BroList broList = BroList();
 
   bool isSearching = false;
@@ -58,51 +57,40 @@ class _BroCastHomeState extends State<BroCastHome> {
   @override
   void initState() {
     super.initState();
+    storage = Storage();
+    broList = BroList();
+    socketServices = SocketServices();
+    socketServices.setStorageInstance(storage);
+    socketServices.setBroListInstance(broList);
+    if (!socketServices.joinedSoloRoom) {
+      if (settings.getBroId() != -1) {
+        socketServices.joinRoomSolo(settings.getBroId());
+      }
+    }
     BackButtonInterceptor.add(myInterceptor);
     bromotionController.addListener(bromotionListener);
-    socketServices.checkConnection();
     socketServices.addListener(socketListener);
+    socketServices.updateBroups();
 
     print("bro home init");
-    storage.selectUser().then((user) {
-      if (user != null) {
-        print("Recheck? ${user.shouldRecheck()}");
+    bros = broList.getBros();
+    bros.sort((b, a) => a.getLastActivity().compareTo(b.getLastActivity()));
+    setState(() {
+      shownBros = bros;
+    });
 
+    setUser();
+  }
+
+  setUser() {
+    storage.selectUser().then((user) async {
+      if (user != null) {
         settings.setEmojiKeyboardDarkMode(user.getKeyboardDarkMode());
         settings.setBroId(user.id);
         settings.setBroName(user.broName);
         settings.setBromotion(user.bromotion);
         settings.setToken(user.token);
-
-        // We should remain in the solo room throughout the app.
-        // Only leave when minimizing or closing the app.
-        print("join room initstate");
-        socketServices.joinRoomSolo(settings.getBroId());
-
-        if (user.shouldRecheck()) {
-          searchBros(user.token);
-          user.recheckBros = 0;
-          storage.updateUser(user).then((value) {
-            print("We have checked the bros, no need to do it again.");
-            print(value);
-          });
-        } else {
-          storage.fetchAllChats().then((value) {
-            bros = value;
-            bros.sort((b, a) => a.getLastActivity().compareTo(b.getLastActivity()));
-            shownBros = bros;
-            broList.setBros(bros);
-            setState(() {
-            });
-            for (Chat broup in bros) {
-              if (broup.isBroup()) {
-                storage.fetchAllBrosOfBroup(broup.id.toString()).then((broupBros) {
-                  (broup as Broup).setBroupBros(broupBros);
-                });
-              }
-            }
-          });
-        }
+        setState(() {});
       }
     });
   }
@@ -127,49 +115,6 @@ class _BroCastHomeState extends State<BroCastHome> {
               );
             })
         : Container();
-  }
-
-  searchBros(String token) {
-    setState(() {
-      isSearching = true;
-    });
-
-    getBros.getBros(token).then((val) async {
-      if (!(val is String)) {
-        // We have retrieved all the bros and broups.
-        // We will remove the chat database and refill it.
-        // TODO: @Skools check to see if this can be removed at some point.
-        if (mounted) {
-          bros = val;
-          broList.setBros(bros);
-          setState(() {
-            shownBros = bros;
-          });
-
-          for (Chat chat in broList.getBros()) {
-            storage.selectChat(chat.id.toString(), chat.broup.toString()).then((
-                value) {
-              if (value == null) {
-                storage.addChat(chat).then((value) {
-                  print(
-                      "we have added another chat that was added since you were away");
-                });
-              } else {
-                storage.updateChat(chat).then((value) {
-                  print("a chat was updated!");
-                });
-              }
-            });
-          }
-          socketServices.updateBroups();
-        }
-      } else {
-        ShowToastComponent.showDialog(val.toString(), context);
-      }
-      setState(() {
-        isSearching = false;
-      });
-    });
   }
 
   void onTapEmojiField() {

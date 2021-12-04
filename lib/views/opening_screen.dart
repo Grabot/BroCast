@@ -1,7 +1,12 @@
 import 'dart:async';
 import 'package:brocast/constants/base_url.dart';
+import 'package:brocast/objects/broup.dart';
+import 'package:brocast/objects/chat.dart';
 import 'package:brocast/objects/user.dart';
 import 'package:brocast/services/auth.dart';
+import 'package:brocast/services/get_bros.dart';
+import 'package:brocast/services/socket_services.dart';
+import 'package:brocast/utils/bro_list.dart';
 import 'package:brocast/utils/shared.dart';
 import 'package:brocast/utils/storage.dart';
 import 'package:brocast/utils/utils.dart';
@@ -20,6 +25,7 @@ class _OpeningScreenState extends State<OpeningScreen> {
   bool isLoading = false;
   bool acceptEULA = false;
   // Auth auth = new Auth();
+  GetBros getBros = new GetBros();
   late Storage storage;
 
   @override
@@ -42,19 +48,6 @@ class _OpeningScreenState extends State<OpeningScreen> {
     super.initState();
   }
 
-  goToBroHome() async {
-    // Ugly fix for now to ensure it won't call home twice
-    var duration = new Duration(milliseconds: 1);
-    return new Timer(duration, broHome);
-  }
-
-  broHome() {
-    Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => BroCastHome(
-        key: UniqueKey()
-    )));
-  }
-
   void startUp() {
     setState(() {
       isLoading = true;
@@ -62,6 +55,12 @@ class _OpeningScreenState extends State<OpeningScreen> {
 
     storage.selectUser().then((user) async {
       if (user != null) {
+
+        searchBros(user.token);
+        user.recheckBros = 0;
+        storage.updateUser(user).then((value) {
+          print("We have checked the bros, no need to do it again.");
+        });
         signIn(user);
       } else {
         setState(() {
@@ -76,6 +75,34 @@ class _OpeningScreenState extends State<OpeningScreen> {
     });
   }
 
+  searchBros(String token) {
+    BroList broList = BroList();
+    getBros.getBros(token).then((bros) async {
+      if (!(bros is String)) {
+        // We have retrieved all the bros and broups.
+        // We will remove the chat database and refill it.
+
+        for (Chat chat in bros) {
+          storage.selectChat(chat.id.toString(), chat.broup.toString()).then((value) {
+            if (value == null) {
+              storage.addChat(chat).then((value) {
+                print("added a chat that was added since you were away");
+              });
+            } else {
+              storage.updateChat(chat).then((value) {
+                print("a chat was updated!");
+              });
+            }
+          });
+        }
+        broList.setBros(bros);
+        print("We have successfully set the bro list");
+      } else {
+        ShowToastComponent.showDialog(bros.toString(), context);
+      }
+    });
+  }
+
   signIn(User user) {
     Auth auth = Auth();
     auth.signIn("", "", "", user.token).then((val) {
@@ -84,7 +111,11 @@ class _OpeningScreenState extends State<OpeningScreen> {
           isLoading = false;
         });
         print("navigate to the bro home 1!");
-        goToBroHome();
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) =>
+            BroCastHome(
+                key: UniqueKey()
+            )));
       } else {
         if (val == "The given credentials are not correct!") {
           // token didn't work, going to check if a username is given and try to log in using password username

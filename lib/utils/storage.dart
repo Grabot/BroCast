@@ -271,11 +271,12 @@ class Storage {
   }
 
   clearDatabase() async {
+    // We won't clear the user table, because the user can log back in later
+    // with the same information that is remembered. If they change it
+    // straight away in the sign up screen it will be overwritten
     Database database = await this.database;
     await database.execute("DROP TABLE IF EXISTS Chat");
-    await database.execute("DROP TABLE IF EXISTS User");
     await database.execute("DROP TABLE IF EXISTS Bro");
-    await createTableUser(database);
     await createTableChat(database);
     await createTableBro(database);
   }
