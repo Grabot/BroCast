@@ -4,6 +4,7 @@ import 'package:brocast/objects/bro_bros.dart';
 import 'package:brocast/objects/bro_not_added.dart';
 import 'package:brocast/objects/broup.dart';
 import 'package:brocast/objects/chat.dart';
+import 'package:brocast/objects/message.dart';
 import 'package:brocast/objects/user.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
@@ -50,6 +51,7 @@ class Storage {
     await createTableUser(db);
     await createTableChat(db);
     await createTableBro(db);
+    await createTableMessage(db);
   }
 
   createTableUser(Database db) async {
@@ -104,6 +106,25 @@ class Storage {
             chatName TEXT,
             broName TEXT,
             bromotion TEXT
+          );
+          ''');
+  }
+
+  createTableMessage(Database db) async {
+    print("create table message");
+    await db.execute('''
+          CREATE TABLE Message (
+            id INTEGER PRIMARY KEY,
+            messageId INTEGER,
+            senderId INTEGER,
+            recipientId INTEGER,
+            chatId INTEGER,
+            body TEXT,
+            textMessage TEXT,
+            info INTEGER,
+            timestamp TEXT,
+            isRead INTEGER,
+            isBroup INTEGER
           );
           ''');
   }
@@ -262,6 +283,25 @@ class Storage {
     );
   }
 
+  Future<int> addMessage(Message message) async {
+    Database database = await this.database;
+    return database.insert(
+      'Message',
+      message.toDbMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+  Future<List<Message>> fetchAllMessages(int chatId, int isBroup) async {
+    Database database = await this.database;
+    List<Map<String, dynamic>> maps = await database.query('Chat');
+    if (maps.isNotEmpty) {
+      return maps.map((map) => Message.fromDbMap(map)
+      ).toList();
+    }
+    return List.empty();
+  }
+
   clearChatTable() async {
     Database database = await this.database;
     await database.execute("DROP TABLE IF EXISTS Chat");
@@ -275,8 +315,10 @@ class Storage {
     await database.execute("DROP TABLE IF EXISTS Chat");
     await database.execute("DROP TABLE IF EXISTS User");
     await database.execute("DROP TABLE IF EXISTS Bro");
+    await database.execute("DROP TABLE IF EXISTS Message");
     await createTableUser(database);
     await createTableChat(database);
     await createTableBro(database);
+    await createTableMessage(database);
   }
 }

@@ -391,7 +391,7 @@ class _BroMessagingState extends State<BroMessaging> {
 
   messageRead(var data) {
     for (Message message in this.messages) {
-      message.isRead = true;
+      message.isRead = 1;
     }
     setState(() {
       this.messages = this.messages;
@@ -789,7 +789,7 @@ class _MessageTileState extends State<MessageTile> {
                               ? widget.message.id != -1
                                   ? WidgetSpan(
                                       child: Icon(Icons.done_all,
-                                          color: widget.message.isRead
+                                          color: widget.message.hasBeenRead()
                                               ? Colors.blue
                                               : Colors.white54,
                                           size: 18))

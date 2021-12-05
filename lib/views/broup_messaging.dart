@@ -434,7 +434,7 @@ class _BroupMessagingState extends State<BroupMessaging> {
     var timeLastRead = DateTime.parse(data + 'Z').toLocal();
     for (Message message in this.messages) {
       if (timeLastRead.isAfter(message.getTimeStamp())) {
-        message.isRead = true;
+        message.isRead = 1;
       }
     }
     setState(() {
@@ -915,7 +915,7 @@ class _MessageTileState extends State<MessageTile> {
                               ? widget.message.id != -1
                                   ? WidgetSpan(
                                       child: Icon(Icons.done_all,
-                                          color: widget.message.isRead
+                                          color: widget.message.hasBeenRead()
                                               ? Colors.blue
                                               : Colors.white54,
                                           size: 18))

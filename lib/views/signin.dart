@@ -1,8 +1,11 @@
 import 'dart:io';
 import 'package:back_button_interceptor/back_button_interceptor.dart';
+import 'package:brocast/objects/chat.dart';
 import 'package:brocast/objects/user.dart';
 import 'package:brocast/services/auth.dart';
+import 'package:brocast/services/get_bros.dart';
 import 'package:brocast/services/settings.dart';
+import 'package:brocast/utils/bro_list.dart';
 import 'package:brocast/utils/storage.dart';
 import 'package:brocast/utils/utils.dart';
 import 'package:brocast/views/bro_home.dart';
@@ -29,6 +32,7 @@ class _SignInState extends State<SignIn> {
   bool signUpMode = false;
 
   Auth auth = new Auth();
+  GetBros getBros = new GetBros();
   Settings settings = Settings();
 
   DateTime? lastPressed;
@@ -144,10 +148,7 @@ class _SignInState extends State<SignIn> {
     auth.signUp(broNameSignup, bromotionSignup, passwordSignup).then((val) {
       if (val.toString() == "") {
         print("navigate to bro home");
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => BroCastHome(
-            key: UniqueKey()
-        )));
+        checkUserAndSearchBros();
       } else {
         ShowToastComponent.showDialog(val.toString(), context);
       }
@@ -166,10 +167,7 @@ class _SignInState extends State<SignIn> {
     auth.signIn(broName, bromotion, password, "").then((val) {
       if (val.toString() == "") {
         print("navigate to bro home");
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => BroCastHome(
-            key: UniqueKey()
-        )));
+        checkUserAndSearchBros();
       } else {
         ShowToastComponent.showDialog(val.toString(), context);
         setState(() {
@@ -178,6 +176,63 @@ class _SignInState extends State<SignIn> {
       }
     });
   }
+
+  checkUserAndSearchBros() {
+    storage.selectUser().then((user) async {
+      if (user != null) {
+        searchBros(user.token).then((value) {
+          if (value == "success") {
+            Navigator.pushReplacement(
+                context, MaterialPageRoute(builder: (context) => BroCastHome(
+                key: UniqueKey()
+            )));
+          } else {
+            setState(() {
+              isLoading = false;
+            });
+          }
+        });
+        user.recheckBros = 0;
+        storage.updateUser(user).then((value) {
+          print("We have checked the bros, no need to do it again.");
+        });
+      } else {
+        setState(() {
+          isLoading = false;
+        });
+      }
+    });
+  }
+
+  Future searchBros(String token) async {
+    BroList broList = BroList();
+    return getBros.getBros(token).then((bros) {
+      if (!(bros is String)) {
+        // We have retrieved all the bros and broups.
+        // We will remove the chat database and refill it.
+
+        for (Chat chat in bros) {
+          storage.selectChat(chat.id.toString(), chat.broup.toString()).then((value) {
+            if (value == null) {
+              storage.addChat(chat).then((value) {
+                print("added a chat that was added since you were away");
+              });
+            } else {
+              storage.updateChat(chat).then((value) {
+                print("a chat was updated!");
+              });
+            }
+          });
+        }
+        broList.setBros(bros);
+        return "success";
+      } else {
+        ShowToastComponent.showDialog(bros.toString(), context);
+        return "failed";
+      }
+    });
+  }
+
 
   void onSelect(BuildContext context, int item) {
     switch (item) {

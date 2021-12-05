@@ -7,9 +7,12 @@ class Message {
   late String textMessage;
   late String timestamp;
 
-  late bool isRead;
+  late int isRead;
   late bool clicked;
   late int info;
+
+  late int chatId;
+  late int isBroup;
 
   Message(int id, int senderId, int recipientId, String body,
       String textMessage, String timestamp, int info) {
@@ -25,7 +28,7 @@ class Message {
       this.timestamp = timestamp + "Z";
     }
     this.info = info;
-    isRead = false;
+    isRead = 0;
     clicked = false;
   }
 
@@ -39,5 +42,33 @@ class Message {
 
   bool isInformation() {
     return info == 1;
+  }
+
+  bool hasBeenRead() {
+    return isRead == 1;
+  }
+
+  Map<String, dynamic> toDbMap() {
+    var map = Map<String, dynamic>();
+    map['messageId'] = id;
+    map['senderId'] = senderId;
+    map['chatId'] = chatId;
+    map['body'] = body;
+    map['textMessage'] = textMessage;
+    map['info'] = info;
+    map['timestamp'] = timestamp;
+    map['isBroup'] = isBroup;
+    return map;
+  }
+
+  Message.fromDbMap(Map<String, dynamic> map) {
+    id = map['messageId'];
+    senderId = map['senderId'];
+    chatId = map['chatId'];
+    body = map['body'];
+    textMessage = map['textMessage'];
+    info = map['info'];
+    timestamp = map['timestamp'];
+    isBroup = map['isBroup'];
   }
 }

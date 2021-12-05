@@ -36,7 +36,7 @@ class GetMessages {
               message["timestamp"],
               message["info"] ? 1 : 0);
           if (timeLastRead.isAfter(mes.getTimeStamp())) {
-            mes.isRead = true;
+            mes.isRead = 1;
           }
           listWithMessages.add(mes);
         }
@@ -78,7 +78,7 @@ class GetMessages {
               message["timestamp"],
               message["info"] ? 1 : 0);
           if (timeLastRead.isAfter(mes.getTimeStamp())) {
-            mes.isRead = true;
+            mes.isRead = 1;
           }
           listWithMessages.add(mes);
         }
