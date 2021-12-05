@@ -1,12 +1,8 @@
 import 'package:brocast/constants/base_url.dart';
 import 'package:brocast/objects/bro.dart';
-import 'package:brocast/objects/bro_added.dart';
 import 'package:brocast/objects/bro_bros.dart';
-import 'package:brocast/objects/bro_not_added.dart';
 import 'package:brocast/objects/broup.dart';
 import 'package:brocast/objects/chat.dart';
-import 'package:brocast/services/get_broup_bros.dart';
-import 'package:brocast/services/settings.dart';
 import 'package:brocast/utils/bro_list.dart';
 import 'package:brocast/utils/storage.dart';
 import 'package:flutter/cupertino.dart';
@@ -90,10 +86,6 @@ class SocketServices extends ChangeNotifier {
       this.socket.on('message_event_added_to_broup', (data) {
         print("added to a broup!");
         broAddedYouToABroup(data);
-      });
-      this.socket.on('message_event_send_solo', (data) {
-        // TODO: @Skools do we still do a message_event_send_solo?
-        print(data);
       });
     }
   }
@@ -230,7 +222,6 @@ class SocketServices extends ChangeNotifier {
       this.socket.off('message_event_bro_added_you');
       this.socket.off('message_event_added_to_broup');
       this.socket.off('message_event_chat_changed');
-      this.socket.off('message_event_send_solo');
     }
   }
 }

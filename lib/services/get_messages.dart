@@ -34,7 +34,10 @@ class GetMessages {
               message["body"],
               message["text_message"],
               message["timestamp"],
-              message["info"] ? 1 : 0);
+              message["info"] ? 1 : 0,
+              brosBroId,
+              0
+          );
           if (timeLastRead.isAfter(mes.getTimeStamp())) {
             mes.isRead = 1;
           }
@@ -76,7 +79,10 @@ class GetMessages {
               message["body"],
               message["text_message"],
               message["timestamp"],
-              message["info"] ? 1 : 0);
+              message["info"] ? 1 : 0,
+              broupId,
+              1
+          );
           if (timeLastRead.isAfter(mes.getTimeStamp())) {
             mes.isRead = 1;
           }

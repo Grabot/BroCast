@@ -15,7 +15,7 @@ class Message {
   late int isBroup;
 
   Message(int id, int senderId, int recipientId, String body,
-      String textMessage, String timestamp, int info) {
+      String textMessage, String timestamp, int info, int chatId, int isBroup) {
     this.id = id;
     this.senderId = senderId;
     this.recipientId = recipientId;

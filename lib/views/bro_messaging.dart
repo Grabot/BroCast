@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:brocast/objects/bro_bros.dart';
-import 'package:brocast/objects/broup.dart';
 import 'package:brocast/objects/chat.dart';
 import 'package:brocast/objects/message.dart';
 import 'package:brocast/services/get_messages.dart';
@@ -137,7 +136,10 @@ class _BroMessagingState extends State<BroMessaging> {
         data["body"],
         data["text_message"],
         data["timestamp"],
-        data["info"] ? 1 : 0);
+        data["info"] ? 1 : 0,
+        chat.id,
+        0
+    );
     updateMessages(mes);
   }
 
@@ -237,7 +239,7 @@ class _BroMessagingState extends State<BroMessaging> {
       timeMessageFirst = "Yesterday";
     }
 
-    Message timeMessage = new Message(0, 0, 0, timeMessageFirst, "", DateTime.now().toUtc().toString(), 1);
+    Message timeMessage = new Message(0, 0, 0, timeMessageFirst, "", DateTime.now().toUtc().toString(), 1, chat.id, 0);
     for (int i = 0; i < this.messages.length; i++) {
       DateTime current = this.messages[i].getTimeStamp();
       DateTime dayMessage = DateTime(current.year, current.month, current.day);
@@ -254,7 +256,7 @@ class _BroMessagingState extends State<BroMessaging> {
           timeMessageTile = "Yesterday";
         }
         this.messages.insert(i, timeMessage);
-        timeMessage = new Message(0, 0, 0, timeMessageTile, "", DateTime.now().toUtc().toString(), 1);
+        timeMessage = new Message(0, 0, 0, timeMessageTile, "", DateTime.now().toUtc().toString(), 1, chat.id, 0);
       }
     }
     this.messages.insert(this.messages.length, timeMessage);
@@ -263,7 +265,7 @@ class _BroMessagingState extends State<BroMessaging> {
   updateDateTiles(Message message) {
     // If the day tiles need to be updated after sending a message it will be the today tile.
     if (this.messages.length == 0) {
-      Message timeMessage = new Message(0, 0, 0, "Today", "", DateTime.now().toUtc().toString(), 1);
+      Message timeMessage = new Message(0, 0, 0, "Today", "", DateTime.now().toUtc().toString(), 1, chat.id, 0);
       this.messages.insert(0, timeMessage);
     } else {
       Message messageFirst = this.messages.first;
@@ -278,7 +280,7 @@ class _BroMessagingState extends State<BroMessaging> {
       if (chatTimeTile != currentDayMessage) {
         chatTimeTile = DateFormat.yMMMMd('en_US').format(dayMessage);
 
-        Message timeMessage = new Message(0, 0, 0, "Today", "", DateTime.now().toUtc().toString(), 1);
+        Message timeMessage = new Message(0, 0, 0, "Today", "", DateTime.now().toUtc().toString(), 1, chat.id, 0);
         this.messages.insert(0, timeMessage);
       }
     }
@@ -320,7 +322,7 @@ class _BroMessagingState extends State<BroMessaging> {
       }
       // We set the id to be "-1". For date tiles it is "0", these will be filtered.
       Message mes =
-          new Message(-1, 0, chat.id, message, textMessage, DateTime.now().toUtc().toString(), 0);
+          new Message(-1, 0, chat.id, message, textMessage, DateTime.now().toUtc().toString(), 0, chat.id, 0);
       setState(() {
         this.messages.insert(0, mes);
       });
