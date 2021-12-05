@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 
 class GetMessages {
   Future getMessages(String token, int brosBroId, int page) async {
-    String urlGetMessages = baseUrl + 'get/messages/' + page.toString();
+    String urlGetMessages = baseUrl_v1_3 + 'get/messages';
     Uri uriGetMessages = Uri.parse(urlGetMessages);
 
     http.Response responsePost = await http.post(
@@ -50,7 +50,7 @@ class GetMessages {
   }
 
   Future getMessagesBroup(String token, int broupId, int page) async {
-    String urlGetMessages = baseUrl_v1_2 + 'get/messages/broup/' + page.toString();
+    String urlGetMessages = baseUrl_v1_3 + 'get/messages/broup';
     Uri uriGetMessages = Uri.parse(urlGetMessages);
 
     http.Response responsePost = await http.post(
@@ -63,6 +63,7 @@ class GetMessages {
         'broup_id': broupId.toString()
       }),
     );
+
     Map<String, dynamic> registerResponse = jsonDecode(responsePost.body);
     if (registerResponse.containsKey("result")) {
       bool result = registerResponse["result"];
@@ -86,6 +87,9 @@ class GetMessages {
           if (timeLastRead.isAfter(mes.getTimeStamp())) {
             mes.isRead = 1;
           }
+          print("a new messages I have retrieved");
+          print(mes);
+          print(mes.body);
           listWithMessages.add(mes);
         }
         return listWithMessages;

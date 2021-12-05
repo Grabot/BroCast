@@ -71,7 +71,9 @@ class _BroupMessagingState extends State<BroupMessaging> {
 
     // Retrieve again from db to ensure up to date data.
     storage.selectChat(chat.id.toString(), chat.broup.toString()).then((value) {
+      print("timestamp test");
       chat = value as Broup;
+      print(chat.lastActivity);
       storage.fetchAllBrosOfBroup(chat.id.toString()).then((broupBros) {
         broList.updateAliases(broupBros);
         chat.setBroupBros(broupBros);
@@ -182,20 +184,18 @@ class _BroupMessagingState extends State<BroupMessaging> {
   }
 
   messageReceived(var data) {
-    if (mounted) {
-      Message mes = new Message(
-          data["id"],
-          data["sender_id"],
-          data["broup_id"],
-          data["body"],
-          data["text_message"],
-          data["timestamp"],
-          data["info"] ? 1 : 0,
-          chat.id,
-          1
-      );
-      updateMessages(mes);
-    }
+    Message mes = new Message(
+        data["id"],
+        data["sender_id"],
+        data["broup_id"],
+        data["body"],
+        data["text_message"],
+        data["timestamp"],
+        data["info"] ? 1 : 0,
+        chat.id,
+        1
+    );
+    updateMessages(mes);
   }
 
   @override
@@ -224,16 +224,32 @@ class _BroupMessagingState extends State<BroupMessaging> {
     setState(() {
       isLoading = true;
     });
+    bool gotServer = false;
+    bool gotLocalDB = false;
+    List<Message> messagesServer = [];
+    List<Message> messagesDB = [];
+    // get messages from the server
     get.getMessagesBroup(settings.getToken(), chat.id, page).then((val) {
       if (!(val is String)) {
         List<Message> messes = val;
         if (messes.length != 0) {
-          setState(() {
-            mergeMessages(messes);
-            setDateTiles();
-          });
+          messagesServer = messes;
+          // TODO: @SKools fix the limiting of querrying too many messages?
           amountViewed += 1;
         }
+        gotServer = true;
+        if (gotLocalDB && gotServer) {
+          mergeMessages(messagesServer + messagesDB);
+          // Set date tiles, but only if all the messages are retrieved
+          setState(() {
+            setDateTiles();
+          });
+        }
+        storeMessages(messes);
+        socketServices.socket.emit(
+          "message_read_broup",
+          {"bro_id": settings.getBroId(), "broup_id": chat.id},
+        );
       } else {
         ShowToastComponent.showDialog(val.toString(), context);
       }
@@ -241,6 +257,39 @@ class _BroupMessagingState extends State<BroupMessaging> {
         isLoading = false;
       });
     });
+    // But also load what you have from your local database
+    storage.fetchAllMessages(chat.id, 1).then((val) {
+      List<Message> messes = val;
+      if (messes.length != 0) {
+        messagesDB = messes;
+        gotLocalDB = true;
+        if (gotLocalDB && gotServer) {
+          mergeMessages(messagesServer + messagesDB);
+          // Set date tiles, but only if all the messages are retrieved
+          setState(() {
+            setDateTiles();
+          });
+        }
+      }
+    });
+  }
+
+  storeMessages(List<Message> messages) {
+    print("going to store messages");
+    for (Message message in messages) {
+      storage.selectMessage(message.id).then((value) {
+        if (value == null) {
+          print("message not yet in db, storing it");
+          // If it is not yet in the db, we store it.
+          // If it is in the db we don't do anything, the message won't change.
+          if (message.id > 0) {
+            storage.addMessage(message).then((value) {
+              print("message is stored");
+            });
+          }
+        }
+      });
+    }
   }
 
   mergeMessages(List<Message> newMessages) {
@@ -252,9 +301,14 @@ class _BroupMessagingState extends State<BroupMessaging> {
       if (lastId <= newMessages[0].id) {
         newMessages = newMessages.where((x) => x.id < lastId).toList();
       }
+      print("merging messages with list of new messages, which I think should be 1 for debugging");
+      print(lastId);
       this.messages = this.messages.where((x) => x.id != 0).toList();
+      print("length now ${this.messages.length}");
     }
+    print("length of messages to be added ${newMessages.length}");
     this.messages.addAll(newMessages);
+    print("length after ${this.messages.length}");
     this.messages.sort((b, a) => a.timestamp.compareTo(b.timestamp));
   }
 
@@ -407,6 +461,9 @@ class _BroupMessagingState extends State<BroupMessaging> {
     updateDateTiles(message);
     setState(() {
       this.messages.insert(0, message);
+    });
+    storage.addMessage(message).then((value) {
+      // stored the message
     });
     updateUserActivity(message.timestamp);
   }

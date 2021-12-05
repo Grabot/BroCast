@@ -104,10 +104,6 @@ class _BroMessagingState extends State<BroMessaging> {
         .on('message_event_send', (data) => messageReceived(data));
     socketServices.socket
         .on('message_event_read', (data) => messageRead(data));
-    socketServices.socket
-        .on('message_event_change_chat_colour_success', (data) {
-      chatColourUpdateSuccess(data);
-    });
   }
 
   socketListener() {
@@ -150,17 +146,6 @@ class _BroMessagingState extends State<BroMessaging> {
     );
   }
 
-  void chatColourUpdateSuccess(var data) {
-    // TODO: @Skools Probably move to background, update every screen
-    if (data.containsKey("result")) {
-      bool result = data["result"];
-      if (result) {
-        chat.chatColor = data["colour"];
-        setState(() {});
-      }
-    }
-  }
-
   @override
   void dispose() {
     focusAppendText.dispose();
@@ -169,8 +154,6 @@ class _BroMessagingState extends State<BroMessaging> {
     socketServices.socket.off('message_event_send');
     socketServices.socket.off('message_event_read');
     socketServices.removeListener(socketListener);
-    // TODO: @Skools Probably move to background, update every screen
-    // socketServices.socket.off('message_event_change_chat_colour_success');
     BackButtonInterceptor.remove(myInterceptor);
     super.dispose();
   }
@@ -184,16 +167,32 @@ class _BroMessagingState extends State<BroMessaging> {
     setState(() {
       isLoading = true;
     });
+    List<Message> messagesServer = [];
+    List<Message> messagesDB = [];
+    bool gotServer = false;
+    bool gotLocalDB = false;
+    // get messages from the server
     get.getMessages(settings.getToken(), chat.id, page).then((val) {
       if (!(val is String)) {
         List<Message> messes = val;
         if (messes.length != 0) {
-          setState(() {
-            mergeMessages(messes);
-            setDateTiles();
-          });
+          messagesServer = messes;
+          // TODO: @SKools fix the limiting of querrying too many messages?
           amountViewed += 1;
         }
+        gotServer = true;
+        if (gotLocalDB && gotServer) {
+          mergeMessages(messagesServer + messagesDB);
+          // Set date tiles, but only if all the messages are retrieved
+          setState(() {
+            setDateTiles();
+          });
+        }
+        storeMessages(messes);
+        socketServices.socket.emit(
+          "message_read",
+          {"bro_id": settings.getBroId(), "bros_bro_id": chat.id},
+        );
       } else {
         ShowToastComponent.showDialog(val.toString(), context);
       }
@@ -201,6 +200,39 @@ class _BroMessagingState extends State<BroMessaging> {
         isLoading = false;
       });
     });
+    // But also load what you have from your local database
+    storage.fetchAllMessages(chat.id, 0).then((val) {
+      List<Message> messes = val;
+      if (messes.length != 0) {
+        messagesDB = messes;
+        gotLocalDB = true;
+        if (gotLocalDB && gotServer) {
+          mergeMessages(messagesServer + messagesDB);
+          // Set date tiles, but only if all the messages are retrieved
+          setState(() {
+            setDateTiles();
+          });
+        }
+      }
+    });
+  }
+
+  storeMessages(List<Message> messages) {
+    print("going to store messages");
+    for (Message message in messages) {
+      storage.selectMessage(message.id).then((value) {
+        if (value == null) {
+          print("message not yet in db, storing it");
+          // If it is not yet in the db, we store it.
+          // If it is in the db we don't do anything, the message won't change.
+          if (message.id > 0) {
+            storage.addMessage(message).then((value) {
+              print("message is stored");
+            });
+          }
+        }
+      });
+    }
   }
 
   mergeMessages(List<Message> newMessages) {
@@ -367,6 +399,9 @@ class _BroMessagingState extends State<BroMessaging> {
     setState(() {
       this.messages.insert(0, message);
     });
+    storage.addMessage(message).then((value) {
+      // stored the message
+    });
     updateUserActivity(message.timestamp);
   }
 
@@ -383,7 +418,7 @@ class _BroMessagingState extends State<BroMessaging> {
     });
     chat.lastActivity = timestamp;
     for (Chat ch4t in broList.getBros()) {
-      if (ch4t.isBroup()) {
+      if (!ch4t.isBroup()) {
         if (ch4t.id == chat.id) {
           ch4t.lastActivity = timestamp;
         }

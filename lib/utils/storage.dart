@@ -294,12 +294,26 @@ class Storage {
 
   Future<List<Message>> fetchAllMessages(int chatId, int isBroup) async {
     Database database = await this.database;
-    List<Map<String, dynamic>> maps = await database.query('Chat');
+    // select * from TABLE_NAME limit 1 offset 2
+    String query = "SELECT * FROM Message where chatId = " + chatId.toString() + " and isBroup = " + isBroup.toString();
+    List<Map<String, dynamic>> maps = await database.rawQuery(query);
     if (maps.isNotEmpty) {
       return maps.map((map) => Message.fromDbMap(map)
       ).toList();
     }
     return List.empty();
+  }
+
+  Future<Message?> selectMessage(int messageId) async {
+    Database database = await this.database;
+    String query = "SELECT * FROM Message where messageId = " + messageId.toString();
+    List<Map<String, dynamic>> message = await database.rawQuery(query);
+    print(message);
+    if (message.length != 1) {
+      return null;
+    } else {
+      return Message.fromDbMap(message[0]);
+    }
   }
 
   clearChatTable() async {

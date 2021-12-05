@@ -28,6 +28,8 @@ class Message {
       this.timestamp = timestamp + "Z";
     }
     this.info = info;
+    this.chatId = chatId;
+    this.isBroup = isBroup;
     isRead = 0;
     clicked = false;
   }
@@ -52,7 +54,11 @@ class Message {
     var map = Map<String, dynamic>();
     map['messageId'] = id;
     map['senderId'] = senderId;
-    map['chatId'] = chatId;
+    if (isBroup == 1) {
+      map['chatId'] = chatId;
+    } else {
+      map['chatId'] = recipientId;
+    }
     map['body'] = body;
     map['textMessage'] = textMessage;
     map['info'] = info;
@@ -64,11 +70,18 @@ class Message {
   Message.fromDbMap(Map<String, dynamic> map) {
     id = map['messageId'];
     senderId = map['senderId'];
+    if (map['isBroup'] == 1) {
+      recipientId = map['senderId'];
+    } else {
+      recipientId = map['chatId'];
+    }
     chatId = map['chatId'];
     body = map['body'];
     textMessage = map['textMessage'];
     info = map['info'];
     timestamp = map['timestamp'];
     isBroup = map['isBroup'];
+    isRead = 0;
+    clicked = false;
   }
 }
