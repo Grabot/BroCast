@@ -357,7 +357,7 @@ class _BroMessagingState extends State<BroMessaging> {
       }
       // We set the id to be "-1". For date tiles it is "0", these will be filtered.
       Message mes =
-          new Message(-1, chat.id, message, textMessage, DateTime.now().toUtc().toString(), 0, chat.id, 0);
+          new Message(-1, settings.getBroId(), message, textMessage, DateTime.now().toUtc().toString(), 0, chat.id, 0);
       setState(() {
         this.messages.insert(0, mes);
       });
@@ -451,7 +451,7 @@ class _BroMessagingState extends State<BroMessaging> {
               return MessageTile(
                 key: UniqueKey(),
                 message: messages[index],
-                myMessage: messages[index].chatId == chat.id // TODO: @Skools find a way to find your message (prob sender id?)
+                myMessage: messages[index].senderId == settings.getBroId()
               );
             })
         : Container();
