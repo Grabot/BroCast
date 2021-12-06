@@ -30,7 +30,6 @@ class GetMessages {
           Message mes = new Message(
               message["id"],
               message["sender_id"],
-              message["recipient_id"],
               message["body"],
               message["text_message"],
               message["timestamp"],
@@ -75,7 +74,6 @@ class GetMessages {
         for (var message in messageList) {
           Message mes = new Message(
               message["id"],
-              message["sender_id"],
               message["sender_id"],
               message["body"],
               message["text_message"],

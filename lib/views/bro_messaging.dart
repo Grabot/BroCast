@@ -128,7 +128,6 @@ class _BroMessagingState extends State<BroMessaging> {
     Message mes = new Message(
         data["id"],
         data["sender_id"],
-        data["recipient_id"],
         data["body"],
         data["text_message"],
         data["timestamp"],
@@ -220,6 +219,10 @@ class _BroMessagingState extends State<BroMessaging> {
   storeMessages(List<Message> messages) {
     print("going to store messages");
     for (Message message in messages) {
+      print("message");
+      print(message.id);
+      print(message.chatId);
+      print(message.isBroup);
       storage.selectMessage(message.id).then((value) {
         if (value == null) {
           print("message not yet in db, storing it");
@@ -271,7 +274,7 @@ class _BroMessagingState extends State<BroMessaging> {
       timeMessageFirst = "Yesterday";
     }
 
-    Message timeMessage = new Message(0, 0, 0, timeMessageFirst, "", DateTime.now().toUtc().toString(), 1, chat.id, 0);
+    Message timeMessage = new Message(0, 0, timeMessageFirst, "", DateTime.now().toUtc().toString(), 1, chat.id, 0);
     for (int i = 0; i < this.messages.length; i++) {
       DateTime current = this.messages[i].getTimeStamp();
       DateTime dayMessage = DateTime(current.year, current.month, current.day);
@@ -288,7 +291,7 @@ class _BroMessagingState extends State<BroMessaging> {
           timeMessageTile = "Yesterday";
         }
         this.messages.insert(i, timeMessage);
-        timeMessage = new Message(0, 0, 0, timeMessageTile, "", DateTime.now().toUtc().toString(), 1, chat.id, 0);
+        timeMessage = new Message(0, 0, timeMessageTile, "", DateTime.now().toUtc().toString(), 1, chat.id, 0);
       }
     }
     this.messages.insert(this.messages.length, timeMessage);
@@ -297,7 +300,7 @@ class _BroMessagingState extends State<BroMessaging> {
   updateDateTiles(Message message) {
     // If the day tiles need to be updated after sending a message it will be the today tile.
     if (this.messages.length == 0) {
-      Message timeMessage = new Message(0, 0, 0, "Today", "", DateTime.now().toUtc().toString(), 1, chat.id, 0);
+      Message timeMessage = new Message(0, 0, "Today", "", DateTime.now().toUtc().toString(), 1, chat.id, 0);
       this.messages.insert(0, timeMessage);
     } else {
       Message messageFirst = this.messages.first;
@@ -312,7 +315,7 @@ class _BroMessagingState extends State<BroMessaging> {
       if (chatTimeTile != currentDayMessage) {
         chatTimeTile = DateFormat.yMMMMd('en_US').format(dayMessage);
 
-        Message timeMessage = new Message(0, 0, 0, "Today", "", DateTime.now().toUtc().toString(), 1, chat.id, 0);
+        Message timeMessage = new Message(0, 0, "Today", "", DateTime.now().toUtc().toString(), 1, chat.id, 0);
         this.messages.insert(0, timeMessage);
       }
     }
@@ -354,7 +357,7 @@ class _BroMessagingState extends State<BroMessaging> {
       }
       // We set the id to be "-1". For date tiles it is "0", these will be filtered.
       Message mes =
-          new Message(-1, 0, chat.id, message, textMessage, DateTime.now().toUtc().toString(), 0, chat.id, 0);
+          new Message(-1, chat.id, message, textMessage, DateTime.now().toUtc().toString(), 0, chat.id, 0);
       setState(() {
         this.messages.insert(0, mes);
       });
@@ -381,7 +384,7 @@ class _BroMessagingState extends State<BroMessaging> {
   }
 
   updateMessages(Message message) {
-    if (!message.isInformation() && message.recipientId == chat.id) {
+    if (!message.isInformation() && message.chatId == chat.id) {
       // We added it immediately as a placeholder.
       // When we get it from the server we add it for real and remove the placeholder
       this.messages.removeAt(0);
@@ -448,7 +451,7 @@ class _BroMessagingState extends State<BroMessaging> {
               return MessageTile(
                 key: UniqueKey(),
                 message: messages[index],
-                myMessage: messages[index].recipientId == chat.id
+                myMessage: messages[index].chatId == chat.id // TODO: @Skools find a way to find your message (prob sender id?)
               );
             })
         : Container();

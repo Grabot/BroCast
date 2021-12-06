@@ -296,7 +296,9 @@ class Storage {
     Database database = await this.database;
     // select * from TABLE_NAME limit 1 offset 2
     String query = "SELECT * FROM Message where chatId = " + chatId.toString() + " and isBroup = " + isBroup.toString();
+    print("fetching message from chat id $chatId and isBroup is $isBroup");
     List<Map<String, dynamic>> maps = await database.rawQuery(query);
+    print(maps);
     if (maps.isNotEmpty) {
       return maps.map((map) => Message.fromDbMap(map)
       ).toList();
