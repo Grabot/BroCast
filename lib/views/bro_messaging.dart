@@ -125,6 +125,7 @@ class _BroMessagingState extends State<BroMessaging> {
   }
 
   messageReceived(var data) {
+    print("message received!");
     Message mes = new Message(
         data["id"],
         data["sender_id"],
@@ -179,14 +180,6 @@ class _BroMessagingState extends State<BroMessaging> {
           // TODO: @SKools fix the limiting of querrying too many messages?
           amountViewed += 1;
         }
-        gotServer = true;
-        if (gotLocalDB && gotServer) {
-          mergeMessages(messagesServer + messagesDB);
-          // Set date tiles, but only if all the messages are retrieved
-          setState(() {
-            setDateTiles();
-          });
-        }
         storeMessages(messes);
         socketServices.socket.emit(
           "message_read",
@@ -194,6 +187,16 @@ class _BroMessagingState extends State<BroMessaging> {
         );
       } else {
         ShowToastComponent.showDialog(val.toString(), context);
+      }
+      gotServer = true;
+      if (gotLocalDB && gotServer) {
+        mergeMessages(messagesServer + messagesDB);
+        // Set date tiles, but only if all the messages are retrieved
+        setState(() {
+          if (this.messages.length != 0) {
+            setDateTiles();
+          }
+        });
       }
       setState(() {
         isLoading = false;
@@ -204,14 +207,16 @@ class _BroMessagingState extends State<BroMessaging> {
       List<Message> messes = val;
       if (messes.length != 0) {
         messagesDB = messes;
-        gotLocalDB = true;
-        if (gotLocalDB && gotServer) {
-          mergeMessages(messagesServer + messagesDB);
-          // Set date tiles, but only if all the messages are retrieved
-          setState(() {
+      }
+      gotLocalDB = true;
+      if (gotLocalDB && gotServer) {
+        mergeMessages(messagesServer + messagesDB);
+        // Set date tiles, but only if all the messages are retrieved
+        setState(() {
+          if (this.messages.length != 0) {
             setDateTiles();
-          });
-        }
+          }
+        });
       }
     });
   }
@@ -384,7 +389,7 @@ class _BroMessagingState extends State<BroMessaging> {
   }
 
   updateMessages(Message message) {
-    if (!message.isInformation() && message.chatId == chat.id) {
+    if (!message.isInformation() && message.senderId == settings.getBroId()) {
       // We added it immediately as a placeholder.
       // When we get it from the server we add it for real and remove the placeholder
       this.messages.removeAt(0);

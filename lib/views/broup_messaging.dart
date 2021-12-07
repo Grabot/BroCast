@@ -236,14 +236,6 @@ class _BroupMessagingState extends State<BroupMessaging> {
           // TODO: @SKools fix the limiting of querrying too many messages?
           amountViewed += 1;
         }
-        gotServer = true;
-        if (gotLocalDB && gotServer) {
-          mergeMessages(messagesServer + messagesDB);
-          // Set date tiles, but only if all the messages are retrieved
-          setState(() {
-            setDateTiles();
-          });
-        }
         storeMessages(messes);
         socketServices.socket.emit(
           "message_read_broup",
@@ -251,6 +243,16 @@ class _BroupMessagingState extends State<BroupMessaging> {
         );
       } else {
         ShowToastComponent.showDialog(val.toString(), context);
+      }
+      gotServer = true;
+      if (gotLocalDB && gotServer) {
+        mergeMessages(messagesServer + messagesDB);
+        // Set date tiles, but only if all the messages are retrieved
+        setState(() {
+          if (this.messages.length != 0) {
+            setDateTiles();
+          }
+        });
       }
       setState(() {
         isLoading = false;
@@ -261,14 +263,16 @@ class _BroupMessagingState extends State<BroupMessaging> {
       List<Message> messes = val;
       if (messes.length != 0) {
         messagesDB = messes;
-        gotLocalDB = true;
-        if (gotLocalDB && gotServer) {
-          mergeMessages(messagesServer + messagesDB);
-          // Set date tiles, but only if all the messages are retrieved
-          setState(() {
+      }
+      gotLocalDB = true;
+      if (gotLocalDB && gotServer) {
+        mergeMessages(messagesServer + messagesDB);
+        // Set date tiles, but only if all the messages are retrieved
+        setState(() {
+          if (this.messages.length != 0) {
             setDateTiles();
-          });
-        }
+          }
+        });
       }
     });
   }
