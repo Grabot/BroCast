@@ -124,7 +124,8 @@ class Storage {
             info INTEGER,
             timestamp TEXT,
             isRead INTEGER,
-            isBroup INTEGER
+            isBroup INTEGER,
+            UNIQUE(messageId, chatId, isBroup) ON CONFLICT REPLACE
           );
           ''');
   }
@@ -292,10 +293,10 @@ class Storage {
     );
   }
 
-  Future<List<Message>> fetchAllMessages(int chatId, int isBroup) async {
+  Future<List<Message>> fetchEverything() async {
     Database database = await this.database;
     // select * from TABLE_NAME limit 1 offset 2
-    String query = "SELECT * FROM Message where chatId = " + chatId.toString() + " and isBroup = " + isBroup.toString();
+    String query = "SELECT * FROM Message";
     List<Map<String, dynamic>> maps = await database.rawQuery(query);
     if (maps.isNotEmpty) {
       return maps.map((map) => Message.fromDbMap(map)
@@ -304,9 +305,27 @@ class Storage {
     return List.empty();
   }
 
-  Future<Message?> selectMessage(int messageId) async {
+  Future<List<Message>> fetchAllMessages(int chatId, int isBroup, int offSet) async {
+    int limit = 50;
+    int setOff = limit * offSet;
     Database database = await this.database;
-    String query = "SELECT * FROM Message where messageId = " + messageId.toString();
+    String query = "SELECT * FROM Message where"
+        " chatId = " + chatId.toString() + " and"
+        " isBroup = " + isBroup.toString() +
+        " order by messageId desc " +
+        " limit " + limit.toString() +
+        " offset " + setOff.toString();
+    List<Map<String, dynamic>> maps = await database.rawQuery(query);
+    if (maps.isNotEmpty) {
+      return maps.map((map) => Message.fromDbMap(map)
+      ).toList();
+    }
+    return List.empty();
+  }
+
+  Future<Message?> selectMessage(int messageId, int isBroup) async {
+    Database database = await this.database;
+    String query = "SELECT * FROM Message where messageId = " + messageId.toString() + " isBroup = " + isBroup.toString();
     List<Map<String, dynamic>> message = await database.rawQuery(query);
     print(message);
     if (message.length != 1) {

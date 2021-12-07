@@ -60,6 +60,8 @@ class _BroupMessagingState extends State<BroupMessaging> {
   late Storage storage;
 
   int amountViewed = 1;
+  bool allMessagesDBRetrieved = false;
+  bool busyRetrieving = false;
 
   @override
   void initState() {
@@ -102,9 +104,13 @@ class _BroupMessagingState extends State<BroupMessaging> {
     BackButtonInterceptor.add(myInterceptor);
 
     messageScrollController.addListener(() {
-      if (messageScrollController.position.atEdge) {
-        if (messageScrollController.position.pixels != 0) {
-          getMessages(amountViewed);
+      if (!busyRetrieving && !allMessagesDBRetrieved) {
+        double distanceToTop = messageScrollController.position
+            .maxScrollExtent - messageScrollController.position.pixels;
+        if (distanceToTop < 1000) {
+          busyRetrieving = true;
+          amountViewed += 1;
+          fetchExtraMessages(amountViewed);
         }
       }
     });
@@ -123,6 +129,7 @@ class _BroupMessagingState extends State<BroupMessaging> {
   }
 
   socketListener() {
+    print("There was some update to the bro list.");
     // There was some update to the bro list.
     // Check the list and see if the change was to this chat object.
     for(Chat ch4t in broList.getBros()) {
@@ -228,24 +235,21 @@ class _BroupMessagingState extends State<BroupMessaging> {
     List<Message> messagesServer = [];
     List<Message> messagesDB = [];
     // get messages from the server
-    get.getMessagesBroup(settings.getToken(), chat.id, page).then((val) {
+    get.getMessagesBroup(settings.getToken(), chat.id).then((val) {
       if (!(val is String)) {
         List<Message> messes = val;
         if (messes.length != 0) {
           messagesServer = messes;
-          // TODO: @SKools fix the limiting of querrying too many messages?
-          amountViewed += 1;
         }
         storeMessages(messes);
-        socketServices.socket.emit(
-          "message_read_broup",
-          {"bro_id": settings.getBroId(), "broup_id": chat.id},
-        );
       } else {
         ShowToastComponent.showDialog(val.toString(), context);
       }
       gotServer = true;
       if (gotLocalDB && gotServer) {
+        print("retrieve db won");
+        print(messagesDB.length);
+        print(messagesServer.length);
         mergeMessages(messagesServer + messagesDB);
         // Set date tiles, but only if all the messages are retrieved
         setState(() {
@@ -253,19 +257,33 @@ class _BroupMessagingState extends State<BroupMessaging> {
             setDateTiles();
           }
         });
+        chat.unreadMessages = 0;
+        broList.updateChat(chat);
+        storage.updateChat(chat).then((value) {
+        });
       }
+      socketServices.socket.emit(
+        "message_read_broup",
+        {"bro_id": settings.getBroId(), "broup_id": chat.id},
+      );
       setState(() {
         isLoading = false;
       });
     });
     // But also load what you have from your local database
-    storage.fetchAllMessages(chat.id, 1).then((val) {
+    storage.fetchAllMessages(chat.id, 1, 0).then((val) {
+      if (val.length != 50) {
+        allMessagesDBRetrieved = true;
+      }
       List<Message> messes = val;
       if (messes.length != 0) {
         messagesDB = messes;
       }
       gotLocalDB = true;
       if (gotLocalDB && gotServer) {
+        print("local db won");
+        print(messagesDB.length);
+        print(messagesServer.length);
         mergeMessages(messagesServer + messagesDB);
         // Set date tiles, but only if all the messages are retrieved
         setState(() {
@@ -273,25 +291,47 @@ class _BroupMessagingState extends State<BroupMessaging> {
             setDateTiles();
           }
         });
+        chat.unreadMessages = 0;
+        broList.updateChat(chat);
+        storage.updateChat(chat).then((value) {
+        });
       }
     });
   }
 
-  storeMessages(List<Message> messages) {
-    print("going to store messages");
-    for (Message message in messages) {
-      storage.selectMessage(message.id).then((value) {
-        if (value == null) {
-          print("message not yet in db, storing it");
-          // If it is not yet in the db, we store it.
-          // If it is in the db we don't do anything, the message won't change.
-          if (message.id > 0) {
-            storage.addMessage(message).then((value) {
-              print("message is stored");
-            });
+  fetchExtraMessages(int offSet) {
+    storage.fetchAllMessages(chat.id, 0, offSet).then((val) {
+      // Limit set to 50. If it retrieves less it means that it can't and all the messages have been retrieved.
+      if (val.length != 50) {
+        allMessagesDBRetrieved = true;
+      }
+      if (val.length != 0) {
+        mergeMessages(val);
+        // Set date tiles, but only if all the messages are retrieved
+        setState(() {
+          if (this.messages.length != 0) {
+            setDateTiles();
           }
-        }
-      });
+        });
+      }
+      busyRetrieving = false;
+    });
+  }
+
+  storeMessages(List<Message> messages) {
+    print("going to store messages I have just received");
+    for (Message message in messages) {
+      print("message with id ${message.id}");
+      print(chat.id);
+      print(message.chatId);
+      print(message.isBroup);
+      // If it is not yet in the db, we store it.
+      // If it is in the db we don't do anything, the message won't change.
+      if (message.id > 0) {
+        storage.addMessage(message).then((value) {
+          print("done storing");
+        });
+      }
     }
   }
 
@@ -304,14 +344,9 @@ class _BroupMessagingState extends State<BroupMessaging> {
       if (lastId <= newMessages[0].id) {
         newMessages = newMessages.where((x) => x.id < lastId).toList();
       }
-      print("merging messages with list of new messages, which I think should be 1 for debugging");
-      print(lastId);
       this.messages = this.messages.where((x) => x.id != 0).toList();
-      print("length now ${this.messages.length}");
     }
-    print("length of messages to be added ${newMessages.length}");
     this.messages.addAll(newMessages);
-    print("length after ${this.messages.length}");
     this.messages.sort((b, a) => a.timestamp.compareTo(b.timestamp));
   }
 
@@ -447,20 +482,19 @@ class _BroupMessagingState extends State<BroupMessaging> {
 
   updateMessages(Message message) {
     print("received a message!");
+    print(message);
+    print(message.id);
+    print(message.chatId);
+    print(message.isBroup);
     if (!message.isInformation() && message.senderId == settings.getBroId()) {
       // We added it immediately as a placeholder.
       // When we get it from the server we add it for real and remove the placeholder
       this.messages.removeAt(0);
-    } else {
-      // If we didn't send this message it is from the other person.
-      // We send a response, indicating that we read the messages
-      if (!message.isInformation()) {
-        socketServices.socket.emit(
-          "message_read_broup",
-          {"bro_id": settings.getBroId(), "broup_id": chat.id},
-        );
-      }
     }
+    socketServices.socket.emit(
+      "message_read_broup",
+      {"bro_id": settings.getBroId(), "broup_id": chat.id},
+    );
     updateDateTiles(message);
     setState(() {
       this.messages.insert(0, message);
@@ -473,24 +507,11 @@ class _BroupMessagingState extends State<BroupMessaging> {
 
 
   updateUserActivity(String timestamp) {
-    storage.selectChat(chat.id.toString(), chat.broup.toString()).then((currentChat) {
-      if (currentChat != null) {
-        // We assume it will succeed because otherwise we couldn't be here.
-        // The chat object we have just received should be updated.
-        currentChat.lastActivity = timestamp;
-        storage.updateChat(chat).then((value) {
-          // chat updated
-        });
-      }
+    storage.updateChat(chat).then((value) {
+      // chat updated
     });
     chat.lastActivity = timestamp;
-    for (Chat ch4t in broList.getBros()) {
-      if (ch4t.isBroup()) {
-        if (ch4t.id == chat.id) {
-          ch4t.lastActivity = timestamp;
-        }
-      }
-    }
+    broList.updateChat(chat);
   }
 
   messageRead(var data) {
@@ -595,8 +616,7 @@ class _BroupMessagingState extends State<BroupMessaging> {
               onPressed: () {
                 backButtonFunctionality();
               }),
-          backgroundColor:
-              chat.getColor() != null ? chat.getColor() : Color(0xff145C9E),
+          backgroundColor: chat.getColor(),
           title: InkWell(
             onTap: () {
               Navigator.pushReplacement(
@@ -610,21 +630,9 @@ class _BroupMessagingState extends State<BroupMessaging> {
             child: Container(
                 alignment: Alignment.centerLeft,
                 color: Colors.transparent,
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      chat.alias != null && chat.alias.isNotEmpty
-                          ? Container(
-                          child: Text(chat.alias,
-                              style: TextStyle(
-                                  color: getTextColor(chat.getColor()), fontSize: 20)))
-                          : Container(
-                          child: Text(chat.chatName,
-                              style: TextStyle(
-                                  color: getTextColor(chat.getColor()), fontSize: 20))),
-                    ],
-                  )
-            ),
+                child: Text(chat.getBroNameOrAlias(),
+                    style: TextStyle(
+                        color: getTextColor(chat.getColor()), fontSize: 20)))
           ),
           actions: [
             PopupMenuButton<int>(

@@ -111,24 +111,6 @@ class _BroupDetailsState extends State<BroupDetails> {
     }
   }
 
-  // sendUpdateMessageBroup(String update) {
-  //   String timestampString = DateTime.now().toUtc().toString();
-  //   // The 'Z' indicates that it's UTC but we'll already add it in the message
-  //   if (timestampString.endsWith('Z')) {
-  //     timestampString =
-  //         timestampString.substring(0, timestampString.length - 1);
-  //   }
-  //
-  //   socketServices.socket.emit(
-  //     "message_broup_update",
-  //     {
-  //       "bro_id": settings.getBroId(),
-  //       "broup_id": chat.id,
-  //       "update": update,
-  //     },
-  //   );
-  // }
-
   void initBroupDetailsSockets() {
     socketServices.socket
         .on('message_event_change_broup_details_failed', (data) {

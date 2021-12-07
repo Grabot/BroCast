@@ -4,7 +4,7 @@ import 'package:brocast/objects/message.dart';
 import 'package:http/http.dart' as http;
 
 class GetMessages {
-  Future getMessages(String token, int brosBroId, int page) async {
+  Future getMessages(String token, int brosBroId) async {
     String urlGetMessages = baseUrl_v1_3 + 'get/messages';
     Uri uriGetMessages = Uri.parse(urlGetMessages);
 
@@ -48,7 +48,7 @@ class GetMessages {
     return "an unknown error has occurred";
   }
 
-  Future getMessagesBroup(String token, int broupId, int page) async {
+  Future getMessagesBroup(String token, int broupId) async {
     String urlGetMessages = baseUrl_v1_3 + 'get/messages/broup';
     Uri uriGetMessages = Uri.parse(urlGetMessages);
 
