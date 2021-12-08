@@ -427,7 +427,9 @@ class _BroMessagingState extends State<BroMessaging> {
     storage.addMessage(message).then((value) {
       // stored the message
     });
-    updateUserActivity(message.timestamp);
+    if (!message.isInformation()) {
+      updateUserActivity(message.timestamp);
+    }
   }
 
   updateUserActivity(String timestamp) {

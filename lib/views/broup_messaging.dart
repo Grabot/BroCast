@@ -502,7 +502,9 @@ class _BroupMessagingState extends State<BroupMessaging> {
     storage.addMessage(message).then((value) {
       // stored the message
     });
-    updateUserActivity(message.timestamp);
+    if (!message.isInformation()) {
+      updateUserActivity(message.timestamp);
+    }
   }
 
 
