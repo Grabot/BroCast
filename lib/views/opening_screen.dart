@@ -7,6 +7,7 @@ import 'package:brocast/services/auth.dart';
 import 'package:brocast/services/get_bros.dart';
 import 'package:brocast/services/socket_services.dart';
 import 'package:brocast/utils/bro_list.dart';
+import 'package:brocast/utils/notification_util.dart';
 import 'package:brocast/utils/shared.dart';
 import 'package:brocast/utils/storage.dart';
 import 'package:brocast/utils/utils.dart';
@@ -31,9 +32,12 @@ class _OpeningScreenState extends State<OpeningScreen> {
   @override
   void initState() {
 
+    NotificationUtil();
+
     print("opening screen init");
     // Initialize the db on startup
     storage = Storage();
+    storage.database;
     HelperFunction.getEULA().then((val) {
       if (val == null || val == false) {
         // first time opening this app!

@@ -7,6 +7,7 @@ import 'package:brocast/services/get_messages.dart';
 import 'package:brocast/services/settings.dart';
 import 'package:brocast/services/socket_services.dart';
 import 'package:brocast/utils/bro_list.dart';
+import 'package:brocast/utils/notification_util.dart';
 import 'package:brocast/utils/storage.dart';
 import 'package:brocast/utils/utils.dart';
 import 'package:brocast/views/bro_home.dart';
@@ -37,6 +38,7 @@ class _BroMessagingState extends State<BroMessaging> {
   Settings settings = Settings();
   SocketServices socketServices = SocketServices();
   BroList broList = BroList();
+  NotificationUtil notificationUtil = NotificationUtil();
 
   bool showEmojiKeyboard = false;
   int amountViewed = 0;
@@ -61,6 +63,7 @@ class _BroMessagingState extends State<BroMessaging> {
   void initState() {
     super.initState();
     chat = widget.chat;
+    notificationUtil.currentChat(chat.id, 0);
     storage = Storage();
     socketServices.checkConnection();
     socketServices.addListener(socketListener);
@@ -131,7 +134,6 @@ class _BroMessagingState extends State<BroMessaging> {
   }
 
   messageReceived(var data) {
-    print("message received!");
     Message mes = new Message(
         data["id"],
         data["sender_id"],
@@ -154,6 +156,7 @@ class _BroMessagingState extends State<BroMessaging> {
 
   @override
   void dispose() {
+    notificationUtil.clearChat();
     focusAppendText.dispose();
     focusEmojiTextField.dispose();
     leaveRoom();

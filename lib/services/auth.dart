@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 import 'package:brocast/constants/base_url.dart';
 import 'package:brocast/objects/user.dart';
 import 'package:brocast/services/settings.dart';
@@ -15,14 +14,12 @@ class Auth {
 
   Future signUp(String broName, String bromotion, String password) async {
 
-    String urlRegister = baseUrl_v1_1 + 'register';
+    String urlRegister = baseUrl_v1_3 + 'register';
     Uri uriRegister = Uri.parse(urlRegister);
 
-    // TODO: @Skools device type no longer needed. Remove when possible
-    String deviceType = "IOS";
-    if (Platform.isAndroid) {
-      deviceType = "Android";
-    }
+    NotificationUtil notificationUtil = NotificationUtil();
+    String registrationId = notificationUtil.getFirebaseToken();
+    print("sign up $registrationId");
 
     http.Response responsePost = await http
         .post(
@@ -34,8 +31,7 @@ class Auth {
         'bro_name': broName,
         'bromotion': bromotion,
         'password': password,
-        'registration_id': "", // TODO: @SKools fix registration
-        'device_type': deviceType
+        'registration_id': registrationId
       }),
     )
         .timeout(
@@ -59,7 +55,7 @@ class Auth {
           String broName = registerResponse["bro"]["bro_name"];
           String bromotion = registerResponse["bro"]["bromotion"];
 
-          await storeUser(broId, broName, bromotion, password, token);
+          await storeUser(broId, broName, bromotion, password, token, registrationId);
           return "";
         } else {
           return message;
@@ -72,14 +68,12 @@ class Auth {
   Future signIn(
       String broName, String bromotion, String password, String token) async {
 
-    String urlLogin = baseUrl_v1_1 + 'login';
+    String urlLogin = baseUrl_v1_3 + 'login';
     Uri uriLogin = Uri.parse(urlLogin);
 
-    // TODO: @Skools device type no longer needed. Remove when possible
-    String deviceType = "IOS";
-    if (Platform.isAndroid) {
-      deviceType = "Android";
-    }
+    NotificationUtil notificationUtil = NotificationUtil();
+    String registrationId = notificationUtil.getFirebaseToken();
+    print("sign in $registrationId");
 
     http.Response responsePost = await http
         .post(
@@ -92,8 +86,7 @@ class Auth {
         'bromotion': bromotion,
         'password': password,
         'token': token,
-        'registration_id': "", // TODO: @Skools firebase stuff
-        'device_type': deviceType
+        'registration_id': registrationId
       }),
     )
         .timeout(
@@ -122,7 +115,7 @@ class Auth {
           String broName = registerResponse["bro"]["bro_name"];
           String bromotion = registerResponse["bro"]["bromotion"];
 
-          await storeUser(broId, broName, bromotion, password, token);
+          await storeUser(broId, broName, bromotion, password, token, registrationId);
           print("awaited the store user");
           return "";
         } else {
@@ -140,9 +133,7 @@ class Auth {
     await HelperFunction.setBroInformation(broName, bromotion, password);
   }
 
-  storeUser(int broId, String broName, String bromotion, String password, String token) async {
-    NotificationUtil notificationUtil = NotificationUtil();
-    String registrationId = notificationUtil.getFirebaseToken();
+  storeUser(int broId, String broName, String bromotion, String password, String token, String registrationId) async {
     User user = new User(broId, broName, bromotion, password, token, registrationId, 1, 0);
     var storage = Storage();
     await storage.selectUser().then((value) async {
