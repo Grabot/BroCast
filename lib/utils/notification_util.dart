@@ -8,6 +8,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:logging/logging.dart';
 import 'package:notification_permissions/notification_permissions.dart';
 import 'package:brocast/constants/route_paths.dart' as routes;
 
@@ -29,6 +30,12 @@ class NotificationUtil {
   final NavigationService _navigationService = locator<NavigationService>();
 
   NotificationUtil._internal() {
+
+    Logger.root.level = Level.SEVERE;
+    Logger.root.onRecord.listen((record) {
+      print('${record.level.name}: ${record.time}: ${record.message}');
+    });
+
     setupFirebase();
   }
 
