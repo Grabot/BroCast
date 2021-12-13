@@ -8,6 +8,7 @@ class User {
   String? registrationId;
   late int recheckBros;
   late int keyboardDarkMode;
+  late String lastTimeActive;
 
   User(
       int id,
@@ -27,6 +28,23 @@ class User {
     this.registrationId = registrationId;
     this.recheckBros = recheckBros;
     this.keyboardDarkMode = keyboardDarkMode;
+    this.lastTimeActive = DateTime.now().toUtc().toString();
+  }
+
+  void updateActivityTime() {
+    this.lastTimeActive = DateTime.now().toUtc().toString();
+  }
+
+  bool getKeyboardDarkMode() {
+    return this.keyboardDarkMode == 1;
+  }
+
+  bool shouldRecheck() {
+    // If the last activity time is longer than a day ago we will recheck
+    if (DateTime.parse(lastTimeActive).toLocal().isBefore(DateTime.now().subtract(Duration(days: 1)))) {
+      recheckBros = 1;
+    }
+    return recheckBros == 1;
   }
 
   Map<String, dynamic> toDbMap() {
@@ -39,6 +57,7 @@ class User {
     map['registrationId'] = registrationId;
     map['recheckBros'] = recheckBros;
     map['keyboardDarkMode'] = keyboardDarkMode;
+    map['lastTimeActive'] = lastTimeActive;
     return map;
   }
 
@@ -51,14 +70,7 @@ class User {
     registrationId = map['registrationId'];
     recheckBros = map['recheckBros'];
     keyboardDarkMode = map['keyboardDarkMode'];
-  }
-
-  bool getKeyboardDarkMode() {
-    return this.keyboardDarkMode == 1;
-  }
-
-  bool shouldRecheck() {
-    return recheckBros == 1;
+    lastTimeActive = map['lastTimeActive'];
   }
 
 }

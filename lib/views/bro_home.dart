@@ -3,6 +3,7 @@ import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:brocast/constants/route_paths.dart' as routes;
 import 'package:brocast/objects/bro_bros.dart';
 import 'package:brocast/objects/chat.dart';
+import 'package:brocast/services/auth.dart';
 import 'package:brocast/services/get_bros.dart';
 import 'package:brocast/services/navigation_service.dart';
 import 'package:brocast/services/reset_registration.dart';
@@ -91,6 +92,22 @@ class _BroCastHomeState extends State<BroCastHome> {
         settings.setToken(user.token);
         if (mounted) {
           setState(() {});
+        }
+        if (user.shouldRecheck()) {
+          broList.searchBros(user.token).then((value) {
+            if (value) {
+              user.recheckBros = 0;
+              user.updateActivityTime();
+              storage.updateUser(user).then((value) {
+              });
+              // We sign in again even though we are already signed in.
+              // This is just to update the token in case it is invalidated.
+              Auth auth = Auth();
+              auth.signInUser(user).then((value) {
+                // do nothing
+              });
+            }
+          });
         }
       }
     });

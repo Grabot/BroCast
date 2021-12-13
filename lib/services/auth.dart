@@ -217,4 +217,34 @@ class Auth {
     });
 
   }
+
+  Future<bool> signInUser(User user) {
+    return this.signIn("", "", "", user.token).then((val) {
+      if (val.toString() == "") {
+        return true;
+      } else {
+        if (val == "The given credentials are not correct!") {
+          // token didn't work, going to check if a username is given and try to log in using password username
+          if (user.broName.isNotEmpty && user.bromotion.isNotEmpty && user.password.isNotEmpty) {
+            return signInName(user.broName, user.bromotion, user.password);
+          } else {
+            return false;
+          }
+        } else {
+          return false;
+        }
+      }
+    });
+  }
+
+  Future<bool> signInName(String broName, String bromotion, String password) {
+    return signIn(broName, bromotion, password, "").then((val) {
+      if (val.toString() == "") {
+        return true;
+      } else {
+        return false;
+      }
+    });
+  }
+
 }

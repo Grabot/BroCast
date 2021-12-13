@@ -65,7 +65,8 @@ class Storage {
             token TEXT,
             registrationId TEXT,
             recheckBros INTEGER,
-            keyboardDarkMode INTEGER
+            keyboardDarkMode INTEGER,
+            lastTimeActive TEXT
           );
           ''');
   }

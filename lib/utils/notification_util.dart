@@ -113,7 +113,7 @@ class NotificationUtil {
         }
       } else {
         print("navigate to the bro home 3!");
-        _navigationService.navigateTo(routes.HomeRoute);
+        _navigationService.navigateTo(routes.OpeningRoute);
       }
     });
   }

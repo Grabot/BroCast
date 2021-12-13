@@ -4,6 +4,7 @@ import 'package:brocast/objects/bro_bros.dart';
 import 'package:brocast/objects/bro_not_added.dart';
 import 'package:brocast/objects/broup.dart';
 import 'package:brocast/objects/chat.dart';
+import 'package:brocast/services/get_bros.dart';
 import 'package:brocast/services/get_broup_bros.dart';
 import 'package:brocast/services/settings.dart';
 import 'package:brocast/utils/storage.dart';
@@ -29,6 +30,35 @@ class BroList {
     return _instance;
   }
 
+
+  Future<bool> searchBros(String token) async {
+    GetBros getBros = new GetBros();
+    return getBros.getBros(token).then((bros) {
+      if (!(bros is String)) {
+        // We have retrieved all the bros and broups.
+        // We will remove the chat database and refill it.
+
+        for (Chat chat in bros) {
+          storage.selectChat(chat.id.toString(), chat.broup.toString()).then((value) {
+            if (value == null) {
+              storage.addChat(chat).then((value) {
+                print("added a chat that was added since you were away");
+              });
+            } else {
+              storage.updateChat(chat).then((value) {
+                print("a chat was updated!");
+              });
+            }
+          });
+        }
+        this.bros = bros;
+        print("We have successfully set the bro list");
+        return true;
+      } else {
+        return false;
+      }
+    });
+  }
 
   List<Chat> getBros() {
     return this.bros;
