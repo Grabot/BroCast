@@ -89,6 +89,29 @@ class _BroupDetailsState extends State<BroupDetails> {
       });
     });
 
+    // We retrieved the chat locally, but we will also get it from the server
+    // If anything has changed, we can update it locally
+    getChat.getBroup(settings.getBroId(), chat.id).then((value) {
+      if (value is Broup) {
+        List<Bro> broupBros = [];
+        if (value.participants.length != chat.participants.length) {
+          // someone was added(removed( and you didn't get updated, add them now
+          broList.chatChangedCheckForAdded(chat.id, value.getParticipants(), value.getAdmins(), [], broupBros);
+          broList.chatCheckForDBRemoved(chat.id, value.getParticipants());
+        } else {
+          broupBros = chat.getBroupBros();
+          broList.updateBroupBrosAdmins(broupBros, value.getAdmins());
+        }
+        chat = value;
+        chat.setBroupBros(broupBros);
+        chat.unreadMessages = 0;
+        broList.updateChat(chat);
+        storage.updateChat(chat).then((value) {
+        });
+        setState(() {});
+      }
+    });
+
     chatDescriptionController.text = chat.chatDescription;
     chatAliasController.text = chat.alias;
 
@@ -1149,7 +1172,7 @@ class _BroTileState extends State<BroTile> {
                 children: [
                   Container(
                   width: widget.bro.isAdmin()
-                      ? MediaQuery.of(context).size.width-84
+                      ? MediaQuery.of(context).size.width-124
                       : MediaQuery.of(context).size.width,
                   padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
                   child: Text(
@@ -1158,7 +1181,7 @@ class _BroTileState extends State<BroTile> {
                   ),
                   widget.bro.isAdmin()
                     ? Container(
-                      width: 60,
+                      width: 100,
                       padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
                       decoration: BoxDecoration(
                           border: Border.all(color: Colors.green)

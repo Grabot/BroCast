@@ -52,7 +52,6 @@ class BroList {
           });
         }
         this.bros = bros;
-        print("We have successfully set the bro list");
         return true;
       } else {
         return false;

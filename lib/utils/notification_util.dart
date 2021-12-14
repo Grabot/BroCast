@@ -112,8 +112,16 @@ class NotificationUtil {
           _navigationService.navigateTo(routes.BroRoute, arguments: chat as BroBros);
         }
       } else {
-        print("navigate to the bro home 3!");
-        _navigationService.navigateTo(routes.OpeningRoute);
+        // We will assume that there is a user
+        storage.selectUser().then((user) async {
+          if (user != null) {
+            user.recheckBros = 1;
+            storage.updateUser(user).then((value) {
+              print("navigate to the bro home 3!");
+              _navigationService.navigateTo(routes.OpeningRoute);
+            });
+          }
+        });
       }
     });
   }

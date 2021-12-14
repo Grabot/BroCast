@@ -63,7 +63,6 @@ class _OpeningScreenState extends State<OpeningScreen> {
             Auth auth = Auth();
             auth.signInUser(user).then((value) {
               if (value) {
-                print("it worked I guess");
                 Navigator.pushReplacement(
                     context, MaterialPageRoute(builder: (context) =>
                     BroCastHome(
@@ -78,6 +77,13 @@ class _OpeningScreenState extends State<OpeningScreen> {
             });
           } else {
             ShowToastComponent.showDialog("cannot retrieve brocast information at this time.", context);
+            setState(() {
+              isLoading = false;
+            });
+            Navigator.pushReplacement(
+                context, MaterialPageRoute(builder: (context) => SignIn(
+                key: UniqueKey()
+            )));
           }
         });
 

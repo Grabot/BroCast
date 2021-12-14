@@ -3,6 +3,7 @@ import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:brocast/objects/bro_bros.dart';
 import 'package:brocast/objects/chat.dart';
 import 'package:brocast/objects/message.dart';
+import 'package:brocast/services/get_chat.dart';
 import 'package:brocast/services/get_messages.dart';
 import 'package:brocast/services/settings.dart';
 import 'package:brocast/services/socket_services.dart';
@@ -38,6 +39,7 @@ class _BroMessagingState extends State<BroMessaging> {
   Settings settings = Settings();
   SocketServices socketServices = SocketServices();
   BroList broList = BroList();
+  GetChat getChat = new GetChat();
   NotificationUtil notificationUtil = NotificationUtil();
 
   bool showEmojiKeyboard = false;
@@ -89,6 +91,20 @@ class _BroMessagingState extends State<BroMessaging> {
         initBroMessagingSocket(settings.getBroId(), chat.id);
       }
     });
+
+    // We retrieved the chat locally, but we will also get it from the server
+    // If anything has changed, we can update it locally
+    getChat.getChat(settings.getBroId(), chat.id).then((value) {
+      if (value is BroBros) {
+        chat = value;
+        chat.unreadMessages = 0;
+        broList.updateChat(chat);
+        storage.updateChat(chat).then((value) {
+        });
+        setState(() {});
+      }
+    });
+
     BackButtonInterceptor.add(myInterceptor);
 
     messageScrollController.addListener(() {
@@ -203,9 +219,6 @@ class _BroMessagingState extends State<BroMessaging> {
           }
         });
         chat.unreadMessages = 0;
-        broList.updateChat(chat);
-        storage.updateChat(chat).then((value) {
-        });
       }
       socketServices.socket.emit(
         "message_read",
@@ -235,9 +248,6 @@ class _BroMessagingState extends State<BroMessaging> {
           }
         });
         chat.unreadMessages = 0;
-        broList.updateChat(chat);
-        storage.updateChat(chat).then((value) {
-        });
       }
     });
   }

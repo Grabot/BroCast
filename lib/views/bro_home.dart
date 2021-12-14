@@ -487,14 +487,14 @@ class _BroTileState extends State<BroTile> {
                 children: [
                   Row(
                     children: [
-                      widget.chat.isMuted() || widget.chat.isBlocked()
+                      widget.chat.isMuted() || widget.chat.isBlocked() || widget.chat.hasLeft()
                       ? Container(
                         width: 35,
                           child: Column(
                             children:
                             [
-                              widget.chat.isBlocked() ? Icon(
-                                Icons.block,
+                              widget.chat.isBlocked() || widget.chat.hasLeft() ? Icon(
+                                widget.chat.hasLeft() ? Icons.person_remove : Icons.block, // Block or left can't both be true
                                 color: getTextColor(widget.chat.getColor()).withOpacity(0.6)
                               ) : Container(
                                 height: 20,

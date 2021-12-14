@@ -90,6 +90,11 @@ class BroBros extends Chat {
     }
   }
 
+  @override
+  bool hasLeft() {
+    return false;
+  }
+
   Map<String, dynamic> toDbMap() {
     var map = Map<String, dynamic>();
     map['chatId'] = id;

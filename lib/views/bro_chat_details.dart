@@ -2,6 +2,7 @@ import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:brocast/objects/bro_bros.dart';
 import 'package:brocast/objects/chat.dart';
 import 'package:brocast/services/block_bro.dart';
+import 'package:brocast/services/get_chat.dart';
 import 'package:brocast/services/remove_bro.dart';
 import 'package:brocast/services/report_bro.dart';
 import 'package:brocast/services/settings.dart';
@@ -45,6 +46,7 @@ class _BroChatDetailsState extends State<BroChatDetails> {
   ReportBro reportBro = new ReportBro();
   RemoveBro removeBro = new RemoveBro();
   Settings settings = Settings();
+  GetChat getChat = new GetChat();
   BroList broList = BroList();
   SocketServices socketServices = SocketServices();
 
@@ -73,6 +75,20 @@ class _BroChatDetailsState extends State<BroChatDetails> {
     storage.selectChat(chat.id.toString(), chat.broup.toString()).then((value) {
       chat = value as BroBros;
     });
+
+    // We retrieved the chat locally, but we will also get it from the server
+    // If anything has changed, we can update it locally
+    getChat.getChat(settings.getBroId(), chat.id).then((value) {
+      if (value is BroBros) {
+        chat = value;
+        chat.unreadMessages = 0;
+        broList.updateChat(chat);
+        storage.updateChat(chat).then((value) {
+        });
+        setState(() {});
+      }
+    });
+
     initBroChatDetailsSockets();
 
     circleColorPickerController = CircleColorPickerController(

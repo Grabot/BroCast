@@ -8,7 +8,6 @@ import 'package:brocast/services/socket_services.dart';
 import 'package:brocast/utils/bro_list.dart';
 import 'package:brocast/utils/utils.dart';
 import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'bro_profile.dart';
 import 'bro_settings.dart';

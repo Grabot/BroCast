@@ -40,8 +40,8 @@ class User {
   }
 
   bool shouldRecheck() {
-    // If the last activity time is longer than a day ago we will recheck
-    if (DateTime.parse(lastTimeActive).toLocal().isBefore(DateTime.now().subtract(Duration(days: 1)))) {
+    // If the last activity time is longer than an hour ago we will recheck
+    if (DateTime.parse(lastTimeActive).toLocal().isBefore(DateTime.now().subtract(Duration(hours: 1)))) {
       recheckBros = 1;
     }
     return recheckBros == 1;

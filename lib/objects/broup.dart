@@ -51,6 +51,7 @@ class Broup extends Chat {
     this.left = left;
   }
 
+  @override
   bool hasLeft() {
     return left == 1;
   }
