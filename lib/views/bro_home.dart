@@ -61,10 +61,8 @@ class _BroCastHomeState extends State<BroCastHome> {
     socketServices = SocketServices();
     socketServices.setStorageInstance(storage);
     socketServices.setBroListInstance(broList);
-    if (!socketServices.joinedSoloRoom) {
-      if (settings.getBroId() != -1) {
-        socketServices.joinRoomSolo(settings.getBroId());
-      }
+    if (settings.getBroId() != -1) {
+      socketServices.joinRoomSolo(settings.getBroId());
     }
     BackButtonInterceptor.add(myInterceptor);
     bromotionController.addListener(bromotionListener);

@@ -67,27 +67,31 @@ class SocketServices extends ChangeNotifier {
   }
 
   void joinRoomSolo(int broId) {
-    if (!joinedSoloRoom) {
-      // After you have logged in you want to remain in the bro's solo room.
-      print("going to join room $broId");
-      joinedSoloRoom = true;
-      this.socket.emit(
-        "join_solo",
-        {
-          "bro_id": broId,
-        },
-      );
-      this.socket.on('message_event_bro_added_you', (data) {
-        broAddedYou(data);
-      });
-      this.socket.on('message_event_chat_changed', (data) {
-        chatChanged(data);
-      });
-      this.socket.on('message_event_added_to_broup', (data) {
-        print("added to a broup!");
-        broAddedYouToABroup(data);
-      });
-    }
+    // After you have logged in you want to remain in the bro's solo room.
+    joinedSoloRoom = true;
+    this.socket.emit(
+      "join_solo",
+      {
+        "bro_id": broId,
+      },
+    );
+    this.socket.off('message_event_bro_added_you');
+    this.socket.off('message_event_added_to_broup');
+    this.socket.off('message_event_chat_changed');
+    joinSockets();
+  }
+
+  joinSockets() {
+    this.socket.on('message_event_bro_added_you', (data) {
+      broAddedYou(data);
+    });
+    this.socket.on('message_event_chat_changed', (data) {
+      chatChanged(data);
+    });
+    this.socket.on('message_event_added_to_broup', (data) {
+      print("added to a broup!");
+      broAddedYouToABroup(data);
+    });
   }
 
   broAddedYouToABroup(data) {
@@ -210,18 +214,15 @@ class SocketServices extends ChangeNotifier {
   }
 
   void leaveRoomSolo(int broId) {
-    if (joinedSoloRoom) {
-      print("left the room");
-      joinedSoloRoom = false;
-      this.socket.emit(
-        "leave_solo",
-        {
-          "bro_id": broId
-        },
-      );
-      this.socket.off('message_event_bro_added_you');
-      this.socket.off('message_event_added_to_broup');
-      this.socket.off('message_event_chat_changed');
-    }
+    joinedSoloRoom = false;
+    this.socket.emit(
+      "leave_solo",
+      {
+        "bro_id": broId
+      },
+    );
+    this.socket.off('message_event_bro_added_you');
+    this.socket.off('message_event_added_to_broup');
+    this.socket.off('message_event_chat_changed');
   }
 }
