@@ -210,6 +210,8 @@ class _BroProfileState extends State<BroProfile> {
     oldPasswordController.dispose();
     newPasswordController1.dispose();
     newPasswordController2.dispose();
+    focusNodeBromotion.dispose();
+    focusNodePassword.dispose();
     super.dispose();
   }
 

@@ -170,6 +170,8 @@ class _BroChatDetailsState extends State<BroChatDetails> {
     chatDescriptionController.dispose();
     chatAliasController.dispose();
     circleColorPickerController.dispose();
+    focusNodeDescription.dispose();
+    focusNodeAlias.dispose();
     super.dispose();
   }
 
