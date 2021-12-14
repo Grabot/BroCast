@@ -61,7 +61,7 @@ class _BroupMessagingState extends State<BroupMessaging> {
   late Broup chat;
   late Storage storage;
 
-  int amountViewed = 1;
+  int amountViewed = 0;
   bool allMessagesDBRetrieved = false;
   bool busyRetrieving = false;
 
@@ -204,7 +204,18 @@ class _BroupMessagingState extends State<BroupMessaging> {
         chat.id,
         1
     );
-    updateMessages(mes);
+    // it's possible that you are receiving the socket message after retrieving
+    // it from the rest call from opening the chat.
+    // So we will do a simple check if it's in the list
+    bool added = false;
+    for (Message message in this.messages) {
+      if (message.id == mes.id) {
+        added = true;
+      }
+    }
+    if (!added) {
+      updateMessages(mes);
+    }
   }
 
   @override
@@ -276,6 +287,7 @@ class _BroupMessagingState extends State<BroupMessaging> {
     });
     // But also load what you have from your local database
     storage.fetchAllMessages(chat.id, 1, 0).then((val) {
+      print("the length of the retrieved messages: ${val.length}");
       if (val.length != 50) {
         allMessagesDBRetrieved = true;
       }
@@ -304,7 +316,8 @@ class _BroupMessagingState extends State<BroupMessaging> {
   }
 
   fetchExtraMessages(int offSet) {
-    storage.fetchAllMessages(chat.id, 0, offSet).then((val) {
+    storage.fetchAllMessages(chat.id, 1, offSet).then((val) {
+      print("fetched ${val.length} new messages");
       // Limit set to 50. If it retrieves less it means that it can't and all the messages have been retrieved.
       if (val.length != 50) {
         allMessagesDBRetrieved = true;
@@ -339,7 +352,24 @@ class _BroupMessagingState extends State<BroupMessaging> {
     }
   }
 
-  mergeMessages(List<Message> newMessages) {
+  List<Message> removeDuplicates(List<Message> newMessages) {
+    List<Message> noDuplicates = [];
+    for (Message message in newMessages) {
+      bool notAdded = true;
+      for (Message messageNoDuplicate in noDuplicates) {
+        if (message.id == messageNoDuplicate.id) {
+          notAdded = false;
+        }
+      }
+      if (notAdded) {
+        noDuplicates.add(message);
+      }
+    }
+    return noDuplicates;
+  }
+
+  mergeMessages(List<Message> incomingMessages) {
+    List<Message> newMessages = removeDuplicates(incomingMessages);
     if (this.messages.length != 0) {
       int lastId = this.messages[this.messages.length - 1].id;
       if (lastId == 0) {
