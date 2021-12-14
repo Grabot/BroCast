@@ -163,6 +163,8 @@ class _BroMessagingState extends State<BroMessaging> {
     socketServices.socket.off('message_event_send');
     socketServices.socket.off('message_event_read');
     socketServices.removeListener(socketListener);
+    broMessageController.dispose();
+    appendTextMessageController.dispose();
     BackButtonInterceptor.remove(myInterceptor);
     super.dispose();
   }

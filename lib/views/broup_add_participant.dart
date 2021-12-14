@@ -119,6 +119,8 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> {
     BackButtonInterceptor.remove(myInterceptor);
     socketServices.removeListener(socketListener);
     socketServices.socket.off('message_event_add_bro_to_broup_failed');
+    bromotionController.dispose();
+    broNameController.dispose();
     super.dispose();
   }
 

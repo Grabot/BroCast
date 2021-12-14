@@ -118,6 +118,10 @@ class _SignInState extends State<SignIn> {
 
   @override
   void dispose() {
+    bromotionController.addListener(bromotionListener);
+    broNameController.dispose();
+    bromotionController.dispose();
+    passwordController.dispose();
     BackButtonInterceptor.remove(myInterceptor);
     super.dispose();
   }

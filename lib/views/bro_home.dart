@@ -220,6 +220,8 @@ class _BroCastHomeState extends State<BroCastHome> {
     socketServices.removeListener(socketListener);
     bromotionController.removeListener(bromotionListener);
     BackButtonInterceptor.remove(myInterceptor);
+    bromotionController.dispose();
+    broNameController.dispose();
     super.dispose();
   }
 

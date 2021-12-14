@@ -167,6 +167,9 @@ class _BroChatDetailsState extends State<BroChatDetails> {
     socketServices.socket.off('message_event_change_chat_mute_success');
     socketServices.socket.off('message_event_change_chat_mute_failed');
     socketServices.removeListener(socketListener);
+    chatDescriptionController.dispose();
+    chatAliasController.dispose();
+    circleColorPickerController.dispose();
     super.dispose();
   }
 

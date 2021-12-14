@@ -232,6 +232,8 @@ class _BroupMessagingState extends State<BroupMessaging> {
     socketServices.socket.off('message_event_add_bro_failed');
     socketServices.socket.off('message_event_send');
     socketServices.socket.off('message_event_read');
+    broMessageController.dispose();
+    appendTextMessageController.dispose();
     BackButtonInterceptor.remove(myInterceptor);
     super.dispose();
   }

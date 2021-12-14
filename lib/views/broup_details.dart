@@ -285,6 +285,8 @@ class _BroupDetailsState extends State<BroupDetails> {
     socketServices.socket.off('message_event_add_bro_failed');
     socketServices.socket.off('message_event_change_broup_mute_success');
     socketServices.socket.off('message_event_change_broup_mute_failed');
+    chatDescriptionController.dispose();
+    chatAliasController.dispose();
     super.dispose();
   }
 

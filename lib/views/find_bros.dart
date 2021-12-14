@@ -112,6 +112,8 @@ class _FindBrosState extends State<FindBros> {
   void dispose() {
     BackButtonInterceptor.remove(myInterceptor);
     bromotionController.removeListener(bromotionListener);
+    broNameController.dispose();
+    bromotionController.dispose();
     socketServices.socket.off('message_event_add_bro_success');
     socketServices.socket.off('message_event_add_bro_failed');
     super.dispose();

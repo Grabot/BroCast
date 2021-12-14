@@ -206,6 +206,10 @@ class _BroProfileState extends State<BroProfile> {
     bromotionChangeController.removeListener(bromotionListener);
     socketServices.socket.off('message_event_bromotion_change');
     socketServices.socket.off('message_event_password_change');
+    bromotionChangeController.dispose();
+    oldPasswordController.dispose();
+    newPasswordController1.dispose();
+    newPasswordController2.dispose();
     super.dispose();
   }
 

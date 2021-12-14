@@ -42,7 +42,6 @@ class _AddBroupState extends State<AddBroup> {
 
   TextEditingController bromotionController = new TextEditingController();
   TextEditingController broNameController = new TextEditingController();
-
   TextEditingController broupNameController = new TextEditingController();
 
   bool showEmojiKeyboard = false;
@@ -97,6 +96,9 @@ class _AddBroupState extends State<AddBroup> {
     socketServices.socket.off('message_event_add_broup_success');
     socketServices.socket.off('message_event_add_broup_failed');
     bromotionController.removeListener(bromotionListener);
+    bromotionController.dispose();
+    broNameController.dispose();
+    broupNameController.dispose();
     super.dispose();
   }
 
