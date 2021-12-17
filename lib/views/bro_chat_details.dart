@@ -353,6 +353,7 @@ class _BroChatDetailsState extends State<BroChatDetails> {
       // De bro moet verwijderd worden!
       if (val is BroBros) {
         BroBros broToRemove = val;
+        broList.deleteChat(broToRemove);
         storage.deleteChat(broToRemove).then((value) {
           print("the chat is successfully removed!");
           Navigator.pushReplacement(
@@ -468,244 +469,329 @@ class _BroChatDetailsState extends State<BroChatDetails> {
                         style: TextStyle(color: Colors.white, fontSize: 25),
                       )),
                   SizedBox(height: 20),
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 10),
-                    child: Row(
-                      children: [
-                        Container(
-                          // 20 padding on both sides, 5 sizedbox and 18 for button
-                          width: MediaQuery.of(context).size.width-45,
-                          child: TextFormField(
-                            focusNode: focusNodeAlias,
-                            onTap: () {
-                              onTapAliasField();
-                            },
-                            controller: chatAliasController,
-                            style: simpleTextStyle(),
-                            textAlign: TextAlign.center,
-                            decoration: textFieldInputDecoration("No chat alias yet"),
-                          ),
-                        ),
-                        SizedBox(width: 5),
-                        changeAlias
-                            ? Container(
-                          width: 20,
-                          child: IconButton(
-                              iconSize: 20.0,
-                              icon: Icon(Icons.check, color: Colors.white),
-                              onPressed: () {
-                                updateAlias();
-                              }
-                          ),
-                        )
-                            : Container(
-                          width: 20,
-                          child: IconButton(
-                              iconSize: 20.0,
-                              icon: Icon(Icons.edit, color: Colors.white),
-                              onPressed: () {
-                                onTapAliasField();
-                              }
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(height: 20),
-                  Container(
+                chat.isBlocked() ? Container(
                     padding: EdgeInsets.symmetric(horizontal: 24),
-                    child: InkWell(
-                      onTap: () {
-                        updateColour();
-                      },
+                    alignment: Alignment.center,
+                    child: Text(
+                      "You've blocked this Bro!",
+                      style: TextStyle(color: Colors.grey, fontSize: 16),
+                    ))
+                  : Container(
+                  child: Column(children: [
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: 10),
                       child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          "Color:",
-                          style: simpleTextStyle(),
-                        ),
-                        SizedBox(width: 20),
-                        Container(
-                          height: 40,
-                          width: 40,
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                              color: chat.getColor(),
-                              borderRadius: BorderRadius.circular(40)),
+                        children: [
+                          Container(
+                            // 20 padding on both sides, 5 sizedbox and 18 for button
+                            width: MediaQuery.of(context).size.width-45,
+                            child: TextFormField(
+                              focusNode: focusNodeAlias,
+                              onTap: () {
+                                onTapAliasField();
+                              },
+                              controller: chatAliasController,
+                              style: simpleTextStyle(),
+                              textAlign: TextAlign.center,
+                              decoration: textFieldInputDecoration("No chat alias yet"),
+                            ),
+                          ),
+                          SizedBox(width: 5),
+                          changeAlias
+                              ? Container(
+                            width: 20,
+                            child: IconButton(
+                                iconSize: 20.0,
+                                icon: Icon(Icons.check, color: Colors.white),
+                                onPressed: () {
+                                  updateAlias();
+                                }
+                            ),
+                          )
+                              : Container(
+                            width: 20,
+                            child: IconButton(
+                                iconSize: 20.0,
+                                icon: Icon(Icons.edit, color: Colors.white),
+                                onPressed: () {
+                                  onTapAliasField();
+                                }
+                            ),
                           ),
                         ],
                       ),
                     ),
-                  ),
-                  changeColour
-                    ? Column(
-                      children:[
-                        CircleColorPicker(
-                          controller: circleColorPickerController,
-                          textStyle: simpleTextStyle(),
-                          onChanged: (colour) {
-                            setState(() => onColorChange(colour));
-                            },
-                        ),
-                        IconButton(
-                            iconSize: 30.0,
-                            icon: Icon(Icons.check, color: Colors.green),
-                            onPressed: () {
-                              saveColour();
-                            }
-                        ),
-                      ]
-                  )
-                  : Container(),
-                  SizedBox(height: 20),
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 10),
-                    child: Row(
-                      children: [
-                        Container(
-                          // 20 padding on both sides, 5 sizedbox and 18 for button
-                          width: MediaQuery.of(context).size.width-45,
-                          child: TextFormField(
-                            focusNode: focusNodeDescription,
-                            maxLines: null,
-                            onTap: () {
-                              onTapDescriptionField();
-                            },
-                            controller: chatDescriptionController,
+                    SizedBox(height: 20),
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: 24),
+                      child: InkWell(
+                        onTap: () {
+                          updateColour();
+                        },
+                        child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            "Color:",
                             style: simpleTextStyle(),
-                            textAlign: TextAlign.center,
-                            decoration:
-                            textFieldInputDecoration("No chat description yet"),
                           ),
+                          SizedBox(width: 20),
+                          Container(
+                            height: 40,
+                            width: 40,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                                color: chat.getColor(),
+                                borderRadius: BorderRadius.circular(40)),
+                            ),
+                          ],
                         ),
-                        SizedBox(width: 5),
-                        changeDescription
-                        ? Container(
-                          width: 20,
-                          child: IconButton(
-                            iconSize: 20.0,
-                            icon: Icon(Icons.check, color: Colors.white),
-                            onPressed: () {
-                              updateDescription();
-                            }
-                          ),
-                        )
-                        : Container(
-                          width: 20,
-                          child: IconButton(
-                            iconSize: 20.0,
-                            icon: Icon(Icons.edit, color: Colors.white),
-                            onPressed: () {
-                              onTapDescriptionField();
-                            }
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(height: 30),
-                  TextButton(
-                      style: ButtonStyle(
-                        foregroundColor:
-                        MaterialStateProperty.all<Color>(Colors.red),
                       ),
-                      onPressed: () {
-                        chat.isMuted()
-                            ? showDialogUnMuteChat(context)
-                            : showDialogMuteChat(context);
-                      },
+                    ),
+                    changeColour
+                      ? Column(
+                        children:[
+                          CircleColorPicker(
+                            controller: circleColorPickerController,
+                            textStyle: simpleTextStyle(),
+                            onChanged: (colour) {
+                              setState(() => onColorChange(colour));
+                              },
+                          ),
+                          IconButton(
+                              iconSize: 30.0,
+                              icon: Icon(Icons.check, color: Colors.green),
+                              onPressed: () {
+                                saveColour();
+                              }
+                          ),
+                        ]
+                    )
+                    : Container(),
+                    SizedBox(height: 20),
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: 10),
                       child: Row(
+                        children: [
+                          Container(
+                            // 20 padding on both sides, 5 sizedbox and 18 for button
+                            width: MediaQuery.of(context).size.width-45,
+                            child: TextFormField(
+                              focusNode: focusNodeDescription,
+                              maxLines: null,
+                              onTap: () {
+                                onTapDescriptionField();
+                              },
+                              controller: chatDescriptionController,
+                              style: simpleTextStyle(),
+                              textAlign: TextAlign.center,
+                              decoration:
+                              textFieldInputDecoration("No chat description yet"),
+                            ),
+                          ),
+                          SizedBox(width: 5),
+                          changeDescription
+                          ? Container(
+                            width: 20,
+                            child: IconButton(
+                              iconSize: 20.0,
+                              icon: Icon(Icons.check, color: Colors.white),
+                              onPressed: () {
+                                updateDescription();
+                              }
+                            ),
+                          )
+                          : Container(
+                            width: 20,
+                            child: IconButton(
+                              iconSize: 20.0,
+                              icon: Icon(Icons.edit, color: Colors.white),
+                              onPressed: () {
+                                onTapDescriptionField();
+                              }
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 30),
+                    TextButton(
+                        style: ButtonStyle(
+                          foregroundColor:
+                          MaterialStateProperty.all<Color>(Colors.red),
+                        ),
+                        onPressed: () {
+                          chat.isMuted()
+                              ? showDialogUnMuteChat(context)
+                              : showDialogMuteChat(context);
+                        },
+                        child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                  chat.isMuted() ? Icons.volume_up : Icons.volume_mute,
+                                  color: chat.isMuted() ? Colors.grey : Colors.red
+                              ),
+                              SizedBox(width: 20),
+                              chat.isMuted()
+                                  ? Text(
+                                'Unmute Chat',
+                                style: simpleTextStyle(),
+                              ) : Text(
+                                'Mute Chat',
+                                style: simpleTextStyle(),
+                              ),
+                            ]
+                        )
+                    ),
+                    SizedBox(height: 10),
+                    TextButton(
+                        style: ButtonStyle(
+                          foregroundColor:
+                          MaterialStateProperty.all<Color>(Colors.red),
+                        ),
+                        onPressed: () {
+                          showDialogBlock(context, chat.getBroNameOrAlias());
+                        },
+                        child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Icon(
-                                chat.isMuted() ? Icons.volume_up : Icons.volume_mute,
-                                color: chat.isMuted() ? Colors.grey : Colors.red
+                                Icons.block,
+                                color: Colors.red
                             ),
                             SizedBox(width: 20),
-                            chat.isMuted()
-                                ? Text(
-                              'Unmute Chat',
-                              style: simpleTextStyle(),
-                            ) : Text(
-                              'Mute Chat',
+                            Text(
+                              'Block',
                               style: simpleTextStyle(),
                             ),
                           ]
-                      )
-                  ),
-                  SizedBox(height: 10),
-                  TextButton(
-                      style: ButtonStyle(
-                        foregroundColor:
-                        MaterialStateProperty.all<Color>(Colors.red),
+                        )
                       ),
-                      onPressed: () {
-                        chat.isBlocked() ?
-                        showDialogUnBlockChat(context) : showDialogBlock(context, chat.getBroNameOrAlias());
-                      },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                              Icons.block,
-                              color: chat.isBlocked() ? Colors.grey : Colors.red
-                          ),
-                          SizedBox(width: 20),
-                          chat.isBlocked() ? Text(
-                            'Unblock',
-                            style: simpleTextStyle(),
-                          ) : Text(
-                            'Block',
-                            style: simpleTextStyle(),
-                          ),
-                        ]
-                      )
+                    SizedBox(height: 10),
+                    TextButton(
+                        style: ButtonStyle(
+                          foregroundColor:
+                          MaterialStateProperty.all<Color>(Colors.red),
+                        ),
+                        onPressed: () {
+                          showDialogRemove(context, chat.getBroNameOrAlias());
+                        },
+                        child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.delete, color: Colors.red),
+                              SizedBox(width: 20),
+                              Text(
+                                'Delete Bro',
+                                style: simpleTextStyle(),
+                              ),
+                            ]
+                        )
                     ),
-                  SizedBox(height: 10),
-                  TextButton(
-                      style: ButtonStyle(
-                        foregroundColor:
-                        MaterialStateProperty.all<Color>(Colors.red),
-                      ),
-                      onPressed: () {
-                        showDialogRemove(context, chat.getBroNameOrAlias());
-                      },
-                      child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(Icons.delete_forever, color: Colors.red),
-                            SizedBox(width: 20),
-                            Text(
-                              'Remove Bro',
-                              style: simpleTextStyle(),
-                            ),
-                          ]
-                      )
-                  ),
-                  SizedBox(height: 10),
-                  TextButton(
-                      style: ButtonStyle(
-                        foregroundColor:
-                        MaterialStateProperty.all<Color>(Colors.red),
-                      ),
-                      onPressed: () {
-                        showDialogReport(context, chat.getBroNameOrAlias());
-                      },
-                      child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(Icons.thumb_down, color: Colors.red),
-                            SizedBox(width: 20),
-                            Text(
-                              'Report Bro',
-                              style: simpleTextStyle(),
-                            ),
-                          ]
-                      )
-                  ),
-                  SizedBox(height: 20),
-                ]),
+                    SizedBox(height: 10),
+                    TextButton(
+                        style: ButtonStyle(
+                          foregroundColor:
+                          MaterialStateProperty.all<Color>(Colors.red),
+                        ),
+                        onPressed: () {
+                          showDialogReport(context, chat.getBroNameOrAlias());
+                        },
+                        child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.thumb_down, color: Colors.red),
+                              SizedBox(width: 20),
+                              Text(
+                                'Report Bro',
+                                style: simpleTextStyle(),
+                              ),
+                            ]
+                        )
+                    ),
+                    SizedBox(height: 20),
+                    ]
+                    )
+                    ),
+                    chat.isBlocked()
+                        ? Container(
+                          child: Column(
+                            children: [
+                              SizedBox(height: 20),
+                              TextButton(
+                                  style: ButtonStyle(
+                                    foregroundColor:
+                                    MaterialStateProperty.all<Color>(Colors.red),
+                                  ),
+                                  onPressed: () {
+                                    showDialogUnBlockChat(context);
+                                  },
+                                  child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Icon(
+                                            Icons.block,
+                                            color: Colors.grey
+                                        ),
+                                        SizedBox(width: 20),
+                                        Text(
+                                          'Unblock',
+                                          style: simpleTextStyle(),
+                                        )
+                                      ]
+                                  )
+                              ),
+                              TextButton(
+                                  style: ButtonStyle(
+                                    foregroundColor:
+                                    MaterialStateProperty.all<Color>(Colors.red),
+                                  ),
+                                  onPressed: () {
+                                    showDialogRemove(context, chat.getBroNameOrAlias());
+                                  },
+                                  child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Icon(Icons.delete, color: Colors.red),
+                                        SizedBox(width: 20),
+                                        Text(
+                                          'Delete Bro',
+                                          style: simpleTextStyle(),
+                                        ),
+                                      ]
+                                  )
+                              ),
+                              SizedBox(height: 10),
+                              TextButton(
+                                  style: ButtonStyle(
+                                    foregroundColor:
+                                    MaterialStateProperty.all<Color>(Colors.red),
+                                  ),
+                                  onPressed: () {
+                                    showDialogReport(context, chat.getBroNameOrAlias());
+                                  },
+                                  child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Icon(Icons.thumb_down, color: Colors.red),
+                                        SizedBox(width: 20),
+                                        Text(
+                                          'Report Bro',
+                                          style: simpleTextStyle(),
+                                        ),
+                                      ]
+                                  )
+                              ),
+                              SizedBox(height:200)
+                            ],
+                          )
+                        )
+                        : Container(
+                      child: SizedBox(height:20)
+                    )
+                  ],
+                ),
               ),
             ),
           ]),
@@ -744,9 +830,9 @@ class _BroChatDetailsState extends State<BroChatDetails> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: new Text("Remove chat $chatName!"),
+          title: new Text("Remove Bro $chatName!"),
           content: new Text(
-              "Are you sure you want to remove this chat? This bro and the messages will be removed from your bro list and the former bro can't send you messages anymore. \n(This action cannot be undone!)"),
+              "Are you sure you want to delete this chat? This bro and the messages will be removed from your bro list and the former bro can't send you messages anymore. \n(This action cannot be undone!)"),
           actions: <Widget>[
             new TextButton(
               child: new Text("Cancel"),
