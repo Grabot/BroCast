@@ -106,7 +106,8 @@ class Storage {
             added INTEGER,
             chatName TEXT,
             broName TEXT,
-            bromotion TEXT
+            bromotion TEXT,
+            UNIQUE(broId, broupId) ON CONFLICT REPLACE
           );
           ''');
   }

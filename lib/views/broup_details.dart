@@ -4,6 +4,7 @@ import 'package:brocast/objects/bro_added.dart';
 import 'package:brocast/objects/bro_bros.dart';
 import 'package:brocast/objects/broup.dart';
 import 'package:brocast/objects/chat.dart';
+import 'package:brocast/services/delete_broup.dart';
 import 'package:brocast/services/get_chat.dart';
 import 'package:brocast/services/report_bro.dart';
 import 'package:brocast/services/settings.dart';
@@ -66,6 +67,7 @@ class _BroupDetailsState extends State<BroupDetails> {
   late Storage storage;
 
   ReportBro reportBro = new ReportBro();
+  DeleteBroup deleteBroup = new DeleteBroup();
 
   bool meAdmin = false;
 
@@ -971,13 +973,37 @@ class _BroupDetailsState extends State<BroupDetails> {
             new TextButton(
               child: new Text("Delete"),
               onPressed: () {
-                reportTheBroup();
+                deleteTheBroup();
               },
             ),
           ],
         );
       },
     );
+  }
+
+  void deleteTheBroup() {
+    deleteBroup.deleteBroup(
+        settings.getToken(),
+        chat.id
+    ).then((val) {
+      if (val is Broup) {
+        Broup deletedBroup = val;
+        broList.deleteChat(deletedBroup);
+        storage.deleteChat(deletedBroup).then((value) {
+          print("the broup is successfully removed!");
+          Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (context) => BroCastHome(key: UniqueKey())));
+        });
+      } else {
+        if (val == "an unknown error has occurred") {
+          ShowToastComponent.showDialog("An unknown error has occurred", context);
+        } else {
+          ShowToastComponent.showDialog("There was an error with the server, we apologize for the inconvenience.", context);
+        }
+      }
+    });
+    Navigator.of(context).pop();
   }
 
   void reportTheBroup() {
@@ -987,6 +1013,7 @@ class _BroupDetailsState extends State<BroupDetails> {
     ).then((val) {
       if (val is Broup) {
         Broup broupToRemove = val;
+        broList.deleteChat(broupToRemove);
         storage.deleteChat(broupToRemove).then((value) {
           print("the broup is successfully removed!");
           Navigator.pushReplacement(

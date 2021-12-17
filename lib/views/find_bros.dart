@@ -197,6 +197,26 @@ class _FindBrosState extends State<FindBros> {
       socketServices.socket.emit("message_event_add_bro",
           {"token": settings.getToken(), "bros_bro_id": addBroId}
       );
+      Future.delayed(Duration(milliseconds: 2000)).then((value) {
+        // The first time something strange happens where it doesn't work.
+        // For this specific case we will wait a bit
+        // If nothing has happened at that point we will refresh the brolist
+        // and after that go to the home screen.
+        print("waited a bit");
+        if (mounted) {
+          if (clickedNewBro) {
+            broList.searchBros(settings.getToken()).then((value) {
+              if (value) {
+                Navigator.pushReplacement(
+                    context, MaterialPageRoute(builder: (context) =>
+                    BroCastHome(
+                        key: UniqueKey()
+                    )));
+              }
+            });
+          }
+        }
+      });
     }
   }
 

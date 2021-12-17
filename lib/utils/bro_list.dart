@@ -9,6 +9,7 @@ import 'package:brocast/services/get_broup_bros.dart';
 import 'package:brocast/services/settings.dart';
 import 'package:brocast/utils/storage.dart';
 import 'package:collection/collection.dart';
+import 'package:collection/collection.dart';
 
 
 class BroList {
@@ -68,11 +69,17 @@ class BroList {
   }
 
   void addChat(Chat chat) {
-    this.bros.add(chat);
+    if (bros.firstWhereOrNull((ch4t) => ch4t.id == chat.id && ch4t.broup == chat.broup) == null) {
+      this.bros.add(chat);
+    }
   }
 
   Chat getChat(int chatId, int broup) {
     return bros[bros.indexWhere((bro) => bro.id == chatId && bro.broup == broup)];
+  }
+
+  void deleteChat(Chat chat) {
+    bros.removeWhere((bro) => bro.id == chat.id && bro.broup == chat.broup);
   }
 
   void updateChat(Chat chat) {

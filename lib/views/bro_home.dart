@@ -91,7 +91,7 @@ class _BroCastHomeState extends State<BroCastHome> {
         if (mounted) {
           setState(() {});
         }
-        if (user.shouldRecheck()) {
+        if (user.shouldRecheck() || broList.getBros().length == 0) {
           broList.searchBros(user.token).then((value) {
             if (value) {
               user.recheckBros = 0;

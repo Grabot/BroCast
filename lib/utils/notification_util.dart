@@ -113,15 +113,7 @@ class NotificationUtil {
         }
       } else {
         // We will assume that there is a user
-        storage.selectUser().then((user) async {
-          if (user != null) {
-            user.recheckBros = 1;
-            storage.updateUser(user).then((value) {
-              print("navigate to the bro home 3!");
-              _navigationService.navigateTo(routes.OpeningRoute);
-            });
-          }
-        });
+        _navigationService.navigateTo(routes.OpeningRoute);
       }
     });
   }

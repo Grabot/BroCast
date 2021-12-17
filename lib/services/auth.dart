@@ -41,7 +41,11 @@ class Auth {
       },
     );
 
-    if (responsePost.body.isEmpty) {
+    print("register is done $responsePost");
+    print("register is done ${responsePost.statusCode}");
+    print("register is done ${responsePost.body}");
+
+    if (responsePost.statusCode == 404 || responsePost.body.isEmpty) {
       return "Could not connect to the server";
     } else {
       Map<String, dynamic> registerResponse = jsonDecode(responsePost.body);
