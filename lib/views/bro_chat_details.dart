@@ -334,7 +334,6 @@ class _BroChatDetailsState extends State<BroChatDetails> {
       if (val is BroBros) {
         BroBros broToRemove = val;
         storage.deleteChat(broToRemove).then((value) {
-          print("the chat is successfully removed!");
           Navigator.pushReplacement(
               context, MaterialPageRoute(builder: (context) => BroCastHome(key: UniqueKey())));
         });
@@ -359,7 +358,6 @@ class _BroChatDetailsState extends State<BroChatDetails> {
         BroBros broToRemove = val;
         broList.deleteChat(broToRemove);
         storage.deleteChat(broToRemove).then((value) {
-          print("the chat is successfully removed!");
           Navigator.pushReplacement(
               context, MaterialPageRoute(builder: (context) => BroCastHome(key: UniqueKey())));
         });

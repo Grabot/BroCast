@@ -151,7 +151,6 @@ class _SignInState extends State<SignIn> {
 
     auth.signUp(broNameSignup, bromotionSignup, passwordSignup).then((val) {
       if (val.toString() == "") {
-        print("navigate to bro home");
         checkUserAndSearchBros();
       } else {
         ShowToastComponent.showDialog(val.toString(), context);
@@ -170,7 +169,6 @@ class _SignInState extends State<SignIn> {
 
     auth.signIn(broName, bromotion, password, "").then((val) {
       if (val.toString() == "") {
-        print("navigate to bro home");
         checkUserAndSearchBros();
       } else {
         ShowToastComponent.showDialog(val.toString(), context);
@@ -198,7 +196,6 @@ class _SignInState extends State<SignIn> {
         });
         user.recheckBros = 0;
         storage.updateUser(user).then((value) {
-          print("We have checked the bros, no need to do it again.");
         });
       } else {
         setState(() {
@@ -219,11 +216,9 @@ class _SignInState extends State<SignIn> {
           storage.selectChat(chat.id.toString(), chat.broup.toString()).then((value) {
             if (value == null) {
               storage.addChat(chat).then((value) {
-                print("added a chat that was added since you were away");
               });
             } else {
               storage.updateChat(chat).then((value) {
-                print("a chat was updated!");
               });
             }
           });

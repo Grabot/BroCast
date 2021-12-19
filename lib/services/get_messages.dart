@@ -85,9 +85,6 @@ class GetMessages {
           if (timeLastRead.isAfter(mes.getTimeStamp())) {
             mes.isRead = 1;
           }
-          print("a new messages I have retrieved");
-          print(mes);
-          print(mes.body);
           listWithMessages.add(mes);
         }
         return listWithMessages;

@@ -27,7 +27,6 @@ class _OpeningScreenState extends State<OpeningScreen> {
 
     NotificationUtil();
 
-    print("opening screen init");
     // Initialize the db on startup
     storage = Storage();
     storage.database;
@@ -58,7 +57,6 @@ class _OpeningScreenState extends State<OpeningScreen> {
             user.recheckBros = 0;
             user.updateActivityTime();
             storage.updateUser(user).then((value) {
-              print("We have checked the bros, no need to do it again.");
             });
             Auth auth = Auth();
             auth.signInUser(user).then((value) {
@@ -91,7 +89,6 @@ class _OpeningScreenState extends State<OpeningScreen> {
         setState(() {
           isLoading = false;
         });
-        print("navigate to sign in");
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => SignIn(
           key: UniqueKey()

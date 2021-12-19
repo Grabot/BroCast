@@ -19,7 +19,6 @@ class Auth {
 
     NotificationUtil notificationUtil = NotificationUtil();
     String registrationId = notificationUtil.getFirebaseToken();
-    print("sign up $registrationId");
 
     http.Response responsePost = await http
         .post(
@@ -40,10 +39,6 @@ class Auth {
         return new http.Response("", 404);
       },
     );
-
-    print("register is done $responsePost");
-    print("register is done ${responsePost.statusCode}");
-    print("register is done ${responsePost.body}");
 
     if (responsePost.statusCode == 404 || responsePost.body.isEmpty) {
       return "Could not connect to the server";
@@ -77,7 +72,6 @@ class Auth {
 
     NotificationUtil notificationUtil = NotificationUtil();
     String registrationId = notificationUtil.getFirebaseToken();
-    print("sign in $registrationId");
 
     http.Response responsePost = await http
         .post(
@@ -120,7 +114,6 @@ class Auth {
           String bromotion = registerResponse["bro"]["bromotion"];
 
           await storeUser(broId, broName, bromotion, password, token, registrationId);
-          print("awaited the store user");
           return "";
         } else {
           return message;
@@ -149,7 +142,6 @@ class Auth {
         settings.setBromotion(user.bromotion);
         settings.setToken(user.token);
 
-        print("there seems to be a user, we only want 1 user, update?");
         if (value.broName == user.broName && value.bromotion == user.bromotion) {
           // The same bro logged in.
           // We assume the password didn't change
@@ -171,29 +163,21 @@ class Auth {
           }
           if (value.password.isEmpty && user.password.isNotEmpty) {
             value.password = user.password;
-            print("changed password");
           }
           if (user.token.isNotEmpty && value.token != user.token) {
             value.token = user.token;
-            print("changed token");
           }
           if (user.registrationId != null && user.registrationId!.isNotEmpty
               && value.registrationId != user.registrationId) {
             value.registrationId = user.registrationId;
-            print("changed registrationid");
           }
           if (value.recheckBros == 0) {
             // If the user logged in the user should retrieve his bros again
             value.recheckBros = 1;
-            print("changed recheck");
           }
-          print("we are going to update the user!");
-          print(value);
           // The token will basically always change when logging in,
           // so we always update the current user.
           storage.updateUser(value).then((value) {
-            print("we have updated the user!");
-            print(value);
           });
         } else {
           // A different user has logged in.
@@ -204,7 +188,6 @@ class Auth {
         // no user yet, probably first time logging in! save the user.
         if (user.password.isEmpty) {
           // This will not happen for new users, but it might happen for older users updating the app.
-          print("was password empty?");
           HelperFunction.getBroInformation().then((val) {
             if (val == null || val.length == 0) {
               // big problem if it comes here.
@@ -215,7 +198,6 @@ class Auth {
             }
           });
         }
-        print("storing new user $user");
         await storage.addUser(user);
       }
     });

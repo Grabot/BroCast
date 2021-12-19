@@ -202,7 +202,6 @@ class _FindBrosState extends State<FindBros> {
         // For this specific case we will wait a bit
         // If nothing has happened at that point we will refresh the brolist
         // and after that go to the home screen.
-        print("waited a bit");
         if (mounted) {
           if (clickedNewBro) {
             broList.searchBros(settings.getToken()).then((value) {

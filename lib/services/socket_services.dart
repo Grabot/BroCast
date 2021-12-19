@@ -35,7 +35,6 @@ class SocketServices extends ChangeNotifier {
   }
 
   startSockConnection() {
-    print("starting the socket connection");
     String namespace = "sock";
     String socketUrl = baseUrl + namespace;
     socket = IO.io(socketUrl, <String, dynamic>{
@@ -89,20 +88,16 @@ class SocketServices extends ChangeNotifier {
       chatChanged(data);
     });
     this.socket.on('message_event_added_to_broup', (data) {
-      print("added to a broup!");
       broAddedYouToABroup(data);
     });
   }
 
   broAddedYouToABroup(data) {
-    print("added a broup, getting information!");
     Broup broup = getBroup(data);
-    print("length of broupbros before: ${broup.getBroupBros()}");
     List<Bro> broupBros = [];
     // We assume this object is always filled an always in the participant list.
     broList.chatChangedCheckForAdded(broup.id, broup.getParticipants(), broup.getAdmins(), [], broupBros);
     broup.setBroupBros(broupBros);
-    print("length of broupbros after: ${broup.getBroupBros()}");
     storage.selectChat(broup.id.toString(), broup.broup.toString()).then((value) {
       if (value == null) {
         storage.addChat(broup).then((value) {
@@ -121,7 +116,6 @@ class SocketServices extends ChangeNotifier {
   updateBroups() {
     for (Chat broup in broList.getBros()) {
       if (broup.isBroup()) {
-        print("updating broup ${broup.id}");
         List<Bro> broupBros = [];
         broup as Broup;
         broList.chatChangedCheckForAdded(broup.id, broup.getParticipants(), broup.getAdmins(), [], broupBros);
@@ -133,39 +127,28 @@ class SocketServices extends ChangeNotifier {
 
   chatChanged(data) async {
     if (data.containsKey("chat_name")) {
-      print("chat has changed!");
       BroBros broBros = getBroBros(data);
       broList.updateChat(broBros);
       storage.updateChat(broBros).then((chat) {
-        print("we have updated the chat");
         notifyListeners();
       });
     } else if (data.containsKey("broup_name")) {
-      print("broup has changed!");
-      print(data);
       Broup broup = getBroup(data);
-      print("first get a copy of the old broup so we can see if a bro was added or removed");
       Broup oldBroup = broList.getChat(broup.id, broup.broup) as Broup;
-      print("length of old broup ${oldBroup.participants.length} and length of new broup ${broup.participants.length}");
-      print("length of broupBros of old broup: ${oldBroup.getBroupBros().length}");
-      print("length of broupBros of New broup (we expect it to be 0): ${broup.getBroupBros().length}");
       List<Bro> broupBros = oldBroup.getBroupBros();
       broList.chatChangedCheckForRemoved(broup, oldBroup, broupBros);
       broList.chatChangedCheckForAdded(broup.id, broup.getParticipants(), broup.getAdmins(), oldBroup.getParticipants(), broupBros);
       broList.updateBroupBrosAdmins(broupBros, broup.getAdmins());
       broList.updateAliases(broupBros);
       broup.setBroupBros(broupBros);
-      print("length of broupBros of New broup (we expect it NOW to be the same as old broup and newbroup participants length): ${broup.getBroupBros().length}");
       broList.updateChat(broup);
       storage.updateChat(broup).then((chat) {
-        print("we have updated the chat");
         notifyListeners();
       });
     }
   }
 
   void broAddedYou(data) {
-    print("a bro has added you!");
     BroBros broBros = getBroBros(data);
     broList.addChat(broBros);
     storage.addChat(broBros).then((value) {

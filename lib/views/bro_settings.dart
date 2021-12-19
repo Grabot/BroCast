@@ -56,8 +56,6 @@ class _BroSettingsState extends State<BroSettings> {
         // This has to be true, otherwise he couldn't have logged in!
         value.keyboardDarkMode = darkValue ? 1 : 0;
         storage.updateUser(value).then((value) {
-          print("we have updated the darkmode setting!");
-          print(value);
         });
       }
     });

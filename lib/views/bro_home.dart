@@ -69,7 +69,6 @@ class _BroCastHomeState extends State<BroCastHome> {
     socketServices.addListener(socketListener);
     socketServices.updateBroups();
 
-    print("bro home init");
     bros = broList.getBros();
     bros.sort((b, a) => a.getLastActivity().compareTo(b.getLastActivity()));
     setState(() {
@@ -82,7 +81,6 @@ class _BroCastHomeState extends State<BroCastHome> {
   setUser() {
     storage.selectUser().then((user) async {
       if (user != null) {
-        print("going to set the user stuff!");
         settings.setEmojiKeyboardDarkMode(user.getKeyboardDarkMode());
         settings.setBroId(user.id);
         settings.setBroName(user.broName);

@@ -69,8 +69,6 @@ class GetBros {
                   .toList();
               broup.setAdmins(broAdminIdList);
               listWithBros.add(broup);
-            } else {
-              print("big problem");
             }
           }
           listWithBros.sort((b, a) =>

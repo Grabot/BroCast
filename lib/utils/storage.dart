@@ -31,7 +31,6 @@ class Storage {
 
   // Creates and opens the database.
   _initDatabase() async {
-    print("initializing the database");
     var databasesPath = await getDatabasesPath();
     String path = join(databasesPath, _dbName);
 
@@ -47,7 +46,6 @@ class Storage {
       Database db,
       int version,
       ) async {
-    print("executing query");
     await createTableUser(db);
     await createTableChat(db);
     await createTableBro(db);
@@ -55,7 +53,6 @@ class Storage {
   }
 
   createTableUser(Database db) async {
-    print("create table user");
     await db.execute('''
     CREATE TABLE User (
             id INTEGER PRIMARY KEY,
@@ -72,7 +69,6 @@ class Storage {
   }
 
   createTableChat(Database db) async {
-    print("create table chat");
     await db.execute('''
           CREATE TABLE Chat (
             id INTEGER PRIMARY KEY,
@@ -96,7 +92,6 @@ class Storage {
   }
 
   createTableBro(Database db) async {
-    print("create table bro");
     await db.execute('''
           CREATE TABLE Bro (
             id INTEGER PRIMARY KEY,
@@ -113,7 +108,6 @@ class Storage {
   }
 
   createTableMessage(Database db) async {
-    print("create table message");
     await db.execute('''
           CREATE TABLE Message (
             id INTEGER PRIMARY KEY,
@@ -143,11 +137,8 @@ class Storage {
 
   Future<Bro?> selectBro(String broId, String broupId) async {
     Database database = await this.database;
-    print("selecting bro");
     String query = "SELECT * FROM Bro where broId = " + broId + " and broupId = " + broupId;
-    print(query);
     List<Map<String, dynamic>> bro = await database.rawQuery(query);
-    print(bro);
     if (bro.length != 1) {
       return null;
     } else {
@@ -206,8 +197,6 @@ class Storage {
     Database database = await this.database;
     String query = "SELECT * FROM User";
     List<Map<String, dynamic>> user = await database.rawQuery(query);
-    print("user!");
-    print(user);
     if (user.length != 1) {
       return null;
     } else {
@@ -249,12 +238,9 @@ class Storage {
   }
 
   Future<Chat?> selectChat(String chatId, String isBroup) async {
-    print("selecting chat");
     Database database = await this.database;
     String query = "SELECT * FROM Chat where chatId = " + chatId + " and isBroup = " + isBroup;
-    print(query);
     List<Map<String, dynamic>> chat = await database.rawQuery(query);
-    print(chat);
     if (chat.length != 1) {
       return null;
     } else {
@@ -329,7 +315,6 @@ class Storage {
     Database database = await this.database;
     String query = "SELECT * FROM Message where messageId = " + messageId.toString() + " isBroup = " + isBroup.toString();
     List<Map<String, dynamic>> message = await database.rawQuery(query);
-    print(message);
     if (message.length != 1) {
       return null;
     } else {

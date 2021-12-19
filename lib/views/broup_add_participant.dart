@@ -92,7 +92,6 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> {
           List<int> ch4tParticipants = (ch4t as Broup).getParticipants();
           List<int> newParticipants = new List<int>.from(ch4tParticipants);
           newParticipants.removeWhere((bro) => chat.getParticipants().contains(bro));
-          print(newParticipants);
           // newParticipants should be exactly one and equal to who the user tried to add.
           if (newBroToAdd == newParticipants[0]) {
             Navigator.pushReplacement(

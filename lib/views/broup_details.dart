@@ -174,7 +174,6 @@ class _BroupDetailsState extends State<BroupDetails> {
   }
 
   socketListener() {
-    print("something happened with the broup details sockets stuff");
     // There was some update to the bro list.
     // Check the list and see if the change was to this chat object.
     for(Chat ch4t in broList.getBros()) {
@@ -186,10 +185,8 @@ class _BroupDetailsState extends State<BroupDetails> {
           // it is the same Broup object as the current open chat
           chat = ch4t as Broup;
           if (!focusNodeDescription.hasFocus) {
-            print("description does NOT have focus");
             chatDescriptionController.text = ch4t.chatDescription;
           } else {
-            print("description has focus");
             previousDescription = ch4t.chatDescription;
           }
           currentColor = ch4t.getColor();
@@ -215,7 +212,6 @@ class _BroupDetailsState extends State<BroupDetails> {
   }
 
   broWasAdded(data) {
-    print("a bro was added! Probably by you");
     BroBros broBros = new BroBros(
         data["bros_bro_id"],
         data["chat_name"],
@@ -231,7 +227,6 @@ class _BroupDetailsState extends State<BroupDetails> {
     );
     broList.addChat(broBros);
     storage.addChat(broBros).then((value) {
-      print("Going to update all the broup for this new bro");
       broList.updateBroupBrosForBroBros(broBros);
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) =>
@@ -992,7 +987,6 @@ class _BroupDetailsState extends State<BroupDetails> {
         Broup deletedBroup = val;
         broList.deleteChat(deletedBroup);
         storage.deleteChat(deletedBroup).then((value) {
-          print("the broup is successfully removed!");
           Navigator.pushReplacement(
               context, MaterialPageRoute(builder: (context) => BroCastHome(key: UniqueKey())));
         });
@@ -1016,7 +1010,6 @@ class _BroupDetailsState extends State<BroupDetails> {
         Broup broupToRemove = val;
         broList.deleteChat(broupToRemove);
         storage.deleteChat(broupToRemove).then((value) {
-          print("the broup is successfully removed!");
           Navigator.pushReplacement(
               context, MaterialPageRoute(builder: (context) => BroCastHome(key: UniqueKey())));
         });
@@ -1327,7 +1320,6 @@ void buttonMessage(BuildContext context, Bro bro, bool alertDialog) {
 }
 
 void buttonAddBro(BuildContext context, Bro bro, bool alertDialog, String token, addNewBro) {
-  print("pressed the add Bro Button");
   addNewBro(bro.id);
   if (alertDialog) {
     Navigator.of(context).pop();

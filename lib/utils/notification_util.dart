@@ -8,7 +8,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:logging/logging.dart';
 import 'package:notification_permissions/notification_permissions.dart';
 import 'package:brocast/constants/route_paths.dart' as routes;
 
@@ -30,11 +29,6 @@ class NotificationUtil {
   final NavigationService _navigationService = locator<NavigationService>();
 
   NotificationUtil._internal() {
-
-    Logger.root.level = Level.SEVERE;
-    Logger.root.onRecord.listen((record) {
-      print('${record.level.name}: ${record.time}: ${record.message}');
-    });
 
     setupFirebase();
   }
@@ -87,13 +81,8 @@ class NotificationUtil {
   }
 
   Future selectNotification(String? payload) async {
-    print("selected the notification");
-    print("payload $payload");
-    print(payload);
     int broId = int.parse(payload!.split(";")[0]);
     int isBroup = int.parse(payload.split(";")[1]);
-    print(broId);
-    print(isBroup);
     notificationNavigate(broId, isBroup);
   }
 
@@ -102,13 +91,9 @@ class NotificationUtil {
     storage.selectChat(id.toString(), isBroup.toString()).then((value) {
       if (value != null) {
         Chat chat = value;
-        print("found a chat");
-        print(chat);
         if (chat.isBroup()) {
-          print("navigate to the broup!");
           _navigationService.navigateTo(routes.BroupRoute, arguments: chat as Broup);
         } else {
-          print("navigate to the bro bros!");
           _navigationService.navigateTo(routes.BroRoute, arguments: chat as BroBros);
         }
       } else {
@@ -140,7 +125,6 @@ class NotificationUtil {
         iosSettings: const NotificationSettingsIos(
             sound: true, badge: true, alert: true))
         .then((_) {
-      print("notifications allowed");
     });
 
     platformChannelSpecifics = const NotificationDetails(
@@ -165,7 +149,6 @@ class NotificationUtil {
     FirebaseMessaging.instance;
     firebaseToken = await FirebaseMessaging.instance.getToken();
 
-    print("registration id: \n$firebaseToken");
     if (firebaseToken == null || firebaseToken == "") {
       return;
     }
@@ -174,16 +157,9 @@ class NotificationUtil {
       // open message when the app is in the foreground.
       // Here we create a notification for both android and ios
       // So no action is taken, except creating a notifciation
-      print('A new onMessage event was published!');
-      print("message: $message");
       String? title = message.notification!.title;
       String? body = message.notification!.body;
       var data = message.data;
-      print("message title $title");
-      print("message body $body");
-      print("message data $data");
-      print("data? ${data["id"]}");
-      print("broup? ${data["broup"]}");
       int broId = int.parse(data["id"]);
       int isBroup = int.parse(data["broup"]);
       if (broId != currentChatId && isBroup != currentIsBroup) {
@@ -196,14 +172,8 @@ class NotificationUtil {
       String? title = message.notification!.title;
       String? body = message.notification!.body;
       var data = message.data;
-      print("message title $title");
-      print("message body $body");
-      print("message data $data");
-      print(data["id"]);
       int broId = int.parse(data["id"]);
       int isBroup = int.parse(data["broup"]);
-      print('A new onMessageOpenedApp event was published!');
-      print("message: $message");
       notificationNavigate(broId, isBroup);
     });
 
@@ -215,14 +185,8 @@ class NotificationUtil {
       String? title = message.notification!.title;
       String? body = message.notification!.body;
       var data = message.data;
-      print("message title $title");
-      print("message body $body");
-      print("message data $data");
-      print(data["id"]);
       int broId = int.parse(data["id"]);
       int isBroup = int.parse(data["broup"]);
-      print('A new onMessageOpenedApp event was published!');
-      print("message: $message");
 
       notificationNavigate(broId, isBroup);
     });
@@ -231,18 +195,12 @@ class NotificationUtil {
   createNotificationChannel() async {
     try {
       await _channel.invokeMethod('createNotificationChannel', channelMap);
-      print("channel created");
     } on PlatformException catch (e) {
       print(e);
     }
   }
 
   Future<void> _showNotification(String title, String body, int broId, int isBroup) async {
-
-    print("message title $title");
-    print("message body $body");
-    print("bro id $broId");
-    print("broup?  $isBroup");
 
     await flutterLocalNotificationsPlugin.show(
       0,

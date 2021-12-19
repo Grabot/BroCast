@@ -79,9 +79,7 @@ class _BroupMessagingState extends State<BroupMessaging> {
 
     // Retrieve again from db to ensure up to date data.
     storage.selectChat(chat.id.toString(), chat.broup.toString()).then((value) {
-      print("timestamp test");
       chat = value as Broup;
-      print(chat.lastActivity);
       storage.fetchAllBrosOfBroup(chat.id.toString()).then((broupBros) {
         broList.updateAliases(broupBros);
         chat.setBroupBros(broupBros);
@@ -159,7 +157,6 @@ class _BroupMessagingState extends State<BroupMessaging> {
   }
 
   socketListener() {
-    print("There was some update to the bro list.");
     // There was some update to the bro list.
     // Check the list and see if the change was to this chat object.
     for(Chat ch4t in broList.getBros()) {
@@ -186,14 +183,12 @@ class _BroupMessagingState extends State<BroupMessaging> {
     socketServices.socket.on('message_event_add_bro_failed', (data) {
         broAddingFailed();
     });
-    print(addBroId);
     socketServices.socket.emit("message_event_add_bro",
         {"token": settings.getToken(), "bros_bro_id": addBroId}
     );
   }
 
   broWasAdded(data) {
-    print("bro was added broup?");
     BroBros broBros = new BroBros(
         data["bros_bro_id"],
         data["chat_name"],
@@ -300,9 +295,6 @@ class _BroupMessagingState extends State<BroupMessaging> {
         }
         gotServer = true;
         if (gotLocalDB && gotServer) {
-          print("retrieve db won");
-          print(messagesDB.length);
-          print(messagesServer.length);
           mergeMessages(messagesServer + messagesDB);
           // Set date tiles, but only if all the messages are retrieved
           setState(() {
@@ -325,7 +317,6 @@ class _BroupMessagingState extends State<BroupMessaging> {
     }
     // But also load what you have from your local database
     storage.fetchAllMessages(chat.id, 1, 0).then((val) {
-      print("the length of the retrieved messages: ${val.length}");
       if (val.length != 50) {
         allMessagesDBRetrieved = true;
       }
@@ -335,9 +326,6 @@ class _BroupMessagingState extends State<BroupMessaging> {
       }
       gotLocalDB = true;
       if (gotLocalDB && gotServer) {
-        print("local db won");
-        print(messagesDB.length);
-        print(messagesServer.length);
         mergeMessages(messagesServer + messagesDB);
         // Set date tiles, but only if all the messages are retrieved
         setState(() {
@@ -352,7 +340,6 @@ class _BroupMessagingState extends State<BroupMessaging> {
 
   fetchExtraMessages(int offSet) {
     storage.fetchAllMessages(chat.id, 1, offSet).then((val) {
-      print("fetched ${val.length} new messages");
       // Limit set to 50. If it retrieves less it means that it can't and all the messages have been retrieved.
       if (val.length != 50) {
         allMessagesDBRetrieved = true;
@@ -371,17 +358,11 @@ class _BroupMessagingState extends State<BroupMessaging> {
   }
 
   storeMessages(List<Message> messages) {
-    print("going to store messages I have just received");
     for (Message message in messages) {
-      print("message with id ${message.id}");
-      print(chat.id);
-      print(message.chatId);
-      print(message.isBroup);
       // If it is not yet in the db, we store it.
       // If it is in the db we don't do anything, the message won't change.
       if (message.id > 0) {
         storage.addMessage(message).then((value) {
-          print("done storing");
         });
       }
     }
@@ -550,11 +531,6 @@ class _BroupMessagingState extends State<BroupMessaging> {
   }
 
   updateMessages(Message message) {
-    print("received a message!");
-    print(message);
-    print(message.id);
-    print(message.chatId);
-    print(message.isBroup);
     if (!message.isInformation() && message.senderId == settings.getBroId()) {
       // We added it immediately as a placeholder.
       // When we get it from the server we add it for real and remove the placeholder

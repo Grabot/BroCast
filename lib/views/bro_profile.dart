@@ -107,8 +107,6 @@ class _BroProfileState extends State<BroProfile> {
     broPassword = newPasswordController2.text;
     currentUser.password = broPassword;
     storage.updateUser(currentUser).then((value) {
-      print("we have updated the user!");
-      print(value);
       oldPasswordController.text = broPassword;
       newPasswordController1.text = "";
       newPasswordController2.text = "";
@@ -129,8 +127,6 @@ class _BroProfileState extends State<BroProfile> {
       currentUser.bromotion = bromotionChangeController.text;
       settings.setBromotion(currentUser.bromotion);
       storage.updateUser(currentUser).then((value) {
-        print("we have updated the user!");
-        print(value);
       });
   }
 

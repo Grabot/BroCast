@@ -473,7 +473,6 @@ class _BroMessagingState extends State<BroMessaging> {
   }
 
   messageRead(var data) {
-    print("we have read the message! $data");
     var timeLastRead = DateTime.parse(data + 'Z').toLocal();
     for (Message message in this.messages) {
       if (timeLastRead.isAfter(message.getTimeStamp())) {

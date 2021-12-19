@@ -43,11 +43,9 @@ class BroList {
           storage.selectChat(chat.id.toString(), chat.broup.toString()).then((value) {
             if (value == null) {
               storage.addChat(chat).then((value) {
-                print("added a chat that was added since you were away");
               });
             } else {
               storage.updateChat(chat).then((value) {
-                print("a chat was updated!");
               });
             }
           });
@@ -96,13 +94,10 @@ class BroList {
             // We only check the not added bro's since we've might have added them.
             if (broBros.id == bro.id) {
               // If we have found one that is the same bro we should update it to a BroAdded
-              print("found one to be updated!");
               BroAdded updatedBro = new BroAdded(bro.id, broup.id, broBros.chatName);
               updatedBro.setAdmin(bro.isAdmin());
-              print("name: ${updatedBro.chatName}");
               // Because it has the same id and broupid it should be updated in the db.
               storage.updateBro(updatedBro, broup.id.toString()).then((value) {
-                print("The added bro is successfully updated in a broup object");
               });
             }
           }
@@ -115,14 +110,10 @@ class BroList {
     // Check if bro's was removed
     List<int> removedBros = new List<int>.from(oldBroup.participants);
     removedBros.removeWhere((broId) => newBroup.participants.contains(broId));
-    print(removedBros);
     // Remove the bro's that have been removed from the db for this broup
     for (int removedBroId in removedBros) {
-      print("removing bro id ${removedBroId.toString()} from broup with id ${newBroup.id.toString()}");
       storage.deleteBro(removedBroId.toString(), newBroup.id.toString()).then((value) {
-        print("we have removed a bro from the db!");
       });
-      print("also remove it from our list of bros");
       broupBros.removeWhere((broupBro){
         return broupBro.id == removedBroId;
       });
@@ -137,7 +128,6 @@ class BroList {
       for (Bro bro in broupBros) {
         if (!participants.contains(bro.id)) {
           storage.deleteBro(bro.id.toString(), bro.broupId.toString()).then((value) {
-            print("we had to remove a bro unfortunately.");
           });
         }
       }
@@ -148,13 +138,9 @@ class BroList {
     storage.selectBro(bro.id.toString(), bro.broupId.toString()).then((value) {
       if (value == null) {
         storage.addBro(bro).then((value) {
-          print("we have added a bro to the db for the broup!");
-          print("broupid ${bro.broupId}");
-          print("bro id ${bro.id}");
         });
       } else {
         storage.updateBro(bro, bro.broupId.toString()).then((value) {
-          print("we have updated a bro to the db for the broup!");
         });
       }
     });
@@ -165,7 +151,6 @@ class BroList {
     List<int> addedBro = new List<int>.from(newBroupP);
     List<int> remainingAdmins = new List<int>.from(newBroupA);
     addedBro.removeWhere((broId) => oldBroupP.contains(broId));
-    print(addedBro);
 
     if (addedBro.contains(settings.getBroId())) {
       // If you are added to a new bro you will be in the addedBro list.
@@ -200,7 +185,6 @@ class BroList {
       }
     }
 
-    print("addedBro remaing $addedBro");
     if (addedBro.length != 0) {
       getBroupBros.getBroupBros(
           settings.getToken(), broupId, addedBro).then((value) {
@@ -217,7 +201,6 @@ class BroList {
           }
           // The list can't be empty if everything was retrieved correctly.
           if (addedBro.length != 0) {
-            print("big error! Fix it!");
           }
         }
       });
@@ -225,7 +208,6 @@ class BroList {
   }
 
   updateBroupBrosAdmins(List<Bro> broupBros, List<int> admins) {
-    print("updating broup bro admins");
     List<int> remainingAdmins = new List<int>.from(admins);
     for (Bro bro in broupBros) {
       // We want to see who is admin and who isn't.
@@ -240,7 +222,6 @@ class BroList {
       }
       insertOrUpdateBro(bro);
     }
-    print("we've covered all Bro's length: ${remainingAdmins.length}");
   }
 
   updateAliases(List<Bro> broupBros) {
