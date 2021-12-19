@@ -165,15 +165,9 @@ class _BroupDetailsState extends State<BroupDetails> {
         .on('message_event_change_broup_remove_bro_failed', (data) {
       broupRemoveBroFailed();
     });
-    // TODO: @SKools check of deze nog nodig zijn
     socketServices.socket.on('message_event_add_bro_failed', (data) {
       broAddingFailed();
     });
-    // TODO: @SKools check of deze nog nodig zijn
-    socketServices.socket.on('message_event_change_broup_mute_success', (data) {
-      broupWasMuted(data);
-    });
-    // TODO: @SKools check of deze nog nodig zijn
     socketServices.socket.on('message_event_change_broup_mute_failed', (data) {
       broupMutingFailed();
     });
@@ -308,7 +302,6 @@ class _BroupDetailsState extends State<BroupDetails> {
     socketServices.socket.off('message_event_change_broup_remove_bro_failed');
     socketServices.socket.off('message_event_add_bro_success');
     socketServices.socket.off('message_event_add_bro_failed');
-    socketServices.socket.off('message_event_change_broup_mute_success');
     socketServices.socket.off('message_event_change_broup_mute_failed');
     chatDescriptionController.dispose();
     chatAliasController.dispose();
@@ -1317,7 +1310,6 @@ void buttonMessage(BuildContext context, Bro bro, bool alertDialog) {
   } else {
     Navigator.pop<int>(context, 1);
   }
-  // TODO: @Skools test this and maybe make it nice with a function callback?
   BroList broList = BroList();
   for (Chat br0 in broList.getBros()) {
     if (!br0.isBroup()) {

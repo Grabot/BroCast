@@ -107,9 +107,6 @@ class _BroChatDetailsState extends State<BroChatDetails> {
         (data) {
       chatColourUpdateFailed();
     });
-    socketServices.socket.on('message_event_change_chat_mute_success', (data) {
-      chatWasMuted(data);
-    });
     socketServices.socket.on('message_event_change_chat_mute_failed', (data) {
       chatMutingFailed();
     });
@@ -180,7 +177,6 @@ class _BroChatDetailsState extends State<BroChatDetails> {
     BackButtonInterceptor.remove(myInterceptor);
     socketServices.socket.off('message_event_change_chat_details_failed');
     socketServices.socket.off('message_event_change_chat_colour_failed');
-    socketServices.socket.off('message_event_change_chat_mute_success');
     socketServices.socket.off('message_event_change_chat_mute_failed');
     socketServices.removeListener(socketListener);
     chatDescriptionController.dispose();
