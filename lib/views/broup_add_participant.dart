@@ -9,6 +9,7 @@ import 'package:brocast/utils/bro_list.dart';
 import 'package:brocast/utils/utils.dart';
 import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
 import 'package:flutter/material.dart';
+import 'bro_home.dart';
 import 'bro_profile.dart';
 import 'bro_settings.dart';
 import 'broup_details.dart';
@@ -213,7 +214,8 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> {
                   PopupMenuItem<int>(value: 0, child: Text("Profile")),
                   PopupMenuItem<int>(value: 1, child: Text("Settings")),
                   PopupMenuItem<int>(value: 2, child: Text("Back to broup details")),
-                ])
+                  PopupMenuItem<int>(value: 3, child: Text("Home"))
+              ])
           ]),
     );
   }
@@ -240,6 +242,13 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> {
                   key: UniqueKey(),
                   chat: chat
                 )));
+        break;
+      case 3:
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) =>
+            BroCastHome(
+                key: UniqueKey()
+            )));
         break;
     }
   }

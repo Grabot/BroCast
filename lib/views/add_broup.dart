@@ -124,13 +124,7 @@ class _AddBroupState extends State<AddBroup> {
                 itemBuilder: (context) => [
                       PopupMenuItem<int>(value: 0, child: Text("Profile")),
                       PopupMenuItem<int>(value: 1, child: Text("Settings")),
-                      PopupMenuItem<int>(
-                          value: 2,
-                          child: Row(children: [
-                            Icon(Icons.logout, color: Colors.black),
-                            SizedBox(width: 8),
-                            Text("Log Out")
-                          ]))
+                      PopupMenuItem<int>(value: 2, child: Text("Home"))
                     ])
           ]),
     );
@@ -174,12 +168,11 @@ class _AddBroupState extends State<AddBroup> {
         )));
         break;
       case 2:
-        ResetRegistration resetRegistration = new ResetRegistration();
-        resetRegistration.removeRegistrationId(settings.getBroId());
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => SignIn(
-          key: UniqueKey()
-        )));
+            context, MaterialPageRoute(builder: (context) =>
+            BroCastHome(
+                key: UniqueKey()
+            )));
         break;
     }
   }

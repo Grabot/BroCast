@@ -337,6 +337,7 @@ class _BroupDetailsState extends State<BroupDetails> {
                       PopupMenuItem<int>(value: 0, child: Text("Profile")),
                       PopupMenuItem<int>(value: 1, child: Text("Settings")),
                       PopupMenuItem<int>(value: 2, child: Text("Back to broup")),
+                      PopupMenuItem<int>(value: 3, child: Text("Home"))
                     ])
           ]),
     );
@@ -364,6 +365,13 @@ class _BroupDetailsState extends State<BroupDetails> {
                     key: UniqueKey(),
                     chat: chat
                 )));
+        break;
+      case 3:
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) =>
+            BroCastHome(
+                key: UniqueKey()
+            )));
         break;
     }
   }

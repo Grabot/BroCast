@@ -249,8 +249,8 @@ class _FindBrosState extends State<FindBros> {
                 onSelected: (item) => onSelect(context, item),
                 itemBuilder: (context) => [
                       PopupMenuItem<int>(value: 0, child: Text("Profile")),
-                      PopupMenuItem<int>(value: 1, child: Text("Settings"))
-                  // TODO: @SKools home?
+                      PopupMenuItem<int>(value: 1, child: Text("Settings")),
+                      PopupMenuItem<int>(value: 2, child: Text("Home"))
                     ])
           ]),
     );
@@ -269,6 +269,13 @@ class _FindBrosState extends State<FindBros> {
             context, MaterialPageRoute(builder: (context) => BroSettings(
             key: UniqueKey()
         )));
+        break;
+      case 2:
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) =>
+            BroCastHome(
+                key: UniqueKey()
+            )));
         break;
     }
   }

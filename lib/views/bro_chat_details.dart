@@ -211,6 +211,7 @@ class _BroChatDetailsState extends State<BroChatDetails> {
                       PopupMenuItem<int>(value: 0, child: Text("Profile")),
                       PopupMenuItem<int>(value: 1, child: Text("Settings")),
                       PopupMenuItem<int>(value: 2, child: Text("Back to chat")),
+                      PopupMenuItem<int>(value: 3, child: Text("Home"))
                     ])
           ]),
     );
@@ -238,6 +239,13 @@ class _BroChatDetailsState extends State<BroChatDetails> {
                   key: UniqueKey(),
                   chat: chat
                 )));
+        break;
+      case 3:
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) =>
+            BroCastHome(
+                key: UniqueKey()
+            )));
         break;
     }
   }
