@@ -935,7 +935,7 @@ class _BroupDetailsState extends State<BroupDetails> {
         return AlertDialog(
           title: new Text("Report broup $chatName!"),
           content: new Text(
-              "Are you sure you want to report this broup? The most recent messages from this broup will be forwarded to Zwaar developers to assess possible deletion of the broup. This broup and the messages will be removed from your bro list and the former broup can't send you messages anymore. This former broup will not be notified of the report. \n(This action cannot be undone!)"),
+              "Are you sure you want to report this broup? The most recent messages from this broup will be forwarded to Zwaar developers to assess possible deletion of the broup. This broup and the messages will be removed from your bro list and the former broup can't send you messages anymore. This former broup will not be notified of the report."),
           actions: <Widget>[
             new TextButton(
               child: new Text("Cancel"),

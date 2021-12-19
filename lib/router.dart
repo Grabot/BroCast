@@ -8,7 +8,6 @@ import 'objects/bro_bros.dart';
 import 'objects/broup.dart';
 
 
-// TODO: @Skools set SETTINGS data in every one of these routes. (from database)
 Route<dynamic> generateRoute(RouteSettings settings) {
   switch (settings.name) {
     case routes.BroRoute:

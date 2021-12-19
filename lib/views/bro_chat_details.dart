@@ -785,7 +785,7 @@ class _BroChatDetailsState extends State<BroChatDetails> {
         return AlertDialog(
           title: new Text("Remove Bro $chatName!"),
           content: new Text(
-              "Are you sure you want to delete this chat? This bro and the messages will be removed from your bro list and the former bro can't send you messages anymore. \n(This action cannot be undone!)"),
+              "Are you sure you want to delete this chat? This bro and the messages will be removed from your bro list and the former bro can't send you messages anymore."),
           actions: <Widget>[
             new TextButton(
               child: new Text("Cancel"),
@@ -812,7 +812,7 @@ class _BroChatDetailsState extends State<BroChatDetails> {
         return AlertDialog(
           title: new Text("Report bro $chatName!"),
           content: new Text(
-              "Are you sure you want to report this bro? The most recent messages from this bro to you will be forwarded to Zwaar developers to assess possible deletion of the bro's account. This bro and the messages will be removed from your bro list and the former bro can't send you messages anymore. This former bro will not be notified of the report. \n(This action cannot be undone!)"),
+              "Are you sure you want to report this bro? The most recent messages from this bro to you will be forwarded to Zwaar developers to assess possible deletion of the bro's account. This bro and the messages will be removed from your bro list and the former bro can't send you messages anymore. This former bro will not be notified of the report."),
           actions: <Widget>[
             new TextButton(
               child: new Text("Cancel"),

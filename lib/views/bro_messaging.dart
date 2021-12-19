@@ -280,7 +280,8 @@ class _BroMessagingState extends State<BroMessaging> {
     }
   }
 
-  mergeMessages(List<Message> newMessages) {
+  mergeMessages(List<Message> incomingMessages) {
+    List<Message> newMessages = removeDuplicates(incomingMessages);
     if (this.messages.length != 0) {
       int lastId = this.messages[this.messages.length - 1].id;
       if (lastId == 0) {
@@ -297,6 +298,22 @@ class _BroMessagingState extends State<BroMessaging> {
 
   int getBroBrosId() {
     return chat.id;
+  }
+
+  List<Message> removeDuplicates(List<Message> newMessages) {
+    List<Message> noDuplicates = [];
+    for (Message message in newMessages) {
+      bool notAdded = true;
+      for (Message messageNoDuplicate in noDuplicates) {
+        if (message.id == messageNoDuplicate.id) {
+          notAdded = false;
+        }
+      }
+      if (notAdded) {
+        noDuplicates.add(message);
+      }
+    }
+    return noDuplicates;
   }
 
   setDateTiles() {

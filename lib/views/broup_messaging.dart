@@ -7,9 +7,11 @@ import 'package:brocast/objects/chat.dart';
 import 'package:brocast/objects/message.dart';
 import 'package:brocast/services/get_chat.dart';
 import 'package:brocast/services/get_messages.dart';
+import 'package:brocast/services/navigation_service.dart';
 import 'package:brocast/services/settings.dart';
 import 'package:brocast/services/socket_services.dart';
 import 'package:brocast/utils/bro_list.dart';
+import 'package:brocast/utils/locator.dart';
 import 'package:brocast/utils/notification_util.dart';
 import 'package:brocast/utils/storage.dart';
 import 'package:brocast/utils/utils.dart';
@@ -20,6 +22,7 @@ import 'package:intl/intl.dart';
 import 'bro_profile.dart';
 import 'bro_settings.dart';
 import 'broup_details.dart';
+import 'package:brocast/constants/route_paths.dart' as routes;
 
 
 class BroupMessaging extends StatefulWidget {
@@ -932,6 +935,8 @@ class _MessageTileState extends State<MessageTile> {
 
   SocketServices socketServices = SocketServices();
 
+  final NavigationService _navigationService = locator<NavigationService>();
+
   Settings settings = Settings();
 
   selectMessage(BuildContext context) {
@@ -1099,19 +1104,17 @@ class _MessageTileState extends State<MessageTile> {
       ).then((int? delta) {
         if (delta == 1) {
           bool broTransition = false;
-          // TODO: @Skools test this and possibly make nice with a function callback?
           BroList broList = BroList();
           for (Chat br0 in broList.getBros()) {
             if (!br0.isBroup()) {
-              // TODO: @SKools FIX ROUTING!
               if (br0.id == widget.senderId) {
                 broTransition = true;
-                // _navigationService.navigateTo(routes.BroRoute, arguments: br0);
+                _navigationService.navigateTo(routes.BroRoute, arguments: br0);
               }
             }
           }
           if (!broTransition) {
-            // _navigationService.navigateTo(routes.HomeRoute);
+            _navigationService.navigateTo(routes.HomeRoute);
           }
         } else if (delta == 2) {
           widget.addNewBro(widget.senderId);
