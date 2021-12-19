@@ -644,7 +644,6 @@ class _BroChatDetailsState extends State<BroChatDetails> {
                             ]
                         )
                     ),
-                    SizedBox(height: 10),
                     TextButton(
                         style: ButtonStyle(
                           foregroundColor:
@@ -668,49 +667,6 @@ class _BroChatDetailsState extends State<BroChatDetails> {
                           ]
                         )
                       ),
-                    SizedBox(height: 10),
-                    TextButton(
-                        style: ButtonStyle(
-                          foregroundColor:
-                          MaterialStateProperty.all<Color>(Colors.red),
-                        ),
-                        onPressed: () {
-                          showDialogRemove(context, chat.getBroNameOrAlias());
-                        },
-                        child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.delete, color: Colors.red),
-                              SizedBox(width: 20),
-                              Text(
-                                'Delete Bro',
-                                style: simpleTextStyle(),
-                              ),
-                            ]
-                        )
-                    ),
-                    SizedBox(height: 10),
-                    TextButton(
-                        style: ButtonStyle(
-                          foregroundColor:
-                          MaterialStateProperty.all<Color>(Colors.red),
-                        ),
-                        onPressed: () {
-                          showDialogReport(context, chat.getBroNameOrAlias());
-                        },
-                        child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.thumb_down, color: Colors.red),
-                              SizedBox(width: 20),
-                              Text(
-                                'Report Bro',
-                                style: simpleTextStyle(),
-                              ),
-                            ]
-                        )
-                    ),
-                    SizedBox(height: 20),
                     ]
                     )
                     ),
@@ -742,54 +698,51 @@ class _BroChatDetailsState extends State<BroChatDetails> {
                                       ]
                                   )
                               ),
-                              TextButton(
-                                  style: ButtonStyle(
-                                    foregroundColor:
-                                    MaterialStateProperty.all<Color>(Colors.red),
-                                  ),
-                                  onPressed: () {
-                                    showDialogRemove(context, chat.getBroNameOrAlias());
-                                  },
-                                  child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Icon(Icons.delete, color: Colors.red),
-                                        SizedBox(width: 20),
-                                        Text(
-                                          'Delete Bro',
-                                          style: simpleTextStyle(),
-                                        ),
-                                      ]
-                                  )
-                              ),
-                              SizedBox(height: 10),
-                              TextButton(
-                                  style: ButtonStyle(
-                                    foregroundColor:
-                                    MaterialStateProperty.all<Color>(Colors.red),
-                                  ),
-                                  onPressed: () {
-                                    showDialogReport(context, chat.getBroNameOrAlias());
-                                  },
-                                  child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Icon(Icons.thumb_down, color: Colors.red),
-                                        SizedBox(width: 20),
-                                        Text(
-                                          'Report Bro',
-                                          style: simpleTextStyle(),
-                                        ),
-                                      ]
-                                  )
-                              ),
-                              SizedBox(height:200)
-                            ],
-                          )
+                              ]
+                            ),
                         )
-                        : Container(
-                      child: SizedBox(height:20)
-                    )
+                        : Container(),
+                  TextButton(
+                      style: ButtonStyle(
+                        foregroundColor:
+                        MaterialStateProperty.all<Color>(Colors.red),
+                      ),
+                      onPressed: () {
+                        showDialogRemove(context, chat.getBroNameOrAlias());
+                      },
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.delete, color: Colors.red),
+                            SizedBox(width: 20),
+                            Text(
+                              'Delete Bro',
+                              style: simpleTextStyle(),
+                            ),
+                          ]
+                      )
+                  ),
+                  TextButton(
+                      style: ButtonStyle(
+                        foregroundColor:
+                        MaterialStateProperty.all<Color>(Colors.red),
+                      ),
+                      onPressed: () {
+                        showDialogReport(context, chat.getBroNameOrAlias());
+                      },
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.thumb_down, color: Colors.red),
+                            SizedBox(width: 20),
+                            Text(
+                              'Report Bro',
+                              style: simpleTextStyle(),
+                            ),
+                          ]
+                      )
+                  ),
+                  SizedBox(height:100)
                   ],
                 ),
               ),
