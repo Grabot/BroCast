@@ -100,7 +100,9 @@ class _BroCastHomeState extends State<BroCastHome> {
               // This is just to update the token in case it is invalidated.
               Auth auth = Auth();
               auth.signInUser(user).then((value) {
-                setState(() {});
+                if (mounted) {
+                  setState(() {});
+                }
               });
             }
           });

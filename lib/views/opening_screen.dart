@@ -86,13 +86,89 @@ class _OpeningScreenState extends State<OpeningScreen> {
         });
 
       } else {
-        setState(() {
-          isLoading = false;
+        // no user in database! But maybe in shared preferences
+        HelperFunction.getBroToken().then((tok) {
+          if (tok == null || tok == "") {
+            // no token currently in the shared preferences, maybe name and password?
+            HelperFunction.getBroInformation().then((val) {
+              if (val != null && val.length != 0) {
+                String broName = val[0];
+                String bromotion = val[1];
+                String broPassword = val[2];
+                Auth auth = Auth();
+                User user = new User(-1, broName, bromotion, broPassword, "", "", 1, 0);
+                auth.signInUser(user).then((value) {
+                  if (value) {
+                    Navigator.pushReplacement(
+                        context, MaterialPageRoute(builder: (context) =>
+                        BroCastHome(
+                            key: UniqueKey()
+                        )));
+                  } else {
+                    Navigator.pushReplacement(
+                        context, MaterialPageRoute(builder: (context) => SignIn(
+                        key: UniqueKey()
+                    )));
+                  }
+                });
+              } else {
+                // If there is nothing in the shared preferences than we will assume that it is a new user and we go to the sign in screen
+                setState(() {
+                  isLoading = false;
+                });
+                Navigator.pushReplacement(
+                    context, MaterialPageRoute(builder: (context) => SignIn(
+                    key: UniqueKey()
+                )));
+              }
+            });
+          } else {
+            // There is a token. We will create a user with what we find in the shared preferences.
+            HelperFunction.getBroInformation().then((val) {
+              if (val != null && val.length != 0) {
+                // we will assume that it can get this information
+                String broName = val[0];
+                String bromotion = val[1];
+                String broPassword = val[2];
+
+                Auth auth = Auth();
+                User user = new User(-1, broName, bromotion, broPassword, tok, "", 1, 0);
+                auth.signInUser(user).then((value) {
+                  if (value) {
+                    Navigator.pushReplacement(
+                        context, MaterialPageRoute(builder: (context) =>
+                        BroCastHome(
+                            key: UniqueKey()
+                        )));
+                  } else {
+                    Navigator.pushReplacement(
+                        context, MaterialPageRoute(builder: (context) => SignIn(
+                        key: UniqueKey()
+                    )));
+                  }
+                });
+              } else {
+                // that didin't seem to work, let's pray that just the token works
+                Auth auth = Auth();
+                User user = new User(-1, "", "", "", tok, "", 1, 0);
+                auth.signInUser(user).then((value) {
+                  if (value) {
+                    Navigator.pushReplacement(
+                        context, MaterialPageRoute(builder: (context) =>
+                        BroCastHome(
+                            key: UniqueKey()
+                        )));
+                  } else {
+                    Navigator.pushReplacement(
+                        context, MaterialPageRoute(builder: (context) => SignIn(
+                        key: UniqueKey()
+                    )));
+                  }
+                });
+              }
+            });
+          }
         });
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => SignIn(
-          key: UniqueKey()
-        )));
       }
     });
   }
