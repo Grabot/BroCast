@@ -132,11 +132,10 @@ class Auth {
 
   storeUser(int broId, String broName, String bromotion, String password, String token, String registrationId) async {
     User user = new User(broId, broName, bromotion, password, token, registrationId, 1, 0);
-    var storage = Storage();
+    Storage storage = Storage();
     await storage.selectUser().then((value) async {
       if (value != null) {
 
-        settings.setEmojiKeyboardDarkMode(user.getKeyboardDarkMode());
         settings.setBroId(user.id);
         settings.setBroName(user.broName);
         settings.setBromotion(user.bromotion);

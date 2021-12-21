@@ -56,7 +56,6 @@ class _BroCastHomeState extends State<BroCastHome> {
   @override
   void initState() {
     super.initState();
-    storage = Storage();
     broList = BroList();
     socketServices = SocketServices();
     socketServices.setStorageInstance(storage);

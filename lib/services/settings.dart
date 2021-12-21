@@ -11,8 +11,6 @@ class Settings {
   String broName = "";
   String bromotion = "";
 
-  bool calledTwice = false;
-
   BroAdded? me;
 
   Settings._internal();

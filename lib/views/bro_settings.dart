@@ -25,7 +25,7 @@ class _BroSettingsState extends State<BroSettings> {
   Settings settings = Settings();
   SocketServices socketServices = SocketServices();
 
-  var storage;
+  Storage storage = Storage();
 
   @override
   void initState() {

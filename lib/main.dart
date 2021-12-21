@@ -24,7 +24,6 @@ void firebaseBackgroundInitialization() async {
 }
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  // Wat te doen hier? message al getoont en alleen nodig bij open doen
 }
 
 class MyApp extends StatelessWidget {

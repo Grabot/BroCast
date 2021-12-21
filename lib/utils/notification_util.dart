@@ -87,7 +87,7 @@ class NotificationUtil {
   }
 
   void notificationNavigate(int id, int isBroup) {
-    var storage = Storage();
+    Storage storage = Storage();
     storage.selectChat(id.toString(), isBroup.toString()).then((value) {
       if (value != null) {
         Chat chat = value;
