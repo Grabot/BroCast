@@ -34,7 +34,7 @@ class Auth {
       }),
     )
         .timeout(
-      Duration(seconds: 5),
+      Duration(seconds: 8),
       onTimeout: () {
         return new http.Response("", 404);
       },
@@ -88,7 +88,7 @@ class Auth {
       }),
     )
         .timeout(
-      Duration(seconds: 5),
+      Duration(seconds: 8),
       onTimeout: () {
         return new http.Response("", 404);
       },

@@ -50,7 +50,9 @@ class SocketServices extends ChangeNotifier {
       socket.emit('message_event', 'Disconnected!');
     });
 
-    socket.on('message_event', (data) => print(data));
+    socket.on('message_event', (data) {
+      // print(data);
+    });
 
     socket.open();
   }

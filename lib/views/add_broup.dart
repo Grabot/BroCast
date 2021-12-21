@@ -45,6 +45,7 @@ class _AddBroupState extends State<AddBroup> {
   TextEditingController broupNameController = new TextEditingController();
 
   bool showEmojiKeyboard = false;
+  bool pressedAddBroup = false;
 
   @override
   void initState() {
@@ -78,6 +79,7 @@ class _AddBroupState extends State<AddBroup> {
   }
 
   broupWasAdded() {
+    pressedAddBroup = false;
     // The broup was added with a different socket stream.
     // If that was successful we get this message
     // so we can go to the home screen to see the broup
@@ -86,6 +88,7 @@ class _AddBroupState extends State<AddBroup> {
   }
 
   broupAddingFailed() {
+    pressedAddBroup = false;
     ShowToastComponent.showDialog(
         "Broup could not be created at this time", context);
   }
@@ -400,11 +403,13 @@ class _AddBroupState extends State<AddBroup> {
   }
 
   void addBroup() {
-    List<int> participants = [];
-    for (Chat participi in broupParticipants) {
-      participants.add(participi.id);
-    }
-    if (broupValidator.currentState!.validate()) {
+    if (!pressedAddBroup) {
+      List<int> participants = [];
+      for (Chat participi in broupParticipants) {
+        participants.add(participi.id);
+      }
+      if (broupValidator.currentState!.validate()) {
+        pressedAddBroup = true;
         socketServices.socket.emit("message_event_add_broup",
             {
               "token": settings.getToken(),
@@ -412,6 +417,7 @@ class _AddBroupState extends State<AddBroup> {
               "participants": jsonEncode(participants)
             }
         );
+      }
     }
   }
 

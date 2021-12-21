@@ -119,6 +119,7 @@ class Storage {
             textMessage TEXT,
             info INTEGER,
             timestamp TEXT,
+            data TEXT,
             isRead INTEGER,
             isBroup INTEGER,
             UNIQUE(messageId, chatId, isBroup) ON CONFLICT REPLACE

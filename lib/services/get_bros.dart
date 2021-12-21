@@ -17,7 +17,7 @@ class GetBros {
       },
       body: jsonEncode(<String, String>{'token': token}),
     ).timeout(
-      Duration(seconds: 5),
+      Duration(seconds: 8),
       onTimeout: () {
         return new http.Response("", 404);
       },
