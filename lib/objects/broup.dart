@@ -60,6 +60,10 @@ class Broup extends Chat {
     return DateTime.parse(lastActivity).toLocal();
   }
 
+  void updateActivityTime() {
+    this.lastActivity = DateTime.now().toString();
+  }
+
   Color getColor() {
     return Color(int.parse("0xFF${this.chatColor}"));
   }

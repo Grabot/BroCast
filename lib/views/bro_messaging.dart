@@ -72,6 +72,14 @@ class _BroMessagingState extends State<BroMessaging> {
 
     storage.selectChat(chat.id.toString(), chat.broup.toString()).then((value) {
       chat = value as BroBros;
+      chat.updateActivityTime();
+      if (broList.bros.isEmpty) {
+        broList.fillBrosFromDB();
+      } else {
+        broList.updateChat(chat);
+      }
+      storage.updateChat(chat).then((value) {
+      });
       // Check if user data is set.
       if (settings.getBroId() == -1) {
         // The user can directly go here (via notification) So we will retrieve and set the user data.
@@ -97,8 +105,12 @@ class _BroMessagingState extends State<BroMessaging> {
     getChat.getChat(settings.getBroId(), chat.id).then((value) {
       if (value is BroBros) {
         chat = value;
-        chat.unreadMessages = 0;
-        broList.updateChat(chat);
+        chat.updateActivityTime();
+        if (broList.bros.isEmpty) {
+          broList.fillBrosFromDB();
+        } else {
+          broList.updateChat(chat);
+        }
         storage.updateChat(chat).then((value) {
         });
         setState(() {});
@@ -182,6 +194,10 @@ class _BroMessagingState extends State<BroMessaging> {
     broMessageController.dispose();
     appendTextMessageController.dispose();
     BackButtonInterceptor.remove(myInterceptor);
+    if (broList.bros.isNotEmpty) {
+      chat.unreadMessages = 0;
+      broList.updateChat(chat);
+    }
     super.dispose();
   }
 

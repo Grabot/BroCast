@@ -58,6 +58,14 @@ class BroList {
     });
   }
 
+  void fillBrosFromDB() {
+    storage.fetchAllChats().then((value) {
+      if (value.isNotEmpty) {
+        this.bros = value;
+      }
+    });
+  }
+
   List<Chat> getBros() {
     return this.bros;
   }

@@ -48,6 +48,10 @@ class BroBros extends Chat {
     return Color(int.parse("0xFF${this.chatColor}"));
   }
 
+  void updateActivityTime() {
+    this.lastActivity = DateTime.now().toString();
+  }
+
   @override
   String getBroNameOrAlias() {
     if (this.alias != "") {

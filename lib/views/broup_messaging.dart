@@ -80,6 +80,13 @@ class _BroupMessagingState extends State<BroupMessaging> {
     // Retrieve again from db to ensure up to date data.
     storage.selectChat(chat.id.toString(), chat.broup.toString()).then((value) {
       chat = value as Broup;
+      if (broList.bros.isEmpty) {
+        broList.fillBrosFromDB();
+      } else {
+        broList.updateChat(chat);
+      }
+      storage.updateChat(chat).then((value) {
+      });
       storage.fetchAllBrosOfBroup(chat.id.toString()).then((broupBros) {
         broList.updateAliases(broupBros);
         chat.setBroupBros(broupBros);
@@ -120,8 +127,11 @@ class _BroupMessagingState extends State<BroupMessaging> {
         }
         chat = value;
         chat.setBroupBros(broupBros);
-        chat.unreadMessages = 0;
-        broList.updateChat(chat);
+        if (broList.bros.isEmpty) {
+          broList.fillBrosFromDB();
+        } else {
+          broList.updateChat(chat);
+        }
         storage.updateChat(chat).then((value) {
         });
         setState(() {});
@@ -257,6 +267,10 @@ class _BroupMessagingState extends State<BroupMessaging> {
 
   @override
   void dispose() {
+    if (broList.bros.isNotEmpty) {
+      chat.unreadMessages = 0;
+      broList.updateChat(chat);
+    }
     notificationUtil.clearChat();
     focusAppendText.dispose();
     focusEmojiTextField.dispose();

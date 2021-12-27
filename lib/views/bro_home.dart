@@ -57,6 +57,9 @@ class _BroCastHomeState extends State<BroCastHome> {
   void initState() {
     super.initState();
     broList = BroList();
+    if (broList.bros.isEmpty) {
+      broList.fillBrosFromDB();
+    }
     socketServices = SocketServices();
     socketServices.setStorageInstance(storage);
     socketServices.setBroListInstance(broList);

@@ -60,17 +60,20 @@ class _OpeningScreenState extends State<OpeningScreen> {
             });
             Auth auth = Auth();
             auth.signInUser(user).then((value) {
-              if (value) {
+              if (mounted && value) {
                 Navigator.pushReplacement(
                     context, MaterialPageRoute(builder: (context) =>
                     BroCastHome(
                         key: UniqueKey()
                     )));
               } else {
-                Navigator.pushReplacement(
-                    context, MaterialPageRoute(builder: (context) => SignIn(
-                    key: UniqueKey()
-                )));
+                if (mounted) {
+                  Navigator.pushReplacement(
+                      context, MaterialPageRoute(builder: (context) =>
+                      SignIn(
+                          key: UniqueKey()
+                      )));
+                }
               }
             });
           } else {
