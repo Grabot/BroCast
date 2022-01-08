@@ -2,7 +2,6 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'chat.dart';
 
-
 class BroBros extends Chat {
   BroBros(
       int id,
@@ -15,8 +14,7 @@ class BroBros extends Chat {
       String roomName,
       int blocked,
       int mute,
-      int broup
-    ) {
+      int broup) {
     this.id = id;
     this.chatName = chatName;
     if (chatDescription == null) {
@@ -114,7 +112,6 @@ class BroBros extends Chat {
     map['isBroup'] = 0;
     return map;
   }
-
 
   BroBros.fromDbMap(Map<String, dynamic> map) {
     id = map['chatId'];

@@ -35,8 +35,7 @@ class GetMessages {
               message["timestamp"],
               message["info"] ? 1 : 0,
               brosBroId,
-              0
-          );
+              0);
           if (timeLastRead.isAfter(mes.getTimeStamp())) {
             mes.isRead = 1;
           }
@@ -57,10 +56,8 @@ class GetMessages {
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
-      body: jsonEncode(<String, String>{
-        'token': token,
-        'broup_id': broupId.toString()
-      }),
+      body: jsonEncode(
+          <String, String>{'token': token, 'broup_id': broupId.toString()}),
     );
 
     Map<String, dynamic> registerResponse = jsonDecode(responsePost.body);
@@ -80,8 +77,7 @@ class GetMessages {
               message["timestamp"],
               message["info"] ? 1 : 0,
               broupId,
-              1
-          );
+              1);
           if (timeLastRead.isAfter(mes.getTimeStamp())) {
             mes.isRead = 1;
           }

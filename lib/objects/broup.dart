@@ -4,9 +4,7 @@ import 'package:flutter/material.dart';
 import 'bro.dart';
 import 'chat.dart';
 
-
 class Broup extends Chat {
-
   List<int> participants = [];
   List<int> admins = [];
   List<Bro> broupBros = [];
@@ -25,8 +23,7 @@ class Broup extends Chat {
       int blocked,
       int mute,
       int broup,
-      int left
-    ) {
+      int left) {
     this.id = id;
     this.chatName = broupName;
     if (broupDescription == null) {

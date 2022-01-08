@@ -24,15 +24,10 @@ import 'bro_settings.dart';
 import 'broup_details.dart';
 import 'package:brocast/constants/route_paths.dart' as routes;
 
-
 class BroupMessaging extends StatefulWidget {
   final Broup chat;
 
-  BroupMessaging(
-      {
-        required Key key,
-        required this.chat
-      }) : super(key: key);
+  BroupMessaging({required Key key, required this.chat}) : super(key: key);
 
   @override
   _BroupMessagingState createState() => _BroupMessagingState();
@@ -85,8 +80,7 @@ class _BroupMessagingState extends State<BroupMessaging> {
       } else {
         broList.updateChat(chat);
       }
-      storage.updateChat(chat).then((value) {
-      });
+      storage.updateChat(chat).then((value) {});
       storage.fetchAllBrosOfBroup(chat.id.toString()).then((broupBros) {
         broList.updateAliases(broupBros);
         chat.setBroupBros(broupBros);
@@ -119,7 +113,8 @@ class _BroupMessagingState extends State<BroupMessaging> {
         List<Bro> broupBros = [];
         if (value.participants.length != chat.participants.length) {
           // someone was added(removed( and you didn't get updated, add them now
-          broList.chatChangedCheckForAdded(chat.id, value.getParticipants(), value.getAdmins(), [], broupBros);
+          broList.chatChangedCheckForAdded(chat.id, value.getParticipants(),
+              value.getAdmins(), [], broupBros);
           broList.chatCheckForDBRemoved(chat.id, value.getParticipants());
         } else {
           broupBros = chat.getBroupBros();
@@ -132,8 +127,7 @@ class _BroupMessagingState extends State<BroupMessaging> {
         } else {
           broList.updateChat(chat);
         }
-        storage.updateChat(chat).then((value) {
-        });
+        storage.updateChat(chat).then((value) {});
         setState(() {});
       }
     });
@@ -142,8 +136,9 @@ class _BroupMessagingState extends State<BroupMessaging> {
 
     messageScrollController.addListener(() {
       if (!busyRetrieving && !allMessagesDBRetrieved) {
-        double distanceToTop = messageScrollController.position
-            .maxScrollExtent - messageScrollController.position.pixels;
+        double distanceToTop =
+            messageScrollController.position.maxScrollExtent -
+                messageScrollController.position.pixels;
         if (distanceToTop < 1000) {
           busyRetrieving = true;
           amountViewed += 1;
@@ -169,7 +164,7 @@ class _BroupMessagingState extends State<BroupMessaging> {
   socketListener() {
     // There was some update to the bro list.
     // Check the list and see if the change was to this chat object.
-    for(Chat ch4t in broList.getBros()) {
+    for (Chat ch4t in broList.getBros()) {
       if (ch4t.isBroup()) {
         if (ch4t.id == chat.id) {
           // This is the chat object of the current chat.
@@ -188,14 +183,13 @@ class _BroupMessagingState extends State<BroupMessaging> {
   }
 
   addNewBro(int addBroId) {
-    socketServices.socket.on('message_event_add_bro_success', (data) =>
-        broWasAdded(data));
+    socketServices.socket
+        .on('message_event_add_bro_success', (data) => broWasAdded(data));
     socketServices.socket.on('message_event_add_bro_failed', (data) {
-        broAddingFailed();
+      broAddingFailed();
     });
     socketServices.socket.emit("message_event_add_bro",
-        {"token": settings.getToken(), "bros_bro_id": addBroId}
-    );
+        {"token": settings.getToken(), "bros_bro_id": addBroId});
   }
 
   broWasAdded(data) {
@@ -210,16 +204,14 @@ class _BroupMessagingState extends State<BroupMessaging> {
         data["room_name"],
         data["blocked"] ? 1 : 0,
         data["mute"] ? 1 : 0,
-        0
-    );
+        0);
     broList.addChat(broBros);
     storage.addChat(broBros).then((value) {
       broList.updateBroupBrosForBroBros(broBros);
       Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) =>
-          BroCastHome(
-              key: UniqueKey()
-          )));
+          context,
+          MaterialPageRoute(
+              builder: (context) => BroCastHome(key: UniqueKey())));
     });
   }
 
@@ -237,8 +229,7 @@ class _BroupMessagingState extends State<BroupMessaging> {
         data["timestamp"],
         data["info"] ? 1 : 0,
         chat.id,
-        1
-    );
+        1);
     // it's possible that you are receiving the socket message after retrieving
     // it from the rest call from opening the chat.
     // So we will do a simple check if it's in the list
@@ -376,8 +367,7 @@ class _BroupMessagingState extends State<BroupMessaging> {
       // If it is not yet in the db, we store it.
       // If it is in the db we don't do anything, the message won't change.
       if (message.id > 0) {
-        storage.addMessage(message).then((value) {
-        });
+        storage.addMessage(message).then((value) {});
       }
     }
   }
@@ -435,7 +425,8 @@ class _BroupMessagingState extends State<BroupMessaging> {
       timeMessageFirst = "Yesterday";
     }
 
-    Message timeMessage = new Message(0, 0, timeMessageFirst, "", DateTime.now().toUtc().toString(), 1, chat.id, 1);
+    Message timeMessage = new Message(0, 0, timeMessageFirst, "",
+        DateTime.now().toUtc().toString(), 1, chat.id, 1);
     for (int i = 0; i < this.messages.length; i++) {
       DateTime current = this.messages[i].getTimeStamp();
       DateTime dayMessage = DateTime(current.year, current.month, current.day);
@@ -452,7 +443,8 @@ class _BroupMessagingState extends State<BroupMessaging> {
           timeMessageTile = "Yesterday";
         }
         this.messages.insert(i, timeMessage);
-        timeMessage = new Message(0, 0, timeMessageTile, "", DateTime.now().toUtc().toString(), 1, chat.id, 1);
+        timeMessage = new Message(0, 0, timeMessageTile, "",
+            DateTime.now().toUtc().toString(), 1, chat.id, 1);
       }
     }
     this.messages.insert(this.messages.length, timeMessage);
@@ -461,7 +453,8 @@ class _BroupMessagingState extends State<BroupMessaging> {
   updateDateTiles(Message message) {
     // If the day tiles need to be updated after sending a message it will be the today tile.
     if (this.messages.length == 0) {
-      Message timeMessage = new Message(0, 0, "Today", "", DateTime.now().toUtc().toString(), 1, chat.id, 1);
+      Message timeMessage = new Message(
+          0, 0, "Today", "", DateTime.now().toUtc().toString(), 1, chat.id, 1);
       this.messages.insert(0, timeMessage);
     } else {
       Message messageFirst = this.messages.first;
@@ -476,7 +469,8 @@ class _BroupMessagingState extends State<BroupMessaging> {
       if (chatTimeTile != currentDayMessage) {
         chatTimeTile = DateFormat.yMMMMd('en_US').format(dayMessage);
 
-        Message timeMessage = new Message(0, 0, "Today", "", DateTime.now().toUtc().toString(), 1, chat.id, 1);
+        Message timeMessage = new Message(0, 0, "Today", "",
+            DateTime.now().toUtc().toString(), 1, chat.id, 1);
         this.messages.insert(0, timeMessage);
       }
     }
@@ -517,8 +511,8 @@ class _BroupMessagingState extends State<BroupMessaging> {
             timestampString.substring(0, timestampString.length - 1);
       }
       // We set the id to be "-1". For date tiles it is "0", these will be filtered.
-      Message mes =
-          new Message(-1, settings.getBroId(), message, textMessage, timestampString, 0, chat.id, 1);
+      Message mes = new Message(-1, settings.getBroId(), message, textMessage,
+          timestampString, 0, chat.id, 1);
       setState(() {
         this.messages.insert(0, mes);
       });
@@ -566,7 +560,6 @@ class _BroupMessagingState extends State<BroupMessaging> {
     }
   }
 
-
   updateUserActivity(String timestamp) {
     storage.updateChat(chat).then((value) {
       // chat updated
@@ -611,7 +604,7 @@ class _BroupMessagingState extends State<BroupMessaging> {
 
   bool getIsAdded(int senderId) {
     for (Chat bro in broList.getBros()) {
-      if(!bro.isBroup()) {
+      if (!bro.isBroup()) {
         if (bro.id == senderId) {
           return true;
         }
@@ -623,7 +616,7 @@ class _BroupMessagingState extends State<BroupMessaging> {
   String getSender(int senderId) {
     String broName = "";
     for (Chat bro in broList.getBros()) {
-      if(!bro.isBroup()) {
+      if (!bro.isBroup()) {
         if (bro.id == senderId) {
           return bro.getBroNameOrAlias();
         }
@@ -662,9 +655,9 @@ class _BroupMessagingState extends State<BroupMessaging> {
       });
     } else {
       Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => BroCastHome(
-        key: UniqueKey()
-      )));
+          context,
+          MaterialPageRoute(
+              builder: (context) => BroCastHome(key: UniqueKey())));
     }
   }
 
@@ -673,35 +666,35 @@ class _BroupMessagingState extends State<BroupMessaging> {
       preferredSize: const Size.fromHeight(50),
       child: AppBar(
           leading: IconButton(
-              icon: Icon(Icons.arrow_back, color: getTextColor(chat.getColor())),
+              icon:
+                  Icon(Icons.arrow_back, color: getTextColor(chat.getColor())),
               onPressed: () {
                 backButtonFunctionality();
               }),
           backgroundColor: chat.getColor(),
           title: InkWell(
-            onTap: () {
-              Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => BroupDetails(
-                          key: UniqueKey(),
-                          chat: chat
-                      )));
-            },
-            child: Container(
-                alignment: Alignment.centerLeft,
-                color: Colors.transparent,
-                child: Text(chat.getBroNameOrAlias(),
-                    style: TextStyle(
-                        color: getTextColor(chat.getColor()), fontSize: 20)))
-          ),
+              onTap: () {
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            BroupDetails(key: UniqueKey(), chat: chat)));
+              },
+              child: Container(
+                  alignment: Alignment.centerLeft,
+                  color: Colors.transparent,
+                  child: Text(chat.getBroNameOrAlias(),
+                      style: TextStyle(
+                          color: getTextColor(chat.getColor()),
+                          fontSize: 20)))),
           actions: [
             PopupMenuButton<int>(
                 onSelected: (item) => onSelectChat(context, item),
                 itemBuilder: (context) => [
                       PopupMenuItem<int>(value: 0, child: Text("Profile")),
                       PopupMenuItem<int>(value: 1, child: Text("Settings")),
-                      PopupMenuItem<int>(value: 2, child: Text("Broup details")),
+                      PopupMenuItem<int>(
+                          value: 2, child: Text("Broup details")),
                       PopupMenuItem<int>(value: 3, child: Text("Home"))
                     ])
           ]),
@@ -712,31 +705,28 @@ class _BroupMessagingState extends State<BroupMessaging> {
     switch (item) {
       case 0:
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => BroProfile(
-          key: UniqueKey()
-        )));
+            context,
+            MaterialPageRoute(
+                builder: (context) => BroProfile(key: UniqueKey())));
         break;
       case 1:
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => BroSettings(
-          key: UniqueKey()
-        )));
+            context,
+            MaterialPageRoute(
+                builder: (context) => BroSettings(key: UniqueKey())));
         break;
       case 2:
         Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-                builder: (context) => BroupDetails(
-                    key: UniqueKey(),
-                    chat: chat
-                )));
+                builder: (context) =>
+                    BroupDetails(key: UniqueKey(), chat: chat)));
         break;
       case 3:
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) =>
-            BroCastHome(
-                key: UniqueKey()
-            )));
+            context,
+            MaterialPageRoute(
+                builder: (context) => BroCastHome(key: UniqueKey())));
         break;
     }
   }
@@ -751,16 +741,13 @@ class _BroupMessagingState extends State<BroupMessaging> {
           child: Column(
             children: [
               Expanded(
-                child: Stack(
-                  children: [
-                    messageList(),
-                    isLoading? Center(
-                        child: Container(child: CircularProgressIndicator()
-                        )
-                    ) : Container()
-                  ]
-                )
-              ),
+                  child: Stack(children: [
+                messageList(),
+                isLoading
+                    ? Center(
+                        child: Container(child: CircularProgressIndicator()))
+                    : Container()
+              ])),
               Container(
                 child: Container(
                   alignment: Alignment.bottomCenter,
@@ -799,7 +786,9 @@ class _BroupMessagingState extends State<BroupMessaging> {
                                 child: TextFormField(
                                   focusNode: focusEmojiTextField,
                                   validator: (val) {
-                                    if (val == null || val.isEmpty || val.trimRight().isEmpty) {
+                                    if (val == null ||
+                                        val.isEmpty ||
+                                        val.trimRight().isEmpty) {
                                       return "Can't send an empty message";
                                     }
                                     if (chat.hasLeft()) {
@@ -819,7 +808,8 @@ class _BroupMessagingState extends State<BroupMessaging> {
                                   style: TextStyle(color: Colors.white),
                                   decoration: InputDecoration(
                                       hintText: "Emoji message...",
-                                      hintStyle: TextStyle(color: Colors.white54),
+                                      hintStyle:
+                                          TextStyle(color: Colors.white54),
                                       border: InputBorder.none),
                                   readOnly: true,
                                   showCursor: true,
@@ -875,8 +865,8 @@ class _BroupMessagingState extends State<BroupMessaging> {
                                         style: TextStyle(color: Colors.white),
                                         decoration: InputDecoration(
                                             hintText: "Append text message...",
-                                            hintStyle:
-                                                TextStyle(color: Colors.white54),
+                                            hintStyle: TextStyle(
+                                                color: Colors.white54),
                                             border: InputBorder.none),
                                       ),
                                     ),
@@ -913,22 +903,20 @@ class MessageTile extends StatefulWidget {
   final void Function(int) addNewBro;
 
   MessageTile(
-      {
-        required Key key,
-        required this.message,
-        required this.senderName,
-        required this.senderId,
-        required this.broAdded,
-        required this.myMessage,
-        required this.addNewBro
-      }) : super(key: key);
+      {required Key key,
+      required this.message,
+      required this.senderName,
+      required this.senderId,
+      required this.broAdded,
+      required this.myMessage,
+      required this.addNewBro})
+      : super(key: key);
 
   @override
   _MessageTileState createState() => _MessageTileState();
 }
 
 class _MessageTileState extends State<MessageTile> {
-
   var _tapPosition;
 
   SocketServices socketServices = SocketServices();
@@ -948,8 +936,7 @@ class _MessageTileState extends State<MessageTile> {
   @override
   Widget build(BuildContext context) {
     return widget.message.isInformation()
-        ?
-        Row(
+        ? Row(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -966,140 +953,138 @@ class _MessageTileState extends State<MessageTile> {
         : Container(
             margin: EdgeInsets.only(top: 12),
             child: new Material(
-            child: Column(children: [
-              widget.myMessage
-                  ? Container()
-                  : Container(
-                  child: Align(
-                  alignment: Alignment.bottomLeft,
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 12),
-                    child: RichText(
-                      text: TextSpan(
-                        children: [
-                          TextSpan(
-                            text: widget.senderName,
-                            style:
-                            TextStyle(color: Colors.white70, fontSize: 16),
+              child: Column(children: [
+                widget.myMessage
+                    ? Container()
+                    : Container(
+                        child: Align(
+                          alignment: Alignment.bottomLeft,
+                          child: Container(
+                            padding: EdgeInsets.symmetric(horizontal: 12),
+                            child: RichText(
+                              text: TextSpan(
+                                children: [
+                                  TextSpan(
+                                    text: widget.senderName,
+                                    style: TextStyle(
+                                        color: Colors.white70, fontSize: 16),
+                                  ),
+                                ],
+                              ),
+                            ),
                           ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 12),
-                width: MediaQuery.of(context).size.width,
-                alignment: widget.myMessage
-                    ? Alignment.bottomRight
-                    : Alignment.bottomLeft,
-                child: new InkWell(
-                  customBorder: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(42),
-                  ),
-                  onLongPress: _showMessageDetailPopupMenu,
-                  onTapDown: _storePosition,
-                  onTap: () {
-                    selectMessage(context);
-                  },
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                    decoration: BoxDecoration(
-                        border: Border.all(
-                            color: widget.myMessage ?
-                            widget.message.textMessage.isEmpty ||
-                                widget.message.clicked ? Color(0xFF009E00)
-                                : Colors.yellow :
-                            widget.message.textMessage.isEmpty ||
-                                widget.message.clicked ? Color(0xFF0060BB)
-                                : Colors.yellow,
-                            width: 2,
                         ),
-                        color: widget.myMessage
-                            ?  Color(0xFF009E00)
-                            : Color(0xFF0060BB),
-                        borderRadius: widget.myMessage
-                            ? BorderRadius.only(
-                                topLeft: Radius.circular(42),
-                                topRight: Radius.circular(42),
-                                bottomLeft: Radius.circular(42))
-                            : BorderRadius.only(
-                                topLeft: Radius.circular(42),
-                                topRight: Radius.circular(42),
-                                bottomRight: Radius.circular(42))),
-                    child: Column(
-                      children: [
-                        widget.message.clicked
-                            ? Text(widget.message.textMessage,
-                                style: simpleTextStyle())
-                            : Text(widget.message.body,
-                                style: simpleTextStyle()),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              Container(
-                child: Align(
+                      ),
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 12),
+                  width: MediaQuery.of(context).size.width,
                   alignment: widget.myMessage
                       ? Alignment.bottomRight
                       : Alignment.bottomLeft,
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 12),
-                    child: RichText(
-                      text: TextSpan(
-                        children: [
-                          TextSpan(
-                            text: DateFormat('HH:mm')
-                                .format(widget.message.getTimeStamp()),
-                            style:
-                                TextStyle(color: Colors.white54, fontSize: 12),
+                  child: new InkWell(
+                    customBorder: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(42),
+                    ),
+                    onLongPress: _showMessageDetailPopupMenu,
+                    onTapDown: _storePosition,
+                    onTap: () {
+                      selectMessage(context);
+                    },
+                    child: Container(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                      decoration: BoxDecoration(
+                          border: Border.all(
+                            color: widget.myMessage
+                                ? widget.message.textMessage.isEmpty ||
+                                        widget.message.clicked
+                                    ? Color(0xFF009E00)
+                                    : Colors.yellow
+                                : widget.message.textMessage.isEmpty ||
+                                        widget.message.clicked
+                                    ? Color(0xFF0060BB)
+                                    : Colors.yellow,
+                            width: 2,
                           ),
-                          widget.myMessage
-                              ? widget.message.id != -1
-                                  ? WidgetSpan(
-                                      child: Icon(Icons.done_all,
-                                          color: widget.message.hasBeenRead()
-                                              ? Colors.blue
-                                              : Colors.white54,
-                                          size: 18))
-                                  : WidgetSpan(
-                                      child: Icon(Icons.done,
-                                          color: Colors.white54, size: 18))
-                              : WidgetSpan(child: Container()),
+                          color: widget.myMessage
+                              ? Color(0xFF009E00)
+                              : Color(0xFF0060BB),
+                          borderRadius: widget.myMessage
+                              ? BorderRadius.only(
+                                  topLeft: Radius.circular(42),
+                                  topRight: Radius.circular(42),
+                                  bottomLeft: Radius.circular(42))
+                              : BorderRadius.only(
+                                  topLeft: Radius.circular(42),
+                                  topRight: Radius.circular(42),
+                                  bottomRight: Radius.circular(42))),
+                      child: Column(
+                        children: [
+                          widget.message.clicked
+                              ? Text(widget.message.textMessage,
+                                  style: simpleTextStyle())
+                              : Text(widget.message.body,
+                                  style: simpleTextStyle()),
                         ],
                       ),
                     ),
                   ),
                 ),
-              ),
-            ]),
-            color: Colors.transparent,
-          ));
+                Container(
+                  child: Align(
+                    alignment: widget.myMessage
+                        ? Alignment.bottomRight
+                        : Alignment.bottomLeft,
+                    child: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 12),
+                      child: RichText(
+                        text: TextSpan(
+                          children: [
+                            TextSpan(
+                              text: DateFormat('HH:mm')
+                                  .format(widget.message.getTimeStamp()),
+                              style: TextStyle(
+                                  color: Colors.white54, fontSize: 12),
+                            ),
+                            widget.myMessage
+                                ? widget.message.id != -1
+                                    ? WidgetSpan(
+                                        child: Icon(Icons.done_all,
+                                            color: widget.message.hasBeenRead()
+                                                ? Colors.blue
+                                                : Colors.white54,
+                                            size: 18))
+                                    : WidgetSpan(
+                                        child: Icon(Icons.done,
+                                            color: Colors.white54, size: 18))
+                                : WidgetSpan(child: Container()),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ]),
+              color: Colors.transparent,
+            ));
   }
 
   void _showMessageDetailPopupMenu() {
     if (!widget.myMessage) {
-      final RenderBox overlay = Overlay
-          .of(context)!
-          .context
-          .findRenderObject() as RenderBox;
+      final RenderBox overlay =
+          Overlay.of(context)!.context.findRenderObject() as RenderBox;
 
       showMenu(
-          context: context,
-          items: [
-            MessageDetailPopup(
-                key: UniqueKey(),
-                sender: widget.senderName,
-                broAdded: widget.broAdded
-            )
-          ],
-          position: RelativeRect.fromRect(
-              _tapPosition & const Size(40, 40),
-              Offset.zero & overlay.size
-          )
-      ).then((int? delta) {
+              context: context,
+              items: [
+                MessageDetailPopup(
+                    key: UniqueKey(),
+                    sender: widget.senderName,
+                    broAdded: widget.broAdded)
+              ],
+              position: RelativeRect.fromRect(_tapPosition & const Size(40, 40),
+                  Offset.zero & overlay.size))
+          .then((int? delta) {
         if (delta == 1) {
           bool broTransition = false;
           BroList broList = BroList();
@@ -1127,17 +1112,13 @@ class _MessageTileState extends State<MessageTile> {
   }
 }
 
-
 class MessageDetailPopup extends PopupMenuEntry<int> {
-
   final String sender;
   final bool broAdded;
 
-  MessageDetailPopup({
-    required Key key,
-    required this.sender,
-    required this.broAdded
-  }) : super(key: key);
+  MessageDetailPopup(
+      {required Key key, required this.sender, required this.broAdded})
+      : super(key: key);
 
   @override
   bool represents(int? n) => n == 1 || n == -1;
@@ -1150,7 +1131,6 @@ class MessageDetailPopup extends PopupMenuEntry<int> {
 }
 
 class MessageDetailPopupState extends State<MessageDetailPopup> {
-
   @override
   Widget build(BuildContext context) {
     return getPopupItems(context, widget.sender, widget.broAdded);
@@ -1165,35 +1145,32 @@ void buttonAdd(BuildContext context) {
   Navigator.pop<int>(context, 2);
 }
 
-
 Widget getPopupItems(BuildContext context, String sender, bool broAdded) {
-  return Column(
-      children: [
-        broAdded ? Container(
-          alignment: Alignment.centerLeft,
-          child: TextButton(
-              onPressed: () {
-                buttonMessage(context);
-              },
-              child: Text(
-                'Message $sender',
-                textAlign: TextAlign.left,
-                style: TextStyle(color: Colors.black, fontSize: 14),
-              )
+  return Column(children: [
+    broAdded
+        ? Container(
+            alignment: Alignment.centerLeft,
+            child: TextButton(
+                onPressed: () {
+                  buttonMessage(context);
+                },
+                child: Text(
+                  'Message $sender',
+                  textAlign: TextAlign.left,
+                  style: TextStyle(color: Colors.black, fontSize: 14),
+                )),
+          )
+        : Container(
+            alignment: Alignment.centerLeft,
+            child: TextButton(
+                onPressed: () {
+                  buttonAdd(context);
+                },
+                child: Text(
+                  'Add $sender',
+                  textAlign: TextAlign.left,
+                  style: TextStyle(color: Colors.black, fontSize: 14),
+                )),
           ),
-        ) : Container(
-          alignment: Alignment.centerLeft,
-          child: TextButton(
-              onPressed: () {
-                buttonAdd(context);
-              },
-              child: Text(
-                'Add $sender',
-                textAlign: TextAlign.left,
-                style: TextStyle(color: Colors.black, fontSize: 14),
-              )
-          ),
-        ),
-      ]
-  );
+  ]);
 }

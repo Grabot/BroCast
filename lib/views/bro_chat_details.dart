@@ -18,15 +18,10 @@ import 'bro_messaging.dart';
 import 'bro_profile.dart';
 import 'bro_settings.dart';
 
-
 class BroChatDetails extends StatefulWidget {
   final BroBros chat;
 
-  BroChatDetails(
-      {
-        required Key key,
-        required this.chat
-      }) : super(key: key);
+  BroChatDetails({required Key key, required this.chat}) : super(key: key);
 
   @override
   _BroChatDetailsState createState() => _BroChatDetailsState();
@@ -83,8 +78,7 @@ class _BroChatDetailsState extends State<BroChatDetails> {
         chat = value;
         chat.unreadMessages = 0;
         broList.updateChat(chat);
-        storage.updateChat(chat).then((value) {
-        });
+        storage.updateChat(chat).then((value) {});
         setState(() {});
       }
     });
@@ -99,12 +93,11 @@ class _BroChatDetailsState extends State<BroChatDetails> {
   }
 
   void initBroChatDetailsSockets() {
-    socketServices.socket
-        .on('message_event_change_chat_details_failed', (data) {
+    socketServices.socket.on('message_event_change_chat_details_failed',
+        (data) {
       chatDetailUpdateFailed();
     });
-    socketServices.socket.on('message_event_change_chat_colour_failed',
-        (data) {
+    socketServices.socket.on('message_event_change_chat_colour_failed', (data) {
       chatColourUpdateFailed();
     });
     socketServices.socket.on('message_event_change_chat_mute_failed', (data) {
@@ -131,27 +124,27 @@ class _BroChatDetailsState extends State<BroChatDetails> {
         FocusScope.of(context).unfocus();
       });
     } else {
-      Navigator.pushReplacement(context,
-          MaterialPageRoute(builder: (context) => BroMessaging(
-            key: UniqueKey(),
-            chat: chat
-          )));
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  BroMessaging(key: UniqueKey(), chat: chat)));
     }
   }
 
   socketListener() {
     // There was some update to the bro list.
     // Check the list and see if the change was to this chat object.
-    for(Chat ch4t in broList.getBros()) {
+    for (Chat ch4t in broList.getBros()) {
       if (!ch4t.isBroup()) {
         if (ch4t.id == chat.id) {
           // This is the chat object of the current chat.
-          if (ch4t.chatName != chat.chatName
-              || ch4t.chatColor != chat.chatColor
-              || ch4t.chatDescription != chat.chatDescription
-              || ch4t.alias != chat.alias
-              || ch4t.mute != chat.mute
-              || ch4t.blocked != chat.blocked) {
+          if (ch4t.chatName != chat.chatName ||
+              ch4t.chatColor != chat.chatColor ||
+              ch4t.chatDescription != chat.chatDescription ||
+              ch4t.alias != chat.alias ||
+              ch4t.mute != chat.mute ||
+              ch4t.blocked != chat.blocked) {
             // If either the name colour has changed. We want to update the screen
             // We know if it gets here that it is a BroBros object and that
             // it is the same BroBros object as the current open chat
@@ -192,14 +185,15 @@ class _BroChatDetailsState extends State<BroChatDetails> {
       preferredSize: const Size.fromHeight(50),
       child: AppBar(
           leading: IconButton(
-              icon: Icon(Icons.arrow_back, color: getTextColor(chat.getColor())),
+              icon:
+                  Icon(Icons.arrow_back, color: getTextColor(chat.getColor())),
               onPressed: () {
                 backButtonFunctionality();
               }),
           backgroundColor: chat.getColor(),
           title: Text(chat.getBroNameOrAlias(),
-            style: TextStyle(
-            color: getTextColor(chat.getColor()), fontSize: 20)),
+              style: TextStyle(
+                  color: getTextColor(chat.getColor()), fontSize: 20)),
           actions: [
             PopupMenuButton<int>(
                 onSelected: (item) => onSelectChat(context, item),
@@ -217,31 +211,28 @@ class _BroChatDetailsState extends State<BroChatDetails> {
     switch (item) {
       case 0:
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => BroProfile(
-          key: UniqueKey()
-        )));
+            context,
+            MaterialPageRoute(
+                builder: (context) => BroProfile(key: UniqueKey())));
         break;
       case 1:
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => BroSettings(
-          key: UniqueKey()
-        )));
+            context,
+            MaterialPageRoute(
+                builder: (context) => BroSettings(key: UniqueKey())));
         break;
       case 2:
         Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-                builder: (context) => BroMessaging(
-                  key: UniqueKey(),
-                  chat: chat
-                )));
+                builder: (context) =>
+                    BroMessaging(key: UniqueKey(), chat: chat)));
         break;
       case 3:
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) =>
-            BroCastHome(
-                key: UniqueKey()
-            )));
+            context,
+            MaterialPageRoute(
+                builder: (context) => BroCastHome(key: UniqueKey())));
         break;
     }
   }
@@ -264,8 +255,7 @@ class _BroChatDetailsState extends State<BroChatDetails> {
 
   void updateDescription() {
     if (previousDescription != chatDescriptionController.text) {
-      socketServices.socket
-          .emit("message_event_change_chat_details", {
+      socketServices.socket.emit("message_event_change_chat_details", {
         "token": settings.getToken(),
         "bros_bro_id": chat.id,
         "description": chatDescriptionController.text
@@ -284,8 +274,7 @@ class _BroChatDetailsState extends State<BroChatDetails> {
 
   void updateAlias() {
     if (previousAlias != chatAliasController.text) {
-      socketServices.socket
-          .emit("message_event_change_chat_alias", {
+      socketServices.socket.emit("message_event_change_chat_alias", {
         "token": settings.getToken(),
         "bros_bro_id": chat.id,
         "alias": chatAliasController.text
@@ -314,8 +303,7 @@ class _BroChatDetailsState extends State<BroChatDetails> {
   saveColour() {
     if (currentColor != chat.getColor()) {
       String newColour = currentColor.value.toRadixString(16).substring(2, 8);
-      socketServices.socket
-          .emit("message_event_change_chat_colour", {
+      socketServices.socket.emit("message_event_change_chat_colour", {
         "token": settings.getToken(),
         "bros_bro_id": chat.id,
         "colour": newColour
@@ -327,21 +315,23 @@ class _BroChatDetailsState extends State<BroChatDetails> {
   }
 
   void reportTheBro() {
-    reportBro.reportBro(
-        settings.getToken(),
-        chat.id
-    ).then((val) {
+    reportBro.reportBro(settings.getToken(), chat.id).then((val) {
       if (val is BroBros) {
         BroBros broToRemove = val;
         storage.deleteChat(broToRemove).then((value) {
           Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) => BroCastHome(key: UniqueKey())));
+              context,
+              MaterialPageRoute(
+                  builder: (context) => BroCastHome(key: UniqueKey())));
         });
       } else {
         if (val == "an unknown error has occurred") {
-          ShowToastComponent.showDialog("An unknown error has occurred", context);
+          ShowToastComponent.showDialog(
+              "An unknown error has occurred", context);
         } else {
-          ShowToastComponent.showDialog("There was an error with the server, we apologize for the inconvenience.", context);
+          ShowToastComponent.showDialog(
+              "There was an error with the server, we apologize for the inconvenience.",
+              context);
         }
       }
     });
@@ -349,23 +339,25 @@ class _BroChatDetailsState extends State<BroChatDetails> {
   }
 
   void removeTheBro() {
-    removeBro.removeBro(
-        settings.getToken(),
-        chat.id
-    ).then((val) {
+    removeBro.removeBro(settings.getToken(), chat.id).then((val) {
       // De bro moet verwijderd worden!
       if (val is BroBros) {
         BroBros broToRemove = val;
         broList.deleteChat(broToRemove);
         storage.deleteChat(broToRemove).then((value) {
           Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) => BroCastHome(key: UniqueKey())));
+              context,
+              MaterialPageRoute(
+                  builder: (context) => BroCastHome(key: UniqueKey())));
         });
       } else {
         if (val == "an unknown error has occurred") {
-          ShowToastComponent.showDialog("An unknown error has occurred", context);
+          ShowToastComponent.showDialog(
+              "An unknown error has occurred", context);
         } else {
-          ShowToastComponent.showDialog("There was an error with the server, we apologize for the inconvenience.", context);
+          ShowToastComponent.showDialog(
+              "There was an error with the server, we apologize for the inconvenience.",
+              context);
         }
       }
     });
@@ -373,11 +365,7 @@ class _BroChatDetailsState extends State<BroChatDetails> {
   }
 
   void blockTheBro(bool blocked) {
-    blockBro.blockBro(
-      settings.getToken(),
-      chat.id,
-        blocked
-    ).then((val) {
+    blockBro.blockBro(settings.getToken(), chat.id, blocked).then((val) {
       if (val is BroBros) {
         setState(() {
           this.chat = val;
@@ -387,9 +375,12 @@ class _BroChatDetailsState extends State<BroChatDetails> {
         });
       } else {
         if (val == "an unknown error has occurred") {
-          ShowToastComponent.showDialog("An unknown error has occurred", context);
+          ShowToastComponent.showDialog(
+              "An unknown error has occurred", context);
         } else {
-          ShowToastComponent.showDialog("There was an error with the server, we apologize for the inconvenience.", context);
+          ShowToastComponent.showDialog(
+              "There was an error with the server, we apologize for the inconvenience.",
+              context);
         }
       }
     });
@@ -425,8 +416,7 @@ class _BroChatDetailsState extends State<BroChatDetails> {
   }
 
   chatMutingFailed() {
-    ShowToastComponent.showDialog(
-        "Chat muting failed at this time.", context);
+    ShowToastComponent.showDialog("Chat muting failed at this time.", context);
   }
 
   @override
@@ -438,313 +428,308 @@ class _BroChatDetailsState extends State<BroChatDetails> {
             Expanded(
               child: SingleChildScrollView(
                 reverse: true,
-                child: Column(children: [
-                  Container(
-                      alignment: Alignment.center,
-                      child:
-                          Image.asset("assets/images/brocast_transparent.png")),
-                  chat.alias.isNotEmpty
-                  ? Column(
-                    children: [
-                      Container(
-                          padding: EdgeInsets.symmetric(horizontal: 24),
-                          alignment: Alignment.center,
-                          child: Text(
-                            "${chat.alias}",
-                            style: TextStyle(color: Colors.white, fontSize: 25),
-                          )),
-                      SizedBox(height: 10),
-                      Container(
-                          padding: EdgeInsets.symmetric(horizontal: 24),
-                          alignment: Alignment.center,
-                          child: Text(
-                            "${chat.chatName}",
-                            style: TextStyle(color: Colors.white, fontSize: 16),
-                          ))
-                    ]
-                  )
-                  : Container(
-                      padding: EdgeInsets.symmetric(horizontal: 24),
-                      alignment: Alignment.center,
-                      child: Text(
-                        "${chat.chatName}",
-                        style: TextStyle(color: Colors.white, fontSize: 25),
-                      )),
-                  SizedBox(height: 20),
-                chat.isBlocked() ? Container(
-                    padding: EdgeInsets.symmetric(horizontal: 24),
-                    alignment: Alignment.center,
-                    child: Text(
-                      "You've blocked this Bro!",
-                      style: TextStyle(color: Colors.grey, fontSize: 16),
-                    ))
-                  : Container(
-                  child: Column(children: [
+                child: Column(
+                  children: [
                     Container(
-                      padding: EdgeInsets.symmetric(horizontal: 10),
-                      child: Row(
-                        children: [
-                          Container(
-                            // 20 padding on both sides, 5 sizedbox and 18 for button
-                            width: MediaQuery.of(context).size.width-45,
-                            child: TextFormField(
-                              focusNode: focusNodeAlias,
-                              onTap: () {
-                                onTapAliasField();
-                              },
-                              controller: chatAliasController,
-                              style: simpleTextStyle(),
-                              textAlign: TextAlign.center,
-                              decoration: textFieldInputDecoration("No chat alias yet"),
-                            ),
-                          ),
-                          SizedBox(width: 5),
-                          changeAlias
-                              ? Container(
-                            width: 20,
-                            child: IconButton(
-                                iconSize: 20.0,
-                                icon: Icon(Icons.check, color: Colors.white),
-                                onPressed: () {
-                                  updateAlias();
-                                }
-                            ),
-                          )
-                              : Container(
-                            width: 20,
-                            child: IconButton(
-                                iconSize: 20.0,
-                                icon: Icon(Icons.edit, color: Colors.white),
-                                onPressed: () {
-                                  onTapAliasField();
-                                }
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: 20),
-                    Container(
-                      padding: EdgeInsets.symmetric(horizontal: 24),
-                      child: InkWell(
-                        onTap: () {
-                          updateColour();
-                        },
-                        child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            "Color:",
-                            style: simpleTextStyle(),
-                          ),
-                          SizedBox(width: 20),
-                          Container(
-                            height: 40,
-                            width: 40,
+                        alignment: Alignment.center,
+                        child: Image.asset(
+                            "assets/images/brocast_transparent.png")),
+                    chat.alias.isNotEmpty
+                        ? Column(children: [
+                            Container(
+                                padding: EdgeInsets.symmetric(horizontal: 24),
+                                alignment: Alignment.center,
+                                child: Text(
+                                  "${chat.alias}",
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 25),
+                                )),
+                            SizedBox(height: 10),
+                            Container(
+                                padding: EdgeInsets.symmetric(horizontal: 24),
+                                alignment: Alignment.center,
+                                child: Text(
+                                  "${chat.chatName}",
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 16),
+                                ))
+                          ])
+                        : Container(
+                            padding: EdgeInsets.symmetric(horizontal: 24),
                             alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                                color: chat.getColor(),
-                                borderRadius: BorderRadius.circular(40)),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    changeColour
-                      ? Column(
-                        children:[
-                          CircleColorPicker(
-                            controller: circleColorPickerController,
-                            textStyle: simpleTextStyle(),
-                            onChanged: (colour) {
-                              setState(() => onColorChange(colour));
-                              },
-                          ),
-                          IconButton(
-                              iconSize: 30.0,
-                              icon: Icon(Icons.check, color: Colors.green),
-                              onPressed: () {
-                                saveColour();
-                              }
-                          ),
-                        ]
-                    )
-                    : Container(),
+                            child: Text(
+                              "${chat.chatName}",
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 25),
+                            )),
                     SizedBox(height: 20),
-                    Container(
-                      padding: EdgeInsets.symmetric(horizontal: 10),
-                      child: Row(
-                        children: [
-                          Container(
-                            // 20 padding on both sides, 5 sizedbox and 18 for button
-                            width: MediaQuery.of(context).size.width-45,
-                            child: TextFormField(
-                              focusNode: focusNodeDescription,
-                              maxLines: null,
-                              onTap: () {
-                                onTapDescriptionField();
-                              },
-                              controller: chatDescriptionController,
-                              style: simpleTextStyle(),
-                              textAlign: TextAlign.center,
-                              decoration:
-                              textFieldInputDecoration("No chat description yet"),
-                            ),
-                          ),
-                          SizedBox(width: 5),
-                          changeDescription
-                          ? Container(
-                            width: 20,
-                            child: IconButton(
-                              iconSize: 20.0,
-                              icon: Icon(Icons.check, color: Colors.white),
-                              onPressed: () {
-                                updateDescription();
-                              }
-                            ),
-                          )
-                          : Container(
-                            width: 20,
-                            child: IconButton(
-                              iconSize: 20.0,
-                              icon: Icon(Icons.edit, color: Colors.white),
-                              onPressed: () {
-                                onTapDescriptionField();
-                              }
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: 30),
-                    TextButton(
-                        style: ButtonStyle(
-                          foregroundColor:
-                          MaterialStateProperty.all<Color>(Colors.red),
-                        ),
-                        onPressed: () {
-                          chat.isMuted()
-                              ? showDialogUnMuteChat(context)
-                              : showDialogMuteChat(context);
-                        },
-                        child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                  chat.isMuted() ? Icons.volume_up : Icons.volume_mute,
-                                  color: chat.isMuted() ? Colors.grey : Colors.red
-                              ),
-                              SizedBox(width: 20),
-                              chat.isMuted()
-                                  ? Text(
-                                'Unmute Chat',
-                                style: simpleTextStyle(),
-                              ) : Text(
-                                'Mute Chat',
-                                style: simpleTextStyle(),
-                              ),
-                            ]
-                        )
-                    ),
-                    TextButton(
-                        style: ButtonStyle(
-                          foregroundColor:
-                          MaterialStateProperty.all<Color>(Colors.red),
-                        ),
-                        onPressed: () {
-                          showDialogBlock(context, chat.getBroNameOrAlias());
-                        },
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                                Icons.block,
-                                color: Colors.red
-                            ),
-                            SizedBox(width: 20),
-                            Text(
-                              'Block',
-                              style: simpleTextStyle(),
-                            ),
-                          ]
-                        )
-                      ),
-                    ]
-                    )
-                    ),
                     chat.isBlocked()
                         ? Container(
-                          child: Column(
-                            children: [
+                            padding: EdgeInsets.symmetric(horizontal: 24),
+                            alignment: Alignment.center,
+                            child: Text(
+                              "You've blocked this Bro!",
+                              style:
+                                  TextStyle(color: Colors.grey, fontSize: 16),
+                            ))
+                        : Container(
+                            child: Column(children: [
+                            Container(
+                              padding: EdgeInsets.symmetric(horizontal: 10),
+                              child: Row(
+                                children: [
+                                  Container(
+                                    // 20 padding on both sides, 5 sizedbox and 18 for button
+                                    width:
+                                        MediaQuery.of(context).size.width - 45,
+                                    child: TextFormField(
+                                      focusNode: focusNodeAlias,
+                                      onTap: () {
+                                        onTapAliasField();
+                                      },
+                                      controller: chatAliasController,
+                                      style: simpleTextStyle(),
+                                      textAlign: TextAlign.center,
+                                      decoration: textFieldInputDecoration(
+                                          "No chat alias yet"),
+                                    ),
+                                  ),
+                                  SizedBox(width: 5),
+                                  changeAlias
+                                      ? Container(
+                                          width: 20,
+                                          child: IconButton(
+                                              iconSize: 20.0,
+                                              icon: Icon(Icons.check,
+                                                  color: Colors.white),
+                                              onPressed: () {
+                                                updateAlias();
+                                              }),
+                                        )
+                                      : Container(
+                                          width: 20,
+                                          child: IconButton(
+                                              iconSize: 20.0,
+                                              icon: Icon(Icons.edit,
+                                                  color: Colors.white),
+                                              onPressed: () {
+                                                onTapAliasField();
+                                              }),
+                                        ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(height: 20),
+                            Container(
+                              padding: EdgeInsets.symmetric(horizontal: 24),
+                              child: InkWell(
+                                onTap: () {
+                                  updateColour();
+                                },
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      "Color:",
+                                      style: simpleTextStyle(),
+                                    ),
+                                    SizedBox(width: 20),
+                                    Container(
+                                      height: 40,
+                                      width: 40,
+                                      alignment: Alignment.center,
+                                      decoration: BoxDecoration(
+                                          color: chat.getColor(),
+                                          borderRadius:
+                                              BorderRadius.circular(40)),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            changeColour
+                                ? Column(children: [
+                                    CircleColorPicker(
+                                      controller: circleColorPickerController,
+                                      textStyle: simpleTextStyle(),
+                                      onChanged: (colour) {
+                                        setState(() => onColorChange(colour));
+                                      },
+                                    ),
+                                    IconButton(
+                                        iconSize: 30.0,
+                                        icon: Icon(Icons.check,
+                                            color: Colors.green),
+                                        onPressed: () {
+                                          saveColour();
+                                        }),
+                                  ])
+                                : Container(),
+                            SizedBox(height: 20),
+                            Container(
+                              padding: EdgeInsets.symmetric(horizontal: 10),
+                              child: Row(
+                                children: [
+                                  Container(
+                                    // 20 padding on both sides, 5 sizedbox and 18 for button
+                                    width:
+                                        MediaQuery.of(context).size.width - 45,
+                                    child: TextFormField(
+                                      focusNode: focusNodeDescription,
+                                      maxLines: null,
+                                      onTap: () {
+                                        onTapDescriptionField();
+                                      },
+                                      controller: chatDescriptionController,
+                                      style: simpleTextStyle(),
+                                      textAlign: TextAlign.center,
+                                      decoration: textFieldInputDecoration(
+                                          "No chat description yet"),
+                                    ),
+                                  ),
+                                  SizedBox(width: 5),
+                                  changeDescription
+                                      ? Container(
+                                          width: 20,
+                                          child: IconButton(
+                                              iconSize: 20.0,
+                                              icon: Icon(Icons.check,
+                                                  color: Colors.white),
+                                              onPressed: () {
+                                                updateDescription();
+                                              }),
+                                        )
+                                      : Container(
+                                          width: 20,
+                                          child: IconButton(
+                                              iconSize: 20.0,
+                                              icon: Icon(Icons.edit,
+                                                  color: Colors.white),
+                                              onPressed: () {
+                                                onTapDescriptionField();
+                                              }),
+                                        ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(height: 30),
+                            TextButton(
+                                style: ButtonStyle(
+                                  foregroundColor:
+                                      MaterialStateProperty.all<Color>(
+                                          Colors.red),
+                                ),
+                                onPressed: () {
+                                  chat.isMuted()
+                                      ? showDialogUnMuteChat(context)
+                                      : showDialogMuteChat(context);
+                                },
+                                child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                          chat.isMuted()
+                                              ? Icons.volume_up
+                                              : Icons.volume_mute,
+                                          color: chat.isMuted()
+                                              ? Colors.grey
+                                              : Colors.red),
+                                      SizedBox(width: 20),
+                                      chat.isMuted()
+                                          ? Text(
+                                              'Unmute Chat',
+                                              style: simpleTextStyle(),
+                                            )
+                                          : Text(
+                                              'Mute Chat',
+                                              style: simpleTextStyle(),
+                                            ),
+                                    ])),
+                            TextButton(
+                                style: ButtonStyle(
+                                  foregroundColor:
+                                      MaterialStateProperty.all<Color>(
+                                          Colors.red),
+                                ),
+                                onPressed: () {
+                                  showDialogBlock(
+                                      context, chat.getBroNameOrAlias());
+                                },
+                                child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(Icons.block, color: Colors.red),
+                                      SizedBox(width: 20),
+                                      Text(
+                                        'Block',
+                                        style: simpleTextStyle(),
+                                      ),
+                                    ])),
+                          ])),
+                    chat.isBlocked()
+                        ? Container(
+                            child: Column(children: [
                               SizedBox(height: 20),
                               TextButton(
                                   style: ButtonStyle(
                                     foregroundColor:
-                                    MaterialStateProperty.all<Color>(Colors.red),
+                                        MaterialStateProperty.all<Color>(
+                                            Colors.red),
                                   ),
                                   onPressed: () {
                                     showDialogUnBlockChat(context);
                                   },
                                   child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
-                                        Icon(
-                                            Icons.block,
-                                            color: Colors.grey
-                                        ),
+                                        Icon(Icons.block, color: Colors.grey),
                                         SizedBox(width: 20),
                                         Text(
                                           'Unblock',
                                           style: simpleTextStyle(),
                                         )
-                                      ]
-                                  )
-                              ),
-                              ]
-                            ),
-                        )
+                                      ])),
+                            ]),
+                          )
                         : Container(),
-                  TextButton(
-                      style: ButtonStyle(
-                        foregroundColor:
-                        MaterialStateProperty.all<Color>(Colors.red),
-                      ),
-                      onPressed: () {
-                        showDialogRemove(context, chat.getBroNameOrAlias());
-                      },
-                      child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(Icons.delete, color: Colors.red),
-                            SizedBox(width: 20),
-                            Text(
-                              'Delete Bro',
-                              style: simpleTextStyle(),
-                            ),
-                          ]
-                      )
-                  ),
-                  TextButton(
-                      style: ButtonStyle(
-                        foregroundColor:
-                        MaterialStateProperty.all<Color>(Colors.red),
-                      ),
-                      onPressed: () {
-                        showDialogReport(context, chat.getBroNameOrAlias());
-                      },
-                      child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(Icons.thumb_down, color: Colors.red),
-                            SizedBox(width: 20),
-                            Text(
-                              'Report Bro',
-                              style: simpleTextStyle(),
-                            ),
-                          ]
-                      )
-                  ),
-                  SizedBox(height:100)
+                    TextButton(
+                        style: ButtonStyle(
+                          foregroundColor:
+                              MaterialStateProperty.all<Color>(Colors.red),
+                        ),
+                        onPressed: () {
+                          showDialogRemove(context, chat.getBroNameOrAlias());
+                        },
+                        child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.delete, color: Colors.red),
+                              SizedBox(width: 20),
+                              Text(
+                                'Delete Bro',
+                                style: simpleTextStyle(),
+                              ),
+                            ])),
+                    TextButton(
+                        style: ButtonStyle(
+                          foregroundColor:
+                              MaterialStateProperty.all<Color>(Colors.red),
+                        ),
+                        onPressed: () {
+                          showDialogReport(context, chat.getBroNameOrAlias());
+                        },
+                        child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.thumb_down, color: Colors.red),
+                              SizedBox(width: 20),
+                              Text(
+                                'Report Bro',
+                                style: simpleTextStyle(),
+                              ),
+                            ])),
+                    SizedBox(height: 100)
                   ],
                 ),
               ),
@@ -898,31 +883,28 @@ class _BroChatDetailsState extends State<BroChatDetails> {
                       onTap: () {
                         setState(() => selectedRadio = index);
                       },
-                      child: Row(
-                          children: [
-                            Radio<int>(
-                                value: index,
-                                groupValue: selectedRadio,
-                                onChanged: (int? value) {
-                                  if (value != null) {
-                                    setState(() => selectedRadio = value);
-                                  }
-                                }
-                            ),
-                            index == 0 ? Container(
-                                child: Text("1 hour")
-                            ) : Container(),
-                            index == 1 ? Container(
-                                child: Text("8 hours")
-                            ) : Container(),
-                            index == 2 ? Container(
-                                child: Text("1 week")
-                            ) : Container(),
-                            index == 3 ? Container(
-                                child: Text("Indefinitely")
-                            ) : Container(),
-                          ]
-                      ),
+                      child: Row(children: [
+                        Radio<int>(
+                            value: index,
+                            groupValue: selectedRadio,
+                            onChanged: (int? value) {
+                              if (value != null) {
+                                setState(() => selectedRadio = value);
+                              }
+                            }),
+                        index == 0
+                            ? Container(child: Text("1 hour"))
+                            : Container(),
+                        index == 1
+                            ? Container(child: Text("8 hours"))
+                            : Container(),
+                        index == 2
+                            ? Container(child: Text("1 week"))
+                            : Container(),
+                        index == 3
+                            ? Container(child: Text("Indefinitely"))
+                            : Container(),
+                      ]),
                     );
                   }),
                 );
@@ -947,8 +929,7 @@ class _BroChatDetailsState extends State<BroChatDetails> {
   }
 
   void unmuteTheChat() {
-    socketServices.socket
-        .emit("message_event_change_chat_mute", {
+    socketServices.socket.emit("message_event_change_chat_mute", {
       "token": settings.getToken(),
       "bros_bro_id": chat.id,
       "bro_id": settings.getBroId(),
@@ -958,8 +939,7 @@ class _BroChatDetailsState extends State<BroChatDetails> {
   }
 
   void muteTheChat(int selectedRadio) {
-    socketServices.socket
-        .emit("message_event_change_chat_mute", {
+    socketServices.socket.emit("message_event_change_chat_mute", {
       "token": settings.getToken(),
       "bros_bro_id": chat.id,
       "bro_id": settings.getBroId(),

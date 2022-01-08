@@ -11,7 +11,6 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'bro_home.dart';
 
-
 class OpeningScreen extends StatefulWidget {
   @override
   _OpeningScreenState createState() => _OpeningScreenState();
@@ -24,7 +23,6 @@ class _OpeningScreenState extends State<OpeningScreen> {
 
   @override
   void initState() {
-
     NotificationUtil();
 
     // Initialize the db on startup
@@ -56,38 +54,35 @@ class _OpeningScreenState extends State<OpeningScreen> {
           if (value) {
             user.recheckBros = 0;
             user.updateActivityTime();
-            storage.updateUser(user).then((value) {
-            });
+            storage.updateUser(user).then((value) {});
             Auth auth = Auth();
             auth.signInUser(user).then((value) {
               if (mounted && value) {
                 Navigator.pushReplacement(
-                    context, MaterialPageRoute(builder: (context) =>
-                    BroCastHome(
-                        key: UniqueKey()
-                    )));
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => BroCastHome(key: UniqueKey())));
               } else {
                 if (mounted) {
                   Navigator.pushReplacement(
-                      context, MaterialPageRoute(builder: (context) =>
-                      SignIn(
-                          key: UniqueKey()
-                      )));
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => SignIn(key: UniqueKey())));
                 }
               }
             });
           } else {
-            ShowToastComponent.showDialog("cannot retrieve brocast information at this time.", context);
+            ShowToastComponent.showDialog(
+                "cannot retrieve brocast information at this time.", context);
             setState(() {
               isLoading = false;
             });
             Navigator.pushReplacement(
-                context, MaterialPageRoute(builder: (context) => SignIn(
-                key: UniqueKey()
-            )));
+                context,
+                MaterialPageRoute(
+                    builder: (context) => SignIn(key: UniqueKey())));
           }
         });
-
       } else {
         // no user in database! But maybe in shared preferences
         HelperFunction.getBroToken().then((tok) {
@@ -99,19 +94,20 @@ class _OpeningScreenState extends State<OpeningScreen> {
                 String bromotion = val[1];
                 String broPassword = val[2];
                 Auth auth = Auth();
-                User user = new User(-1, broName, bromotion, broPassword, "", "", 1, 0);
+                User user =
+                    new User(-1, broName, bromotion, broPassword, "", "", 1, 0);
                 auth.signInUser(user).then((value) {
                   if (value) {
                     Navigator.pushReplacement(
-                        context, MaterialPageRoute(builder: (context) =>
-                        BroCastHome(
-                            key: UniqueKey()
-                        )));
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                BroCastHome(key: UniqueKey())));
                   } else {
                     Navigator.pushReplacement(
-                        context, MaterialPageRoute(builder: (context) => SignIn(
-                        key: UniqueKey()
-                    )));
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => SignIn(key: UniqueKey())));
                   }
                 });
               } else {
@@ -120,9 +116,9 @@ class _OpeningScreenState extends State<OpeningScreen> {
                   isLoading = false;
                 });
                 Navigator.pushReplacement(
-                    context, MaterialPageRoute(builder: (context) => SignIn(
-                    key: UniqueKey()
-                )));
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => SignIn(key: UniqueKey())));
               }
             });
           } else {
@@ -135,19 +131,20 @@ class _OpeningScreenState extends State<OpeningScreen> {
                 String broPassword = val[2];
 
                 Auth auth = Auth();
-                User user = new User(-1, broName, bromotion, broPassword, tok, "", 1, 0);
+                User user = new User(
+                    -1, broName, bromotion, broPassword, tok, "", 1, 0);
                 auth.signInUser(user).then((value) {
                   if (value) {
                     Navigator.pushReplacement(
-                        context, MaterialPageRoute(builder: (context) =>
-                        BroCastHome(
-                            key: UniqueKey()
-                        )));
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                BroCastHome(key: UniqueKey())));
                   } else {
                     Navigator.pushReplacement(
-                        context, MaterialPageRoute(builder: (context) => SignIn(
-                        key: UniqueKey()
-                    )));
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => SignIn(key: UniqueKey())));
                   }
                 });
               } else {
@@ -157,15 +154,15 @@ class _OpeningScreenState extends State<OpeningScreen> {
                 auth.signInUser(user).then((value) {
                   if (value) {
                     Navigator.pushReplacement(
-                        context, MaterialPageRoute(builder: (context) =>
-                        BroCastHome(
-                            key: UniqueKey()
-                        )));
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                BroCastHome(key: UniqueKey())));
                   } else {
                     Navigator.pushReplacement(
-                        context, MaterialPageRoute(builder: (context) => SignIn(
-                        key: UniqueKey()
-                    )));
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => SignIn(key: UniqueKey())));
                   }
                 });
               }
@@ -195,134 +192,120 @@ class _OpeningScreenState extends State<OpeningScreen> {
               alignment: Alignment.centerLeft, child: Text("Brocast"))),
       body: Stack(
         children: [
-          acceptEULA ? Container(
-            child: Container(
-                alignment: Alignment.center,
-              child: Column(children: [
-              Expanded(
-              child: SingleChildScrollView(
-                reverse: true,
-                child: Column(children: [
-                  SizedBox(height:40),
-                  Container(
-                      child: Text(
-                          "Welcome to Brocast!",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 30
-                          )
-                      )
-                  ),
-                  Container(
+          acceptEULA
+              ? Container(
+                  child: Container(
                       alignment: Alignment.center,
-                      child:
-                      Image.asset("assets/images/brocast_transparent.png")
-                  ),
-                  SizedBox(height: 50),
-                  Container(
-                    width: MediaQuery.of(context).size.width*1,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                    Text(
-                      "Read our ",
-                      style: TextStyle(
-                          color: Colors.white, fontSize: 16),
-                      ),
-                    GestureDetector(
-                        onTap: () {
-                          launch(brocastPrivacyUrl);
-                        },
-                        child: Text(
-                          "privacy policy.",
-                          style: TextStyle(
-                              color: Colors.lightBlue,
-                              fontSize: 16,
-                              decoration:
-                              TextDecoration.underline),
-                        )
-                    )
-                        ]
-                ),
-                  ),
-                  Container(
-                    width: MediaQuery.of(context).size.width*1,
-                    child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            "Tap \"Agree and continue\" to ",
-                            style: TextStyle(
-                                color: Colors.white, fontSize: 16),
-                          ),
-                        ]
-                    ),
-                  ),
-                  Container(
-                    width: MediaQuery.of(context).size.width*1,
-                    child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            "accept the ",
-                            style: TextStyle(
-                                color: Colors.white, fontSize: 16),
-                          ),
-                          GestureDetector(
-                              onTap: () {
-                                launch(brocastTermsUrl);
+                      child: Column(children: [
+                        Expanded(
+                            child: SingleChildScrollView(
+                          reverse: true,
+                          child: Column(children: [
+                            SizedBox(height: 40),
+                            Container(
+                                child: Text("Welcome to Brocast!",
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 30))),
+                            Container(
+                                alignment: Alignment.center,
+                                child: Image.asset(
+                                    "assets/images/brocast_transparent.png")),
+                            SizedBox(height: 50),
+                            Container(
+                              width: MediaQuery.of(context).size.width * 1,
+                              child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      "Read our ",
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 16),
+                                    ),
+                                    GestureDetector(
+                                        onTap: () {
+                                          launch(brocastPrivacyUrl);
+                                        },
+                                        child: Text(
+                                          "privacy policy.",
+                                          style: TextStyle(
+                                              color: Colors.lightBlue,
+                                              fontSize: 16,
+                                              decoration:
+                                                  TextDecoration.underline),
+                                        ))
+                                  ]),
+                            ),
+                            Container(
+                              width: MediaQuery.of(context).size.width * 1,
+                              child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      "Tap \"Agree and continue\" to ",
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 16),
+                                    ),
+                                  ]),
+                            ),
+                            Container(
+                              width: MediaQuery.of(context).size.width * 1,
+                              child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      "accept the ",
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 16),
+                                    ),
+                                    GestureDetector(
+                                        onTap: () {
+                                          launch(brocastTermsUrl);
+                                        },
+                                        child: Text(
+                                          "Terms and Service.",
+                                          style: TextStyle(
+                                              color: Colors.lightBlue,
+                                              fontSize: 16,
+                                              decoration:
+                                                  TextDecoration.underline),
+                                        ))
+                                  ]),
+                            ),
+                            SizedBox(height: 20),
+                            ElevatedButton(
+                              child: Text('Agree and continue'),
+                              onPressed: () {
+                                agreeAndContinue();
                               },
-                              child: Text(
-                                "Terms and Service.",
-                                style: TextStyle(
-                                    color: Colors.lightBlue,
-                                    fontSize: 16,
-                                    decoration:
-                                    TextDecoration.underline),
-                              )
-                          )
-                        ]
-                    ),
-                  ),
-                  SizedBox(height: 20),
-                  ElevatedButton(
-                    child: Text('Agree and continue'),
-                    onPressed: () {
-                      agreeAndContinue();
-                    },
-                    style: ElevatedButton.styleFrom(
-                        primary: Colors.green,
-                        padding: EdgeInsets.symmetric(horizontal: 80, vertical: 5),
-                        textStyle: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold)),
-                  ),
-                  SizedBox(height: 80),
-                  Text(
-                    "from",
-                    style: TextStyle(
-                        color: Colors.blueGrey, fontSize: 12),
-                  ),
-                  SizedBox(height: 6),
-                  Text(
-                    "Zwaar developers",
-                    style: TextStyle(
-                        color: Colors.blueGrey, fontSize: 20),
-                  ),
-                  SizedBox(height: 10),
-                ]
-                ),
-              )
-              ),
-              ]
-              )
-            )
-          )
+                              style: ElevatedButton.styleFrom(
+                                  primary: Colors.green,
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 80, vertical: 5),
+                                  textStyle: TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.bold)),
+                            ),
+                            SizedBox(height: 80),
+                            Text(
+                              "from",
+                              style: TextStyle(
+                                  color: Colors.blueGrey, fontSize: 12),
+                            ),
+                            SizedBox(height: 6),
+                            Text(
+                              "Zwaar developers",
+                              style: TextStyle(
+                                  color: Colors.blueGrey, fontSize: 20),
+                            ),
+                            SizedBox(height: 10),
+                          ]),
+                        )),
+                      ])))
               : Container(
-              child: Center(
-                  // The opening screen will always be a loading screen,
-                  // so we also show the circular progress indicator
-                  child: CircularProgressIndicator()))
+                  child: Center(
+                      // The opening screen will always be a loading screen,
+                      // so we also show the circular progress indicator
+                      child: CircularProgressIndicator()))
         ],
       ),
     );

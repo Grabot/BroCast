@@ -1,5 +1,3 @@
-
-
 abstract class Bro {
   late int id;
   late int broupId;

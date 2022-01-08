@@ -1,7 +1,6 @@
 import 'dart:ui';
 
 abstract class Chat {
-
   late int id;
   late String lastActivity;
   late String roomName;

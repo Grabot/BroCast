@@ -8,12 +8,8 @@ import "package:flutter/material.dart";
 import 'package:app_settings/app_settings.dart';
 import 'bro_profile.dart';
 
-
 class BroSettings extends StatefulWidget {
-  BroSettings(
-      {
-        required Key key
-      }) : super(key: key);
+  BroSettings({required Key key}) : super(key: key);
 
   @override
   _BroSettingsState createState() => _BroSettingsState();
@@ -55,8 +51,7 @@ class _BroSettingsState extends State<BroSettings> {
       if (value != null) {
         // This has to be true, otherwise he couldn't have logged in!
         value.keyboardDarkMode = darkValue ? 1 : 0;
-        storage.updateUser(value).then((value) {
-        });
+        storage.updateUser(value).then((value) {});
       }
     });
     settings.setEmojiKeyboardDarkMode(darkValue);
@@ -66,10 +61,8 @@ class _BroSettingsState extends State<BroSettings> {
   }
 
   void backButtonFunctionality() {
-    Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => BroCastHome(
-      key: UniqueKey()
-    )));
+    Navigator.pushReplacement(context,
+        MaterialPageRoute(builder: (context) => BroCastHome(key: UniqueKey())));
   }
 
   PreferredSize appBarSettings(BuildContext context) {
@@ -81,8 +74,8 @@ class _BroSettingsState extends State<BroSettings> {
               onPressed: () {
                 backButtonFunctionality();
               }),
-          title:
-              Container(alignment: Alignment.centerLeft, child: Text("Settings")),
+          title: Container(
+              alignment: Alignment.centerLeft, child: Text("Settings")),
           actions: [
             PopupMenuButton<int>(
                 onSelected: (item) => onSelect(context, item),
@@ -98,15 +91,15 @@ class _BroSettingsState extends State<BroSettings> {
     switch (item) {
       case 0:
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => BroProfile(
-          key: UniqueKey()
-        )));
+            context,
+            MaterialPageRoute(
+                builder: (context) => BroProfile(key: UniqueKey())));
         break;
       case 1:
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => BroCastHome(
-            key: UniqueKey()
-        )));
+            context,
+            MaterialPageRoute(
+                builder: (context) => BroCastHome(key: UniqueKey())));
         break;
     }
   }
@@ -142,7 +135,7 @@ class _BroSettingsState extends State<BroSettings> {
                   TextButton(
                     style: ButtonStyle(
                       foregroundColor:
-                      MaterialStateProperty.all<Color>(Colors.blue),
+                          MaterialStateProperty.all<Color>(Colors.blue),
                     ),
                     onPressed: AppSettings.openNotificationSettings,
                     child: Text('Open notification Settings'),

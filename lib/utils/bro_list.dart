@@ -11,7 +11,6 @@ import 'package:brocast/utils/storage.dart';
 import 'package:collection/collection.dart';
 import 'package:collection/collection.dart';
 
-
 class BroList {
   static final BroList _instance = BroList._internal();
 
@@ -31,7 +30,6 @@ class BroList {
     return _instance;
   }
 
-
   Future<bool> searchBros(String token) async {
     GetBros getBros = new GetBros();
     return getBros.getBros(token).then((bros) {
@@ -40,13 +38,13 @@ class BroList {
         // We will remove the chat database and refill it.
 
         for (Chat chat in bros) {
-          storage.selectChat(chat.id.toString(), chat.broup.toString()).then((value) {
+          storage
+              .selectChat(chat.id.toString(), chat.broup.toString())
+              .then((value) {
             if (value == null) {
-              storage.addChat(chat).then((value) {
-              });
+              storage.addChat(chat).then((value) {});
             } else {
-              storage.updateChat(chat).then((value) {
-              });
+              storage.updateChat(chat).then((value) {});
             }
           });
         }
@@ -75,13 +73,16 @@ class BroList {
   }
 
   void addChat(Chat chat) {
-    if (bros.firstWhereOrNull((ch4t) => ch4t.id == chat.id && ch4t.broup == chat.broup) == null) {
+    if (bros.firstWhereOrNull(
+            (ch4t) => ch4t.id == chat.id && ch4t.broup == chat.broup) ==
+        null) {
       this.bros.add(chat);
     }
   }
 
   Chat getChat(int chatId, int broup) {
-    return bros[bros.indexWhere((bro) => bro.id == chatId && bro.broup == broup)];
+    return bros[
+        bros.indexWhere((bro) => bro.id == chatId && bro.broup == broup)];
   }
 
   void deleteChat(Chat chat) {
@@ -89,8 +90,8 @@ class BroList {
   }
 
   void updateChat(Chat chat) {
-    bros[bros.indexWhere((bro) =>
-          bro.id == chat.id && bro.broup == chat.broup)] = chat;
+    bros[bros.indexWhere(
+        (bro) => bro.id == chat.id && bro.broup == chat.broup)] = chat;
   }
 
   updateBroupBrosForBroBros(BroBros broBros) {
@@ -102,11 +103,13 @@ class BroList {
             // We only check the not added bro's since we've might have added them.
             if (broBros.id == bro.id) {
               // If we have found one that is the same bro we should update it to a BroAdded
-              BroAdded updatedBro = new BroAdded(bro.id, broup.id, broBros.chatName);
+              BroAdded updatedBro =
+                  new BroAdded(bro.id, broup.id, broBros.chatName);
               updatedBro.setAdmin(bro.isAdmin());
               // Because it has the same id and broupid it should be updated in the db.
-              storage.updateBro(updatedBro, broup.id.toString()).then((value) {
-              });
+              storage
+                  .updateBro(updatedBro, broup.id.toString())
+                  .then((value) {});
             }
           }
         }
@@ -114,15 +117,17 @@ class BroList {
     }
   }
 
-  chatChangedCheckForRemoved(Broup newBroup, Broup oldBroup, List<Bro> broupBros) {
+  chatChangedCheckForRemoved(
+      Broup newBroup, Broup oldBroup, List<Bro> broupBros) {
     // Check if bro's was removed
     List<int> removedBros = new List<int>.from(oldBroup.participants);
     removedBros.removeWhere((broId) => newBroup.participants.contains(broId));
     // Remove the bro's that have been removed from the db for this broup
     for (int removedBroId in removedBros) {
-      storage.deleteBro(removedBroId.toString(), newBroup.id.toString()).then((value) {
-      });
-      broupBros.removeWhere((broupBro){
+      storage
+          .deleteBro(removedBroId.toString(), newBroup.id.toString())
+          .then((value) {});
+      broupBros.removeWhere((broupBro) {
         return broupBro.id == removedBroId;
       });
     }
@@ -135,8 +140,9 @@ class BroList {
       // If we find some of those entries, we will remove them
       for (Bro bro in broupBros) {
         if (!participants.contains(bro.id)) {
-          storage.deleteBro(bro.id.toString(), bro.broupId.toString()).then((value) {
-          });
+          storage
+              .deleteBro(bro.id.toString(), bro.broupId.toString())
+              .then((value) {});
         }
       }
     });
@@ -145,16 +151,15 @@ class BroList {
   insertOrUpdateBro(Bro bro) {
     storage.selectBro(bro.id.toString(), bro.broupId.toString()).then((value) {
       if (value == null) {
-        storage.addBro(bro).then((value) {
-        });
+        storage.addBro(bro).then((value) {});
       } else {
-        storage.updateBro(bro, bro.broupId.toString()).then((value) {
-        });
+        storage.updateBro(bro, bro.broupId.toString()).then((value) {});
       }
     });
   }
 
-  chatChangedCheckForAdded(int broupId, List<int> newBroupP, List<int> newBroupA, List<int> oldBroupP, List<Bro> broupBros) {
+  chatChangedCheckForAdded(int broupId, List<int> newBroupP,
+      List<int> newBroupA, List<int> oldBroupP, List<Bro> broupBros) {
     // bro's that were added
     List<int> addedBro = new List<int>.from(newBroupP);
     List<int> remainingAdmins = new List<int>.from(newBroupA);
@@ -194,8 +199,9 @@ class BroList {
     }
 
     if (addedBro.length != 0) {
-      getBroupBros.getBroupBros(
-          settings.getToken(), broupId, addedBro).then((value) {
+      getBroupBros
+          .getBroupBros(settings.getToken(), broupId, addedBro)
+          .then((value) {
         if (value != "an unknown error has occurred") {
           List<Bro> notAddedBros = value;
           for (Bro broNotAdded in notAddedBros) {
@@ -208,8 +214,7 @@ class BroList {
             addedBro.remove(broNotAdded.id);
           }
           // The list can't be empty if everything was retrieved correctly.
-          if (addedBro.length != 0) {
-          }
+          if (addedBro.length != 0) {}
         }
       });
     }
@@ -235,7 +240,8 @@ class BroList {
   updateAliases(List<Bro> broupBros) {
     for (Chat bro in bros) {
       if (!bro.isBroup()) {
-        Bro? check = broupBros.firstWhereOrNull((element) => bro.id == element.id);
+        Bro? check =
+            broupBros.firstWhereOrNull((element) => bro.id == element.id);
         if (check != null && check is BroAdded) {
           // It's possible that you have given this bro an alias.
           // We want to see this instead of the actual name,

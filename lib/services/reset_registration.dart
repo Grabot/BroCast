@@ -4,7 +4,6 @@ import 'package:brocast/utils/storage.dart';
 import 'package:http/http.dart' as http;
 
 class ResetRegistration {
-
   Storage storage = Storage();
 
   Future removeRegistrationId(int broId) async {

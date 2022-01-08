@@ -9,7 +9,6 @@ import 'package:brocast/objects/user.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
-
 class Storage {
   static const _dbName = "brocast.db";
 
@@ -43,9 +42,9 @@ class Storage {
 
   // Creates the database structure (unless database has already been created)
   Future _onCreate(
-      Database db,
-      int version,
-      ) async {
+    Database db,
+    int version,
+  ) async {
     await createTableUser(db);
     await createTableChat(db);
     await createTableBro(db);
@@ -138,7 +137,10 @@ class Storage {
 
   Future<Bro?> selectBro(String broId, String broupId) async {
     Database database = await this.database;
-    String query = "SELECT * FROM Bro where broId = " + broId + " and broupId = " + broupId;
+    String query = "SELECT * FROM Bro where broId = " +
+        broId +
+        " and broupId = " +
+        broupId;
     List<Map<String, dynamic>> bro = await database.rawQuery(query);
     if (bro.length != 1) {
       return null;
@@ -156,11 +158,11 @@ class Storage {
     String query = "SELECT * FROM Bro where broupId = " + broupId;
     List<Map<String, dynamic>> bros = await database.rawQuery(query);
     if (bros.isNotEmpty) {
-      return bros.map((map) =>
-      map['added'] == 1
-          ? BroAdded.fromDbMap(map)
-          : BroNotAdded.fromDbMap(map)
-      ).toList();
+      return bros
+          .map((map) => map['added'] == 1
+              ? BroAdded.fromDbMap(map)
+              : BroNotAdded.fromDbMap(map))
+          .toList();
     }
     return List.empty();
   }
@@ -229,18 +231,21 @@ class Storage {
     Database database = await this.database;
     List<Map<String, dynamic>> maps = await database.query('Chat');
     if (maps.isNotEmpty) {
-      return maps.map((map) =>
-      map['isBroup'] == 1
-          ? Broup.fromDbMap(map)
-          : BroBros.fromDbMap(map)
-      ).toList();
+      return maps
+          .map((map) => map['isBroup'] == 1
+              ? Broup.fromDbMap(map)
+              : BroBros.fromDbMap(map))
+          .toList();
     }
     return List.empty();
   }
 
   Future<Chat?> selectChat(String chatId, String isBroup) async {
     Database database = await this.database;
-    String query = "SELECT * FROM Chat where chatId = " + chatId + " and isBroup = " + isBroup;
+    String query = "SELECT * FROM Chat where chatId = " +
+        chatId +
+        " and isBroup = " +
+        isBroup;
     List<Map<String, dynamic>> chat = await database.rawQuery(query);
     if (chat.length != 1) {
       return null;
@@ -288,33 +293,40 @@ class Storage {
     String query = "SELECT * FROM Message";
     List<Map<String, dynamic>> maps = await database.rawQuery(query);
     if (maps.isNotEmpty) {
-      return maps.map((map) => Message.fromDbMap(map)
-      ).toList();
+      return maps.map((map) => Message.fromDbMap(map)).toList();
     }
     return List.empty();
   }
 
-  Future<List<Message>> fetchAllMessages(int chatId, int isBroup, int offSet) async {
+  Future<List<Message>> fetchAllMessages(
+      int chatId, int isBroup, int offSet) async {
     int limit = 50;
     int setOff = limit * offSet;
     Database database = await this.database;
     String query = "SELECT * FROM Message where"
-        " chatId = " + chatId.toString() + " and"
-        " isBroup = " + isBroup.toString() +
+            " chatId = " +
+        chatId.toString() +
+        " and"
+            " isBroup = " +
+        isBroup.toString() +
         " order by messageId desc " +
-        " limit " + limit.toString() +
-        " offset " + setOff.toString();
+        " limit " +
+        limit.toString() +
+        " offset " +
+        setOff.toString();
     List<Map<String, dynamic>> maps = await database.rawQuery(query);
     if (maps.isNotEmpty) {
-      return maps.map((map) => Message.fromDbMap(map)
-      ).toList();
+      return maps.map((map) => Message.fromDbMap(map)).toList();
     }
     return List.empty();
   }
 
   Future<Message?> selectMessage(int messageId, int isBroup) async {
     Database database = await this.database;
-    String query = "SELECT * FROM Message where messageId = " + messageId.toString() + " isBroup = " + isBroup.toString();
+    String query = "SELECT * FROM Message where messageId = " +
+        messageId.toString() +
+        " isBroup = " +
+        isBroup.toString();
     List<Map<String, dynamic>> message = await database.rawQuery(query);
     if (message.length != 1) {
       return null;

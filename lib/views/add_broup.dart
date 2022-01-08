@@ -16,19 +16,14 @@ import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'bro_profile.dart';
 import 'bro_settings.dart';
 
-
 class AddBroup extends StatefulWidget {
-  AddBroup(
-      {
-        required Key key
-      }) : super(key: key);
+  AddBroup({required Key key}) : super(key: key);
 
   @override
   _AddBroupState createState() => _AddBroupState();
 }
 
 class _AddBroupState extends State<AddBroup> {
-
   GetBros getBros = new GetBros();
   Settings settings = Settings();
   SocketServices socketServices = SocketServices();
@@ -83,8 +78,8 @@ class _AddBroupState extends State<AddBroup> {
     // The broup was added with a different socket stream.
     // If that was successful we get this message
     // so we can go to the home screen to see the broup
-    Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => BroCastHome(key: UniqueKey())));
+    Navigator.pushReplacement(context,
+        MaterialPageRoute(builder: (context) => BroCastHome(key: UniqueKey())));
   }
 
   broupAddingFailed() {
@@ -152,7 +147,9 @@ class _AddBroupState extends State<AddBroup> {
       });
     } else {
       Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => BroCastHome(key: UniqueKey())));
+          context,
+          MaterialPageRoute(
+              builder: (context) => BroCastHome(key: UniqueKey())));
     }
   }
 
@@ -160,22 +157,21 @@ class _AddBroupState extends State<AddBroup> {
     switch (item) {
       case 0:
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => BroProfile(
-          key: UniqueKey()
-        )));
+            context,
+            MaterialPageRoute(
+                builder: (context) => BroProfile(key: UniqueKey())));
         break;
       case 1:
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => BroSettings(
-          key: UniqueKey()
-        )));
+            context,
+            MaterialPageRoute(
+                builder: (context) => BroSettings(key: UniqueKey())));
         break;
       case 2:
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) =>
-            BroCastHome(
-                key: UniqueKey()
-            )));
+            context,
+            MaterialPageRoute(
+                builder: (context) => BroCastHome(key: UniqueKey())));
         break;
     }
   }
@@ -183,22 +179,22 @@ class _AddBroupState extends State<AddBroup> {
   Widget broupParticipantsList() {
     return broupParticipants.isNotEmpty
         ? ListView.builder(
-        shrinkWrap: true,
-        itemCount: broupParticipants.length,
-        itemBuilder: (context, index) {
-          return broupParticipantsTile(broupParticipants[index]);
-        })
+            shrinkWrap: true,
+            itemCount: broupParticipants.length,
+            itemBuilder: (context, index) {
+              return broupParticipantsTile(broupParticipants[index]);
+            })
         : Container();
   }
 
   Widget listOfBros() {
     return shownBrosAddBroup.isNotEmpty
         ? ListView.builder(
-        shrinkWrap: true,
-        itemCount: shownBrosAddBroup.length,
-        itemBuilder: (context, index) {
-          return broTileAddBroup(index);
-        })
+            shrinkWrap: true,
+            itemCount: shownBrosAddBroup.length,
+            itemBuilder: (context, index) {
+              return broTileAddBroup(index);
+            })
         : Container();
   }
 
@@ -241,17 +237,15 @@ class _AddBroupState extends State<AddBroup> {
 
   Widget broupParticipantsTile(Chat participant) {
     return InkWell(
-      onTap: () {
-        removeParticipant(participant);
-      },
-      child: Container(
-        width: MediaQuery.of(context).size.width,
-        color: participant.getColor().withOpacity(0.3),
-        child: Row(
-          children:
-          [
-            Container(
-              child: Row(
+        onTap: () {
+          removeParticipant(participant);
+        },
+        child: Container(
+            width: MediaQuery.of(context).size.width,
+            color: participant.getColor().withOpacity(0.3),
+            child: Row(children: [
+              Container(
+                  child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Container(
@@ -262,40 +256,31 @@ class _AddBroupState extends State<AddBroup> {
                           width: MediaQuery.of(context).size.width - 40,
                           child: Text(participant.getBroNameOrAlias(),
                               overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                  color: Colors.white, fontSize: 20)),
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 20)),
                         ),
                         participant.chatDescription != ""
                             ? Container(
-                          width:
-                          MediaQuery.of(context).size.width - 40,
-                          child: Text(participant.chatDescription,
-                              style: TextStyle(
-                                  color: Colors.white, fontSize: 12)),
-                        )
+                                width: MediaQuery.of(context).size.width - 40,
+                                child: Text(participant.chatDescription,
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 12)),
+                              )
                             : Container(),
                       ],
                     ),
                   ),
                   Container(
-                    width: 40,
-                    child: IconButton(
-                      onPressed: () {
-                        removeParticipant(participant);
-                      },
-                      icon: Icon(
-                          Icons.highlight_remove,
-                          color: Colors.white
-                      ),
-                    )
-                  )
+                      width: 40,
+                      child: IconButton(
+                        onPressed: () {
+                          removeParticipant(participant);
+                        },
+                        icon: Icon(Icons.highlight_remove, color: Colors.white),
+                      ))
                 ],
-              )
-            )
-          ]
-        )
-      )
-    );
+              ))
+            ])));
   }
 
   Widget broTileAddBroup(index) {
@@ -305,82 +290,107 @@ class _AddBroupState extends State<AddBroup> {
       },
       child: Container(
         width: MediaQuery.of(context).size.width,
-        color: shownBrosAddBroup[index].getBroBros().getColor().withOpacity(0.6),
-        child: Row(
-            children: [
-              Container(
-                width: 50,
-                child: Checkbox(
-                  checkColor: Colors.white,
-                  fillColor: MaterialStateProperty.resolveWith(getColor),
-                  value: shownBrosAddBroup[index].isSelected(),
-                  onChanged: (bool? value) {
-                    selectBro(shownBrosAddBroup[index]);
-                  },
-                ),
-              ),
-              Container(
-                width: MediaQuery.of(context).size.width-50,
-                child: Material(
-                  child: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Container(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  width: MediaQuery.of(context).size.width - 160,
-                                  child: shownBrosAddBroup[index].getBroBros().alias != null && shownBrosAddBroup[index].getBroBros().alias.isNotEmpty
-                                      ? Container(
+        color:
+            shownBrosAddBroup[index].getBroBros().getColor().withOpacity(0.6),
+        child: Row(children: [
+          Container(
+            width: 50,
+            child: Checkbox(
+              checkColor: Colors.white,
+              fillColor: MaterialStateProperty.resolveWith(getColor),
+              value: shownBrosAddBroup[index].isSelected(),
+              onChanged: (bool? value) {
+                selectBro(shownBrosAddBroup[index]);
+              },
+            ),
+          ),
+          Container(
+            width: MediaQuery.of(context).size.width - 50,
+            child: Material(
+              child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              width: MediaQuery.of(context).size.width - 160,
+                              child: shownBrosAddBroup[index].getBroBros().alias != null &&
+                                      shownBrosAddBroup[index]
+                                          .getBroBros()
+                                          .alias
+                                          .isNotEmpty
+                                  ? Container(
                                       child: Text(shownBrosAddBroup[index].getBroBros().alias,
                                           overflow: TextOverflow.ellipsis,
                                           style: TextStyle(
-                                              color: getTextColor(shownBrosAddBroup[index].getBroBros().getColor()), fontSize: 20)))
-                                      : Container(
-                                      child: Text(shownBrosAddBroup[index].getBroBros().chatName,
+                                              color: getTextColor(
+                                                  shownBrosAddBroup[index]
+                                                      .getBroBros()
+                                                      .getColor()),
+                                              fontSize: 20)))
+                                  : Container(
+                                      child: Text(
+                                          shownBrosAddBroup[index]
+                                              .getBroBros()
+                                              .chatName,
                                           overflow: TextOverflow.ellipsis,
                                           style: TextStyle(
-                                              color: getTextColor(shownBrosAddBroup[index].getBroBros().getColor()), fontSize: 20))),
-                                ),
-                              ],
+                                              color: getTextColor(shownBrosAddBroup[index].getBroBros().getColor()),
+                                              fontSize: 20))),
                             ),
-                          ),
-                        ],
-                      )
-                  ),
-                  color: Colors.transparent,
-                ),
-              ),
-            ]
-        ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  )),
+              color: Colors.transparent,
+            ),
+          ),
+        ]),
       ),
     );
   }
 
   void onChangedBroNameField(String typedText, String emojiField) {
     if (emojiField.isEmpty && typedText.isNotEmpty) {
-      shownBrosAddBroup = brosAddBroup.where((element) =>
-          element.getBroBros().getBroNameOrAlias().toLowerCase()
-              .contains(typedText.toLowerCase())).toList();
+      shownBrosAddBroup = brosAddBroup
+          .where((element) => element
+              .getBroBros()
+              .getBroNameOrAlias()
+              .toLowerCase()
+              .contains(typedText.toLowerCase()))
+          .toList();
     } else if (emojiField.isNotEmpty && typedText.isEmpty) {
-      shownBrosAddBroup = brosAddBroup.where((element) =>
-          element.getBroBros().getBroNameOrAlias().toLowerCase()
-              .contains(emojiField)).toList();
+      shownBrosAddBroup = brosAddBroup
+          .where((element) => element
+              .getBroBros()
+              .getBroNameOrAlias()
+              .toLowerCase()
+              .contains(emojiField))
+          .toList();
     } else if (emojiField.isNotEmpty && typedText.isNotEmpty) {
-      shownBrosAddBroup = brosAddBroup.where((element) =>
-          element.getBroBros().getBroNameOrAlias().toLowerCase()
-              .contains(typedText.toLowerCase()) &&
-              element.getBroBros().getBroNameOrAlias().toLowerCase()
-                  .contains(emojiField)).toList();
+      shownBrosAddBroup = brosAddBroup
+          .where((element) =>
+              element
+                  .getBroBros()
+                  .getBroNameOrAlias()
+                  .toLowerCase()
+                  .contains(typedText.toLowerCase()) &&
+              element
+                  .getBroBros()
+                  .getBroNameOrAlias()
+                  .toLowerCase()
+                  .contains(emojiField))
+          .toList();
     } else {
       // both empty
       shownBrosAddBroup = brosAddBroup;
     }
-    setState(() {
-    });
+    setState(() {});
   }
 
   void onTapTextField() {
@@ -410,13 +420,11 @@ class _AddBroupState extends State<AddBroup> {
       }
       if (broupValidator.currentState!.validate()) {
         pressedAddBroup = true;
-        socketServices.socket.emit("message_event_add_broup",
-            {
-              "token": settings.getToken(),
-              "broup_name": broupNameController.text,
-              "participants": jsonEncode(participants)
-            }
-        );
+        socketServices.socket.emit("message_event_add_broup", {
+          "token": settings.getToken(),
+          "broup_name": broupNameController.text,
+          "participants": jsonEncode(participants)
+        });
       }
     }
   }
@@ -431,72 +439,56 @@ class _AddBroupState extends State<AddBroup> {
             children: [
               Container(
                 alignment: Alignment.centerLeft,
-                child: Text(
-                  "Participants in bro group",
-                  style: simpleTextStyle()
-                ),
+                child:
+                    Text("Participants in bro group", style: simpleTextStyle()),
               ),
-              Container(
-                height: 120,
-                child: broupParticipantsList()
-              ),
-              SizedBox(
-                height: 10
-              ),
+              Container(height: 120, child: broupParticipantsList()),
+              SizedBox(height: 10),
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 10),
-                child: Row(
-                  children:
-                  [
-                    Container(
-                      width: MediaQuery.of(context).size.width-100,
-                      child: TextFormField(
-                        controller: broupNameController,
-                        key: broupValidator,
-                        validator: (val) {
-                          if (val == null || val.isEmpty || val.trimRight().isEmpty) {
-                            return "Please provide a Broup name";
-                          }
-                          if (broupParticipants.length <= 1) {
-                            return "Can't create broup with less than 2 bros";
-                          }
-                          return null;
+                child: Row(children: [
+                  Container(
+                    width: MediaQuery.of(context).size.width - 100,
+                    child: TextFormField(
+                      controller: broupNameController,
+                      key: broupValidator,
+                      validator: (val) {
+                        if (val == null ||
+                            val.isEmpty ||
+                            val.trimRight().isEmpty) {
+                          return "Please provide a Broup name";
+                        }
+                        if (broupParticipants.length <= 1) {
+                          return "Can't create broup with less than 2 bros";
+                        }
+                        return null;
+                      },
+                      textAlign: TextAlign.center,
+                      style: simpleTextStyle(),
+                      decoration:
+                          textFieldInputDecoration("Type Broup name here"),
+                    ),
+                  ),
+                  SizedBox(width: 15),
+                  Container(
+                      width: 50,
+                      height: 50,
+                      decoration: BoxDecoration(
+                          color: Colors.green,
+                          borderRadius: BorderRadius.all(Radius.circular(40))),
+                      child: IconButton(
+                        onPressed: () {
+                          addBroup();
                         },
-                        textAlign: TextAlign.center,
-                        style: simpleTextStyle(),
-                        decoration:
-                        textFieldInputDecoration("Type Broup name here"),
-                      ),
-                    ),
-                    SizedBox(width: 15),
-                    Container(
-                        width: 50,
-                        height: 50,
-                        decoration: BoxDecoration(
-                            color: Colors.green,
-                            borderRadius: BorderRadius.all(Radius.circular(40))
-                        ),
-                        child: IconButton(
-                          onPressed: () {
-                            addBroup();
-                          },
-                          icon: Icon(
-                              Icons.check,
-                              color: Colors.white
-                          ),
-                        )
-                    ),
-                    SizedBox(width: 15),
-                  ]
-                ),
+                        icon: Icon(Icons.check, color: Colors.white),
+                      )),
+                  SizedBox(width: 15),
+                ]),
               ),
               SizedBox(height: 20),
               Container(
                 alignment: Alignment.centerLeft,
-                child: Text(
-                    "Search for your bro",
-                    style: simpleTextStyle()
-                ),
+                child: Text("Search for your bro", style: simpleTextStyle()),
               ),
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 24, vertical: 0),
@@ -535,9 +527,7 @@ class _AddBroupState extends State<AddBroup> {
                   ],
                 ),
               ),
-              SizedBox(
-                  height: 10
-              ),
+              SizedBox(height: 10),
               Expanded(child: listOfBros()),
               Align(
                 alignment: Alignment.bottomCenter,
@@ -548,14 +538,12 @@ class _AddBroupState extends State<AddBroup> {
                     darkMode: settings.getEmojiKeyboardDarkMode()),
               ),
             ],
-          )
-      ),
+          )),
     );
   }
 }
 
 class BroAddBroup {
-
   late bool selected;
   late Chat broBros;
 

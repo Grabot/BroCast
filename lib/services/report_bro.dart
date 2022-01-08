@@ -53,10 +53,8 @@ class ReportBro {
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
-      body: jsonEncode(<String, String>{
-        'token': token,
-        'broup_id': broupId.toString()
-      }),
+      body: jsonEncode(
+          <String, String>{'token': token, 'broup_id': broupId.toString()}),
     );
 
     Map<String, dynamic> reportBroupResponse = jsonDecode(responsePost.body);

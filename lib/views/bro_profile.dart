@@ -9,12 +9,8 @@ import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
 import "package:flutter/material.dart";
 import 'bro_settings.dart';
 
-
 class BroProfile extends StatefulWidget {
-  BroProfile(
-      {
-        required Key key
-      }) : super(key: key);
+  BroProfile({required Key key}) : super(key: key);
 
   @override
   _BroProfileState createState() => _BroProfileState();
@@ -123,11 +119,10 @@ class _BroProfileState extends State<BroProfile> {
   }
 
   void onChangeBromotionSuccess() {
-      ShowToastComponent.showDialog("bromotion changed successfully", context);
-      currentUser.bromotion = bromotionChangeController.text;
-      settings.setBromotion(currentUser.bromotion);
-      storage.updateUser(currentUser).then((value) {
-      });
+    ShowToastComponent.showDialog("bromotion changed successfully", context);
+    currentUser.bromotion = bromotionChangeController.text;
+    settings.setBromotion(currentUser.bromotion);
+    storage.updateUser(currentUser).then((value) {});
   }
 
   void onChangeBromotionFailedExists() {
@@ -218,9 +213,9 @@ class _BroProfileState extends State<BroProfile> {
       });
     } else {
       Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => BroCastHome(
-        key: UniqueKey()
-      )));
+          context,
+          MaterialPageRoute(
+              builder: (context) => BroCastHome(key: UniqueKey())));
     }
   }
 
@@ -233,8 +228,8 @@ class _BroProfileState extends State<BroProfile> {
               onPressed: () {
                 backButtonFunctionality();
               }),
-          title:
-              Container(alignment: Alignment.centerLeft, child: Text("Profile")),
+          title: Container(
+              alignment: Alignment.centerLeft, child: Text("Profile")),
           actions: [
             PopupMenuButton<int>(
                 onSelected: (item) => onSelect(context, item),
@@ -250,15 +245,15 @@ class _BroProfileState extends State<BroProfile> {
     switch (item) {
       case 0:
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => BroSettings(
-          key: UniqueKey()
-        )));
+            context,
+            MaterialPageRoute(
+                builder: (context) => BroSettings(key: UniqueKey())));
         break;
       case 1:
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => BroCastHome(
-            key: UniqueKey()
-        )));
+            context,
+            MaterialPageRoute(
+                builder: (context) => BroCastHome(key: UniqueKey())));
         break;
     }
   }

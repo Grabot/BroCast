@@ -22,12 +22,8 @@ import 'package:flutter/services.dart';
 import 'bro_profile.dart';
 import 'bro_settings.dart';
 
-
 class BroCastHome extends StatefulWidget {
-  BroCastHome(
-      {
-        required Key key
-      }) : super(key: key);
+  BroCastHome({required Key key}) : super(key: key);
 
   @override
   _BroCastHomeState createState() => _BroCastHomeState();
@@ -96,8 +92,7 @@ class _BroCastHomeState extends State<BroCastHome> {
             if (value) {
               user.recheckBros = 0;
               user.updateActivityTime();
-              storage.updateUser(user).then((value) {
-              });
+              storage.updateUser(user).then((value) {});
               // We sign in again even though we are already signed in.
               // This is just to update the token in case it is invalidated.
               Auth auth = Auth();
@@ -127,10 +122,7 @@ class _BroCastHomeState extends State<BroCastHome> {
             shrinkWrap: true,
             itemCount: shownBros.length,
             itemBuilder: (context, index) {
-              return BroTile(
-                key: UniqueKey(),
-                chat: shownBros[index]
-              );
+              return BroTile(key: UniqueKey(), chat: shownBros[index]);
             })
         : Container();
   }
@@ -156,25 +148,31 @@ class _BroCastHomeState extends State<BroCastHome> {
 
   void onChangedBroNameField(String typedText, String emojiField) {
     if (emojiField.isEmpty && typedText.isNotEmpty) {
-      shownBros = bros.where((element) =>
-          element.getBroNameOrAlias().toLowerCase()
-              .contains(typedText.toLowerCase())).toList();
+      shownBros = bros
+          .where((element) => element
+              .getBroNameOrAlias()
+              .toLowerCase()
+              .contains(typedText.toLowerCase()))
+          .toList();
     } else if (emojiField.isNotEmpty && typedText.isEmpty) {
-      shownBros = bros.where((element) =>
-          element.getBroNameOrAlias().toLowerCase()
-              .contains(emojiField)).toList();
+      shownBros = bros
+          .where((element) =>
+              element.getBroNameOrAlias().toLowerCase().contains(emojiField))
+          .toList();
     } else if (emojiField.isNotEmpty && typedText.isNotEmpty) {
-      shownBros = bros.where((element) =>
-      element.getBroNameOrAlias().toLowerCase()
-          .contains(typedText.toLowerCase()) &&
-          element.getBroNameOrAlias().toLowerCase()
-              .contains(emojiField)).toList();
+      shownBros = bros
+          .where((element) =>
+              element
+                  .getBroNameOrAlias()
+                  .toLowerCase()
+                  .contains(typedText.toLowerCase()) &&
+              element.getBroNameOrAlias().toLowerCase().contains(emojiField))
+          .toList();
     } else {
       // both empty
       shownBros = bros;
     }
-    setState(() {
-    });
+    setState(() {});
   }
 
   bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
@@ -229,37 +227,40 @@ class _BroCastHomeState extends State<BroCastHome> {
     return PreferredSize(
       preferredSize: const Size.fromHeight(50),
       child: AppBar(
-          leading: searchMode ? IconButton(
-            icon: Icon(Icons.arrow_back, color: Colors.white),
-              onPressed: () {
-                backButtonFunctionality();
-              }
-          ) : Container(),
-          title:
-              Container(alignment: Alignment.centerLeft, child: Text("Brocast")),
+          leading: searchMode
+              ? IconButton(
+                  icon: Icon(Icons.arrow_back, color: Colors.white),
+                  onPressed: () {
+                    backButtonFunctionality();
+                  })
+              : Container(),
+          title: Container(
+              alignment: Alignment.centerLeft, child: Text("Brocast")),
           actions: [
-            searchMode ? IconButton(
-              icon: Icon(Icons.search_off, color: Colors.white),
-              onPressed: () {
-                setState(() {
-                  searchMode = false;
-                });
-              }
-            ) : IconButton(
-                icon: Icon(Icons.search, color: Colors.white),
-                onPressed: () {
-                  setState(() {
-                    searchMode = true;
-                  });
-                }
-            ),
+            searchMode
+                ? IconButton(
+                    icon: Icon(Icons.search_off, color: Colors.white),
+                    onPressed: () {
+                      setState(() {
+                        searchMode = false;
+                      });
+                    })
+                : IconButton(
+                    icon: Icon(Icons.search, color: Colors.white),
+                    onPressed: () {
+                      setState(() {
+                        searchMode = true;
+                      });
+                    }),
             PopupMenuButton<int>(
                 onSelected: (item) => onSelect(context, item),
                 itemBuilder: (context) => [
                       PopupMenuItem<int>(value: 0, child: Text("Profile")),
                       PopupMenuItem<int>(value: 1, child: Text("Settings")),
-                      PopupMenuItem<int>(value: 2, child: Text("Find a new Bro")),
-                      PopupMenuItem<int>(value: 3, child: Text("Add new Broup")),
+                      PopupMenuItem<int>(
+                          value: 2, child: Text("Find a new Bro")),
+                      PopupMenuItem<int>(
+                          value: 3, child: Text("Add new Broup")),
                       PopupMenuItem<int>(value: 4, child: Text("Exit Brocast")),
                       PopupMenuItem<int>(
                           value: 5,
@@ -277,27 +278,27 @@ class _BroCastHomeState extends State<BroCastHome> {
     switch (item) {
       case 0:
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => BroProfile(
-          key: UniqueKey()
-        )));
+            context,
+            MaterialPageRoute(
+                builder: (context) => BroProfile(key: UniqueKey())));
         break;
       case 1:
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => BroSettings(
-          key: UniqueKey()
-        )));
+            context,
+            MaterialPageRoute(
+                builder: (context) => BroSettings(key: UniqueKey())));
         break;
       case 2:
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => FindBros(
-            key: UniqueKey()
-        )));
+            context,
+            MaterialPageRoute(
+                builder: (context) => FindBros(key: UniqueKey())));
         break;
       case 3:
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => AddBroup(
-            key: UniqueKey()
-        )));
+            context,
+            MaterialPageRoute(
+                builder: (context) => AddBroup(key: UniqueKey())));
         break;
       case 4:
         socketServices.leaveRoomSolo(settings.getBroId());
@@ -311,10 +312,8 @@ class _BroCastHomeState extends State<BroCastHome> {
         socketServices.leaveRoomSolo(settings.getBroId());
         ResetRegistration resetRegistration = new ResetRegistration();
         resetRegistration.removeRegistrationId(settings.getBroId());
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => SignIn(
-          key: UniqueKey()
-        )));
+        Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (context) => SignIn(key: UniqueKey())));
         break;
     }
   }
@@ -354,10 +353,10 @@ class _BroCastHomeState extends State<BroCastHome> {
             child: Material(
               child: InkWell(
                 onTap: () {
-                  Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (context) => BroProfile(
-                        key: UniqueKey()
-                      )));
+                  Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => BroProfile(key: UniqueKey())));
                 },
                 child: Container(
                     color: Color(0x8b2d69a3),
@@ -372,42 +371,42 @@ class _BroCastHomeState extends State<BroCastHome> {
               color: Colors.transparent,
             ),
           ),
-          searchMode ? Container(
-            child: Row(
-                children: [
-                  Expanded(
-                    flex: 4,
-                    child: TextFormField(
-                      onTap: () {
-                        onTapTextField();
-                      },
-                      onChanged: (text) {
-                        onChangedBroNameField(text, bromotionController.text);
-                      },
-                      controller: broNameController,
-                      textAlign: TextAlign.center,
-                      style: simpleTextStyle(),
-                      decoration: textFieldInputDecoration("Bro name"),
+          searchMode
+              ? Container(
+                  child: Row(children: [
+                    Expanded(
+                      flex: 4,
+                      child: TextFormField(
+                        onTap: () {
+                          onTapTextField();
+                        },
+                        onChanged: (text) {
+                          onChangedBroNameField(text, bromotionController.text);
+                        },
+                        controller: broNameController,
+                        textAlign: TextAlign.center,
+                        style: simpleTextStyle(),
+                        decoration: textFieldInputDecoration("Bro name"),
+                      ),
                     ),
-                  ),
-                  SizedBox(width: 50),
-                  Expanded(
-                    flex: 1,
-                    child: TextFormField(
-                      onTap: () {
-                        onTapEmojiField();
-                      },
-                      controller: bromotionController,
-                      style: simpleTextStyle(),
-                      textAlign: TextAlign.center,
-                      decoration: textFieldInputDecoration("😀"),
-                      readOnly: true,
-                      showCursor: true,
+                    SizedBox(width: 50),
+                    Expanded(
+                      flex: 1,
+                      child: TextFormField(
+                        onTap: () {
+                          onTapEmojiField();
+                        },
+                        controller: bromotionController,
+                        style: simpleTextStyle(),
+                        textAlign: TextAlign.center,
+                        decoration: textFieldInputDecoration("😀"),
+                        readOnly: true,
+                        showCursor: true,
+                      ),
                     ),
-                  ),
-                ]
-            ),
-          ) : Container(),
+                  ]),
+                )
+              : Container(),
           Container(
             child: Expanded(child: listOfBros()),
           ),
@@ -417,8 +416,7 @@ class _BroCastHomeState extends State<BroCastHome> {
                 bromotionController: bromotionController,
                 emojiKeyboardHeight: 300,
                 showEmojiKeyboard: showEmojiKeyboard,
-                darkMode: settings.getEmojiKeyboardDarkMode()
-            ),
+                darkMode: settings.getEmojiKeyboardDarkMode()),
           ),
         ])),
       ),
@@ -426,9 +424,9 @@ class _BroCastHomeState extends State<BroCastHome> {
         child: Icon(Icons.person_add),
         onPressed: () {
           Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) => FindBros(
-            key: UniqueKey()
-          )));
+              context,
+              MaterialPageRoute(
+                  builder: (context) => FindBros(key: UniqueKey())));
         },
       ),
     );
@@ -438,18 +436,13 @@ class _BroCastHomeState extends State<BroCastHome> {
 class BroTile extends StatefulWidget {
   final Chat chat;
 
-  BroTile(
-      {
-        required Key key,
-        required this.chat
-      }) : super(key: key);
+  BroTile({required Key key, required this.chat}) : super(key: key);
 
   @override
   _BroTileState createState() => _BroTileState();
 }
 
 class _BroTileState extends State<BroTile> {
-
   Settings settings = Settings();
   SocketServices socketServices = SocketServices();
   final NavigationService _navigationService = locator<NavigationService>();
@@ -475,10 +468,10 @@ class _BroTileState extends State<BroTile> {
           },
           child: Container(
               color: widget.chat.unreadMessages < 4
-                      ? widget.chat.unreadMessages < 3
-                          ? widget.chat.unreadMessages < 2
-                              ? widget.chat.unreadMessages < 1
-                                  ? widget.chat.getColor().withOpacity(0.6)
+                  ? widget.chat.unreadMessages < 3
+                      ? widget.chat.unreadMessages < 2
+                          ? widget.chat.unreadMessages < 1
+                              ? widget.chat.getColor().withOpacity(0.6)
                               : widget.chat.getColor().withOpacity(0.7)
                           : widget.chat.getColor().withOpacity(0.8)
                       : widget.chat.getColor().withOpacity(0.9)
@@ -489,28 +482,34 @@ class _BroTileState extends State<BroTile> {
                 children: [
                   Row(
                     children: [
-                      widget.chat.isMuted() || widget.chat.isBlocked() || widget.chat.hasLeft()
-                      ? Container(
-                        width: 35,
-                          child: Column(
-                            children:
-                            [
-                              widget.chat.isBlocked() || widget.chat.hasLeft() ? Icon(
-                                widget.chat.hasLeft() ? Icons.person_remove : Icons.block, // Block or left can't both be true
-                                color: getTextColor(widget.chat.getColor()).withOpacity(0.6)
-                              ) : Container(
-                                height: 20,
-                              ),
-                              widget.chat.isMuted() ? Icon(
-                                  Icons.volume_off,
-                                  color: getTextColor(widget.chat.getColor()).withOpacity(0.6)
-                              ) : Container(
-                                height: 20,
-                              ),
-                            ]
-                          )
-                      )
-                      : SizedBox(width: 35),
+                      widget.chat.isMuted() ||
+                              widget.chat.isBlocked() ||
+                              widget.chat.hasLeft()
+                          ? Container(
+                              width: 35,
+                              child: Column(children: [
+                                widget.chat.isBlocked() || widget.chat.hasLeft()
+                                    ? Icon(
+                                        widget.chat.hasLeft()
+                                            ? Icons.person_remove
+                                            : Icons
+                                                .block, // Block or left can't both be true
+                                        color:
+                                            getTextColor(widget.chat.getColor())
+                                                .withOpacity(0.6))
+                                    : Container(
+                                        height: 20,
+                                      ),
+                                widget.chat.isMuted()
+                                    ? Icon(Icons.volume_off,
+                                        color:
+                                            getTextColor(widget.chat.getColor())
+                                                .withOpacity(0.6))
+                                    : Container(
+                                        height: 20,
+                                      ),
+                              ]))
+                          : SizedBox(width: 35),
                       Container(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -519,21 +518,23 @@ class _BroTileState extends State<BroTile> {
                               // All the padding and sizedboxes (and message bal) added up it's 103.
                               // We need to make the width the total width of the screen minus 103 at least to not get an overflow.
                               width: MediaQuery.of(context).size.width - 110,
-                              child: Text(
-                                  widget.chat.getBroNameOrAlias(),
+                              child: Text(widget.chat.getBroNameOrAlias(),
                                   overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
                                       color: Colors.white, fontSize: 20)),
                             ),
                             widget.chat.alias != ""
                                 ? Container(
-                              // If there is an alias, we want to show the name of the bro as well.
-                              // We will do that in smaller letters underneath
-                              width: MediaQuery.of(context).size.width - 110,
-                              child: Text("     -" + widget.chat.chatName,
-                                  style: TextStyle(
-                                      color: getTextColor(widget.chat.getColor()), fontSize: 10)),
-                            )
+                                    // If there is an alias, we want to show the name of the bro as well.
+                                    // We will do that in smaller letters underneath
+                                    width:
+                                        MediaQuery.of(context).size.width - 110,
+                                    child: Text("     -" + widget.chat.chatName,
+                                        style: TextStyle(
+                                            color: getTextColor(
+                                                widget.chat.getColor()),
+                                            fontSize: 10)),
+                                  )
                                 : Container(),
                             widget.chat.chatDescription != ""
                                 ? Container(
@@ -543,7 +544,9 @@ class _BroTileState extends State<BroTile> {
                                         MediaQuery.of(context).size.width - 110,
                                     child: Text(widget.chat.chatDescription,
                                         style: TextStyle(
-                                            color: getTextColor(widget.chat.getColor()), fontSize: 12)),
+                                            color: getTextColor(
+                                                widget.chat.getColor()),
+                                            fontSize: 12)),
                                   )
                                 : Container(),
                           ],
@@ -612,31 +615,28 @@ class _BroTileState extends State<BroTile> {
                       onTap: () {
                         setState(() => selectedRadio = index);
                       },
-                      child: Row(
-                          children: [
-                            Radio<int>(
-                                value: index,
-                                groupValue: selectedRadio,
-                                onChanged: (int? value) {
-                                  if (value != null) {
-                                    setState(() => selectedRadio = value);
-                                  }
-                                }
-                            ),
-                            index == 0 ? Container(
-                                child: Text("1 hour")
-                            ) : Container(),
-                            index == 1 ? Container(
-                                child: Text("8 hours")
-                            ) : Container(),
-                            index == 2 ? Container(
-                                child: Text("1 week")
-                            ) : Container(),
-                            index == 3 ? Container(
-                                child: Text("Indefinitely")
-                            ) : Container(),
-                          ]
-                      ),
+                      child: Row(children: [
+                        Radio<int>(
+                            value: index,
+                            groupValue: selectedRadio,
+                            onChanged: (int? value) {
+                              if (value != null) {
+                                setState(() => selectedRadio = value);
+                              }
+                            }),
+                        index == 0
+                            ? Container(child: Text("1 hour"))
+                            : Container(),
+                        index == 1
+                            ? Container(child: Text("8 hours"))
+                            : Container(),
+                        index == 2
+                            ? Container(child: Text("1 week"))
+                            : Container(),
+                        index == 3
+                            ? Container(child: Text("Indefinitely"))
+                            : Container(),
+                      ]),
                     );
                   }),
                 );
@@ -662,16 +662,14 @@ class _BroTileState extends State<BroTile> {
 
   void unmuteTheChat() {
     if (widget.chat is BroBros) {
-      socketServices.socket
-          .emit("message_event_change_chat_mute", {
+      socketServices.socket.emit("message_event_change_chat_mute", {
         "token": settings.getToken(),
         "bros_bro_id": widget.chat.id,
         "bro_id": settings.getBroId(),
         "mute": -1
       });
     } else {
-      socketServices.socket
-          .emit("message_event_change_broup_mute", {
+      socketServices.socket.emit("message_event_change_broup_mute", {
         "token": settings.getToken(),
         "broup_id": widget.chat.id,
         "bro_id": settings.getBroId(),
@@ -683,16 +681,14 @@ class _BroTileState extends State<BroTile> {
 
   void muteTheChat(int selectedRadio) {
     if (widget.chat is BroBros) {
-      socketServices.socket
-          .emit("message_event_change_chat_mute", {
+      socketServices.socket.emit("message_event_change_chat_mute", {
         "token": settings.getToken(),
         "bros_bro_id": widget.chat.id,
         "bro_id": settings.getBroId(),
         "mute": selectedRadio
       });
     } else {
-      socketServices.socket
-          .emit("message_event_change_broup_mute", {
+      socketServices.socket.emit("message_event_change_broup_mute", {
         "token": settings.getToken(),
         "broup_id": widget.chat.id,
         "bro_id": settings.getBroId(),
@@ -703,29 +699,22 @@ class _BroTileState extends State<BroTile> {
   }
 
   void _showChatDetailPopupMenu() {
-    final RenderBox overlay = Overlay
-        .of(context)!
-        .context
-        .findRenderObject() as RenderBox;
+    final RenderBox overlay =
+        Overlay.of(context)!.context.findRenderObject() as RenderBox;
 
     showMenu(
-        context: context,
-        items: [
-          ChatDetailPopup(
-            key: UniqueKey(),
-            chat: widget.chat
-          )
-        ],
-        position: RelativeRect.fromRect(
-            _tapPosition & const Size(40, 40),
-            Offset.zero & overlay.size
-        )
-    ).then((int? delta) {
+            context: context,
+            items: [ChatDetailPopup(key: UniqueKey(), chat: widget.chat)],
+            position: RelativeRect.fromRect(
+                _tapPosition & const Size(40, 40), Offset.zero & overlay.size))
+        .then((int? delta) {
       if (delta == 1) {
         if (widget.chat.isBroup()) {
-          _navigationService.navigateTo(routes.BroupRoute, arguments: widget.chat);
+          _navigationService.navigateTo(routes.BroupRoute,
+              arguments: widget.chat);
         } else {
-          _navigationService.navigateTo(routes.BroRoute, arguments: widget.chat);
+          _navigationService.navigateTo(routes.BroRoute,
+              arguments: widget.chat);
         }
       } else if (delta == 2) {
         showDialogMuteChat(context);
@@ -740,14 +729,11 @@ class _BroTileState extends State<BroTile> {
     _tapPosition = details.globalPosition;
   }
 }
-class ChatDetailPopup extends PopupMenuEntry<int> {
 
+class ChatDetailPopup extends PopupMenuEntry<int> {
   final Chat chat;
 
-  ChatDetailPopup({
-    required Key key,
-    required this.chat
-  }) : super(key: key);
+  ChatDetailPopup({required Key key, required this.chat}) : super(key: key);
 
   @override
   bool represents(int? n) => n == 1 || n == -1;
@@ -760,7 +746,6 @@ class ChatDetailPopup extends PopupMenuEntry<int> {
 }
 
 class ChatDetailPopupState extends State<ChatDetailPopup> {
-
   @override
   Widget build(BuildContext context) {
     return getPopupItems(context, widget.chat);
@@ -780,34 +765,30 @@ void buttonUnmute(BuildContext context) {
 }
 
 Widget getPopupItems(BuildContext context, Chat chat) {
-  return Column(
-    children: [
-      Container(
-        alignment: Alignment.centerLeft,
-        child: TextButton(
-            onPressed: () {
-              buttonMessage(context);
-            },
-            child: Text(
-              'Message ${chat.getBroNameOrAlias()}',
-              textAlign: TextAlign.left,
-              style: TextStyle(color: Colors.black, fontSize: 14),
-            )
-        ),
-      ),
-      Container(
-        alignment: Alignment.centerLeft,
-        child: TextButton(
-            onPressed: () {
-              chat.isMuted() ? buttonUnmute(context) : buttonMute(context);
-            },
-            child: Text(
-              chat.isMuted() ? 'Unmute chat' : 'Mute chat',
-              textAlign: TextAlign.left,
-              style: TextStyle(color: Colors.black, fontSize: 14),
-            )
-        ),
-      ),
-    ]
-  );
+  return Column(children: [
+    Container(
+      alignment: Alignment.centerLeft,
+      child: TextButton(
+          onPressed: () {
+            buttonMessage(context);
+          },
+          child: Text(
+            'Message ${chat.getBroNameOrAlias()}',
+            textAlign: TextAlign.left,
+            style: TextStyle(color: Colors.black, fontSize: 14),
+          )),
+    ),
+    Container(
+      alignment: Alignment.centerLeft,
+      child: TextButton(
+          onPressed: () {
+            chat.isMuted() ? buttonUnmute(context) : buttonMute(context);
+          },
+          child: Text(
+            chat.isMuted() ? 'Unmute chat' : 'Mute chat',
+            textAlign: TextAlign.left,
+            style: TextStyle(color: Colors.black, fontSize: 14),
+          )),
+    ),
+  ]);
 }

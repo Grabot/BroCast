@@ -11,16 +11,13 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:notification_permissions/notification_permissions.dart';
 import 'package:brocast/constants/route_paths.dart' as routes;
 
-
 const String androidChannelId = "custom_sound";
 const String androidChannelName = "Brocast notification";
 const String androidChannelDescription = "Custom Bro Sound for notifications";
 
-const MethodChannel _channel
-    = MethodChannel('nl.brocast/channel_bro');
+const MethodChannel _channel = MethodChannel('nl.brocast/channel_bro');
 
 class NotificationUtil {
-
   int currentChatId = -1;
   int currentIsBroup = -1;
 
@@ -29,7 +26,6 @@ class NotificationUtil {
   final NavigationService _navigationService = locator<NavigationService>();
 
   NotificationUtil._internal() {
-
     setupFirebase();
   }
 
@@ -45,8 +41,8 @@ class NotificationUtil {
     "description": androidChannelDescription
   };
 
-  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin
-            = FlutterLocalNotificationsPlugin();
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
   late NotificationDetails platformChannelSpecifics;
 
   clearChat() {
@@ -60,24 +56,19 @@ class NotificationUtil {
   }
 
   Future<void> initializeLocalNotifications() async {
-    const AndroidInitializationSettings androidSettings
-              = AndroidInitializationSettings('res_bro_icon');
+    const AndroidInitializationSettings androidSettings =
+        AndroidInitializationSettings('res_bro_icon');
 
     const IOSInitializationSettings iosSettings = IOSInitializationSettings(
         requestSoundPermission: false,
         requestBadgePermission: false,
-        requestAlertPermission: false
-    );
+        requestAlertPermission: false);
 
-    const InitializationSettings initSettings = InitializationSettings(
-        android: androidSettings,
-        iOS: iosSettings
-    );
+    const InitializationSettings initSettings =
+        InitializationSettings(android: androidSettings, iOS: iosSettings);
 
-    await flutterLocalNotificationsPlugin.initialize(
-        initSettings,
-        onSelectNotification: selectNotification
-    );
+    await flutterLocalNotificationsPlugin.initialize(initSettings,
+        onSelectNotification: selectNotification);
   }
 
   Future selectNotification(String? payload) async {
@@ -92,9 +83,11 @@ class NotificationUtil {
       if (value != null) {
         Chat chat = value;
         if (chat.isBroup()) {
-          _navigationService.navigateTo(routes.BroupRoute, arguments: chat as Broup);
+          _navigationService.navigateTo(routes.BroupRoute,
+              arguments: chat as Broup);
         } else {
-          _navigationService.navigateTo(routes.BroRoute, arguments: chat as BroBros);
+          _navigationService.navigateTo(routes.BroRoute,
+              arguments: chat as BroBros);
         }
       } else {
         // We will assume that there is a user
@@ -106,12 +99,12 @@ class NotificationUtil {
   void requestIOSPermissions() {
     flutterLocalNotificationsPlugin
         .resolvePlatformSpecificImplementation<
-        IOSFlutterLocalNotificationsPlugin>()
+            IOSFlutterLocalNotificationsPlugin>()
         ?.requestPermissions(
-      alert: true,
-      badge: true,
-      sound: true,
-    );
+          alert: true,
+          badge: true,
+          sound: true,
+        );
   }
 
   setupFirebase() async {
@@ -122,16 +115,15 @@ class NotificationUtil {
     createNotificationChannel();
 
     NotificationPermissions.requestNotificationPermissions(
-        iosSettings: const NotificationSettingsIos(
-            sound: true, badge: true, alert: true))
-        .then((_) {
-    });
+            iosSettings: const NotificationSettingsIos(
+                sound: true, badge: true, alert: true))
+        .then((_) {});
 
     platformChannelSpecifics = const NotificationDetails(
         android: AndroidNotificationDetails(
           androidChannelId,
           androidChannelName,
-          androidChannelDescription,
+          channelDescription: androidChannelDescription,
           playSound: true,
           priority: Priority.high,
           importance: Importance.high,
@@ -141,8 +133,7 @@ class NotificationUtil {
             presentBadge: true,
             presentSound: true,
             badgeNumber: 0,
-            sound: "res_brodio.aiff"
-        ));
+            sound: "res_brodio.aiff"));
   }
 
   Future<void> initializeFirebaseService() async {
@@ -200,15 +191,11 @@ class NotificationUtil {
     }
   }
 
-  Future<void> _showNotification(String title, String body, int broId, int isBroup) async {
-
+  Future<void> _showNotification(
+      String title, String body, int broId, int isBroup) async {
     await flutterLocalNotificationsPlugin.show(
-      0,
-      title,
-      body,
-      platformChannelSpecifics,
-      payload: broId.toString() + ";" + isBroup.toString()
-    );
+        0, title, body, platformChannelSpecifics,
+        payload: broId.toString() + ";" + isBroup.toString());
   }
 
   void showNotification(String title, String body, int broId, int isBroup) {

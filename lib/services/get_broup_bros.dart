@@ -6,7 +6,6 @@ import 'package:brocast/objects/bro_not_added.dart';
 import 'package:http/http.dart' as http;
 
 class GetBroupBros {
-
   Future getBroupBros(String token, int broupId, List<int> participants) async {
     String urlGetBroupBros = baseUrl_v1_2 + 'get/broup_bros';
     Uri uriGetBroupBros = Uri.parse(urlGetBroupBros);
@@ -29,7 +28,8 @@ class GetBroupBros {
         var broList = registerResponse["bro_list"];
         List<Bro> listWithBros = [];
         for (var br0 in broList) {
-          Bro bro = new BroNotAdded(br0["id"], broupId, br0["bro_name"], br0["bromotion"]);
+          Bro bro = new BroNotAdded(
+              br0["id"], broupId, br0["bro_name"], br0["bromotion"]);
           listWithBros.add(bro);
         }
         return listWithBros;

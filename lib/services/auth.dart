@@ -9,11 +9,9 @@ import 'package:brocast/utils/storage.dart';
 import 'package:http/http.dart' as http;
 
 class Auth {
-
   Settings settings = Settings();
 
   Future signUp(String broName, String bromotion, String password) async {
-
     String urlRegister = baseUrl_v1_3 + 'register';
     Uri uriRegister = Uri.parse(urlRegister);
 
@@ -54,7 +52,8 @@ class Auth {
           String broName = registerResponse["bro"]["bro_name"];
           String bromotion = registerResponse["bro"]["bromotion"];
 
-          await storeUser(broId, broName, bromotion, password, token, registrationId);
+          await storeUser(
+              broId, broName, bromotion, password, token, registrationId);
           return "";
         } else {
           return message;
@@ -66,7 +65,6 @@ class Auth {
 
   Future signIn(
       String broName, String bromotion, String password, String token) async {
-
     String urlLogin = baseUrl_v1_3 + 'login';
     Uri uriLogin = Uri.parse(urlLogin);
 
@@ -113,7 +111,8 @@ class Auth {
           String broName = registerResponse["bro"]["bro_name"];
           String bromotion = registerResponse["bro"]["bromotion"];
 
-          await storeUser(broId, broName, bromotion, password, token, registrationId);
+          await storeUser(
+              broId, broName, bromotion, password, token, registrationId);
           return "";
         } else {
           return message;
@@ -130,18 +129,20 @@ class Auth {
     await HelperFunction.setBroInformation(broName, bromotion, password);
   }
 
-  storeUser(int broId, String broName, String bromotion, String password, String token, String registrationId) async {
-    User user = new User(broId, broName, bromotion, password, token, registrationId, 1, 0);
+  storeUser(int broId, String broName, String bromotion, String password,
+      String token, String registrationId) async {
+    User user = new User(
+        broId, broName, bromotion, password, token, registrationId, 1, 0);
     Storage storage = Storage();
     await storage.selectUser().then((value) async {
       if (value != null) {
-
         settings.setBroId(user.id);
         settings.setBroName(user.broName);
         settings.setBromotion(user.bromotion);
         settings.setToken(user.token);
 
-        if (value.broName == user.broName && value.bromotion == user.bromotion) {
+        if (value.broName == user.broName &&
+            value.bromotion == user.bromotion) {
           // The same bro logged in.
           // We assume the password didn't change
           // (can be null at this point because of token log in)
@@ -166,8 +167,9 @@ class Auth {
           if (user.token.isNotEmpty && value.token != user.token) {
             value.token = user.token;
           }
-          if (user.registrationId != null && user.registrationId!.isNotEmpty
-              && value.registrationId != user.registrationId) {
+          if (user.registrationId != null &&
+              user.registrationId!.isNotEmpty &&
+              value.registrationId != user.registrationId) {
             value.registrationId = user.registrationId;
           }
           if (value.recheckBros == 0) {
@@ -176,8 +178,7 @@ class Auth {
           }
           // The token will basically always change when logging in,
           // so we always update the current user.
-          storage.updateUser(value).then((value) {
-          });
+          storage.updateUser(value).then((value) {});
         } else {
           // A different user has logged in.
           await storage.clearDatabase();
@@ -200,7 +201,6 @@ class Auth {
         await storage.addUser(user);
       }
     });
-
   }
 
   Future<bool> signInUser(User user) {
@@ -210,7 +210,9 @@ class Auth {
       } else {
         if (val == "The given credentials are not correct!") {
           // token didn't work, going to check if a username is given and try to log in using password username
-          if (user.broName.isNotEmpty && user.bromotion.isNotEmpty && user.password.isNotEmpty) {
+          if (user.broName.isNotEmpty &&
+              user.bromotion.isNotEmpty &&
+              user.password.isNotEmpty) {
             return signInName(user.broName, user.bromotion, user.password);
           } else {
             return false;
@@ -231,5 +233,4 @@ class Auth {
       }
     });
   }
-
 }
