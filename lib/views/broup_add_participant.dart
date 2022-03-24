@@ -420,7 +420,7 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> {
             Align(
               alignment: Alignment.bottomCenter,
               child: EmojiKeyboard(
-                  bromotionController: bromotionController,
+                  emotionController: bromotionController,
                   emojiKeyboardHeight: 300,
                   showEmojiKeyboard: showEmojiKeyboard,
                   darkMode: settings.getEmojiKeyboardDarkMode()),

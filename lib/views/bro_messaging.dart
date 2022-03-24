@@ -16,6 +16,7 @@ import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../services/auth.dart';
 import 'bro_chat_details.dart';
 import 'bro_profile.dart';
 import 'bro_settings.dart';
@@ -68,31 +69,32 @@ class _BroMessagingState extends State<BroMessaging> {
 
     storage.selectChat(chat.id.toString(), chat.broup.toString()).then((value) {
       chat = value as BroBros;
-      chat.updateActivityTime();
       if (broList.bros.isEmpty) {
         broList.fillBrosFromDB();
       } else {
         broList.updateChat(chat);
       }
       storage.updateChat(chat).then((value) {});
-      // Check if user data is set.
-      if (settings.getBroId() == -1) {
-        // The user can directly go here (via notification) So we will retrieve and set the user data.
-        storage.selectUser().then((user) async {
-          if (user != null) {
-            settings.setEmojiKeyboardDarkMode(user.getKeyboardDarkMode());
-            settings.setBroId(user.id);
-            settings.setBroName(user.broName);
-            settings.setBromotion(user.bromotion);
-            settings.setToken(user.token);
-            getMessages(amountViewed);
-            initBroMessagingSocket(settings.getBroId(), chat.id);
-          }
-        });
-      } else {
-        getMessages(amountViewed);
-        initBroMessagingSocket(settings.getBroId(), chat.id);
-      }
+
+      // The user can go here directly via notifications
+      // So we will retrieve and update the user data.
+      storage.selectUser().then((user) async {
+        if (user != null) {
+          settings.setEmojiKeyboardDarkMode(user.getKeyboardDarkMode());
+          settings.setBroId(user.id);
+          settings.setBroName(user.broName);
+          settings.setBromotion(user.bromotion);
+          settings.setToken(user.token);
+          getMessages(amountViewed);
+          initBroMessagingSocket(settings.getBroId(), chat.id);
+        } else {
+          // There is no user for some reason, go back to the home screen where the user will log in.
+          Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => BroCastHome(key: UniqueKey())));
+        }
+      });
     });
 
     // We retrieved the chat locally, but we will also get it from the server
@@ -100,7 +102,7 @@ class _BroMessagingState extends State<BroMessaging> {
     getChat.getChat(settings.getBroId(), chat.id).then((value) {
       if (value is BroBros) {
         chat = value;
-        chat.updateActivityTime();
+        chat.unreadMessages = 0;
         if (broList.bros.isEmpty) {
           broList.fillBrosFromDB();
         } else {
@@ -210,15 +212,28 @@ class _BroMessagingState extends State<BroMessaging> {
     // get messages from the server
     get.getMessages(settings.getToken(), chat.id).then((val) {
       if (!(val is String)) {
+        gotServer = true;
         List<Message> messes = val;
         if (messes.length != 0) {
           messagesServer = messes;
         }
         storeMessages(messes);
       } else {
-        ShowToastComponent.showDialog(val.toString(), context);
+        gotServer = false;
+        // token validation probably failed, log in again
+        storage.selectUser().then((user) async {
+          if (user != null) {
+            Auth auth = Auth();
+            auth.signInUser(user).then((value) {
+              if (value) {
+                // If the user logged in again we will retrieve messages again.
+                getMessages(page);
+              }
+            });
+          }
+        });
       }
-      gotServer = true;
+
       if (gotLocalDB && gotServer) {
         mergeMessages(messagesServer + messagesDB);
         // Set date tiles, but only if all the messages are retrieved
@@ -229,10 +244,12 @@ class _BroMessagingState extends State<BroMessaging> {
         });
         chat.unreadMessages = 0;
       }
-      socketServices.socket.emit(
-        "message_read",
-        {"bro_id": settings.getBroId(), "bros_bro_id": chat.id},
-      );
+      if (gotServer) {
+        socketServices.socket.emit(
+          "message_read",
+          {"bro_id": settings.getBroId(), "bros_bro_id": chat.id},
+        );
+      }
       setState(() {
         isLoading = false;
       });
@@ -760,7 +777,7 @@ class _BroMessagingState extends State<BroMessaging> {
               Align(
                 alignment: Alignment.bottomCenter,
                 child: EmojiKeyboard(
-                  bromotionController: broMessageController,
+                  emotionController: broMessageController,
                   emojiKeyboardHeight: 300,
                   showEmojiKeyboard: showEmojiKeyboard,
                   darkMode: settings.getEmojiKeyboardDarkMode(),

@@ -95,21 +95,21 @@ class Auth {
     if (responsePost.body.isEmpty) {
       return "Could not connect to the server";
     } else {
-      Map<String, dynamic> registerResponse;
+      Map<String, dynamic> signInResponse;
       try {
-        registerResponse = jsonDecode(responsePost.body);
+        signInResponse = jsonDecode(responsePost.body);
       } on Exception catch (_) {
         return "an unknown error has occurred";
       }
-      if (registerResponse.containsKey("result") &&
-          registerResponse.containsKey("message")) {
-        bool result = registerResponse["result"];
-        String message = registerResponse["message"];
+      if (signInResponse.containsKey("result") &&
+          signInResponse.containsKey("message")) {
+        bool result = signInResponse["result"];
+        String message = signInResponse["message"];
         if (result) {
-          String token = registerResponse["token"];
-          int broId = registerResponse["bro"]["id"];
-          String broName = registerResponse["bro"]["bro_name"];
-          String bromotion = registerResponse["bro"]["bromotion"];
+          String token = signInResponse["token"];
+          int broId = signInResponse["bro"]["id"];
+          String broName = signInResponse["bro"]["bro_name"];
+          String bromotion = signInResponse["bro"]["bromotion"];
 
           await storeUser(
               broId, broName, bromotion, password, token, registrationId);

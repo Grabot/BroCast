@@ -19,6 +19,7 @@ import 'package:brocast/views/bro_home.dart';
 import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import '../services/auth.dart';
 import 'bro_profile.dart';
 import 'bro_settings.dart';
 import 'broup_details.dart';
@@ -85,31 +86,32 @@ class _BroupMessagingState extends State<BroupMessaging> {
         broList.updateAliases(broupBros);
         chat.setBroupBros(broupBros);
       });
-      if (settings.getBroId() == -1) {
-        // The user can directly go here (via notification) So we will retrieve and set the user data.
-        storage.selectUser().then((user) async {
-          if (user != null) {
-            settings.setEmojiKeyboardDarkMode(user.getKeyboardDarkMode());
-            settings.setBroId(user.id);
-            settings.setBroName(user.broName);
-            settings.setBromotion(user.bromotion);
-            settings.setToken(user.token);
 
-            getMessages(amountViewed);
-            initBroupMessagingSocket();
-          }
-        });
-      } else {
-        // Data is already set.
-        getMessages(amountViewed);
-        initBroupMessagingSocket();
-      }
+      storage.selectUser().then((user) async {
+        if (user != null) {
+          settings.setEmojiKeyboardDarkMode(user.getKeyboardDarkMode());
+          settings.setBroId(user.id);
+          settings.setBroName(user.broName);
+          settings.setBromotion(user.bromotion);
+          settings.setToken(user.token);
+
+          getMessages(amountViewed);
+          initBroupMessagingSocket();
+        } else {
+          // There is no user for some reason, go back to the home screen where the user will log in.
+          Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => BroCastHome(key: UniqueKey())));
+        }
+      });
     });
 
     // We retrieved the chat locally, but we will also get it from the server
     // If anything has changed, we can update it locally
     getChat.getBroup(settings.getBroId(), chat.id).then((value) {
       if (value is Broup) {
+        chat.unreadMessages = 0;
         List<Bro> broupBros = [];
         if (value.participants.length != chat.participants.length) {
           // someone was added(removed( and you didn't get updated, add them now
@@ -290,15 +292,28 @@ class _BroupMessagingState extends State<BroupMessaging> {
       });
       get.getMessagesBroup(settings.getToken(), chat.id).then((val) {
         if (!(val is String)) {
+          gotServer = true;
           List<Message> messes = val;
           if (messes.length != 0) {
             messagesServer = messes;
           }
           storeMessages(messes);
         } else {
-          ShowToastComponent.showDialog(val.toString(), context);
+          // token validation probably failed, log in again
+          gotServer = false;
+          storage.selectUser().then((user) async {
+            if (user != null) {
+              Auth auth = Auth();
+              auth.signInUser(user).then((value) {
+                if (value) {
+                  // If the user logged in again we will retrieve messages again
+                  getMessages(page);
+                }
+              });
+            }
+          });
         }
-        gotServer = true;
+
         if (gotLocalDB && gotServer) {
           mergeMessages(messagesServer + messagesDB);
           // Set date tiles, but only if all the messages are retrieved
@@ -309,10 +324,12 @@ class _BroupMessagingState extends State<BroupMessaging> {
           });
           chat.unreadMessages = 0;
         }
-        socketServices.socket.emit(
-          "message_read_broup",
-          {"bro_id": settings.getBroId(), "broup_id": chat.id},
-        );
+        if (gotServer) {
+          socketServices.socket.emit(
+            "message_read_broup",
+            {"bro_id": settings.getBroId(), "broup_id": chat.id},
+          );
+        }
         setState(() {
           isLoading = false;
         });
@@ -880,7 +897,7 @@ class _BroupMessagingState extends State<BroupMessaging> {
               Align(
                 alignment: Alignment.bottomCenter,
                 child: EmojiKeyboard(
-                  bromotionController: broMessageController,
+                  emotionController: broMessageController,
                   emojiKeyboardHeight: 300,
                   showEmojiKeyboard: showEmojiKeyboard,
                   darkMode: settings.getEmojiKeyboardDarkMode(),

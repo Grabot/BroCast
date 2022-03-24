@@ -415,7 +415,7 @@ class _BroProfileState extends State<BroProfile> {
                   Align(
                     alignment: Alignment.bottomCenter,
                     child: EmojiKeyboard(
-                        bromotionController: bromotionChangeController,
+                        emotionController: bromotionChangeController,
                         emojiKeyboardHeight: 300,
                         showEmojiKeyboard: showEmojiKeyboard,
                         darkMode: settings.getEmojiKeyboardDarkMode()),

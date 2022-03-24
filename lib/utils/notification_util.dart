@@ -90,7 +90,7 @@ class NotificationUtil {
               arguments: chat as BroBros);
         }
       } else {
-        // We will assume that there is a user
+        // We will assume that there is a chat, otherwise go to opening
         _navigationService.navigateTo(routes.OpeningRoute);
       }
     });

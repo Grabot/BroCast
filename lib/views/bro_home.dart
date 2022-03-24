@@ -88,14 +88,15 @@ class _BroCastHomeState extends State<BroCastHome> {
           setState(() {});
         }
         if (user.shouldRecheck() || broList.getBros().length == 0) {
+          Auth auth = Auth();
           broList.searchBros(user.token).then((value) {
             if (value) {
+              // BroList has been retrieved. Update user and screen
               user.recheckBros = 0;
               user.updateActivityTime();
               storage.updateUser(user).then((value) {});
-              // We sign in again even though we are already signed in.
-              // This is just to update the token in case it is invalidated.
-              Auth auth = Auth();
+            } else {
+              // Maybe token is no longer valid, log in again
               auth.signInUser(user).then((value) {
                 if (mounted) {
                   setState(() {});
@@ -195,6 +196,7 @@ class _BroCastHomeState extends State<BroCastHome> {
         });
         return true;
       } else {
+        socketServices.leaveRoomSolo(settings.getBroId());
         return false;
       }
     }
@@ -322,32 +324,7 @@ class _BroCastHomeState extends State<BroCastHome> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: appBarHome(context),
-      body: WillPopScope(
-        onWillPop: () async {
-          final now = DateTime.now();
-          final maxDuration = Duration(seconds: 2);
-          final isWarning =
-              lastPressed == null || now.difference(lastPressed!) > maxDuration;
-
-          if (isWarning) {
-            lastPressed = DateTime.now();
-
-            final snackBar = SnackBar(
-              content: Text('Press back twice to exit the application'),
-              duration: maxDuration,
-            );
-
-            ScaffoldMessenger.of(context)
-              ..removeCurrentSnackBar()
-              ..showSnackBar(snackBar);
-
-            return false;
-          } else {
-            socketServices.leaveRoomSolo(settings.getBroId());
-            return true;
-          }
-        },
-        child: Container(
+      body: Container(
             child: Column(children: [
           Container(
             child: Material(
@@ -413,23 +390,22 @@ class _BroCastHomeState extends State<BroCastHome> {
           Align(
             alignment: Alignment.bottomCenter,
             child: EmojiKeyboard(
-                bromotionController: bromotionController,
+                emotionController: bromotionController,
                 emojiKeyboardHeight: 300,
                 showEmojiKeyboard: showEmojiKeyboard,
                 darkMode: settings.getEmojiKeyboardDarkMode()),
           ),
         ])),
-      ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.person_add),
-        onPressed: () {
-          Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => FindBros(key: UniqueKey())));
-        },
-      ),
-    );
+        floatingActionButton: FloatingActionButton(
+          child: Icon(Icons.person_add),
+          onPressed: () {
+            Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => FindBros(key: UniqueKey())));
+          },
+        ),
+      );
   }
 }
 

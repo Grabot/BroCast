@@ -11,6 +11,7 @@ import 'package:brocast/views/bro_home.dart';
 import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
 import 'package:flutter/material.dart';
 
+import '../services/auth.dart';
 import 'add_broup.dart';
 import 'bro_profile.dart';
 import 'bro_settings.dart';
@@ -23,6 +24,7 @@ class FindBros extends StatefulWidget {
 }
 
 class _FindBrosState extends State<FindBros> {
+  bool isLoading = false;
   Search search = new Search();
   Settings settings = Settings();
   BroList broList = BroList();
@@ -95,12 +97,18 @@ class _FindBrosState extends State<FindBros> {
           MaterialPageRoute(
               builder: (context) => BroCastHome(key: UniqueKey())));
     });
+    setState(() {
+      isLoading = false;
+    });
   }
 
   broAddingFailed() {
     clickedNewBro = false;
     ShowToastComponent.showDialog(
         "Bro could not be added at this time", context);
+    setState(() {
+      isLoading = false;
+    });
   }
 
   @override
@@ -163,12 +171,33 @@ class _FindBrosState extends State<FindBros> {
               searchedBroNothingFound = broNameSearch;
             }
           });
+          setState(() {
+            isSearching = false;
+          });
         } else {
-          ShowToastComponent.showDialog(val.toString(), context);
+          // token validation probably failed, log in again
+          storage.selectUser().then((user) async {
+            if (user != null) {
+              Auth auth = Auth();
+              auth.signInUser(user).then((value) {
+                if (value) {
+                  // If the user logged in again we will retrieve messages again.
+                  searchBros();
+                } else {
+                  ShowToastComponent.showDialog("an unknown error occurred, please try again later", context);
+                  setState(() {
+                    isSearching = false;
+                  });
+                }
+              });
+            } else {
+              ShowToastComponent.showDialog("an unknown error occurred, please try again later", context);
+              setState(() {
+                isSearching = false;
+              });
+            }
+          });
         }
-        setState(() {
-          isSearching = false;
-        });
       });
     }
   }
@@ -188,6 +217,9 @@ class _FindBrosState extends State<FindBros> {
   addNewBro(int addBroId) {
     if (!clickedNewBro) {
       clickedNewBro = true;
+      setState(() {
+        isLoading = true;
+      });
       socketServices.socket.emit("message_event_add_bro",
           {"token": settings.getToken(), "bros_bro_id": addBroId});
       Future.delayed(Duration(milliseconds: 2000)).then((value) {
@@ -364,6 +396,10 @@ class _FindBrosState extends State<FindBros> {
                 ],
               ),
             ),
+            isLoading
+                ? Center(
+                child: Container(child: CircularProgressIndicator()))
+                :
             brosToBeAdded.length == 0 && searchedBroNothingFound.isNotEmpty
                 ? Container(
                     child: Text("nothing found for $searchedBroNothingFound",
@@ -373,7 +409,7 @@ class _FindBrosState extends State<FindBros> {
             Align(
               alignment: Alignment.bottomCenter,
               child: EmojiKeyboard(
-                  bromotionController: bromotionController,
+                  emotionController: bromotionController,
                   emojiKeyboardHeight: 300,
                   showEmojiKeyboard: showEmojiKeyboard,
                   darkMode: settings.getEmojiKeyboardDarkMode()),

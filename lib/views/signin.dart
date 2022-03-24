@@ -442,7 +442,7 @@ class _SignInState extends State<SignIn> {
                 Align(
                     alignment: Alignment.bottomCenter,
                     child: EmojiKeyboard(
-                        bromotionController: bromotionController,
+                        emotionController: bromotionController,
                         emojiKeyboardHeight: 300,
                         showEmojiKeyboard: showEmojiKeyboard,
                         darkMode: emojiKeyboardDarkMode)),

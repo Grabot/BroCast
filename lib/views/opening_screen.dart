@@ -49,38 +49,47 @@ class _OpeningScreenState extends State<OpeningScreen> {
 
     storage.selectUser().then((user) async {
       if (user != null) {
-        BroList broList = BroList();
-        broList.searchBros(user.token).then((value) {
+        // If a user in the database we will use the token to login again
+        // If this fails (for instance because the token is no longer valid)
+        // We log in again with bro_name/password
+        // After the login is successful we will retrieve the bro list.
+        Auth auth = Auth();
+        auth.signInUser(user).then((value) {
+          // The user has successfully logged in, and the new token is stored.
           if (value) {
-            user.recheckBros = 0;
-            user.updateActivityTime();
-            storage.updateUser(user).then((value) {});
-            Auth auth = Auth();
-            auth.signInUser(user).then((value) {
-              if (mounted && value) {
-                Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => BroCastHome(key: UniqueKey())));
+            // We retrieve the user again with the new token credentials
+            storage.selectUser().then((userUpdated) async {
+              if (userUpdated != null) {
+                BroList broList = BroList();
+                // We use the token to retrieve the BroList.
+                broList.searchBros(userUpdated.token).then((value) {
+                  if (value) {
+                    userUpdated.recheckBros = 0;
+                    userUpdated.updateActivityTime();
+                    storage.updateUser(userUpdated).then((value) {});
+                    if (mounted) {
+                      if (value) {
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => BroCastHome(key: UniqueKey())));
+                      } else {
+                        logInFail();
+                      }
+                    }
+                  } else {
+                    // Something went wrong, go to SignInScreen.
+                    logInFail();
+                  }
+                });
               } else {
-                if (mounted) {
-                  Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => SignIn(key: UniqueKey())));
-                }
+                // Something went wrong, go to SignInScreen.
+                logInFail();
               }
             });
           } else {
-            ShowToastComponent.showDialog(
-                "cannot retrieve brocast information at this time.", context);
-            setState(() {
-              isLoading = false;
-            });
-            Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => SignIn(key: UniqueKey())));
+            // Something went wrong, go to SignInScreen.
+            logInFail();
           }
         });
       } else {
@@ -169,6 +178,38 @@ class _OpeningScreenState extends State<OpeningScreen> {
             });
           }
         });
+      }
+    });
+  }
+
+  void logInFail() {
+    ShowToastComponent.showDialog("couldn't log in, please try again", context);
+    setState(() {
+      isLoading = false;
+    });
+    Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+            builder: (context) => SignIn(key: UniqueKey())));
+  }
+
+  void test(User user, Auth auth) {
+    user.recheckBros = 0;
+    user.updateActivityTime();
+    storage.updateUser(user).then((value) {});
+    auth.signInUser(user).then((value) {
+      if (mounted && value) {
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (context) => BroCastHome(key: UniqueKey())));
+      } else {
+        if (mounted) {
+          Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => SignIn(key: UniqueKey())));
+        }
       }
     });
   }
