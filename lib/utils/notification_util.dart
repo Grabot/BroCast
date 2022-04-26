@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:brocast/objects/bro_bros.dart';
 import 'package:brocast/objects/broup.dart';
 import 'package:brocast/objects/chat.dart';
@@ -139,11 +141,13 @@ class NotificationUtil {
     initializeFirebaseService();
 
     createNotificationChannel();
-
-    NotificationPermissions.requestNotificationPermissions(
-            iosSettings: const NotificationSettingsIos(
-                sound: true, badge: true, alert: true))
-        .then((_) {});
+    
+    if (!Platform.isAndroid) {
+      NotificationPermissions.requestNotificationPermissions(
+          iosSettings: const NotificationSettingsIos(
+              sound: true, badge: true, alert: true))
+          .then((_) {});
+    }
 
 
     platformChannelSpecifics = const NotificationDetails(
@@ -211,10 +215,12 @@ class NotificationUtil {
   }
 
   createNotificationChannel() async {
-    try {
-      await _channel.invokeMethod('createNotificationChannel', channelMap);
-    } on PlatformException catch (e) {
-      print(e);
+    if (Platform.isAndroid) {
+      try {
+        await _channel.invokeMethod('createNotificationChannel', channelMap);
+      } on PlatformException catch (e) {
+        print(e);
+      }
     }
   }
 
