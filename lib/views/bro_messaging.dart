@@ -76,25 +76,10 @@ class _BroMessagingState extends State<BroMessaging> {
       }
       storage.updateChat(chat).then((value) {});
 
-      // The user can go here directly via notifications
-      // So we will retrieve and update the user data.
-      storage.selectUser().then((user) async {
-        if (user != null) {
-          settings.setEmojiKeyboardDarkMode(user.getKeyboardDarkMode());
-          settings.setBroId(user.id);
-          settings.setBroName(user.broName);
-          settings.setBromotion(user.bromotion);
-          settings.setToken(user.token);
-          getMessages(amountViewed);
-          initBroMessagingSocket(settings.getBroId(), chat.id);
-        } else {
-          // There is no user for some reason, go back to the home screen where the user will log in.
-          Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => BroCastHome(key: UniqueKey())));
-        }
-      });
+      // We will assume that, either via notification or just opening the chat,
+      // the user data is correctly set
+      getMessages(amountViewed);
+      initBroMessagingSocket(settings.getBroId(), chat.id);
     });
 
     // We retrieved the chat locally, but we will also get it from the server

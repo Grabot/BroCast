@@ -34,7 +34,7 @@ class User {
     // If the last activity time is longer than an hour ago we will recheck
     if (DateTime.parse(lastTimeActive)
         .toLocal()
-        .isBefore(DateTime.now().subtract(Duration(hours: 1)))) {
+        .isBefore(DateTime.now().subtract(Duration(hours: 6)))) {
       updateActivityTime();
       recheckBros = 1;
     }

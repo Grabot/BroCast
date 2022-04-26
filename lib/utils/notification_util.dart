@@ -11,15 +11,20 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:notification_permissions/notification_permissions.dart';
 import 'package:brocast/constants/route_paths.dart' as routes;
 
+import '../services/settings.dart';
+
 const String androidChannelId = "custom_sound";
-const String androidChannelName = "Brocast notification";
+const String androidChannelName = "Bro notifications";
 const String androidChannelDescription = "Custom Bro Sound for notifications";
+const String groupKey = 'custom_sound_brouping';
 
 const MethodChannel _channel = MethodChannel('nl.brocast/channel_bro');
 
 class NotificationUtil {
   int currentChatId = -1;
   int currentIsBroup = -1;
+
+  bool fromNotification = false;
 
   static final NotificationUtil _instance = NotificationUtil._internal();
 
@@ -31,6 +36,10 @@ class NotificationUtil {
 
   factory NotificationUtil() {
     return _instance;
+  }
+
+  isFromNotification() {
+    return fromNotification;
   }
 
   String? firebaseToken;
@@ -78,17 +87,34 @@ class NotificationUtil {
   }
 
   void notificationNavigate(int id, int isBroup) {
+    fromNotification = true;
     Storage storage = Storage();
     storage.selectChat(id.toString(), isBroup.toString()).then((value) {
+      // When we open a notification we will retrieve the user and set the data
+      // This will be used in the rest of the app.
+      Settings settings = Settings();
       if (value != null) {
-        Chat chat = value;
-        if (chat.isBroup()) {
-          _navigationService.navigateTo(routes.BroupRoute,
-              arguments: chat as Broup);
-        } else {
-          _navigationService.navigateTo(routes.BroRoute,
-              arguments: chat as BroBros);
-        }
+        storage.selectUser().then((user) async {
+          if (user != null) {
+            settings.setEmojiKeyboardDarkMode(user.getKeyboardDarkMode());
+            settings.setBroId(user.id);
+            settings.setBroName(user.broName);
+            settings.setBromotion(user.bromotion);
+            settings.setToken(user.token);
+
+            Chat chat = value;
+            if (chat.isBroup()) {
+              _navigationService.navigateTo(routes.BroupRoute,
+                  arguments: chat as Broup);
+            } else {
+              _navigationService.navigateTo(routes.BroRoute,
+                  arguments: chat as BroBros);
+            }
+          } else {
+            // We will assume that there is a user, otherwise go to opening
+            _navigationService.navigateTo(routes.OpeningRoute);
+          }
+        });
       } else {
         // We will assume that there is a chat, otherwise go to opening
         _navigationService.navigateTo(routes.OpeningRoute);
@@ -119,14 +145,15 @@ class NotificationUtil {
                 sound: true, badge: true, alert: true))
         .then((_) {});
 
+
     platformChannelSpecifics = const NotificationDetails(
         android: AndroidNotificationDetails(
           androidChannelId,
           androidChannelName,
           channelDescription: androidChannelDescription,
-          playSound: true,
-          priority: Priority.high,
-          importance: Importance.high,
+          groupKey: groupKey,
+          setAsGroupSummary: true,
+          playSound: true
         ),
         iOS: IOSNotificationDetails(
             presentAlert: true,
@@ -147,7 +174,7 @@ class NotificationUtil {
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       // open message when the app is in the foreground.
       // Here we create a notification for both android and ios
-      // So no action is taken, except creating a notifciation
+      // So no action is taken, except creating a notification
       String? title = message.notification!.title;
       String? body = message.notification!.body;
       var data = message.data;
@@ -196,10 +223,6 @@ class NotificationUtil {
     await flutterLocalNotificationsPlugin.show(
         0, title, body, platformChannelSpecifics,
         payload: broId.toString() + ";" + isBroup.toString());
-  }
-
-  void showNotification(String title, String body, int broId, int isBroup) {
-    _showNotification(title, body, broId, isBroup);
   }
 
   String getFirebaseToken() {

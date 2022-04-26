@@ -20,10 +20,11 @@ class _OpeningScreenState extends State<OpeningScreen> {
   bool isLoading = false;
   bool acceptEULA = false;
   late Storage storage;
+  late NotificationUtil notificationUtil;
 
   @override
   void initState() {
-    NotificationUtil();
+    notificationUtil = NotificationUtil();
 
     // Initialize the db on startup
     storage = Storage();
@@ -47,36 +48,46 @@ class _OpeningScreenState extends State<OpeningScreen> {
       isLoading = true;
     });
 
-    storage.selectUser().then((user) async {
-      if (user != null) {
-        // If a user in the database we will use the token to login again
-        // If this fails (for instance because the token is no longer valid)
-        // We log in again with bro_name/password
-        // After the login is successful we will retrieve the bro list.
-        Auth auth = Auth();
-        auth.signInUser(user).then((value) {
-          // The user has successfully logged in, and the new token is stored.
-          if (value) {
-            // We retrieve the user again with the new token credentials
-            storage.selectUser().then((userUpdated) async {
-              if (userUpdated != null) {
-                BroList broList = BroList();
-                // We use the token to retrieve the BroList.
-                broList.searchBros(userUpdated.token).then((value) {
-                  if (value) {
-                    userUpdated.recheckBros = 0;
-                    userUpdated.updateActivityTime();
-                    storage.updateUser(userUpdated).then((value) {});
-                    if (mounted) {
+    // We wait for a short moment so that the services can load until
+    // we know for sure if it came from a notification or not.
+    Future.delayed(Duration(milliseconds: 50)).then((value) {
+      if (!notificationUtil.isFromNotification()) {
+        storage.selectUser().then((user) async {
+          if (user != null) {
+            // If a user in the database we will use the token to login again
+            // If this fails (for instance because the token is no longer valid)
+            // We log in again with bro_name/password
+            // After the login is successful we will retrieve the bro list.
+            Auth auth = Auth();
+            auth.signInUser(user).then((value) {
+              // The user has successfully logged in, and the new token is stored.
+              if (value) {
+                // We retrieve the user again with the new token credentials
+                storage.selectUser().then((userUpdated) async {
+                  if (userUpdated != null) {
+                    BroList broList = BroList();
+                    // We use the token to retrieve the BroList.
+                    broList.searchBros(userUpdated.token).then((value) {
                       if (value) {
-                        Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => BroCastHome(key: UniqueKey())));
+                        userUpdated.recheckBros = 0;
+                        userUpdated.updateActivityTime();
+                        storage.updateUser(userUpdated).then((value) {});
+                        if (mounted) {
+                          if (value) {
+                            Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        BroCastHome(key: UniqueKey())));
+                          } else {
+                            logInFail();
+                          }
+                        }
                       } else {
+                        // Something went wrong, go to SignInScreen.
                         logInFail();
                       }
-                    }
+                    });
                   } else {
                     // Something went wrong, go to SignInScreen.
                     logInFail();
@@ -88,31 +99,46 @@ class _OpeningScreenState extends State<OpeningScreen> {
               }
             });
           } else {
-            // Something went wrong, go to SignInScreen.
-            logInFail();
-          }
-        });
-      } else {
-        // no user in database! But maybe in shared preferences
-        HelperFunction.getBroToken().then((tok) {
-          if (tok == null || tok == "") {
-            // no token currently in the shared preferences, maybe name and password?
-            HelperFunction.getBroInformation().then((val) {
-              if (val != null && val.length != 0) {
-                String broName = val[0];
-                String bromotion = val[1];
-                String broPassword = val[2];
-                Auth auth = Auth();
-                User user =
-                    new User(-1, broName, bromotion, broPassword, "", "", 1, 0);
-                auth.signInUser(user).then((value) {
-                  if (value) {
-                    Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                BroCastHome(key: UniqueKey())));
+            // no user in database! But maybe in shared preferences
+            HelperFunction.getBroToken().then((tok) {
+              if (tok == null || tok == "") {
+                // no token currently in the shared preferences, maybe name and password?
+                HelperFunction.getBroInformation().then((val) {
+                  if (val != null && val.length != 0) {
+                    String broName = val[0];
+                    String bromotion = val[1];
+                    String broPassword = val[2];
+                    Auth auth = Auth();
+                    User user =
+                    new User(
+                        -1,
+                        broName,
+                        bromotion,
+                        broPassword,
+                        "",
+                        "",
+                        1,
+                        0);
+                    auth.signInUser(user).then((value) {
+                      if (value) {
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    BroCastHome(key: UniqueKey())));
+                      } else {
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    SignIn(key: UniqueKey())));
+                      }
+                    });
                   } else {
+                    // If there is nothing in the shared preferences than we will assume that it is a new user and we go to the sign in screen
+                    setState(() {
+                      isLoading = false;
+                    });
                     Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
@@ -120,58 +146,66 @@ class _OpeningScreenState extends State<OpeningScreen> {
                   }
                 });
               } else {
-                // If there is nothing in the shared preferences than we will assume that it is a new user and we go to the sign in screen
-                setState(() {
-                  isLoading = false;
-                });
-                Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => SignIn(key: UniqueKey())));
-              }
-            });
-          } else {
-            // There is a token. We will create a user with what we find in the shared preferences.
-            HelperFunction.getBroInformation().then((val) {
-              if (val != null && val.length != 0) {
-                // we will assume that it can get this information
-                String broName = val[0];
-                String bromotion = val[1];
-                String broPassword = val[2];
+                // There is a token. We will create a user with what we find in the shared preferences.
+                HelperFunction.getBroInformation().then((val) {
+                  if (val != null && val.length != 0) {
+                    // we will assume that it can get this information
+                    String broName = val[0];
+                    String bromotion = val[1];
+                    String broPassword = val[2];
 
-                Auth auth = Auth();
-                User user = new User(
-                    -1, broName, bromotion, broPassword, tok, "", 1, 0);
-                auth.signInUser(user).then((value) {
-                  if (value) {
-                    Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                BroCastHome(key: UniqueKey())));
+                    Auth auth = Auth();
+                    User user = new User(
+                        -1,
+                        broName,
+                        bromotion,
+                        broPassword,
+                        tok,
+                        "",
+                        1,
+                        0);
+                    auth.signInUser(user).then((value) {
+                      if (value) {
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    BroCastHome(key: UniqueKey())));
+                      } else {
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    SignIn(key: UniqueKey())));
+                      }
+                    });
                   } else {
-                    Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => SignIn(key: UniqueKey())));
-                  }
-                });
-              } else {
-                // that didin't seem to work, let's pray that just the token works
-                Auth auth = Auth();
-                User user = new User(-1, "", "", "", tok, "", 1, 0);
-                auth.signInUser(user).then((value) {
-                  if (value) {
-                    Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                BroCastHome(key: UniqueKey())));
-                  } else {
-                    Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => SignIn(key: UniqueKey())));
+                    // that didin't seem to work, let's pray that just the token works
+                    Auth auth = Auth();
+                    User user = new User(
+                        -1,
+                        "",
+                        "",
+                        "",
+                        tok,
+                        "",
+                        1,
+                        0);
+                    auth.signInUser(user).then((value) {
+                      if (value) {
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    BroCastHome(key: UniqueKey())));
+                      } else {
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    SignIn(key: UniqueKey())));
+                      }
+                    });
                   }
                 });
               }
@@ -191,27 +225,6 @@ class _OpeningScreenState extends State<OpeningScreen> {
         context,
         MaterialPageRoute(
             builder: (context) => SignIn(key: UniqueKey())));
-  }
-
-  void test(User user, Auth auth) {
-    user.recheckBros = 0;
-    user.updateActivityTime();
-    storage.updateUser(user).then((value) {});
-    auth.signInUser(user).then((value) {
-      if (mounted && value) {
-        Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (context) => BroCastHome(key: UniqueKey())));
-      } else {
-        if (mounted) {
-          Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => SignIn(key: UniqueKey())));
-        }
-      }
-    });
   }
 
   void agreeAndContinue() {
