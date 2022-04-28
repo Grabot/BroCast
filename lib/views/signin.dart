@@ -13,13 +13,8 @@ import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-
 class SignIn extends StatefulWidget {
-
-  SignIn(
-      {
-        required Key key
-      }) : super(key: key);
+  SignIn({required Key key}) : super(key: key);
 
   @override
   _SignInState createState() => _SignInState();
@@ -162,7 +157,6 @@ class _SignInState extends State<SignIn> {
   }
 
   signInName(String broName, String bromotion, String password) {
-
     setState(() {
       isLoading = true;
     });
@@ -185,9 +179,9 @@ class _SignInState extends State<SignIn> {
         searchBros(user.token).then((value) {
           if (value == "success") {
             Navigator.pushReplacement(
-                context, MaterialPageRoute(builder: (context) => BroCastHome(
-                key: UniqueKey()
-            )));
+                context,
+                MaterialPageRoute(
+                    builder: (context) => BroCastHome(key: UniqueKey())));
           } else {
             setState(() {
               isLoading = false;
@@ -195,8 +189,7 @@ class _SignInState extends State<SignIn> {
           }
         });
         user.recheckBros = 0;
-        storage.updateUser(user).then((value) {
-        });
+        storage.updateUser(user).then((value) {});
       } else {
         setState(() {
           isLoading = false;
@@ -213,13 +206,13 @@ class _SignInState extends State<SignIn> {
         // We will remove the chat database and refill it.
 
         for (Chat chat in bros) {
-          storage.selectChat(chat.id.toString(), chat.broup.toString()).then((value) {
+          storage
+              .selectChat(chat.id.toString(), chat.broup.toString())
+              .then((value) {
             if (value == null) {
-              storage.addChat(chat).then((value) {
-              });
+              storage.addChat(chat).then((value) {});
             } else {
-              storage.updateChat(chat).then((value) {
-              });
+              storage.updateChat(chat).then((value) {});
             }
           });
         }
@@ -231,7 +224,6 @@ class _SignInState extends State<SignIn> {
       }
     });
   }
-
 
   void onSelect(BuildContext context, int item) {
     switch (item) {
@@ -397,15 +389,19 @@ class _SignInState extends State<SignIn> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Container(
-                                    child: signUpMode ? Text(
-                                      "Already have an account?  ",
-                                      style: TextStyle(
-                                          color: Colors.white, fontSize: 16),
-                                    ) : Text(
-                                      "Don't have an account?  ",
-                                      style: TextStyle(
-                                          color: Colors.white, fontSize: 16),
-                                    ),
+                                    child: signUpMode
+                                        ? Text(
+                                            "Already have an account?  ",
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 16),
+                                          )
+                                        : Text(
+                                            "Don't have an account?  ",
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 16),
+                                          ),
                                   ),
                                   Expanded(
                                     child: GestureDetector(
@@ -444,14 +440,12 @@ class _SignInState extends State<SignIn> {
                   ),
                 ),
                 Align(
-                  alignment: Alignment.bottomCenter,
-                  child: EmojiKeyboard(
-                      bromotionController: bromotionController,
-                      emojiKeyboardHeight: 300,
-                      showEmojiKeyboard: showEmojiKeyboard,
-                      darkMode: emojiKeyboardDarkMode
-                  )
-                ),
+                    alignment: Alignment.bottomCenter,
+                    child: EmojiKeyboard(
+                        emotionController: bromotionController,
+                        emojiKeyboardHeight: 300,
+                        showEmojiKeyboard: showEmojiKeyboard,
+                        darkMode: emojiKeyboardDarkMode)),
               ]),
             ),
           ]),

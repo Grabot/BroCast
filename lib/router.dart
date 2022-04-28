@@ -7,25 +7,19 @@ import 'package:brocast/constants/route_paths.dart' as routes;
 import 'objects/bro_bros.dart';
 import 'objects/broup.dart';
 
-
 Route<dynamic> generateRoute(RouteSettings settings) {
   switch (settings.name) {
     case routes.BroRoute:
       BroBros bro = settings.arguments as BroBros;
-      return MaterialPageRoute(builder: (context) => BroMessaging(
-          key: UniqueKey(),
-          chat: bro
-      ));
+      return MaterialPageRoute(
+          builder: (context) => BroMessaging(key: UniqueKey(), chat: bro));
     case routes.BroupRoute:
       Broup broup = settings.arguments as Broup;
-      return MaterialPageRoute(builder: (context) => BroupMessaging(
-          key: UniqueKey(),
-          chat: broup
-      ));
+      return MaterialPageRoute(
+          builder: (context) => BroupMessaging(key: UniqueKey(), chat: broup));
     case routes.HomeRoute:
-      return MaterialPageRoute(builder: (context) => BroCastHome(
-          key: UniqueKey()
-      ));
+      return MaterialPageRoute(
+          builder: (context) => BroCastHome(key: UniqueKey()));
     case routes.OpeningRoute:
       return MaterialPageRoute(builder: (context) => OpeningScreen());
     default:

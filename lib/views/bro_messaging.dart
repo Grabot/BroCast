@@ -16,6 +16,7 @@ import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../services/auth.dart';
 import 'bro_chat_details.dart';
 import 'bro_profile.dart';
 import 'bro_settings.dart';
@@ -23,11 +24,7 @@ import 'bro_settings.dart';
 class BroMessaging extends StatefulWidget {
   final BroBros chat;
 
-  BroMessaging(
-      {
-        required Key key,
-        required this.chat
-      }) : super(key: key);
+  BroMessaging({required Key key, required this.chat}) : super(key: key);
 
   @override
   _BroMessagingState createState() => _BroMessagingState();
@@ -72,32 +69,17 @@ class _BroMessagingState extends State<BroMessaging> {
 
     storage.selectChat(chat.id.toString(), chat.broup.toString()).then((value) {
       chat = value as BroBros;
-      chat.updateActivityTime();
       if (broList.bros.isEmpty) {
         broList.fillBrosFromDB();
       } else {
         broList.updateChat(chat);
       }
-      storage.updateChat(chat).then((value) {
-      });
-      // Check if user data is set.
-      if (settings.getBroId() == -1) {
-        // The user can directly go here (via notification) So we will retrieve and set the user data.
-        storage.selectUser().then((user) async {
-          if (user != null) {
-            settings.setEmojiKeyboardDarkMode(user.getKeyboardDarkMode());
-            settings.setBroId(user.id);
-            settings.setBroName(user.broName);
-            settings.setBromotion(user.bromotion);
-            settings.setToken(user.token);
-            getMessages(amountViewed);
-            initBroMessagingSocket(settings.getBroId(), chat.id);
-          }
-        });
-      } else {
-        getMessages(amountViewed);
-        initBroMessagingSocket(settings.getBroId(), chat.id);
-      }
+      storage.updateChat(chat).then((value) {});
+
+      // We will assume that, either via notification or just opening the chat,
+      // the user data is correctly set
+      getMessages(amountViewed);
+      initBroMessagingSocket(settings.getBroId(), chat.id);
     });
 
     // We retrieved the chat locally, but we will also get it from the server
@@ -105,14 +87,13 @@ class _BroMessagingState extends State<BroMessaging> {
     getChat.getChat(settings.getBroId(), chat.id).then((value) {
       if (value is BroBros) {
         chat = value;
-        chat.updateActivityTime();
+        chat.unreadMessages = 0;
         if (broList.bros.isEmpty) {
           broList.fillBrosFromDB();
         } else {
           broList.updateChat(chat);
         }
-        storage.updateChat(chat).then((value) {
-        });
+        storage.updateChat(chat).then((value) {});
         setState(() {});
       }
     });
@@ -121,8 +102,9 @@ class _BroMessagingState extends State<BroMessaging> {
 
     messageScrollController.addListener(() {
       if (!busyRetrieving && !allMessagesDBRetrieved) {
-        double distanceToTop = messageScrollController.position
-            .maxScrollExtent - messageScrollController.position.pixels;
+        double distanceToTop =
+            messageScrollController.position.maxScrollExtent -
+                messageScrollController.position.pixels;
         if (distanceToTop < 1000) {
           busyRetrieving = true;
           amountViewed += 1;
@@ -139,14 +121,13 @@ class _BroMessagingState extends State<BroMessaging> {
     );
     socketServices.socket
         .on('message_event_send', (data) => messageReceived(data));
-    socketServices.socket
-        .on('message_event_read', (data) => messageRead(data));
+    socketServices.socket.on('message_event_read', (data) => messageRead(data));
   }
 
   socketListener() {
     // There was some update to the bro list.
     // Check the list and see if the change was to this chat object.
-    for(Chat ch4t in broList.getBros()) {
+    for (Chat ch4t in broList.getBros()) {
       if (!ch4t.isBroup()) {
         if (ch4t.id == chat.id) {
           // This is the chat object of the current chat.
@@ -170,8 +151,7 @@ class _BroMessagingState extends State<BroMessaging> {
         data["timestamp"],
         data["info"] ? 1 : 0,
         chat.id,
-        0
-    );
+        0);
     updateMessages(mes);
   }
 
@@ -217,15 +197,28 @@ class _BroMessagingState extends State<BroMessaging> {
     // get messages from the server
     get.getMessages(settings.getToken(), chat.id).then((val) {
       if (!(val is String)) {
+        gotServer = true;
         List<Message> messes = val;
         if (messes.length != 0) {
           messagesServer = messes;
         }
         storeMessages(messes);
       } else {
-        ShowToastComponent.showDialog(val.toString(), context);
+        gotServer = false;
+        // token validation probably failed, log in again
+        storage.selectUser().then((user) async {
+          if (user != null) {
+            Auth auth = Auth();
+            auth.signInUser(user).then((value) {
+              if (value) {
+                // If the user logged in again we will retrieve messages again.
+                getMessages(page);
+              }
+            });
+          }
+        });
       }
-      gotServer = true;
+
       if (gotLocalDB && gotServer) {
         mergeMessages(messagesServer + messagesDB);
         // Set date tiles, but only if all the messages are retrieved
@@ -236,10 +229,12 @@ class _BroMessagingState extends State<BroMessaging> {
         });
         chat.unreadMessages = 0;
       }
-      socketServices.socket.emit(
-        "message_read",
-        {"bro_id": settings.getBroId(), "bros_bro_id": chat.id},
-      );
+      if (gotServer) {
+        socketServices.socket.emit(
+          "message_read",
+          {"bro_id": settings.getBroId(), "bros_bro_id": chat.id},
+        );
+      }
       setState(() {
         isLoading = false;
       });
@@ -290,8 +285,7 @@ class _BroMessagingState extends State<BroMessaging> {
   storeMessages(List<Message> messages) {
     for (Message message in messages) {
       if (message.id > 0) {
-        storage.addMessage(message).then((value) {
-        });
+        storage.addMessage(message).then((value) {});
       }
     }
   }
@@ -349,7 +343,8 @@ class _BroMessagingState extends State<BroMessaging> {
       timeMessageFirst = "Yesterday";
     }
 
-    Message timeMessage = new Message(0, 0, timeMessageFirst, "", DateTime.now().toUtc().toString(), 1, chat.id, 0);
+    Message timeMessage = new Message(0, 0, timeMessageFirst, "",
+        DateTime.now().toUtc().toString(), 1, chat.id, 0);
     for (int i = 0; i < this.messages.length; i++) {
       DateTime current = this.messages[i].getTimeStamp();
       DateTime dayMessage = DateTime(current.year, current.month, current.day);
@@ -366,7 +361,8 @@ class _BroMessagingState extends State<BroMessaging> {
           timeMessageTile = "Yesterday";
         }
         this.messages.insert(i, timeMessage);
-        timeMessage = new Message(0, 0, timeMessageTile, "", DateTime.now().toUtc().toString(), 1, chat.id, 0);
+        timeMessage = new Message(0, 0, timeMessageTile, "",
+            DateTime.now().toUtc().toString(), 1, chat.id, 0);
       }
     }
     this.messages.insert(this.messages.length, timeMessage);
@@ -375,7 +371,8 @@ class _BroMessagingState extends State<BroMessaging> {
   updateDateTiles(Message message) {
     // If the day tiles need to be updated after sending a message it will be the today tile.
     if (this.messages.length == 0) {
-      Message timeMessage = new Message(0, 0, "Today", "", DateTime.now().toUtc().toString(), 1, chat.id, 0);
+      Message timeMessage = new Message(
+          0, 0, "Today", "", DateTime.now().toUtc().toString(), 1, chat.id, 0);
       this.messages.insert(0, timeMessage);
     } else {
       Message messageFirst = this.messages.first;
@@ -390,7 +387,8 @@ class _BroMessagingState extends State<BroMessaging> {
       if (chatTimeTile != currentDayMessage) {
         chatTimeTile = DateFormat.yMMMMd('en_US').format(dayMessage);
 
-        Message timeMessage = new Message(0, 0, "Today", "", DateTime.now().toUtc().toString(), 1, chat.id, 0);
+        Message timeMessage = new Message(0, 0, "Today", "",
+            DateTime.now().toUtc().toString(), 1, chat.id, 0);
         this.messages.insert(0, timeMessage);
       }
     }
@@ -431,8 +429,8 @@ class _BroMessagingState extends State<BroMessaging> {
             timestampString.substring(0, timestampString.length - 1);
       }
       // We set the id to be "-1". For date tiles it is "0", these will be filtered.
-      Message mes =
-          new Message(-1, settings.getBroId(), message, textMessage, DateTime.now().toUtc().toString(), 0, chat.id, 0);
+      Message mes = new Message(-1, settings.getBroId(), message, textMessage,
+          DateTime.now().toUtc().toString(), 0, chat.id, 0);
       setState(() {
         this.messages.insert(0, mes);
       });
@@ -511,10 +509,9 @@ class _BroMessagingState extends State<BroMessaging> {
             controller: messageScrollController,
             itemBuilder: (context, index) {
               return MessageTile(
-                key: UniqueKey(),
-                message: messages[index],
-                myMessage: messages[index].senderId == settings.getBroId()
-              );
+                  key: UniqueKey(),
+                  message: messages[index],
+                  myMessage: messages[index].senderId == settings.getBroId());
             })
         : Container();
   }
@@ -544,9 +541,9 @@ class _BroMessagingState extends State<BroMessaging> {
       });
     } else {
       Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => BroCastHome(
-        key: UniqueKey()
-      )));
+          context,
+          MaterialPageRoute(
+              builder: (context) => BroCastHome(key: UniqueKey())));
     }
   }
 
@@ -555,28 +552,27 @@ class _BroMessagingState extends State<BroMessaging> {
       preferredSize: const Size.fromHeight(50),
       child: AppBar(
           leading: IconButton(
-              icon: Icon(Icons.arrow_back, color: getTextColor(chat.getColor())),
+              icon:
+                  Icon(Icons.arrow_back, color: getTextColor(chat.getColor())),
               onPressed: () {
                 backButtonFunctionality();
               }),
           backgroundColor: chat.getColor(),
           title: InkWell(
-            onTap: () {
-              Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => BroChatDetails(
-                        key: UniqueKey(),
-                        chat: chat
-                      )));
-            },
-            child: Container(
-                alignment: Alignment.centerLeft,
-                color: Colors.transparent,
-                child: Text(chat.getBroNameOrAlias(),
-                    style: TextStyle(
-                        color: getTextColor(chat.getColor()), fontSize: 20)))
-          ),
+              onTap: () {
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            BroChatDetails(key: UniqueKey(), chat: chat)));
+              },
+              child: Container(
+                  alignment: Alignment.centerLeft,
+                  color: Colors.transparent,
+                  child: Text(chat.getBroNameOrAlias(),
+                      style: TextStyle(
+                          color: getTextColor(chat.getColor()),
+                          fontSize: 20)))),
           actions: [
             PopupMenuButton<int>(
                 onSelected: (item) => onSelectChat(context, item),
@@ -594,31 +590,28 @@ class _BroMessagingState extends State<BroMessaging> {
     switch (item) {
       case 0:
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => BroProfile(
-          key: UniqueKey()
-        )));
+            context,
+            MaterialPageRoute(
+                builder: (context) => BroProfile(key: UniqueKey())));
         break;
       case 1:
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => BroSettings(
-          key: UniqueKey()
-        )));
+            context,
+            MaterialPageRoute(
+                builder: (context) => BroSettings(key: UniqueKey())));
         break;
       case 2:
         Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-                builder: (context) => BroChatDetails(
-                  key: UniqueKey(),
-                  chat: chat
-                )));
+                builder: (context) =>
+                    BroChatDetails(key: UniqueKey(), chat: chat)));
         break;
       case 3:
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) =>
-            BroCastHome(
-                key: UniqueKey()
-            )));
+            context,
+            MaterialPageRoute(
+                builder: (context) => BroCastHome(key: UniqueKey())));
         break;
     }
   }
@@ -633,16 +626,13 @@ class _BroMessagingState extends State<BroMessaging> {
           child: Column(
             children: [
               Expanded(
-                child: Stack(
-                  children: [
-                    messageList(),
-                    isLoading? Center(
-                        child: Container(child: CircularProgressIndicator()
-                        )
-                    ) : Container()
-                  ]
-                )
-              ),
+                  child: Stack(children: [
+                messageList(),
+                isLoading
+                    ? Center(
+                        child: Container(child: CircularProgressIndicator()))
+                    : Container()
+              ])),
               Container(
                 child: Container(
                   alignment: Alignment.bottomCenter,
@@ -681,7 +671,9 @@ class _BroMessagingState extends State<BroMessaging> {
                                 child: TextFormField(
                                   focusNode: focusEmojiTextField,
                                   validator: (val) {
-                                    if (val == null || val.isEmpty || val.trimRight().isEmpty) {
+                                    if (val == null ||
+                                        val.isEmpty ||
+                                        val.trimRight().isEmpty) {
                                       return "Can't send an empty message";
                                     }
                                     if (chat.isBlocked()) {
@@ -698,7 +690,8 @@ class _BroMessagingState extends State<BroMessaging> {
                                   style: TextStyle(color: Colors.white),
                                   decoration: InputDecoration(
                                       hintText: "Emoji message...",
-                                      hintStyle: TextStyle(color: Colors.white54),
+                                      hintStyle:
+                                          TextStyle(color: Colors.white54),
                                       border: InputBorder.none),
                                   readOnly: true,
                                   showCursor: true,
@@ -754,8 +747,8 @@ class _BroMessagingState extends State<BroMessaging> {
                                         style: TextStyle(color: Colors.white),
                                         decoration: InputDecoration(
                                             hintText: "Append text message...",
-                                            hintStyle:
-                                                TextStyle(color: Colors.white54),
+                                            hintStyle: TextStyle(
+                                                color: Colors.white54),
                                             border: InputBorder.none),
                                       ),
                                     ),
@@ -769,7 +762,7 @@ class _BroMessagingState extends State<BroMessaging> {
               Align(
                 alignment: Alignment.bottomCenter,
                 child: EmojiKeyboard(
-                  bromotionController: broMessageController,
+                  emotionController: broMessageController,
                   emojiKeyboardHeight: 300,
                   showEmojiKeyboard: showEmojiKeyboard,
                   darkMode: settings.getEmojiKeyboardDarkMode(),
@@ -788,11 +781,8 @@ class MessageTile extends StatefulWidget {
   final bool myMessage;
 
   MessageTile(
-      {
-        required Key key,
-        required this.message,
-        required this.myMessage
-      }) : super(key: key);
+      {required Key key, required this.message, required this.myMessage})
+      : super(key: key);
 
   @override
   _MessageTileState createState() => _MessageTileState();
@@ -810,8 +800,7 @@ class _MessageTileState extends State<MessageTile> {
   @override
   Widget build(BuildContext context) {
     return widget.message.isInformation()
-        ?
-        Row(
+        ? Row(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -846,17 +835,19 @@ class _MessageTileState extends State<MessageTile> {
                     padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                     decoration: BoxDecoration(
                         border: Border.all(
-                            color: widget.myMessage ?
-                            widget.message.textMessage.isEmpty ||
-                                widget.message.clicked ? Color(0xFF009E00)
-                                : Colors.yellow :
-                            widget.message.textMessage.isEmpty ||
-                                widget.message.clicked ? Color(0xFF0060BB)
-                                : Colors.yellow,
-                            width: 2,
+                          color: widget.myMessage
+                              ? widget.message.textMessage.isEmpty ||
+                                      widget.message.clicked
+                                  ? Color(0xFF009E00)
+                                  : Colors.yellow
+                              : widget.message.textMessage.isEmpty ||
+                                      widget.message.clicked
+                                  ? Color(0xFF0060BB)
+                                  : Colors.yellow,
+                          width: 2,
                         ),
                         color: widget.myMessage
-                            ?  Color(0xFF009E00)
+                            ? Color(0xFF009E00)
                             : Color(0xFF0060BB),
                         borderRadius: widget.myMessage
                             ? BorderRadius.only(

@@ -1,5 +1,4 @@
 class Message {
-
   late int id;
   late int senderId;
   late String body;
@@ -13,8 +12,8 @@ class Message {
   late int chatId;
   late int isBroup;
 
-  Message(int id, int senderId, String body,
-      String textMessage, String timestamp, int info, int chatId, int isBroup) {
+  Message(int id, int senderId, String body, String textMessage,
+      String timestamp, int info, int chatId, int isBroup) {
     this.id = id;
     this.senderId = senderId;
     this.body = body;

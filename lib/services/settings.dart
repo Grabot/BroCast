@@ -2,7 +2,6 @@
 import 'package:brocast/objects/bro_added.dart';
 
 class Settings {
-
   static final Settings _instance = Settings._internal();
 
   bool emojiKeyboardDarkMode = false;

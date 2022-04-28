@@ -19,12 +19,11 @@ class Search {
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
-      body: jsonEncode(
-          <String, String>{
-            'token': token,
-            'bro_name': broName,
-            'bromotion': bromotion
-          }),
+      body: jsonEncode(<String, String>{
+        'token': token,
+        'bro_name': broName,
+        'bromotion': bromotion
+      }),
     );
     Map<String, dynamic> registerResponse = jsonDecode(responsePost.body);
     if (registerResponse.containsKey("result")) {
@@ -34,7 +33,8 @@ class Search {
         List<Bro> listWithBros = [];
         for (var br0 in broList) {
           // This bro will not be stored in the db, so we give it a -1 broupid
-          Bro bro = new BroNotAdded(br0["id"], -1, br0["bro_name"], br0["bromotion"]);
+          Bro bro =
+              new BroNotAdded(br0["id"], -1, br0["bro_name"], br0["bromotion"]);
           listWithBros.add(bro);
         }
         return listWithBros;

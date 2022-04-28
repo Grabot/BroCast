@@ -1,17 +1,10 @@
-
 import 'bro.dart';
 
 class BroNotAdded extends Bro {
-
   late String broName;
   late String bromotion;
 
-  BroNotAdded(
-      int id,
-      int broupId,
-      String broName,
-      String bromotion
-    ) {
+  BroNotAdded(int id, int broupId, String broName, String bromotion) {
     this.id = id;
     this.broupId = broupId;
     this.broName = broName;
@@ -41,17 +34,14 @@ class BroNotAdded extends Bro {
   }
 
   @override
-  BroNotAdded copyBro({
-    int? id,
-    int? broupId,
-    String? broName,
-    String? bromotion
-  }) => BroNotAdded(
-    id ?? this.id,
-    broupId ?? this.broupId,
-    broName ?? this.broName,
-    bromotion ?? this.bromotion,
-  );
+  BroNotAdded copyBro(
+          {int? id, int? broupId, String? broName, String? bromotion}) =>
+      BroNotAdded(
+        id ?? this.id,
+        broupId ?? this.broupId,
+        broName ?? this.broName,
+        bromotion ?? this.bromotion,
+      );
 
   @override
   Map<String, dynamic> toDbMap() {

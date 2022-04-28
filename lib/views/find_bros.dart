@@ -11,22 +11,20 @@ import 'package:brocast/views/bro_home.dart';
 import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
 import 'package:flutter/material.dart';
 
+import '../services/auth.dart';
 import 'add_broup.dart';
 import 'bro_profile.dart';
 import 'bro_settings.dart';
 
-
 class FindBros extends StatefulWidget {
-  FindBros(
-      {
-        required Key key
-      }) : super(key: key);
+  FindBros({required Key key}) : super(key: key);
 
   @override
   _FindBrosState createState() => _FindBrosState();
 }
 
 class _FindBrosState extends State<FindBros> {
+  bool isLoading = false;
   Search search = new Search();
   Settings settings = Settings();
   BroList broList = BroList();
@@ -59,10 +57,10 @@ class _FindBrosState extends State<FindBros> {
   void initFindBrosSockets() {
     // The "message_event_bro_added_you" socket is handled in the background.
     // The "message_event_add_bro_success" should be handled in this screen.
-    socketServices.socket.on('message_event_add_bro_success', (data) =>
-        youAddedABro(data));
-    socketServices.socket.on('message_event_add_bro_failed', (data) =>
-        broAddingFailed());
+    socketServices.socket
+        .on('message_event_add_bro_success', (data) => youAddedABro(data));
+    socketServices.socket
+        .on('message_event_add_bro_failed', (data) => broAddingFailed());
   }
 
   bromotionListener() {
@@ -88,17 +86,19 @@ class _FindBrosState extends State<FindBros> {
         data["room_name"],
         data["blocked"] ? 1 : 0,
         data["mute"] ? 1 : 0,
-        0
-    );
+        0);
     // Check all broups. If this user is in there it switches from not added to added.
     broList.addChat(broBros);
     storage.addChat(broBros).then((value) {
       broList.updateBroupBrosForBroBros(broBros);
       clickedNewBro = false;
       Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => BroCastHome(
-          key: UniqueKey()
-      )));
+          context,
+          MaterialPageRoute(
+              builder: (context) => BroCastHome(key: UniqueKey())));
+    });
+    setState(() {
+      isLoading = false;
     });
   }
 
@@ -106,6 +106,9 @@ class _FindBrosState extends State<FindBros> {
     clickedNewBro = false;
     ShowToastComponent.showDialog(
         "Bro could not be added at this time", context);
+    setState(() {
+      isLoading = false;
+    });
   }
 
   @override
@@ -133,8 +136,8 @@ class _FindBrosState extends State<FindBros> {
   }
 
   void addBroup() {
-    Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => AddBroup(key: UniqueKey())));
+    Navigator.pushReplacement(context,
+        MaterialPageRoute(builder: (context) => AddBroup(key: UniqueKey())));
   }
 
   void onTapEmojiField() {
@@ -158,7 +161,9 @@ class _FindBrosState extends State<FindBros> {
       String broNameSearch = broNameController.text.trimRight();
       String bromotionSearch = bromotionController.text;
 
-      search.searchBro(settings.getToken(), broNameSearch, bromotionSearch).then((val) {
+      search
+          .searchBro(settings.getToken(), broNameSearch, bromotionSearch)
+          .then((val) {
         if (!(val is String)) {
           setState(() {
             brosToBeAdded = val;
@@ -166,12 +171,33 @@ class _FindBrosState extends State<FindBros> {
               searchedBroNothingFound = broNameSearch;
             }
           });
+          setState(() {
+            isSearching = false;
+          });
         } else {
-          ShowToastComponent.showDialog(val.toString(), context);
+          // token validation probably failed, log in again
+          storage.selectUser().then((user) async {
+            if (user != null) {
+              Auth auth = Auth();
+              auth.signInUser(user).then((value) {
+                if (value) {
+                  // If the user logged in again we will retrieve messages again.
+                  searchBros();
+                } else {
+                  ShowToastComponent.showDialog("an unknown error occurred, please try again later", context);
+                  setState(() {
+                    isSearching = false;
+                  });
+                }
+              });
+            } else {
+              ShowToastComponent.showDialog("an unknown error occurred, please try again later", context);
+              setState(() {
+                isSearching = false;
+              });
+            }
+          });
         }
-        setState(() {
-          isSearching = false;
-        });
       });
     }
   }
@@ -183,10 +209,7 @@ class _FindBrosState extends State<FindBros> {
             itemCount: brosToBeAdded.length,
             itemBuilder: (context, index) {
               return BroTileSearch(
-                  brosToBeAdded[index],
-                  settings.getToken(),
-                  addNewBro
-              );
+                  brosToBeAdded[index], settings.getToken(), addNewBro);
             })
         : Container();
   }
@@ -194,9 +217,11 @@ class _FindBrosState extends State<FindBros> {
   addNewBro(int addBroId) {
     if (!clickedNewBro) {
       clickedNewBro = true;
+      setState(() {
+        isLoading = true;
+      });
       socketServices.socket.emit("message_event_add_bro",
-          {"token": settings.getToken(), "bros_bro_id": addBroId}
-      );
+          {"token": settings.getToken(), "bros_bro_id": addBroId});
       Future.delayed(Duration(milliseconds: 2000)).then((value) {
         // The first time something strange happens where it doesn't work.
         // For this specific case we will wait a bit
@@ -207,10 +232,9 @@ class _FindBrosState extends State<FindBros> {
             broList.searchBros(settings.getToken()).then((value) {
               if (value) {
                 Navigator.pushReplacement(
-                    context, MaterialPageRoute(builder: (context) =>
-                    BroCastHome(
-                        key: UniqueKey()
-                    )));
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => BroCastHome(key: UniqueKey())));
               }
             });
           }
@@ -226,9 +250,9 @@ class _FindBrosState extends State<FindBros> {
       });
     } else {
       Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => BroCastHome(
-        key: UniqueKey()
-      )));
+          context,
+          MaterialPageRoute(
+              builder: (context) => BroCastHome(key: UniqueKey())));
     }
   }
 
@@ -259,22 +283,21 @@ class _FindBrosState extends State<FindBros> {
     switch (item) {
       case 0:
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => BroProfile(
-            key: UniqueKey()
-        )));
+            context,
+            MaterialPageRoute(
+                builder: (context) => BroProfile(key: UniqueKey())));
         break;
       case 1:
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => BroSettings(
-            key: UniqueKey()
-        )));
+            context,
+            MaterialPageRoute(
+                builder: (context) => BroSettings(key: UniqueKey())));
         break;
       case 2:
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) =>
-            BroCastHome(
-                key: UniqueKey()
-            )));
+            context,
+            MaterialPageRoute(
+                builder: (context) => BroCastHome(key: UniqueKey())));
         break;
     }
   }
@@ -293,30 +316,23 @@ class _FindBrosState extends State<FindBros> {
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 24),
                 height: 80,
-                child: Row(
-                  children: [
-                    Container(
+                child: Row(children: [
+                  Container(
                       decoration: BoxDecoration(
                           color: Colors.green,
-                          borderRadius: BorderRadius.all(Radius.circular(40))
-                      ),
+                          borderRadius: BorderRadius.all(Radius.circular(40))),
                       child: IconButton(
                         onPressed: () {
                           addBroup();
                         },
-                        icon: Icon(
-                            Icons.group_add,
-                            color: Colors.white
-                        ),
-                      )
-                    ),
-                    SizedBox(width: 20),
-                    Text(
-                        "Add new Broup",
-                        style: TextStyle(color: Colors.grey, fontSize: 20),
-                    )
-                  ]
-                ),
+                        icon: Icon(Icons.group_add, color: Colors.white),
+                      )),
+                  SizedBox(width: 20),
+                  Text(
+                    "Add new Broup",
+                    style: TextStyle(color: Colors.grey, fontSize: 20),
+                  )
+                ]),
               ),
             ),
             Container(
@@ -324,8 +340,7 @@ class _FindBrosState extends State<FindBros> {
               alignment: Alignment.centerLeft,
               child: Text(
                   "Or search for a bro using their bro name \n(bromotion optional)",
-                  style: simpleTextStyle()
-              ),
+                  style: simpleTextStyle()),
             ),
             Container(
               padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
@@ -339,7 +354,9 @@ class _FindBrosState extends State<FindBros> {
                         onTapTextField();
                       },
                       validator: (val) {
-                        return val == null || val.isEmpty ? "Please provide a bro name" : null;
+                        return val == null || val.isEmpty
+                            ? "Please provide a bro name"
+                            : null;
                       },
                       controller: broNameController,
                       textAlign: TextAlign.center,
@@ -379,16 +396,20 @@ class _FindBrosState extends State<FindBros> {
                 ],
               ),
             ),
-            brosToBeAdded.length == 0 && searchedBroNothingFound.isNotEmpty ? Container(
-              child: Text(
-                "nothing found for $searchedBroNothingFound",
-                style: simpleTextStyle())
-            ) : Container(),
+            isLoading
+                ? Center(
+                child: Container(child: CircularProgressIndicator()))
+                :
+            brosToBeAdded.length == 0 && searchedBroNothingFound.isNotEmpty
+                ? Container(
+                    child: Text("nothing found for $searchedBroNothingFound",
+                        style: simpleTextStyle()))
+                : Container(),
             Expanded(child: listOfBros()),
             Align(
               alignment: Alignment.bottomCenter,
               child: EmojiKeyboard(
-                  bromotionController: bromotionController,
+                  emotionController: bromotionController,
                   emojiKeyboardHeight: 300,
                   showEmojiKeyboard: showEmojiKeyboard,
                   darkMode: settings.getEmojiKeyboardDarkMode()),
@@ -405,11 +426,7 @@ class BroTileSearch extends StatelessWidget {
   final String token;
   final void Function(int) addNewBro;
 
-  BroTileSearch(
-      this.bro,
-      this.token,
-      this.addNewBro
-    );
+  BroTileSearch(this.bro, this.token, this.addNewBro);
 
   addBro() {
     addNewBro(bro.id);
@@ -423,12 +440,8 @@ class BroTileSearch extends StatelessWidget {
         children: [
           Container(
               width: MediaQuery.of(context).size.width - 110,
-              child: Text(
-                  bro.getFullName(),
-                  overflow: TextOverflow.ellipsis,
-                  style: simpleTextStyle()
-              )
-          ),
+              child: Text(bro.getFullName(),
+                  overflow: TextOverflow.ellipsis, style: simpleTextStyle())),
           Spacer(),
           Container(
             width: 62,

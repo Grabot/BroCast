@@ -9,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 class SocketServices extends ChangeNotifier {
-
   late IO.Socket socket;
   late Storage storage;
   late BroList broList;
@@ -98,9 +97,12 @@ class SocketServices extends ChangeNotifier {
     Broup broup = getBroup(data);
     List<Bro> broupBros = [];
     // We assume this object is always filled an always in the participant list.
-    broList.chatChangedCheckForAdded(broup.id, broup.getParticipants(), broup.getAdmins(), [], broupBros);
+    broList.chatChangedCheckForAdded(
+        broup.id, broup.getParticipants(), broup.getAdmins(), [], broupBros);
     broup.setBroupBros(broupBros);
-    storage.selectChat(broup.id.toString(), broup.broup.toString()).then((value) {
+    storage
+        .selectChat(broup.id.toString(), broup.broup.toString())
+        .then((value) {
       if (value == null) {
         storage.addChat(broup).then((value) {
           broList.addChat(broup);
@@ -120,7 +122,8 @@ class SocketServices extends ChangeNotifier {
       if (broup.isBroup()) {
         List<Bro> broupBros = [];
         broup as Broup;
-        broList.chatChangedCheckForAdded(broup.id, broup.getParticipants(), broup.getAdmins(), [], broupBros);
+        broList.chatChangedCheckForAdded(broup.id, broup.getParticipants(),
+            broup.getAdmins(), [], broupBros);
         broList.chatCheckForDBRemoved(broup.id, broup.getParticipants());
         broup.setBroupBros(broupBros);
       }
@@ -139,7 +142,8 @@ class SocketServices extends ChangeNotifier {
       Broup oldBroup = broList.getChat(broup.id, broup.broup) as Broup;
       List<Bro> broupBros = oldBroup.getBroupBros();
       broList.chatChangedCheckForRemoved(broup, oldBroup, broupBros);
-      broList.chatChangedCheckForAdded(broup.id, broup.getParticipants(), broup.getAdmins(), oldBroup.getParticipants(), broupBros);
+      broList.chatChangedCheckForAdded(broup.id, broup.getParticipants(),
+          broup.getAdmins(), oldBroup.getParticipants(), broupBros);
       broList.updateBroupBrosAdmins(broupBros, broup.getAdmins());
       broList.updateAliases(broupBros);
       broup.setBroupBros(broupBros);
@@ -194,17 +198,14 @@ class SocketServices extends ChangeNotifier {
         data["room_name"],
         data["blocked"] ? 1 : 0,
         data["mute"] ? 1 : 0,
-        0
-    );
+        0);
   }
 
   void leaveRoomSolo(int broId) {
     joinedSoloRoom = false;
     this.socket.emit(
       "leave_solo",
-      {
-        "bro_id": broId
-      },
+      {"bro_id": broId},
     );
     this.socket.off('message_event_bro_added_you');
     this.socket.off('message_event_added_to_broup');

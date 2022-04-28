@@ -6,7 +6,6 @@ import 'package:brocast/objects/broup.dart';
 import 'package:http/http.dart' as http;
 
 class DeleteBroup {
-
   Future deleteBroup(String token, int broupId) async {
     String urlDeleteBroup = baseUrl_v1_3 + 'delete/broup';
     Uri uriDeleteBroup = Uri.parse(urlDeleteBroup);
@@ -16,10 +15,8 @@ class DeleteBroup {
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
-      body: jsonEncode(<String, String>{
-        'token': token,
-        'broup_id': broupId.toString()
-      }),
+      body: jsonEncode(
+          <String, String>{'token': token, 'broup_id': broupId.toString()}),
     );
 
     Map<String, dynamic> deleteBroupResponse = jsonDecode(responsePost.body);

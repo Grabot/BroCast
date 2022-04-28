@@ -1,5 +1,4 @@
 class User {
-
   late int id;
   late String broName;
   late String bromotion;
@@ -10,16 +9,8 @@ class User {
   late int keyboardDarkMode;
   late String lastTimeActive;
 
-  User(
-      int id,
-      String broName,
-      String bromotion,
-      String password,
-      String token,
-      String? registrationId,
-      int recheckBros,
-      int keyboardDarkMode
-    ) {
+  User(int id, String broName, String bromotion, String password, String token,
+      String? registrationId, int recheckBros, int keyboardDarkMode) {
     this.id = id;
     this.broName = broName;
     this.bromotion = bromotion;
@@ -41,7 +32,9 @@ class User {
 
   bool shouldRecheck() {
     // If the last activity time is longer than an hour ago we will recheck
-    if (DateTime.parse(lastTimeActive).toLocal().isBefore(DateTime.now().subtract(Duration(hours: 1)))) {
+    if (DateTime.parse(lastTimeActive)
+        .toLocal()
+        .isBefore(DateTime.now().subtract(Duration(hours: 6)))) {
       updateActivityTime();
       recheckBros = 1;
     }
@@ -73,5 +66,4 @@ class User {
     keyboardDarkMode = map['keyboardDarkMode'];
     lastTimeActive = map['lastTimeActive'];
   }
-
 }

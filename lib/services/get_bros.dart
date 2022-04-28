@@ -10,13 +10,15 @@ class GetBros {
     String urlGetBros = baseUrl + 'get/bros';
     Uri uriGetBros = Uri.parse(urlGetBros);
 
-    http.Response responsePost = await http.post(
+    http.Response responsePost = await http
+        .post(
       uriGetBros,
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode(<String, String>{'token': token}),
-    ).timeout(
+    )
+        .timeout(
       Duration(seconds: 8),
       onTimeout: () {
         return new http.Response("", 404);
@@ -65,14 +67,14 @@ class GetBros {
               List<int> broIdList = broIds.map((s) => s as int).toList();
               broup.setParticipants(broIdList);
               List<dynamic> broAdminsIds = br0["bro_admin_ids"];
-              List<int> broAdminIdList = broAdminsIds.map((s) => s as int)
-                  .toList();
+              List<int> broAdminIdList =
+                  broAdminsIds.map((s) => s as int).toList();
               broup.setAdmins(broAdminIdList);
               listWithBros.add(broup);
             }
           }
-          listWithBros.sort((b, a) =>
-              a.getLastActivity().compareTo(b.getLastActivity()));
+          listWithBros.sort(
+              (b, a) => a.getLastActivity().compareTo(b.getLastActivity()));
           return listWithBros;
         }
       }

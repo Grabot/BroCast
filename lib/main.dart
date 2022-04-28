@@ -23,8 +23,7 @@ void firebaseBackgroundInitialization() async {
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 }
 
-Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-}
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {}
 
 class MyApp extends StatelessWidget {
   @override

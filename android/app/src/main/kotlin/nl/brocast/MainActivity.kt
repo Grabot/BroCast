@@ -2,6 +2,7 @@ package nl.brocast
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.NotificationChannelGroup
 import android.content.ContentResolver
 import android.graphics.Paint
 import android.media.AudioAttributes
@@ -56,8 +57,15 @@ class MainActivity: FlutterActivity() {
         val completed: Boolean
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 
-            val id = mapData["id"]
+            val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+
+            val groupId = "custom_sound_brouping"
             val name = mapData["name"]
+
+            var channelGroup = NotificationChannelGroup(groupId, name);
+            notificationManager.createNotificationChannelGroup(channelGroup)
+
+            val id = mapData["id"]
             val descriptionText = mapData["description"]
             val sound = "res_brodio"
             val importance = NotificationManager.IMPORTANCE_HIGH
@@ -71,9 +79,10 @@ class MainActivity: FlutterActivity() {
                     .build();
 
             mChannel.setSound(soundUri, att)
+            mChannel.setGroup(channelGroup.getId());
 
-            val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(mChannel)
+
             completed = true
         }
         else{

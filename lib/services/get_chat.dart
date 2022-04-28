@@ -5,7 +5,6 @@ import 'package:brocast/objects/broup.dart';
 import 'package:http/http.dart' as http;
 
 class GetChat {
-
   Future getChat(int broId, int broBrosId) async {
     String urlGetChat = baseUrl + 'get/chat';
     Uri uriGetChat = Uri.parse(urlGetChat);
