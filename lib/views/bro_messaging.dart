@@ -15,6 +15,7 @@ import 'package:brocast/views/bro_home.dart';
 import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:linkable/linkable.dart';
 
 import '../services/auth.dart';
 import 'bro_chat_details.dart';
@@ -797,6 +798,11 @@ class _MessageTileState extends State<MessageTile> {
     }
   }
 
+  getMessageText() {
+    print("message test ${widget.message.textMessage}");
+    return widget.message.textMessage;
+  }
+
   @override
   Widget build(BuildContext context) {
     return widget.message.isInformation()
@@ -861,8 +867,10 @@ class _MessageTileState extends State<MessageTile> {
                     child: Column(
                       children: [
                         widget.message.clicked
-                            ? Text(widget.message.textMessage,
-                                style: simpleTextStyle())
+                            ? Linkable(
+                                text:
+                                  getMessageText(),
+                              )
                             : Text(widget.message.body,
                                 style: simpleTextStyle()),
                       ],
