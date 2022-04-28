@@ -19,6 +19,7 @@ import 'package:brocast/views/bro_home.dart';
 import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:linkable/linkable.dart';
 import '../services/auth.dart';
 import 'bro_profile.dart';
 import 'bro_settings.dart';
@@ -1038,8 +1039,12 @@ class _MessageTileState extends State<MessageTile> {
                       child: Column(
                         children: [
                           widget.message.clicked
-                              ? Text(widget.message.textMessage,
-                                  style: simpleTextStyle())
+                              ? Linkable(
+                                  text: widget.message.textMessage,
+                                  textColor: Colors.white,
+                                  linkColor: Colors.blue[200],
+                                  style: simpleTextStyle()
+                              )
                               : Text(widget.message.body,
                                   style: simpleTextStyle()),
                         ],

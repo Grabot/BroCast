@@ -798,11 +798,6 @@ class _MessageTileState extends State<MessageTile> {
     }
   }
 
-  getMessageText() {
-    print("message test ${widget.message.textMessage}");
-    return widget.message.textMessage;
-  }
-
   @override
   Widget build(BuildContext context) {
     return widget.message.isInformation()
@@ -868,8 +863,10 @@ class _MessageTileState extends State<MessageTile> {
                       children: [
                         widget.message.clicked
                             ? Linkable(
-                                text:
-                                  getMessageText(),
+                                text: widget.message.textMessage,
+                                textColor: Colors.white,
+                                linkColor: Colors.blue[200],
+                                style: simpleTextStyle()
                               )
                             : Text(widget.message.body,
                                 style: simpleTextStyle()),
