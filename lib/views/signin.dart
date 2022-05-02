@@ -157,7 +157,6 @@ class _SignInState extends State<SignIn> {
   }
 
   signInName(String broName, String bromotion, String password) {
-    print("going to sign in!");
     setState(() {
       isLoading = true;
     });

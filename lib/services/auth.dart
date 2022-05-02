@@ -71,7 +71,6 @@ class Auth {
     NotificationUtil notificationUtil = NotificationUtil();
     String registrationId = notificationUtil.getFirebaseToken();
 
-    print("going to send request to $urlLogin");
     http.Response responsePost = await http
         .post(
       uriLogin,
@@ -93,7 +92,6 @@ class Auth {
       },
     );
 
-    print("response from server: ${responsePost.body}");
     if (responsePost.body.isEmpty) {
       return "Could not connect to the server";
     } else {
