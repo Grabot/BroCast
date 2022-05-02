@@ -751,161 +751,158 @@ class _BroupMessagingState extends State<BroupMessaging> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      bottom: true,
-      child: Scaffold(
-        appBar: appBarChat(),
-        body: Container(
-          child: Column(
-            children: [
-              Expanded(
-                  child: Stack(children: [
-                messageList(),
-                isLoading
-                    ? Center(
-                        child: Container(child: CircularProgressIndicator()))
-                    : Container()
-              ])),
-              Container(
+    return Scaffold(
+      appBar: appBarChat(),
+      body: Container(
+        child: Column(
+          children: [
+            Expanded(
+                child: Stack(children: [
+              messageList(),
+              isLoading
+                  ? Center(
+                      child: Container(child: CircularProgressIndicator()))
+                  : Container()
+            ])),
+            Container(
+              child: Container(
+                alignment: Alignment.bottomCenter,
                 child: Container(
-                  alignment: Alignment.bottomCenter,
+                  padding: EdgeInsets.symmetric(horizontal: 10),
                   child: Container(
                     padding: EdgeInsets.symmetric(horizontal: 10),
-                    child: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 10),
-                      decoration: BoxDecoration(
-                          color: Color(0x36FFFFFF),
-                          borderRadius: BorderRadius.circular(35)),
-                      child: Row(
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              appendTextMessage();
-                            },
-                            child: Container(
-                                height: 35,
-                                width: 35,
-                                decoration: BoxDecoration(
-                                    color: appendingMessage
-                                        ? Colors.green
-                                        : Colors.grey,
-                                    borderRadius: BorderRadius.circular(35)),
-                                padding: EdgeInsets.symmetric(horizontal: 6),
-                                child: Icon(Icons.text_snippet,
-                                    color: appendingMessage
-                                        ? Colors.white
-                                        : Color(0xFF616161))),
-                          ),
-                          Expanded(
-                            child: Container(
-                              padding: EdgeInsets.only(left: 15),
-                              child: Form(
-                                key: formKey,
-                                child: TextFormField(
-                                  focusNode: focusEmojiTextField,
-                                  validator: (val) {
-                                    if (val == null ||
-                                        val.isEmpty ||
-                                        val.trimRight().isEmpty) {
-                                      return "Can't send an empty message";
-                                    }
-                                    if (chat.hasLeft()) {
-                                      return "You're no longer a participant in this Broup";
-                                    }
-                                    if (chat.isBlocked()) {
-                                      return "Can't send messages to a blocked Broup";
-                                    }
-                                    return null;
-                                  },
-                                  onTap: () {
-                                    onTapEmojiTextField();
-                                  },
-                                  keyboardType: TextInputType.multiline,
-                                  maxLines: null,
-                                  controller: broMessageController,
-                                  style: TextStyle(color: Colors.white),
-                                  decoration: InputDecoration(
-                                      hintText: "Emoji message...",
-                                      hintStyle:
-                                          TextStyle(color: Colors.white54),
-                                      border: InputBorder.none),
-                                  readOnly: true,
-                                  showCursor: true,
-                                ),
+                    decoration: BoxDecoration(
+                        color: Color(0x36FFFFFF),
+                        borderRadius: BorderRadius.circular(35)),
+                    child: Row(
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            appendTextMessage();
+                          },
+                          child: Container(
+                              height: 35,
+                              width: 35,
+                              decoration: BoxDecoration(
+                                  color: appendingMessage
+                                      ? Colors.green
+                                      : Colors.grey,
+                                  borderRadius: BorderRadius.circular(35)),
+                              padding: EdgeInsets.symmetric(horizontal: 6),
+                              child: Icon(Icons.text_snippet,
+                                  color: appendingMessage
+                                      ? Colors.white
+                                      : Color(0xFF616161))),
+                        ),
+                        Expanded(
+                          child: Container(
+                            padding: EdgeInsets.only(left: 15),
+                            child: Form(
+                              key: formKey,
+                              child: TextFormField(
+                                focusNode: focusEmojiTextField,
+                                validator: (val) {
+                                  if (val == null ||
+                                      val.isEmpty ||
+                                      val.trimRight().isEmpty) {
+                                    return "Can't send an empty message";
+                                  }
+                                  if (chat.hasLeft()) {
+                                    return "You're no longer a participant in this Broup";
+                                  }
+                                  if (chat.isBlocked()) {
+                                    return "Can't send messages to a blocked Broup";
+                                  }
+                                  return null;
+                                },
+                                onTap: () {
+                                  onTapEmojiTextField();
+                                },
+                                keyboardType: TextInputType.multiline,
+                                maxLines: null,
+                                controller: broMessageController,
+                                style: TextStyle(color: Colors.white),
+                                decoration: InputDecoration(
+                                    hintText: "Emoji message...",
+                                    hintStyle:
+                                        TextStyle(color: Colors.white54),
+                                    border: InputBorder.none),
+                                readOnly: true,
+                                showCursor: true,
                               ),
                             ),
                           ),
-                          GestureDetector(
-                            onTap: () {
-                              sendMessageBroup();
-                            },
-                            child: Container(
-                                height: 35,
-                                width: 35,
-                                decoration: BoxDecoration(
-                                    color: Color(0xFF34A843),
-                                    borderRadius: BorderRadius.circular(35)),
-                                padding: EdgeInsets.symmetric(horizontal: 6),
-                                child: Icon(
-                                  Icons.send,
-                                  color: Colors.white,
-                                )),
-                          )
-                        ],
-                      ),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            sendMessageBroup();
+                          },
+                          child: Container(
+                              height: 35,
+                              width: 35,
+                              decoration: BoxDecoration(
+                                  color: Color(0xFF34A843),
+                                  borderRadius: BorderRadius.circular(35)),
+                              padding: EdgeInsets.symmetric(horizontal: 6),
+                              child: Icon(
+                                Icons.send,
+                                color: Colors.white,
+                              )),
+                        )
+                      ],
                     ),
                   ),
                 ),
               ),
-              Container(
-                  child: appendingMessage
-                      ? Container(
+            ),
+            Container(
+                child: appendingMessage
+                    ? Container(
+                        padding: EdgeInsets.symmetric(horizontal: 6),
+                        child: Container(
                           padding: EdgeInsets.symmetric(horizontal: 6),
-                          child: Container(
-                            padding: EdgeInsets.symmetric(horizontal: 6),
-                            decoration: BoxDecoration(
-                                color: Color(0x36FFFFFF),
-                                borderRadius: BorderRadius.circular(35)),
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: Container(
-                                    padding: EdgeInsets.only(left: 15),
-                                    child: Form(
-                                      child: TextFormField(
-                                        onTap: () {
-                                          onTapAppendTextField();
-                                        },
-                                        focusNode: focusAppendText,
-                                        keyboardType: TextInputType.multiline,
-                                        maxLines: null,
-                                        controller: appendTextMessageController,
-                                        style: TextStyle(color: Colors.white),
-                                        decoration: InputDecoration(
-                                            hintText: "Append text message...",
-                                            hintStyle: TextStyle(
-                                                color: Colors.white54),
-                                            border: InputBorder.none),
-                                      ),
+                          decoration: BoxDecoration(
+                              color: Color(0x36FFFFFF),
+                              borderRadius: BorderRadius.circular(35)),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Container(
+                                  padding: EdgeInsets.only(left: 15),
+                                  child: Form(
+                                    child: TextFormField(
+                                      onTap: () {
+                                        onTapAppendTextField();
+                                      },
+                                      focusNode: focusAppendText,
+                                      keyboardType: TextInputType.multiline,
+                                      maxLines: null,
+                                      controller: appendTextMessageController,
+                                      style: TextStyle(color: Colors.white),
+                                      decoration: InputDecoration(
+                                          hintText: "Append text message...",
+                                          hintStyle: TextStyle(
+                                              color: Colors.white54),
+                                          border: InputBorder.none),
                                     ),
                                   ),
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
-                        )
-                      : Container()),
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: EmojiKeyboard(
-                  emotionController: broMessageController,
-                  emojiKeyboardHeight: 300,
-                  showEmojiKeyboard: showEmojiKeyboard,
-                  darkMode: settings.getEmojiKeyboardDarkMode(),
-                ),
+                        ),
+                      )
+                    : Container()),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: EmojiKeyboard(
+                emotionController: broMessageController,
+                emojiKeyboardHeight: 300,
+                showEmojiKeyboard: showEmojiKeyboard,
+                darkMode: settings.getEmojiKeyboardDarkMode(),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
