@@ -16,11 +16,12 @@ import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:linkable/linkable.dart';
-
+import 'package:camera/camera.dart';
 import '../services/auth.dart';
 import 'bro_chat_details.dart';
 import 'bro_profile.dart';
 import 'bro_settings.dart';
+import 'camera_page.dart';
 
 class BroMessaging extends StatefulWidget {
   final BroBros chat;
@@ -48,6 +49,7 @@ class _BroMessagingState extends State<BroMessaging> {
   FocusNode focusAppendText = FocusNode();
   FocusNode focusEmojiTextField = FocusNode();
   bool appendingMessage = false;
+  bool appendingPicture = false;
 
   TextEditingController broMessageController = new TextEditingController();
   TextEditingController appendTextMessageController =
@@ -395,6 +397,23 @@ class _BroMessagingState extends State<BroMessaging> {
     }
   }
 
+  appendPicture() {
+    // TODO
+    if (!appendingPicture) {
+      print("appending picture");
+      // Obtain a list of the available cameras on the device.
+      setState(() {
+        showEmojiKeyboard = false;
+        appendingPicture = true;
+      });
+    } else {
+      setState(() {
+        showEmojiKeyboard = true;
+        appendingPicture = false;
+      });
+    }
+  }
+
   appendTextMessage() {
     if (!appendingMessage) {
       focusAppendText.requestFocus();
@@ -447,11 +466,18 @@ class _BroMessagingState extends State<BroMessaging> {
       broMessageController.clear();
       appendTextMessageController.clear();
 
-      if (appendingMessage) {
+      if (appendingMessage && !appendingPicture) {
         focusEmojiTextField.requestFocus();
         setState(() {
           showEmojiKeyboard = true;
           appendingMessage = false;
+        });
+      }
+      if (appendingPicture && !appendingMessage) {
+        // TODO
+        setState(() {
+          showEmojiKeyboard = true;
+          appendingPicture = false;
         });
       }
     }
@@ -659,6 +685,26 @@ class _BroMessagingState extends State<BroMessaging> {
                               padding: EdgeInsets.symmetric(horizontal: 6),
                               child: Icon(Icons.text_snippet,
                                   color: appendingMessage
+                                      ? Colors.white
+                                      : Color(0xFF616161))),
+                        ),
+                        SizedBox(width: 5),
+                        GestureDetector(
+                          onTap: () async {
+                            await availableCameras().then((value) => Navigator.push(context,
+                                MaterialPageRoute(builder: (_) => CameraPage(cameras: value))));
+                          },
+                          child: Container(
+                              height: 35,
+                              width: 35,
+                              decoration: BoxDecoration(
+                                  color: appendingPicture
+                                      ? Colors.green
+                                      : Colors.grey,
+                                  borderRadius: BorderRadius.circular(35)),
+                              padding: EdgeInsets.symmetric(horizontal: 6),
+                              child: Icon(Icons.camera_alt,
+                                  color: appendingPicture
                                       ? Colors.white
                                       : Color(0xFF616161))),
                         ),
