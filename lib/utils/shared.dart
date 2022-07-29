@@ -8,6 +8,7 @@ class HelperFunction {
   static String bromotionKey = "bromotion";
   static String broPasswordKey = "password";
   static String eula = "eula";
+  static String flashKey = "flash";
 
   static Future<bool> setBroToken(String broToken) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
@@ -36,6 +37,11 @@ class HelperFunction {
     }
   }
 
+  static Future<bool> setFlashConfiguration(int flashConfiguration) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    return await preferences.setInt(flashKey, flashConfiguration);
+  }
+
   static Future<String?> getBroToken() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     return preferences.getString(broTokenKey);
@@ -55,4 +61,10 @@ class HelperFunction {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     return preferences.getStringList(broInformationKey);
   }
+
+  static Future<int?> getFlashConfiguration() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    return preferences.getInt(flashKey);
+  }
+
 }

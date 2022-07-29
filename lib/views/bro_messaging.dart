@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:brocast/objects/bro_bros.dart';
 import 'package:brocast/objects/chat.dart';
@@ -14,6 +15,8 @@ import 'package:brocast/utils/utils.dart';
 import 'package:brocast/views/bro_home.dart';
 import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:linkable/linkable.dart';
 import 'package:camera/camera.dart';
@@ -692,7 +695,11 @@ class _BroMessagingState extends State<BroMessaging> {
                         GestureDetector(
                           onTap: () async {
                             await availableCameras().then((value) => Navigator.push(context,
-                                MaterialPageRoute(builder: (_) => CameraPage(cameras: value))));
+                                MaterialPageRoute(builder: (_) => CameraPage(
+                                  chat: chat,
+                                  cameras: value
+                                ))));
+                            // pickImage();
                           },
                           child: Container(
                               height: 35,
