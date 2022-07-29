@@ -149,6 +149,7 @@ class _BroMessagingState extends State<BroMessaging> {
   }
 
   messageReceived(var data) {
+    print("message received: ${data}");
     Message mes = new Message(
         data["id"],
         data["sender_id"],

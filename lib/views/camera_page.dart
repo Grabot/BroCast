@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:brocast/views/preview_page.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
@@ -41,15 +40,16 @@ class _CameraPageState extends State<CameraPage> {
     try {
       XFile? picture = await ImagePicker().pickImage(source: ImageSource.gallery);
       if (picture != null) {
-        Image test = Image.file(
-            File(picture.path), fit: BoxFit.cover, width: MediaQuery.of(context).size.width - 100);
 
+        Image test = Image.file(File(picture.path), fit: BoxFit.cover, width: MediaQuery.of(context).size.width - 100);
         Navigator.push(
             context,
             MaterialPageRoute(
                 builder: (context) =>
                     PreviewPage(
+                      chat: widget.chat,
                       picture: test,
+                      pictureData: picture,
                       pictureName: picture.name,
                     )));
       } else {
@@ -60,18 +60,15 @@ class _CameraPageState extends State<CameraPage> {
     }
   }
 
-
   @override
   void dispose() {
     _cameraController.dispose();
-    BackButtonInterceptor.remove(myInterceptor);
     super.dispose();
   }
 
   @override
   void initState() {
     super.initState();
-    BackButtonInterceptor.add(myInterceptor);
 
     HelperFunction.getFlashConfiguration().then((val) {
       if (val != null) {
@@ -111,12 +108,13 @@ class _CameraPageState extends State<CameraPage> {
       XFile picture = await _cameraController.takePicture();
 
       Image test = Image.file(File(picture.path), fit: BoxFit.cover, width: MediaQuery.of(context).size.width - 100);
-
       Navigator.push(
           context,
           MaterialPageRoute(
               builder: (context) => PreviewPage(
+                chat: widget.chat,
                 picture: test,
+                pictureData: picture,
                 pictureName: picture.name,
               )));
 
@@ -139,13 +137,7 @@ class _CameraPageState extends State<CameraPage> {
     }
   }
 
-  bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
-    exitCameraMode();
-    return true;
-  }
-
   exitCameraMode() {
-    print("exit");
     if (widget.chat.isBroup()) {
       Navigator.pushReplacement(
           context,
