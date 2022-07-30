@@ -33,6 +33,7 @@ class GetMessages {
               message["body"],
               message["text_message"],
               message["timestamp"],
+              message["data"],
               message["info"] ? 1 : 0,
               brosBroId,
               0);
@@ -75,6 +76,7 @@ class GetMessages {
               message["body"],
               message["text_message"],
               message["timestamp"],
+              message["data"],
               message["info"] ? 1 : 0,
               broupId,
               1);

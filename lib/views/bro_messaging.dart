@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:brocast/objects/bro_bros.dart';
 import 'package:brocast/objects/chat.dart';
@@ -16,7 +18,8 @@ import 'package:brocast/views/bro_home.dart';
 import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:gallery_saver/gallery_saver.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:intl/intl.dart';
 import 'package:linkable/linkable.dart';
 import 'package:camera/camera.dart';
@@ -150,12 +153,19 @@ class _BroMessagingState extends State<BroMessaging> {
 
   messageReceived(var data) {
     print("message received: ${data}");
+    // var decoded = base64.decode(data["data"]);
+    // print(decoded);
+    // print(decoded.runtimeType);
+    // Image test = Image.memory(decoded, fit: BoxFit.cover, width: MediaQuery.of(context).size.width - 100);
+    // print(test);
+
     Message mes = new Message(
         data["id"],
         data["sender_id"],
         data["body"],
         data["text_message"],
         data["timestamp"],
+        data["data"],
         data["info"] ? 1 : 0,
         chat.id,
         0);
@@ -350,8 +360,17 @@ class _BroMessagingState extends State<BroMessaging> {
       timeMessageFirst = "Yesterday";
     }
 
-    Message timeMessage = new Message(0, 0, timeMessageFirst, "",
-        DateTime.now().toUtc().toString(), 1, chat.id, 0);
+    Message timeMessage = new Message(
+        0,
+        0,
+        timeMessageFirst,
+        "",
+        DateTime.now().toUtc().toString(),
+        null,
+        1,
+        chat.id,
+        0
+    );
     for (int i = 0; i < this.messages.length; i++) {
       DateTime current = this.messages[i].getTimeStamp();
       DateTime dayMessage = DateTime(current.year, current.month, current.day);
@@ -368,8 +387,17 @@ class _BroMessagingState extends State<BroMessaging> {
           timeMessageTile = "Yesterday";
         }
         this.messages.insert(i, timeMessage);
-        timeMessage = new Message(0, 0, timeMessageTile, "",
-            DateTime.now().toUtc().toString(), 1, chat.id, 0);
+        timeMessage = new Message(
+            0,
+            0,
+            timeMessageTile,
+            "",
+            DateTime.now().toUtc().toString(),
+            null,
+            1,
+            chat.id,
+            0
+        );
       }
     }
     this.messages.insert(this.messages.length, timeMessage);
@@ -379,7 +407,16 @@ class _BroMessagingState extends State<BroMessaging> {
     // If the day tiles need to be updated after sending a message it will be the today tile.
     if (this.messages.length == 0) {
       Message timeMessage = new Message(
-          0, 0, "Today", "", DateTime.now().toUtc().toString(), 1, chat.id, 0);
+          0,
+          0,
+          "Today",
+          "",
+          DateTime.now().toUtc().toString(),
+          null,
+          1,
+          chat.id,
+          0
+      );
       this.messages.insert(0, timeMessage);
     } else {
       Message messageFirst = this.messages.first;
@@ -394,8 +431,17 @@ class _BroMessagingState extends State<BroMessaging> {
       if (chatTimeTile != currentDayMessage) {
         chatTimeTile = DateFormat.yMMMMd('en_US').format(dayMessage);
 
-        Message timeMessage = new Message(0, 0, "Today", "",
-            DateTime.now().toUtc().toString(), 1, chat.id, 0);
+        Message timeMessage = new Message(
+            0,
+            0,
+            "Today",
+            "",
+            DateTime.now().toUtc().toString(),
+            null,
+            1,
+            chat.id,
+            0
+        );
         this.messages.insert(0, timeMessage);
       }
     }
@@ -453,8 +499,17 @@ class _BroMessagingState extends State<BroMessaging> {
             timestampString.substring(0, timestampString.length - 1);
       }
       // We set the id to be "-1". For date tiles it is "0", these will be filtered.
-      Message mes = new Message(-1, settings.getBroId(), message, textMessage,
-          DateTime.now().toUtc().toString(), 0, chat.id, 0);
+      Message mes = new Message(
+          -1,
+          settings.getBroId(),
+          message,
+          textMessage,
+          DateTime.now().toUtc().toString(),
+          null,
+          0,
+          chat.id,
+          0
+      );
       setState(() {
         this.messages.insert(0, mes);
       });
@@ -841,10 +896,105 @@ class MessageTile extends StatefulWidget {
 }
 
 class _MessageTileState extends State<MessageTile> {
+
+  bool isImage = false;
+
   selectMessage(BuildContext context) {
-    if (widget.message.textMessage.isNotEmpty) {
+    if (widget.message.textMessage.isNotEmpty || isImage) {
       setState(() {
         widget.message.clicked = !widget.message.clicked;
+      });
+    }
+  }
+
+  Image? test;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.message.data != null && widget.message.data != "") {
+      Uint8List decoded = base64.decode(widget.message.data!);
+      test = Image.memory(decoded);
+      // test = Image.memory(decoded, fit: BoxFit.cover, width: MediaQuery.of(context).size.width - 100);
+      isImage = true;
+    }
+  }
+
+  Color getBorderColour() {
+    // First we set the border to be the colour of the message
+    // Which is the colour for a normal plain message without content
+    Color borderColour = widget.myMessage
+        ? Color(0xFF009E00)
+        : Color(0xFF0060BB);
+    // We check if there is a message content
+    if (widget.message.textMessage.isNotEmpty) {
+      // If this is the case the border should be yellow, but only if it's not clicked
+      if (!widget.message.clicked) {
+        borderColour = Colors.yellow;
+      }
+    }
+    // Now we check if it's maybe a data message with an image!
+    if (isImage) {
+      if (!widget.message.clicked) {
+        borderColour = Colors.red;
+      }
+    }
+    return borderColour;
+  }
+
+  Widget getMessageContent() {
+    // We show the normal body, unless it's clicked. Than we show the extra info
+    if (widget.message.clicked) {
+      // If it's clicked we show the extra text message or the image!
+      if (isImage) {
+        if (widget.message.textMessage.isNotEmpty) {
+          return Column(
+              children: [
+                test!,
+                Linkable(
+                  text: widget.message.textMessage,
+                  textColor: Colors.white,
+                  linkColor: Colors.blue[200],
+                  style: simpleTextStyle()
+                )
+              ]
+          );
+        } else {
+          return test!;
+        }
+      } else {
+        return Linkable(
+            text: widget.message.textMessage,
+            textColor: Colors.white,
+            linkColor: Colors.blue[200],
+            style: simpleTextStyle()
+        );
+      }
+    } else {
+      return Text(
+          widget.message.body,
+          style: simpleTextStyle());
+    }
+  }
+
+  longPressedMessage() async {
+    if (isImage && widget.message.clicked) {
+      // code for image storing
+      Uint8List decoded = base64.decode(widget.message.data!);
+      // First we save it to the local application folder
+      Directory appDocDirectory = await getApplicationDocumentsDirectory();
+      String dir = appDocDirectory.path;
+
+      String imageName = "brocast_" + DateTime.now().toUtc().toString();
+      String fullPath = '$dir/$imageName.png';
+      // We create the file once we have the full path
+      File file = File(fullPath);
+      // We store the image on the file
+      await file.writeAsBytes(decoded);
+      // We now save to image gallery
+      await GallerySaver.saveImage(file.path, albumName: "Brocast").then((value) {
+        // We have save the image to the gallery, remove it from the application folder
+        file.delete();
       });
     }
   }
@@ -883,19 +1033,14 @@ class _MessageTileState extends State<MessageTile> {
                   onTap: () {
                     selectMessage(context);
                   },
+                  onLongPress: () async {
+                    longPressedMessage();
+                  },
                   child: Container(
                     padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                     decoration: BoxDecoration(
                         border: Border.all(
-                          color: widget.myMessage
-                              ? widget.message.textMessage.isEmpty ||
-                                      widget.message.clicked
-                                  ? Color(0xFF009E00)
-                                  : Colors.yellow
-                              : widget.message.textMessage.isEmpty ||
-                                      widget.message.clicked
-                                  ? Color(0xFF0060BB)
-                                  : Colors.yellow,
+                          color: getBorderColour(),
                           width: 2,
                         ),
                         color: widget.myMessage
@@ -910,18 +1055,8 @@ class _MessageTileState extends State<MessageTile> {
                                 topLeft: Radius.circular(42),
                                 topRight: Radius.circular(42),
                                 bottomRight: Radius.circular(42))),
-                    child: Column(
-                      children: [
-                        widget.message.clicked
-                            ? Linkable(
-                                text: widget.message.textMessage,
-                                textColor: Colors.white,
-                                linkColor: Colors.blue[200],
-                                style: simpleTextStyle()
-                              )
-                            : Text(widget.message.body,
-                                style: simpleTextStyle()),
-                      ],
+                    child: Container(
+                        child: getMessageContent()
                     ),
                   ),
                 ),

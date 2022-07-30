@@ -11,8 +11,8 @@ import '../objects/broup.dart';
 import '../objects/chat.dart';
 import '../services/settings.dart';
 import '../services/socket_services.dart';
-import 'bro_messaging.dart';
-import 'broup_messaging.dart';
+import 'dart:convert';
+
 
 class PreviewPage  extends StatefulWidget {
   const PreviewPage({
@@ -76,9 +76,10 @@ class _PreviewPageState extends State<PreviewPage> {
     print("sending image with caption ${captionMessageController.text}");
 
     var bytes = await widget.pictureData.readAsBytes();
-    // var decoder = Utf16BytesToCodeUnitsDecoder(bytes); // use le variant if no BOM
-    // var string = String.fromCharCodes(decoder.decodeRest());
-    String string = String.fromCharCodes(bytes);
+    print(bytes);
+    String encoded = base64.encode(bytes);
+    // String decoded = utf8.decode(base64.decode(encoded));
+
 
     socketServices.socket.emit(
       "message",
@@ -87,7 +88,7 @@ class _PreviewPageState extends State<PreviewPage> {
         "bros_bro_id": widget.chat.id,
         "message": "📷",
         "text_message": captionMessageController.text,
-        "message_data": string
+        "message_data": encoded
       },
     );
    }

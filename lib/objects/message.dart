@@ -12,8 +12,10 @@ class Message {
   late int chatId;
   late int isBroup;
 
+  String? data;
+
   Message(int id, int senderId, String body, String textMessage,
-      String timestamp, int info, int chatId, int isBroup) {
+      String timestamp, String? data, int info, int chatId, int isBroup) {
     this.id = id;
     this.senderId = senderId;
     this.body = body;
@@ -27,6 +29,7 @@ class Message {
     this.info = info;
     this.chatId = chatId;
     this.isBroup = isBroup;
+    this.data = data;
     isRead = 0;
     clicked = false;
   }
@@ -57,6 +60,7 @@ class Message {
     map['info'] = info;
     map['timestamp'] = timestamp;
     map['isBroup'] = isBroup;
+    map['data'] = data;
     return map;
   }
 
@@ -69,6 +73,7 @@ class Message {
     info = map['info'];
     timestamp = map['timestamp'];
     isBroup = map['isBroup'];
+    data = map['data'];
     isRead = 0;
     clicked = false;
   }
