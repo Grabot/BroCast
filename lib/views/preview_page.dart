@@ -62,7 +62,14 @@ class _PreviewPageState extends State<PreviewPage> {
   }
 
   bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
-    backToMessageScreen();
+
+    if (showEmojiKeyboard) {
+      setState(() {
+        showEmojiKeyboard = false;
+      });
+    } else {
+      backToMessageScreen();
+    }
     return true;
   }
 
@@ -70,7 +77,7 @@ class _PreviewPageState extends State<PreviewPage> {
   void initState() {
     super.initState();
     BackButtonInterceptor.add(myInterceptor);
-    broMessageController.text = "📷";
+    broMessageController.text = "📸";
     socketServices.checkConnection();
     setState(() {});
   }
@@ -79,7 +86,7 @@ class _PreviewPageState extends State<PreviewPage> {
     if (!appendingCaption) {
       focusCaptionField.requestFocus();
       if (broMessageController.text == "") {
-        broMessageController.text = "📷";
+        broMessageController.text = "📸";
       }
       setState(() {
         showEmojiKeyboard = false;
@@ -139,26 +146,20 @@ class _PreviewPageState extends State<PreviewPage> {
   }
 
   backToMessageScreen() {
-    if (showEmojiKeyboard) {
-      setState(() {
-        showEmojiKeyboard = false;
-      });
+    if (widget.chat.isBroup()) {
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  BroupMessaging(
+                      key: UniqueKey(), chat: widget.chat as Broup)));
     } else {
-      if (widget.chat.isBroup()) {
-        Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (context) =>
-                    BroupMessaging(
-                        key: UniqueKey(), chat: widget.chat as Broup)));
-      } else {
-        Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (context) =>
-                    BroMessaging(
-                        key: UniqueKey(), chat: widget.chat as BroBros)));
-      }
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  BroMessaging(
+                      key: UniqueKey(), chat: widget.chat as BroBros)));
     }
   }
 
