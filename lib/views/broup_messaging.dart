@@ -1,4 +1,7 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
+import 'dart:typed_data';
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:brocast/objects/bro.dart';
 import 'package:brocast/objects/bro_bros.dart';
@@ -18,13 +21,17 @@ import 'package:brocast/utils/utils.dart';
 import 'package:brocast/views/bro_home.dart';
 import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:gallery_saver/gallery_saver.dart';
 import 'package:intl/intl.dart';
 import 'package:linkable/linkable.dart';
+import 'package:path_provider/path_provider.dart';
 import '../services/auth.dart';
 import 'bro_profile.dart';
 import 'bro_settings.dart';
 import 'broup_details.dart';
 import 'package:brocast/constants/route_paths.dart' as routes;
+import 'package:camera/camera.dart';
+import 'camera_page.dart';
 
 class BroupMessaging extends StatefulWidget {
   final Broup chat;
@@ -543,6 +550,7 @@ class _BroupMessagingState extends State<BroupMessaging> {
       });
     } else {
       focusEmojiTextField.requestFocus();
+      appendTextMessageController.text = "";
       if (broMessageController.text == "✉️") {
         broMessageController.text = "";
       }
@@ -603,7 +611,7 @@ class _BroupMessagingState extends State<BroupMessaging> {
   }
 
   updateMessages(Message message) {
-    if (!message.isInformation() && message.senderId == settings.getBroId()) {
+    if (!message.isInformation() && message.senderId == settings.getBroId() && message.data == null) {
       // We added it immediately as a placeholder.
       // When we get it from the server we add it for real and remove the placeholder
       this.messages.removeAt(0);
@@ -880,6 +888,26 @@ class _BroupMessagingState extends State<BroupMessaging> {
                           ),
                         ),
                         GestureDetector(
+                          onTap: () async {
+                            await availableCameras().then((value) => Navigator.pushReplacement(context,
+                                MaterialPageRoute(builder: (_) => CameraPage(
+                                    chat: chat,
+                                    cameras: value
+                                ))));
+                            // pickImage();
+                          },
+                          child: Container(
+                              height: 35,
+                              width: 35,
+                              decoration: BoxDecoration(
+                                  color: Colors.grey,
+                                  borderRadius: BorderRadius.circular(35)),
+                              padding: EdgeInsets.symmetric(horizontal: 6),
+                              child: Icon(Icons.camera_alt,
+                                  color: Color(0xFF616161))),
+                        ),
+                        SizedBox(width: 5),
+                        GestureDetector(
                           onTap: () {
                             sendMessageBroup();
                           },
@@ -979,6 +1007,7 @@ class MessageTile extends StatefulWidget {
 
 class _MessageTileState extends State<MessageTile> {
   var _tapPosition;
+  bool isImage = false;
 
   SocketServices socketServices = SocketServices();
 
@@ -987,10 +1016,80 @@ class _MessageTileState extends State<MessageTile> {
   Settings settings = Settings();
 
   selectMessage(BuildContext context) {
-    if (widget.message.textMessage.isNotEmpty) {
+    if (widget.message.textMessage.isNotEmpty || isImage) {
       setState(() {
         widget.message.clicked = !widget.message.clicked;
       });
+    }
+  }
+
+  Image? test;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.message.data != null && widget.message.data != "") {
+      Uint8List decoded = base64.decode(widget.message.data!);
+      test = Image.memory(decoded);
+      // test = Image.memory(decoded, fit: BoxFit.cover, width: MediaQuery.of(context).size.width - 100);
+      isImage = true;
+    }
+  }
+
+  Color getBorderColour() {
+    // First we set the border to be the colour of the message
+    // Which is the colour for a normal plain message without content
+    Color borderColour = widget.myMessage
+        ? Color(0xFF009E00)
+        : Color(0xFF0060BB);
+    // We check if there is a message content
+    if (widget.message.textMessage.isNotEmpty) {
+      // If this is the case the border should be yellow, but only if it's not clicked
+      if (!widget.message.clicked) {
+        borderColour = Colors.yellow;
+      }
+    }
+    // Now we check if it's maybe a data message with an image!
+    if (isImage) {
+      if (!widget.message.clicked) {
+        borderColour = Colors.red;
+      }
+    }
+    return borderColour;
+  }
+
+  Widget getMessageContent() {
+    // We show the normal body, unless it's clicked. Than we show the extra info
+    if (widget.message.clicked) {
+      // If it's clicked we show the extra text message or the image!
+      if (isImage) {
+        if (widget.message.textMessage.isNotEmpty) {
+          return Column(
+              children: [
+                test!,
+                Linkable(
+                    text: widget.message.textMessage,
+                    textColor: Colors.white,
+                    linkColor: Colors.blue[200],
+                    style: simpleTextStyle()
+                )
+              ]
+          );
+        } else {
+          return test!;
+        }
+      } else {
+        return Linkable(
+            text: widget.message.textMessage,
+            textColor: Colors.white,
+            linkColor: Colors.blue[200],
+            style: simpleTextStyle()
+        );
+      }
+    } else {
+      return Text(
+          widget.message.body,
+          style: simpleTextStyle());
     }
   }
 
@@ -1056,15 +1155,7 @@ class _MessageTileState extends State<MessageTile> {
                           EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                       decoration: BoxDecoration(
                           border: Border.all(
-                            color: widget.myMessage
-                                ? widget.message.textMessage.isEmpty ||
-                                        widget.message.clicked
-                                    ? Color(0xFF009E00)
-                                    : Colors.yellow
-                                : widget.message.textMessage.isEmpty ||
-                                        widget.message.clicked
-                                    ? Color(0xFF0060BB)
-                                    : Colors.yellow,
+                            color: getBorderColour(),
                             width: 2,
                           ),
                           color: widget.myMessage
@@ -1079,18 +1170,8 @@ class _MessageTileState extends State<MessageTile> {
                                   topLeft: Radius.circular(42),
                                   topRight: Radius.circular(42),
                                   bottomRight: Radius.circular(42))),
-                      child: Column(
-                        children: [
-                          widget.message.clicked
-                              ? Linkable(
-                                  text: widget.message.textMessage,
-                                  textColor: Colors.white,
-                                  linkColor: Colors.blue[200],
-                                  style: simpleTextStyle()
-                              )
-                              : Text(widget.message.body,
-                                  style: simpleTextStyle()),
-                        ],
+                      child: Container(
+                          child: getMessageContent()
                       ),
                     ),
                   ),
@@ -1135,7 +1216,9 @@ class _MessageTileState extends State<MessageTile> {
   }
 
   void _showMessageDetailPopupMenu() {
-    if (!widget.myMessage) {
+    // Only show the option to save the image if the message is clicked.
+    bool imageShowing = isImage && widget.message.clicked;
+    if (!widget.myMessage || imageShowing) {
       final RenderBox overlay =
           Overlay.of(context)!.context.findRenderObject() as RenderBox;
 
@@ -1144,8 +1227,11 @@ class _MessageTileState extends State<MessageTile> {
               items: [
                 MessageDetailPopup(
                     key: UniqueKey(),
+                    myMessage: widget.myMessage,
                     sender: widget.senderName,
-                    broAdded: widget.broAdded)
+                    broAdded: widget.broAdded,
+                    imageShowing: imageShowing
+                )
               ],
               position: RelativeRect.fromRect(_tapPosition & const Size(40, 40),
                   Offset.zero & overlay.size))
@@ -1166,10 +1252,34 @@ class _MessageTileState extends State<MessageTile> {
           }
         } else if (delta == 2) {
           widget.addNewBro(widget.senderId);
+        } else if (delta == 3) {
+          // Save the image!
+          saveImageToGallery();
         }
         return;
       });
     }
+  }
+
+  saveImageToGallery() async {
+    // code for image storing
+    Uint8List decoded = base64.decode(widget.message.data!);
+    // First we save it to the local application folder
+    Directory appDocDirectory = await getApplicationDocumentsDirectory();
+    String dir = appDocDirectory.path;
+
+    String imageName = "brocast_" + DateTime.now().toUtc().toString();
+    String fullPath = '$dir/$imageName.png';
+    // We create the file once we have the full path
+    File file = File(fullPath);
+    // We store the image on the file
+    await file.writeAsBytes(decoded);
+    // We now save to image gallery
+    await GallerySaver.saveImage(file.path, albumName: "Brocast").then((value) {
+      // We have save the image to the gallery, remove it from the application folder
+      file.delete();
+      ShowToastComponent.showDialog("Image was saved!", context);
+    });
   }
 
   void _storePosition(TapDownDetails details) {
@@ -1179,10 +1289,18 @@ class _MessageTileState extends State<MessageTile> {
 
 class MessageDetailPopup extends PopupMenuEntry<int> {
   final String sender;
+  final bool myMessage;
   final bool broAdded;
+  final bool imageShowing;
 
   MessageDetailPopup(
-      {required Key key, required this.sender, required this.broAdded})
+      {
+        required Key key,
+        required this.myMessage,
+        required this.sender,
+        required this.broAdded,
+        required this.imageShowing
+      })
       : super(key: key);
 
   @override
@@ -1198,7 +1316,7 @@ class MessageDetailPopup extends PopupMenuEntry<int> {
 class MessageDetailPopupState extends State<MessageDetailPopup> {
   @override
   Widget build(BuildContext context) {
-    return getPopupItems(context, widget.sender, widget.broAdded);
+    return getPopupItems(context, widget.sender, widget.broAdded, widget.imageShowing, widget.myMessage);
   }
 }
 
@@ -1210,9 +1328,13 @@ void buttonAdd(BuildContext context) {
   Navigator.pop<int>(context, 2);
 }
 
-Widget getPopupItems(BuildContext context, String sender, bool broAdded) {
+void buttonSaveImage(BuildContext context) {
+  Navigator.pop<int>(context, 3);
+}
+
+Widget getPopupItems(BuildContext context, String sender, bool broAdded, bool imageShowing, bool myMessage) {
   return Column(children: [
-    broAdded
+    broAdded && !myMessage
         ? Container(
             alignment: Alignment.centerLeft,
             child: TextButton(
@@ -1225,7 +1347,9 @@ Widget getPopupItems(BuildContext context, String sender, bool broAdded) {
                   style: TextStyle(color: Colors.black, fontSize: 14),
                 )),
           )
-        : Container(
+        : Container(),
+    !broAdded && !myMessage
+        ? Container(
             alignment: Alignment.centerLeft,
             child: TextButton(
                 onPressed: () {
@@ -1236,6 +1360,18 @@ Widget getPopupItems(BuildContext context, String sender, bool broAdded) {
                   textAlign: TextAlign.left,
                   style: TextStyle(color: Colors.black, fontSize: 14),
                 )),
-          ),
+          ) : Container(),
+    imageShowing ? Container(
+      alignment: Alignment.centerLeft,
+      child: TextButton(
+          onPressed: () {
+            buttonSaveImage(context);
+          },
+          child: Text(
+            'Save image to gallery',
+            textAlign: TextAlign.left,
+            style: TextStyle(color: Colors.black, fontSize: 14),
+          )),
+    ) : Container()
   ]);
 }

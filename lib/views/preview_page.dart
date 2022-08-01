@@ -108,16 +108,29 @@ class _PreviewPageState extends State<PreviewPage> {
       var bytes = await widget.pictureData.readAsBytes();
       String encoded = base64.encode(bytes);
 
-      socketServices.socket.emit(
-        "message",
-        {
-          "bro_id": settings.getBroId(),
-          "bros_bro_id": widget.chat.id,
-          "message": broMessageController.text,
-          "text_message": captionMessageController.text,
-          "message_data": encoded
-        },
-      );
+      if (widget.chat.isBroup()) {
+        socketServices.socket.emit(
+          "message_broup",
+          {
+            "bro_id": settings.getBroId(),
+            "broup_id": widget.chat.id,
+            "message": broMessageController.text,
+            "text_message": captionMessageController.text,
+            "message_data": encoded
+          },
+        );
+      } else {
+        socketServices.socket.emit(
+          "message",
+          {
+            "bro_id": settings.getBroId(),
+            "bros_bro_id": widget.chat.id,
+            "message": broMessageController.text,
+            "text_message": captionMessageController.text,
+            "message_data": encoded
+          },
+        );
+      }
       // After sending the image we go back to the message screen.
       // If the server has received the image it will be send back
       // and we will load it there again.
