@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:image/image.dart' as img;
+import 'package:back_button_interceptor/back_button_interceptor.dart';
 
 import '../objects/bro_bros.dart';
 import '../objects/broup.dart';
@@ -42,7 +42,7 @@ class _CameraPageState extends State<CameraPage> {
       if (picture != null) {
 
         Image test = Image.file(File(picture.path), fit: BoxFit.cover, width: MediaQuery.of(context).size.width - 100);
-        Navigator.push(
+        Navigator.pushReplacement(
             context,
             MaterialPageRoute(
                 builder: (context) =>
@@ -60,15 +60,22 @@ class _CameraPageState extends State<CameraPage> {
     }
   }
 
+  bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
+    exitCameraMode();
+    return false;
+  }
+
   @override
   void dispose() {
     _cameraController.dispose();
+    BackButtonInterceptor.remove(myInterceptor);
     super.dispose();
   }
 
   @override
   void initState() {
     super.initState();
+    BackButtonInterceptor.add(myInterceptor);
 
     HelperFunction.getFlashConfiguration().then((val) {
       if (val != null) {
@@ -108,7 +115,7 @@ class _CameraPageState extends State<CameraPage> {
       XFile picture = await _cameraController.takePicture();
 
       Image test = Image.file(File(picture.path), fit: BoxFit.cover, width: MediaQuery.of(context).size.width - 100);
-      Navigator.push(
+      Navigator.pushReplacement(
           context,
           MaterialPageRoute(
               builder: (context) => PreviewPage(

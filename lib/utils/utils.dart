@@ -22,11 +22,13 @@ TextStyle simpleTextStyle() {
 class ShowToastComponent {
   static showDialog(String msg, context) {
     Fluttertoast.showToast(
-      msg: msg,
-      toastLength: Toast.LENGTH_SHORT,
-      webBgColor: "#e74c3c",
-      textColor: Colors.black,
-      timeInSecForIosWeb: 5,
+        msg: msg,
+        toastLength: Toast.LENGTH_LONG,
+        textColor: Colors.black,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 5,
+        backgroundColor: Colors.grey,
+        fontSize: 12.0
     );
   }
 }

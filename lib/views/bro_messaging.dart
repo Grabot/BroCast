@@ -55,7 +55,6 @@ class _BroMessagingState extends State<BroMessaging> {
   FocusNode focusAppendText = FocusNode();
   FocusNode focusEmojiTextField = FocusNode();
   bool appendingMessage = false;
-  bool appendingPicture = false;
 
   TextEditingController broMessageController = new TextEditingController();
   TextEditingController appendTextMessageController =
@@ -152,13 +151,6 @@ class _BroMessagingState extends State<BroMessaging> {
   }
 
   messageReceived(var data) {
-    print("message received: ${data}");
-    // var decoded = base64.decode(data["data"]);
-    // print(decoded);
-    // print(decoded.runtimeType);
-    // Image test = Image.memory(decoded, fit: BoxFit.cover, width: MediaQuery.of(context).size.width - 100);
-    // print(test);
-
     Message mes = new Message(
         data["id"],
         data["sender_id"],
@@ -447,23 +439,6 @@ class _BroMessagingState extends State<BroMessaging> {
     }
   }
 
-  appendPicture() {
-    // TODO
-    if (!appendingPicture) {
-      print("appending picture");
-      // Obtain a list of the available cameras on the device.
-      setState(() {
-        showEmojiKeyboard = false;
-        appendingPicture = true;
-      });
-    } else {
-      setState(() {
-        showEmojiKeyboard = true;
-        appendingPicture = false;
-      });
-    }
-  }
-
   appendTextMessage() {
     if (!appendingMessage) {
       focusAppendText.requestFocus();
@@ -476,6 +451,7 @@ class _BroMessagingState extends State<BroMessaging> {
       });
     } else {
       focusEmojiTextField.requestFocus();
+      appendTextMessageController.text = "";
       if (broMessageController.text == "✉️") {
         broMessageController.text = "";
       }
@@ -525,25 +501,18 @@ class _BroMessagingState extends State<BroMessaging> {
       broMessageController.clear();
       appendTextMessageController.clear();
 
-      if (appendingMessage && !appendingPicture) {
+      if (appendingMessage) {
         focusEmojiTextField.requestFocus();
         setState(() {
           showEmojiKeyboard = true;
           appendingMessage = false;
         });
       }
-      if (appendingPicture && !appendingMessage) {
-        // TODO
-        setState(() {
-          showEmojiKeyboard = true;
-          appendingPicture = false;
-        });
-      }
     }
   }
 
   updateMessages(Message message) {
-    if (!message.isInformation() && message.senderId == settings.getBroId()) {
+    if (!message.isInformation() && message.senderId == settings.getBroId() && message.data == null) {
       // We added it immediately as a placeholder.
       // When we get it from the server we add it for real and remove the placeholder
       this.messages.removeAt(0);
@@ -748,29 +717,6 @@ class _BroMessagingState extends State<BroMessaging> {
                                       : Color(0xFF616161))),
                         ),
                         SizedBox(width: 5),
-                        GestureDetector(
-                          onTap: () async {
-                            await availableCameras().then((value) => Navigator.push(context,
-                                MaterialPageRoute(builder: (_) => CameraPage(
-                                  chat: chat,
-                                  cameras: value
-                                ))));
-                            // pickImage();
-                          },
-                          child: Container(
-                              height: 35,
-                              width: 35,
-                              decoration: BoxDecoration(
-                                  color: appendingPicture
-                                      ? Colors.green
-                                      : Colors.grey,
-                                  borderRadius: BorderRadius.circular(35)),
-                              padding: EdgeInsets.symmetric(horizontal: 6),
-                              child: Icon(Icons.camera_alt,
-                                  color: appendingPicture
-                                      ? Colors.white
-                                      : Color(0xFF616161))),
-                        ),
                         Expanded(
                           child: Container(
                             padding: EdgeInsets.only(left: 15),
@@ -807,6 +753,26 @@ class _BroMessagingState extends State<BroMessaging> {
                             ),
                           ),
                         ),
+                        GestureDetector(
+                          onTap: () async {
+                            await availableCameras().then((value) => Navigator.pushReplacement(context,
+                                MaterialPageRoute(builder: (_) => CameraPage(
+                                    chat: chat,
+                                    cameras: value
+                                ))));
+                            // pickImage();
+                          },
+                          child: Container(
+                              height: 35,
+                              width: 35,
+                              decoration: BoxDecoration(
+                                  color: Colors.grey,
+                                  borderRadius: BorderRadius.circular(35)),
+                              padding: EdgeInsets.symmetric(horizontal: 6),
+                              child: Icon(Icons.camera_alt,
+                                  color: Color(0xFF616161))),
+                        ),
+                        SizedBox(width: 5),
                         GestureDetector(
                           onTap: () {
                             sendMessage();
@@ -897,6 +863,7 @@ class MessageTile extends StatefulWidget {
 
 class _MessageTileState extends State<MessageTile> {
 
+  var _tapPosition;
   bool isImage = false;
 
   selectMessage(BuildContext context) {
@@ -977,28 +944,6 @@ class _MessageTileState extends State<MessageTile> {
     }
   }
 
-  longPressedMessage() async {
-    if (isImage && widget.message.clicked) {
-      // code for image storing
-      Uint8List decoded = base64.decode(widget.message.data!);
-      // First we save it to the local application folder
-      Directory appDocDirectory = await getApplicationDocumentsDirectory();
-      String dir = appDocDirectory.path;
-
-      String imageName = "brocast_" + DateTime.now().toUtc().toString();
-      String fullPath = '$dir/$imageName.png';
-      // We create the file once we have the full path
-      File file = File(fullPath);
-      // We store the image on the file
-      await file.writeAsBytes(decoded);
-      // We now save to image gallery
-      await GallerySaver.saveImage(file.path, albumName: "Brocast").then((value) {
-        // We have save the image to the gallery, remove it from the application folder
-        file.delete();
-      });
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return widget.message.isInformation()
@@ -1033,9 +978,12 @@ class _MessageTileState extends State<MessageTile> {
                   onTap: () {
                     selectMessage(context);
                   },
-                  onLongPress: () async {
-                    longPressedMessage();
+                  onLongPress: () {
+                    if (isImage && widget.message.clicked) {
+                      _showMessageDetailPopupMenu();
+                    }
                   },
+                  onTapDown: _storePosition,
                   child: Container(
                     padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                     decoration: BoxDecoration(
@@ -1099,4 +1047,97 @@ class _MessageTileState extends State<MessageTile> {
             color: Colors.transparent,
           ));
   }
+
+  void _showMessageDetailPopupMenu() {
+    final RenderBox overlay =
+    Overlay.of(context)!.context.findRenderObject() as RenderBox;
+
+    showMenu(
+        context: context,
+        items: [
+          BroMessageDetailPopup(
+              key: UniqueKey()
+          )
+        ],
+        position: RelativeRect.fromRect(_tapPosition & const Size(40, 40),
+            Offset.zero & overlay.size))
+        .then((int? delta) {
+          print("pressed? delta: $delta");
+          if (delta == 1) {
+            // Save the image!
+            saveImageToGallery();
+          }
+      return;
+    });
+  }
+
+  saveImageToGallery() async {
+    // code for image storing
+    Uint8List decoded = base64.decode(widget.message.data!);
+    // First we save it to the local application folder
+    Directory appDocDirectory = await getApplicationDocumentsDirectory();
+    String dir = appDocDirectory.path;
+
+    String imageName = "brocast_" + DateTime.now().toUtc().toString();
+    String fullPath = '$dir/$imageName.png';
+    // We create the file once we have the full path
+    File file = File(fullPath);
+    // We store the image on the file
+    await file.writeAsBytes(decoded);
+    // We now save to image gallery
+    await GallerySaver.saveImage(file.path, albumName: "Brocast").then((value) {
+      // We have save the image to the gallery, remove it from the application folder
+      file.delete();
+      ShowToastComponent.showDialog("Image was saved!", context);
+    });
+  }
+
+  void _storePosition(TapDownDetails details) {
+    _tapPosition = details.globalPosition;
+  }
+
+}
+
+class BroMessageDetailPopup extends PopupMenuEntry<int> {
+
+  BroMessageDetailPopup(
+      {required Key key})
+      : super(key: key);
+
+  @override
+  bool represents(int? n) => n == 1 || n == -1;
+
+  @override
+  BroMessageDetailPopupState createState() => BroMessageDetailPopupState();
+
+  @override
+  double get height => 1;
+}
+
+class BroMessageDetailPopupState extends State<BroMessageDetailPopup> {
+  @override
+  Widget build(BuildContext context) {
+    return getPopupItems(context);
+  }
+}
+
+void buttonMessage(BuildContext context) {
+  Navigator.pop<int>(context, 1);
+}
+
+Widget getPopupItems(BuildContext context) {
+  return Column(children: [
+    Container(
+      alignment: Alignment.centerLeft,
+      child: TextButton(
+          onPressed: () {
+            buttonMessage(context);
+          },
+          child: Text(
+            'Save image to gallery',
+            textAlign: TextAlign.left,
+            style: TextStyle(color: Colors.black, fontSize: 14),
+          )),
+    )
+  ]);
 }
