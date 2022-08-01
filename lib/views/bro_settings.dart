@@ -104,6 +104,11 @@ class _BroSettingsState extends State<BroSettings> {
     }
   }
 
+  clearMessages() async {
+    await storage.clearMessages();
+    ShowToastComponent.showDialog("Messages cleared", context);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -140,7 +145,15 @@ class _BroSettingsState extends State<BroSettings> {
                     onPressed: AppSettings.openNotificationSettings,
                     child: Text('Open notification Settings'),
                   ),
-                  SizedBox(height: 300),
+                  TextButton(
+                    style: ButtonStyle(
+                      foregroundColor:
+                      MaterialStateProperty.all<Color>(Colors.blue),
+                    ),
+                    onPressed: clearMessages,
+                    child: Text('clear all messages'),
+                  ),
+                  SizedBox(height: 150),
                 ]),
               ),
             ),

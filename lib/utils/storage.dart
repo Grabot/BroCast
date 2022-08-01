@@ -354,4 +354,10 @@ class Storage {
     await createTableBro(database);
     await createTableMessage(database);
   }
+
+  clearMessages() async {
+    Database database = await this.database;
+    await database.execute("DROP TABLE IF EXISTS Message");
+    await createTableMessage(database);
+  }
 }
