@@ -24,7 +24,7 @@ dependencies:
   flutter:
     sdk: flutter
 
-  emoji_keyboard_flutter: ^1.4.0
+  emoji_keyboard_flutter: ^1.4.1
 
 dev_dependencies:
   flutter_test:
