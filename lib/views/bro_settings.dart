@@ -137,14 +137,14 @@ class _BroSettingsState extends State<BroSettings> {
                     ],
                   ),
                   SizedBox(height: 20),
-                  TextButton(
-                    style: ButtonStyle(
-                      foregroundColor:
-                          MaterialStateProperty.all<Color>(Colors.blue),
-                    ),
-                    onPressed: AppSettings.openNotificationSettings,
-                    child: Text('Open notification Settings'),
-                  ),
+                  // TextButton(
+                  //   style: ButtonStyle(
+                  //     foregroundColor:
+                  //         MaterialStateProperty.all<Color>(Colors.blue),
+                  //   ),
+                  //   onPressed: AppSettings.openNotificationSettings,
+                  //   child: Text('Open notification Settings'),
+                  // ),
                   TextButton(
                     style: ButtonStyle(
                       foregroundColor:

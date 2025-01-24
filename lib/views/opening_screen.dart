@@ -332,7 +332,8 @@ class _OpeningScreenState extends State<OpeningScreen> {
                                 agreeAndContinue();
                               },
                               style: ElevatedButton.styleFrom(
-                                  primary: Colors.green,
+                                  foregroundColor: Colors.green,
+                                  backgroundColor: Colors.green,
                                   padding: EdgeInsets.symmetric(
                                       horizontal: 80, vertical: 5),
                                   textStyle: TextStyle(

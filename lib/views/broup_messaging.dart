@@ -21,7 +21,7 @@ import 'package:brocast/utils/utils.dart';
 import 'package:brocast/views/bro_home.dart';
 import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
 import 'package:flutter/material.dart';
-import 'package:gallery_saver/gallery_saver.dart';
+// import 'package:gallery_saver/gallery_saver.dart';
 import 'package:intl/intl.dart';
 import 'package:linkable/linkable.dart';
 import 'package:path_provider/path_provider.dart';
@@ -1275,11 +1275,11 @@ class _MessageTileState extends State<MessageTile> {
     // We store the image on the file
     await file.writeAsBytes(decoded);
     // We now save to image gallery
-    await GallerySaver.saveImage(file.path, albumName: "Brocast").then((value) {
-      // We have save the image to the gallery, remove it from the application folder
-      file.delete();
-      ShowToastComponent.showDialog("Image was saved!", context);
-    });
+    // await GallerySaver.saveImage(file.path, albumName: "Brocast").then((value) {
+    //   // We have save the image to the gallery, remove it from the application folder
+    //   file.delete();
+    //   ShowToastComponent.showDialog("Image was saved!", context);
+    // });
   }
 
   void _storePosition(TapDownDetails details) {

@@ -70,16 +70,16 @@ class NotificationUtil {
     const AndroidInitializationSettings androidSettings =
         AndroidInitializationSettings('res_bro_icon');
 
-    const IOSInitializationSettings iosSettings = IOSInitializationSettings(
-        requestSoundPermission: false,
-        requestBadgePermission: false,
-        requestAlertPermission: false);
+    // const IOSInitializationSettings iosSettings = IOSInitializationSettings(
+    //     requestSoundPermission: false,
+    //     requestBadgePermission: false,
+    //     requestAlertPermission: false);
 
-    const InitializationSettings initSettings =
-        InitializationSettings(android: androidSettings, iOS: iosSettings);
+    // const InitializationSettings initSettings =
+    //     InitializationSettings(android: androidSettings, iOS: iosSettings);
 
-    await flutterLocalNotificationsPlugin.initialize(initSettings,
-        onSelectNotification: selectNotification);
+    // await flutterLocalNotificationsPlugin.initialize(initSettings,
+    //     onSelectNotification: selectNotification);
   }
 
   Future selectNotification(String? payload) async {
@@ -159,12 +159,13 @@ class NotificationUtil {
           setAsGroupSummary: true,
           playSound: true
         ),
-        iOS: IOSNotificationDetails(
-            presentAlert: true,
-            presentBadge: true,
-            presentSound: true,
-            badgeNumber: 0,
-            sound: "res_brodio.aiff"));
+        // iOS: IOSNotificationDetails(
+        //     presentAlert: true,
+        //     presentBadge: true,
+        //     presentSound: true,
+        //     badgeNumber: 0,
+        //     sound: "res_brodio.aiff")
+    );
   }
 
   Future<void> initializeFirebaseService() async {
