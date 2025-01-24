@@ -1,4 +1,4 @@
-package nl.brocast.brocast
+package nl.brocast
 
 import io.flutter.embedding.android.FlutterActivity
 
