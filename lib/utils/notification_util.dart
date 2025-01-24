@@ -9,8 +9,8 @@ import 'package:brocast/utils/storage.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:notification_permissions/notification_permissions.dart';
+// import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+// import 'package:notification_permissions/notification_permissions.dart';
 import 'package:brocast/constants/route_paths.dart' as routes;
 
 import '../services/settings.dart';
@@ -52,9 +52,9 @@ class NotificationUtil {
     "description": androidChannelDescription
   };
 
-  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-      FlutterLocalNotificationsPlugin();
-  late NotificationDetails platformChannelSpecifics;
+  // final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+  //     FlutterLocalNotificationsPlugin();
+  // late NotificationDetails platformChannelSpecifics;
 
   clearChat() {
     currentChatId = -1;
@@ -67,8 +67,8 @@ class NotificationUtil {
   }
 
   Future<void> initializeLocalNotifications() async {
-    const AndroidInitializationSettings androidSettings =
-        AndroidInitializationSettings('res_bro_icon');
+    // const AndroidInitializationSettings androidSettings =
+    //     AndroidInitializationSettings('res_bro_icon');
 
     // const IOSInitializationSettings iosSettings = IOSInitializationSettings(
     //     requestSoundPermission: false,
@@ -125,14 +125,14 @@ class NotificationUtil {
   }
 
   void requestIOSPermissions() {
-    flutterLocalNotificationsPlugin
-        .resolvePlatformSpecificImplementation<
-            IOSFlutterLocalNotificationsPlugin>()
-        ?.requestPermissions(
-          alert: true,
-          badge: true,
-          sound: true,
-        );
+    // flutterLocalNotificationsPlugin
+    //     .resolvePlatformSpecificImplementation<
+    //         IOSFlutterLocalNotificationsPlugin>()
+    //     ?.requestPermissions(
+    //       alert: true,
+    //       badge: true,
+    //       sound: true,
+    //     );
   }
 
   setupFirebase() async {
@@ -143,29 +143,29 @@ class NotificationUtil {
     createNotificationChannel();
     
     if (!Platform.isAndroid) {
-      NotificationPermissions.requestNotificationPermissions(
-          iosSettings: const NotificationSettingsIos(
-              sound: true, badge: true, alert: true))
-          .then((_) {});
+      // NotificationPermissions.requestNotificationPermissions(
+      //     iosSettings: const NotificationSettingsIos(
+      //         sound: true, badge: true, alert: true))
+      //     .then((_) {});
     }
 
 
-    platformChannelSpecifics = const NotificationDetails(
-        android: AndroidNotificationDetails(
-          androidChannelId,
-          androidChannelName,
-          channelDescription: androidChannelDescription,
-          groupKey: groupKey,
-          setAsGroupSummary: true,
-          playSound: true
-        ),
+    // platformChannelSpecifics = const NotificationDetails(
+    //     android: AndroidNotificationDetails(
+    //       androidChannelId,
+    //       androidChannelName,
+    //       channelDescription: androidChannelDescription,
+    //       groupKey: groupKey,
+    //       setAsGroupSummary: true,
+    //       playSound: true
+    //     ),
         // iOS: IOSNotificationDetails(
         //     presentAlert: true,
         //     presentBadge: true,
         //     presentSound: true,
         //     badgeNumber: 0,
         //     sound: "res_brodio.aiff")
-    );
+    // );
   }
 
   Future<void> initializeFirebaseService() async {
@@ -227,9 +227,9 @@ class NotificationUtil {
 
   Future<void> _showNotification(
       String title, String body, int broId, int isBroup) async {
-    await flutterLocalNotificationsPlugin.show(
-        0, title, body, platformChannelSpecifics,
-        payload: broId.toString() + ";" + isBroup.toString());
+    // await flutterLocalNotificationsPlugin.show(
+    //     0, title, body, platformChannelSpecifics,
+    //     payload: broId.toString() + ";" + isBroup.toString());
   }
 
   String getFirebaseToken() {
