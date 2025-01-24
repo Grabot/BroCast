@@ -1,103 +1,45 @@
-import 'package:back_button_interceptor/back_button_interceptor.dart';
-import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
+import 'package:brocast/router.dart' as router;
+import 'package:brocast/services/navigation_service.dart';
+import 'package:brocast/services/settings.dart';
+import 'package:brocast/utils/locator.dart';
+import 'package:brocast/views/opening_screen.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  Settings();
+  setupLocator();
+
+  firebaseBackgroundInitialization();
+
   runApp(MyApp());
 }
 
+void firebaseBackgroundInitialization() async {
+  await Firebase.initializeApp();
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+}
+
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {}
+
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Emoji Keyboard',
+      title: "Brocast",
       debugShowCheckedModeBanner: false,
+      onGenerateRoute: router.generateRoute,
+      navigatorKey: locator<NavigationService>().navigatorKey,
       theme: ThemeData(
+        primaryColor: Color(0xff145C9E),
+        scaffoldBackgroundColor: Color(0xff292a38),
         primarySwatch: Colors.blue,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: MyHomePage(key: UniqueKey(), title: 'Emoji Keyboard'),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  MyHomePage({
-    required Key key,
-    required this.title
-  }) : super(key: key);
-  final String title;
-
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  bool showEmojiKeyboard = false;
-  final TextEditingController controller = TextEditingController();
-
-  @override
-  void initState() {
-    showEmojiKeyboard = false;
-    BackButtonInterceptor.add(myInterceptor);
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    BackButtonInterceptor.remove(myInterceptor);
-    super.dispose();
-  }
-
-  bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
-    if (showEmojiKeyboard) {
-      setState(() {
-        showEmojiKeyboard = false;
-      });
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  void onTapEmojiField() {
-    if (!showEmojiKeyboard) {
-      setState(() {
-        showEmojiKeyboard = true;
-      });
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Stack(children: [
-        Container(
-          color: Colors.white,
-          alignment: Alignment.topCenter,
-          padding: const EdgeInsets.all(6),
-          child: TextFormField(
-            onTap: () {
-              onTapEmojiField();
-            },
-            controller: controller,
-            decoration: const InputDecoration(border: OutlineInputBorder()),
-            readOnly: true,
-            showCursor: true,
-          ),
-        ),
-        Align(
-          alignment: Alignment.bottomCenter,
-          child: EmojiKeyboard(
-              emotionController: controller,
-              emojiKeyboardHeight: 400,
-              showEmojiKeyboard: showEmojiKeyboard,
-              darkMode: true),
-        ),
-      ]),
+      home: OpeningScreen(),
     );
   }
 }
