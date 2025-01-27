@@ -334,7 +334,7 @@ class _PreviewPageState extends State<PreviewPage> {
               Align(
                 alignment: Alignment.bottomCenter,
                 child: EmojiKeyboard(
-                  emotionController: broMessageController,
+                  emojiController: broMessageController,
                   emojiKeyboardHeight: 300,
                   showEmojiKeyboard: showEmojiKeyboard,
                   darkMode: settings.getEmojiKeyboardDarkMode(),

@@ -35,7 +35,7 @@ class SocketServices extends ChangeNotifier {
 
   startSockConnection() {
     String namespace = "sock";
-    String socketUrl = baseUrl + namespace;
+    String socketUrl = baseUrl_v1_0 + namespace;
     socket = IO.io(socketUrl, <String, dynamic>{
       'autoConnect': false,
       'transports': ['websocket'],

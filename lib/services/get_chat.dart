@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 
 class GetChat {
   Future getChat(int broId, int broBrosId) async {
-    String urlGetChat = baseUrl + 'get/chat';
+    String urlGetChat = baseUrl_v1_0 + 'get/chat';
     Uri uriGetChat = Uri.parse(urlGetChat);
 
     http.Response responsePost = await http.post(
@@ -44,7 +44,7 @@ class GetChat {
   }
 
   Future getBroup(int broId, int broupId) async {
-    String urlGetBroup = baseUrl_v1_2 + 'get/broup';
+    String urlGetBroup = baseUrl_v1_0 + 'get/broup';
     Uri uriGetBroup = Uri.parse(urlGetBroup);
 
     http.Response responsePost = await http.post(

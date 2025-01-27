@@ -119,8 +119,7 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> {
   addingBroToBroupFailed() {
     newBroToAdd = -1;
     broToBeAddedToBroup = null;
-    ShowToastComponent.showDialog(
-        "Adding bro to the broup has failed", context);
+    showToastMessage("Adding bro to the broup has failed");
   }
 
   bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
@@ -420,7 +419,7 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> {
             Align(
               alignment: Alignment.bottomCenter,
               child: EmojiKeyboard(
-                  emotionController: bromotionController,
+                  emojiController: bromotionController,
                   emojiKeyboardHeight: 300,
                   showEmojiKeyboard: showEmojiKeyboard,
                   darkMode: settings.getEmojiKeyboardDarkMode()),

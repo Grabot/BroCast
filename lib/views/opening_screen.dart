@@ -217,7 +217,7 @@ class _OpeningScreenState extends State<OpeningScreen> {
   }
 
   void logInFail() {
-    ShowToastComponent.showDialog("couldn't log in, please try again", context);
+    showToastMessage("couldn't log in, please try again");
     setState(() {
       isLoading = false;
     });
@@ -327,12 +327,15 @@ class _OpeningScreenState extends State<OpeningScreen> {
                             ),
                             SizedBox(height: 20),
                             ElevatedButton(
-                              child: Text('Agree and continue'),
+                              child: Text(
+                                'Agree and continue',
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 16)
+                              ),
                               onPressed: () {
                                 agreeAndContinue();
                               },
                               style: ElevatedButton.styleFrom(
-                                  foregroundColor: Colors.green,
                                   backgroundColor: Colors.green,
                                   padding: EdgeInsets.symmetric(
                                       horizontal: 80, vertical: 5),
@@ -352,7 +355,7 @@ class _OpeningScreenState extends State<OpeningScreen> {
                               style: TextStyle(
                                   color: Colors.blueGrey, fontSize: 20),
                             ),
-                            SizedBox(height: 10),
+                            SizedBox(height: 40),
                           ]),
                         )),
                       ])))

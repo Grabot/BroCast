@@ -7,7 +7,7 @@ import 'package:http/http.dart' as http;
 
 class Search {
   Future searchBro(String token, String broName, String bromotion) async {
-    String urlSearch = baseUrl_v1_2 + 'search';
+    String urlSearch = baseUrl_v1_0 + 'search';
     Uri uriRegister = Uri.parse(urlSearch);
 
     if (bromotion == null || bromotion == " ") {

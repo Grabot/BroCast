@@ -106,7 +106,7 @@ class _BroSettingsState extends State<BroSettings> {
 
   clearMessages() async {
     await storage.clearMessages();
-    ShowToastComponent.showDialog("Messages cleared", context);
+    showToastMessage("Messages cleared");
   }
 
   @override

@@ -84,8 +84,7 @@ class _AddBroupState extends State<AddBroup> {
 
   broupAddingFailed() {
     pressedAddBroup = false;
-    ShowToastComponent.showDialog(
-        "Broup could not be created at this time", context);
+    showToastMessage("Broup could not be created at this time");
   }
 
   @override
@@ -532,7 +531,7 @@ class _AddBroupState extends State<AddBroup> {
               Align(
                 alignment: Alignment.bottomCenter,
                 child: EmojiKeyboard(
-                    emotionController: bromotionController,
+                    emojiController: bromotionController,
                     emojiKeyboardHeight: 300,
                     showEmojiKeyboard: showEmojiKeyboard,
                     darkMode: settings.getEmojiKeyboardDarkMode()),

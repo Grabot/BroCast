@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 
 class GetMessages {
   Future getMessages(String token, int brosBroId) async {
-    String urlGetMessages = baseUrl_v1_3 + 'get/messages';
+    String urlGetMessages = baseUrl_v1_0 + 'get/messages';
     Uri uriGetMessages = Uri.parse(urlGetMessages);
 
     http.Response responsePost = await http.post(
@@ -49,7 +49,7 @@ class GetMessages {
   }
 
   Future getMessagesBroup(String token, int broupId) async {
-    String urlGetMessages = baseUrl_v1_3 + 'get/messages/broup';
+    String urlGetMessages = baseUrl_v1_0 + 'get/messages/broup';
     Uri uriGetMessages = Uri.parse(urlGetMessages);
 
     http.Response responsePost = await http.post(

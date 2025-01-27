@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:jwt_decode/jwt_decode.dart';
+import 'package:oktoast/oktoast.dart';
+
+import '../services/auth/models/login_response.dart';
+import '../services/settings.dart';
+import 'secure_storage.dart';
 
 InputDecoration textFieldInputDecoration(String hintText) {
   return InputDecoration(
@@ -19,21 +24,19 @@ TextStyle simpleTextStyle() {
   return TextStyle(color: Colors.white, fontSize: 16);
 }
 
-class ShowToastComponent {
-  static showDialog(String msg, context) {
-    Fluttertoast.showToast(
-        msg: msg,
-        toastLength: Toast.LENGTH_LONG,
-        textColor: Colors.black,
-        gravity: ToastGravity.BOTTOM,
-        timeInSecForIosWeb: 5,
-        backgroundColor: Colors.grey,
-        fontSize: 12.0
-    );
-  }
+showToastMessage(String message) {
+  print("showing toast?");
+  showToast(
+    message,
+    duration: const Duration(milliseconds: 2000),
+    position: ToastPosition.top,
+    backgroundColor: Colors.white,
+    radius: 1.0,
+    textStyle: const TextStyle(fontSize: 30.0, color: Colors.black),
+  );
 }
 
-Color getTextColor(Color color) {
+Color getTextColor(Color? color) {
   if (color == null) {
     return Colors.white;
   }
@@ -48,4 +51,45 @@ Color getTextColor(Color color) {
   } else {
     return Colors.white;
   }
+}
+
+bool emailValid(String possibleEmail) {
+  return RegExp(
+      r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+      .hasMatch(possibleEmail);
+}
+
+successfulLogin(LoginResponse loginResponse) async {
+  SecureStorage secureStorage = SecureStorage();
+  Settings settings = Settings();
+
+  String? accessToken = loginResponse.getAccessToken();
+  if (accessToken != null) {
+    // the access token will be set in memory and local storage.
+    settings.setAccessToken(accessToken);
+    settings.setAccessTokenExpiration(Jwt.parseJwt(accessToken)['exp']);
+    await secureStorage.setAccessToken(accessToken);
+  }
+
+  String? refreshToken = loginResponse.getRefreshToken();
+  if (refreshToken != null) {
+    // the refresh token will only be set in memory.
+    settings.setRefreshToken(refreshToken);
+    settings.setRefreshTokenExpiration(Jwt.parseJwt(refreshToken)['exp']);
+    await secureStorage.setRefreshToken(refreshToken);
+  }
+
+  // TODO: fix?
+  // User? user = loginResponse.getUser();
+  // if (user != null) {
+  //   settings.setUser(user);
+  //   if (user.getAvatar() != null) {
+  //     settings.setAvatar(user.getAvatar()!);
+  //   }
+  //   SocketServices().login(user.id);
+  //   additionalLoginInformation(user);
+  // }
+  // ChatMessages().login();
+  // settings.setLoggingIn(false);
+  // ProfileChangeNotifier().notify();
 }

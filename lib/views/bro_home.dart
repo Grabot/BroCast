@@ -390,7 +390,7 @@ class _BroCastHomeState extends State<BroCastHome> {
           Align(
             alignment: Alignment.bottomCenter,
             child: EmojiKeyboard(
-                emotionController: bromotionController,
+                emojiController: bromotionController,
                 emojiKeyboardHeight: 300,
                 showEmojiKeyboard: showEmojiKeyboard,
                 darkMode: settings.getEmojiKeyboardDarkMode()),

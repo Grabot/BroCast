@@ -7,7 +7,7 @@ import 'package:http/http.dart' as http;
 
 class GetBroupBros {
   Future getBroupBros(String token, int broupId, List<int> participants) async {
-    String urlGetBroupBros = baseUrl_v1_2 + 'get/broup_bros';
+    String urlGetBroupBros = baseUrl_v1_0 + 'get/broup_bros';
     Uri uriGetBroupBros = Uri.parse(urlGetBroupBros);
 
     http.Response responsePost = await http.post(

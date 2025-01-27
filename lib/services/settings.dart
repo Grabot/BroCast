@@ -12,6 +12,12 @@ class Settings {
 
   BroAdded? me;
 
+  bool loggingIn = false;
+  String accessToken = "";
+  String refreshToken = "";
+  int accessTokenExpiration = 0;
+  int refreshTokenExpiration = 0;
+
   Settings._internal();
 
   factory Settings() {
@@ -70,5 +76,54 @@ class Settings {
 
   BroAdded? getMe() {
     return this.me;
+  }
+
+  logout() {
+    accessToken = "";
+    refreshToken = "";
+    accessTokenExpiration = 0;
+    // user = null;
+    // avatar = null;
+    loggingIn = false;
+  }
+
+  setAccessToken(String accessToken) {
+    this.accessToken = accessToken;
+  }
+
+  String getAccessToken() {
+    return accessToken;
+  }
+
+  setRefreshToken(String refreshToken) {
+    this.refreshToken = refreshToken;
+  }
+
+  String getRefreshToken() {
+    return refreshToken;
+  }
+
+  setLoggingIn(bool loggingIn) {
+    this.loggingIn = loggingIn;
+  }
+
+  bool getLoggingIn() {
+    return loggingIn;
+  }
+
+  setAccessTokenExpiration(int accessTokenExpiration) {
+    this.accessTokenExpiration = accessTokenExpiration;
+  }
+
+  int getAccessTokenExpiration() {
+    return accessTokenExpiration;
+  }
+
+  setRefreshTokenExpiration(int refreshTokenExpiration) {
+    this.refreshTokenExpiration = refreshTokenExpiration;
+  }
+
+  int getRefreshTokenExpiration() {
+    return refreshTokenExpiration;
   }
 }

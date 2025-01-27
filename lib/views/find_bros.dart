@@ -104,8 +104,7 @@ class _FindBrosState extends State<FindBros> {
 
   broAddingFailed() {
     clickedNewBro = false;
-    ShowToastComponent.showDialog(
-        "Bro could not be added at this time", context);
+    showToastMessage("Bro could not be added at this time");
     setState(() {
       isLoading = false;
     });
@@ -184,14 +183,14 @@ class _FindBrosState extends State<FindBros> {
                   // If the user logged in again we will retrieve messages again.
                   searchBros();
                 } else {
-                  ShowToastComponent.showDialog("an unknown error occurred, please try again later", context);
+                  showToastMessage("an unknown error occurred, please try again later");
                   setState(() {
                     isSearching = false;
                   });
                 }
               });
             } else {
-              ShowToastComponent.showDialog("an unknown error occurred, please try again later", context);
+              showToastMessage("an unknown error occurred, please try again later");
               setState(() {
                 isSearching = false;
               });
@@ -409,7 +408,7 @@ class _FindBrosState extends State<FindBros> {
             Align(
               alignment: Alignment.bottomCenter,
               child: EmojiKeyboard(
-                  emotionController: bromotionController,
+                  emojiController: bromotionController,
                   emojiKeyboardHeight: 300,
                   showEmojiKeyboard: showEmojiKeyboard,
                   darkMode: settings.getEmojiKeyboardDarkMode()),

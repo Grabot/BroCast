@@ -6,8 +6,8 @@ import 'package:brocast/objects/chat.dart';
 import 'package:brocast/services/navigation_service.dart';
 import 'package:brocast/utils/locator.dart';
 import 'package:brocast/utils/storage.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
+// import 'package:firebase_core/firebase_core.dart';
+// import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/services.dart';
 // import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 // import 'package:notification_permissions/notification_permissions.dart';
@@ -33,7 +33,7 @@ class NotificationUtil {
   final NavigationService _navigationService = locator<NavigationService>();
 
   NotificationUtil._internal() {
-    setupFirebase();
+    // setupFirebase();
   }
 
   factory NotificationUtil() {
@@ -135,85 +135,85 @@ class NotificationUtil {
     //     );
   }
 
-  setupFirebase() async {
-    await Firebase.initializeApp();
-    initializeLocalNotifications();
-    initializeFirebaseService();
+  // setupFirebase() async {
+  //   await Firebase.initializeApp();
+  //   initializeLocalNotifications();
+  //   initializeFirebaseService();
+  //
+  //   createNotificationChannel();
+  //
+  //   if (!Platform.isAndroid) {
+  //     // NotificationPermissions.requestNotificationPermissions(
+  //     //     iosSettings: const NotificationSettingsIos(
+  //     //         sound: true, badge: true, alert: true))
+  //     //     .then((_) {});
+  //   }
+  //
+  //
+  //   // platformChannelSpecifics = const NotificationDetails(
+  //   //     android: AndroidNotificationDetails(
+  //   //       androidChannelId,
+  //   //       androidChannelName,
+  //   //       channelDescription: androidChannelDescription,
+  //   //       groupKey: groupKey,
+  //   //       setAsGroupSummary: true,
+  //   //       playSound: true
+  //   //     ),
+  //       // iOS: IOSNotificationDetails(
+  //       //     presentAlert: true,
+  //       //     presentBadge: true,
+  //       //     presentSound: true,
+  //       //     badgeNumber: 0,
+  //       //     sound: "res_brodio.aiff")
+  //   // );
+  // }
 
-    createNotificationChannel();
-    
-    if (!Platform.isAndroid) {
-      // NotificationPermissions.requestNotificationPermissions(
-      //     iosSettings: const NotificationSettingsIos(
-      //         sound: true, badge: true, alert: true))
-      //     .then((_) {});
-    }
-
-
-    // platformChannelSpecifics = const NotificationDetails(
-    //     android: AndroidNotificationDetails(
-    //       androidChannelId,
-    //       androidChannelName,
-    //       channelDescription: androidChannelDescription,
-    //       groupKey: groupKey,
-    //       setAsGroupSummary: true,
-    //       playSound: true
-    //     ),
-        // iOS: IOSNotificationDetails(
-        //     presentAlert: true,
-        //     presentBadge: true,
-        //     presentSound: true,
-        //     badgeNumber: 0,
-        //     sound: "res_brodio.aiff")
-    // );
-  }
-
-  Future<void> initializeFirebaseService() async {
-    FirebaseMessaging.instance;
-    firebaseToken = await FirebaseMessaging.instance.getToken();
-
-    if (firebaseToken == null || firebaseToken == "") {
-      return;
-    }
-
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      // open message when the app is in the foreground.
-      // Here we create a notification for both android and ios
-      // So no action is taken, except creating a notification
-      String? title = message.notification!.title;
-      String? body = message.notification!.body;
-      var data = message.data;
-      int broId = int.parse(data["id"]);
-      int isBroup = int.parse(data["broup"]);
-      if (broId != currentChatId && isBroup != currentIsBroup) {
-        _showNotification(title!, body!, broId, isBroup);
-      }
-    });
-
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      // open message when the app is in the background, but not terminated.
-      String? title = message.notification!.title;
-      String? body = message.notification!.body;
-      var data = message.data;
-      int broId = int.parse(data["id"]);
-      int isBroup = int.parse(data["broup"]);
-      notificationNavigate(broId, isBroup);
-    });
-
-    FirebaseMessaging.instance.getInitialMessage().then((message) {
-      if (message == null) {
-        return;
-      }
-
-      String? title = message.notification!.title;
-      String? body = message.notification!.body;
-      var data = message.data;
-      int broId = int.parse(data["id"]);
-      int isBroup = int.parse(data["broup"]);
-
-      notificationNavigate(broId, isBroup);
-    });
-  }
+  // Future<void> initializeFirebaseService() async {
+  //   FirebaseMessaging.instance;
+  //   firebaseToken = await FirebaseMessaging.instance.getToken();
+  //
+  //   if (firebaseToken == null || firebaseToken == "") {
+  //     return;
+  //   }
+  //
+  //   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+  //     // open message when the app is in the foreground.
+  //     // Here we create a notification for both android and ios
+  //     // So no action is taken, except creating a notification
+  //     String? title = message.notification!.title;
+  //     String? body = message.notification!.body;
+  //     var data = message.data;
+  //     int broId = int.parse(data["id"]);
+  //     int isBroup = int.parse(data["broup"]);
+  //     if (broId != currentChatId && isBroup != currentIsBroup) {
+  //       _showNotification(title!, body!, broId, isBroup);
+  //     }
+  //   });
+  //
+  //   FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+  //     // open message when the app is in the background, but not terminated.
+  //     String? title = message.notification!.title;
+  //     String? body = message.notification!.body;
+  //     var data = message.data;
+  //     int broId = int.parse(data["id"]);
+  //     int isBroup = int.parse(data["broup"]);
+  //     notificationNavigate(broId, isBroup);
+  //   });
+  //
+  //   FirebaseMessaging.instance.getInitialMessage().then((message) {
+  //     if (message == null) {
+  //       return;
+  //     }
+  //
+  //     String? title = message.notification!.title;
+  //     String? body = message.notification!.body;
+  //     var data = message.data;
+  //     int broId = int.parse(data["id"]);
+  //     int isBroup = int.parse(data["broup"]);
+  //
+  //     notificationNavigate(broId, isBroup);
+  //   });
+  // }
 
   createNotificationChannel() async {
     if (Platform.isAndroid) {

@@ -99,7 +99,7 @@ class _BroProfileState extends State<BroProfile> {
   }
 
   void onChangePasswordSuccess() {
-    ShowToastComponent.showDialog("password changed successfully", context);
+    showToastMessage("password changed successfully");
     broPassword = newPasswordController2.text;
     currentUser.password = broPassword;
     storage.updateUser(currentUser).then((value) {
@@ -110,8 +110,7 @@ class _BroProfileState extends State<BroProfile> {
   }
 
   void onChangePasswordFailed() {
-    ShowToastComponent.showDialog(
-        "changing password failed due to an unknown error.", context);
+    showToastMessage("changing password failed due to an unknown error.");
     setState(() {
       newPasswordController1.text = "";
       newPasswordController2.text = "";
@@ -119,23 +118,21 @@ class _BroProfileState extends State<BroProfile> {
   }
 
   void onChangeBromotionSuccess() {
-    ShowToastComponent.showDialog("bromotion changed successfully", context);
+    showToastMessage("bromotion changed successfully");
     currentUser.bromotion = bromotionChangeController.text;
     settings.setBromotion(currentUser.bromotion);
     storage.updateUser(currentUser).then((value) {});
   }
 
   void onChangeBromotionFailedExists() {
-    ShowToastComponent.showDialog(
-        "BroName bromotion combination exists, please pick a different bromotion",
-        context);
+    showToastMessage("BroName bromotion combination exists, please pick a different bromotion");
     setState(() {
       bromotionChangeController.text = currentUser.bromotion;
     });
   }
 
   void onChangeBromotionFailedUnknown() {
-    ShowToastComponent.showDialog("an unknown Error has occurred", context);
+    showToastMessage("an unknown Error has occurred");
     setState(() {
       bromotionChangeController.text = currentUser.bromotion;
     });
@@ -415,7 +412,7 @@ class _BroProfileState extends State<BroProfile> {
                   Align(
                     alignment: Alignment.bottomCenter,
                     child: EmojiKeyboard(
-                        emotionController: bromotionChangeController,
+                        emojiController: bromotionChangeController,
                         emojiKeyboardHeight: 300,
                         showEmojiKeyboard: showEmojiKeyboard,
                         darkMode: settings.getEmojiKeyboardDarkMode()),

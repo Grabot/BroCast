@@ -226,8 +226,7 @@ class _BroupMessagingState extends State<BroupMessaging> {
   }
 
   broAddingFailed() {
-    ShowToastComponent.showDialog(
-        "Bro could not be added at this time", context);
+    showToastMessage("Bro could not be added at this time");
   }
 
   messageReceived(var data) {
@@ -970,7 +969,7 @@ class _BroupMessagingState extends State<BroupMessaging> {
             Align(
               alignment: Alignment.bottomCenter,
               child: EmojiKeyboard(
-                emotionController: broMessageController,
+                emojiController: broMessageController,
                 emojiKeyboardHeight: 300,
                 showEmojiKeyboard: showEmojiKeyboard,
                 darkMode: settings.getEmojiKeyboardDarkMode(),

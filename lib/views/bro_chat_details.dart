@@ -326,12 +326,9 @@ class _BroChatDetailsState extends State<BroChatDetails> {
         });
       } else {
         if (val == "an unknown error has occurred") {
-          ShowToastComponent.showDialog(
-              "An unknown error has occurred", context);
+          showToastMessage("An unknown error has occurred");
         } else {
-          ShowToastComponent.showDialog(
-              "There was an error with the server, we apologize for the inconvenience.",
-              context);
+          showToastMessage("There was an error with the server, we apologize for the inconvenience.");
         }
       }
     });
@@ -352,12 +349,9 @@ class _BroChatDetailsState extends State<BroChatDetails> {
         });
       } else {
         if (val == "an unknown error has occurred") {
-          ShowToastComponent.showDialog(
-              "An unknown error has occurred", context);
+          showToastMessage("An unknown error has occurred");
         } else {
-          ShowToastComponent.showDialog(
-              "There was an error with the server, we apologize for the inconvenience.",
-              context);
+          showToastMessage("There was an error with the server, we apologize for the inconvenience.");
         }
       }
     });
@@ -375,12 +369,9 @@ class _BroChatDetailsState extends State<BroChatDetails> {
         });
       } else {
         if (val == "an unknown error has occurred") {
-          ShowToastComponent.showDialog(
-              "An unknown error has occurred", context);
+          showToastMessage("An unknown error has occurred");
         } else {
-          ShowToastComponent.showDialog(
-              "There was an error with the server, we apologize for the inconvenience.",
-              context);
+          showToastMessage("There was an error with the server, we apologize for the inconvenience.");
         }
       }
     });
@@ -390,13 +381,12 @@ class _BroChatDetailsState extends State<BroChatDetails> {
   void chatDetailUpdateFailed() {
     currentColor = previousColor!;
     circleColorPickerController.color = previousColor!;
-    ShowToastComponent.showDialog("Updating the bro chat has failed", context);
+    showToastMessage("Updating the bro chat has failed");
   }
 
   void chatColourUpdateFailed() {
     chatDescriptionController.text = previousDescription;
-    ShowToastComponent.showDialog(
-        "Updating the bro colour has failed", context);
+    showToastMessage("Updating the bro colour has failed");
   }
 
   onColorChange(Color colour) {
@@ -416,7 +406,7 @@ class _BroChatDetailsState extends State<BroChatDetails> {
   }
 
   chatMutingFailed() {
-    ShowToastComponent.showDialog("Chat muting failed at this time.", context);
+    showToastMessage("Chat muting failed at this time.");
   }
 
   @override

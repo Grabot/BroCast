@@ -1,17 +1,15 @@
 import 'dart:io';
 import 'package:back_button_interceptor/back_button_interceptor.dart';
-import 'package:brocast/objects/chat.dart';
 import 'package:brocast/objects/user.dart';
-import 'package:brocast/services/auth.dart';
-import 'package:brocast/services/get_bros.dart';
 import 'package:brocast/services/settings.dart';
-import 'package:brocast/utils/bro_list.dart';
 import 'package:brocast/utils/storage.dart';
-import 'package:brocast/utils/utils.dart';
-import 'package:brocast/views/bro_home.dart';
 import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
+import '../services/auth/auth_service_login.dart';
+import '../services/auth/models/register_request.dart';
+import '../utils/utils.dart';
 
 class SignIn extends StatefulWidget {
   SignIn({required Key key}) : super(key: key);
@@ -24,16 +22,11 @@ class _SignInState extends State<SignIn> {
   bool isLoading = false;
   bool showEmojiKeyboard = false;
 
-  bool signUpMode = false;
-
-  Auth auth = new Auth();
-  GetBros getBros = new GetBros();
   Settings settings = Settings();
-
-  DateTime? lastPressed;
 
   final formKey = GlobalKey<FormState>();
   TextEditingController broNameController = new TextEditingController();
+  TextEditingController emailController = new TextEditingController();
   TextEditingController bromotionController = new TextEditingController();
   TextEditingController passwordController = new TextEditingController();
 
@@ -41,28 +34,15 @@ class _SignInState extends State<SignIn> {
 
   late Storage storage;
 
-  late User currentUser;
+  bool loginBroName = true;
+  bool signUpMode = false;
 
   @override
   void initState() {
     BackButtonInterceptor.add(myInterceptor);
     bromotionController.addListener(bromotionListener);
-    // If credentials are stored we will automatically sign in,
-    // but we will also set it on the text fields just for usability reasons
-    // (in case logging in fails)
 
     storage = Storage();
-
-    currentUser = new User(-1, "", "", "", "", "", 0, 0);
-    storage.selectUser().then((user) {
-      if (user != null) {
-        currentUser = user;
-        broNameController.text = user.broName;
-        bromotionController.text = user.bromotion;
-        passwordController.text = user.password;
-        setState(() {});
-      }
-    });
 
     setState(() {
       emojiKeyboardDarkMode = settings.getEmojiKeyboardDarkMode();
@@ -115,114 +95,11 @@ class _SignInState extends State<SignIn> {
   void dispose() {
     bromotionController.addListener(bromotionListener);
     broNameController.dispose();
+    emailController.dispose();
     bromotionController.dispose();
     passwordController.dispose();
     BackButtonInterceptor.remove(myInterceptor);
     super.dispose();
-  }
-
-  signInForm() {
-    if (formKey.currentState!.validate()) {
-      if (signUpMode) {
-        signUp();
-      } else {
-        String broNameSignup = broNameController.text.trimRight();
-        String bromotionSignup = bromotionController.text;
-        String passwordSignup = passwordController.text;
-
-        signInName(broNameSignup, bromotionSignup, passwordSignup);
-      }
-    }
-  }
-
-  signUp() {
-    setState(() {
-      isLoading = true;
-    });
-
-    String broNameSignup = broNameController.text.trimRight();
-    String bromotionSignup = bromotionController.text;
-    String passwordSignup = passwordController.text;
-
-    auth.signUp(broNameSignup, bromotionSignup, passwordSignup).then((val) {
-      if (val.toString() == "") {
-        checkUserAndSearchBros();
-      } else {
-        ShowToastComponent.showDialog(val.toString(), context);
-      }
-      setState(() {
-        isLoading = false;
-      });
-    });
-  }
-
-  signInName(String broName, String bromotion, String password) {
-    setState(() {
-      isLoading = true;
-    });
-
-    auth.signIn(broName, bromotion, password, "").then((val) {
-      if (val.toString() == "") {
-        checkUserAndSearchBros();
-      } else {
-        ShowToastComponent.showDialog(val.toString(), context);
-        setState(() {
-          isLoading = false;
-        });
-      }
-    });
-  }
-
-  checkUserAndSearchBros() {
-    storage.selectUser().then((user) async {
-      if (user != null) {
-        searchBros(user.token).then((value) {
-          if (value == "success") {
-            Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => BroCastHome(key: UniqueKey())));
-          } else {
-            setState(() {
-              isLoading = false;
-            });
-          }
-        });
-        user.recheckBros = 0;
-        storage.updateUser(user).then((value) {});
-      } else {
-        setState(() {
-          isLoading = false;
-        });
-      }
-    });
-  }
-
-  Future searchBros(String token) async {
-    BroList broList = BroList();
-    return getBros.getBros(token).then((bros) {
-      if (!(bros is String)) {
-        // We have retrieved all the bros and broups.
-        // We will remove the chat database and refill it.
-
-        for (Chat chat in bros) {
-          storage
-              .selectChat(chat.id.toString(), chat.broup.toString())
-              .then((value) {
-            if (value == null) {
-              storage.addChat(chat).then((value) {});
-            } else {
-              storage.updateChat(chat).then((value) {});
-            }
-          });
-        }
-        broList.setBros(bros);
-        return "success";
-      } else {
-        ShowToastComponent.showDialog(bros.toString(), context);
-        return "failed";
-      }
-    });
   }
 
   void onSelect(BuildContext context, int item) {
@@ -235,6 +112,352 @@ class _SignInState extends State<SignIn> {
         }
         break;
     }
+  }
+
+  register() {
+    String broNameLogin = broNameController.text.trimRight();
+    String bromotionLogin = bromotionController.text;
+    String passwordLogin = passwordController.text;
+    String emailLogin = emailController.text;
+
+    print("broNameLogin: $broNameLogin");
+    print("bromotionLogin: $bromotionLogin");
+    print("passwordLogin: $passwordLogin");
+    print("emailLogin: $emailLogin");
+    // This issue should not be possible, but check if the required fields are filled anyway
+    if (emailLogin == "" || broNameLogin == "" || bromotionLogin == "" || passwordLogin == "") {
+      showToastMessage("Please fill in the email, bro name, bromotion and password field");
+      return;
+    }
+    isLoading = true;
+    AuthServiceLogin authService = AuthServiceLogin();
+    RegisterRequest registerRequest = RegisterRequest(emailLogin, broNameLogin, bromotionLogin, passwordLogin);
+    authService.getRegister(registerRequest).then((loginResponse) {
+      if (loginResponse.getResult()) {
+        isLoading = false;
+        // TODO: move to main screen?
+        setState(() {});
+      } else if (!loginResponse.getResult()) {
+        showToastMessage(loginResponse.getMessage());
+        isLoading = false;
+      }
+    }).onError((error, stackTrace) {
+      showToastMessage(error.toString());
+      isLoading = false;
+    });
+  }
+
+  login() {
+    String broNameLogin = broNameController.text.trimRight();
+    String bromotionLogin = bromotionController.text;
+    String passwordLogin = passwordController.text;
+    String emailLogin = emailController.text;
+
+    if (loginBroName) {
+      // This issue should not be possible, but check if the required fields are filled anyway
+      if (broNameLogin == "" || bromotionLogin == "" || passwordLogin == "") {
+        showToastMessage("Please fill in the bro name, bromotion and password field");
+        return;
+      }
+    } else {
+      if (emailLogin == "" || passwordLogin == "") {
+        showToastMessage("Please fill in the email and password field.");
+        return;
+      }
+    }
+
+    // signInName(broNameSignup, bromotionSignup, passwordSignup);
+  }
+
+  signInForm() {
+    // The form only validates the fields that are in view.
+    if (formKey.currentState!.validate()) {
+      if (signUpMode) {
+        register();
+      } else {
+        login();
+      }
+    }
+  }
+
+  Widget broNameTextField() {
+    return Expanded(
+      child: TextFormField(
+        onTap: () {
+          if (!isLoading) {
+            onTapTextField();
+          }
+        },
+        validator: (val) {
+          return val == null || val.isEmpty
+              ? "Please provide your bro name"
+              : null;
+        },
+        controller: broNameController,
+        textAlign: TextAlign.center,
+        style: simpleTextStyle(),
+        decoration: textFieldInputDecoration("Bro name"),
+      ),
+    );
+  }
+
+  Widget bromotionTextField() {
+    return SizedBox(
+      width: 50,
+      height: 50,
+      child: TextFormField(
+        onTap: () {
+          if (!isLoading) {
+            onTapEmojiField();
+          }
+        },
+        validator: (val) {
+          return val == null || val.trim().isEmpty
+              ? "😢?😄!"
+              : null;
+        },
+        controller: bromotionController,
+        style: simpleTextStyle(),
+        textAlign: TextAlign.center,
+        decoration: textFieldInputDecoration("😀"),
+        readOnly: true,
+        showCursor: true,
+      ),
+    );
+  }
+
+  Widget broNameAndBromotionInputField() {
+    return Row(
+      children: [
+        SizedBox(width: 20),
+        broNameTextField(),
+        SizedBox(width: 20),
+        bromotionTextField(),
+        SizedBox(width: 20),
+      ],
+    );
+  }
+
+  Widget emailTextField() {
+    return Expanded(
+      child: TextFormField(
+        onTap: () {
+          if (!isLoading) {
+            onTapTextField();
+          }
+        },
+        validator: (val) {
+          if (val != null) {
+            if (!emailValid(val)) {
+              return "Email not formatted correctly";
+            }
+          }
+          return val == null || val.isEmpty
+              ? "Please provide an Email"
+              : null;
+        },
+        controller: emailController,
+        textAlign: TextAlign.center,
+        style: simpleTextStyle(),
+        decoration: textFieldInputDecoration("Email"),
+      ),
+    );
+  }
+
+  Widget emailInputField() {
+    return Row(
+      children: [
+        SizedBox(width: 20),
+        emailTextField(),
+        SizedBox(width: 20),
+      ],
+    );
+  }
+
+  Widget switchBroNameEmail() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Container(),
+        InkWell(
+          onTap: () {
+            if (!isLoading) {
+              setState(() {
+                loginBroName = !loginBroName;
+              });
+            }
+          },
+          child: Row(
+            children: [
+              loginBroName ? Text(
+                "Switch to email",
+                style: TextStyle(color: Colors.green, fontSize: 16),
+              ) : Text(
+                "Switch to Bro name",
+                style: TextStyle(color: Colors.green, fontSize: 16),
+              ),
+              Icon(Icons.sync, color: Colors.green),
+            ]
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget passwordInputField() {
+    return Row(
+      children:
+      [
+        SizedBox(width: 20),
+        Expanded(
+          child: TextFormField(
+            onTap: () {
+              if (!isLoading) {
+                onTapTextField();
+              }
+            },
+            obscureText: true,
+            validator: (val) {
+              return val == null || val.isEmpty
+                  ? "Please provide a password"
+                  : null;
+            },
+            controller: passwordController,
+            textAlign: TextAlign.center,
+            style: simpleTextStyle(),
+            decoration: textFieldInputDecoration("Password"),
+          ),
+        ),
+        SizedBox(width: 20),
+      ]
+    );
+  }
+
+  Widget forgotPassword() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Container(),
+        InkWell(
+          onTap: () {
+            if (!isLoading) {
+              setState(() {
+                print("TODO: forgot password");
+              });
+            }
+          },
+          child: Row(
+              children: [
+                Text(
+                  "Forgot password?",
+                  style: TextStyle(color: Colors.blue, fontSize: 16),
+                ),
+              ]
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget signInButton() {
+    return GestureDetector(
+      onTap: () {
+        if (!isLoading) {
+          signInForm();
+        }
+      },
+      child: Container(
+        alignment: Alignment.center,
+        width: MediaQuery.of(context).size.width,
+        padding: EdgeInsets.symmetric(vertical: 16),
+        decoration: BoxDecoration(
+            gradient: LinearGradient(colors: [
+              const Color(0xBf007EF4),
+              const Color(0xff2A75BC)
+            ]),
+            borderRadius: BorderRadius.circular(30)),
+        child: signUpMode
+            ? Text("Register",
+            style: simpleTextStyle())
+            : Text("Login",
+            style: simpleTextStyle()),
+      ),
+    );
+  }
+
+  Widget switchLoginRegister() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Container(
+          child: signUpMode
+              ? Text(
+            "Already have an account?  ",
+            style: TextStyle(
+                color: Colors.white,
+                fontSize: 16),
+          )
+              : Text(
+            "Don't have an account?  ",
+            style: TextStyle(
+                color: Colors.white,
+                fontSize: 16),
+          ),
+        ),
+        Expanded(
+          child: GestureDetector(
+            onTap: () {
+              if (!isLoading) {
+                setState(() {
+                  signUpMode = !signUpMode;
+                });
+              }
+            },
+            child: signUpMode
+                ? Text(
+              "Login now!",
+              style: TextStyle(
+                  color: Colors.blue,
+                  fontSize: 16,
+                  decoration:
+                  TextDecoration.underline),
+            )
+                : Text(
+              "Register now!",
+              style: TextStyle(
+                  color: Colors.blue,
+                  fontSize: 16,
+                  decoration:
+                  TextDecoration.underline),
+            ),
+          ),
+        )
+      ],
+    );
+  }
+
+  Widget loginView() {
+    return Column(
+      children: [
+        loginBroName
+            ? broNameAndBromotionInputField()
+            : emailInputField(),
+        switchBroNameEmail(),
+        passwordInputField(),
+        SizedBox(height:10),
+        forgotPassword(),
+      ],
+    );
+  }
+
+  Widget registerView() {
+    return Column(
+      children: [
+        broNameAndBromotionInputField(),
+        emailInputField(),
+        passwordInputField(),
+      ],
+    );
   }
 
   @override
@@ -251,31 +474,7 @@ class _SignInState extends State<SignIn> {
                     ]),
           ],
         ),
-        body: WillPopScope(
-          onWillPop: () async {
-            final now = DateTime.now();
-            final maxDuration = Duration(seconds: 2);
-            final isWarning = lastPressed == null ||
-                now.difference(lastPressed!) > maxDuration;
-
-            if (isWarning) {
-              lastPressed = DateTime.now();
-
-              final snackBar = SnackBar(
-                content: Text('Press back twice to exit the application'),
-                duration: maxDuration,
-              );
-
-              ScaffoldMessenger.of(context)
-                ..removeCurrentSnackBar()
-                ..showSnackBar(snackBar);
-
-              return false;
-            } else {
-              return true;
-            }
-          },
-          child: Stack(children: [
+        body: Stack(children: [
             isLoading
                 ? Container(child: Center(child: CircularProgressIndicator()))
                 : Container(),
@@ -286,169 +485,41 @@ class _SignInState extends State<SignIn> {
                     reverse: true,
                     child: Container(
                       padding: EdgeInsets.symmetric(horizontal: 30),
-                      child: Form(
-                          key: formKey,
-                          child: Column(
+                      child: Column(
                             children: [
                               Container(
                                   alignment: Alignment.center,
                                   child: Image.asset(
-                                      "assets/images/brocast_transparent.png")),
-                              Row(children: [
-                                Expanded(
-                                  flex: 4,
-                                  child: TextFormField(
-                                    onTap: () {
-                                      if (!isLoading) {
-                                        onTapTextField();
-                                      }
-                                    },
-                                    validator: (val) {
-                                      return val == null || val.isEmpty
-                                          ? "Please provide a bro name"
-                                          : null;
-                                    },
-                                    controller: broNameController,
-                                    textAlign: TextAlign.center,
-                                    style: simpleTextStyle(),
-                                    decoration:
-                                        textFieldInputDecoration("Bro name"),
-                                  ),
-                                ),
-                                SizedBox(width: 50),
-                                Expanded(
-                                  flex: 1,
-                                  child: TextFormField(
-                                    onTap: () {
-                                      if (!isLoading) {
-                                        onTapEmojiField();
-                                      }
-                                    },
-                                    validator: (val) {
-                                      return val == null || val.trim().isEmpty
-                                          ? "😢?😄!"
-                                          : null;
-                                    },
-                                    controller: bromotionController,
-                                    style: simpleTextStyle(),
-                                    textAlign: TextAlign.center,
-                                    decoration: textFieldInputDecoration("😀"),
-                                    readOnly: true,
-                                    showCursor: true,
-                                  ),
-                                ),
-                              ]),
-                              SizedBox(height: 30),
-                              Container(
-                                padding: EdgeInsets.symmetric(horizontal: 50),
-                                child: TextFormField(
-                                  onTap: () {
-                                    if (!isLoading) {
-                                      onTapTextField();
-                                    }
-                                  },
-                                  obscureText: true,
-                                  validator: (val) {
-                                    return val == null || val.isEmpty
-                                        ? "Please provide a password"
-                                        : null;
-                                  },
-                                  controller: passwordController,
-                                  textAlign: TextAlign.center,
-                                  style: simpleTextStyle(),
-                                  decoration:
-                                      textFieldInputDecoration("Password"),
-                                ),
+                                      "assets/images/brocast_transparent.png")
                               ),
-                              SizedBox(height: 60),
-                              GestureDetector(
-                                onTap: () {
-                                  if (!isLoading) {
-                                    signInForm();
-                                  }
-                                },
-                                child: Container(
-                                  alignment: Alignment.center,
-                                  width: MediaQuery.of(context).size.width,
-                                  padding: EdgeInsets.symmetric(vertical: 16),
-                                  decoration: BoxDecoration(
-                                      gradient: LinearGradient(colors: [
-                                        const Color(0xBf007EF4),
-                                        const Color(0xff2A75BC)
-                                      ]),
-                                      borderRadius: BorderRadius.circular(30)),
-                                  child: signUpMode
-                                      ? Text("Sign up",
-                                          style: simpleTextStyle())
-                                      : Text("Sign in",
-                                          style: simpleTextStyle()),
+                              Form(
+                                key: formKey,
+                                child: Column(
+                                  children: [
+                                    signUpMode ? registerView() : loginView(),
+                                    SizedBox(height: 40),
+                                    signInButton(),
+                                    SizedBox(height:10),
+                                    switchLoginRegister()
+                                  ],
                                 ),
-                              ),
-                              SizedBox(height: 10),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Container(
-                                    child: signUpMode
-                                        ? Text(
-                                            "Already have an account?  ",
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 16),
-                                          )
-                                        : Text(
-                                            "Don't have an account?  ",
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 16),
-                                          ),
-                                  ),
-                                  Expanded(
-                                    child: GestureDetector(
-                                      onTap: () {
-                                        if (!isLoading) {
-                                          setState(() {
-                                            signUpMode = !signUpMode;
-                                          });
-                                        }
-                                      },
-                                      child: signUpMode
-                                          ? Text(
-                                              "Login now!",
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 16,
-                                                  decoration:
-                                                      TextDecoration.underline),
-                                            )
-                                          : Text(
-                                              "Register now!",
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 16,
-                                                  decoration:
-                                                      TextDecoration.underline),
-                                            ),
-                                    ),
-                                  )
-                                ],
                               ),
                               SizedBox(height: 100),
                             ],
-                          )),
+                          ),
                     ),
                   ),
                 ),
                 Align(
                     alignment: Alignment.bottomCenter,
                     child: EmojiKeyboard(
-                        emotionController: bromotionController,
+                        emojiController: bromotionController,
                         emojiKeyboardHeight: 300,
                         showEmojiKeyboard: showEmojiKeyboard,
                         darkMode: emojiKeyboardDarkMode)),
               ]),
             ),
           ]),
-        ));
+        );
   }
 }

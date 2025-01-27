@@ -7,7 +7,7 @@ import 'package:http/http.dart' as http;
 
 class DeleteBroup {
   Future deleteBroup(String token, int broupId) async {
-    String urlDeleteBroup = baseUrl_v1_3 + 'delete/broup';
+    String urlDeleteBroup = baseUrl_v1_0 + 'delete/broup';
     Uri uriDeleteBroup = Uri.parse(urlDeleteBroup);
 
     http.Response responsePost = await http.post(

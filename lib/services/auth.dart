@@ -12,11 +12,11 @@ class Auth {
   Settings settings = Settings();
 
   Future signUp(String broName, String bromotion, String password) async {
-    String urlRegister = baseUrl_v1_3 + 'register';
+    String urlRegister = baseUrl_v1_0 + 'register';
     Uri uriRegister = Uri.parse(urlRegister);
 
-    NotificationUtil notificationUtil = NotificationUtil();
-    String registrationId = notificationUtil.getFirebaseToken();
+    // NotificationUtil notificationUtil = NotificationUtil();
+    // String registrationId = notificationUtil.getFirebaseToken();
 
     http.Response responsePost = await http
         .post(
@@ -28,7 +28,7 @@ class Auth {
         'bro_name': broName,
         'bromotion': bromotion,
         'password': password,
-        'registration_id': registrationId
+        'registration_id': "registrationId"
       }),
     )
         .timeout(
@@ -53,7 +53,7 @@ class Auth {
           String bromotion = registerResponse["bro"]["bromotion"];
 
           await storeUser(
-              broId, broName, bromotion, password, token, registrationId);
+              broId, broName, bromotion, password, token, "registrationId");
           return "";
         } else {
           return message;
@@ -65,11 +65,11 @@ class Auth {
 
   Future signIn(
       String broName, String bromotion, String password, String token) async {
-    String urlLogin = baseUrl_v1_3 + 'login';
+    String urlLogin = baseUrl_v1_0 + 'login';
     Uri uriLogin = Uri.parse(urlLogin);
 
-    NotificationUtil notificationUtil = NotificationUtil();
-    String registrationId = notificationUtil.getFirebaseToken();
+    // NotificationUtil notificationUtil = NotificationUtil();
+    // String registrationId = notificationUtil.getFirebaseToken();
 
     http.Response responsePost = await http
         .post(
@@ -82,7 +82,7 @@ class Auth {
         'bromotion': bromotion,
         'password': password,
         'token': token,
-        'registration_id': registrationId
+        'registration_id': "registrationId"
       }),
     )
         .timeout(
@@ -112,7 +112,7 @@ class Auth {
           String bromotion = signInResponse["bro"]["bromotion"];
 
           await storeUser(
-              broId, broName, bromotion, password, token, registrationId);
+              broId, broName, bromotion, password, token, "registrationId");
           return "";
         } else {
           return message;

@@ -7,7 +7,7 @@ class ResetRegistration {
   Storage storage = Storage();
 
   Future removeRegistrationId(int broId) async {
-    String urlRemoveRegistration = baseUrl + 'remove/registration';
+    String urlRemoveRegistration = baseUrl_v1_0 + 'remove/registration';
     Uri uriRemoveRegistration = Uri.parse(urlRemoveRegistration);
 
     http.Response responsePost = await http.post(
