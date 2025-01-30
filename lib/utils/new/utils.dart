@@ -1,9 +1,12 @@
+import 'package:brocast/views/bro_home/bro_home_change_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:jwt_decode/jwt_decode.dart';
 import 'package:oktoast/oktoast.dart';
 
-import '../services/auth/models/login_response.dart';
-import '../services/settings.dart';
+import '../../objects/new/me.dart';
+import '../../services/auth/models/login_response.dart';
+import 'settings.dart';
+import 'socket_services.dart';
 import 'secure_storage.dart';
 
 InputDecoration textFieldInputDecoration(String hintText) {
@@ -79,17 +82,22 @@ successfulLogin(LoginResponse loginResponse) async {
     await secureStorage.setRefreshToken(refreshToken);
   }
 
-  // TODO: fix?
-  // User? user = loginResponse.getUser();
-  // if (user != null) {
-  //   settings.setUser(user);
-  //   if (user.getAvatar() != null) {
-  //     settings.setAvatar(user.getAvatar()!);
-  //   }
-  //   SocketServices().login(user.id);
-  //   additionalLoginInformation(user);
-  // }
-  // ChatMessages().login();
-  // settings.setLoggingIn(false);
-  // ProfileChangeNotifier().notify();
+  Me? me = loginResponse.getMe();
+  if (me != null) {
+    settings.setMe(me);
+    // don't store email because we don't know it.
+    SocketServices().joinRoomSolo(me.getId());
+  }
+  settings.setLoggingIn(false);
+  BroHomeChangeNotifier().notify();
+}
+
+Widget zwaarDevelopersLogo(double width, bool normalMode) {
+  return Container(
+      padding: normalMode
+          ? EdgeInsets.only(left: width/3, right: width/3)
+          : EdgeInsets.only(left: width/8, right: width/8),
+      alignment: Alignment.center,
+      child: Image.asset("assets/images/Zwaar_Logo.png")
+  );
 }

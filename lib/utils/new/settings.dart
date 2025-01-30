@@ -1,22 +1,17 @@
 // A class to store anything that might be useful at any point in the app.
 import 'package:brocast/objects/bro_added.dart';
+import 'package:brocast/objects/new/me.dart';
 
 class Settings {
   static final Settings _instance = Settings._internal();
-
-  bool emojiKeyboardDarkMode = false;
-  String token = "";
-  int broId = -1;
-  String broName = "";
-  String bromotion = "";
-
-  BroAdded? me;
 
   bool loggingIn = false;
   String accessToken = "";
   String refreshToken = "";
   int accessTokenExpiration = 0;
   int refreshTokenExpiration = 0;
+  Me? me;
+  bool emojiKeyboardDarkMode = false;
 
   Settings._internal();
 
@@ -32,59 +27,20 @@ class Settings {
     return this.emojiKeyboardDarkMode;
   }
 
-  setToken(String token) {
-    this.token = token;
-  }
-
-  String getToken() {
-    return this.token;
-  }
-
-  setBroId(int broId) {
-    this.broId = broId;
-  }
-
-  int getBroId() {
-    return this.broId;
-  }
-
-  setBroName(String broName) {
-    if (this.bromotion.isNotEmpty) {
-      me = new BroAdded(this.broId, -1, broName + " " + this.bromotion);
-    }
-    this.broName = broName;
-  }
-
-  String getBroName() {
-    return this.broName;
-  }
-
-  setBromotion(String bromotion) {
-    if (this.broName.isNotEmpty) {
-      me = new BroAdded(this.broId, -1, this.broName + " " + bromotion);
-    }
-    this.bromotion = bromotion;
-  }
-
-  String getBromotion() {
-    return this.bromotion;
-  }
-
-  setMe(BroAdded me) {
-    this.me = me;
-  }
-
-  BroAdded? getMe() {
-    return this.me;
-  }
-
   logout() {
     accessToken = "";
     refreshToken = "";
     accessTokenExpiration = 0;
-    // user = null;
-    // avatar = null;
+    me = null;
     loggingIn = false;
+  }
+
+  setMe(Me me) {
+    this.me = me;
+  }
+
+  Me? getMe() {
+    return me;
   }
 
   setAccessToken(String accessToken) {

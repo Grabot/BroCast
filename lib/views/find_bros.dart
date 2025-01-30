@@ -2,16 +2,14 @@ import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:brocast/objects/bro.dart';
 import 'package:brocast/objects/bro_bros.dart';
 import 'package:brocast/services/search.dart';
-import 'package:brocast/services/settings.dart';
-import 'package:brocast/services/socket_services.dart';
+import 'package:brocast/utils/new/settings.dart';
+import 'package:brocast/utils/new/socket_services.dart';
 import 'package:brocast/utils/bro_list.dart';
 import 'package:brocast/utils/storage.dart';
-import 'package:brocast/utils/utils.dart';
-import 'package:brocast/views/bro_home.dart';
+import 'package:brocast/utils/new/utils.dart';
+import 'package:brocast/views/bro_home/bro_home.dart';
 import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
 import 'package:flutter/material.dart';
-
-import '../services/auth.dart';
 import 'add_broup.dart';
 import 'bro_profile.dart';
 import 'bro_settings.dart';
@@ -160,44 +158,44 @@ class _FindBrosState extends State<FindBros> {
       String broNameSearch = broNameController.text.trimRight();
       String bromotionSearch = bromotionController.text;
 
-      search
-          .searchBro(settings.getToken(), broNameSearch, bromotionSearch)
-          .then((val) {
-        if (!(val is String)) {
-          setState(() {
-            brosToBeAdded = val;
-            if (brosToBeAdded.length == 0) {
-              searchedBroNothingFound = broNameSearch;
-            }
-          });
-          setState(() {
-            isSearching = false;
-          });
-        } else {
-          // token validation probably failed, log in again
-          storage.selectUser().then((user) async {
-            if (user != null) {
-              Auth auth = Auth();
-              auth.signInUser(user).then((value) {
-                if (value) {
-                  // If the user logged in again we will retrieve messages again.
-                  searchBros();
-                } else {
-                  showToastMessage("an unknown error occurred, please try again later");
-                  setState(() {
-                    isSearching = false;
-                  });
-                }
-              });
-            } else {
-              showToastMessage("an unknown error occurred, please try again later");
-              setState(() {
-                isSearching = false;
-              });
-            }
-          });
-        }
-      });
+      // search
+      //     .searchBro(settings.getToken(), broNameSearch, bromotionSearch)
+      //     .then((val) {
+      //   if (!(val is String)) {
+      //     setState(() {
+      //       brosToBeAdded = val;
+      //       if (brosToBeAdded.length == 0) {
+      //         searchedBroNothingFound = broNameSearch;
+      //       }
+      //     });
+      //     setState(() {
+      //       isSearching = false;
+      //     });
+      //   } else {
+      //     // token validation probably failed, log in again
+      //     storage.selectUser().then((user) async {
+      //       if (user != null) {
+      //         Auth auth = Auth();
+      //         auth.signInUser(user).then((value) {
+      //           if (value) {
+      //             // If the user logged in again we will retrieve messages again.
+      //             searchBros();
+      //           } else {
+      //             showToastMessage("an unknown error occurred, please try again later");
+      //             setState(() {
+      //               isSearching = false;
+      //             });
+      //           }
+      //         });
+      //       } else {
+      //         showToastMessage("an unknown error occurred, please try again later");
+      //         setState(() {
+      //           isSearching = false;
+      //         });
+      //       }
+      //     });
+      //   }
+      // });
     }
   }
 
@@ -208,7 +206,7 @@ class _FindBrosState extends State<FindBros> {
             itemCount: brosToBeAdded.length,
             itemBuilder: (context, index) {
               return BroTileSearch(
-                  brosToBeAdded[index], settings.getToken(), addNewBro);
+                  brosToBeAdded[index], "settings.getToken()", addNewBro);
             })
         : Container();
   }
@@ -220,7 +218,7 @@ class _FindBrosState extends State<FindBros> {
         isLoading = true;
       });
       socketServices.socket.emit("message_event_add_bro",
-          {"token": settings.getToken(), "bros_bro_id": addBroId});
+          {"token": "settings.getToken()", "bros_bro_id": addBroId});
       Future.delayed(Duration(milliseconds: 2000)).then((value) {
         // The first time something strange happens where it doesn't work.
         // For this specific case we will wait a bit
@@ -228,7 +226,7 @@ class _FindBrosState extends State<FindBros> {
         // and after that go to the home screen.
         if (mounted) {
           if (clickedNewBro) {
-            broList.searchBros(settings.getToken()).then((value) {
+            broList.searchBros("settings.getToken()").then((value) {
               if (value) {
                 Navigator.pushReplacement(
                     context,

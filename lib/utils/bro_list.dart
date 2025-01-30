@@ -6,7 +6,7 @@ import 'package:brocast/objects/broup.dart';
 import 'package:brocast/objects/chat.dart';
 import 'package:brocast/services/get_bros.dart';
 import 'package:brocast/services/get_broup_bros.dart';
-import 'package:brocast/services/settings.dart';
+import 'package:brocast/utils/new/settings.dart';
 import 'package:brocast/utils/storage.dart';
 import 'package:collection/collection.dart';
 import 'package:collection/collection.dart';
@@ -165,20 +165,20 @@ class BroList {
     List<int> remainingAdmins = new List<int>.from(newBroupA);
     addedBro.removeWhere((broId) => oldBroupP.contains(broId));
 
-    if (addedBro.contains(settings.getBroId())) {
-      // If you are added to a new bro you will be in the addedBro list.
-      // Make an object for yourself as well.
-      BroAdded? me = settings.getMe();
-      BroAdded meBroup = me!.copyBro();
-      if (remainingAdmins.contains(meBroup.id)) {
-        meBroup.setAdmin(true);
-        remainingAdmins.remove(meBroup.id);
-      }
-      meBroup.broupId = broupId;
-      broupBros.add(meBroup);
-      addedBro.remove(settings.getBroId());
-      insertOrUpdateBro(meBroup);
-    }
+    // if (addedBro.contains(settings.getBroId())) {
+    //   // If you are added to a new bro you will be in the addedBro list.
+    //   // Make an object for yourself as well.
+    //   BroAdded? me = settings.getMe();
+    //   BroAdded meBroup = me!.copyBro();
+    //   if (remainingAdmins.contains(meBroup.id)) {
+    //     meBroup.setAdmin(true);
+    //     remainingAdmins.remove(meBroup.id);
+    //   }
+    //   meBroup.broupId = broupId;
+    //   broupBros.add(meBroup);
+    //   addedBro.remove(settings.getBroId());
+    //   insertOrUpdateBro(meBroup);
+    // }
 
     // We look in our list of bros to see if we find the added bros
     // If that is the case than the bro's are BroAdded Bro's
@@ -200,7 +200,7 @@ class BroList {
 
     if (addedBro.length != 0) {
       getBroupBros
-          .getBroupBros(settings.getToken(), broupId, addedBro)
+          .getBroupBros("settings.getToken()", broupId, addedBro)
           .then((value) {
         if (value != "an unknown error has occurred") {
           List<Bro> notAddedBros = value;

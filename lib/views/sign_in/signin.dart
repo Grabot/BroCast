@@ -1,18 +1,33 @@
 import 'dart:io';
 import 'package:back_button_interceptor/back_button_interceptor.dart';
-import 'package:brocast/objects/user.dart';
-import 'package:brocast/services/settings.dart';
+import 'package:brocast/utils/new/settings.dart';
 import 'package:brocast/utils/storage.dart';
+import 'package:brocast/views/bro_home/bro_home.dart';
+import 'package:brocast/views/web_view/web_view_screen.dart';
 import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
+import 'package:url_launcher/url_launcher.dart';
 
-import '../services/auth/auth_service_login.dart';
-import '../services/auth/models/register_request.dart';
-import '../utils/utils.dart';
+import '../../constants/base_url.dart';
+import '../../services/auth/auth_service_login.dart';
+import '../../services/auth/models/login_bro_name_request.dart';
+import '../../services/auth/models/login_email_request.dart';
+import '../../services/auth/models/register_request.dart';
+import '../../utils/new/utils.dart';
+import '../../utils/new/secure_storage.dart';
 
 class SignIn extends StatefulWidget {
-  SignIn({required Key key}) : super(key: key);
+
+  final bool showRegister;
+
+  SignIn({
+    required Key key,
+    required this.showRegister
+  }) : super(key: key);
 
   @override
   _SignInState createState() => _SignInState();
@@ -37,8 +52,13 @@ class _SignInState extends State<SignIn> {
   bool loginBroName = true;
   bool signUpMode = false;
 
+  SecureStorage secureStorage = SecureStorage();
+
   @override
   void initState() {
+    if (widget.showRegister) {
+      signUpMode = true;
+    }
     BackButtonInterceptor.add(myInterceptor);
     bromotionController.addListener(bromotionListener);
 
@@ -48,6 +68,29 @@ class _SignInState extends State<SignIn> {
       emojiKeyboardDarkMode = settings.getEmojiKeyboardDarkMode();
     });
     super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_){
+      fillFields();
+    });
+  }
+
+  fillFields() async {
+    String? broName = await secureStorage.getBroName();
+    String? bromotion = await secureStorage.getBromotion();
+    String? password = await secureStorage.getPassword();
+    String? email = await secureStorage.getEmail();
+    if (broName != null) {
+      broNameController.text = broName;
+    }
+    if (bromotion != null) {
+      bromotionController.text = bromotion;
+    }
+    if (password != null) {
+      passwordController.text = password;
+    }
+    if (email != null) {
+      emailController.text = email;
+    }
   }
 
   bromotionListener() {
@@ -114,29 +157,37 @@ class _SignInState extends State<SignIn> {
     }
   }
 
-  register() {
-    String broNameLogin = broNameController.text.trimRight();
-    String bromotionLogin = bromotionController.text;
-    String passwordLogin = passwordController.text;
-    String emailLogin = emailController.text;
+  goToBroCastHome() {
+    Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+            builder: (context) =>
+                BroCastHome(key: UniqueKey())));
+  }
 
-    print("broNameLogin: $broNameLogin");
-    print("bromotionLogin: $bromotionLogin");
-    print("passwordLogin: $passwordLogin");
-    print("emailLogin: $emailLogin");
+  register() async {
+    String broNameRegister = broNameController.text.trimRight();
+    String bromotionRegister = bromotionController.text;
+    String passwordRegister = passwordController.text;
+    String emailRegister = emailController.text;
+
     // This issue should not be possible, but check if the required fields are filled anyway
-    if (emailLogin == "" || broNameLogin == "" || bromotionLogin == "" || passwordLogin == "") {
+    if (emailRegister == "" || broNameRegister == "" || bromotionRegister == "" || passwordRegister == "") {
       showToastMessage("Please fill in the email, bro name, bromotion and password field");
       return;
     }
     isLoading = true;
     AuthServiceLogin authService = AuthServiceLogin();
-    RegisterRequest registerRequest = RegisterRequest(emailLogin, broNameLogin, bromotionLogin, passwordLogin);
+    RegisterRequest registerRequest = RegisterRequest(emailRegister, broNameRegister, bromotionRegister, passwordRegister);
     authService.getRegister(registerRequest).then((loginResponse) {
       if (loginResponse.getResult()) {
+        // We securely store information locally on the phone
+        secureStorage.setBroName(broNameRegister);
+        secureStorage.setBromotion(bromotionRegister);
+        secureStorage.setPassword(passwordRegister);
+        secureStorage.setEmail(emailRegister);
         isLoading = false;
-        // TODO: move to main screen?
-        setState(() {});
+        goToBroCastHome();
       } else if (!loginResponse.getResult()) {
         showToastMessage(loginResponse.getMessage());
         isLoading = false;
@@ -166,7 +217,46 @@ class _SignInState extends State<SignIn> {
       }
     }
 
-    // signInName(broNameSignup, bromotionSignup, passwordSignup);
+    isLoading = true;
+    AuthServiceLogin authService = AuthServiceLogin();
+    if (loginBroName) {
+      LoginBroNameRequest loginBroNameRequest = LoginBroNameRequest(
+          broNameLogin, bromotionLogin, passwordLogin);
+      authService.getLoginBroName(loginBroNameRequest).then((loginResponse) {
+        if (loginResponse.getResult()) {
+          isLoading = false;
+          // We securely store information locally on the phone
+          secureStorage.setBroName(broNameLogin);
+          secureStorage.setBromotion(bromotionLogin);
+          secureStorage.setPassword(passwordLogin);
+          goToBroCastHome();
+        } else if (!loginResponse.getResult()) {
+          showToastMessage(loginResponse.getMessage());
+          isLoading = false;
+        }
+      }).onError((error, stackTrace) {
+        showToastMessage(error.toString());
+        isLoading = false;
+      });
+    } else {
+      LoginEmailRequest loginEmailRequest = LoginEmailRequest(
+          emailLogin, passwordLogin);
+      authService.getLoginEmail(loginEmailRequest).then((loginResponse) {
+        if (loginResponse.getResult()) {
+          isLoading = false;
+          // We securely store information locally on the phone
+          secureStorage.setEmail(emailLogin);
+          secureStorage.setPassword(passwordLogin);
+          goToBroCastHome();
+        } else if (!loginResponse.getResult()) {
+          showToastMessage(loginResponse.getMessage());
+          isLoading = false;
+        }
+      }).onError((error, stackTrace) {
+        showToastMessage(error.toString());
+        isLoading = false;
+      });
+    }
   }
 
   signInForm() {
@@ -421,8 +511,7 @@ class _SignInState extends State<SignIn> {
                   fontSize: 16,
                   decoration:
                   TextDecoration.underline),
-            )
-                : Text(
+            ) : Text(
               "Register now!",
               style: TextStyle(
                   color: Colors.blue,
@@ -460,6 +549,150 @@ class _SignInState extends State<SignIn> {
     );
   }
 
+  Widget dividerLogin() {
+    return Row(
+        children: [
+          Expanded(
+            child: Container(
+                margin: const EdgeInsets.only(left: 10.0, right: 20.0),
+                child: const Divider(
+                  color: Colors.white,
+                  height: 36,
+                )),
+          ),
+          !signUpMode ? Text(
+            "or login with",
+            style: TextStyle(
+                color: Colors.white,
+                fontSize: 16
+            ),
+          ) : Text(
+            "or register with",
+            style: TextStyle(
+                color: Colors.white,
+                fontSize: 16
+            ),
+          ),
+          Expanded(
+            child: Container(
+                margin: const EdgeInsets.only(left: 20.0, right: 10.0),
+                child: const Divider(
+                  color: Colors.white,
+                  height: 36,
+                )),
+          ),
+        ]
+    );
+  }
+
+  Widget loginAlternatives() {
+    double totalWidth = MediaQuery.of(context).size.width;
+    // Remove the padding from both sides.
+    totalWidth -= 20*2;
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        Column(
+            children: [
+              InkWell(
+                onTap: () {
+                  _handleSignInGoogle();
+                },
+                child: SizedBox(
+                  height: totalWidth/5,
+                  width: totalWidth/5,
+                  child: Image.asset(
+                      "assets/images/google_button.png"
+                  ),
+                ),
+              ),
+              Text(
+                "Google",
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16
+                ),
+              )
+            ]
+        ),
+        const SizedBox(width: 10),
+        Column(
+            children: [
+              InkWell(
+                onTap: () {
+                  _handleSignInApple();
+                },
+                child: SizedBox(
+                  height: totalWidth/5,
+                  width: totalWidth/5,
+                  child: Image.asset(
+                      "assets/images/apple_button.png"
+                  ),
+                ),
+              ),
+              Text(
+                "Apple",
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16
+                ),
+              )
+            ]
+        ),
+        const SizedBox(width: 10),
+        Column(
+          children: [
+            InkWell(
+              onTap: () {
+                final Uri url = Uri.parse(githubLogin);
+                _launchUrl(url);
+              },
+              child: SizedBox(
+                height: totalWidth/5,
+                width: totalWidth/5,
+                child: Image.asset(
+                    "assets/images/github_button.png"
+                ),
+              ),
+            ),
+            Text(
+              "Github",
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16
+              ),
+            )
+          ],
+        ),
+        const SizedBox(width: 10),
+        Column(
+            children: [
+              InkWell(
+                onTap: () {
+                  final Uri url = Uri.parse(redditLogin);
+                  _launchUrl(url);
+                },
+                child: SizedBox(
+                  height: totalWidth/5,
+                  width: totalWidth/5,
+                  child: Image.asset(
+                      "assets/images/reddit_button.png"
+                  ),
+                ),
+              ),
+              Text(
+                "Reddit",
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16
+                ),
+              )
+            ]
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -484,7 +717,7 @@ class _SignInState extends State<SignIn> {
                   child: SingleChildScrollView(
                     reverse: true,
                     child: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 30),
+                      padding: EdgeInsets.symmetric(horizontal: 20),
                       child: Column(
                             children: [
                               Container(
@@ -497,14 +730,18 @@ class _SignInState extends State<SignIn> {
                                 child: Column(
                                   children: [
                                     signUpMode ? registerView() : loginView(),
-                                    SizedBox(height: 40),
+                                    SizedBox(height: 20),
+                                    switchLoginRegister(),
+                                    SizedBox(height: 20),
                                     signInButton(),
                                     SizedBox(height:10),
-                                    switchLoginRegister()
+                                    dividerLogin(),
+                                    SizedBox(height:10),
+                                    loginAlternatives()
                                   ],
                                 ),
                               ),
-                              SizedBox(height: 100),
+                              SizedBox(height: 20),
                             ],
                           ),
                     ),
@@ -521,5 +758,102 @@ class _SignInState extends State<SignIn> {
             ),
           ]),
         );
+  }
+
+  Future<void> _launchUrl(Uri url) async {
+    if (kIsWeb) {
+      if (!await launchUrl(
+          url,
+          webOnlyWindowName: '_self'
+      )) {
+        throw 'Could not launch $url';
+      }
+    } else {
+      // Go to the webview
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  WebViewScreen(
+                      key: UniqueKey(),
+                      fromRegister: signUpMode,
+                      url: url
+                  )));
+    }
+  }
+
+  Future<void> _handleSignInApple() async {
+    String appleLogin = "$appleLoginUrl?response_type=code&client_id=$appleClientId&redirect_uri=$appleRedirectUri&scope=email%20name&state=random_generated_state&response_mode=form_post";
+    Uri url = Uri.parse(appleLogin);
+    Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+            builder: (context) =>
+                WebViewScreen(
+                    key: UniqueKey(),
+                    fromRegister: signUpMode,
+                    url: url
+                )));
+    return;
+  }
+
+  Future<void> _handleSignInGoogle() async {
+
+    isLoading = true;
+    const List<String> scopes = <String>[
+      'email',
+    ];
+
+    GoogleSignIn googleSignIn;
+    if (Platform.isIOS) {
+      // IOS
+      googleSignIn = GoogleSignIn(
+        clientId: clientIdLoginIOS,
+        scopes: scopes,
+      );
+    } else {
+      // Android
+      googleSignIn = GoogleSignIn(
+        scopes: scopes,
+      );
+    }
+
+    String? googleAccessToken;
+    try {
+      print("going to sign in");
+      final GoogleSignInAccount? googleSignInAccount = await googleSignIn.signIn();
+      final GoogleSignInAuthentication googleSignInAuthentication = await googleSignInAccount!.authentication;
+      googleAccessToken = googleSignInAuthentication.accessToken;
+      print("Google access token: $googleAccessToken");
+      if (googleAccessToken == null) {
+        isLoading = false;
+        showToastMessage("Google login failed");
+        return;
+      }
+    } catch (error) {
+      print("google error: $error");
+      isLoading = false;
+      return;
+    }
+
+    AuthServiceLogin().getLoginGoogle(googleAccessToken).then((
+        loginResponse) {
+      if (loginResponse.getResult()) {
+        goToBroCastHome();
+        setState(() {
+          isLoading = false;
+        });
+      } else if (!loginResponse.getResult()) {
+        showToastMessage(loginResponse.getMessage());
+        setState(() {
+          isLoading = false;
+        });
+      }
+    }).onError((error, stackTrace) {
+      showToastMessage(error.toString());
+      setState(() {
+        isLoading = false;
+      });
+    });
   }
 }

@@ -11,8 +11,8 @@ import 'package:back_button_interceptor/back_button_interceptor.dart';
 import '../objects/bro_bros.dart';
 import '../objects/broup.dart';
 import '../objects/chat.dart';
-import '../services/settings.dart';
-import '../services/socket_services.dart';
+import '../utils/new/settings.dart';
+import '../utils/new/socket_services.dart';
 import 'bro_messaging.dart';
 import 'broup_messaging.dart';
 
@@ -119,7 +119,7 @@ class _PreviewPageState extends State<PreviewPage> {
         socketServices.socket.emit(
           "message_broup",
           {
-            "bro_id": settings.getBroId(),
+            // "bro_id": settings.getBroId(),
             "broup_id": widget.chat.id,
             "message": broMessageController.text,
             "text_message": captionMessageController.text,
@@ -130,7 +130,7 @@ class _PreviewPageState extends State<PreviewPage> {
         socketServices.socket.emit(
           "message",
           {
-            "bro_id": settings.getBroId(),
+            // "bro_id": settings.getBroId(),
             "bros_bro_id": widget.chat.id,
             "message": broMessageController.text,
             "text_message": captionMessageController.text,

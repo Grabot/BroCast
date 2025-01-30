@@ -13,7 +13,7 @@ import 'package:flutter/services.dart';
 // import 'package:notification_permissions/notification_permissions.dart';
 import 'package:brocast/constants/route_paths.dart' as routes;
 
-import '../services/settings.dart';
+import 'new/settings.dart';
 
 const String androidChannelId = "custom_sound";
 const String androidChannelName = "Bro notifications";
@@ -91,37 +91,37 @@ class NotificationUtil {
   void notificationNavigate(int id, int isBroup) {
     fromNotification = true;
     Storage storage = Storage();
-    storage.selectChat(id.toString(), isBroup.toString()).then((value) {
-      // When we open a notification we will retrieve the user and set the data
-      // This will be used in the rest of the app.
-      Settings settings = Settings();
-      if (value != null) {
-        storage.selectUser().then((user) async {
-          if (user != null) {
-            settings.setEmojiKeyboardDarkMode(user.getKeyboardDarkMode());
-            settings.setBroId(user.id);
-            settings.setBroName(user.broName);
-            settings.setBromotion(user.bromotion);
-            settings.setToken(user.token);
-
-            Chat chat = value;
-            if (chat.isBroup()) {
-              _navigationService.navigateTo(routes.BroupRoute,
-                  arguments: chat as Broup);
-            } else {
-              _navigationService.navigateTo(routes.BroRoute,
-                  arguments: chat as BroBros);
-            }
-          } else {
-            // We will assume that there is a user, otherwise go to opening
-            _navigationService.navigateTo(routes.OpeningRoute);
-          }
-        });
-      } else {
-        // We will assume that there is a chat, otherwise go to opening
-        _navigationService.navigateTo(routes.OpeningRoute);
-      }
-    });
+    // storage.selectChat(id.toString(), isBroup.toString()).then((value) {
+    //   // When we open a notification we will retrieve the user and set the data
+    //   // This will be used in the rest of the app.
+    //   Settings settings = Settings();
+    //   if (value != null) {
+    //     storage.selectUser().then((user) async {
+    //       if (user != null) {
+    //         settings.setEmojiKeyboardDarkMode(user.getKeyboardDarkMode());
+    //         // settings.setBroId(user.id);
+    //         // settings.setBroName(user.broName);
+    //         // settings.setBromotion(user.bromotion);
+    //         // settings.setToken(user.token);
+    //
+    //         Chat chat = value;
+    //         if (chat.isBroup()) {
+    //           _navigationService.navigateTo(routes.BroupRoute,
+    //               arguments: chat as Broup);
+    //         } else {
+    //           _navigationService.navigateTo(routes.BroRoute,
+    //               arguments: chat as BroBros);
+    //         }
+    //       } else {
+    //         // We will assume that there is a user, otherwise go to opening
+    //         _navigationService.navigateTo(routes.OpeningRoute);
+    //       }
+    //     });
+    //   } else {
+    //     // We will assume that there is a chat, otherwise go to opening
+    //     _navigationService.navigateTo(routes.OpeningRoute);
+    //   }
+    // });
   }
 
   void requestIOSPermissions() {

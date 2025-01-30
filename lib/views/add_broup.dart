@@ -4,12 +4,12 @@ import 'package:brocast/objects/bro_bros.dart';
 import 'package:brocast/objects/chat.dart';
 import 'package:brocast/services/get_bros.dart';
 import 'package:brocast/services/reset_registration.dart';
-import 'package:brocast/services/settings.dart';
-import 'package:brocast/services/socket_services.dart';
+import 'package:brocast/utils/new/settings.dart';
+import 'package:brocast/utils/new/socket_services.dart';
 import 'package:brocast/utils/bro_list.dart';
-import 'package:brocast/utils/utils.dart';
-import 'package:brocast/views/bro_home.dart';
-import 'package:brocast/views/signin.dart';
+import 'package:brocast/utils/new/utils.dart';
+import 'package:brocast/views/bro_home/bro_home.dart';
+import 'package:brocast/views/sign_in/signin.dart';
 import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:back_button_interceptor/back_button_interceptor.dart';
@@ -420,7 +420,7 @@ class _AddBroupState extends State<AddBroup> {
       if (broupValidator.currentState!.validate()) {
         pressedAddBroup = true;
         socketServices.socket.emit("message_event_add_broup", {
-          "token": settings.getToken(),
+          "token": "settings.getToken()",
           "broup_name": broupNameController.text,
           "participants": jsonEncode(participants)
         });

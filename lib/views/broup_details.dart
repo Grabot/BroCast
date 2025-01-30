@@ -7,15 +7,15 @@ import 'package:brocast/objects/chat.dart';
 import 'package:brocast/services/delete_broup.dart';
 import 'package:brocast/services/get_chat.dart';
 import 'package:brocast/services/report_bro.dart';
-import 'package:brocast/services/settings.dart';
-import 'package:brocast/services/socket_services.dart';
+import 'package:brocast/utils/new/settings.dart';
+import 'package:brocast/utils/new/socket_services.dart';
 import 'package:brocast/utils/bro_list.dart';
 import 'package:brocast/utils/storage.dart';
-import 'package:brocast/utils/utils.dart';
+import 'package:brocast/utils/new/utils.dart';
 import 'package:brocast/views/broup_add_participant.dart';
 import "package:flutter/material.dart";
 import 'package:flutter_circle_color_picker/flutter_circle_color_picker.dart';
-import 'bro_home.dart';
+import 'bro_home/bro_home.dart';
 import 'bro_messaging.dart';
 import 'bro_profile.dart';
 import 'bro_settings.dart';
@@ -87,26 +87,26 @@ class _BroupDetailsState extends State<BroupDetails> {
 
     // We retrieved the chat locally, but we will also get it from the server
     // If anything has changed, we can update it locally
-    getChat.getBroup(settings.getBroId(), chat.id).then((value) {
-      if (value is Broup) {
-        List<Bro> broupBros = [];
-        if (value.participants.length != chat.participants.length) {
-          // someone was added(removed( and you didn't get updated, add them now
-          broList.chatChangedCheckForAdded(chat.id, value.getParticipants(),
-              value.getAdmins(), [], broupBros);
-          broList.chatCheckForDBRemoved(chat.id, value.getParticipants());
-        } else {
-          broupBros = chat.getBroupBros();
-          broList.updateBroupBrosAdmins(broupBros, value.getAdmins());
-        }
-        chat = value;
-        chat.setBroupBros(broupBros);
-        chat.unreadMessages = 0;
-        broList.updateChat(chat);
-        storage.updateChat(chat).then((value) {});
-        setState(() {});
-      }
-    });
+    // getChat.getBroup(settings.getBroId(), chat.id).then((value) {
+    //   if (value is Broup) {
+    //     List<Bro> broupBros = [];
+    //     if (value.participants.length != chat.participants.length) {
+    //       // someone was added(removed( and you didn't get updated, add them now
+    //       broList.chatChangedCheckForAdded(chat.id, value.getParticipants(),
+    //           value.getAdmins(), [], broupBros);
+    //       broList.chatCheckForDBRemoved(chat.id, value.getParticipants());
+    //     } else {
+    //       broupBros = chat.getBroupBros();
+    //       broList.updateBroupBrosAdmins(broupBros, value.getAdmins());
+    //     }
+    //     chat = value;
+    //     chat.setBroupBros(broupBros);
+    //     chat.unreadMessages = 0;
+    //     broList.updateChat(chat);
+    //     storage.updateChat(chat).then((value) {});
+    //     setState(() {});
+    //   }
+    // });
 
     chatDescriptionController.text = chat.chatDescription;
     chatAliasController.text = chat.alias;
@@ -121,12 +121,12 @@ class _BroupDetailsState extends State<BroupDetails> {
   checkMeAdmin() {
     meAdmin = false;
     for (int adminId in chat.getAdmins()) {
-      if (adminId == settings.getBroId()) {
-        // We are admin
-        setState(() {
-          meAdmin = true;
-        });
-      }
+      // if (adminId == settings.getBroId()) {
+      //   // We are admin
+      //   setState(() {
+      //     meAdmin = true;
+      //   });
+      // }
     }
   }
 
@@ -199,8 +199,8 @@ class _BroupDetailsState extends State<BroupDetails> {
     socketServices.socket.on('message_event_add_bro_failed', (data) {
       broAddingFailed();
     });
-    socketServices.socket.emit("message_event_add_bro",
-        {"token": settings.getToken(), "bros_bro_id": addBroId});
+    // socketServices.socket.emit("message_event_add_bro",
+    //     {"token": settings.getToken(), "bros_bro_id": addBroId});
   }
 
   broWasAdded(data) {
@@ -372,7 +372,7 @@ class _BroupDetailsState extends State<BroupDetails> {
   void updateDescription() {
     if (previousDescription != chatDescriptionController.text) {
       socketServices.socket.emit("message_event_change_broup_details", {
-        "token": settings.getToken(),
+        "token": "settings.getToken()",
         "broup_id": chat.id,
         "description": chatDescriptionController.text
       });
@@ -391,7 +391,7 @@ class _BroupDetailsState extends State<BroupDetails> {
   void updateAlias() {
     if (previousAlias != chatAliasController.text) {
       socketServices.socket.emit("message_event_change_broup_alias", {
-        "token": settings.getToken(),
+        "token": "settings.getToken()",
         "broup_id": chat.id,
         "alias": chatAliasController.text
       });
@@ -418,7 +418,7 @@ class _BroupDetailsState extends State<BroupDetails> {
     if (currentColor != chat.getColor()) {
       String newColour = currentColor.value.toRadixString(16).substring(2, 8);
       socketServices.socket.emit("message_event_change_broup_colour", {
-        "token": settings.getToken(),
+        "token": "settings.getToken()",
         "broup_id": chat.id,
         "colour": newColour
       });
@@ -451,9 +451,9 @@ class _BroupDetailsState extends State<BroupDetails> {
           if (bro.id == data["old_admin"]) {
             bro.setAdmin(false);
             chat.dismissAdmin(data["old_admin"]);
-            if (settings.getBroId() == data["old_admin"]) {
-              meAdmin = false;
-            }
+            // if (settings.getBroId() == data["old_admin"]) {
+            //   meAdmin = false;
+            // }
             break;
           }
         }
@@ -867,11 +867,11 @@ class _BroupDetailsState extends State<BroupDetails> {
   }
 
   void exitBroup() {
-    socketServices.socket.emit("message_event_change_broup_remove_bro", {
-      "token": settings.getToken(),
-      "broup_id": chat.id,
-      "bro_id": settings.getBroId()
-    });
+    // socketServices.socket.emit("message_event_change_broup_remove_bro", {
+    //   "token": settings.getToken(),
+    //   "broup_id": chat.id,
+    //   "bro_id": settings.getBroId()
+    // });
     Navigator.of(context).pop();
   }
 
@@ -955,46 +955,46 @@ class _BroupDetailsState extends State<BroupDetails> {
   }
 
   void deleteTheBroup() {
-    deleteBroup.deleteBroup(settings.getToken(), chat.id).then((val) {
-      if (val is Broup) {
-        Broup deletedBroup = val;
-        broList.deleteChat(deletedBroup);
-        storage.deleteChat(deletedBroup).then((value) {
-          Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => BroCastHome(key: UniqueKey())));
-        });
-      } else {
-        if (val == "an unknown error has occurred") {
-          showToastMessage("An unknown error has occurred");
-        } else {
-          showToastMessage("There was an error with the server, we apologize for the inconvenience.");
-        }
-      }
-    });
+    // deleteBroup.deleteBroup(settings.getToken(), chat.id).then((val) {
+    //   if (val is Broup) {
+    //     Broup deletedBroup = val;
+    //     broList.deleteChat(deletedBroup);
+    //     storage.deleteChat(deletedBroup).then((value) {
+    //       Navigator.pushReplacement(
+    //           context,
+    //           MaterialPageRoute(
+    //               builder: (context) => BroCastHome(key: UniqueKey())));
+    //     });
+    //   } else {
+    //     if (val == "an unknown error has occurred") {
+    //       showToastMessage("An unknown error has occurred");
+    //     } else {
+    //       showToastMessage("There was an error with the server, we apologize for the inconvenience.");
+    //     }
+    //   }
+    // });
     Navigator.of(context).pop();
   }
 
   void reportTheBroup() {
-    reportBro.reportBroup(settings.getToken(), chat.id).then((val) {
-      if (val is Broup) {
-        Broup broupToRemove = val;
-        broList.deleteChat(broupToRemove);
-        storage.deleteChat(broupToRemove).then((value) {
-          Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => BroCastHome(key: UniqueKey())));
-        });
-      } else {
-        if (val == "an unknown error has occurred") {
-          showToastMessage("An unknown error has occurred");
-        } else {
-          showToastMessage("There was an error with the server, we apologize for the inconvenience.");
-        }
-      }
-    });
+    // reportBro.reportBroup(settings.getToken(), chat.id).then((val) {
+    //   if (val is Broup) {
+    //     Broup broupToRemove = val;
+    //     broList.deleteChat(broupToRemove);
+    //     storage.deleteChat(broupToRemove).then((value) {
+    //       Navigator.pushReplacement(
+    //           context,
+    //           MaterialPageRoute(
+    //               builder: (context) => BroCastHome(key: UniqueKey())));
+    //     });
+    //   } else {
+    //     if (val == "an unknown error has occurred") {
+    //       showToastMessage("An unknown error has occurred");
+    //     } else {
+    //       showToastMessage("There was an error with the server, we apologize for the inconvenience.");
+    //     }
+    //   }
+    // });
     Navigator.of(context).pop();
   }
 
@@ -1084,22 +1084,22 @@ class _BroupDetailsState extends State<BroupDetails> {
   }
 
   void unmuteTheBroup() {
-    socketServices.socket.emit("message_event_change_broup_mute", {
-      "token": settings.getToken(),
-      "broup_id": chat.id,
-      "bro_id": settings.getBroId(),
-      "mute": -1
-    });
+    // socketServices.socket.emit("message_event_change_broup_mute", {
+    //   "token": settings.getToken(),
+    //   "broup_id": chat.id,
+    //   "bro_id": settings.getBroId(),
+    //   "mute": -1
+    // });
     Navigator.of(context).pop();
   }
 
   void muteTheBroup(int selectedRadio) {
-    socketServices.socket.emit("message_event_change_broup_mute", {
-      "token": settings.getToken(),
-      "broup_id": chat.id,
-      "bro_id": settings.getBroId(),
-      "mute": selectedRadio
-    });
+    // socketServices.socket.emit("message_event_change_broup_mute", {
+    //   "token": settings.getToken(),
+    //   "broup_id": chat.id,
+    //   "bro_id": settings.getBroId(),
+    //   "mute": selectedRadio
+    // });
     Navigator.of(context).pop();
   }
 }
@@ -1130,31 +1130,31 @@ class _BroTileState extends State<BroTile> {
   var _tapPosition;
 
   selectBro(BuildContext context) {
-    if (widget.bro.id != settings.getBroId()) {
-      showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(actions: <Widget>[
-              widget.userAdmin
-                  ? getPopupItemsAdmin(
-                      context,
-                      widget.broName,
-                      widget.bro,
-                      widget.broupId,
-                      true,
-                      settings.getToken(),
-                      widget.addNewBro)
-                  : getPopupItemsNormal(
-                      context,
-                      widget.broName,
-                      widget.bro,
-                      widget.broupId,
-                      true,
-                      settings.getToken(),
-                      widget.addNewBro)
-            ]);
-          });
-    }
+    // if (widget.bro.id != settings.getBroId()) {
+    //   showDialog(
+    //       context: context,
+    //       builder: (BuildContext context) {
+    //         return AlertDialog(actions: <Widget>[
+    //           widget.userAdmin
+    //               ? getPopupItemsAdmin(
+    //                   context,
+    //                   widget.broName,
+    //                   widget.bro,
+    //                   widget.broupId,
+    //                   true,
+    //                   settings.getToken(),
+    //                   widget.addNewBro)
+    //               : getPopupItemsNormal(
+    //                   context,
+    //                   widget.broName,
+    //                   widget.bro,
+    //                   widget.broupId,
+    //                   true,
+    //                   settings.getToken(),
+    //                   widget.addNewBro)
+    //         ]);
+    //       });
+    // }
   }
 
   @override
@@ -1197,27 +1197,27 @@ class _BroTileState extends State<BroTile> {
   }
 
   void _showBroupPopupMenu() {
-    if (widget.bro.id != settings.getBroId()) {
-      final RenderBox overlay =
-          Overlay.of(context)!.context.findRenderObject() as RenderBox;
-
-      showMenu(
-              context: context,
-              items: [
-                BroupParticipantPopup(
-                    key: UniqueKey(),
-                    broName: widget.broName,
-                    bro: widget.bro,
-                    broupId: widget.broupId,
-                    userAdmin: widget.userAdmin,
-                    addNewBro: widget.addNewBro)
-              ],
-              position: RelativeRect.fromRect(_tapPosition & const Size(40, 40),
-                  Offset.zero & overlay.size))
-          .then((int? delta) {
-        return;
-      });
-    }
+    // if (widget.bro.id != settings.getBroId()) {
+    //   final RenderBox overlay =
+    //       Overlay.of(context)!.context.findRenderObject() as RenderBox;
+    //
+    //   showMenu(
+    //           context: context,
+    //           items: [
+    //             BroupParticipantPopup(
+    //                 key: UniqueKey(),
+    //                 broName: widget.broName,
+    //                 bro: widget.bro,
+    //                 broupId: widget.broupId,
+    //                 userAdmin: widget.userAdmin,
+    //                 addNewBro: widget.addNewBro)
+    //           ],
+    //           position: RelativeRect.fromRect(_tapPosition & const Size(40, 40),
+    //               Offset.zero & overlay.size))
+    //       .then((int? delta) {
+    //     return;
+    //   });
+    // }
   }
 
   void _storePosition(TapDownDetails details) {
@@ -1258,9 +1258,9 @@ class BroupParticipantPopupState extends State<BroupParticipantPopup> {
   Widget build(BuildContext context) {
     return widget.userAdmin
         ? getPopupItemsAdmin(context, widget.broName, widget.bro,
-            widget.broupId, false, settings.getToken(), widget.addNewBro)
+            widget.broupId, false, "settings.getToken()", widget.addNewBro)
         : getPopupItemsNormal(context, widget.broName, widget.bro,
-            widget.broupId, false, settings.getToken(), widget.addNewBro);
+            widget.broupId, false,"settings.getToken()", widget.addNewBro);
   }
 }
 

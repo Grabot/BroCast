@@ -1,29 +1,26 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:brocast/objects/bro_bros.dart';
 import 'package:brocast/objects/chat.dart';
 import 'package:brocast/objects/message.dart';
 import 'package:brocast/services/get_chat.dart';
 import 'package:brocast/services/get_messages.dart';
-import 'package:brocast/services/settings.dart';
-import 'package:brocast/services/socket_services.dart';
+import 'package:brocast/utils/new/settings.dart';
+import 'package:brocast/utils/new/socket_services.dart';
 import 'package:brocast/utils/bro_list.dart';
 import 'package:brocast/utils/notification_util.dart';
 import 'package:brocast/utils/storage.dart';
-import 'package:brocast/utils/utils.dart';
-import 'package:brocast/views/bro_home.dart';
+import 'package:brocast/utils/new/utils.dart';
+import 'package:brocast/views/bro_home/bro_home.dart';
 import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-// import 'package:gallery_saver/gallery_saver.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:intl/intl.dart';
 import 'package:linkable/linkable.dart';
 import 'package:camera/camera.dart';
-import '../services/auth.dart';
 import 'bro_chat_details.dart';
 import 'bro_profile.dart';
 import 'bro_settings.dart';
@@ -87,24 +84,24 @@ class _BroMessagingState extends State<BroMessaging> {
       // We will assume that, either via notification or just opening the chat,
       // the user data is correctly set
       getMessages(amountViewed);
-      initBroMessagingSocket(settings.getBroId(), chat.id);
+      // initBroMessagingSocket(settings.getBroId(), chat.id);
     });
 
     // We retrieved the chat locally, but we will also get it from the server
     // If anything has changed, we can update it locally
-    getChat.getChat(settings.getBroId(), chat.id).then((value) {
-      if (value is BroBros) {
-        chat = value;
-        chat.unreadMessages = 0;
-        if (broList.bros.isEmpty) {
-          broList.fillBrosFromDB();
-        } else {
-          broList.updateChat(chat);
-        }
-        storage.updateChat(chat).then((value) {});
-        setState(() {});
-      }
-    });
+    // getChat.getChat(settings.getBroId(), chat.id).then((value) {
+    //   if (value is BroBros) {
+    //     chat = value;
+    //     chat.unreadMessages = 0;
+    //     if (broList.bros.isEmpty) {
+    //       broList.fillBrosFromDB();
+    //     } else {
+    //       broList.updateChat(chat);
+    //     }
+    //     storage.updateChat(chat).then((value) {});
+    //     setState(() {});
+    //   }
+    // });
 
     BackButtonInterceptor.add(myInterceptor);
 
@@ -165,10 +162,10 @@ class _BroMessagingState extends State<BroMessaging> {
   }
 
   leaveRoom() {
-    socketServices.socket.emit(
-      "leave",
-      {"bro_id": settings.getBroId(), "bros_bro_id": chat.id},
-    );
+    // socketServices.socket.emit(
+    //   "leave",
+    //   {"bro_id": settings.getBroId(), "bros_bro_id": chat.id},
+    // );
   }
 
   @override
@@ -204,50 +201,50 @@ class _BroMessagingState extends State<BroMessaging> {
     bool gotServer = false;
     bool gotLocalDB = false;
     // get messages from the server
-    get.getMessages(settings.getToken(), chat.id).then((val) {
-      if (!(val is String)) {
-        gotServer = true;
-        List<Message> messes = val;
-        if (messes.length != 0) {
-          messagesServer = messes;
-        }
-        storeMessages(messes);
-      } else {
-        gotServer = false;
-        // token validation probably failed, log in again
-        storage.selectUser().then((user) async {
-          if (user != null) {
-            Auth auth = Auth();
-            auth.signInUser(user).then((value) {
-              if (value) {
-                // If the user logged in again we will retrieve messages again.
-                getMessages(page);
-              }
-            });
-          }
-        });
-      }
-
-      if (gotLocalDB && gotServer) {
-        mergeMessages(messagesServer + messagesDB);
-        // Set date tiles, but only if all the messages are retrieved
-        setState(() {
-          if (this.messages.length != 0) {
-            setDateTiles();
-          }
-        });
-        chat.unreadMessages = 0;
-      }
-      if (gotServer) {
-        socketServices.socket.emit(
-          "message_read",
-          {"bro_id": settings.getBroId(), "bros_bro_id": chat.id},
-        );
-      }
-      setState(() {
-        isLoading = false;
-      });
-    });
+    // get.getMessages(settings.getToken(), chat.id).then((val) {
+    //   if (!(val is String)) {
+    //     gotServer = true;
+    //     List<Message> messes = val;
+    //     if (messes.length != 0) {
+    //       messagesServer = messes;
+    //     }
+    //     storeMessages(messes);
+    //   } else {
+    //     gotServer = false;
+    //     // token validation probably failed, log in again
+    //     storage.selectUser().then((user) async {
+    //       if (user != null) {
+    //         Auth auth = Auth();
+    //         auth.signInUser(user).then((value) {
+    //           if (value) {
+    //             // If the user logged in again we will retrieve messages again.
+    //             getMessages(page);
+    //           }
+    //         });
+    //       }
+    //     });
+    //   }
+    //
+    //   if (gotLocalDB && gotServer) {
+    //     mergeMessages(messagesServer + messagesDB);
+    //     // Set date tiles, but only if all the messages are retrieved
+    //     setState(() {
+    //       if (this.messages.length != 0) {
+    //         setDateTiles();
+    //       }
+    //     });
+    //     chat.unreadMessages = 0;
+    //   }
+    //   if (gotServer) {
+    //     socketServices.socket.emit(
+    //       "message_read",
+    //       {"bro_id": settings.getBroId(), "bros_bro_id": chat.id},
+    //     );
+    //   }
+    //   setState(() {
+    //     isLoading = false;
+    //   });
+    // });
     // But also load what you have from your local database
     storage.fetchAllMessages(chat.id, 0, 0).then((val) {
       // Limit set to 50. If it retrieves less it means that it can't and all the messages have been retrieved.
@@ -477,7 +474,8 @@ class _BroMessagingState extends State<BroMessaging> {
       // We set the id to be "-1". For date tiles it is "0", these will be filtered.
       Message mes = new Message(
           -1,
-          settings.getBroId(),
+          // settings.getBroId(),
+          0,
           message,
           textMessage,
           DateTime.now().toUtc().toString(),
@@ -492,7 +490,7 @@ class _BroMessagingState extends State<BroMessaging> {
       socketServices.socket.emit(
         "message",
         {
-          "bro_id": settings.getBroId(),
+          // "bro_id": settings.getBroId(),
           "bros_bro_id": chat.id,
           "message": message,
           "text_message": textMessage
@@ -512,15 +510,15 @@ class _BroMessagingState extends State<BroMessaging> {
   }
 
   updateMessages(Message message) {
-    if (!message.isInformation() && message.senderId == settings.getBroId() && message.data == null) {
-      // We added it immediately as a placeholder.
-      // When we get it from the server we add it for real and remove the placeholder
-      this.messages.removeAt(0);
-    }
-    socketServices.socket.emit(
-      "message_read",
-      {"bro_id": settings.getBroId(), "bros_bro_id": chat.id},
-    );
+    // if (!message.isInformation() && message.senderId == settings.getBroId() && message.data == null) {
+    //   // We added it immediately as a placeholder.
+    //   // When we get it from the server we add it for real and remove the placeholder
+    //   this.messages.removeAt(0);
+    // }
+    // socketServices.socket.emit(
+    //   "message_read",
+    //   {"bro_id": settings.getBroId(), "bros_bro_id": chat.id},
+    // );
     updateDateTiles(message);
     setState(() {
       this.messages.insert(0, message);
@@ -566,7 +564,8 @@ class _BroMessagingState extends State<BroMessaging> {
               return MessageTile(
                   key: UniqueKey(),
                   message: messages[index],
-                  myMessage: messages[index].senderId == settings.getBroId());
+                  // myMessage: messages[index].senderId == settings.getBroId());
+                  myMessage: messages[index].senderId == 0);
             })
         : Container();
   }

@@ -5,15 +5,15 @@ import 'package:brocast/services/block_bro.dart';
 import 'package:brocast/services/get_chat.dart';
 import 'package:brocast/services/remove_bro.dart';
 import 'package:brocast/services/report_bro.dart';
-import 'package:brocast/services/settings.dart';
-import 'package:brocast/services/socket_services.dart';
+import 'package:brocast/utils/new/settings.dart';
+import 'package:brocast/utils/new/socket_services.dart';
 import 'package:brocast/utils/bro_list.dart';
 import 'package:brocast/utils/storage.dart';
-import 'package:brocast/utils/utils.dart';
+import 'package:brocast/utils/new/utils.dart';
 import "package:flutter/material.dart";
 import 'package:flutter_circle_color_picker/flutter_circle_color_picker.dart';
 
-import 'bro_home.dart';
+import 'bro_home/bro_home.dart';
 import 'bro_messaging.dart';
 import 'bro_profile.dart';
 import 'bro_settings.dart';
@@ -73,15 +73,15 @@ class _BroChatDetailsState extends State<BroChatDetails> {
 
     // We retrieved the chat locally, but we will also get it from the server
     // If anything has changed, we can update it locally
-    getChat.getChat(settings.getBroId(), chat.id).then((value) {
-      if (value is BroBros) {
-        chat = value;
-        chat.unreadMessages = 0;
-        broList.updateChat(chat);
-        storage.updateChat(chat).then((value) {});
-        setState(() {});
-      }
-    });
+    // getChat.getChat(settings.getBroId(), chat.id).then((value) {
+    //   if (value is BroBros) {
+    //     chat = value;
+    //     chat.unreadMessages = 0;
+    //     broList.updateChat(chat);
+    //     storage.updateChat(chat).then((value) {});
+    //     setState(() {});
+    //   }
+    // });
 
     initBroChatDetailsSockets();
 
@@ -256,7 +256,7 @@ class _BroChatDetailsState extends State<BroChatDetails> {
   void updateDescription() {
     if (previousDescription != chatDescriptionController.text) {
       socketServices.socket.emit("message_event_change_chat_details", {
-        "token": settings.getToken(),
+        "token": "settings.getToken()",
         "bros_bro_id": chat.id,
         "description": chatDescriptionController.text
       });
@@ -275,7 +275,7 @@ class _BroChatDetailsState extends State<BroChatDetails> {
   void updateAlias() {
     if (previousAlias != chatAliasController.text) {
       socketServices.socket.emit("message_event_change_chat_alias", {
-        "token": settings.getToken(),
+        "token": "settings.getToken()",
         "bros_bro_id": chat.id,
         "alias": chatAliasController.text
       });
@@ -304,7 +304,7 @@ class _BroChatDetailsState extends State<BroChatDetails> {
     if (currentColor != chat.getColor()) {
       String newColour = currentColor.value.toRadixString(16).substring(2, 8);
       socketServices.socket.emit("message_event_change_chat_colour", {
-        "token": settings.getToken(),
+        "token": "settings.getToken()",
         "bros_bro_id": chat.id,
         "colour": newColour
       });
@@ -315,7 +315,7 @@ class _BroChatDetailsState extends State<BroChatDetails> {
   }
 
   void reportTheBro() {
-    reportBro.reportBro(settings.getToken(), chat.id).then((val) {
+    reportBro.reportBro("settings.getToken()", chat.id).then((val) {
       if (val is BroBros) {
         BroBros broToRemove = val;
         storage.deleteChat(broToRemove).then((value) {
@@ -336,7 +336,7 @@ class _BroChatDetailsState extends State<BroChatDetails> {
   }
 
   void removeTheBro() {
-    removeBro.removeBro(settings.getToken(), chat.id).then((val) {
+    removeBro.removeBro("settings.getToken()", chat.id).then((val) {
       // De bro moet verwijderd worden!
       if (val is BroBros) {
         BroBros broToRemove = val;
@@ -359,7 +359,7 @@ class _BroChatDetailsState extends State<BroChatDetails> {
   }
 
   void blockTheBro(bool blocked) {
-    blockBro.blockBro(settings.getToken(), chat.id, blocked).then((val) {
+    blockBro.blockBro("settings.getToken()", chat.id, blocked).then((val) {
       if (val is BroBros) {
         setState(() {
           this.chat = val;
@@ -920,9 +920,10 @@ class _BroChatDetailsState extends State<BroChatDetails> {
 
   void unmuteTheChat() {
     socketServices.socket.emit("message_event_change_chat_mute", {
-      "token": settings.getToken(),
+      "token": "settings.getToken()",
       "bros_bro_id": chat.id,
-      "bro_id": settings.getBroId(),
+      // "bro_id": settings.getBroId(),
+      "bro_id": 0,
       "mute": -1
     });
     Navigator.of(context).pop();
@@ -930,9 +931,10 @@ class _BroChatDetailsState extends State<BroChatDetails> {
 
   void muteTheChat(int selectedRadio) {
     socketServices.socket.emit("message_event_change_chat_mute", {
-      "token": settings.getToken(),
+      "token": "settings.getToken()",
       "bros_bro_id": chat.id,
-      "bro_id": settings.getBroId(),
+      // "bro_id": settings.getBroId(),
+      "bro_id": 0,
       "mute": selectedRadio
     });
     Navigator.of(context).pop();

@@ -1,14 +1,15 @@
 
 
+import '../../../objects/new/me.dart';
+
 class LoginResponse {
   late bool result;
   late String message;
   String? accessToken;
   String? refreshToken;
-  // User? user;
+  Me? me;
 
-  // LoginResponse(this.result, this.message, this.accessToken, this.refreshToken, this.user);
-  LoginResponse(this.result, this.message, this.accessToken, this.refreshToken);
+  LoginResponse(this.result, this.message, this.accessToken, this.refreshToken, this.me);
 
   bool getResult() {
     return result;
@@ -26,9 +27,9 @@ class LoginResponse {
     return refreshToken;
   }
 
-  // User? getUser() {
-  //   return user;
-  // }
+  Me? getMe() {
+    return me;
+  }
 
   LoginResponse.fromJson(Map<String, dynamic> json) {
     if (json.containsKey("result") &&
@@ -38,9 +39,9 @@ class LoginResponse {
       if (result) {
         accessToken = json["access_token"];
         refreshToken = json["refresh_token"];
-        if (json.containsKey("user")) {
-          Map<String, dynamic> userJson = json["user"];
-          // user = User.fromJson(userJson);
+        if (json.containsKey("bro")) {
+          Map<String, dynamic> userJson = json["bro"];
+          me = Me.fromJson(userJson);
         }
       }
     }

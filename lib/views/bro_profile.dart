@@ -1,10 +1,9 @@
 import 'package:back_button_interceptor/back_button_interceptor.dart';
-import 'package:brocast/objects/user.dart';
-import 'package:brocast/services/settings.dart';
-import 'package:brocast/services/socket_services.dart';
+import 'package:brocast/utils/new/settings.dart';
+import 'package:brocast/utils/new/socket_services.dart';
 import 'package:brocast/utils/storage.dart';
-import 'package:brocast/utils/utils.dart';
-import 'package:brocast/views/bro_home.dart';
+import 'package:brocast/utils/new/utils.dart';
+import 'package:brocast/views/bro_home/bro_home.dart';
 import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
 import "package:flutter/material.dart";
 import 'bro_settings.dart';
@@ -38,8 +37,6 @@ class _BroProfileState extends State<BroProfile> {
 
   late Storage storage;
 
-  late User currentUser;
-
   @override
   void initState() {
     super.initState();
@@ -49,15 +46,15 @@ class _BroProfileState extends State<BroProfile> {
 
     storage = Storage();
 
-    currentUser = new User(-1, "", "", "", "", "", 0, 0);
-    storage.selectUser().then((user) {
-      if (user != null) {
-        currentUser = user;
-        bromotionChangeController.text = user.bromotion;
-        oldPasswordController.text = user.password;
-        setState(() {});
-      }
-    });
+    // currentUser = new User(-1, "", "", "", "", "", 0, 0);
+    // storage.selectUser().then((user) {
+    //   if (user != null) {
+    //     currentUser = user;
+    //     bromotionChangeController.text = user.bromotion;
+    //     oldPasswordController.text = user.password;
+    //     setState(() {});
+    //   }
+    // });
 
     BackButtonInterceptor.add(myInterceptor);
   }
@@ -101,12 +98,12 @@ class _BroProfileState extends State<BroProfile> {
   void onChangePasswordSuccess() {
     showToastMessage("password changed successfully");
     broPassword = newPasswordController2.text;
-    currentUser.password = broPassword;
-    storage.updateUser(currentUser).then((value) {
-      oldPasswordController.text = broPassword;
-      newPasswordController1.text = "";
-      newPasswordController2.text = "";
-    });
+    // currentUser.password = broPassword;
+    // storage.updateUser(currentUser).then((value) {
+    //   oldPasswordController.text = broPassword;
+    //   newPasswordController1.text = "";
+    //   newPasswordController2.text = "";
+    // });
   }
 
   void onChangePasswordFailed() {
@@ -119,22 +116,22 @@ class _BroProfileState extends State<BroProfile> {
 
   void onChangeBromotionSuccess() {
     showToastMessage("bromotion changed successfully");
-    currentUser.bromotion = bromotionChangeController.text;
-    settings.setBromotion(currentUser.bromotion);
-    storage.updateUser(currentUser).then((value) {});
+    // currentUser.bromotion = bromotionChangeController.text;
+    // // settings.setBromotion(currentUser.bromotion);
+    // storage.updateUser(currentUser).then((value) {});
   }
 
   void onChangeBromotionFailedExists() {
     showToastMessage("BroName bromotion combination exists, please pick a different bromotion");
     setState(() {
-      bromotionChangeController.text = currentUser.bromotion;
+      // bromotionChangeController.text = currentUser.bromotion;
     });
   }
 
   void onChangeBromotionFailedUnknown() {
     showToastMessage("an unknown Error has occurred");
     setState(() {
-      bromotionChangeController.text = currentUser.bromotion;
+      // bromotionChangeController.text = currentUser.bromotion;
     });
   }
 
@@ -148,7 +145,7 @@ class _BroProfileState extends State<BroProfile> {
   void onSavePassword() {
     if (passwordFormValidator.currentState!.validate()) {
       socketServices.socket.emit("password_change", {
-        "token": settings.getToken(),
+        "token": "settings.getToken()",
         "password": newPasswordController1.text
       });
       setState(() {
@@ -160,7 +157,7 @@ class _BroProfileState extends State<BroProfile> {
   void onSaveBromotion() {
     if (bromotionValidator.currentState!.validate()) {
       socketServices.socket.emit("bromotion_change", {
-        "token": settings.getToken(),
+        "token": "settings.getToken()",
         "bromotion": bromotionChangeController.text
       });
       setState(() {
@@ -272,7 +269,8 @@ class _BroProfileState extends State<BroProfile> {
                   Container(
                       alignment: Alignment.center,
                       child: Text(
-                        "${currentUser.broName}",
+                        // "${currentUser.broName}",
+                        "",
                         style: TextStyle(color: Colors.white, fontSize: 25),
                       )),
                   SizedBox(height: 20),

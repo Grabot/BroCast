@@ -35,7 +35,7 @@ class RegisterRequest {
     this.bromotion = bromotion;
   }
 
-  String getBroMotion() {
+  String getBromotion() {
     return bromotion;
   }
 

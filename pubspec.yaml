@@ -49,6 +49,9 @@ dependencies:
   dio: ^5.7.0
   flutter_secure_storage: ^9.2.4
   jwt_decode: ^0.3.1
+  webview_flutter: ^4.10.0
+  sign_in_with_apple: ^6.1.4
+  google_sign_in: ^6.2.2
 
 dev_dependencies:
   flutter_test:
@@ -81,6 +84,11 @@ flutter:
     - assets/images/icon-brocast.png
     - assets/images/brocast_transparent.png
     - assets/images/res_bro_icon.png
+    - assets/images/Zwaar_Logo.png
+    - assets/images/github_button.png
+    - assets/images/google_button.png
+    - assets/images/apple_button.png
+    - assets/images/reddit_button.png
     - assets/sound/res_brodio.m4a
 
   # An image asset can refer to one or more resolution-specific "variants", see

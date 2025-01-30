@@ -1,9 +1,9 @@
 import 'package:back_button_interceptor/back_button_interceptor.dart';
-import 'package:brocast/services/settings.dart';
-import 'package:brocast/services/socket_services.dart';
+import 'package:brocast/utils/new/settings.dart';
+import 'package:brocast/utils/new/socket_services.dart';
 import 'package:brocast/utils/storage.dart';
-import 'package:brocast/utils/utils.dart';
-import 'package:brocast/views/bro_home.dart';
+import 'package:brocast/utils/new/utils.dart';
+import 'package:brocast/views/bro_home/bro_home.dart';
 import "package:flutter/material.dart";
 import 'package:app_settings/app_settings.dart';
 import 'bro_profile.dart';
@@ -47,13 +47,13 @@ class _BroSettingsState extends State<BroSettings> {
   }
 
   void toggledEmojiKeyboardDarkMode(darkValue) {
-    storage.selectUser().then((value) {
-      if (value != null) {
-        // This has to be true, otherwise he couldn't have logged in!
-        value.keyboardDarkMode = darkValue ? 1 : 0;
-        storage.updateUser(value).then((value) {});
-      }
-    });
+    // storage.selectUser().then((value) {
+    //   if (value != null) {
+    //     // This has to be true, otherwise he couldn't have logged in!
+    //     value.keyboardDarkMode = darkValue ? 1 : 0;
+    //     storage.updateUser(value).then((value) {});
+    //   }
+    // });
     settings.setEmojiKeyboardDarkMode(darkValue);
     setState(() {
       toggleSwitchKeyboard = darkValue;

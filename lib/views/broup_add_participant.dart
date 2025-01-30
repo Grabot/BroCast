@@ -3,13 +3,13 @@ import 'package:brocast/objects/bro_added.dart';
 import 'package:brocast/objects/bro_bros.dart';
 import 'package:brocast/objects/broup.dart';
 import 'package:brocast/objects/chat.dart';
-import 'package:brocast/services/settings.dart';
-import 'package:brocast/services/socket_services.dart';
+import 'package:brocast/utils/new/settings.dart';
+import 'package:brocast/utils/new/socket_services.dart';
 import 'package:brocast/utils/bro_list.dart';
-import 'package:brocast/utils/utils.dart';
+import 'package:brocast/utils/new/utils.dart';
 import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
 import 'package:flutter/material.dart';
-import 'bro_home.dart';
+import 'bro_home/bro_home.dart';
 import 'bro_profile.dart';
 import 'bro_settings.dart';
 import 'broup_details.dart';
@@ -460,7 +460,7 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> {
     broToBeAddedToBroup = new BroAdded(broBros.id, chat.id, broBros.chatName);
     newBroToAdd = broBros.id;
     socketServices.socket.emit("message_event_add_bro_to_broup", {
-      'token': settings.getToken(),
+      'token': "settings.getToken()",
       'broup_id': chat.id,
       'bro_id': broBros.id
     });

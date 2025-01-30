@@ -5,7 +5,6 @@ import 'package:brocast/objects/bro_not_added.dart';
 import 'package:brocast/objects/broup.dart';
 import 'package:brocast/objects/chat.dart';
 import 'package:brocast/objects/message.dart';
-import 'package:brocast/objects/user.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
@@ -187,36 +186,36 @@ class Storage {
     );
   }
 
-  Future<int> addUser(User user) async {
-    Database database = await this.database;
-    return database.insert(
-      'User',
-      user.toDbMap(),
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
-  }
+  // Future<int> addUser(User user) async {
+  //   Database database = await this.database;
+  //   return database.insert(
+  //     'User',
+  //     user.toDbMap(),
+  //     conflictAlgorithm: ConflictAlgorithm.replace,
+  //   );
+  // }
 
-  Future<User?> selectUser() async {
-    Database database = await this.database;
-    String query = "SELECT * FROM User";
-    List<Map<String, dynamic>> user = await database.rawQuery(query);
-    if (user.length != 1) {
-      return null;
-    } else {
-      return User.fromDbMap(user[0]);
-    }
-  }
-
-  Future<int> updateUser(User user) async {
-    Database database = await this.database;
-    return database.update(
-      'User',
-      user.toDbMap(),
-      where: 'id = ?',
-      whereArgs: [user.id],
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
-  }
+  // Future<User?> selectUser() async {
+  //   Database database = await this.database;
+  //   String query = "SELECT * FROM User";
+  //   List<Map<String, dynamic>> user = await database.rawQuery(query);
+  //   if (user.length != 1) {
+  //     return null;
+  //   } else {
+  //     return User.fromDbMap(user[0]);
+  //   }
+  // }
+  //
+  // Future<int> updateUser(User user) async {
+  //   Database database = await this.database;
+  //   return database.update(
+  //     'User',
+  //     user.toDbMap(),
+  //     where: 'id = ?',
+  //     whereArgs: [user.id],
+  //     conflictAlgorithm: ConflictAlgorithm.replace,
+  //   );
+  // }
 
   Future<int> addChat(Chat chat) async {
     Database database = await this.database;

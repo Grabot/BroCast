@@ -1,11 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:dio/dio.dart';
-import '../../utils/utils.dart';
-import '../settings.dart';
+import '../../utils/new/utils.dart';
+import '../../utils/new/settings.dart';
 import 'auth_api.dart';
 import 'models/base_response.dart';
-import 'models/login_request.dart';
+import 'models/login_bro_name_request.dart';
+import 'models/login_email_request.dart';
 import 'models/login_response.dart';
 import 'models/register_request.dart';
 
@@ -17,14 +18,31 @@ class AuthServiceLogin {
 
   AuthServiceLogin._internal();
 
-  Future<LoginResponse> getLogin(LoginRequest loginRequest) async {
+  Future<LoginResponse> getLoginEmail(LoginEmailRequest loginEmailRequest) async {
     Settings().setLoggingIn(true);
     String endPoint = "login";
     var response = await AuthApi().dio.post(endPoint,
         options: Options(headers: {
           HttpHeaders.contentTypeHeader: "application/json",
         }),
-        data: loginRequest.toJson()
+        data: loginEmailRequest.toJson()
+    );
+
+    LoginResponse loginResponse = LoginResponse.fromJson(response.data);
+    if (loginResponse.getResult()) {
+      successfulLogin(loginResponse);
+    }
+    return loginResponse;
+  }
+
+  Future<LoginResponse> getLoginBroName(LoginBroNameRequest loginBroNameRequest) async {
+    Settings().setLoggingIn(true);
+    String endPoint = "login";
+    var response = await AuthApi().dio.post(endPoint,
+        options: Options(headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+        }),
+        data: loginBroNameRequest.toJson()
     );
 
     LoginResponse loginResponse = LoginResponse.fromJson(response.data);
@@ -176,5 +194,23 @@ class AuthServiceLogin {
 
     BaseResponse baseResponse = BaseResponse.fromJson(response.data);
     return baseResponse;
+  }
+
+  Future<LoginResponse> getLoginGoogle(String accessToken) async {
+    Settings().setLoggingIn(true);
+    String endPoint = "login/google/token";
+    var response = await AuthApi().dio.post(endPoint,
+        options: Options(headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+        }),
+        data: jsonEncode(<String, dynamic> {
+          "access_token": accessToken
+        }));
+
+    LoginResponse loginResponse = LoginResponse.fromJson(response.data);
+    if (loginResponse.getResult()) {
+      successfulLogin(loginResponse);
+    }
+    return loginResponse;
   }
 }

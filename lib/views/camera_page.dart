@@ -77,11 +77,11 @@ class _CameraPageState extends State<CameraPage> {
     super.initState();
     BackButtonInterceptor.add(myInterceptor);
 
-    HelperFunction.getFlashConfiguration().then((val) {
-      if (val != null) {
-        _flash = val;
-      }
-    });
+    // HelperFunction.getFlashConfiguration().then((val) {
+    //   if (val != null) {
+    //     _flash = val;
+    //   }
+    // });
 
     initCamera(widget.cameras![0]);
   }
@@ -91,10 +91,10 @@ class _CameraPageState extends State<CameraPage> {
     if (_flash == 3) {
       _flash = 0;
     }
-    HelperFunction.setFlashConfiguration(_flash).then((val) {
-      setState(() {
-      });
-    });
+    // HelperFunction.setFlashConfiguration(_flash).then((val) {
+    //   setState(() {
+    //   });
+    // });
   }
 
   Future takePicture() async {
