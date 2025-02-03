@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:brocast/constants/base_url.dart';
 import 'package:brocast/objects/bro_bros.dart';
-import 'package:brocast/objects/broup.dart';
 import 'package:http/http.dart' as http;
 
 class ReportBro {
@@ -60,23 +59,23 @@ class ReportBro {
     Map<String, dynamic> reportBroupResponse = jsonDecode(responsePost.body);
     if (reportBroupResponse.containsKey("result")) {
       bool result = reportBroupResponse["result"];
-      if (result) {
-        Map<String, dynamic> chatResponse = reportBroupResponse["chat"];
-        Broup broup = new Broup(
-            chatResponse["id"],
-            chatResponse["broup_name"],
-            chatResponse["broup_description"],
-            chatResponse["alias"],
-            chatResponse["broup_colour"],
-            chatResponse["unread_messages"],
-            chatResponse["last_time_activity"],
-            chatResponse["room_name"],
-            0,
-            chatResponse["mute"] ? 1 : 0,
-            1,
-            chatResponse["left"] ? 1 : 0);
-        return broup;
-      }
+      // if (result) {
+      //   Map<String, dynamic> chatResponse = reportBroupResponse["chat"];
+      //   Broup broup = new Broup(
+      //       chatResponse["id"],
+      //       chatResponse["broup_name"],
+      //       chatResponse["broup_description"],
+      //       chatResponse["alias"],
+      //       chatResponse["broup_colour"],
+      //       chatResponse["unread_messages"],
+      //       chatResponse["last_time_activity"],
+      //       chatResponse["room_name"],
+      //       0,
+      //       chatResponse["mute"] ? 1 : 0,
+      //       1,
+      //       chatResponse["left"] ? 1 : 0);
+      //   return broup;
+      // }
     }
     return "an unknown error has occurred";
   }

@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:brocast/constants/base_url.dart';
 import 'package:brocast/objects/bro_bros.dart';
 import 'package:brocast/objects/chat.dart';
-import 'package:brocast/objects/broup.dart';
 import 'package:http/http.dart' as http;
 
 class GetBros {
@@ -50,27 +49,27 @@ class GetBros {
                   0);
               listWithBros.add(broBros);
             } else if (br0.containsKey("broup_name")) {
-              Broup broup = new Broup(
-                  br0["id"],
-                  br0["broup_name"],
-                  br0["broup_description"],
-                  br0["alias"],
-                  br0["broup_colour"],
-                  br0["unread_messages"],
-                  br0["last_time_activity"],
-                  br0["room_name"],
-                  0,
-                  br0["mute"] ? 1 : 0,
-                  1,
-                  br0["left"] ? 1 : 0);
-              List<dynamic> broIds = br0["bro_ids"];
-              List<int> broIdList = broIds.map((s) => s as int).toList();
-              broup.setParticipants(broIdList);
-              List<dynamic> broAdminsIds = br0["bro_admin_ids"];
-              List<int> broAdminIdList =
-                  broAdminsIds.map((s) => s as int).toList();
-              broup.setAdmins(broAdminIdList);
-              listWithBros.add(broup);
+              // Broup broup = new Broup(
+              //     br0["id"],
+              //     br0["broup_name"],
+              //     br0["broup_description"],
+              //     br0["alias"],
+              //     br0["broup_colour"],
+              //     br0["unread_messages"],
+              //     br0["last_time_activity"],
+              //     br0["room_name"],
+              //     0,
+              //     br0["mute"] ? 1 : 0,
+              //     1,
+              //     br0["left"] ? 1 : 0);
+              // List<dynamic> broIds = br0["bro_ids"];
+              // List<int> broIdList = broIds.map((s) => s as int).toList();
+              // broup.setParticipants(broIdList);
+              // List<dynamic> broAdminsIds = br0["bro_admin_ids"];
+              // List<int> broAdminIdList =
+              //     broAdminsIds.map((s) => s as int).toList();
+              // broup.setAdmins(broAdminIdList);
+              // listWithBros.add(broup);
             }
           }
           listWithBros.sort(

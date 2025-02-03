@@ -1,8 +1,6 @@
 import 'dart:convert';
 
 import 'package:brocast/constants/base_url.dart';
-import 'package:brocast/objects/bro.dart';
-import 'package:brocast/objects/bro_not_added.dart';
 import 'package:http/http.dart' as http;
 
 class Search {
@@ -30,14 +28,14 @@ class Search {
       bool result = registerResponse["result"];
       if (result) {
         var broList = registerResponse["bro_list"];
-        List<Bro> listWithBros = [];
-        for (var br0 in broList) {
-          // This bro will not be stored in the db, so we give it a -1 broupid
-          Bro bro =
-              new BroNotAdded(br0["id"], -1, br0["bro_name"], br0["bromotion"]);
-          listWithBros.add(bro);
-        }
-        return listWithBros;
+        // List<Bro> listWithBros = [];
+        // for (var br0 in broList) {
+        //   // This bro will not be stored in the db, so we give it a -1 broupid
+        //   Bro bro =
+        //       new BroNotAdded(br0["id"], -1, br0["bro_name"], br0["bromotion"]);
+        //   listWithBros.add(bro);
+        // }
+        return [];
       }
     }
     return "an unknown error has occurred";

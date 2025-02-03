@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:brocast/constants/base_url.dart';
 import 'package:brocast/objects/bro_bros.dart';
-import 'package:brocast/objects/broup.dart';
 import 'package:http/http.dart' as http;
 
 class GetChat {
@@ -63,26 +62,26 @@ class GetChat {
       bool result = registerResponse["result"];
       if (result) {
         var chat = registerResponse["chat"];
-        Broup broup = new Broup(
-            chat["id"],
-            chat["broup_name"],
-            chat["broup_description"],
-            chat["alias"],
-            chat["broup_colour"],
-            chat["unread_messages"],
-            chat["last_time_activity"],
-            chat["room_name"],
-            0,
-            chat["mute"] ? 1 : 0,
-            1,
-            chat["left"] ? 1 : 0);
-        List<dynamic> broIds = chat["bro_ids"];
-        List<int> broIdList = broIds.map((s) => s as int).toList();
-        broup.setParticipants(broIdList);
-        List<dynamic> broAdminsIds = chat["bro_admin_ids"];
-        List<int> broAdminIdList = broAdminsIds.map((s) => s as int).toList();
-        broup.setAdmins(broAdminIdList);
-        return broup;
+        // Broup broup = new Broup(
+        //     chat["id"],
+        //     chat["broup_name"],
+        //     chat["broup_description"],
+        //     chat["alias"],
+        //     chat["broup_colour"],
+        //     chat["unread_messages"],
+        //     chat["last_time_activity"],
+        //     chat["room_name"],
+        //     0,
+        //     chat["mute"] ? 1 : 0,
+        //     1,
+        //     chat["left"] ? 1 : 0);
+        // List<dynamic> broIds = chat["bro_ids"];
+        // List<int> broIdList = broIds.map((s) => s as int).toList();
+        // broup.setParticipants(broIdList);
+        // List<dynamic> broAdminsIds = chat["bro_admin_ids"];
+        // List<int> broAdminIdList = broAdminsIds.map((s) => s as int).toList();
+        // broup.setAdmins(broAdminIdList);
+        // return broup;
       }
     }
     return "an unknown error has occurred";

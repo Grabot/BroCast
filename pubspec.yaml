@@ -89,6 +89,7 @@ flutter:
     - assets/images/google_button.png
     - assets/images/apple_button.png
     - assets/images/reddit_button.png
+    - assets/images/default_avatar.png
     - assets/sound/res_brodio.m4a
 
   # An image asset can refer to one or more resolution-specific "variants", see

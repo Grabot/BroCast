@@ -59,18 +59,26 @@ class SocketServices extends ChangeNotifier {
         "bro_id": broId,
       },
     );
-    this.socket.off('message_event_chat_changed');
+    this.socket.off('chat_changed');
+    this.socket.off('chat_added');
     joinSockets();
   }
 
   joinSockets() {
-    this.socket.on('message_event_chat_changed', (data) {
+    this.socket.on('chat_changed', (data) {
       chatChanged(data);
+    });
+    this.socket.on('chat_added', (data) {
+      chatAdded(data);
     });
   }
 
   chatChanged(data) async {
     print("chat changed");
+  }
+
+  chatAdded(data) async {
+    print("chat added");
   }
 
   void leaveRoomSolo(int broId) {

@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 import '../../services/auth/auth_service_login.dart';
+import '../bro_home/bro_home.dart';
 
 class WebViewScreen extends StatefulWidget {
   final bool fromRegister;
@@ -45,23 +46,26 @@ class _WebViewScreenState extends State<WebViewScreen> {
           onWebResourceError: (WebResourceError error) {
           },
           onNavigationRequest: (NavigationRequest request) {
+            // TODO: Test if this works
             if (request.url.startsWith('https://brocast.nl/broaccess?') || request.url.startsWith('https://www.brocast.nl/broaccess?')) {
-              // When we detect the redirect to the worldaccess page
-              // We use the worldaccess paramters to log in.
+              // When we detect the redirect to the broaccess page
+              // We use the broaccess paramters to log in.
               // and then close the webview.
               webViewController.loadRequest(Uri.parse('about:blank'));
-              Uri worldAccessUri = Uri.parse(request.url);
-              String? accessToken = worldAccessUri.queryParameters["access_token"];
-              String? refreshToken = worldAccessUri.queryParameters["refresh_token"];
+              Uri broAccessUri = Uri.parse(request.url);
+              String? accessToken = broAccessUri.queryParameters["access_token"];
+              String? refreshToken = broAccessUri.queryParameters["refresh_token"];
               // Use the tokens to immediately refresh the access token
               if (accessToken != null && refreshToken != null) {
                 AuthServiceLogin authService = AuthServiceLogin();
                 authService.getRefresh(accessToken, refreshToken).then((loginResponse) {
                   if (loginResponse.getResult()) {
-                    setState(() {
-                      // TODO: Do something?
-                      print("Logged in!?");
-                    });
+                    // user logged in, so go to the home screen
+                    Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                BroCastHome(key: UniqueKey())));
                   } else {
                     showToastMessage("Failed to log in.");
                   }

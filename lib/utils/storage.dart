@@ -1,8 +1,5 @@
-import 'package:brocast/objects/bro.dart';
-import 'package:brocast/objects/bro_added.dart';
 import 'package:brocast/objects/bro_bros.dart';
-import 'package:brocast/objects/bro_not_added.dart';
-import 'package:brocast/objects/broup.dart';
+// import 'package:brocast/objects/broup.dart';
 import 'package:brocast/objects/chat.dart';
 import 'package:brocast/objects/message.dart';
 import 'package:sqflite/sqflite.dart';
@@ -44,26 +41,9 @@ class Storage {
     Database db,
     int version,
   ) async {
-    await createTableUser(db);
     await createTableChat(db);
     await createTableBro(db);
     await createTableMessage(db);
-  }
-
-  createTableUser(Database db) async {
-    await db.execute('''
-    CREATE TABLE User (
-            id INTEGER PRIMARY KEY,
-            broName TEXT,
-            bromotion TEXT,
-            password TEXT,
-            token TEXT,
-            registrationId TEXT,
-            recheckBros INTEGER,
-            keyboardDarkMode INTEGER,
-            lastTimeActive TEXT
-          );
-          ''');
   }
 
   createTableChat(Database db) async {
@@ -125,57 +105,57 @@ class Storage {
           ''');
   }
 
-  Future<int> addBro(Bro bro) async {
-    Database database = await this.database;
-    return database.insert(
-      'Bro',
-      bro.toDbMap(),
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
-  }
-
-  Future<Bro?> selectBro(String broId, String broupId) async {
-    Database database = await this.database;
-    String query = "SELECT * FROM Bro where broId = " +
-        broId +
-        " and broupId = " +
-        broupId;
-    List<Map<String, dynamic>> bro = await database.rawQuery(query);
-    if (bro.length != 1) {
-      return null;
-    } else {
-      if (bro[0]["added"] == 1) {
-        return BroAdded.fromDbMap(bro[0]);
-      } else {
-        return BroNotAdded.fromDbMap(bro[0]);
-      }
-    }
-  }
-
-  Future<List<Bro>> fetchAllBrosOfBroup(String broupId) async {
-    Database database = await this.database;
-    String query = "SELECT * FROM Bro where broupId = " + broupId;
-    List<Map<String, dynamic>> bros = await database.rawQuery(query);
-    if (bros.isNotEmpty) {
-      return bros
-          .map((map) => map['added'] == 1
-              ? BroAdded.fromDbMap(map)
-              : BroNotAdded.fromDbMap(map))
-          .toList();
-    }
-    return List.empty();
-  }
-
-  Future<int> updateBro(Bro bro, String broupId) async {
-    Database database = await this.database;
-    return database.update(
-      'Bro',
-      bro.toDbMap(),
-      where: 'broId = ? and broupId = ?',
-      whereArgs: [bro.id, broupId],
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
-  }
+  // Future<int> addBro(Bro bro) async {
+  //   Database database = await this.database;
+  //   return database.insert(
+  //     'Bro',
+  //     bro.toDbMap(),
+  //     conflictAlgorithm: ConflictAlgorithm.replace,
+  //   );
+  // }
+  //
+  // Future<Bro?> selectBro(String broId, String broupId) async {
+  //   Database database = await this.database;
+  //   String query = "SELECT * FROM Bro where broId = " +
+  //       broId +
+  //       " and broupId = " +
+  //       broupId;
+  //   List<Map<String, dynamic>> bro = await database.rawQuery(query);
+  //   if (bro.length != 1) {
+  //     return null;
+  //   } else {
+  //     if (bro[0]["added"] == 1) {
+  //       return BroAdded.fromDbMap(bro[0]);
+  //     } else {
+  //       return BroNotAdded.fromDbMap(bro[0]);
+  //     }
+  //   }
+  // }
+  //
+  // Future<List<Bro>> fetchAllBrosOfBroup(String broupId) async {
+  //   Database database = await this.database;
+  //   String query = "SELECT * FROM Bro where broupId = " + broupId;
+  //   List<Map<String, dynamic>> bros = await database.rawQuery(query);
+  //   if (bros.isNotEmpty) {
+  //     return bros
+  //         .map((map) => map['added'] == 1
+  //             ? BroAdded.fromDbMap(map)
+  //             : BroNotAdded.fromDbMap(map))
+  //         .toList();
+  //   }
+  //   return List.empty();
+  // }
+  //
+  // Future<int> updateBro(Bro bro, String broupId) async {
+  //   Database database = await this.database;
+  //   return database.update(
+  //     'Bro',
+  //     bro.toDbMap(),
+  //     where: 'broId = ? and broupId = ?',
+  //     whereArgs: [bro.id, broupId],
+  //     conflictAlgorithm: ConflictAlgorithm.replace,
+  //   );
+  // }
 
   Future<int> deleteBro(String broId, String broupId) async {
     Database database = await this.database;
@@ -226,36 +206,36 @@ class Storage {
     );
   }
 
-  Future<List<Chat>> fetchAllChats() async {
-    Database database = await this.database;
-    List<Map<String, dynamic>> maps = await database.query('Chat');
-    if (maps.isNotEmpty) {
-      return maps
-          .map((map) => map['isBroup'] == 1
-              ? Broup.fromDbMap(map)
-              : BroBros.fromDbMap(map))
-          .toList();
-    }
-    return List.empty();
-  }
-
-  Future<Chat?> selectChat(String chatId, String isBroup) async {
-    Database database = await this.database;
-    String query = "SELECT * FROM Chat where chatId = " +
-        chatId +
-        " and isBroup = " +
-        isBroup;
-    List<Map<String, dynamic>> chat = await database.rawQuery(query);
-    if (chat.length != 1) {
-      return null;
-    } else {
-      if (chat[0]["isBroup"] == 1) {
-        return Broup.fromDbMap(chat[0]);
-      } else {
-        return BroBros.fromDbMap(chat[0]);
-      }
-    }
-  }
+  // Future<List<Chat>> fetchAllChats() async {
+  //   Database database = await this.database;
+  //   List<Map<String, dynamic>> maps = await database.query('Chat');
+  //   if (maps.isNotEmpty) {
+  //     return maps
+  //         .map((map) => map['isBroup'] == 1
+  //             ? Broup.fromDbMap(map)
+  //             : BroBros.fromDbMap(map))
+  //         .toList();
+  //   }
+  //   return List.empty();
+  // }
+  //
+  // Future<Chat?> selectChat(String chatId, String isBroup) async {
+  //   Database database = await this.database;
+  //   String query = "SELECT * FROM Chat where chatId = " +
+  //       chatId +
+  //       " and isBroup = " +
+  //       isBroup;
+  //   List<Map<String, dynamic>> chat = await database.rawQuery(query);
+  //   if (chat.length != 1) {
+  //     return null;
+  //   } else {
+  //     if (chat[0]["isBroup"] == 1) {
+  //       return Broup.fromDbMap(chat[0]);
+  //     } else {
+  //       return BroBros.fromDbMap(chat[0]);
+  //     }
+  //   }
+  // }
 
   Future<int> updateChat(Chat chat) async {
     Database database = await this.database;
@@ -348,7 +328,6 @@ class Storage {
     await database.execute("DROP TABLE IF EXISTS User");
     await database.execute("DROP TABLE IF EXISTS Bro");
     await database.execute("DROP TABLE IF EXISTS Message");
-    await createTableUser(database);
     await createTableChat(database);
     await createTableBro(database);
     await createTableMessage(database);
