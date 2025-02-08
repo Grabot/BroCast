@@ -5,7 +5,7 @@ import 'package:brocast/views/bro_home/bro_home.dart';
 import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
 import 'package:flutter/material.dart';
 
-import '../../objects/new/bro.dart';
+import '../../objects/bro.dart';
 import '../../services/auth/auth_service_social.dart';
 import '../add_broup.dart';
 import '../bro_profile.dart';
@@ -131,16 +131,18 @@ class _FindBrosState extends State<FindBros> {
         isLoading = true;
       });
       AuthServiceSocial().addNewBro(addBroId).then((value) {
+        clickedNewBro = false;
         if (value) {
+          // The broup added, move to the home screen where it will be shown
           Navigator.pushReplacement(
               context,
               MaterialPageRoute(
                   builder: (context) => BroCastHome(key: UniqueKey())));
         } else {
+          showToastMessage("Bro contact already in Bro list!");
           setState(() {
             isLoading = false;
           });
-          showToastMessage("Failed to add bro");
         }
       });
     }
@@ -163,13 +165,18 @@ class _FindBrosState extends State<FindBros> {
     return PreferredSize(
       preferredSize: const Size.fromHeight(50),
       child: AppBar(
+          backgroundColor: Color(0xff145C9E),
           leading: IconButton(
               icon: Icon(Icons.arrow_back, color: Colors.white),
               onPressed: () {
                 backButtonFunctionality();
               }),
           title: Container(
-              alignment: Alignment.centerLeft, child: Text("Add new bros")),
+              alignment: Alignment.centerLeft,
+              child: Text(
+                  "Add new Bros",
+                  style: TextStyle(color: Colors.white)
+              )),
           actions: [
             PopupMenuButton<int>(
                 onSelected: (item) => onSelect(context, item),

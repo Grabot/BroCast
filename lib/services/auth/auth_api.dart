@@ -90,7 +90,6 @@ class AppInterceptors extends Interceptor {
 
             LoginResponse loginRefresh = LoginResponse.fromJson(response.data);
             if (loginRefresh.getResult()) {
-              accessToken = loginRefresh.getAccessToken();
               successfulLogin(loginRefresh);
             } else {
               DioException dioError = DioException(requestOptions: options,

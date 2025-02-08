@@ -1,6 +1,7 @@
- import 'package:flutter/material.dart';
+ import 'package:brocast/views/chat_view/bro_messaging/bro_messaging.dart';
+import 'package:flutter/material.dart';
 
-import '../../../objects/new/broup.dart';
+import '../../../objects/broup.dart';
 import '../../../services/navigation_service.dart';
 import '../../../utils/locator.dart';
 import '../../../utils/new/utils.dart';
@@ -21,9 +22,17 @@ class _BroTileState extends State<BroTile> {
   var _tapPosition;
 
   selectBro(BuildContext context) {
-    // TODO: Fix navigation
     if (widget.chat.isPrivate()) {
-      // _navigationService.navigateTo(routes.BroupRoute, arguments: widget.chat);
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => BroMessaging(
+                  key: UniqueKey(),
+                  chat: widget.chat
+              )
+          ),
+          // ModalRoute.withName(routes.ChatRoute)
+      );
     } else {
       // _navigationService.navigateTo(routes.BroRoute, arguments: widget.chat);
     }
@@ -302,7 +311,7 @@ class _BroTileState extends State<BroTile> {
           _navigationService.navigateTo(routes.BroupRoute,
               arguments: widget.chat);
         } else {
-          _navigationService.navigateTo(routes.BroRoute,
+          _navigationService.navigateTo(routes.BroHomeRoute,
               arguments: widget.chat);
         }
       } else if (delta == 2) {

@@ -1,7 +1,4 @@
 import 'dart:convert';
-
-import 'package:brocast/objects/bro_bros.dart';
-import 'package:brocast/objects/chat.dart';
 import 'package:brocast/services/get_bros.dart';
 import 'package:brocast/services/reset_registration.dart';
 import 'package:brocast/utils/new/settings.dart';
@@ -24,16 +21,16 @@ class AddBroup extends StatefulWidget {
 }
 
 class _AddBroupState extends State<AddBroup> {
-  GetBros getBros = new GetBros();
+  // GetBros getBros = new GetBros();
   Settings settings = Settings();
-  SocketServices socketServices = SocketServices();
-  BroList broList = BroList();
+  // SocketServices socketServices = SocketServices();
+  // BroList broList = BroList();
 
   final broupValidator = GlobalKey<FormFieldState>();
 
-  List<BroAddBroup> brosAddBroup = [];
-  List<BroAddBroup> shownBrosAddBroup = [];
-  List<BroBros> broupParticipants = [];
+  // List<BroAddBroup> brosAddBroup = [];
+  // List<BroAddBroup> shownBrosAddBroup = [];
+  // List<BroBros> broupParticipants = [];
 
   TextEditingController bromotionController = new TextEditingController();
   TextEditingController broNameController = new TextEditingController();
@@ -46,31 +43,31 @@ class _AddBroupState extends State<AddBroup> {
   void initState() {
     super.initState();
     bromotionController.addListener(bromotionListener);
-    socketServices.checkConnection();
-    initAddBroupSockets();
-    List<Chat> chats = broList.getBros();
-    brosAddBroup.clear();
-    shownBrosAddBroup.clear();
-    broupParticipants.clear();
-    for (Chat myBro in chats) {
-      if (!myBro.isBroup()) {
-        BroAddBroup broAddBroup = new BroAddBroup(false, myBro);
-        brosAddBroup.add(broAddBroup);
-      }
-    }
+    // socketServices.checkConnection();
+    // initAddBroupSockets();
+    // List<Chat> chats = broList.getBros();
+    // brosAddBroup.clear();
+    // shownBrosAddBroup.clear();
+    // broupParticipants.clear();
+    // for (Chat myBro in chats) {
+    //   if (!myBro.isBroup()) {
+    //     BroAddBroup broAddBroup = new BroAddBroup(false, myBro);
+    //     brosAddBroup.add(broAddBroup);
+    //   }
+    // }
     setState(() {
-      shownBrosAddBroup = brosAddBroup;
+      // shownBrosAddBroup = brosAddBroup;
     });
     BackButtonInterceptor.add(myInterceptor);
   }
 
   void initAddBroupSockets() {
-    socketServices.socket.on('message_event_add_broup_success', (data) {
-      broupWasAdded();
-    });
-    socketServices.socket.on('message_event_add_broup_failed', (data) {
-      broupAddingFailed();
-    });
+    // socketServices.socket.on('message_event_add_broup_success', (data) {
+    //   broupWasAdded();
+    // });
+    // socketServices.socket.on('message_event_add_broup_failed', (data) {
+    //   broupAddingFailed();
+    // });
   }
 
   broupWasAdded() {
@@ -90,8 +87,8 @@ class _AddBroupState extends State<AddBroup> {
   @override
   void dispose() {
     BackButtonInterceptor.remove(myInterceptor);
-    socketServices.socket.off('message_event_add_broup_success');
-    socketServices.socket.off('message_event_add_broup_failed');
+    // socketServices.socket.off('message_event_add_broup_success');
+    // socketServices.socket.off('message_event_add_broup_failed');
     bromotionController.removeListener(bromotionListener);
     bromotionController.dispose();
     broNameController.dispose();
@@ -108,13 +105,18 @@ class _AddBroupState extends State<AddBroup> {
     return PreferredSize(
       preferredSize: const Size.fromHeight(50),
       child: AppBar(
+          backgroundColor: Color(0xff145C9E),
           leading: IconButton(
               icon: Icon(Icons.arrow_back, color: Colors.white),
               onPressed: () {
                 backButtonFunctionality();
               }),
           title: Container(
-              alignment: Alignment.centerLeft, child: Text("Create new Broup")),
+              alignment: Alignment.centerLeft,
+              child: Text(
+                  "Create new Broup",
+                  style: TextStyle(color: Colors.white)
+              )),
           actions: [
             PopupMenuButton<int>(
                 onSelected: (item) => onSelect(context, item),
@@ -136,7 +138,7 @@ class _AddBroupState extends State<AddBroup> {
       String newText = bromotionController.text.replaceFirst(lastEmoji, "");
       bromotionController.text = newText;
     }
-    onChangedBroNameField(broNameController.text, bromotionController.text);
+    // onChangedBroNameField(broNameController.text, bromotionController.text);
   }
 
   void backButtonFunctionality() {
@@ -175,40 +177,40 @@ class _AddBroupState extends State<AddBroup> {
     }
   }
 
-  Widget broupParticipantsList() {
-    return broupParticipants.isNotEmpty
-        ? ListView.builder(
-            shrinkWrap: true,
-            itemCount: broupParticipants.length,
-            itemBuilder: (context, index) {
-              return broupParticipantsTile(broupParticipants[index]);
-            })
-        : Container();
-  }
+  // Widget broupParticipantsList() {
+  //   return broupParticipants.isNotEmpty
+  //       ? ListView.builder(
+  //           shrinkWrap: true,
+  //           itemCount: broupParticipants.length,
+  //           itemBuilder: (context, index) {
+  //             return broupParticipantsTile(broupParticipants[index]);
+  //           })
+  //       : Container();
+  // }
 
-  Widget listOfBros() {
-    return shownBrosAddBroup.isNotEmpty
-        ? ListView.builder(
-            shrinkWrap: true,
-            itemCount: shownBrosAddBroup.length,
-            itemBuilder: (context, index) {
-              return broTileAddBroup(index);
-            })
-        : Container();
-  }
-
-  void selectBro(BroAddBroup broAddBroup) {
-    broAddBroup.setSelected(!broAddBroup.isSelected());
-    updateParticipantsBroup();
-  }
+  // Widget listOfBros() {
+  //   return shownBrosAddBroup.isNotEmpty
+  //       ? ListView.builder(
+  //           shrinkWrap: true,
+  //           itemCount: shownBrosAddBroup.length,
+  //           itemBuilder: (context, index) {
+  //             return broTileAddBroup(index);
+  //           })
+  //       : Container();
+  // }
+  //
+  // void selectBro(BroAddBroup broAddBroup) {
+  //   broAddBroup.setSelected(!broAddBroup.isSelected());
+  //   updateParticipantsBroup();
+  // }
 
   void updateParticipantsBroup() {
-    broupParticipants.clear();
-    for (BroAddBroup broAddBroup in brosAddBroup) {
-      if (broAddBroup.isSelected()) {
-        broupParticipants.add(broAddBroup.getBroBros());
-      }
-    }
+    // broupParticipants.clear();
+    // for (BroAddBroup broAddBroup in brosAddBroup) {
+    //   if (broAddBroup.isSelected()) {
+    //     broupParticipants.add(broAddBroup.getBroBros());
+    //   }
+    // }
     setState(() {});
   }
 
@@ -224,85 +226,85 @@ class _AddBroupState extends State<AddBroup> {
     return Colors.red;
   }
 
-  void removeParticipant(Chat participant) {
-    broupParticipants.remove(participant);
-    for (BroAddBroup broAddBroup in brosAddBroup) {
-      if (participant.id == broAddBroup.getBroBros().id) {
-        broAddBroup.setSelected(false);
-      }
-    }
-    onChangedBroNameField(broNameController.text, bromotionController.text);
-  }
+  // void removeParticipant(Chat participant) {
+  //   broupParticipants.remove(participant);
+  //   for (BroAddBroup broAddBroup in brosAddBroup) {
+  //     if (participant.id == broAddBroup.getBroBros().id) {
+  //       broAddBroup.setSelected(false);
+  //     }
+  //   }
+  //   onChangedBroNameField(broNameController.text, bromotionController.text);
+  // }
 
-  Widget broupParticipantsTile(Chat participant) {
-    return InkWell(
-        onTap: () {
-          removeParticipant(participant);
-        },
-        child: Container(
-            width: MediaQuery.of(context).size.width,
-            color: participant.getColor().withOpacity(0.3),
-            child: Row(children: [
-              Container(
-                  child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          width: MediaQuery.of(context).size.width - 40,
-                          child: Text(participant.getBroNameOrAlias(),
-                              overflow: TextOverflow.ellipsis,
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 20)),
-                        ),
-                        participant.chatDescription != ""
-                            ? Container(
-                                width: MediaQuery.of(context).size.width - 40,
-                                child: Text(participant.chatDescription,
-                                    style: TextStyle(
-                                        color: Colors.white, fontSize: 12)),
-                              )
-                            : Container(),
-                      ],
-                    ),
-                  ),
-                  Container(
-                      width: 40,
-                      child: IconButton(
-                        onPressed: () {
-                          removeParticipant(participant);
-                        },
-                        icon: Icon(Icons.highlight_remove, color: Colors.white),
-                      ))
-                ],
-              ))
-            ])));
-  }
+  // Widget broupParticipantsTile(Chat participant) {
+  //   return InkWell(
+  //       onTap: () {
+  //         removeParticipant(participant);
+  //       },
+  //       child: Container(
+  //           width: MediaQuery.of(context).size.width,
+  //           color: participant.getColor().withOpacity(0.3),
+  //           child: Row(children: [
+  //             Container(
+  //                 child: Row(
+  //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //               children: [
+  //                 Container(
+  //                   child: Column(
+  //                     crossAxisAlignment: CrossAxisAlignment.start,
+  //                     children: [
+  //                       Container(
+  //                         width: MediaQuery.of(context).size.width - 40,
+  //                         child: Text(participant.getBroNameOrAlias(),
+  //                             overflow: TextOverflow.ellipsis,
+  //                             style:
+  //                                 TextStyle(color: Colors.white, fontSize: 20)),
+  //                       ),
+  //                       participant.chatDescription != ""
+  //                           ? Container(
+  //                               width: MediaQuery.of(context).size.width - 40,
+  //                               child: Text(participant.chatDescription,
+  //                                   style: TextStyle(
+  //                                       color: Colors.white, fontSize: 12)),
+  //                             )
+  //                           : Container(),
+  //                     ],
+  //                   ),
+  //                 ),
+  //                 Container(
+  //                     width: 40,
+  //                     child: IconButton(
+  //                       onPressed: () {
+  //                         removeParticipant(participant);
+  //                       },
+  //                       icon: Icon(Icons.highlight_remove, color: Colors.white),
+  //                     ))
+  //               ],
+  //             ))
+  //           ])));
+  // }
 
   Widget broTileAddBroup(index) {
     return InkWell(
       onTap: () {
-        selectBro(shownBrosAddBroup[index]);
+        // selectBro(shownBrosAddBroup[index]);
       },
       child: Container(
         width: MediaQuery.of(context).size.width,
-        color:
-            shownBrosAddBroup[index].getBroBros().getColor().withOpacity(0.6),
+        color: Colors.red,
+            // shownBrosAddBroup[index].getBroBros().getColor().withOpacity(0.6),
         child: Row(children: [
-          Container(
-            width: 50,
-            child: Checkbox(
-              checkColor: Colors.white,
-              fillColor: MaterialStateProperty.resolveWith(getColor),
-              value: shownBrosAddBroup[index].isSelected(),
-              onChanged: (bool? value) {
-                selectBro(shownBrosAddBroup[index]);
-              },
-            ),
-          ),
+          // Container(
+          //   width: 50,
+          //   child: Checkbox(
+          //     checkColor: Colors.white,
+          //     fillColor: MaterialStateProperty.resolveWith(getColor),
+          //     value: shownBrosAddBroup[index].isSelected(),
+          //     onChanged: (bool? value) {
+          //       selectBro(shownBrosAddBroup[index]);
+          //     },
+          //   ),
+          // ),
           Container(
             width: MediaQuery.of(context).size.width - 50,
             child: Material(
@@ -315,32 +317,32 @@ class _AddBroupState extends State<AddBroup> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Container(
-                              width: MediaQuery.of(context).size.width - 160,
-                              child: shownBrosAddBroup[index].getBroBros().alias != null &&
-                                      shownBrosAddBroup[index]
-                                          .getBroBros()
-                                          .alias
-                                          .isNotEmpty
-                                  ? Container(
-                                      child: Text(shownBrosAddBroup[index].getBroBros().alias,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(
-                                              color: getTextColor(
-                                                  shownBrosAddBroup[index]
-                                                      .getBroBros()
-                                                      .getColor()),
-                                              fontSize: 20)))
-                                  : Container(
-                                      child: Text(
-                                          shownBrosAddBroup[index]
-                                              .getBroBros()
-                                              .chatName,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(
-                                              color: getTextColor(shownBrosAddBroup[index].getBroBros().getColor()),
-                                              fontSize: 20))),
-                            ),
+                            // Container(
+                            //   width: MediaQuery.of(context).size.width - 160,
+                            //   child: shownBrosAddBroup[index].getBroBros().alias != null &&
+                            //           shownBrosAddBroup[index]
+                            //               .getBroBros()
+                            //               .alias
+                            //               .isNotEmpty
+                            //       ? Container(
+                            //           child: Text(shownBrosAddBroup[index].getBroBros().alias,
+                            //               overflow: TextOverflow.ellipsis,
+                            //               style: TextStyle(
+                            //                   color: getTextColor(
+                            //                       shownBrosAddBroup[index]
+                            //                           .getBroBros()
+                            //                           .getColor()),
+                            //                   fontSize: 20)))
+                            //       : Container(
+                            //           child: Text(
+                            //               shownBrosAddBroup[index]
+                            //                   .getBroBros()
+                            //                   .chatName,
+                            //               overflow: TextOverflow.ellipsis,
+                            //               style: TextStyle(
+                            //                   color: getTextColor(shownBrosAddBroup[index].getBroBros().getColor()),
+                            //                   fontSize: 20))),
+                            // ),
                           ],
                         ),
                       ),
@@ -354,43 +356,43 @@ class _AddBroupState extends State<AddBroup> {
     );
   }
 
-  void onChangedBroNameField(String typedText, String emojiField) {
-    if (emojiField.isEmpty && typedText.isNotEmpty) {
-      shownBrosAddBroup = brosAddBroup
-          .where((element) => element
-              .getBroBros()
-              .getBroNameOrAlias()
-              .toLowerCase()
-              .contains(typedText.toLowerCase()))
-          .toList();
-    } else if (emojiField.isNotEmpty && typedText.isEmpty) {
-      shownBrosAddBroup = brosAddBroup
-          .where((element) => element
-              .getBroBros()
-              .getBroNameOrAlias()
-              .toLowerCase()
-              .contains(emojiField))
-          .toList();
-    } else if (emojiField.isNotEmpty && typedText.isNotEmpty) {
-      shownBrosAddBroup = brosAddBroup
-          .where((element) =>
-              element
-                  .getBroBros()
-                  .getBroNameOrAlias()
-                  .toLowerCase()
-                  .contains(typedText.toLowerCase()) &&
-              element
-                  .getBroBros()
-                  .getBroNameOrAlias()
-                  .toLowerCase()
-                  .contains(emojiField))
-          .toList();
-    } else {
-      // both empty
-      shownBrosAddBroup = brosAddBroup;
-    }
-    setState(() {});
-  }
+  // void onChangedBroNameField(String typedText, String emojiField) {
+  //   if (emojiField.isEmpty && typedText.isNotEmpty) {
+  //     shownBrosAddBroup = brosAddBroup
+  //         .where((element) => element
+  //             .getBroBros()
+  //             .getBroNameOrAlias()
+  //             .toLowerCase()
+  //             .contains(typedText.toLowerCase()))
+  //         .toList();
+  //   } else if (emojiField.isNotEmpty && typedText.isEmpty) {
+  //     shownBrosAddBroup = brosAddBroup
+  //         .where((element) => element
+  //             .getBroBros()
+  //             .getBroNameOrAlias()
+  //             .toLowerCase()
+  //             .contains(emojiField))
+  //         .toList();
+  //   } else if (emojiField.isNotEmpty && typedText.isNotEmpty) {
+  //     shownBrosAddBroup = brosAddBroup
+  //         .where((element) =>
+  //             element
+  //                 .getBroBros()
+  //                 .getBroNameOrAlias()
+  //                 .toLowerCase()
+  //                 .contains(typedText.toLowerCase()) &&
+  //             element
+  //                 .getBroBros()
+  //                 .getBroNameOrAlias()
+  //                 .toLowerCase()
+  //                 .contains(emojiField))
+  //         .toList();
+  //   } else {
+  //     // both empty
+  //     shownBrosAddBroup = brosAddBroup;
+  //   }
+  //   setState(() {});
+  // }
 
   void onTapTextField() {
     if (showEmojiKeyboard) {
@@ -414,17 +416,17 @@ class _AddBroupState extends State<AddBroup> {
   void addBroup() {
     if (!pressedAddBroup) {
       List<int> participants = [];
-      for (Chat participi in broupParticipants) {
-        participants.add(participi.id);
-      }
-      if (broupValidator.currentState!.validate()) {
-        pressedAddBroup = true;
-        socketServices.socket.emit("message_event_add_broup", {
-          "token": "settings.getToken()",
-          "broup_name": broupNameController.text,
-          "participants": jsonEncode(participants)
-        });
-      }
+      // for (Chat participi in broupParticipants) {
+      //   participants.add(participi.id);
+      // }
+      // if (broupValidator.currentState!.validate()) {
+      //   pressedAddBroup = true;
+      //   socketServices.socket.emit("message_event_add_broup", {
+      //     "token": "settings.getToken()",
+      //     "broup_name": broupNameController.text,
+      //     "participants": jsonEncode(participants)
+      //   });
+      // }
     }
   }
 
@@ -441,7 +443,7 @@ class _AddBroupState extends State<AddBroup> {
                 child:
                     Text("Participants in bro group", style: simpleTextStyle()),
               ),
-              Container(height: 120, child: broupParticipantsList()),
+              // Container(height: 120, child: broupParticipantsList()),
               SizedBox(height: 10),
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 10),
@@ -457,9 +459,9 @@ class _AddBroupState extends State<AddBroup> {
                             val.trimRight().isEmpty) {
                           return "Please provide a Broup name";
                         }
-                        if (broupParticipants.length <= 1) {
-                          return "Can't create broup with less than 2 bros";
-                        }
+                        // if (broupParticipants.length <= 1) {
+                        //   return "Can't create broup with less than 2 bros";
+                        // }
                         return null;
                       },
                       textAlign: TextAlign.center,
@@ -500,7 +502,7 @@ class _AddBroupState extends State<AddBroup> {
                           onTapTextField();
                         },
                         onChanged: (text) {
-                          onChangedBroNameField(text, bromotionController.text);
+                          // onChangedBroNameField(text, bromotionController.text);
                         },
                         controller: broNameController,
                         textAlign: TextAlign.center,
@@ -527,7 +529,7 @@ class _AddBroupState extends State<AddBroup> {
                 ),
               ),
               SizedBox(height: 10),
-              Expanded(child: listOfBros()),
+              // Expanded(child: listOfBros()),
               Align(
                 alignment: Alignment.bottomCenter,
                 child: EmojiKeyboard(
@@ -541,25 +543,25 @@ class _AddBroupState extends State<AddBroup> {
     );
   }
 }
-
-class BroAddBroup {
-  late bool selected;
-  late Chat broBros;
-
-  BroAddBroup(bool selected, Chat broBros) {
-    this.selected = selected;
-    this.broBros = broBros;
-  }
-
-  getBroBros() {
-    return this.broBros;
-  }
-
-  isSelected() {
-    return this.selected;
-  }
-
-  setSelected(bool selected) {
-    this.selected = selected;
-  }
-}
+//
+// class BroAddBroup {
+//   late bool selected;
+//   // late Chat broBros;
+//
+//   BroAddBroup(bool selected, Chat broBros) {
+//     this.selected = selected;
+//     // this.broBros = broBros;
+//   }
+//
+//   getBroBros() {
+//     return this.broBros;
+//   }
+//
+//   isSelected() {
+//     return this.selected;
+//   }
+//
+//   setSelected(bool selected) {
+//     this.selected = selected;
+//   }
+// }

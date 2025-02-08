@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:brocast/utils/new/settings.dart';
-import 'package:brocast/utils/storage.dart';
+import 'package:brocast/utils/new/storage.dart';
 import 'package:brocast/views/bro_home/bro_home.dart';
 import 'package:brocast/views/web_view/web_view_screen.dart';
 import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
@@ -111,7 +111,16 @@ class _SignInState extends State<SignIn> {
       });
       return true;
     } else {
-      return false;
+      exitApp();
+      return true;
+    }
+  }
+
+  exitApp() {
+    if (Platform.isAndroid) {
+      SystemNavigator.pop();
+    } else {
+      exit(0);
     }
   }
 
@@ -697,8 +706,13 @@ class _SignInState extends State<SignIn> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          backgroundColor: Color(0xff145C9E),
           title: Container(
-              alignment: Alignment.centerLeft, child: Text("Brocast")),
+              alignment: Alignment.centerLeft,
+              child: Text(
+                  "BroCast",
+                  style: TextStyle(color: Colors.white)
+              )),
           actions: [
             PopupMenuButton<int>(
                 onSelected: (item) => onSelect(context, item),

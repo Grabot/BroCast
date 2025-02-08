@@ -1,14 +1,18 @@
+import 'dart:io';
+
 import 'package:brocast/constants/base_url.dart';
 import 'package:brocast/utils/new/utils.dart';
 import 'package:brocast/utils/shared.dart';
 import 'package:brocast/views/bro_home/bro_home.dart';
 import 'package:brocast/views/sign_in/signin.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:jwt_decode/jwt_decode.dart';
 import 'package:url_launcher/url_launcher.dart';
-
+import 'package:back_button_interceptor/back_button_interceptor.dart';
 import '../../utils/new/game_start_login.dart';
 import '../../utils/new/secure_storage.dart';
+import 'package:brocast/constants/route_paths.dart' as routes;
 
 class OpeningScreen extends StatefulWidget {
   @override
@@ -21,6 +25,7 @@ class _OpeningScreenState extends State<OpeningScreen> {
 
   @override
   void initState() {
+    BackButtonInterceptor.add(myInterceptor);
     HelperFunction.getEULA().then((val) {
       if (val == null || val == false) {
         // first time opening this app!
@@ -35,25 +40,46 @@ class _OpeningScreenState extends State<OpeningScreen> {
     super.initState();
   }
 
+  bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
+    exitApp();
+    return true;
+  }
+
+  exitApp() {
+    if (Platform.isAndroid) {
+      SystemNavigator.pop();
+    } else {
+      exit(0);
+    }
+  }
+
   void startUp(bool showRegister) {
     setState(() {
       isLoading = true;
     });
     loginCheck().then((loggedIn) {
       if (loggedIn) {
-        Navigator.pushReplacement(
+        Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => BroCastHome(key: UniqueKey())));
+                builder: (context) => BroCastHome(
+                    key: UniqueKey(),
+                )
+            ),
+            // ModalRoute.withName(routes.BroHomeRoute)
+        );
         return;
       } else {
-        Navigator.pushReplacement(
+        Navigator.push(
             context,
             MaterialPageRoute(
                 builder: (context) => SignIn(
                   key: UniqueKey(),
                   showRegister: showRegister
-                )));
+                )
+            ),
+            // ModalRoute.withName(routes.SignInRoute)
+        );
         return;
       }
     });
@@ -67,6 +93,7 @@ class _OpeningScreenState extends State<OpeningScreen> {
 
   @override
   void dispose() {
+    BackButtonInterceptor.remove(myInterceptor);
     super.dispose();
   }
 
@@ -74,8 +101,14 @@ class _OpeningScreenState extends State<OpeningScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+          backgroundColor: Color(0xff145C9E),
           title: Container(
-              alignment: Alignment.centerLeft, child: Text("Brocast"))),
+              alignment: Alignment.centerLeft,
+              child: Text(
+                  "BroCast",
+                  style: TextStyle(color: Colors.white)
+              )
+          )),
       body: Stack(
         children: [
           acceptEULA
@@ -182,7 +215,7 @@ class _OpeningScreenState extends State<OpeningScreen> {
                                   color: Colors.blueGrey, fontSize: 12),
                             ),
                             SizedBox(height: 6),
-                            zwaarDevelopersLogo(300, true),
+                            zwaarDevelopersLogo(200, true),
                             Text(
                               "developers",
                               style: TextStyle(

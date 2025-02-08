@@ -1,9 +1,17 @@
 import 'package:brocast/constants/base_url.dart';
+import 'package:brocast/views/bro_home/bro_home_change_notifier.dart';
+import 'package:brocast/views/chat_view/bro_messaging/bro_messaging_change_notifier.dart';
 import 'package:flutter/material.dart';
-import 'package:socket_io_client/socket_io_client.dart' as IO;
+import 'package:socket_io_client/socket_io_client.dart' as io;
+
+import '../../objects/message.dart';
+import '../../objects/broup.dart';
+import '../../objects/me.dart';
+import 'storage.dart';
+import 'settings.dart';
 
 class SocketServices extends ChangeNotifier {
-  late IO.Socket socket;
+  late io.Socket socket;
 
   bool joinedSoloRoom = false;
 
@@ -18,10 +26,10 @@ class SocketServices extends ChangeNotifier {
   }
 
   startSockConnection() {
-    String namespace = "/sock";
-    String socketUrl = baseUrl_v1_0 + namespace;
-    socket = IO.io(socketUrl, <String, dynamic>{
+    String socketUrl = baseUrl_v1_0;
+    socket = io.io(socketUrl, <String, dynamic>{
       'autoConnect': false,
+      'path': "/socket.io",
       'transports': ['websocket'],
     });
 
@@ -34,7 +42,7 @@ class SocketServices extends ChangeNotifier {
     });
 
     socket.on('message_event', (data) {
-      // print(data);
+      print(data);
     });
 
     socket.open();
@@ -59,26 +67,105 @@ class SocketServices extends ChangeNotifier {
         "bro_id": broId,
       },
     );
-    this.socket.off('chat_changed');
-    this.socket.off('chat_added');
-    joinSockets();
+    // First leave the rooms before joining them
+    // This is to prevent multiple joins
+    leaveSocketsSolo();
+    joinSocketsSolo();
   }
 
-  joinSockets() {
+  chatChanged(data) async {
+    print("chat changed $data");
+    var broup = data["broup"];
+  }
+
+  chatAdded(data) async {
+    var broup = data["broup"];
+    print(broup);
+    Me? me = Settings().getMe();
+    if (me != null) {
+      // Add the broup. It's not possible that it already exists
+      // so we don't account for that.
+      Broup newBroup = Broup.fromJson(broup);
+      Storage().addBroup(newBroup);
+      me.bros.add(newBroup);
+      joinRoomBroup(newBroup.getBroupId());
+    }
+    BroHomeChangeNotifier().notify();
+  }
+
+  messageReceived(data) async {
+    print("message received $data");
+    Message message = Message.fromJson(data);
+    int broupId = message.broupId;
+    Me? me = Settings().getMe();
+    if (me != null) {
+      Broup broup = me.bros.firstWhere((element) => element.broupId == broupId);
+      broup.updateMessages(message);
+      // Check if the user has the broup page open. if not send a notification
+      if (BroMessagingChangeNotifier().getBroupId() == broupId) {
+        print("page open");
+        broup.readMessages();
+      } else {
+        print("page not open");
+        broup.unreadMessages++;
+        broup.checkReceivedMessages(message);
+        // TODO: send notification
+      }
+      notifyListeners();
+    }
+  }
+
+  messageRead(data) async {
+    print("message read $data");
+    int broupId = data["broup_id"];
+    String timestamp = data["timestamp"];
+    Me? me = Settings().getMe();
+    if (me != null) {
+      Broup broup = me.bros.firstWhere((element) => element.broupId == broupId);
+      broup.updateLastReadMessages(timestamp);
+      notifyListeners();
+    }
+  }
+
+  void joinRoomBroup(int broupId) {
+    this.socket.emit(
+      "join_broup",
+      {
+        "broup_id": broupId,
+      },
+    );
+    leaveSocketsBroup();
+    joinSocketsBroup();
+  }
+
+  joinSocketsSolo() {
     this.socket.on('chat_changed', (data) {
       chatChanged(data);
     });
     this.socket.on('chat_added', (data) {
       chatAdded(data);
     });
+    // these messages will be send in the broup rooms,
+    // but we need to listen to it here
+    this.socket.on('message_received', (data) {
+      messageReceived(data);
+    });
+    this.socket.on('message_read', (data) {
+      messageRead(data);
+    });
   }
 
-  chatChanged(data) async {
-    print("chat changed");
+  joinSocketsBroup() {
   }
 
-  chatAdded(data) async {
-    print("chat added");
+  leaveSocketsSolo() {
+    this.socket.off('chat_changed');
+    this.socket.off('chat_added');
+    this.socket.off('message_received');
+    this.socket.off('message_read');
+  }
+
+  leaveSocketsBroup() {
   }
 
   void leaveRoomSolo(int broId) {
@@ -87,6 +174,13 @@ class SocketServices extends ChangeNotifier {
       "leave_solo",
       {"bro_id": broId},
     );
-    this.socket.off('message_event_chat_changed');
+    leaveSocketsSolo();
+  }
+
+  leaveRoomBroup(int broupId) {
+    this.socket.emit(
+      "leave_broup",
+      {"broup_id": broupId},
+    );
   }
 }

@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:jwt_decode/jwt_decode.dart';
 import 'package:oktoast/oktoast.dart';
 
-import '../../objects/new/me.dart';
+import '../../objects/me.dart';
 import '../../services/auth/models/login_response.dart';
 import 'settings.dart';
 import 'socket_services.dart';
@@ -69,6 +69,13 @@ successfulLogin(LoginResponse loginResponse) async {
   SecureStorage secureStorage = SecureStorage();
   Settings settings = Settings();
 
+  Me? me = loginResponse.getMe();
+  if (me != null) {
+    settings.setMe(me);
+    // don't store email because we don't know it.
+    SocketServices().joinRoomSolo(me.getId());
+  }
+
   String? accessToken = loginResponse.getAccessToken();
   if (accessToken != null) {
     // the access token will be set in memory and local storage.
@@ -85,20 +92,13 @@ successfulLogin(LoginResponse loginResponse) async {
     await secureStorage.setRefreshToken(refreshToken);
   }
 
-  Me? me = loginResponse.getMe();
-  if (me != null) {
-    settings.setMe(me);
-    // don't store email because we don't know it.
-    SocketServices().joinRoomSolo(me.getId());
-  }
   settings.setLoggingIn(false);
+  BroHomeChangeNotifier().notify();
 }
 
 Widget zwaarDevelopersLogo(double width, bool normalMode) {
   return Container(
-      padding: normalMode
-          ? EdgeInsets.only(left: width/3, right: width/3)
-          : EdgeInsets.only(left: width/8, right: width/8),
+      width: width,
       alignment: Alignment.center,
       child: Image.asset("assets/images/Zwaar_Logo.png")
   );

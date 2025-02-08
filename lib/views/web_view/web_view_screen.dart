@@ -118,13 +118,18 @@ class _WebViewScreenState extends State<WebViewScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          backgroundColor: Color(0xff145C9E),
           leading: IconButton(
               icon: Icon(Icons.arrow_back, color: Colors.white),
               onPressed: () {
                 backButtonFunctionality();
               }),
           title: Container(
-              alignment: Alignment.centerLeft, child: Text("Brocast")),
+              alignment: Alignment.centerLeft,
+              child: Text(
+                  "BroCast Login",
+                  style: TextStyle(color: Colors.white)
+              )),
           actions: [
             PopupMenuButton<int>(
                 onSelected: (item) => onSelect(context, item),

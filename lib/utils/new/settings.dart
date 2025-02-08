@@ -1,5 +1,5 @@
 // A class to store anything that might be useful at any point in the app.
-import 'package:brocast/objects/new/me.dart';
+import 'package:brocast/objects/me.dart';
 
 class Settings {
   static final Settings _instance = Settings._internal();
@@ -11,6 +11,8 @@ class Settings {
   int refreshTokenExpiration = 0;
   Me? me;
   bool emojiKeyboardDarkMode = false;
+
+  List<String> doneRoutes = [];
 
   Settings._internal();
 

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../objects/new/bro.dart';
+import '../../../objects/bro.dart';
 import '../../../utils/new/utils.dart';
 
 class BroTileSearch extends StatelessWidget {

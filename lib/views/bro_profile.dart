@@ -1,7 +1,7 @@
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:brocast/utils/new/settings.dart';
 import 'package:brocast/utils/new/socket_services.dart';
-import 'package:brocast/utils/storage.dart';
+import 'package:brocast/utils/new/storage.dart';
 import 'package:brocast/utils/new/utils.dart';
 import 'package:brocast/views/bro_home/bro_home.dart';
 import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
@@ -217,13 +217,18 @@ class _BroProfileState extends State<BroProfile> {
     return PreferredSize(
       preferredSize: const Size.fromHeight(50),
       child: AppBar(
+          backgroundColor: Color(0xff145C9E),
           leading: IconButton(
               icon: Icon(Icons.arrow_back, color: Colors.white),
               onPressed: () {
                 backButtonFunctionality();
               }),
           title: Container(
-              alignment: Alignment.centerLeft, child: Text("Profile")),
+              alignment: Alignment.centerLeft,
+              child: Text(
+                  "Profile",
+                  style: TextStyle(color: Colors.white)
+              )),
           actions: [
             PopupMenuButton<int>(
                 onSelected: (item) => onSelect(context, item),

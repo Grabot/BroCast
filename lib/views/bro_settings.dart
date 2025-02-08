@@ -1,12 +1,14 @@
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:brocast/utils/new/settings.dart';
 import 'package:brocast/utils/new/socket_services.dart';
-import 'package:brocast/utils/storage.dart';
+import 'package:brocast/utils/new/storage.dart';
 import 'package:brocast/utils/new/utils.dart';
 import 'package:brocast/views/bro_home/bro_home.dart';
 import "package:flutter/material.dart";
 import 'package:app_settings/app_settings.dart';
+import 'package:flutter/scheduler.dart';
 import 'bro_profile.dart';
+import 'package:brocast/constants/route_paths.dart' as routes;
 
 class BroSettings extends StatefulWidget {
   BroSettings({required Key key}) : super(key: key);
@@ -33,6 +35,9 @@ class _BroSettingsState extends State<BroSettings> {
     toggleSwitchKeyboard = settings.getEmojiKeyboardDarkMode();
 
     BackButtonInterceptor.add(myInterceptor);
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      settings.doneRoutes.add(routes.ChatRoute);
+    });
   }
 
   bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
@@ -61,21 +66,38 @@ class _BroSettingsState extends State<BroSettings> {
   }
 
   void backButtonFunctionality() {
-    Navigator.pushReplacement(context,
-        MaterialPageRoute(builder: (context) => BroCastHome(key: UniqueKey())));
+    if (settings.doneRoutes.contains(routes.BroHomeRoute)) {
+      // We want to pop until we reach the BroHomeRoute
+      for (int i = 0; i < 200; i++) {
+        String route = settings.doneRoutes.removeLast();
+        Navigator.pop(context);
+        if (route == routes.BroHomeRoute) {
+          break;
+        }
+      }
+    } else {
+      settings.doneRoutes = [];
+      Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (context) => BroCastHome(key: UniqueKey())));
+    }
   }
 
   PreferredSize appBarSettings(BuildContext context) {
     return PreferredSize(
       preferredSize: const Size.fromHeight(50),
       child: AppBar(
+          backgroundColor: Color(0xff145C9E),
           leading: IconButton(
               icon: Icon(Icons.arrow_back, color: Colors.white),
               onPressed: () {
                 backButtonFunctionality();
               }),
           title: Container(
-              alignment: Alignment.centerLeft, child: Text("Settings")),
+              alignment: Alignment.centerLeft,
+              child: Text(
+                  "Settings",
+                  style: TextStyle(color: Colors.white)
+              )),
           actions: [
             PopupMenuButton<int>(
                 onSelected: (item) => onSelect(context, item),

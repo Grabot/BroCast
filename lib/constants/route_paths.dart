@@ -1,4 +1,6 @@
-const String BroRoute = 'Bro';
 const String BroupRoute = 'Broup';
-const String HomeRoute = 'Home';
+const String BroHomeRoute = 'Home';
+const String ChatRoute = 'Chat';
 const String OpeningRoute = 'Opening';
+const String BroMessagingRoute = 'BroMessaging';
+const String SignInRoute = 'SignIn';

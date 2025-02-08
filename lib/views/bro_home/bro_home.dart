@@ -12,14 +12,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 
-import '../../objects/new/bro.dart';
-import '../../objects/new/broup.dart';
-import '../../objects/new/me.dart';
+import '../../objects/bro.dart';
+import '../../objects/broup.dart';
+import '../../objects/me.dart';
 import '../../utils/new/secure_storage.dart';
+import '../../utils/new/storage.dart';
 import '../bro_profile.dart';
 import '../bro_settings.dart';
 import 'bro_home_change_notifier.dart';
 import 'models/bro_tile.dart';
+import 'package:brocast/constants/route_paths.dart' as routes;
 
 class BroCastHome extends StatefulWidget {
   BroCastHome({required Key key}) : super(key: key);
@@ -38,6 +40,7 @@ class _BroCastHomeState extends State<BroCastHome> {
 
   late SocketServices socketServices;
   late Settings settings;
+  // late Storage storage;
 
   late BroHomeChangeNotifier broHomeChangeNotifier;
 
@@ -50,17 +53,20 @@ class _BroCastHomeState extends State<BroCastHome> {
     BackButtonInterceptor.add(myInterceptor);
     socketServices = SocketServices();
     settings = Settings();
+    // storage = Storage();
 
     broHomeChangeNotifier = BroHomeChangeNotifier();
     broHomeChangeNotifier.addListener(broHomeChangeListener);
+    socketServices.addListener(broHomeChangeListener);
     // Wait until page is loaded and then call the broHomeChangeListener
     SchedulerBinding.instance.addPostFrameCallback((_) {
+      settings.doneRoutes.add(routes.BroHomeRoute);
       broHomeChangeListener();
     });
   }
 
   broHomeChangeListener() {
-    print("bro home change listener");
+    print("listen to home");
     if (mounted) {
       Me? me = settings.getMe();
       if (me != null) {
@@ -69,7 +75,13 @@ class _BroCastHomeState extends State<BroCastHome> {
           // Set all bros to be shown, except when the bro is searching.
           shownBros = bros;
         }
-        print("bros set");
+        // Join Broups if not already joined.
+        for (Broup broup in bros) {
+          if (!broup.joinedBroupRoom) {
+            socketServices.joinRoomBroup(broup.getBroupId());
+            broup.joinedBroupRoom = true;
+          }
+        }
       }
       setState(() {});
     }
@@ -139,11 +151,35 @@ class _BroCastHomeState extends State<BroCastHome> {
 
   bool backButtonFunctionality() {
     if (mounted) {
+      if (searchMode) {
+        setState(() {
+          searchMode = false;
+        });
+      } else {
+        exitApp();
+      }
       return true;
     }
     return false;
   }
 
+  exitApp() {
+    Me? me = settings.getMe();
+    if (me != null) {
+      socketServices.leaveRoomSolo(me.getId());
+      for (Broup broup in me.bros) {
+        if (broup.joinedBroupRoom) {
+          socketServices.leaveRoomBroup(broup.getBroupId());
+          broup.joinedBroupRoom = false;
+        }
+      }
+    }
+    if (Platform.isAndroid) {
+      SystemNavigator.pop();
+    } else {
+      exit(0);
+    }
+  }
 
   @override
   void dispose() {
@@ -155,6 +191,7 @@ class _BroCastHomeState extends State<BroCastHome> {
     return PreferredSize(
       preferredSize: const Size.fromHeight(50),
       child: AppBar(
+          backgroundColor: Color(0xff145C9E),
           leading: searchMode
               ? IconButton(
                   icon: Icon(Icons.arrow_back, color: Colors.white),
@@ -163,7 +200,11 @@ class _BroCastHomeState extends State<BroCastHome> {
                   })
               : Container(),
           title: Container(
-              alignment: Alignment.centerLeft, child: Text("Brocast")),
+              alignment: Alignment.centerLeft,
+              child: Text(
+                "Brocast",
+                style: TextStyle(color: Colors.white),
+              )),
           actions: [
             searchMode
                 ? IconButton(
@@ -229,16 +270,7 @@ class _BroCastHomeState extends State<BroCastHome> {
                 builder: (context) => AddBroup(key: UniqueKey())));
         break;
       case 4:
-        // TODO: Should I exit socket, test once chatting works.
-        Me? me = settings.getMe();
-        if (me != null) {
-          socketServices.leaveRoomSolo(me.getId());
-        }
-        if (Platform.isAndroid) {
-          SystemNavigator.pop();
-        } else {
-          exit(0);
-        }
+        exitApp();
         break;
       case 5:
         Me? me = settings.getMe();

@@ -1,6 +1,6 @@
 
 
-import '../../../objects/new/me.dart';
+import '../../../objects/me.dart';
 
 class LoginResponse {
   late bool result;

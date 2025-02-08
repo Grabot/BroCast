@@ -1,9 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:brocast/views/bro_home/bro_home_change_notifier.dart';
-
-import 'bro.dart';
+import '../views/bro_home/bro_home_change_notifier.dart';
 import 'broup.dart';
 
 class Me {
@@ -58,5 +56,6 @@ class Me {
         bros.add(Broup.fromJson(bro));
       }
     }
+    BroHomeChangeNotifier().notify();
   }
 }
