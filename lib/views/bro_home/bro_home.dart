@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:back_button_interceptor/back_button_interceptor.dart';
+import 'package:brocast/services/auth/auth_service_social.dart';
 import 'package:brocast/utils/new/settings.dart';
 import 'package:brocast/utils/new/socket_services.dart';
 import 'package:brocast/utils/new/utils.dart';
@@ -12,7 +13,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 
-import '../../objects/bro.dart';
 import '../../objects/broup.dart';
 import '../../objects/me.dart';
 import '../../utils/new/secure_storage.dart';
@@ -40,7 +40,7 @@ class _BroCastHomeState extends State<BroCastHome> {
 
   late SocketServices socketServices;
   late Settings settings;
-  // late Storage storage;
+  late Storage storage;
 
   late BroHomeChangeNotifier broHomeChangeNotifier;
 
@@ -53,7 +53,7 @@ class _BroCastHomeState extends State<BroCastHome> {
     BackButtonInterceptor.add(myInterceptor);
     socketServices = SocketServices();
     settings = Settings();
-    // storage = Storage();
+    storage = Storage();
 
     broHomeChangeNotifier = BroHomeChangeNotifier();
     broHomeChangeNotifier.addListener(broHomeChangeListener);
@@ -71,8 +71,8 @@ class _BroCastHomeState extends State<BroCastHome> {
       Me? me = settings.getMe();
       if (me != null) {
         bros = me.bros;
-        if (!searchMode) {
-          // Set all bros to be shown, except when the bro is searching.
+        // Set all bros to be shown, except when the bro is searching.
+        if (!searchMode && settings.retrievedData) {
           shownBros = bros;
         }
         // Join Broups if not already joined.
@@ -82,9 +82,98 @@ class _BroCastHomeState extends State<BroCastHome> {
             broup.joinedBroupRoom = true;
           }
         }
+        getBroData();
       }
       setState(() {});
     }
+  }
+
+  getBroData() {
+    // This function is important.
+    // We call it when the page is loaded and also
+    // multiple times later in case `me.bros`
+    // was not filled at the time.
+    // The `retrievedData` flag on the settings will
+    // ensure that we only call this once.
+    Me? me = settings.getMe();
+    // `loggingIn` is set to false when we have finished logging in
+    if (me != null && !settings.loggingIn && !settings.retrievedData) {
+      settings.retrievedData = true;
+      storage.fetchAllBroups().then((broups) {
+        List<int> broupIdsToRetrieve = [];
+        Map<String, Broup> broupMap = {for (var broup in broups) broup.getBroupId().toString(): broup};
+        for (Broup broup in settings.getMe()!.bros) {
+          // Update the properties of the broup from me.bros with the properties from the database
+          Broup? dbBroup = broupMap[broup.getBroupId().toString()];
+          if (dbBroup != null) {
+            broup
+              ..alias = dbBroup.alias
+              ..broIds = dbBroup.broIds
+              ..adminIds = dbBroup.adminIds
+              ..broupName = dbBroup.broupName
+              ..broupDescription = dbBroup.broupDescription
+              ..broupColour = dbBroup.broupColour
+              ..private = dbBroup.private
+              ..lastMessageId = dbBroup.lastMessageId
+              ..avatar = dbBroup.avatar
+              ..messages = dbBroup.messages;
+
+            // Keep the following properties from me.bros
+            // These are from the server and are up to date.
+            broup
+              ..unreadMessages = broup.unreadMessages
+              ..updateBroup = broup.updateBroup
+              ..newMessages = broup.newMessages
+              ..left = broup.left
+              ..mute = broup.mute;
+          }
+          if (broup.updateBroup) {
+            broupIdsToRetrieve.add(broup.getBroupId());
+          }
+        }
+        shownBros = settings.getMe()!.bros;
+        if (broupIdsToRetrieve.isNotEmpty) {
+          retrieveBroups(broupIdsToRetrieve);
+        }
+        setState(() {});
+      });
+    }
+  }
+
+  retrieveBroups(List<int> broupIds) {
+    AuthServiceSocial().retrieveBroups(broupIds).then((broups) {
+      for (Broup broup in settings.getMe()!.bros) {
+        if (broupIds.contains(broup.getBroupId())) {
+          Broup? serverBroup;
+          for (var element in broups) {
+            if (element.getBroupId() == broup.getBroupId()) {
+              serverBroup = element;
+              break;
+            }
+          }
+          if (serverBroup != null) {
+            // We update like this to not lost existing properties like messages
+            broup
+              ..broIds = serverBroup.broIds
+              ..adminIds = serverBroup.adminIds
+              ..alias = serverBroup.alias
+              ..unreadMessages = serverBroup.unreadMessages
+              ..left = serverBroup.left
+              ..mute = serverBroup.mute
+              ..broupName = serverBroup.broupName
+              ..broupDescription = serverBroup.broupDescription
+              ..broupColour = serverBroup.broupColour
+              ..private = serverBroup.private
+              ..lastMessageId = serverBroup.lastMessageId
+              ..updateBroup = serverBroup.updateBroup
+              ..newMessages = serverBroup.newMessages
+              ..avatar = serverBroup.avatar
+              ..messages = serverBroup.messages;
+          }
+        }
+      }
+      setState(() {});
+    });
   }
 
   void onTapEmojiField() {
@@ -167,6 +256,8 @@ class _BroCastHomeState extends State<BroCastHome> {
     Me? me = settings.getMe();
     if (me != null) {
       socketServices.leaveRoomSolo(me.getId());
+      settings.setLoggingIn(true);
+      settings.retrievedData = false;
       for (Broup broup in me.bros) {
         if (broup.joinedBroupRoom) {
           socketServices.leaveRoomBroup(broup.getBroupId());
@@ -222,6 +313,7 @@ class _BroCastHomeState extends State<BroCastHome> {
                       });
                     }),
             PopupMenuButton<int>(
+                icon: Icon(Icons.more_vert, color: getTextColor(Colors.white)),
                 onSelected: (item) => onSelect(context, item),
                 itemBuilder: (context) => [
                       PopupMenuItem<int>(value: 0, child: Text("Profile")),
@@ -252,13 +344,13 @@ class _BroCastHomeState extends State<BroCastHome> {
                 builder: (context) => BroProfile(key: UniqueKey())));
         break;
       case 1:
-        Navigator.pushReplacement(
+        Navigator.push(
             context,
             MaterialPageRoute(
                 builder: (context) => BroSettings(key: UniqueKey())));
         break;
       case 2:
-        Navigator.pushReplacement(
+        Navigator.push(
             context,
             MaterialPageRoute(
                 builder: (context) => FindBros(key: UniqueKey())));
@@ -278,6 +370,8 @@ class _BroCastHomeState extends State<BroCastHome> {
           socketServices.leaveRoomSolo(me.getId());
         }
         settings.logout();
+        settings.setLoggingIn(true);
+        settings.retrievedData = false;
         SecureStorage().logout();
         Navigator.pushReplacement(context,
             MaterialPageRoute(builder: (context) => SignIn(

@@ -128,7 +128,6 @@ class AuthServiceSocial {
   }
 
   Future<bool> readMessages(int broupId) async {
-    print("sending read message");
     String endPoint = "message/read";
     var response = await AuthApi().dio.post(endPoint,
         options: Options(headers: {
@@ -145,6 +144,38 @@ class AuthServiceSocial {
       return false;
     } else {
       return json.containsKey("result");
+    }
+  }
+
+  Future<List<Broup>> retrieveBroups(List<int> broupIds) async {
+    String endPoint = "broup/get";
+    var response = await AuthApi().dio.post(endPoint,
+        options: Options(headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+        }),
+        data: jsonEncode(<String, dynamic> {
+          "broup_ids": broupIds
+        }
+      )
+    );
+
+    Map<String, dynamic> json = response.data;
+    if (!json.containsKey("result")) {
+      return [];
+    } else {
+      if (json["result"]) {
+        if (json.containsKey("broups")) {
+          List<Broup> broups = [];
+          for (var broup in json["broups"]) {
+            broups.add(Broup.fromJson(broup));
+          }
+          return broups;
+        } else {
+          return [];
+        }
+      } else {
+        return [];
+      }
     }
   }
 }

@@ -35,14 +35,12 @@ class Storage {
   }
 
   // Creates the database structure (unless database has already been created)
-  Future _onCreate(
-    Database db,
-    int version,
-  ) async {
+  Future _onCreate(Database db,
+      int version,) async {
     print("Creating database");
     await createTableBroup(db);
+    await createTableMessage(db);
     // await createTableBro(db);
-    // await createTableMessage(db);
   }
 
   createTableBroup(Database db) async {
@@ -64,10 +62,29 @@ class Storage {
             left INTEGER,
             blocked INTEGER,
             lastMessageId INTEGER,
-            avatar TEXT,
             updateBroup INTEGER,
+            newMessages INTEGER,
+            avatar TEXT,
             messages TEXT,
             UNIQUE(broupId) ON CONFLICT REPLACE
+          );
+          ''');
+  }
+
+  createTableMessage(Database db) async {
+    await db.execute('''
+          CREATE TABLE Message (
+            id INTEGER PRIMARY KEY,
+            messageId INTEGER,
+            senderId INTEGER,
+            broupId INTEGER,
+            body TEXT,
+            textMessage TEXT,
+            info INTEGER,
+            timestamp TEXT,
+            isRead INTEGER,
+            data TEXT,
+            UNIQUE(messageId, broupId) ON CONFLICT REPLACE
           );
           ''');
   }
@@ -84,24 +101,6 @@ class Storage {
   //           broName TEXT,
   //           bromotion TEXT,
   //           UNIQUE(broId, broupId) ON CONFLICT REPLACE
-  //         );
-  //         ''');
-  // }
-
-  // createTableMessage(Database db) async {
-  //   await db.execute('''
-  //         CREATE TABLE Message (
-  //           id INTEGER PRIMARY KEY,
-  //           messageId INTEGER,
-  //           senderId INTEGER,
-  //           broupId INTEGER,
-  //           body TEXT,
-  //           textMessage TEXT,
-  //           info INTEGER,
-  //           timestamp TEXT,
-  //           isRead INTEGER,
-  //           data TEXT,
-  //           UNIQUE(messageId, chatId, isBroup) ON CONFLICT REPLACE
   //         );
   //         ''');
   // }
@@ -219,19 +218,26 @@ class Storage {
     );
   }
 
-  // Future<List<Chat>> fetchAllChats() async {
-  //   Database database = await this.database;
-  //   List<Map<String, dynamic>> maps = await database.query('Chat');
-  //   if (maps.isNotEmpty) {
-  //     return maps
-  //         .map((map) => map['isBroup'] == 1
-  //             ? Broup.fromDbMap(map)
-  //             : BroBros.fromDbMap(map))
-  //         .toList();
-  //   }
-  //   return List.empty();
-  // }
-  //
+  Future<List<Broup>> fetchAllBroups() async {
+    Database database = await this.database;
+    List<Map<String, dynamic>> maps = await database.query('Broup');
+    if (maps.isNotEmpty) {
+      return maps
+          .map((map) => Broup.fromDbMap(map))
+          .toList();
+    }
+    return List.empty();
+  }
+
+  Future<int> addMessage(Message message) async {
+    Database database = await this.database;
+    return database.insert(
+      'Message',
+      message.toDbMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
   // Future<Chat?> selectChat(String chatId, String isBroup) async {
   //   Database database = await this.database;
   //   String query = "SELECT * FROM Chat where chatId = " +
@@ -260,15 +266,7 @@ class Storage {
   //   );
   // }
 
-  // Future<int> addMessage(Message message) async {
-  //   Database database = await this.database;
-  //   return database.insert(
-  //     'Message',
-  //     message.toDbMap(),
-  //     conflictAlgorithm: ConflictAlgorithm.replace,
-  //   );
-  // }
-  //
+
   // Future<List<Message>> fetchEverything() async {
   //   Database database = await this.database;
   //   // select * from TABLE_NAME limit 1 offset 2
@@ -280,28 +278,25 @@ class Storage {
   //   return List.empty();
   // }
 
-  // Future<List<Message>> fetchAllMessages(
-  //     int chatId, int isBroup, int offSet) async {
-  //   int limit = 50;
-  //   int setOff = limit * offSet;
-  //   Database database = await this.database;
-  //   String query = "SELECT * FROM Message where"
-  //           " chatId = " +
-  //       chatId.toString() +
-  //       " and"
-  //           " isBroup = " +
-  //       isBroup.toString() +
-  //       " order by messageId desc " +
-  //       " limit " +
-  //       limit.toString() +
-  //       " offset " +
-  //       setOff.toString();
-  //   List<Map<String, dynamic>> maps = await database.rawQuery(query);
-  //   if (maps.isNotEmpty) {
-  //     return maps.map((map) => Message.fromDbMap(map)).toList();
-  //   }
-  //   return List.empty();
-  // }
+  Future<List<Message>> fetchAllMessages(
+      int broupId, int offSet) async {
+    int limit = 50;
+    int setOff = limit * offSet;
+    Database database = await this.database;
+    String query = "SELECT * FROM Message where"
+            " broupId = " +
+        broupId.toString() +
+        " order by messageId desc " +
+        " limit " +
+        limit.toString() +
+        " offset " +
+        setOff.toString();
+    List<Map<String, dynamic>> maps = await database.rawQuery(query);
+    if (maps.isNotEmpty) {
+      return maps.map((map) => Message.fromDbMap(map)).toList();
+    }
+    return List.empty();
+  }
 
   // Future<Message?> selectMessage(int messageId, int isBroup) async {
   //   Database database = await this.database;
@@ -327,9 +322,9 @@ class Storage {
   clearDatabase() async {
     Database database = await this.database;
     await database.execute("DROP TABLE IF EXISTS Broup");
-    // await database.execute("DROP TABLE IF EXISTS Message");
+    await database.execute("DROP TABLE IF EXISTS Message");
     await createTableBroup(database);
-    // await createTableMessage(database);
+    await createTableMessage(database);
   }
 
   clearMessages() async {

@@ -57,6 +57,7 @@ class _OpeningScreenState extends State<OpeningScreen> {
     setState(() {
       isLoading = true;
     });
+    // TODO: If the user logs in with a different user that is in the storage. Make sure you clear the storage before adding the new data.
     loginCheck().then((loggedIn) {
       if (loggedIn) {
         Navigator.push(

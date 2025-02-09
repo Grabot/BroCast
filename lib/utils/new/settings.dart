@@ -4,7 +4,7 @@ import 'package:brocast/objects/me.dart';
 class Settings {
   static final Settings _instance = Settings._internal();
 
-  bool loggingIn = false;
+  bool loggingIn = true;
   String accessToken = "";
   String refreshToken = "";
   int accessTokenExpiration = 0;
@@ -13,6 +13,7 @@ class Settings {
   bool emojiKeyboardDarkMode = false;
 
   List<String> doneRoutes = [];
+  bool retrievedData = false;
 
   Settings._internal();
 

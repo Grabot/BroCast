@@ -75,12 +75,23 @@ class SocketServices extends ChangeNotifier {
 
   chatChanged(data) async {
     print("chat changed $data");
-    var broup = data["broup"];
+    int broupId = data["broup_id"];
+    Me? me = Settings().getMe();
+    if (me != null) {
+      Broup broup = me.bros.firstWhere((element) => element.broupId == broupId);
+      if (data.containsKey("new_broup_colour")) {
+        broup.setBroupColor(data["new_broup_colour"]);
+      }
+      if (data.containsKey("new_broup_description")) {
+        broup.setBroupDescription(data["new_broup_description"]);
+      }
+      Storage().updateBroup(broup);
+      notifyListeners();
+    }
   }
 
   chatAdded(data) async {
     var broup = data["broup"];
-    print(broup);
     Me? me = Settings().getMe();
     if (me != null) {
       // Add the broup. It's not possible that it already exists
@@ -96,21 +107,15 @@ class SocketServices extends ChangeNotifier {
   messageReceived(data) async {
     print("message received $data");
     Message message = Message.fromJson(data);
+    Storage storage = Storage();
+    storage.addMessage(message);
     int broupId = message.broupId;
     Me? me = Settings().getMe();
     if (me != null) {
       Broup broup = me.bros.firstWhere((element) => element.broupId == broupId);
       broup.updateMessages(message);
-      // Check if the user has the broup page open. if not send a notification
-      if (BroMessagingChangeNotifier().getBroupId() == broupId) {
-        print("page open");
-        broup.readMessages();
-      } else {
-        print("page not open");
-        broup.unreadMessages++;
-        broup.checkReceivedMessages(message);
-        // TODO: send notification
-      }
+
+      storage.updateBroup(broup);
       notifyListeners();
     }
   }
@@ -123,6 +128,7 @@ class SocketServices extends ChangeNotifier {
     if (me != null) {
       Broup broup = me.bros.firstWhere((element) => element.broupId == broupId);
       broup.updateLastReadMessages(timestamp);
+      Storage().updateBroup(broup);
       notifyListeners();
     }
   }

@@ -74,6 +74,9 @@ class _BroSettingsState extends State<BroSettings> {
         if (route == routes.BroHomeRoute) {
           break;
         }
+        if (settings.doneRoutes.length == 0) {
+          break;
+        }
       }
     } else {
       settings.doneRoutes = [];
@@ -100,6 +103,7 @@ class _BroSettingsState extends State<BroSettings> {
               )),
           actions: [
             PopupMenuButton<int>(
+                icon: Icon(Icons.more_vert, color: getTextColor(Colors.white)),
                 onSelected: (item) => onSelect(context, item),
                 itemBuilder: (context) => [
                       PopupMenuItem<int>(value: 0, child: Text("Profile")),

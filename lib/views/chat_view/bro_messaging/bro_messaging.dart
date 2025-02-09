@@ -17,6 +17,7 @@ import 'package:intl/intl.dart';
 
 import '../../bro_profile.dart';
 import '../../bro_settings.dart';
+import '../chat_details/chat_details.dart';
 import 'models/message_tile.dart';
 import 'package:brocast/constants/route_paths.dart' as routes;
 
@@ -458,6 +459,9 @@ class _BroMessagingState extends State<BroMessaging> {
           if (route == routes.BroHomeRoute) {
             break;
           }
+          if (settings.doneRoutes.length == 0) {
+            break;
+          }
         }
       } else {
         // TODO: How to test this?
@@ -471,39 +475,52 @@ class _BroMessagingState extends State<BroMessaging> {
   PreferredSize appBarChat() {
     return PreferredSize(
       preferredSize: const Size.fromHeight(50),
-      child: AppBar(
-          leading: IconButton(
-              icon:
-                  Icon(Icons.arrow_back, color: getTextColor(chat.getColor())),
+      child: InkWell(
+        onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      ChatDetails(
+                          key: UniqueKey(),
+                          chat: chat
+                      )));
+        },
+        child: Ink(
+          color: chat.getColor(),
+          child: AppBar(
+            leading: IconButton(
+              icon: Icon(Icons.arrow_back, color: getTextColor(chat.getColor())),
               onPressed: () {
                 backButtonFunctionality();
-              }),
-          backgroundColor: chat.getColor(),
-          title: InkWell(
-              onTap: () {
-                // Navigator.pushReplacement(
-                //     context,
-                //     MaterialPageRoute(
-                //         builder: (context) =>
-                //             BroChatDetails(key: UniqueKey(), chat: chat)));
               },
-              child: Container(
-                  alignment: Alignment.centerLeft,
-                  color: Colors.transparent,
-                  child: Text(chat.getBroupNameOrAlias(),
-                      style: TextStyle(
-                          color: getTextColor(chat.getColor()),
-                          fontSize: 20)))),
-          actions: [
-            PopupMenuButton<int>(
+            ),
+            backgroundColor: Colors.transparent,
+            title: Container(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                chat.getBroupNameOrAlias(),
+                style: TextStyle(
+                  color: getTextColor(chat.getColor()),
+                  fontSize: 20,
+                ),
+              ),
+            ),
+            actions: [
+              PopupMenuButton<int>(
+                icon: Icon(Icons.more_vert, color: getTextColor(chat.getColor())),
                 onSelected: (item) => onSelectChat(context, item),
                 itemBuilder: (context) => [
-                      PopupMenuItem<int>(value: 0, child: Text("Profile")),
-                      PopupMenuItem<int>(value: 1, child: Text("Settings")),
-                      PopupMenuItem<int>(value: 2, child: Text("Chat details")),
-                      PopupMenuItem<int>(value: 3, child: Text("Home"))
-                    ])
-          ]),
+                  PopupMenuItem<int>(value: 0, child: Text("Profile")),
+                  PopupMenuItem<int>(value: 1, child: Text("Settings")),
+                  PopupMenuItem<int>(value: 2, child: Text("Chat details")),
+                  PopupMenuItem<int>(value: 3, child: Text("Home")),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 
@@ -522,11 +539,14 @@ class _BroMessagingState extends State<BroMessaging> {
                 builder: (context) => BroSettings(key: UniqueKey())));
         break;
       case 2:
-        // Navigator.pushReplacement(
-        //     context,
-        //     MaterialPageRoute(
-        //         builder: (context) =>
-        //             BroChatDetails(key: UniqueKey(), chat: chat)));
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    ChatDetails(
+                        key: UniqueKey(),
+                        chat: chat
+                    )));
         break;
       case 3:
         Navigator.pushReplacement(

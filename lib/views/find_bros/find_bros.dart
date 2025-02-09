@@ -11,6 +11,8 @@ import '../add_broup.dart';
 import '../bro_profile.dart';
 import '../bro_settings.dart';
 import 'models/bro_tile_search.dart';
+import 'package:brocast/constants/route_paths.dart' as routes;
+
 
 class FindBros extends StatefulWidget {
   FindBros({required Key key}) : super(key: key);
@@ -154,6 +156,26 @@ class _FindBrosState extends State<FindBros> {
         showEmojiKeyboard = false;
       });
     } else {
+      if (settings.doneRoutes.contains(routes.BroHomeRoute)) {
+        // We want to pop until we reach the BroHomeRoute
+        // We remove one, because it's this page.
+        settings.doneRoutes.removeLast();
+        for (int i = 0; i < 200; i++) {
+          String route = settings.doneRoutes.removeLast();
+          Navigator.pop(context);
+          if (route == routes.BroHomeRoute) {
+            break;
+          }
+          if (settings.doneRoutes.length == 0) {
+            break;
+          }
+        }
+      } else {
+        // TODO: How to test this?
+        settings.doneRoutes = [];
+        Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (context) => BroCastHome(key: UniqueKey())));
+      }
       Navigator.pushReplacement(
           context,
           MaterialPageRoute(
@@ -179,6 +201,7 @@ class _FindBrosState extends State<FindBros> {
               )),
           actions: [
             PopupMenuButton<int>(
+                icon: Icon(Icons.more_vert, color: getTextColor(Colors.white)),
                 onSelected: (item) => onSelect(context, item),
                 itemBuilder: (context) => [
                       PopupMenuItem<int>(value: 0, child: Text("Profile")),

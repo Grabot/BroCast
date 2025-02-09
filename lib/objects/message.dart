@@ -52,8 +52,9 @@ class Message {
     map['broupId'] = broupId;
     map['body'] = body;
     map['textMessage'] = textMessage;
-    map['info'] = info;
+    map['info'] = info ? 1 : 0;
     map['timestamp'] = timestamp;
+    map['isRead'] = isRead;
     map['data'] = data;
     return map;
   }
@@ -80,7 +81,10 @@ class Message {
       textMessage = json['text_message'];
     }
     info = json['info'];
-    timestamp = json['timestamp'];
+    this.timestamp = json['timestamp'];
+    if (!timestamp.endsWith("Z")) {
+      this.timestamp = timestamp + "Z";
+    }
     if (json.containsKey('data')) {
       data = json['data'];
     }
