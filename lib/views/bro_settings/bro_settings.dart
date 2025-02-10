@@ -1,13 +1,13 @@
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:brocast/utils/new/settings.dart';
+import 'package:brocast/utils/new/shared.dart';
 import 'package:brocast/utils/new/socket_services.dart';
 import 'package:brocast/utils/new/storage.dart';
 import 'package:brocast/utils/new/utils.dart';
 import 'package:brocast/views/bro_home/bro_home.dart';
 import "package:flutter/material.dart";
-import 'package:app_settings/app_settings.dart';
 import 'package:flutter/scheduler.dart';
-import 'bro_profile.dart';
+import '../bro_profile/bro_profile.dart';
 import 'package:brocast/constants/route_paths.dart' as routes;
 
 class BroSettings extends StatefulWidget {
@@ -52,22 +52,17 @@ class _BroSettingsState extends State<BroSettings> {
   }
 
   void toggledEmojiKeyboardDarkMode(darkValue) {
-    // storage.selectUser().then((value) {
-    //   if (value != null) {
-    //     // This has to be true, otherwise he couldn't have logged in!
-    //     value.keyboardDarkMode = darkValue ? 1 : 0;
-    //     storage.updateUser(value).then((value) {});
-    //   }
-    // });
-    settings.setEmojiKeyboardDarkMode(darkValue);
-    setState(() {
-      toggleSwitchKeyboard = darkValue;
+    HelperFunction.setDarkKeyboard(darkValue).then((value) {
+      settings.setEmojiKeyboardDarkMode(darkValue);
+      setState(() {
+        toggleSwitchKeyboard = darkValue;
+      });
     });
   }
 
   void backButtonFunctionality() {
     if (settings.doneRoutes.contains(routes.BroHomeRoute)) {
-      // We want to pop until we reach the BroHomeRoute
+      settings.doneRoutes.removeLast();
       for (int i = 0; i < 200; i++) {
         String route = settings.doneRoutes.removeLast();
         Navigator.pop(context);
@@ -116,16 +111,51 @@ class _BroSettingsState extends State<BroSettings> {
   void onSelect(BuildContext context, int item) {
     switch (item) {
       case 0:
-        Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (context) => BroProfile(key: UniqueKey())));
+        // Navigate to profile. It's possible he's been there before.
+        if (settings.doneRoutes.contains(routes.ProfileRoute)) {
+          // We want to pop until we reach the BroHomeRoute
+          // We remove one, because it's this page.
+          settings.doneRoutes.removeLast();
+          for (int i = 0; i < 200; i++) {
+            String route = settings.doneRoutes.removeLast();
+            Navigator.pop(context);
+            if (route == routes.ProfileRoute) {
+              break;
+            }
+            if (settings.doneRoutes.length == 0) {
+              break;
+            }
+          }
+        } else {
+          // Probably he's not been there before, so we just push it.
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => BroProfile(key: UniqueKey())));
+        }
         break;
       case 1:
-        Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (context) => BroCastHome(key: UniqueKey())));
+        // Navigate to Home
+        if (settings.doneRoutes.contains(routes.BroHomeRoute)) {
+          // We want to pop until we reach the BroHomeRoute
+          // We remove one, because it's this page.
+          settings.doneRoutes.removeLast();
+          for (int i = 0; i < 200; i++) {
+            String route = settings.doneRoutes.removeLast();
+            Navigator.pop(context);
+            if (route == routes.BroHomeRoute) {
+              break;
+            }
+            if (settings.doneRoutes.length == 0) {
+              break;
+            }
+          }
+        } else {
+          // TODO: How to test this?
+          settings.doneRoutes = [];
+          Navigator.pushReplacement(context,
+              MaterialPageRoute(builder: (context) => BroCastHome(key: UniqueKey())));
+        }
         break;
     }
   }
@@ -133,6 +163,7 @@ class _BroSettingsState extends State<BroSettings> {
   clearMessages() async {
     await storage.clearMessages();
     showToastMessage("Messages cleared");
+    Navigator.of(context).pop();
   }
 
   @override
@@ -144,7 +175,12 @@ class _BroSettingsState extends State<BroSettings> {
             Expanded(
               child: SingleChildScrollView(
                 reverse: true,
-                child: Column(children: [
+                child: Column(
+                    children: [
+                      Container(
+                          child: Text("BroCast",
+                              style: TextStyle(
+                                  color: Colors.white, fontSize: 30))),
                   Container(
                       alignment: Alignment.center,
                       child:
@@ -163,20 +199,25 @@ class _BroSettingsState extends State<BroSettings> {
                     ],
                   ),
                   SizedBox(height: 20),
-                  // TextButton(
-                  //   style: ButtonStyle(
-                  //     foregroundColor:
-                  //         MaterialStateProperty.all<Color>(Colors.blue),
-                  //   ),
-                  //   onPressed: AppSettings.openNotificationSettings,
-                  //   child: Text('Open notification Settings'),
-                  // ),
                   TextButton(
                     style: ButtonStyle(
                       foregroundColor:
-                      MaterialStateProperty.all<Color>(Colors.blue),
+                          WidgetStateProperty.all<Color>(Colors.blue),
                     ),
-                    onPressed: clearMessages,
+                    // onPressed: AppSettings.openNotificationSettings,
+                    onPressed: () {
+                      print("TODO: implement!");
+                    },
+                    child: Text('Open notification Settings'),
+                  ),
+                  TextButton(
+                    style: ButtonStyle(
+                      foregroundColor:
+                      WidgetStateProperty.all<Color>(Colors.blue),
+                    ),
+                    onPressed: () {
+                      showDialogClearMessages(context);
+                    },
                     child: Text('clear all messages'),
                   ),
                   SizedBox(height: 150),
@@ -185,5 +226,29 @@ class _BroSettingsState extends State<BroSettings> {
             ),
           ]),
         ));
+  }
+
+  showDialogClearMessages(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: new Text("Are you sure?\nThis will clear ALL your messages!"),
+            actions: <Widget>[
+              new TextButton(
+                child: new Text("Cancel"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              new TextButton(
+                child: new Text("Clear"),
+                onPressed: () {
+                  clearMessages();
+                },
+              ),
+            ],
+          );
+        });
   }
 }

@@ -65,10 +65,10 @@ class Message {
     broupId = map['broupId'];
     body = map['body'];
     textMessage = map['textMessage'];
-    info = map['info'];
+    info = map['info'] == 1;
     timestamp = map['timestamp'];
     data = map['data'];
-    isRead = 0;
+    isRead = map['isRead'];
     clicked = false;
   }
 

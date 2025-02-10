@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:brocast/constants/base_url.dart';
 import 'package:brocast/utils/new/utils.dart';
-import 'package:brocast/utils/shared.dart';
+import 'package:brocast/utils/new/shared.dart';
 import 'package:brocast/views/bro_home/bro_home.dart';
 import 'package:brocast/views/sign_in/signin.dart';
 import 'package:flutter/material.dart';

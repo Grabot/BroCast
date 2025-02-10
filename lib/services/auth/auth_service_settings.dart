@@ -81,4 +81,59 @@ class AuthServiceSettings {
       return json["result"];
     }
   }
+
+  Future<String> changeBromotion(String bromotion) async {
+    String endPoint = "change/bromotion";
+    var response = await AuthApi().dio.post(endPoint,
+        options: Options(headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+        }),
+        data: jsonEncode(<String, dynamic>{
+          "bromotion": bromotion,
+        }
+      )
+    );
+
+    Map<String, dynamic> json = response.data;
+    if (!json.containsKey("result")) {
+      return "Something went wrong";
+    } else {
+      if (json["result"]) {
+        return "Bromotion changed";
+      } else {
+        if (!json.containsKey("message")) {
+          return json["message"];
+        }
+        return "Bromotion not changed";
+      }
+    }
+  }
+
+  Future<String> changePassword(String oldPassword, String newPassword) async {
+    String endPoint = "change/password";
+    var response = await AuthApi().dio.post(endPoint,
+        options: Options(headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+        }),
+        data: jsonEncode(<String, dynamic>{
+          "old_password": oldPassword,
+          "new_password": newPassword,
+        }
+      )
+    );
+
+    Map<String, dynamic> json = response.data;
+    if (!json.containsKey("result")) {
+      return "Something went wrong";
+    } else {
+      if (json["result"]) {
+        return "Password changed";
+      } else {
+        if (!json.containsKey("message")) {
+          return json["message"];
+        }
+        return "Password not changed";
+      }
+    }
+  }
 }

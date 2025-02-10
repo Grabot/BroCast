@@ -113,92 +113,8 @@ class Storage {
   //     conflictAlgorithm: ConflictAlgorithm.replace,
   //   );
   // }
-  //
-  // Future<Bro?> selectBro(String broId, String broupId) async {
-  //   Database database = await this.database;
-  //   String query = "SELECT * FROM Bro where broId = " +
-  //       broId +
-  //       " and broupId = " +
-  //       broupId;
-  //   List<Map<String, dynamic>> bro = await database.rawQuery(query);
-  //   if (bro.length != 1) {
-  //     return null;
-  //   } else {
-  //     if (bro[0]["added"] == 1) {
-  //       return BroAdded.fromDbMap(bro[0]);
-  //     } else {
-  //       return BroNotAdded.fromDbMap(bro[0]);
-  //     }
-  //   }
-  // }
-  //
-  // Future<List<Bro>> fetchAllBrosOfBroup(String broupId) async {
-  //   Database database = await this.database;
-  //   String query = "SELECT * FROM Bro where broupId = " + broupId;
-  //   List<Map<String, dynamic>> bros = await database.rawQuery(query);
-  //   if (bros.isNotEmpty) {
-  //     return bros
-  //         .map((map) => map['added'] == 1
-  //             ? BroAdded.fromDbMap(map)
-  //             : BroNotAdded.fromDbMap(map))
-  //         .toList();
-  //   }
-  //   return List.empty();
-  // }
-  //
-  // Future<int> updateBro(Bro bro, String broupId) async {
-  //   Database database = await this.database;
-  //   return database.update(
-  //     'Bro',
-  //     bro.toDbMap(),
-  //     where: 'broId = ? and broupId = ?',
-  //     whereArgs: [bro.id, broupId],
-  //     conflictAlgorithm: ConflictAlgorithm.replace,
-  //   );
-  // }
-
-  // Future<int> deleteBro(String broId, String broupId) async {
-  //   Database database = await this.database;
-  //   return database.delete(
-  //     'Bro',
-  //     where: 'broId = ? and broupId = ?',
-  //     whereArgs: [broId, broupId],
-  //   );
-  // }
-
-  // Future<int> addUser(User user) async {
-  //   Database database = await this.database;
-  //   return database.insert(
-  //     'User',
-  //     user.toDbMap(),
-  //     conflictAlgorithm: ConflictAlgorithm.replace,
-  //   );
-  // }
-
-  // Future<User?> selectUser() async {
-  //   Database database = await this.database;
-  //   String query = "SELECT * FROM User";
-  //   List<Map<String, dynamic>> user = await database.rawQuery(query);
-  //   if (user.length != 1) {
-  //     return null;
-  //   } else {
-  //     return User.fromDbMap(user[0]);
-  //   }
-  // }
-  //
-  // Future<int> updateUser(User user) async {
-  //   Database database = await this.database;
-  //   return database.update(
-  //     'User',
-  //     user.toDbMap(),
-  //     where: 'id = ?',
-  //     whereArgs: [user.id],
-  //     conflictAlgorithm: ConflictAlgorithm.replace,
-  //   );
-  // }
 
   Future<int> addBroup(Broup broup) async {
-    print("adding broup");
     Database database = await this.database;
     return database.insert(
       'Broup',
@@ -238,47 +154,27 @@ class Storage {
     );
   }
 
-  // Future<Chat?> selectChat(String chatId, String isBroup) async {
-  //   Database database = await this.database;
-  //   String query = "SELECT * FROM Chat where chatId = " +
-  //       chatId +
-  //       " and isBroup = " +
-  //       isBroup;
-  //   List<Map<String, dynamic>> chat = await database.rawQuery(query);
-  //   if (chat.length != 1) {
-  //     return null;
-  //   } else {
-  //     if (chat[0]["isBroup"] == 1) {
-  //       return Broup.fromDbMap(chat[0]);
-  //     } else {
-  //       return BroBros.fromDbMap(chat[0]);
-  //     }
-  //   }
-  // }
+  Future<int> updateMessage(Message message) async {
+    Database database = await this.database;
+    return database.update(
+      'Message',
+      message.toDbMap(),
+      where: 'messageId = ? and broupId = ?',
+      whereArgs: [message.messageId, message.broupId],
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
 
+  Future<int> deleteChat(int broupId) async {
+    Database database = await this.database;
+    return database.delete(
+      'Message',
+      where: 'broupId = ?',
+      whereArgs: [broupId],
+    );
+  }
 
-  // Future<int> deleteChat(Chat chat) async {
-  //   Database database = await this.database;
-  //   return database.delete(
-  //     'Chat',
-  //     where: 'chatId = ? and isBroup = ?',
-  //     whereArgs: [chat.id, chat.broup],
-  //   );
-  // }
-
-
-  // Future<List<Message>> fetchEverything() async {
-  //   Database database = await this.database;
-  //   // select * from TABLE_NAME limit 1 offset 2
-  //   String query = "SELECT * FROM Message";
-  //   List<Map<String, dynamic>> maps = await database.rawQuery(query);
-  //   if (maps.isNotEmpty) {
-  //     return maps.map((map) => Message.fromDbMap(map)).toList();
-  //   }
-  //   return List.empty();
-  // }
-
-  Future<List<Message>> fetchAllMessages(
+  Future<List<Message>> fetchMessages(
       int broupId, int offSet) async {
     int limit = 50;
     int setOff = limit * offSet;
@@ -298,27 +194,6 @@ class Storage {
     return List.empty();
   }
 
-  // Future<Message?> selectMessage(int messageId, int isBroup) async {
-  //   Database database = await this.database;
-  //   String query = "SELECT * FROM Message where messageId = " +
-  //       messageId.toString() +
-  //       " isBroup = " +
-  //       isBroup.toString();
-  //   List<Map<String, dynamic>> message = await database.rawQuery(query);
-  //   if (message.length != 1) {
-  //     return null;
-  //   } else {
-  //     return Message.fromDbMap(message[0]);
-  //   }
-  // }
-
-  // clearChatTable() async {
-  //   Database database = await this.database;
-  //   await database.execute("DROP TABLE IF EXISTS Broup");
-  //   await createTableBroup(database);
-  //   await createTableBro(database);
-  // }
-
   clearDatabase() async {
     Database database = await this.database;
     await database.execute("DROP TABLE IF EXISTS Broup");
@@ -328,8 +203,8 @@ class Storage {
   }
 
   clearMessages() async {
-    // Database database = await this.database;
-    // await database.execute("DROP TABLE IF EXISTS Message");
-    // await createTableMessage(database);
+    Database database = await this.database;
+    await database.execute("DROP TABLE IF EXISTS Message");
+    await createTableMessage(database);
   }
 }

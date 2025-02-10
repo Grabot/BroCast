@@ -15,8 +15,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:intl/intl.dart';
 
-import '../../bro_profile.dart';
-import '../../bro_settings.dart';
+import '../../bro_profile/bro_profile.dart';
+import '../../bro_settings/bro_settings.dart';
 import '../chat_details/chat_details.dart';
 import 'models/message_tile.dart';
 import 'package:brocast/constants/route_paths.dart' as routes;
@@ -51,6 +51,8 @@ class _BroMessagingState extends State<BroMessaging> {
       new TextEditingController();
   final formKey = GlobalKey<FormState>();
 
+  ScrollController messageScrollController = ScrollController();
+
   late Broup chat;
   late Storage storage;
 
@@ -62,18 +64,17 @@ class _BroMessagingState extends State<BroMessaging> {
     storage = Storage();
     socketServices.checkConnection();
     socketServices.addListener(messageViewListener);
-    broMessageController.addListener(messageViewListener);
+    broMessagingChangeNotifier.addListener(messageViewListener);
     broMessagingChangeNotifier.setBroupId(chat.getBroupId());
 
     BackButtonInterceptor.add(myInterceptor);
-
-    // TODO: Retrieve messages from db if redirected straight to this page.
 
     messageScrollController.addListener(() {
       if (!busyRetrieving && !allMessagesDBRetrieved) {
         double distanceToTop =
             messageScrollController.position.maxScrollExtent -
                 messageScrollController.position.pixels;
+        print("distance to top: $distanceToTop");
         if (distanceToTop < 1000) {
           busyRetrieving = true;
           amountViewed += 1;
@@ -84,26 +85,25 @@ class _BroMessagingState extends State<BroMessaging> {
 
     SchedulerBinding.instance.addPostFrameCallback((_) {
       settings.doneRoutes.add(routes.ChatRoute);
-      // TODO: first retrieve message when needed?
-      // When the page is loaded we consider all messages as read
-      chat.readMessages();
+
+      getMessages(0);
     });
   }
 
   messageViewListener() {
-    print("update message view");
     setState(() {
     });
   }
 
   @override
   void dispose() {
-    // notificationUtil.clearChat();
+    // We were just on the messaging page, so we consider all messages as read
+    chat.unreadMessages = 0;
+    broMessagingChangeNotifier.setBroupId(-1);
     focusAppendText.dispose();
     focusEmojiTextField.dispose();
     socketServices.removeListener(messageViewListener);
     broMessagingChangeNotifier.removeListener(messageViewListener);
-    broMessagingChangeNotifier.setBroupId(-1);
     broMessageController.dispose();
     appendTextMessageController.dispose();
     BackButtonInterceptor.remove(myInterceptor);
@@ -116,140 +116,107 @@ class _BroMessagingState extends State<BroMessaging> {
   }
 
   getMessages(int page) {
+    print("getting messages");
     setState(() {
       isLoading = true;
     });
-    // List<Message> messagesServer = [];
-    // List<Message> messagesDB = [];
-    // bool gotServer = false;
-    // bool gotLocalDB = false;
+    List<Message> messagesServer = [];
+    List<Message> messagesDB = [];
+    bool gotServer = false;
+    bool gotLocalDB = false;
     // get messages from the server
-    // get.getMessages(settings.getToken(), chat.id).then((val) {
-    //   if (!(val is String)) {
-    //     gotServer = true;
-    //     List<Message> messes = val;
-    //     if (messes.length != 0) {
-    //       messagesServer = messes;
-    //     }
-    //     storeMessages(messes);
-    //   } else {
-    //     gotServer = false;
-    //     // token validation probably failed, log in again
-    //     storage.selectUser().then((user) async {
-    //       if (user != null) {
-    //         Auth auth = Auth();
-    //         auth.signInUser(user).then((value) {
-    //           if (value) {
-    //             // If the user logged in again we will retrieve messages again.
-    //             getMessages(page);
-    //           }
-    //         });
-    //       }
-    //     });
-    //   }
-    //
-    //   if (gotLocalDB && gotServer) {
-    //     mergeMessages(messagesServer + messagesDB);
-    //     // Set date tiles, but only if all the messages are retrieved
-    //     setState(() {
-    //       if (this.messages.length != 0) {
-    //         setDateTiles();
-    //       }
-    //     });
-    //     chat.unreadMessages = 0;
-    //   }
-    //   if (gotServer) {
-    //     socketServices.socket.emit(
-    //       "message_read",
-    //       {"bro_id": settings.getBroId(), "bros_bro_id": chat.id},
-    //     );
-    //   }
-    //   setState(() {
-    //     isLoading = false;
-    //   });
-    // });
+    if (chat.newMessages) {
+      print("get from server");
+      AuthServiceSocial().retrieveMessages(chat.getBroupId(), chat.lastMessageId).then((value) {
+        gotServer = true;
+        if (value.isNotEmpty) {
+          messagesServer = value;
+        }
+        if (gotLocalDB && gotServer) {
+          mergeMessages(messagesServer + messagesDB);
+        }
+      });
+    } else {
+      print("no new messages");
+      gotServer = true;
+      // When the page is loaded we consider all messages as read
+      chat.readMessages();
+    }
     // But also load what you have from your local database
-    // storage.fetchAllMessages(chat.id, 0, 0).then((val) {
-    //   // Limit set to 50. If it retrieves less it means that it can't and all the messages have been retrieved.
-    //   if (val.length != 50) {
-    //     allMessagesDBRetrieved = true;
-    //   }
-    //   List<Message> messes = val;
-    //   if (messes.length != 0) {
-    //     messagesDB = messes;
-    //   }
-    //   gotLocalDB = true;
-    //   if (gotLocalDB && gotServer) {
-    //     mergeMessages(messagesServer + messagesDB);
-    //     // Set date tiles, but only if all the messages are retrieved
-    //     setState(() {
-    //       if (this.messages.length != 0) {
-    //         setDateTiles();
-    //       }
-    //     });
-    //     chat.unreadMessages = 0;
-    //   }
-    // });
+    storage.fetchMessages(chat.getBroupId(), 0).then((val) {
+      gotLocalDB = true;
+      // Limit set to 50. If it retrieves less it means that it can't and all the messages have been retrieved.
+      print("length of retrieved messages: ${val.length}");
+      if (val.length != 50) {
+        print("all messssages retrieved");
+        allMessagesDBRetrieved = true;
+      }
+      if (val.length != 0) {
+        messagesDB = val;
+      }
+      if (gotLocalDB && gotServer) {
+        mergeMessages(messagesServer + messagesDB);
+      }
+    });
   }
 
   fetchExtraMessages(int offSet) {
-    // storage.fetchAllMessages(chat.id, 0, offSet).then((val) {
-    //   // Limit set to 50. If it retrieves less it means that it can't and all the messages have been retrieved.
-    //   if (val.length != 50) {
-    //     allMessagesDBRetrieved = true;
-    //   }
-    //   if (val.length != 0) {
-    //     mergeMessages(val);
-    //     // Set date tiles, but only if all the messages are retrieved
-    //     setState(() {
-    //       if (this.messages.length != 0) {
-    //         setDateTiles();
-    //       }
-    //     });
-    //   }
-    //   busyRetrieving = false;
-    // });
+    storage.fetchMessages(chat.getBroupId(), offSet).then((val) {
+      // Limit set to 50. If it retrieves less it means that it can't
+      // and all the messages have been retrieved.
+      if (val.length != 50) {
+        allMessagesDBRetrieved = true;
+      }
+      if (val.length != 0) {
+        mergeMessages(val);
+      }
+      busyRetrieving = false;
+    });
   }
 
-  // storeMessages(List<Message> messages) {
-  //   for (Message message in messages) {
-  //     if (message.id > 0) {
-  //       storage.addMessage(message).then((value) {});
-  //     }
-  //   }
-  // }
+  mergeMessages(List<Message> incomingMessages) {
+    List<Message> newMessages = removeDuplicates(incomingMessages);
+    if (chat.messages.length != 0 && newMessages.isNotEmpty) {
+      // id 0 is a date tile
+      int lastId = chat.messages[chat.messages.length - 1].messageId;
+      if (lastId == 0) {
+        lastId = chat.messages[chat.messages.length - 2].messageId;
+      }
+      if (lastId <= newMessages[0].messageId) {
+        newMessages = newMessages.where((x) => x.messageId < lastId).toList();
+      }
+      chat.messages = chat.messages.where((x) => x.messageId != 0).toList();
+    }
+    chat.messages.addAll(newMessages);
+    chat.messages.sort((b, a) => a.timestamp.compareTo(b.timestamp));
+    // Set date tiles, but only if all the messages are retrieved
+    setState(() {
+      if (chat.messages.length != 0) {
+        setDateTiles();
+        if (chat.messages[0].messageId <= 0) {
+          chat.lastMessageId = chat.messages[1].messageId;
+        } else {
+          chat.lastMessageId = chat.messages[0].messageId;
+        }
+      }
+      isLoading = false;
+    });
+  }
 
-  // mergeMessages(List<Message> incomingMessages) {
-  //   List<Message> newMessages = removeDuplicates(incomingMessages);
-  //   if (this.messages.length != 0) {
-  //     int lastId = this.messages[this.messages.length - 1].id;
-  //     if (lastId == 0) {
-  //       lastId = this.messages[this.messages.length - 2].id;
-  //     }
-  //     if (lastId <= newMessages[0].id) {
-  //       newMessages = newMessages.where((x) => x.id < lastId).toList();
-  //     }
-  //     this.messages = this.messages.where((x) => x.id != 0).toList();
-  //   }
-  //   this.messages.addAll(newMessages);
-  //   this.messages.sort((b, a) => a.timestamp.compareTo(b.timestamp));
-  // }
+  List<Message> removeDuplicates(List<Message> newMessages) {
+    // It's possible that certain messages were already in the list
+    List<int> seenMessageIds = chat.messages.map((e) => e.messageId).toList();
+    List<Message> noDuplicates = [];
 
-  // List<Message> removeDuplicates(List<Message> newMessages) {
-  //   List<Message> noDuplicates = [];
-  //   for (Message message in newMessages) {
-  //     bool notAdded = true;
-  //     for (Message messageNoDuplicate in noDuplicates) {
-  //       if (message.id == messageNoDuplicate.id) {
-  //         notAdded = false;
-  //       }
-  //     }
-  //     if (notAdded) {
-  //       noDuplicates.add(message);
-  //     }
-  //   }
-  //   return noDuplicates;
-  // }
+    for (Message message in newMessages) {
+      if (!seenMessageIds.contains(message.messageId)) {
+        seenMessageIds.add(message.messageId);
+        noDuplicates.add(message);
+      }
+    }
+
+    return noDuplicates;
+  }
 
   setDateTiles() {
     DateTime now = DateTime.now();
@@ -293,6 +260,16 @@ class _BroMessagingState extends State<BroMessaging> {
         if (dayMessage == yesterday) {
           timeMessageTile = "Yesterday";
         }
+
+        if (timeMessage.body == "Today") {
+          if (!chat.todayTileAdded) {
+            chat.todayTileAdded = true;
+            this.chat.messages.insert(i, timeMessage);
+          }
+        } else {
+          this.chat.messages.insert(i, timeMessage);
+        }
+
         this.chat.messages.insert(i, timeMessage);
         timeMessage = new Message(
             0,
@@ -306,7 +283,15 @@ class _BroMessagingState extends State<BroMessaging> {
         );
       }
     }
-    this.chat.messages.insert(this.chat.messages.length, timeMessage);
+
+    if (timeMessage.body == "Today") {
+      if (!chat.todayTileAdded) {
+        chat.todayTileAdded = true;
+        this.chat.messages.insert(this.chat.messages.length, timeMessage);
+      }
+    } else {
+      this.chat.messages.insert(this.chat.messages.length, timeMessage);
+    }
   }
 
   appendTextMessage() {
@@ -339,14 +324,6 @@ class _BroMessagingState extends State<BroMessaging> {
       if (textMessage.isEmpty) {
         textMessage = null;
       }
-      // We add the message already as being send.
-      // If it is received we remove this message and show 'received'
-      String timestampString = DateTime.now().toUtc().toString();
-      // The 'Z' indicates that it's UTC but we'll already add it in the message
-      if (timestampString.endsWith('Z')) {
-        timestampString =
-            timestampString.substring(0, timestampString.length - 1);
-      }
       Message mes = new Message(
           -1,
           settings.getMe()!.getId(),
@@ -357,7 +334,7 @@ class _BroMessagingState extends State<BroMessaging> {
           false,
           chat.getBroupId(),
       );
-      mes.isRead = 2;
+      mes.isRead = 2;  // indicates send to server but not received
       setState(() {
         this.chat.messages.insert(0, mes);
       });
@@ -365,7 +342,6 @@ class _BroMessagingState extends State<BroMessaging> {
       AuthServiceSocial().sendMessage(chat.getBroupId(), message, textMessage, messageData).then((value) {
         if (value) {
           // message send
-          // TODO: set broup to `update` until message arrives?
         } else {
           // The message was not sent, we remove it from the list
           showToastMessage("there was an issue sending the message");
@@ -387,14 +363,6 @@ class _BroMessagingState extends State<BroMessaging> {
     }
   }
 
-  // updateUserActivity(String timestamp) {
-  //   storage.updateChat(chat).then((value) {
-  //     // chat updated
-  //   });
-  //   chat.lastActivity = timestamp;
-  //   broList.updateChat(chat);
-  // }
-
   messageRead(var data) {
     var timeLastRead = DateTime.parse(data + 'Z').toLocal();
     for (Message message in this.chat.messages) {
@@ -406,8 +374,6 @@ class _BroMessagingState extends State<BroMessaging> {
       this.chat.messages = this.chat.messages;
     });
   }
-
-  var messageScrollController = ScrollController();
 
   Widget messageList() {
     return chat.messages.isNotEmpty

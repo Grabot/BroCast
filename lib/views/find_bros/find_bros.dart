@@ -8,8 +8,8 @@ import 'package:flutter/material.dart';
 import '../../objects/bro.dart';
 import '../../services/auth/auth_service_social.dart';
 import '../add_broup.dart';
-import '../bro_profile.dart';
-import '../bro_settings.dart';
+import '../bro_profile/bro_profile.dart';
+import '../bro_settings/bro_settings.dart';
 import 'models/bro_tile_search.dart';
 import 'package:brocast/constants/route_paths.dart' as routes;
 

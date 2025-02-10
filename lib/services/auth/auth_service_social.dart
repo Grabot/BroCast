@@ -7,6 +7,7 @@ import 'package:dio/dio.dart';
 import '../../objects/bro.dart';
 import '../../objects/broup.dart';
 import '../../objects/me.dart';
+import '../../objects/message.dart';
 import '../../utils/new/settings.dart';
 import '../../utils/new/storage.dart';
 import 'auth_api.dart';
@@ -170,6 +171,42 @@ class AuthServiceSocial {
             broups.add(Broup.fromJson(broup));
           }
           return broups;
+        } else {
+          return [];
+        }
+      } else {
+        return [];
+      }
+    }
+  }
+
+  Future<List<Message>> retrieveMessages(int broupId, int lastMessageId) async {
+    String endPoint = "message/get";
+    var response = await AuthApi().dio.post(endPoint,
+        options: Options(headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+        }),
+        data: jsonEncode(<String, dynamic> {
+          "broup_id": broupId,
+          "last_message_id": lastMessageId
+        }
+      )
+    );
+
+    Storage storage = Storage();
+    Map<String, dynamic> json = response.data;
+    if (!json.containsKey("result")) {
+      return [];
+    } else {
+      if (json["result"]) {
+        if (json.containsKey("messages")) {
+          List<Message> messages = [];
+          for (var message in json["messages"]) {
+            Message newMessage = Message.fromJson(message);
+            storage.addMessage(newMessage);
+            messages.add(newMessage);
+          }
+          return messages;
         } else {
           return [];
         }

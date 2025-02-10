@@ -1,11 +1,6 @@
 import 'package:back_button_interceptor/back_button_interceptor.dart';
-import 'package:brocast/services/block_bro.dart';
-import 'package:brocast/services/get_chat.dart';
-import 'package:brocast/services/remove_bro.dart';
-import 'package:brocast/services/report_bro.dart';
 import 'package:brocast/utils/new/settings.dart';
 import 'package:brocast/utils/new/socket_services.dart';
-import 'package:brocast/utils/bro_list.dart';
 import 'package:brocast/utils/new/utils.dart';
 import 'package:brocast/views/chat_view/bro_messaging/bro_messaging.dart';
 import "package:flutter/material.dart";
@@ -16,8 +11,8 @@ import '../../../objects/broup.dart';
 import '../../../services/auth/auth_service_settings.dart';
 import '../../../utils/new/storage.dart';
 import '../../bro_home/bro_home.dart';
-import '../../bro_profile.dart';
-import '../../bro_settings.dart';
+import '../../bro_profile/bro_profile.dart';
+import '../../bro_settings/bro_settings.dart';
 
 class ChatDetails extends StatefulWidget {
   final Broup chat;
@@ -273,17 +268,16 @@ class _ChatDetailsState extends State<ChatDetails> {
   }
 
   String toHex(Color test) {
-    final hexA = (test.a * 255).round().toRadixString(16).padLeft(2, '0');
     final hexR = (test.r * 255).round().toRadixString(16).padLeft(2, '0');
     final hexG = (test.g * 255).round().toRadixString(16).padLeft(2, '0');
     final hexB = (test.b * 255).round().toRadixString(16).padLeft(2, '0');
 
-    return '$hexA$hexR$hexG$hexB';
+    return '$hexR$hexG$hexB';
   }
 
   saveColour() {
     if (currentColor != chat.getColor()) {
-      String newBroupColour = toHex(currentColor).substring(2, 8);
+      String newBroupColour = toHex(currentColor);
       print("New colour: $newBroupColour");
       AuthServiceSettings().changeColourBroup(chat.getBroupId(), newBroupColour).then((val) {
         if (val) {
@@ -713,6 +707,29 @@ class _ChatDetailsState extends State<ChatDetails> {
     );
   }
 
+  Widget clearMessageInputField() {
+    return TextButton(
+        style: ButtonStyle(
+          foregroundColor:
+          WidgetStateProperty.all<Color>(Colors.red),
+        ),
+        onPressed: () {
+          showDialogClearMessages(context, chat.getBroupNameOrAlias());
+        },
+        child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.layers_clear, color: Colors.red),
+              SizedBox(width: 20),
+              Text(
+                'Clear Messages',
+                style: simpleTextStyle(),
+              ),
+            ]
+        )
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -736,6 +753,7 @@ class _ChatDetailsState extends State<ChatDetails> {
                         ? unblockInputField() : Container(),
                     deleteBroInputField(),
                     reportBroInputField(),
+                    clearMessageInputField(),
                     SizedBox(height: 100)
                   ],
                 ),
@@ -819,6 +837,43 @@ class _ChatDetailsState extends State<ChatDetails> {
               child: new Text("Report"),
               onPressed: () {
                 reportTheBro();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  clearMessagesBroup() {
+    Storage().deleteChat(chat.broupId).then((value) {
+      setState(() {
+        chat.messages = [];
+      });
+      showToastMessage("All messages are deleted");
+      Navigator.of(context).pop();
+    });
+  }
+
+  showDialogClearMessages(BuildContext context, String chatName) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: new Text("Clear messages broup $chatName!"),
+          content: new Text(
+              "Are you sure you want to clear the messages of this bro?"),
+          actions: <Widget>[
+            new TextButton(
+              child: new Text("Cancel"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            new TextButton(
+              child: new Text("Clear Messages"),
+              onPressed: () {
+                clearMessagesBroup();
               },
             ),
           ],

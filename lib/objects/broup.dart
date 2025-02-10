@@ -3,10 +3,12 @@ import 'dart:typed_data';
 
 import 'package:brocast/objects/message.dart';
 import 'package:brocast/services/auth/auth_service_social.dart';
+import 'package:brocast/views/bro_home/bro_home_change_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../utils/new/settings.dart';
+import '../utils/new/storage.dart';
 import '../views/chat_view/bro_messaging/bro_messaging_change_notifier.dart';
 
 class Broup {
@@ -29,6 +31,9 @@ class Broup {
   String alias = "";
   String broupColour = "";
   bool private = false;
+
+  // Simple solution to not add multiple "today" message tiles
+  bool todayTileAdded = false;
 
   bool joinedBroupRoom = false;
   late List<int> messageIds;
@@ -53,7 +58,7 @@ class Broup {
       ) {
     messages = [];
     messageIds = [];
-    lastMessageId = 0;
+    lastMessageId = 1;
   }
 
   getBroupId() {
@@ -105,6 +110,10 @@ class Broup {
     }
   }
 
+  setBroupName(String newBroupName) {
+    this.broupName = newBroupName;
+  }
+
   String getBroupName() {
     return broupName;
   }
@@ -143,7 +152,7 @@ class Broup {
     }
     messages = [];
     messageIds = [];
-    lastMessageId = 0;
+    lastMessageId = 1;
   }
 
   Map<String, dynamic> toDbMap() {
@@ -219,7 +228,11 @@ class Broup {
         true,
         getBroupId(),
       );
-      this.messages.insert(0, timeMessage);
+      print("adding today1");
+      if (!todayTileAdded) {
+        todayTileAdded = true;
+        this.messages.insert(0, timeMessage);
+      }
     } else {
       Message messageFirst = this.messages.first;
       DateTime dayFirst = DateTime(messageFirst.getTimeStamp().year,
@@ -243,7 +256,11 @@ class Broup {
           true,
           getBroupId(),
         );
-        this.messages.insert(0, timeMessage);
+        print("adding today2");
+        if (!todayTileAdded) {
+          todayTileAdded = true;
+          this.messages.insert(0, timeMessage);
+        }
       }
     }
   }
@@ -261,10 +278,6 @@ class Broup {
     // `isRead` 0 indicates it was successfully send to the server
     message.isRead = 0;
     this.messages.insert(0, message);
-    // TODO: add messages to storage?
-    // storage.addMessage(message).then((value) {
-    //   // stored the message
-    // });
     if (!message.isInformation()) {
       checkReceivedMessages(message);
     }
@@ -284,17 +297,29 @@ class Broup {
       lastMessageId += 1;
       // If we have send the message, we have obviously received it
       // So no need to send the received update if the message was from us.
+      print("Check if we did not send the message ${message.senderId} != ${Settings().getMe()!.getId()}");
       if (message.senderId != Settings().getMe()!.getId()) {
+        print("indicate that the message was received");
         AuthServiceSocial().receivedMessage(broupId, lastMessageId).then((value) {
+          print("received message $value");
           if (value) {
             // The message that was received really was the last one so no update required
             newMessages = false;
             // Check if the user has the broup page open. if not send a notification
-            if (BroMessagingChangeNotifier().getBroupId() == broupId) {
-              readMessages();
-            } else {
+            print("Check if the user has the broup page open. if not send a notification");
+            if (BroMessagingChangeNotifier().getBroupId() != broupId) {
+              print("page was NOT open add unread messages");
               unreadMessages++;
               // TODO: send notification?
+            } else {
+              print("page was open when receiving");
+              // If the message was send by me we have already read it via the send.
+              if (message.senderId != Settings().getMe()!.id) {
+                // If it was send by someone else wa want to indicate that we read it.
+                // Because we had the correct page open
+                print("message received, so indicate that we read it");
+                readMessages();
+              }
             }
           } else {
             if (!newMessages) {
@@ -302,9 +327,13 @@ class Broup {
               // TODO: If page is open do update immediately?
             }
           }
+          // notify the home screen because the call
+          // might not have finished when a notify was send out
+          BroHomeChangeNotifier().notify();
         });
       }
     } else {
+      unreadMessages++;
       newMessages = true;
     }
   }
@@ -315,7 +344,9 @@ class Broup {
       lastReadTime = lastReadTime + "Z";
     }
 
+    Storage storage = Storage();
     DateTime lastReadDateTime = DateTime.parse(lastReadTime).toLocal();
+    print("updating last read messages $lastReadDateTime");
     // Go through the messages and set the isRead to 1 if the message is older than the lastReadDateTime
     for (Message message in messages) {
       if (!message.isInformation()) {
@@ -325,6 +356,7 @@ class Broup {
         DateTime messageDateTime = message.getTimeStamp();
         if (messageDateTime.compareTo(lastReadDateTime) <= 0) {
           message.isRead = 1;
+          storage.updateMessage(message);
         }
       }
     }
@@ -333,7 +365,9 @@ class Broup {
   readMessages() {
     AuthServiceSocial().readMessages(getBroupId()).then((value) {
       if (value) {
-        // messages read
+        if (BroMessagingChangeNotifier().getBroupId() == broupId) {
+          BroMessagingChangeNotifier().notify();
+        }
       }
     });
   }

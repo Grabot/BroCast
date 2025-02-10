@@ -1,4 +1,5 @@
 import 'package:back_button_interceptor/back_button_interceptor.dart';
+import 'package:brocast/services/auth/auth_service_settings.dart';
 import 'package:brocast/utils/new/settings.dart';
 import 'package:brocast/utils/new/socket_services.dart';
 import 'package:brocast/utils/new/storage.dart';
@@ -6,7 +7,8 @@ import 'package:brocast/utils/new/utils.dart';
 import 'package:brocast/views/bro_home/bro_home.dart';
 import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
 import "package:flutter/material.dart";
-import 'bro_settings.dart';
+import '../../objects/me.dart';
+import '../bro_settings/bro_settings.dart';
 
 class BroProfile extends StatefulWidget {
   BroProfile({required Key key}) : super(key: key);
@@ -40,42 +42,14 @@ class _BroProfileState extends State<BroProfile> {
   @override
   void initState() {
     super.initState();
-    bromotionChangeController.addListener(bromotionListener);
-    socketServices.checkConnection();
-    initProfileSockets();
 
     storage = Storage();
-
-    // currentUser = new User(-1, "", "", "", "", "", 0, 0);
-    // storage.selectUser().then((user) {
-    //   if (user != null) {
-    //     currentUser = user;
-    //     bromotionChangeController.text = user.bromotion;
-    //     oldPasswordController.text = user.password;
-    //     setState(() {});
-    //   }
-    // });
-
+    Me? me = settings.getMe();
+    bromotionChangeController.addListener(bromotionListener);
+    if (me != null) {
+      bromotionChangeController.text = me.getBromotion();
+    }
     BackButtonInterceptor.add(myInterceptor);
-  }
-
-  void initProfileSockets() {
-    socketServices.socket.on('message_event_bromotion_change', (data) {
-      if (data == "bromotion change successful") {
-        onChangeBromotionSuccess();
-      } else if (data == "broName bromotion combination taken") {
-        onChangeBromotionFailedExists();
-      } else {
-        onChangeBromotionFailedUnknown();
-      }
-    });
-    socketServices.socket.on('message_event_password_change', (data) {
-      if (data == "password change successful") {
-        onChangePasswordSuccess();
-      } else {
-        onChangePasswordFailed();
-      }
-    });
   }
 
   bromotionListener() {
@@ -95,46 +69,6 @@ class _BroProfileState extends State<BroProfile> {
     return true;
   }
 
-  void onChangePasswordSuccess() {
-    showToastMessage("password changed successfully");
-    broPassword = newPasswordController2.text;
-    // currentUser.password = broPassword;
-    // storage.updateUser(currentUser).then((value) {
-    //   oldPasswordController.text = broPassword;
-    //   newPasswordController1.text = "";
-    //   newPasswordController2.text = "";
-    // });
-  }
-
-  void onChangePasswordFailed() {
-    showToastMessage("changing password failed due to an unknown error.");
-    setState(() {
-      newPasswordController1.text = "";
-      newPasswordController2.text = "";
-    });
-  }
-
-  void onChangeBromotionSuccess() {
-    showToastMessage("bromotion changed successfully");
-    // currentUser.bromotion = bromotionChangeController.text;
-    // // settings.setBromotion(currentUser.bromotion);
-    // storage.updateUser(currentUser).then((value) {});
-  }
-
-  void onChangeBromotionFailedExists() {
-    showToastMessage("BroName bromotion combination exists, please pick a different bromotion");
-    setState(() {
-      // bromotionChangeController.text = currentUser.bromotion;
-    });
-  }
-
-  void onChangeBromotionFailedUnknown() {
-    showToastMessage("an unknown Error has occurred");
-    setState(() {
-      // bromotionChangeController.text = currentUser.bromotion;
-    });
-  }
-
   void onChangePassword() {
     focusNodePassword.requestFocus();
     setState(() {
@@ -144,21 +78,44 @@ class _BroProfileState extends State<BroProfile> {
 
   void onSavePassword() {
     if (passwordFormValidator.currentState!.validate()) {
-      socketServices.socket.emit("password_change", {
-        "token": "settings.getToken()",
-        "password": newPasswordController1.text
-      });
-      setState(() {
-        changePassword = false;
+      AuthServiceSettings().changePassword(
+          oldPasswordController.text, newPasswordController1.text).then((value) {
+        if (value == "Password changed") {
+          showToastMessage("Password changed successfully");
+        } else {
+          showToastMessage(value);
+        }
+        oldPasswordController.text = "";
+        newPasswordController1.text = "";
+        setState(() {
+          changePassword = false;
+        });
+      }).catchError((error) {
+        showToastMessage("an unknown Error has occurred");
       });
     }
   }
 
-  void onSaveBromotion() {
+  onSaveBromotion() {
     if (bromotionValidator.currentState!.validate()) {
-      socketServices.socket.emit("bromotion_change", {
-        "token": "settings.getToken()",
-        "bromotion": bromotionChangeController.text
+      print("changing to ${bromotionChangeController.text}");
+      AuthServiceSettings().changeBromotion(bromotionChangeController.text).then((value) {
+        if (value == "Bromotion changed") {
+          showToastMessage("bromotion changed successfully");
+          setState(() {
+            settings.getMe()!.setBromotion(bromotionChangeController.text);
+          });
+        } else {
+          showToastMessage(value);
+          setState(() {
+            bromotionChangeController.text = settings.getMe()!.bromotion;
+          });
+        }
+      }).catchError((error) {
+        showToastMessage("an unknown Error has occurred");
+        setState(() {
+          bromotionChangeController.text = settings.getMe()!.bromotion;
+        });
       });
       setState(() {
         bromotionEnabled = false;
@@ -267,7 +224,12 @@ class _BroProfileState extends State<BroProfile> {
             Expanded(
               child: SingleChildScrollView(
                 reverse: true,
-                child: Column(children: [
+                child: Column(
+                    children: [
+                      Container(
+                          child: Text("BroCast",
+                              style: TextStyle(
+                                  color: Colors.white, fontSize: 30))),
                   Container(
                       alignment: Alignment.center,
                       child:
@@ -307,7 +269,7 @@ class _BroProfileState extends State<BroProfile> {
                       ? TextButton(
                           style: ButtonStyle(
                             foregroundColor:
-                                MaterialStateProperty.all<Color>(Colors.red),
+                                WidgetStateProperty.all<Color>(Colors.red),
                           ),
                           onPressed: () {
                             onSaveBromotion();
@@ -317,7 +279,7 @@ class _BroProfileState extends State<BroProfile> {
                       : TextButton(
                           style: ButtonStyle(
                             foregroundColor:
-                                MaterialStateProperty.all<Color>(Colors.blue),
+                                WidgetStateProperty.all<Color>(Colors.blue),
                           ),
                           onPressed: () {
                             onChangeBromotion();
@@ -393,7 +355,7 @@ class _BroProfileState extends State<BroProfile> {
                       ? TextButton(
                           style: ButtonStyle(
                             foregroundColor:
-                                MaterialStateProperty.all<Color>(Colors.red),
+                                WidgetStateProperty.all<Color>(Colors.red),
                           ),
                           onPressed: () {
                             onSavePassword();
@@ -403,7 +365,7 @@ class _BroProfileState extends State<BroProfile> {
                       : TextButton(
                           style: ButtonStyle(
                             foregroundColor:
-                                MaterialStateProperty.all<Color>(Colors.blue),
+                                WidgetStateProperty.all<Color>(Colors.blue),
                           ),
                           onPressed: () {
                             onChangePassword();

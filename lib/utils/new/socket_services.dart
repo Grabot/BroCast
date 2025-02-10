@@ -85,6 +85,9 @@ class SocketServices extends ChangeNotifier {
       if (data.containsKey("new_broup_description")) {
         broup.setBroupDescription(data["new_broup_description"]);
       }
+      if (data.containsKey("new_broup_name")) {
+        broup.setBroupName(data["new_broup_name"]);
+      }
       Storage().updateBroup(broup);
       notifyListeners();
     }
@@ -114,7 +117,6 @@ class SocketServices extends ChangeNotifier {
     if (me != null) {
       Broup broup = me.bros.firstWhere((element) => element.broupId == broupId);
       broup.updateMessages(message);
-
       storage.updateBroup(broup);
       notifyListeners();
     }

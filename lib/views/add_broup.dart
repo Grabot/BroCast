@@ -1,17 +1,11 @@
-import 'dart:convert';
-import 'package:brocast/services/get_bros.dart';
-import 'package:brocast/services/reset_registration.dart';
 import 'package:brocast/utils/new/settings.dart';
-import 'package:brocast/utils/new/socket_services.dart';
-import 'package:brocast/utils/bro_list.dart';
 import 'package:brocast/utils/new/utils.dart';
 import 'package:brocast/views/bro_home/bro_home.dart';
-import 'package:brocast/views/sign_in/signin.dart';
 import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:back_button_interceptor/back_button_interceptor.dart';
-import 'bro_profile.dart';
-import 'bro_settings.dart';
+import 'bro_profile/bro_profile.dart';
+import 'bro_settings/bro_settings.dart';
 
 class AddBroup extends StatefulWidget {
   AddBroup({required Key key}) : super(key: key);
