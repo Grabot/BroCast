@@ -69,14 +69,17 @@ class AuthServiceSocial {
     if (!json.containsKey("result")) {
       return false;
     } else {
-      if (json.containsKey("broup")) {
+      if (json.containsKey("broup") && json.containsKey("bro")) {
         Me? me = Settings().getMe();
         if (me != null) {
-          if (me.bros.indexWhere((element) => element.getBroupId() == json["broup"]["broup_id"]) == -1) {
+          if (me.broups.indexWhere((element) => element.getBroupId() == json["broup"]["broup_id"]) == -1) {
             Broup newBroup = Broup.fromJson(json["broup"]);
             Storage().addBroup(newBroup);
-            me.bros.add(newBroup);
+            me.broups.add(newBroup);
           }
+          Bro newBro = Bro.fromJson(json["bro"]);
+          newBro.added = true;
+          Storage().addBro(newBro);
         }
       }
       return json["result"];
@@ -213,6 +216,70 @@ class AuthServiceSocial {
       } else {
         return [];
       }
+    }
+  }
+
+  Future<List<Bro>> getBrosServer(List<int> broIds) async {
+    String endPoint = "bro/get";
+    var response = await AuthApi().dio.post(endPoint,
+        options: Options(headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+        }),
+        data: jsonEncode(<String, dynamic> {
+          "bro_ids": broIds
+        }
+      )
+    );
+
+    Map<String, dynamic> json = response.data;
+    if (!json.containsKey("result")) {
+      return [];
+    } else {
+      if (json["result"]) {
+        if (json.containsKey("bros")) {
+          List<Bro> bros = [];
+          for (var bro in json["bros"]) {
+            Bro newBro = Bro.fromJson(bro);
+            bros.add(newBro);
+          }
+          return bros;
+        } else {
+          return [];
+        }
+      } else {
+        return [];
+      }
+    }
+  }
+
+  Future<bool> addNewBroup(List<int> broIds, String broupName) async {
+    String endPoint = "broup/add";
+    var response = await AuthApi().dio.post(endPoint,
+        options: Options(headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+        }),
+        data: jsonEncode(<String, dynamic>{
+          "bro_ids": broIds,
+          "broup_name": broupName
+        }
+      )
+    );
+
+    Map<String, dynamic> json = response.data;
+    if (!json.containsKey("result")) {
+      return false;
+    } else {
+      if (json.containsKey("broup")) {
+        Me? me = Settings().getMe();
+        if (me != null) {
+          if (me.broups.indexWhere((element) => element.getBroupId() == json["broup"]["broup_id"]) == -1) {
+            Broup newBroup = Broup.fromJson(json["broup"]);
+            Storage().addBroup(newBroup);
+            me.broups.add(newBroup);
+          }
+        }
+      }
+      return json["result"];
     }
   }
 }

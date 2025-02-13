@@ -5,3 +5,5 @@ const String OpeningRoute = 'Opening';
 const String BroMessagingRoute = 'BroMessaging';
 const String SignInRoute = 'SignIn';
 const String ProfileRoute = 'Profile';
+const String FindBroRoute = 'FindBro';
+const String AddBroRoute = 'AddBro';

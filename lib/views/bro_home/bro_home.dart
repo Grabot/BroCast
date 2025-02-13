@@ -5,7 +5,7 @@ import 'package:brocast/services/auth/auth_service_social.dart';
 import 'package:brocast/utils/new/settings.dart';
 import 'package:brocast/utils/new/socket_services.dart';
 import 'package:brocast/utils/new/utils.dart';
-import 'package:brocast/views/add_broup.dart';
+import 'package:brocast/views/add_broup/add_broup.dart';
 import 'package:brocast/views/find_bros/find_bros.dart';
 import 'package:brocast/views/sign_in/signin.dart';
 import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
@@ -70,7 +70,7 @@ class _BroCastHomeState extends State<BroCastHome> {
     if (mounted) {
       Me? me = settings.getMe();
       if (me != null) {
-        bros = me.bros;
+        bros = me.broups;
         // Set all bros to be shown, except when the bro is searching.
         if (!searchMode && settings.retrievedData) {
           shownBros = bros;
@@ -100,9 +100,9 @@ class _BroCastHomeState extends State<BroCastHome> {
     if (me != null && !settings.loggingIn && !settings.retrievedData) {
       settings.retrievedData = true;
       storage.fetchAllBroups().then((broups) {
-        List<int> broupIdsToRetrieve = [];
+        List<int> broupIdsToRetrieve = me.broups.map((broup) => broup.broupId).toList();
         Map<String, Broup> broupMap = {for (var broup in broups) broup.getBroupId().toString(): broup};
-        for (Broup broup in settings.getMe()!.bros) {
+        for (Broup broup in settings.getMe()!.broups) {
           // Update the properties of the broup from me.bros with the properties from the database
           Broup? dbBroup = broupMap[broup.getBroupId().toString()];
           if (dbBroup != null) {
@@ -126,23 +126,27 @@ class _BroCastHomeState extends State<BroCastHome> {
               ..newMessages = broup.newMessages
               ..left = broup.left
               ..mute = broup.mute;
-          }
-          if (broup.updateBroup) {
-            broupIdsToRetrieve.add(broup.getBroupId());
+
+            // Only update it if we have to.
+            // If it's not in the db yet we update it anyway
+            if (!broup.updateBroup) {
+              broupIdsToRetrieve.remove(broup.getBroupId());
+            }
           }
         }
-        shownBros = settings.getMe()!.bros;
+        shownBros = settings.getMe()!.broups;
         if (broupIdsToRetrieve.isNotEmpty) {
-          retrieveBroups(broupIdsToRetrieve);
+          retrieveServerBroups(broupIdsToRetrieve);
         }
         setState(() {});
       });
     }
   }
 
-  retrieveBroups(List<int> broupIds) {
+  retrieveServerBroups(List<int> broupIds) {
+    print("retrieve broups from the server $broupIds");
     AuthServiceSocial().retrieveBroups(broupIds).then((broups) {
-      for (Broup broup in settings.getMe()!.bros) {
+      for (Broup broup in settings.getMe()!.broups) {
         if (broupIds.contains(broup.getBroupId())) {
           Broup? serverBroup;
           for (var element in broups) {
@@ -164,11 +168,16 @@ class _BroCastHomeState extends State<BroCastHome> {
               ..broupDescription = serverBroup.broupDescription
               ..broupColour = serverBroup.broupColour
               ..private = serverBroup.private
-              ..lastMessageId = serverBroup.lastMessageId
               ..updateBroup = serverBroup.updateBroup
-              ..newMessages = serverBroup.newMessages
-              ..avatar = serverBroup.avatar
-              ..messages = serverBroup.messages;
+              ..newMessages = serverBroup.newMessages;
+
+            broup
+              ..lastMessageId = broup.lastMessageId
+              ..messages = broup.messages
+              ..avatar = broup.avatar;
+            // Should be false from the server, but we also set it to false here
+            broup.updateBroup = false;
+            storage.updateBroup(broup);
           }
         }
       }
@@ -258,7 +267,7 @@ class _BroCastHomeState extends State<BroCastHome> {
       socketServices.leaveRoomSolo(me.getId());
       settings.setLoggingIn(true);
       settings.retrievedData = false;
-      for (Broup broup in me.bros) {
+      for (Broup broup in me.broups) {
         if (broup.joinedBroupRoom) {
           socketServices.leaveRoomBroup(broup.getBroupId());
           broup.joinedBroupRoom = false;
@@ -338,7 +347,7 @@ class _BroCastHomeState extends State<BroCastHome> {
   void onSelect(BuildContext context, int item) {
     switch (item) {
       case 0:
-        Navigator.pushReplacement(
+        Navigator.push(
             context,
             MaterialPageRoute(
                 builder: (context) => BroProfile(key: UniqueKey())));
@@ -356,7 +365,7 @@ class _BroCastHomeState extends State<BroCastHome> {
                 builder: (context) => FindBros(key: UniqueKey())));
         break;
       case 3:
-        Navigator.pushReplacement(
+        Navigator.push(
             context,
             MaterialPageRoute(
                 builder: (context) => AddBroup(key: UniqueKey())));
@@ -413,7 +422,7 @@ class _BroCastHomeState extends State<BroCastHome> {
                         child: Material(
                           child: InkWell(
                             onTap: () {
-                              Navigator.pushReplacement(
+                              Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) => BroProfile(key: UniqueKey())));
@@ -486,7 +495,7 @@ class _BroCastHomeState extends State<BroCastHome> {
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.person_add),
         onPressed: () {
-          Navigator.pushReplacement(
+          Navigator.push(
               context,
               MaterialPageRoute(
                   builder: (context) => FindBros(key: UniqueKey())));

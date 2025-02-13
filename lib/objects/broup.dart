@@ -9,7 +9,8 @@ import 'package:intl/intl.dart';
 
 import '../utils/new/settings.dart';
 import '../utils/new/storage.dart';
-import '../views/chat_view/bro_messaging/bro_messaging_change_notifier.dart';
+import '../views/chat_view/messaging_change_notifier.dart';
+import 'bro.dart';
 
 class Broup {
   late int broupId;
@@ -23,6 +24,7 @@ class Broup {
   bool mute = false;
   bool left = false;
   Uint8List? avatar;
+  late List<Bro> broupBros;
   // Chat details. Initialized with empty values
   List<int> broIds = [];
   List<int> adminIds = [];
@@ -33,7 +35,9 @@ class Broup {
   bool private = false;
 
   // Simple solution to not add multiple "today" message tiles
+  // And to not retrieve the Bro objects from the db multiple times
   bool todayTileAdded = false;
+  bool retrievedBros = false;
 
   bool joinedBroupRoom = false;
   late List<int> messageIds;
@@ -56,9 +60,10 @@ class Broup {
       this.newMessages,
       this.avatar
       ) {
+    broupBros = [];
     messages = [];
     messageIds = [];
-    lastMessageId = 1;
+    lastMessageId = 0;
   }
 
   getBroupId() {
@@ -110,6 +115,14 @@ class Broup {
     }
   }
 
+  List<int> getBroIds() {
+    return broIds;
+  }
+
+  List<Bro> getBroupBros() {
+    return broupBros;
+  }
+
   setBroupName(String newBroupName) {
     this.broupName = newBroupName;
   }
@@ -150,9 +163,10 @@ class Broup {
         avatar = base64Decode(chat_details["avatar"].replaceAll("\n", ""));
       }
     }
+    broupBros = [];
     messages = [];
     messageIds = [];
-    lastMessageId = 1;
+    lastMessageId = 0;
   }
 
   Map<String, dynamic> toDbMap() {
@@ -183,7 +197,6 @@ class Broup {
   }
 
   Broup.fromDbMap(Map<String, dynamic> map) {
-    print("mapping broup from db");
     broupId = map['broupId'];
 
     List<dynamic> broIds = jsonDecode(map['broIds']);
@@ -211,8 +224,8 @@ class Broup {
     this.messageIds = messageIdsList;
     // this.messages = messageIdsList;
     // TODO: load the messages? Or load it only when the chat is opened?
-    this.messages = [];
-    print("retrieved from db $this");
+    messages = [];
+    broupBros = [];
   }
 
   updateDateTiles(Message message) {
@@ -228,7 +241,6 @@ class Broup {
         true,
         getBroupId(),
       );
-      print("adding today1");
       if (!todayTileAdded) {
         todayTileAdded = true;
         this.messages.insert(0, timeMessage);
@@ -256,7 +268,6 @@ class Broup {
           true,
           getBroupId(),
         );
-        print("adding today2");
         if (!todayTileAdded) {
           todayTileAdded = true;
           this.messages.insert(0, timeMessage);
@@ -307,7 +318,7 @@ class Broup {
             newMessages = false;
             // Check if the user has the broup page open. if not send a notification
             print("Check if the user has the broup page open. if not send a notification");
-            if (BroMessagingChangeNotifier().getBroupId() != broupId) {
+            if (MessagingChangeNotifier().getBroupId() != broupId) {
               print("page was NOT open add unread messages");
               unreadMessages++;
               // TODO: send notification?
@@ -338,7 +349,7 @@ class Broup {
     }
   }
 
-   updateLastReadMessages(String lastRead) {
+  updateLastReadMessages(String lastRead) {
     String lastReadTime = lastRead;
     if (!lastReadTime.endsWith("Z")) {
       lastReadTime = lastReadTime + "Z";
@@ -365,8 +376,8 @@ class Broup {
   readMessages() {
     AuthServiceSocial().readMessages(getBroupId()).then((value) {
       if (value) {
-        if (BroMessagingChangeNotifier().getBroupId() == broupId) {
-          BroMessagingChangeNotifier().notify();
+        if (MessagingChangeNotifier().getBroupId() == broupId) {
+          MessagingChangeNotifier().notify();
         }
       }
     });

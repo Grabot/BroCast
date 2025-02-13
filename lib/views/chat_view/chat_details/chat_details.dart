@@ -1,18 +1,22 @@
 import 'package:back_button_interceptor/back_button_interceptor.dart';
+import 'package:brocast/objects/broup.dart';
+import 'package:brocast/services/delete_broup.dart';
+import 'package:brocast/services/get_chat.dart';
+import 'package:brocast/services/report_bro.dart';
 import 'package:brocast/utils/new/settings.dart';
 import 'package:brocast/utils/new/socket_services.dart';
 import 'package:brocast/utils/new/utils.dart';
-import 'package:brocast/views/chat_view/bro_messaging/bro_messaging.dart';
+import 'package:brocast/views/broup_add_participant.dart';
 import "package:flutter/material.dart";
 import 'package:flutter_circle_color_picker/flutter_circle_color_picker.dart';
-import 'package:brocast/constants/route_paths.dart' as routes;
 
-import '../../../objects/broup.dart';
 import '../../../services/auth/auth_service_settings.dart';
 import '../../../utils/new/storage.dart';
 import '../../bro_home/bro_home.dart';
 import '../../bro_profile/bro_profile.dart';
 import '../../bro_settings/bro_settings.dart';
+import '../broup_messaging/broup_messaging.dart';
+import 'models/bro_tile_details.dart';
 
 class ChatDetails extends StatefulWidget {
   final Broup chat;
@@ -24,6 +28,9 @@ class ChatDetails extends StatefulWidget {
 }
 
 class _ChatDetailsState extends State<ChatDetails> {
+  Settings settings = Settings();
+  SocketServices socketServices = SocketServices();
+
   TextEditingController chatDescriptionController = new TextEditingController();
   TextEditingController chatAliasController = new TextEditingController();
 
@@ -31,15 +38,9 @@ class _ChatDetailsState extends State<ChatDetails> {
   bool changeAlias = false;
   bool changeColour = false;
 
-  late CircleColorPickerController circleColorPickerController;
+  late int amountInGroup;
 
-  // BlockBro blockBro = new BlockBro();
-  // ReportBro reportBro = new ReportBro();
-  // RemoveBro removeBro = new RemoveBro();
-  Settings settings = Settings();
-  // GetChat getChat = new GetChat();
-  // BroList broList = BroList();
-  SocketServices socketServices = SocketServices();
+  late CircleColorPickerController circleColorPickerController;
 
   late Color currentColor;
   Color? previousColor;
@@ -51,7 +52,10 @@ class _ChatDetailsState extends State<ChatDetails> {
   String previousAlias = "";
 
   late Broup chat;
+
   late Storage storage;
+
+  bool meAdmin = false;
 
   double iconSize = 30;
 
@@ -59,18 +63,90 @@ class _ChatDetailsState extends State<ChatDetails> {
   void initState() {
     super.initState();
     chat = widget.chat;
+    storage = Storage();
+    amountInGroup = chat.getBroIds().length;
     socketServices.checkConnection();
     socketServices.addListener(socketListener);
     BackButtonInterceptor.add(myInterceptor);
-    chatDescriptionController.text = chat.getBroupDescription();
+
+    chatDescriptionController.text = chat.broupDescription;
     chatAliasController.text = chat.alias;
-    storage = Storage();
 
     circleColorPickerController = CircleColorPickerController(
       initialColor: chat.getColor(),
     );
-
     currentColor = chat.getColor();
+  }
+
+  checkMeAdmin() {
+    // meAdmin = false;
+    meAdmin = true;
+    // for (int adminId in chat.getAdmins()) {
+    //   if (adminId == settings.getBroId()) {
+    //     // We are admin
+    //     setState(() {
+    //       meAdmin = true;
+    //     });
+    //   }
+    // }
+  }
+
+  socketListener() {
+    setState(() {
+
+    });
+  }
+
+  addNewBro(int addBroId) {
+    // socketServices.socket
+    //     .on('message_event_add_bro_success', (data) => broWasAdded(data));
+    // socketServices.socket.on('message_event_add_bro_failed', (data) {
+    //   broAddingFailed();
+    // });
+    // socketServices.socket.emit("message_event_add_bro",
+    //     {"token": settings.getToken(), "bros_bro_id": addBroId});
+  }
+
+  broWasAdded(data) {
+    // BroBros broBros = new BroBros(
+    //     data["bros_bro_id"],
+    //     data["chat_name"],
+    //     data["chat_description"],
+    //     data["alias"],
+    //     data["chat_colour"],
+    //     data["unread_messages"],
+    //     data["last_time_activity"],
+    //     data["room_name"],
+    //     data["blocked"] ? 1 : 0,
+    //     data["mute"] ? 1 : 0,
+    //     0);
+    // broList.addChat(broBros);
+    // storage.addChat(broBros).then((value) {
+    //   broList.updateBroupBrosForBroBros(broBros);
+    //   Navigator.pushReplacement(
+    //       context,
+    //       MaterialPageRoute(
+    //           builder: (context) => BroCastHome(key: UniqueKey())));
+    // });
+  }
+
+  broAddingFailed() {
+    showToastMessage("Bro could not be added at this time");
+  }
+
+  broupWasMuted(var data) {
+    // if (data.containsKey("result")) {
+    //   bool result = data["result"];
+    //   if (result) {
+    //     setState(() {
+    //       chat.setMuted(data["mute"]);
+    //     });
+    //   }
+    // }
+  }
+
+  broupMutingFailed() {
+    showToastMessage("Broup muting failed at this time.");
   }
 
   bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
@@ -92,34 +168,12 @@ class _ChatDetailsState extends State<ChatDetails> {
         FocusScope.of(context).unfocus();
       });
     } else {
-      if (settings.doneRoutes.contains(routes.BroMessagingRoute)) {
-        // We want to pop until we reach the BroHomeRoute
-        // We remove one, because it's this page.
-        settings.doneRoutes.removeLast();
-        for (int i = 0; i < 200; i++) {
-          String route = settings.doneRoutes.removeLast();
-          Navigator.pop(context);
-          if (route == routes.BroMessagingRoute) {
-            break;
-          }
-          if (settings.doneRoutes.length == 0) {
-            break;
-          }
-        }
-      } else {
-        // TODO: How to test this?
-        settings.doneRoutes = [];
-        Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (context) => BroMessaging(
-              key: UniqueKey(),
-              chat: chat,
-            )));
-      }
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  BroupMessaging(key: UniqueKey(), chat: chat)));
     }
-  }
-
-  socketListener() {
-    setState(() {});
   }
 
   @override
@@ -128,7 +182,6 @@ class _ChatDetailsState extends State<ChatDetails> {
     socketServices.removeListener(socketListener);
     chatDescriptionController.dispose();
     chatAliasController.dispose();
-    circleColorPickerController.dispose();
     focusNodeDescription.dispose();
     focusNodeAlias.dispose();
     super.dispose();
@@ -150,41 +203,41 @@ class _ChatDetailsState extends State<ChatDetails> {
                   color: getTextColor(chat.getColor()), fontSize: 20)),
           actions: [
             PopupMenuButton<int>(
-                icon: Icon(Icons.more_vert, color: getTextColor(chat.getColor())),
                 onSelected: (item) => onSelectChat(context, item),
                 itemBuilder: (context) => [
                       PopupMenuItem<int>(value: 0, child: Text("Profile")),
                       PopupMenuItem<int>(value: 1, child: Text("Settings")),
-                      PopupMenuItem<int>(value: 2, child: Text("Back to chat")),
+                      PopupMenuItem<int>(
+                          value: 2, child: Text("Back to broup")),
                       PopupMenuItem<int>(value: 3, child: Text("Home"))
                     ])
           ]),
     );
   }
 
-  void onSelectChat(BuildContext context, int item) {
+  onSelectChat(BuildContext context, int item) {
     switch (item) {
       case 0:
-        Navigator.pushReplacement(
+        Navigator.push(
             context,
             MaterialPageRoute(
                 builder: (context) => BroProfile(key: UniqueKey())));
         break;
       case 1:
-        Navigator.pushReplacement(
+        Navigator.push(
             context,
             MaterialPageRoute(
                 builder: (context) => BroSettings(key: UniqueKey())));
         break;
       case 2:
-        Navigator.pushReplacement(
+        Navigator.push(
             context,
             MaterialPageRoute(
                 builder: (context) =>
-                    BroMessaging(key: UniqueKey(), chat: chat)));
+                    BroupMessaging(key: UniqueKey(), chat: chat)));
         break;
       case 3:
-        Navigator.pushReplacement(
+        Navigator.push(
             context,
             MaterialPageRoute(
                 builder: (context) => BroCastHome(key: UniqueKey())));
@@ -208,7 +261,7 @@ class _ChatDetailsState extends State<ChatDetails> {
     });
   }
 
-  void updateDescription() {
+  updateDescription() {
     if (previousDescription != chatDescriptionController.text) {
       String newBroupDescription = chatDescriptionController.text;
       print("changing the description to $newBroupDescription");
@@ -231,7 +284,7 @@ class _ChatDetailsState extends State<ChatDetails> {
     });
   }
 
-  void updateAlias() {
+  updateAlias() {
     if (previousAlias != chatAliasController.text) {
       String newBroupAlias = chatAliasController.text;
       print("changing the alias to $newBroupAlias");
@@ -259,156 +312,190 @@ class _ChatDetailsState extends State<ChatDetails> {
   }
 
   updateColour() {
-    if (!chat.isBlocked()) {
-      previousColor = currentColor;
-      setState(() {
-        changeColour = true;
-      });
-    }
-  }
-
-  String toHex(Color test) {
-    final hexR = (test.r * 255).round().toRadixString(16).padLeft(2, '0');
-    final hexG = (test.g * 255).round().toRadixString(16).padLeft(2, '0');
-    final hexB = (test.b * 255).round().toRadixString(16).padLeft(2, '0');
-
-    return '$hexR$hexG$hexB';
+    previousColor = currentColor;
+    setState(() {
+      changeColour = true;
+    });
   }
 
   saveColour() {
-    if (currentColor != chat.getColor()) {
-      String newBroupColour = toHex(currentColor);
-      print("New colour: $newBroupColour");
-      AuthServiceSettings().changeColourBroup(chat.getBroupId(), newBroupColour).then((val) {
-        if (val) {
-          // The details are updated via sockets.
-        } else {
-          showToastMessage("something went wrong with changing the colour");
-          currentColor = previousColor!;
-        }
-        setState(() {
-          changeColour = false;
-        });
-      });
+    // if (currentColor != chat.getColor()) {
+    //   String newColour = currentColor.value.toRadixString(16).substring(2, 8);
+    //   socketServices.socket.emit("message_event_change_broup_colour", {
+    //     "token": "settings.getToken()",
+    //     "broup_id": chat.id,
+    //     "colour": newColour
+    //   });
+    // }
+    // setState(() {
+    //   changeColour = false;
+    // });
+  }
+
+  void broupAliasUpdateFailed() {
+    chatAliasController.text = previousAlias;
+    showToastMessage("Updating the bro alias has failed");
+  }
+
+  void broupDetailUpdateFailed() {
+    currentColor = previousColor!;
+    circleColorPickerController.color = previousColor!;
+    showToastMessage("Updating the bro chat has failed");
+  }
+
+  void broupAddAdminFailed() {
+    showToastMessage("Adding the bro as admin has failed");
+  }
+
+  void broupDismissAdminSuccess(var data) {
+    if (data.containsKey("result")) {
+      bool result = data["result"];
+      if (result) {
+        // for (Bro bro in chat.getBroupBros()) {
+        //   if (bro.id == data["old_admin"]) {
+        //     bro.setAdmin(false);
+        //     chat.dismissAdmin(data["old_admin"]);
+        //     // if (settings.getBroId() == data["old_admin"]) {
+        //     //   meAdmin = false;
+        //     // }
+        //     break;
+        //   }
+        // }
+        setState(() {});
+      } else {
+        broupAddAdminFailed();
+      }
+    } else {
+      broupAddAdminFailed();
     }
   }
 
-  reportTheBro() {
-    // reportBro.reportBro("settings.getToken()", chat.id).then((val) {
-    //   if (val is BroBros) {
-    //     BroBros broToRemove = val;
-    //     storage.deleteChat(broToRemove).then((value) {
-    //       Navigator.pushReplacement(
-    //           context,
-    //           MaterialPageRoute(
-    //               builder: (context) => BroCastHome(key: UniqueKey())));
-    //     });
-    //   } else {
-    //     if (val == "an unknown error has occurred") {
-    //       showToastMessage("An unknown error has occurred");
-    //     } else {
-    //       showToastMessage("There was an error with the server, we apologize for the inconvenience.");
-    //     }
-    //   }
-    // });
-    // Navigator.of(context).pop();
+  void broupDismissAdminFailed() {
+    showToastMessage("Dismissing the bro from his admin role has failed");
   }
 
-  removeTheBro() {
-    // removeBro.removeBro("settings.getToken()", chat.id).then((val) {
-    //   // De bro moet verwijderd worden!
-    //   if (val is BroBros) {
-    //     BroBros broToRemove = val;
-    //     broList.deleteChat(broToRemove);
-    //     storage.deleteChat(broToRemove).then((value) {
-    //       Navigator.pushReplacement(
-    //           context,
-    //           MaterialPageRoute(
-    //               builder: (context) => BroCastHome(key: UniqueKey())));
-    //     });
-    //   } else {
-    //     if (val == "an unknown error has occurred") {
-    //       showToastMessage("An unknown error has occurred");
-    //     } else {
-    //       showToastMessage("There was an error with the server, we apologize for the inconvenience.");
-    //     }
-    //   }
-    // });
-    // Navigator.of(context).pop();
+  void broupRemoveBroFailed() {
+    showToastMessage("Removing the bro from the broup has failed");
   }
 
-  blockTheBro(bool blocked) {
-    // blockBro.blockBro("settings.getToken()", chat.id, blocked).then((val) {
-    //   if (val is BroBros) {
-    //     setState(() {
-    //       this.chat = val;
-    //       storage.updateChat(this.chat).then((value) {
-    //         setState(() {});
-    //       });
-    //     });
-    //   } else {
-    //     if (val == "an unknown error has occurred") {
-    //       showToastMessage("An unknown error has occurred");
-    //     } else {
-    //       showToastMessage("There was an error with the server, we apologize for the inconvenience.");
-    //     }
-    //   }
-    // });
-    // Navigator.of(context).pop();
+  void broupColourUpdateFailed() {
+    chatDescriptionController.text = previousDescription;
+    showToastMessage("Updating the bro colour has failed");
   }
 
   onColorChange(Color colour) {
     currentColor = colour;
   }
 
-  Widget broupNameWidget() {
-    return Column(
-      children: [
-        chat.alias.isNotEmpty
-            ? Column(children: [
-          Container(
-              padding: EdgeInsets.symmetric(horizontal: 24),
-              alignment: Alignment.center,
-              child: Text(
-                "${chat.alias}",
-                style: TextStyle(
-                    color: Colors.white, fontSize: 25),
-              )),
-          SizedBox(height: 10),
-          Container(
-              padding: EdgeInsets.symmetric(horizontal: 24),
-              alignment: Alignment.center,
-              child: Text(
-                "${chat.broupName}",
-                style: TextStyle(
-                    color: Colors.white, fontSize: 16),
-              ))
-        ])
-            : Container(
+  Widget participantsList() {
+    return Container(
+        alignment: Alignment.center,
+        child: brosInBroupList()
+    );
+  }
+
+  Widget brosInBroupList() {
+    return chat.getBroupBros().isNotEmpty
+        ? ListView.builder(
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            itemCount: chat.getBroupBros().length,
+            itemBuilder: (context, index) {
+              return BroTileDetails(
+                  key: UniqueKey(),
+                  bro: chat.getBroupBros()[index],
+                  broupId: chat.broupId,
+                  userAdmin: true,  // TODO: fix?
+                  addNewBro: addNewBro
+              );
+            })
+        : Container();
+  }
+
+  addParticipant() {
+    // Navigator.pushReplacement(
+    //     context,
+    //     MaterialPageRoute(
+    //         builder: (context) =>
+    //             BroupAddParticipant(key: UniqueKey(), chat: chat)));
+  }
+
+  Widget broCastLogo() {
+    return Container(
+        alignment: Alignment.center,
+        child:
+        Image.asset("assets/images/brocast_transparent.png"));
+  }
+
+  Widget broupNameHeader() {
+    if (chat.alias.isNotEmpty) {
+      return Column(children: [
+        Container(
+            padding: EdgeInsets.symmetric(horizontal: 24),
+            alignment: Alignment.center,
+            child: Text(
+              "${chat.alias}",
+              style: TextStyle(
+                  color: Colors.white, fontSize: 25),
+            )),
+        SizedBox(height: 10),
+        Container(
             padding: EdgeInsets.symmetric(horizontal: 24),
             alignment: Alignment.center,
             child: Text(
               "${chat.broupName}",
-              style:
-              TextStyle(color: Colors.white, fontSize: 25),
-            )),
-        SizedBox(height: 20),
-      ],
+              style: TextStyle(
+                  color: Colors.white, fontSize: 16),
+            ))
+      ]);
+    } else {
+      return Container(
+          padding: EdgeInsets.symmetric(horizontal: 24),
+          alignment: Alignment.center,
+          child: Text(
+            "${chat.broupName}",
+            style: TextStyle(color: Colors.white, fontSize: 25),
+          ));
+    }
+  }
+
+  Widget broHasLeft() {
+    return Column(
+      children: [
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 24),
+          alignment: Alignment.center,
+          child: Text(
+            "You're no longer a participant in this Broup",
+            style: TextStyle(color: Colors.grey, fontSize: 16),
+          )),
+        Container(
+          child: TextButton(
+              style: ButtonStyle(
+                foregroundColor:
+                WidgetStateProperty.all<Color>(
+                    Colors.red),
+              ),
+              onPressed: () {
+                showDialogDelete(
+                    context, chat.getBroupNameOrAlias());
+              },
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.delete, color: Colors.red),
+                    SizedBox(width: 20),
+                    Text(
+                      'Delete Broup',
+                      style: simpleTextStyle(),
+                    ),
+                  ])),
+        )
+    ]
     );
   }
 
-  Widget blockedWidget() {
-    return Container(
-        padding: EdgeInsets.symmetric(horizontal: 24),
-        alignment: Alignment.center,
-        child: Text(
-          "You've blocked this Bro!",
-          style:
-          TextStyle(color: Colors.grey, fontSize: 16),
-        ));
-  }
-
-  Widget aliasInputField() {
+  Widget chatAliasWidget() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -454,56 +541,58 @@ class _ChatDetailsState extends State<ChatDetails> {
     );
   }
 
-  Widget colorInputField() {
+  Widget chatColourWidget() {
     return Column(
       children: [
-        InkWell(
-          onTap: () {
-            updateColour();
-          },
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                "Color:",
-                style: simpleTextStyle(),
-              ),
-              SizedBox(width: 20),
-              Container(
-                height: 40,
-                width: 40,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                    color: chat.getColor(),
-                    borderRadius:
-                    BorderRadius.circular(40)),
-              ),
-            ],
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 24),
+          child: InkWell(
+            onTap: () {
+              updateColour();
+            },
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "Color:",
+                  style: simpleTextStyle(),
+                ),
+                SizedBox(width: 20),
+                Container(
+                  height: 40,
+                  width: 40,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                      color: chat.getColor(),
+                      borderRadius:
+                      BorderRadius.circular(40)),
+                ),
+              ],
+            ),
           ),
         ),
-        changeColour
-            ? Column(children: [
-          CircleColorPicker(
-            controller: circleColorPickerController,
-            textStyle: simpleTextStyle(),
-            onChanged: (colour) {
-              setState(() => onColorChange(colour));
-            },
-          ),
-          IconButton(
-              iconSize: 30.0,
-              icon: Icon(Icons.check,
-                  color: Colors.green),
-              onPressed: () {
-                saveColour();
-              }),
-        ])
-            : Container(),
-      ],
+        changeColour ? Column(
+            children: [
+              CircleColorPicker(
+                controller: circleColorPickerController,
+                textStyle: simpleTextStyle(),
+                onChanged: (colour) {
+                  setState(() => onColorChange(colour));
+                },
+              ),
+              IconButton(
+                  iconSize: iconSize,
+                  icon: Icon(Icons.check,
+                      color: Colors.green),
+                  onPressed: () {
+                    saveColour();
+                  }),
+            ]) : Container(),
+      ]
     );
   }
 
-  Widget descriptionInputField() {
+  Widget broupDescriptionWidget() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -552,7 +641,58 @@ class _ChatDetailsState extends State<ChatDetails> {
     );
   }
 
-  Widget muteInputField() {
+  Widget chatDetailsParticipants() {
+    return Column(
+      children: [
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 24),
+          alignment: Alignment.centerLeft,
+          child: Text(
+              "" +
+                  amountInGroup.toString() +
+                  " Participants",
+              style: simpleTextStyle()),
+        ),
+        SizedBox(height: 10),
+        meAdmin ? InkWell(
+          onTap: () {
+            addParticipant();
+          },
+          child: Container(
+            padding: EdgeInsets.symmetric(
+                horizontal: 24, vertical: 6),
+            child: Row(children: [
+              Container(
+                  height: 40,
+                  width: 40,
+                  decoration: BoxDecoration(
+                      color: Colors.green,
+                      borderRadius: BorderRadius.all(
+                          Radius.circular(40))),
+                  child: IconButton(
+                    onPressed: () {
+                      addParticipant();
+                    },
+                    icon: Icon(Icons.person_add,
+                        color: Colors.white),
+                  )),
+              SizedBox(width: 20),
+              Text(
+                "Add participants",
+                style: TextStyle(
+                    color: Colors.grey, fontSize: 20),
+              ),
+            ]),
+          ),
+        ) : Container(),
+        Container(
+            alignment: Alignment.center,
+            child: brosInBroupList()),
+      ],
+    );
+  }
+
+  Widget muteChatWidget() {
     return TextButton(
         style: ButtonStyle(
           foregroundColor:
@@ -561,8 +701,8 @@ class _ChatDetailsState extends State<ChatDetails> {
         ),
         onPressed: () {
           chat.isMuted()
-              ? showDialogUnMuteChat(context)
-              : showDialogMuteChat(context);
+              ? showDialogUnMuteBroup(context)
+              : showDialogMuteBroup(context);
         },
         child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -577,19 +717,17 @@ class _ChatDetailsState extends State<ChatDetails> {
               SizedBox(width: 20),
               chat.isMuted()
                   ? Text(
-                'Unmute Chat',
+                'Unmute Broup',
                 style: simpleTextStyle(),
               )
                   : Text(
-                'Mute Chat',
+                'Mute Broup',
                 style: simpleTextStyle(),
               ),
-            ]
-        )
-    );
+            ]));
   }
 
-  Widget blockInputField() {
+  Widget leaveBroupWidget() {
     return TextButton(
         style: ButtonStyle(
           foregroundColor:
@@ -597,94 +735,42 @@ class _ChatDetailsState extends State<ChatDetails> {
               Colors.red),
         ),
         onPressed: () {
-          showDialogBlock(
-              context, chat.getBroupNameOrAlias());
+          showDialogExitBroup(context, chat.broupName);
         },
         child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.block, color: Colors.red),
+              Icon(Icons.exit_to_app,
+                  color: Colors.red),
               SizedBox(width: 20),
               Text(
-                'Block',
+                'Leave Broup',
                 style: simpleTextStyle(),
               ),
-            ]
-        )
-    );
+            ]));
   }
 
-  Widget chatDetails() {
+  Widget chatDetailWidget() {
     return Container(
-        child: Column(children: [
-          aliasInputField(),
-          SizedBox(height: 20),
-          colorInputField(),
-          SizedBox(height: 20),
-          descriptionInputField(),
-          SizedBox(height: 30),
-          muteInputField(),
-          blockInputField(),
-        ]
-        )
+      child: Column(
+          children: [
+            chatAliasWidget(),
+            SizedBox(height: 20),
+            chatColourWidget(),
+            SizedBox(height: 20),
+            broupDescriptionWidget(),
+            SizedBox(height: 50),
+            chatDetailsParticipants(),
+            SizedBox(height: 10),
+            muteChatWidget(),
+            SizedBox(height: 10),
+            leaveBroupWidget(),
+            SizedBox(height: 10),
+      ]),
     );
   }
 
-  Widget unblockInputField() {
-    return Container(
-      child: Column(children: [
-        SizedBox(height: 20),
-        TextButton(
-            style: ButtonStyle(
-              foregroundColor:
-              WidgetStateProperty.all<Color>(
-                  Colors.red),
-            ),
-            onPressed: () {
-              showDialogUnBlockChat(context);
-            },
-            child: Row(
-                mainAxisAlignment:
-                MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.block, color: Colors.grey),
-                  SizedBox(width: 20),
-                  Text(
-                    'Unblock',
-                    style: simpleTextStyle(),
-                  )
-                ]
-            )
-        ),
-      ]
-      ),
-    );
-  }
-
-  Widget deleteBroInputField() {
-    return TextButton(
-        style: ButtonStyle(
-          foregroundColor:
-          WidgetStateProperty.all<Color>(Colors.red),
-        ),
-        onPressed: () {
-          showDialogRemove(context, chat.getBroupNameOrAlias());
-        },
-        child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.delete, color: Colors.red),
-              SizedBox(width: 20),
-              Text(
-                'Delete Bro',
-                style: simpleTextStyle(),
-              ),
-            ]
-        )
-    );
-  }
-
-  Widget reportBroInputField() {
+  Widget reportBroupWidget() {
     return TextButton(
         style: ButtonStyle(
           foregroundColor:
@@ -699,35 +785,10 @@ class _ChatDetailsState extends State<ChatDetails> {
               Icon(Icons.thumb_down, color: Colors.red),
               SizedBox(width: 20),
               Text(
-                'Report Bro',
+                'Report Broup',
                 style: simpleTextStyle(),
               ),
-            ]
-        )
-    );
-  }
-
-  Widget clearMessageInputField() {
-    return TextButton(
-        style: ButtonStyle(
-          foregroundColor:
-          WidgetStateProperty.all<Color>(Colors.red),
-        ),
-        onPressed: () {
-          showDialogClearMessages(context, chat.getBroupNameOrAlias());
-        },
-        child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.layers_clear, color: Colors.red),
-              SizedBox(width: 20),
-              Text(
-                'Clear Messages',
-                style: simpleTextStyle(),
-              ),
-            ]
-        )
-    );
+            ]));
   }
 
   @override
@@ -738,40 +799,38 @@ class _ChatDetailsState extends State<ChatDetails> {
           child: Column(children: [
             Expanded(
               child: SingleChildScrollView(
-                reverse: true,
-                child: Column(
-                  children: [
-                    Container(
-                        alignment: Alignment.center,
-                        child: Image.asset(
-                            "assets/images/brocast_transparent.png")),
-                    broupNameWidget(),
-                    chat.isBlocked()
-                        ? blockedWidget()
-                        : chatDetails(),
-                    chat.isBlocked()
-                        ? unblockInputField() : Container(),
-                    deleteBroInputField(),
-                    reportBroInputField(),
-                    clearMessageInputField(),
-                    SizedBox(height: 100)
-                  ],
-                ),
+                child: Column(children: [
+                  broCastLogo(),
+                  broupNameHeader(),
+                  SizedBox(height: 20),
+                  chat.hasLeft()
+                      ? broHasLeft()
+                      : chatDetailWidget(),
+                  reportBroupWidget(),
+                  SizedBox(height: 20),
+                ]),
               ),
             ),
           ]),
-        )
-    );
+        ));
   }
 
-  showDialogBlock(BuildContext context, String chatName) {
+  void exitBroup() {
+    // socketServices.socket.emit("message_event_change_broup_remove_bro", {
+    //   "token": settings.getToken(),
+    //   "broup_id": chat.id,
+    //   "bro_id": settings.getBroId()
+    // });
+    Navigator.of(context).pop();
+  }
+
+  void showDialogExitBroup(BuildContext context, String broupName) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: new Text("Block bro $chatName!"),
-          content: new Text(
-              "Are you sure you want to block this bro? The former bro will no longer be able to send you messages."),
+          title: new Text("Leave Broup $broupName!"),
+          content: new Text("Are you sure you want to leave this broup?"),
           actions: <Widget>[
             new TextButton(
               child: new Text("Cancel"),
@@ -780,9 +839,9 @@ class _ChatDetailsState extends State<ChatDetails> {
               },
             ),
             new TextButton(
-              child: new Text("Block"),
+              child: new Text("Leave Broup"),
               onPressed: () {
-                blockTheBro(true);
+                exitBroup();
               },
             ),
           ],
@@ -791,41 +850,14 @@ class _ChatDetailsState extends State<ChatDetails> {
     );
   }
 
-  showDialogRemove(BuildContext context, String chatName) {
+  void showDialogReport(BuildContext context, String chatName) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: new Text("Remove Bro $chatName!"),
+          title: new Text("Report broup $chatName!"),
           content: new Text(
-              "Are you sure you want to delete this chat? This bro and the messages will be removed from your bro list and the former bro can't send you messages anymore."),
-          actions: <Widget>[
-            new TextButton(
-              child: new Text("Cancel"),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            new TextButton(
-              child: new Text("Remove"),
-              onPressed: () {
-                removeTheBro();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  showDialogReport(BuildContext context, String chatName) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: new Text("Report bro $chatName!"),
-          content: new Text(
-              "Are you sure you want to report this bro? The most recent messages from this bro to you will be forwarded to Zwaar developers to assess possible deletion of the bro's account. This bro and the messages will be removed from your bro list and the former bro can't send you messages anymore. This former bro will not be notified of the report."),
+              "Are you sure you want to report this broup? The most recent messages from this broup will be forwarded to Zwaar developers to assess possible deletion of the broup. This broup and the messages will be removed from your bro list and the former broup can't send you messages anymore. This former broup will not be notified of the report."),
           actions: <Widget>[
             new TextButton(
               child: new Text("Cancel"),
@@ -836,7 +868,7 @@ class _ChatDetailsState extends State<ChatDetails> {
             new TextButton(
               child: new Text("Report"),
               onPressed: () {
-                reportTheBro();
+                reportTheBroup();
               },
             ),
           ],
@@ -845,24 +877,13 @@ class _ChatDetailsState extends State<ChatDetails> {
     );
   }
 
-  clearMessagesBroup() {
-    Storage().deleteChat(chat.broupId).then((value) {
-      setState(() {
-        chat.messages = [];
-      });
-      showToastMessage("All messages are deleted");
-      Navigator.of(context).pop();
-    });
-  }
-
-  showDialogClearMessages(BuildContext context, String chatName) {
+  void showDialogDelete(BuildContext context, String chatName) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: new Text("Clear messages broup $chatName!"),
-          content: new Text(
-              "Are you sure you want to clear the messages of this bro?"),
+          title: new Text("Delete broup $chatName!"),
+          content: new Text("Are you sure you want to delete this broup?"),
           actions: <Widget>[
             new TextButton(
               child: new Text("Cancel"),
@@ -871,9 +892,9 @@ class _ChatDetailsState extends State<ChatDetails> {
               },
             ),
             new TextButton(
-              child: new Text("Clear Messages"),
+              child: new Text("Delete"),
               onPressed: () {
-                clearMessagesBroup();
+                deleteTheBroup();
               },
             ),
           ],
@@ -882,7 +903,51 @@ class _ChatDetailsState extends State<ChatDetails> {
     );
   }
 
-  showDialogUnMuteChat(BuildContext context) {
+  void deleteTheBroup() {
+    // deleteBroup.deleteBroup(settings.getToken(), chat.id).then((val) {
+    //   if (val is Broup) {
+    //     Broup deletedBroup = val;
+    //     broList.deleteChat(deletedBroup);
+    //     storage.deleteChat(deletedBroup).then((value) {
+    //       Navigator.pushReplacement(
+    //           context,
+    //           MaterialPageRoute(
+    //               builder: (context) => BroCastHome(key: UniqueKey())));
+    //     });
+    //   } else {
+    //     if (val == "an unknown error has occurred") {
+    //       showToastMessage("An unknown error has occurred");
+    //     } else {
+    //       showToastMessage("There was an error with the server, we apologize for the inconvenience.");
+    //     }
+    //   }
+    // });
+    Navigator.of(context).pop();
+  }
+
+  void reportTheBroup() {
+    // reportBro.reportBroup(settings.getToken(), chat.id).then((val) {
+    //   if (val is Broup) {
+    //     Broup broupToRemove = val;
+    //     broList.deleteChat(broupToRemove);
+    //     storage.deleteChat(broupToRemove).then((value) {
+    //       Navigator.pushReplacement(
+    //           context,
+    //           MaterialPageRoute(
+    //               builder: (context) => BroCastHome(key: UniqueKey())));
+    //     });
+    //   } else {
+    //     if (val == "an unknown error has occurred") {
+    //       showToastMessage("An unknown error has occurred");
+    //     } else {
+    //       showToastMessage("There was an error with the server, we apologize for the inconvenience.");
+    //     }
+    //   }
+    // });
+    Navigator.of(context).pop();
+  }
+
+  void showDialogUnMuteBroup(BuildContext context) {
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -898,7 +963,7 @@ class _ChatDetailsState extends State<ChatDetails> {
               new TextButton(
                 child: new Text("Unmute"),
                 onPressed: () {
-                  unmuteTheChat();
+                  unmuteTheBroup();
                 },
               ),
             ],
@@ -906,31 +971,7 @@ class _ChatDetailsState extends State<ChatDetails> {
         });
   }
 
-  showDialogUnBlockChat(BuildContext context) {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: new Text("Unblock Bro?"),
-            actions: <Widget>[
-              new TextButton(
-                child: new Text("Cancel"),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-              new TextButton(
-                child: new Text("Unblock"),
-                onPressed: () {
-                  blockTheBro(false);
-                },
-              ),
-            ],
-          );
-        });
-  }
-
-  showDialogMuteChat(BuildContext context) {
+  void showDialogMuteBroup(BuildContext context) {
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -983,7 +1024,7 @@ class _ChatDetailsState extends State<ChatDetails> {
               new TextButton(
                 child: new Text("Mute"),
                 onPressed: () {
-                  muteTheChat(selectedRadio);
+                  muteTheBroup(selectedRadio);
                 },
               ),
             ],
@@ -991,25 +1032,352 @@ class _ChatDetailsState extends State<ChatDetails> {
         });
   }
 
-  unmuteTheChat() {
-    // socketServices.socket.emit("message_event_change_chat_mute", {
-    //   "token": "settings.getToken()",
-    //   "bros_bro_id": chat.id,
-    //   // "bro_id": settings.getBroId(),
-    //   "bro_id": 0,
+  void unmuteTheBroup() {
+    // socketServices.socket.emit("message_event_change_broup_mute", {
+    //   "token": settings.getToken(),
+    //   "broup_id": chat.id,
+    //   "bro_id": settings.getBroId(),
     //   "mute": -1
     // });
-    // Navigator.of(context).pop();
+    Navigator.of(context).pop();
   }
 
-  void muteTheChat(int selectedRadio) {
-    // socketServices.socket.emit("message_event_change_chat_mute", {
-    //   "token": "settings.getToken()",
-    //   "bros_bro_id": chat.id,
-    //   // "bro_id": settings.getBroId(),
-    //   "bro_id": 0,
+  void muteTheBroup(int selectedRadio) {
+    // socketServices.socket.emit("message_event_change_broup_mute", {
+    //   "token": settings.getToken(),
+    //   "broup_id": chat.id,
+    //   "bro_id": settings.getBroId(),
     //   "mute": selectedRadio
     // });
-    // Navigator.of(context).pop();
+    Navigator.of(context).pop();
   }
 }
+
+// class BroTile extends StatefulWidget {
+//   final Bro bro;
+//   final String broName;
+//   final int broupId;
+//   final bool userAdmin;
+//   final void Function(int) addNewBro;
+//
+//   BroTile(
+//       {required Key key,
+//       required this.bro,
+//       required this.broName,
+//       required this.broupId,
+//       required this.userAdmin,
+//       required this.addNewBro})
+//       : super(key: key);
+//
+//   @override
+//   _BroTileState createState() => _BroTileState();
+// }
+//
+// class _BroTileState extends State<BroTile> {
+//   Settings settings = Settings();
+//
+//   var _tapPosition;
+//
+//   selectBro(BuildContext context) {
+//     // if (widget.bro.id != settings.getBroId()) {
+//     //   showDialog(
+//     //       context: context,
+//     //       builder: (BuildContext context) {
+//     //         return AlertDialog(actions: <Widget>[
+//     //           widget.userAdmin
+//     //               ? getPopupItemsAdmin(
+//     //                   context,
+//     //                   widget.broName,
+//     //                   widget.bro,
+//     //                   widget.broupId,
+//     //                   true,
+//     //                   settings.getToken(),
+//     //                   widget.addNewBro)
+//     //               : getPopupItemsNormal(
+//     //                   context,
+//     //                   widget.broName,
+//     //                   widget.bro,
+//     //                   widget.broupId,
+//     //                   true,
+//     //                   settings.getToken(),
+//     //                   widget.addNewBro)
+//     //         ]);
+//     //       });
+//     // }
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(
+//       child: Material(
+//         child: GestureDetector(
+//           onLongPress: _showBroupPopupMenu,
+//           onTapDown: _storePosition,
+//           child: InkWell(
+//             onTap: () {
+//               selectBro(context);
+//             },
+//             child: Row(children: [
+//               Container(
+//                 width: widget.bro.isAdmin()
+//                     ? MediaQuery.of(context).size.width - 124
+//                     : MediaQuery.of(context).size.width,
+//                 padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+//                 child: Text(widget.broName, style: simpleTextStyle()),
+//               ),
+//               widget.bro.isAdmin()
+//                   ? Container(
+//                       width: 100,
+//                       padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+//                       decoration: BoxDecoration(
+//                           border: Border.all(color: Colors.green)),
+//                       child: Text(
+//                         "admin",
+//                         style: TextStyle(color: Colors.green, fontSize: 16),
+//                         textAlign: TextAlign.center,
+//                       ))
+//                   : Container(),
+//             ]),
+//           ),
+//         ),
+//         color: Colors.transparent,
+//       ),
+//     );
+//   }
+//
+//   void _showBroupPopupMenu() {
+//     // if (widget.bro.id != settings.getBroId()) {
+//     //   final RenderBox overlay =
+//     //       Overlay.of(context)!.context.findRenderObject() as RenderBox;
+//     //
+//     //   showMenu(
+//     //           context: context,
+//     //           items: [
+//     //             BroupParticipantPopup(
+//     //                 key: UniqueKey(),
+//     //                 broName: widget.broName,
+//     //                 bro: widget.bro,
+//     //                 broupId: widget.broupId,
+//     //                 userAdmin: widget.userAdmin,
+//     //                 addNewBro: widget.addNewBro)
+//     //           ],
+//     //           position: RelativeRect.fromRect(_tapPosition & const Size(40, 40),
+//     //               Offset.zero & overlay.size))
+//     //       .then((int? delta) {
+//     //     return;
+//     //   });
+//     // }
+//   }
+//
+//   void _storePosition(TapDownDetails details) {
+//     _tapPosition = details.globalPosition;
+//   }
+// }
+//
+// class BroupParticipantPopup extends PopupMenuEntry<int> {
+//   final String broName;
+//   final Bro bro;
+//   final int broupId;
+//   final bool userAdmin;
+//   final void Function(int) addNewBro;
+//
+//   BroupParticipantPopup(
+//       {required Key key,
+//       required this.broName,
+//       required this.bro,
+//       required this.broupId,
+//       required this.userAdmin,
+//       required this.addNewBro})
+//       : super(key: key);
+//
+//   @override
+//   bool represents(int? n) => n == 1 || n == -1;
+//
+//   @override
+//   BroupParticipantPopupState createState() => BroupParticipantPopupState();
+//
+//   @override
+//   double get height => 1;
+// }
+//
+// class BroupParticipantPopupState extends State<BroupParticipantPopup> {
+//   Settings settings = Settings();
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return widget.userAdmin
+//         ? getPopupItemsAdmin(context, widget.broName, widget.bro,
+//             widget.broupId, false, "settings.getToken()", widget.addNewBro)
+//         : getPopupItemsNormal(context, widget.broName, widget.bro,
+//             widget.broupId, false,"settings.getToken()", widget.addNewBro);
+//   }
+// }
+//
+// void buttonMessage(BuildContext context, Bro bro, bool alertDialog) {
+//   if (alertDialog) {
+//     Navigator.of(context).pop();
+//   } else {
+//     Navigator.pop<int>(context, 1);
+//   }
+//   BroList broList = BroList();
+//   for (Chat br0 in broList.getBros()) {
+//     if (!br0.isBroup()) {
+//       if (br0.id == bro.id) {
+//         Navigator.pushReplacement(
+//             context,
+//             MaterialPageRoute(
+//                 builder: (context) =>
+//                     BroMessaging(key: UniqueKey(), chat: br0 as BroBros)));
+//       }
+//     }
+//   }
+// }
+//
+// void buttonAddBro(
+//     BuildContext context, Bro bro, bool alertDialog, String token, addNewBro) {
+//   addNewBro(bro.id);
+//   if (alertDialog) {
+//     Navigator.of(context).pop();
+//   } else {
+//     Navigator.pop<int>(context, 1);
+//   }
+// }
+//
+// void buttonMakeAdmin(BuildContext context, Bro bro, int broupId,
+//     bool alertDialog, String token) {
+//   if (alertDialog) {
+//     Navigator.of(context).pop();
+//   } else {
+//     Navigator.pop<int>(context, 2);
+//   }
+//   SocketServices socketServices = SocketServices();
+//   socketServices.socket.emit("message_event_change_broup_add_admin",
+//       {"token": token, "broup_id": broupId, "bro_id": bro.id});
+// }
+//
+// void buttonDismissAdmin(BuildContext context, Bro bro, int broupId,
+//     bool alertDialog, String token) {
+//   if (alertDialog) {
+//     Navigator.of(context).pop();
+//   } else {
+//     Navigator.pop<int>(context, 3);
+//   }
+//   SocketServices socketServices = SocketServices();
+//   socketServices.socket.emit("message_event_change_broup_dismiss_admin",
+//       {"token": token, "broup_id": broupId, "bro_id": bro.id});
+// }
+//
+// void buttonRemove(BuildContext context, Bro bro, int broupId, bool alertDialog,
+//     String token) {
+//   if (alertDialog) {
+//     Navigator.of(context).pop();
+//   } else {
+//     Navigator.pop<int>(context, 3);
+//   }
+//   SocketServices socketServices = SocketServices();
+//   socketServices.socket.emit("message_event_change_broup_remove_bro",
+//       {"token": token, "broup_id": broupId, "bro_id": bro.id});
+// }
+//
+// Widget getPopupItemsAdmin(BuildContext context, String broName, Bro bro,
+//     int broupId, bool alertDialog, String token, addNewBro) {
+//   return Column(
+//     children: [
+//       bro is BroAdded
+//           ? Container(
+//               alignment: Alignment.centerLeft,
+//               child: TextButton(
+//                   onPressed: () {
+//                     buttonMessage(context, bro, alertDialog);
+//                   },
+//                   child: Text(
+//                     'Message $broName',
+//                     textAlign: TextAlign.left,
+//                     style: TextStyle(color: Colors.black, fontSize: 14),
+//                   )),
+//             )
+//           : Container(
+//               alignment: Alignment.centerLeft,
+//               child: TextButton(
+//                   onPressed: () {
+//                     buttonAddBro(context, bro, alertDialog, token, addNewBro);
+//                   },
+//                   child: Text(
+//                     'Add $broName',
+//                     textAlign: TextAlign.left,
+//                     style: TextStyle(color: Colors.black, fontSize: 14),
+//                   )),
+//             ),
+//       bro.isAdmin()
+//           ? Container(
+//               alignment: Alignment.centerLeft,
+//               child: TextButton(
+//                   onPressed: () {
+//                     buttonDismissAdmin(
+//                         context, bro, broupId, alertDialog, token);
+//                   },
+//                   child: Text(
+//                     'Dismiss as admin',
+//                     textAlign: TextAlign.left,
+//                     style: TextStyle(color: Colors.black, fontSize: 14),
+//                   )),
+//             )
+//           : Container(
+//               alignment: Alignment.centerLeft,
+//               child: TextButton(
+//                   onPressed: () {
+//                     buttonMakeAdmin(context, bro, broupId, alertDialog, token);
+//                   },
+//                   child: Text(
+//                     'Make Broup admin',
+//                     textAlign: TextAlign.left,
+//                     style: TextStyle(color: Colors.black, fontSize: 14),
+//                   )),
+//             ),
+//       Container(
+//         alignment: Alignment.centerLeft,
+//         child: TextButton(
+//             onPressed: () {
+//               buttonRemove(context, bro, broupId, alertDialog, token);
+//             },
+//             child: Text(
+//               'Remove $broName',
+//               style: TextStyle(color: Colors.black, fontSize: 14),
+//             )),
+//       )
+//     ],
+//   );
+// }
+//
+// Widget getPopupItemsNormal(BuildContext context, String broName, Bro bro,
+//     int broupId, bool alertDialog, String token, addNewBro) {
+//   return Column(
+//     children: [
+//       bro is BroAdded
+//           ? Container(
+//               alignment: Alignment.centerLeft,
+//               child: TextButton(
+//                   onPressed: () {
+//                     buttonMessage(context, bro, alertDialog);
+//                   },
+//                   child: Text(
+//                     'Message $broName',
+//                     textAlign: TextAlign.left,
+//                     style: TextStyle(color: Colors.black, fontSize: 14),
+//                   )),
+//             )
+//           : Container(
+//               alignment: Alignment.centerLeft,
+//               child: TextButton(
+//                   onPressed: () {
+//                     buttonAddBro(context, bro, alertDialog, token, addNewBro);
+//                   },
+//                   child: Text(
+//                     'Add $broName',
+//                     textAlign: TextAlign.left,
+//                     style: TextStyle(color: Colors.black, fontSize: 14),
+//                   )),
+//             ),
+//     ],
+//   );
+// }

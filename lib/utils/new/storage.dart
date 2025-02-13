@@ -3,6 +3,8 @@ import 'package:brocast/objects/message.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
+import '../../objects/bro.dart';
+
 class Storage {
   static const _dbName = "brocast.db";
 
@@ -34,13 +36,11 @@ class Storage {
     );
   }
 
-  // Creates the database structure (unless database has already been created)
-  Future _onCreate(Database db,
-      int version,) async {
+  Future _onCreate(Database db, int version,) async {
     print("Creating database");
     await createTableBroup(db);
     await createTableMessage(db);
-    // await createTableBro(db);
+    await createTableBro(db);
   }
 
   createTableBroup(Database db) async {
@@ -64,7 +64,7 @@ class Storage {
             lastMessageId INTEGER,
             updateBroup INTEGER,
             newMessages INTEGER,
-            avatar TEXT,
+            avatar BLOB,
             messages TEXT,
             UNIQUE(broupId) ON CONFLICT REPLACE
           );
@@ -89,30 +89,51 @@ class Storage {
           ''');
   }
 
-  // createTableBro(Database db) async {
-  //   await db.execute('''
-  //         CREATE TABLE Bro (
-  //           id INTEGER PRIMARY KEY,
-  //           broId INTEGER,
-  //           broupId INTEGER,
-  //           admin INTEGER,
-  //           added INTEGER,
-  //           chatName TEXT,
-  //           broName TEXT,
-  //           bromotion TEXT,
-  //           UNIQUE(broId, broupId) ON CONFLICT REPLACE
-  //         );
-  //         ''');
-  // }
+  createTableBro(Database db) async {
+    await db.execute('''
+          CREATE TABLE Bro (
+            id INTEGER PRIMARY KEY,
+            broId INTEGER,
+            broName TEXT,
+            bromotion TEXT,
+            added INTEGER,
+            updateBro INTEGER,
+            avatar BLOB,
+            UNIQUE(broId) ON CONFLICT REPLACE
+          );
+          ''');
+  }
 
-  // Future<int> addBro(Bro bro) async {
-  //   Database database = await this.database;
-  //   return database.insert(
-  //     'Bro',
-  //     bro.toDbMap(),
-  //     conflictAlgorithm: ConflictAlgorithm.replace,
-  //   );
-  // }
+  Future<int> addBro(Bro bro) async {
+    Database database = await this.database;
+    return database.insert(
+      'Bro',
+      bro.toDbMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+  Future<int> updateBro(Bro bro) async {
+    Database database = await this.database;
+    return database.update(
+      'Bro',
+      bro.toDbMap(),
+      where: 'broId = ?',
+      whereArgs: [bro.id],
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+  Future<List<Bro>> fetchAllBros() async {
+    Database database = await this.database;
+    List<Map<String, dynamic>> maps = await database.query('Bro');
+    if (maps.isNotEmpty) {
+      return maps
+          .map((map) => Bro.fromDbMap(map))
+          .toList();
+    }
+    return List.empty();
+  }
 
   Future<int> addBroup(Broup broup) async {
     Database database = await this.database;
@@ -190,6 +211,16 @@ class Storage {
     List<Map<String, dynamic>> maps = await database.rawQuery(query);
     if (maps.isNotEmpty) {
       return maps.map((map) => Message.fromDbMap(map)).toList();
+    }
+    return List.empty();
+  }
+
+  Future<List<Bro>> fetchBros(List<int> broIds) async {
+    Database database = await this.database;
+    String query = "SELECT * FROM Bro WHERE broId IN (${broIds.join(',')})";
+    List<Map<String, dynamic>> maps = await database.rawQuery(query);
+    if (maps.isNotEmpty) {
+      return maps.map((map) => Bro.fromDbMap(map)).toList();
     }
     return List.empty();
   }

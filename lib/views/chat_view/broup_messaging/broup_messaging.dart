@@ -1,50 +1,46 @@
 import 'dart:async';
 
 import 'package:back_button_interceptor/back_button_interceptor.dart';
+import 'package:brocast/constants/route_paths.dart' as routes;
 import 'package:brocast/objects/broup.dart';
 import 'package:brocast/objects/message.dart';
-import 'package:brocast/services/auth/auth_service_social.dart';
+import 'package:brocast/services/get_messages.dart';
 import 'package:brocast/utils/new/settings.dart';
 import 'package:brocast/utils/new/socket_services.dart';
 import 'package:brocast/utils/new/utils.dart';
-import 'package:brocast/utils/new/storage.dart';
 import 'package:brocast/views/bro_home/bro_home.dart';
-import 'package:brocast/views/chat_view/messaging_change_notifier.dart';
 import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:intl/intl.dart';
 
 import '../../../objects/bro.dart';
+import '../../../services/auth/auth_service_social.dart';
+import '../../../utils/new/storage.dart';
 import '../../bro_profile/bro_profile.dart';
 import '../../bro_settings/bro_settings.dart';
 import '../chat_details/chat_details.dart';
 import '../chat_details/chat_details.dart';
 import '../message_util.dart';
-import 'models/bro_message_tile.dart';
-import 'package:brocast/constants/route_paths.dart' as routes;
+import 'models/broup_message_tile.dart';
 
-class BroMessaging extends StatefulWidget {
+class BroupMessaging extends StatefulWidget {
   final Broup chat;
 
-  BroMessaging({required Key key, required this.chat}) : super(key: key);
+  BroupMessaging({required Key key, required this.chat}) : super(key: key);
 
   @override
-  _BroMessagingState createState() => _BroMessagingState();
+  _BroupMessagingState createState() => _BroupMessagingState();
 }
 
-class _BroMessagingState extends State<BroMessaging> {
+class _BroupMessagingState extends State<BroupMessaging> {
   bool isLoadingBros = false;
   bool isLoadingMessages = false;
+  GetMessages get = new GetMessages();
   Settings settings = Settings();
   SocketServices socketServices = SocketServices();
 
-  MessagingChangeNotifier messagingChangeNotifier = MessagingChangeNotifier();
-
   bool showEmojiKeyboard = false;
-  int amountViewed = 0;
-  bool allMessagesDBRetrieved = false;
-  bool busyRetrieving = false;
 
   FocusNode focusAppendText = FocusNode();
   FocusNode focusEmojiTextField = FocusNode();
@@ -55,21 +51,24 @@ class _BroMessagingState extends State<BroMessaging> {
       new TextEditingController();
   final formKey = GlobalKey<FormState>();
 
-  ScrollController messageScrollController = ScrollController();
+  List<Message> messages = [];
 
   late Broup chat;
   late Storage storage;
+
+  int amountViewed = 0;
+  bool allMessagesDBRetrieved = false;
+  bool busyRetrieving = false;
+
+  var messageScrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
     chat = widget.chat;
-    chat.unreadMessages = 0;
     storage = Storage();
     socketServices.checkConnection();
-    socketServices.addListener(messageViewListener);
-    messagingChangeNotifier.addListener(messageViewListener);
-    messagingChangeNotifier.setBroupId(chat.getBroupId());
+    socketServices.addListener(socketListener);
 
     BackButtonInterceptor.add(myInterceptor);
 
@@ -78,7 +77,6 @@ class _BroMessagingState extends State<BroMessaging> {
         double distanceToTop =
             messageScrollController.position.maxScrollExtent -
                 messageScrollController.position.pixels;
-        print("distance to top: $distanceToTop");
         if (distanceToTop < 1000) {
           busyRetrieving = true;
           amountViewed += 1;
@@ -119,20 +117,49 @@ class _BroMessagingState extends State<BroMessaging> {
     });
   }
 
-  messageViewListener() {
-    setState(() {
-    });
+  socketListener() {
+    setState(() {});
+  }
+
+  addNewBro(int addBroId) {
+    // socketServices.socket
+    //     .on('message_event_add_bro_success', (data) => broWasAdded(data));
+    // socketServices.socket.on('message_event_add_bro_failed', (data) {
+    //   broAddingFailed();
+    // });
+    // socketServices.socket.emit("message_event_add_bro",
+    //     {"token": settings.getToken(), "bros_bro_id": addBroId});
+  }
+
+  broWasAdded(data) {
+    // BroBros broBros = new BroBros(
+    //     data["bros_bro_id"],
+    //     data["chat_name"],
+    //     data["chat_description"],
+    //     data["alias"],
+    //     data["chat_colour"],
+    //     data["unread_messages"],
+    //     data["last_time_activity"],
+    //     data["room_name"],
+    //     data["blocked"] ? 1 : 0,
+    //     data["mute"] ? 1 : 0,
+    //     0);
+    // broList.addChat(broBros);
+    // storage.addChat(broBros).then((value) {
+    //   broList.updateBroupBrosForBroBros(broBros);
+    //   Navigator.pushReplacement(
+    //       context,
+    //       MaterialPageRoute(
+    //           builder: (context) => BroCastHome(key: UniqueKey())));
+    // });
   }
 
   @override
   void dispose() {
-    // We were just on the messaging page, so we consider all messages as read
     chat.unreadMessages = 0;
-    messagingChangeNotifier.setBroupId(-1);
     focusAppendText.dispose();
     focusEmojiTextField.dispose();
-    socketServices.removeListener(messageViewListener);
-    messagingChangeNotifier.removeListener(messageViewListener);
+    socketServices.removeListener(socketListener);
     broMessageController.dispose();
     appendTextMessageController.dispose();
     BackButtonInterceptor.remove(myInterceptor);
@@ -167,26 +194,32 @@ class _BroMessagingState extends State<BroMessaging> {
     }
   }
 
-  sendMessage() {
+  sendMessageBroup() {
+    // TODO: copied?
     if (formKey.currentState!.validate()) {
       String message = broMessageController.text;
-      String? textMessage = appendTextMessageController.text;
-      if (textMessage.isEmpty) {
-        textMessage = null;
+      String textMessage = appendTextMessageController.text;
+      // We add the message already as being send.
+      // If it is received we remove this message and show 'received'
+      String timestampString = DateTime.now().toUtc().toString();
+      // The 'Z' indicates that it's UTC but we'll already add it in the message
+      if (timestampString.endsWith('Z')) {
+        timestampString =
+            timestampString.substring(0, timestampString.length - 1);
       }
+      // We set the id to be "-1". For date tiles it is "0", these will be filtered.
       Message mes = new Message(
-          -1,
-          settings.getMe()!.getId(),
-          message,
-          textMessage,
-          DateTime.now().toUtc().toString(),
-          null,
-          false,
-          chat.getBroupId(),
+        -1,
+        settings.getMe()!.getId(),
+        message,
+        textMessage,
+        DateTime.now().toUtc().toString(),
+        null,
+        false,
+        chat.getBroupId(),
       );
-      mes.isRead = 2;  // indicates send to server but not received
       setState(() {
-        this.chat.messages.insert(0, mes);
+        this.messages.insert(0, mes);
       });
       String? messageData = null;
       AuthServiceSocial().sendMessage(chat.getBroupId(), message, textMessage, messageData).then((value) {
@@ -214,31 +247,68 @@ class _BroMessagingState extends State<BroMessaging> {
   }
 
   messageRead(var data) {
+    // TODO: copied?
     var timeLastRead = DateTime.parse(data + 'Z').toLocal();
-    for (Message message in this.chat.messages) {
+    for (Message message in this.messages) {
       if (timeLastRead.isAfter(message.getTimeStamp())) {
         message.isRead = 1;
       }
     }
     setState(() {
-      this.chat.messages = this.chat.messages;
+      this.messages = this.messages;
     });
   }
 
+
   Widget messageList() {
-    return chat.messages.isNotEmpty
+    return messages.isNotEmpty
         ? ListView.builder(
-            itemCount: chat.messages.length,
+            itemCount: messages.length,
             shrinkWrap: true,
             reverse: true,
             controller: messageScrollController,
             itemBuilder: (context, index) {
-              return BroMessageTile(
+              return BroupMessageTile(
                   key: UniqueKey(),
-                  message: chat.messages[index],
-                  myMessage: chat.messages[index].senderId == settings.getMe()!.getId());
+                  message: messages[index],
+                  senderName: getSender(messages[index].senderId),
+                  senderId: messages[index].senderId,
+                  broAdded: getIsAdded(messages[index].senderId),
+                  // myMessage: messages[index].senderId == settings.getBroId(),
+                  myMessage: messages[index].senderId == 1,
+                  addNewBro: addNewBro);
             })
         : Container();
+  }
+
+  bool getIsAdded(int senderId) {
+    // TODO: How is this used?
+    // for (Chat bro in broList.getBros()) {
+    //   if (!bro.isBroup()) {
+    //     if (bro.id == senderId) {
+    //       return true;
+    //     }
+    //   }
+    // }
+    return false;
+  }
+
+  String getSender(int senderId) {
+    // TODO: How is this used?
+    // String broName = "";
+    // for (Chat bro in broList.getBros()) {
+    //   if (!bro.isBroup()) {
+    //     if (bro.id == senderId) {
+    //       return bro.getBroNameOrAlias();
+    //     }
+    //   }
+    // }
+    // for (Bro bro in chat.getBroupBros()) {
+    //   if (bro.id == senderId) {
+    //     return bro.getFullName();
+    //   }
+    // }
+    return "broName";
   }
 
   void onTapEmojiTextField() {
@@ -256,6 +326,29 @@ class _BroMessagingState extends State<BroMessaging> {
       setState(() {
         showEmojiKeyboard = false;
       });
+    }
+  }
+
+  navigateToHome() {
+    if (settings.doneRoutes.contains(routes.BroHomeRoute)) {
+      // We want to pop until we reach the BroHomeRoute
+      // We remove one, because it's this page.
+      settings.doneRoutes.removeLast();
+      for (int i = 0; i < 200; i++) {
+        String route = settings.doneRoutes.removeLast();
+        Navigator.pop(context);
+        if (route == routes.BroHomeRoute) {
+          break;
+        }
+        if (settings.doneRoutes.length == 0) {
+          break;
+        }
+      }
+    } else {
+      // TODO: How to test this?
+      settings.doneRoutes = [];
+      Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (context) => BroCastHome(key: UniqueKey())));
     }
   }
 
@@ -285,7 +378,7 @@ class _BroMessagingState extends State<BroMessaging> {
           child: AppBar(
               leading: IconButton(
                   icon:
-                  Icon(Icons.arrow_back, color: getTextColor(chat.getColor())),
+                      Icon(Icons.arrow_back, color: getTextColor(chat.getColor())),
                   onPressed: () {
                     backButtonFunctionality();
                   }),
@@ -302,42 +395,19 @@ class _BroMessagingState extends State<BroMessaging> {
                     icon: Icon(Icons.more_vert, color: getTextColor(chat.getColor())),
                     onSelected: (item) => onSelectChat(context, item),
                     itemBuilder: (context) => [
-                      PopupMenuItem<int>(value: 0, child: Text("Profile")),
-                      PopupMenuItem<int>(value: 1, child: Text("Settings")),
-                      PopupMenuItem<int>(
-                          value: 2, child: Text("Broup details")),
-                      PopupMenuItem<int>(value: 3, child: Text("Home"))
-                    ])
+                          PopupMenuItem<int>(value: 0, child: Text("Profile")),
+                          PopupMenuItem<int>(value: 1, child: Text("Settings")),
+                          PopupMenuItem<int>(
+                              value: 2, child: Text("Broup details")),
+                          PopupMenuItem<int>(value: 3, child: Text("Home"))
+                        ])
               ]),
         ),
       ),
     );
   }
 
-  navigateToHome() {
-    if (settings.doneRoutes.contains(routes.BroHomeRoute)) {
-      // We want to pop until we reach the BroHomeRoute
-      // We remove one, because it's this page.
-      settings.doneRoutes.removeLast();
-      for (int i = 0; i < 200; i++) {
-        String route = settings.doneRoutes.removeLast();
-        Navigator.pop(context);
-        if (route == routes.BroHomeRoute) {
-          break;
-        }
-        if (settings.doneRoutes.length == 0) {
-          break;
-        }
-      }
-    } else {
-      // TODO: How to test this?
-      settings.doneRoutes = [];
-      Navigator.pushReplacement(context,
-          MaterialPageRoute(builder: (context) => BroCastHome(key: UniqueKey())));
-    }
-  }
-
-  onSelectChat(BuildContext context, int item) {
+  void onSelectChat(BuildContext context, int item) {
     switch (item) {
       case 0:
         Navigator.push(
@@ -356,13 +426,13 @@ class _BroMessagingState extends State<BroMessaging> {
             context,
             MaterialPageRoute(
                 builder: (context) =>
-                    ChatDetails(
-                        key: UniqueKey(),
-                        chat: chat
-                    )));
+                    ChatDetails(key: UniqueKey(), chat: chat)));
         break;
       case 3:
-        navigateToHome();
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => BroCastHome(key: UniqueKey())));
         break;
     }
   }
@@ -412,7 +482,6 @@ class _BroMessagingState extends State<BroMessaging> {
                                       ? Colors.white
                                       : Color(0xFF616161))),
                         ),
-                        SizedBox(width: 5),
                         Expanded(
                           child: Container(
                             padding: EdgeInsets.only(left: 15),
@@ -426,8 +495,11 @@ class _BroMessagingState extends State<BroMessaging> {
                                       val.trimRight().isEmpty) {
                                     return "Can't send an empty message";
                                   }
+                                  if (chat.hasLeft()) {
+                                    return "You're no longer a participant in this Broup";
+                                  }
                                   if (chat.isBlocked()) {
-                                    return "Can't send messages to a blocked bro";
+                                    return "Can't send messages to a blocked Broup";
                                   }
                                   return null;
                                 },
@@ -456,7 +528,7 @@ class _BroMessagingState extends State<BroMessaging> {
                             //         chat: chat,
                             //         cameras: value
                             //     ))));
-                            // pickImage();
+                            // // pickImage();
                           },
                           child: Container(
                               height: 35,
@@ -471,7 +543,7 @@ class _BroMessagingState extends State<BroMessaging> {
                         SizedBox(width: 5),
                         GestureDetector(
                           onTap: () {
-                            sendMessage();
+                            sendMessageBroup();
                           },
                           child: Container(
                               height: 35,
@@ -544,3 +616,4 @@ class _BroMessagingState extends State<BroMessaging> {
     );
   }
 }
+

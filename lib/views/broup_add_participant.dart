@@ -11,7 +11,7 @@
 // import 'bro_home/bro_home.dart';
 // import 'bro_profile.dart';
 // import 'bro_settings.dart';
-// import 'broup_details.dart';
+// import 'chat_details.dart';
 //
 // class BroupAddParticipant extends StatefulWidget {
 //   final Broup chat;

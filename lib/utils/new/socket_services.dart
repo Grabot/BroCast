@@ -1,6 +1,6 @@
 import 'package:brocast/constants/base_url.dart';
 import 'package:brocast/views/bro_home/bro_home_change_notifier.dart';
-import 'package:brocast/views/chat_view/bro_messaging/bro_messaging_change_notifier.dart';
+import 'package:brocast/views/chat_view/messaging_change_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:socket_io_client/socket_io_client.dart' as io;
 
@@ -78,7 +78,7 @@ class SocketServices extends ChangeNotifier {
     int broupId = data["broup_id"];
     Me? me = Settings().getMe();
     if (me != null) {
-      Broup broup = me.bros.firstWhere((element) => element.broupId == broupId);
+      Broup broup = me.broups.firstWhere((element) => element.broupId == broupId);
       if (data.containsKey("new_broup_colour")) {
         broup.setBroupColor(data["new_broup_colour"]);
       }
@@ -94,6 +94,7 @@ class SocketServices extends ChangeNotifier {
   }
 
   chatAdded(data) async {
+    print("chat added $data");
     var broup = data["broup"];
     Me? me = Settings().getMe();
     if (me != null) {
@@ -101,7 +102,7 @@ class SocketServices extends ChangeNotifier {
       // so we don't account for that.
       Broup newBroup = Broup.fromJson(broup);
       Storage().addBroup(newBroup);
-      me.bros.add(newBroup);
+      me.broups.add(newBroup);
       joinRoomBroup(newBroup.getBroupId());
     }
     BroHomeChangeNotifier().notify();
@@ -115,7 +116,7 @@ class SocketServices extends ChangeNotifier {
     int broupId = message.broupId;
     Me? me = Settings().getMe();
     if (me != null) {
-      Broup broup = me.bros.firstWhere((element) => element.broupId == broupId);
+      Broup broup = me.broups.firstWhere((element) => element.broupId == broupId);
       broup.updateMessages(message);
       storage.updateBroup(broup);
       notifyListeners();
@@ -128,7 +129,7 @@ class SocketServices extends ChangeNotifier {
     String timestamp = data["timestamp"];
     Me? me = Settings().getMe();
     if (me != null) {
-      Broup broup = me.bros.firstWhere((element) => element.broupId == broupId);
+      Broup broup = me.broups.firstWhere((element) => element.broupId == broupId);
       broup.updateLastReadMessages(timestamp);
       Storage().updateBroup(broup);
       notifyListeners();

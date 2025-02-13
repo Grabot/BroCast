@@ -10,6 +10,8 @@ import 'package:flutter/scheduler.dart';
 import '../bro_profile/bro_profile.dart';
 import 'package:brocast/constants/route_paths.dart' as routes;
 
+import '../chat_view/messaging_change_notifier.dart';
+
 class BroSettings extends StatefulWidget {
   BroSettings({required Key key}) : super(key: key);
 
@@ -28,6 +30,8 @@ class _BroSettingsState extends State<BroSettings> {
   @override
   void initState() {
     super.initState();
+
+    MessagingChangeNotifier().setBroupId(-1);
 
     storage = Storage();
     socketServices.checkConnection();

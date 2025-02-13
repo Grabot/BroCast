@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 
 
-class BroMessagingChangeNotifier extends ChangeNotifier {
+class MessagingChangeNotifier extends ChangeNotifier {
 
   // If the bro opens a message view we keep track of which broupId it is
   // If the bro gets a message we can check if it's on the page that is open
   int broupId = -1;
-  static final BroMessagingChangeNotifier _instance = BroMessagingChangeNotifier._internal();
+  static final MessagingChangeNotifier _instance = MessagingChangeNotifier._internal();
 
-  BroMessagingChangeNotifier._internal();
+  MessagingChangeNotifier._internal();
 
-  factory BroMessagingChangeNotifier() {
+  factory MessagingChangeNotifier() {
     return _instance;
   }
 

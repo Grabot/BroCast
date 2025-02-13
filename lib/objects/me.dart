@@ -2,17 +2,19 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import '../views/bro_home/bro_home_change_notifier.dart';
+import 'bro.dart';
 import 'broup.dart';
 
-class Me {
+class Me extends Bro {
   late int id;
   late String broName;
   late String bromotion;
   late bool origin;
   Uint8List? avatar;
-  late List<Broup> bros;
+  late List<Broup> broups;
 
-  Me(this.id, this.broName, this.bromotion, this.origin, this.avatar, this.bros);
+  Me(this.id, this.broName, this.bromotion, this.origin, this.avatar, this.broups)
+      : super(id, broName, bromotion, false, null, false);
 
   getId() {
     return id;
@@ -42,7 +44,8 @@ class Me {
     return this.avatar;
   }
 
-  Me.fromJson(Map<String, dynamic> json) {
+  Me.fromJson(Map<String, dynamic> json)
+      : super(json["id"], json["bro_name"], json["bromotion"], false, null, false) {
     id = json["id"];
     broName = json["bro_name"];
     bromotion = json["bromotion"];
@@ -50,10 +53,10 @@ class Me {
     if (json.containsKey("avatar") && json["avatar"] != null) {
       avatar = base64Decode(json["avatar"].replaceAll("\n", ""));
     }
-    bros = [];
+    broups = [];
     if (json.containsKey("broups")) {
       for (var bro in json["broups"]) {
-        bros.add(Broup.fromJson(bro));
+        broups.add(Broup.fromJson(bro));
       }
     }
     BroHomeChangeNotifier().notify();

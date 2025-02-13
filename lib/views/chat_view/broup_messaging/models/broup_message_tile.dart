@@ -10,21 +10,29 @@ import '../../../../objects/message.dart';
 import '../../../../utils/new/utils.dart';
 
 
-
-class MessageTile extends StatefulWidget {
+class BroupMessageTile extends StatefulWidget {
   final Message message;
+  final String senderName;
+  final int senderId;
+  final bool broAdded;
   final bool myMessage;
+  final void Function(int) addNewBro;
 
-  MessageTile(
-      {required Key key, required this.message, required this.myMessage})
+  BroupMessageTile(
+      {required Key key,
+        required this.message,
+        required this.senderName,
+        required this.senderId,
+        required this.broAdded,
+        required this.myMessage,
+        required this.addNewBro})
       : super(key: key);
 
   @override
-  _MessageTileState createState() => _MessageTileState();
+  _BroupMessageTileState createState() => _BroupMessageTileState();
 }
 
-class _MessageTileState extends State<MessageTile> {
-
+class _BroupMessageTileState extends State<BroupMessageTile> {
   var _tapPosition;
   bool isImage = false;
 
@@ -124,11 +132,32 @@ class _MessageTileState extends State<MessageTile> {
               child: Text(widget.message.body, style: simpleTextStyle()))
         ])
         : Container(
+        margin: EdgeInsets.only(top: 12),
         child: new Material(
           child: Column(children: [
+            widget.myMessage
+                ? Container()
+                : Container(
+              child: Align(
+                alignment: Alignment.bottomLeft,
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 12),
+                  child: RichText(
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                          text: widget.senderName,
+                          style: TextStyle(
+                              color: Colors.white70, fontSize: 16),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
             Container(
               padding: EdgeInsets.symmetric(horizontal: 12),
-              margin: EdgeInsets.only(top: 12),
               width: MediaQuery.of(context).size.width,
               alignment: widget.myMessage
                   ? Alignment.bottomRight
@@ -137,17 +166,14 @@ class _MessageTileState extends State<MessageTile> {
                 customBorder: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(42),
                 ),
+                onLongPress: _showMessageDetailPopupMenu,
+                onTapDown: _storePosition,
                 onTap: () {
                   selectMessage(context);
                 },
-                onLongPress: () {
-                  if (isImage && widget.message.clicked) {
-                    _showMessageDetailPopupMenu();
-                  }
-                },
-                onTapDown: _storePosition,
                 child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  padding:
+                  EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                   decoration: BoxDecoration(
                       border: Border.all(
                         color: getBorderColour(),
@@ -184,11 +210,11 @@ class _MessageTileState extends State<MessageTile> {
                         TextSpan(
                           text: DateFormat('HH:mm')
                               .format(widget.message.getTimeStamp()),
-                          style:
-                          TextStyle(color: Colors.white54, fontSize: 12),
+                          style: TextStyle(
+                              color: Colors.white54, fontSize: 12),
                         ),
                         widget.myMessage
-                            ? widget.message.isRead != 2
+                            ? widget.message.messageId != -1
                             ? WidgetSpan(
                             child: Icon(Icons.done_all,
                                 color: widget.message.hasBeenRead()
@@ -211,26 +237,50 @@ class _MessageTileState extends State<MessageTile> {
   }
 
   void _showMessageDetailPopupMenu() {
-    final RenderBox overlay =
-    Overlay.of(context).context.findRenderObject() as RenderBox;
+    // Only show the option to save the image if the message is clicked.
+    bool imageShowing = isImage && widget.message.clicked;
+    if (!widget.myMessage || imageShowing) {
+      final RenderBox overlay =
+      Overlay.of(context).context.findRenderObject() as RenderBox;
 
-    showMenu(
-        context: context,
-        items: [
-          BroMessageDetailPopup(
-              key: UniqueKey()
-          )
-        ],
-        position: RelativeRect.fromRect(_tapPosition & const Size(40, 40),
-            Offset.zero & overlay.size))
-        .then((int? delta) {
-      print("pressed? delta: $delta");
-      if (delta == 1) {
-        // Save the image!
-        saveImageToGallery();
-      }
-      return;
-    });
+      showMenu(
+          context: context,
+          items: [
+            MessageDetailPopup(
+                key: UniqueKey(),
+                myMessage: widget.myMessage,
+                sender: widget.senderName,
+                broAdded: widget.broAdded,
+                imageShowing: imageShowing
+            )
+          ],
+          position: RelativeRect.fromRect(_tapPosition & const Size(40, 40),
+              Offset.zero & overlay.size))
+          .then((int? delta) {
+        if (delta == 1) {
+          // TODO: how is this used?
+          // bool broTransition = false;
+          // BroList broList = BroList();
+          // for (Chat br0 in broList.getBros()) {
+          //   if (!br0.isBroup()) {
+          //     if (br0.id == widget.senderId) {
+          //       broTransition = true;
+          //       _navigationService.navigateTo(routes.BroRoute, arguments: br0);
+          //     }
+          //   }
+          // }
+          // if (!broTransition) {
+          //   _navigationService.navigateTo(routes.HomeRoute);
+          // }
+        } else if (delta == 2) {
+          widget.addNewBro(widget.senderId);
+        } else if (delta == 3) {
+          // Save the image!
+          saveImageToGallery();
+        }
+        return;
+      });
+    }
   }
 
   saveImageToGallery() async {
@@ -257,29 +307,38 @@ class _MessageTileState extends State<MessageTile> {
   void _storePosition(TapDownDetails details) {
     _tapPosition = details.globalPosition;
   }
-
 }
 
-class BroMessageDetailPopup extends PopupMenuEntry<int> {
+class MessageDetailPopup extends PopupMenuEntry<int> {
+  final String sender;
+  final bool myMessage;
+  final bool broAdded;
+  final bool imageShowing;
 
-  BroMessageDetailPopup(
-      {required Key key})
+  MessageDetailPopup(
+      {
+        required Key key,
+        required this.myMessage,
+        required this.sender,
+        required this.broAdded,
+        required this.imageShowing
+      })
       : super(key: key);
 
   @override
   bool represents(int? n) => n == 1 || n == -1;
 
   @override
-  BroMessageDetailPopupState createState() => BroMessageDetailPopupState();
+  MessageDetailPopupState createState() => MessageDetailPopupState();
 
   @override
   double get height => 1;
 }
 
-class BroMessageDetailPopupState extends State<BroMessageDetailPopup> {
+class MessageDetailPopupState extends State<MessageDetailPopup> {
   @override
   Widget build(BuildContext context) {
-    return getPopupItems(context);
+    return getPopupItems(context, widget.sender, widget.broAdded, widget.imageShowing, widget.myMessage);
   }
 }
 
@@ -287,19 +346,54 @@ void buttonMessage(BuildContext context) {
   Navigator.pop<int>(context, 1);
 }
 
-Widget getPopupItems(BuildContext context) {
+void buttonAdd(BuildContext context) {
+  Navigator.pop<int>(context, 2);
+}
+
+void buttonSaveImage(BuildContext context) {
+  Navigator.pop<int>(context, 3);
+}
+
+Widget getPopupItems(BuildContext context, String sender, bool broAdded, bool imageShowing, bool myMessage) {
   return Column(children: [
-    Container(
+    broAdded && !myMessage
+        ? Container(
       alignment: Alignment.centerLeft,
       child: TextButton(
           onPressed: () {
             buttonMessage(context);
           },
           child: Text(
-            'Save image to gallery',
+            'Message $sender',
             textAlign: TextAlign.left,
             style: TextStyle(color: Colors.black, fontSize: 14),
           )),
     )
+        : Container(),
+    !broAdded && !myMessage
+        ? Container(
+      alignment: Alignment.centerLeft,
+      child: TextButton(
+          onPressed: () {
+            buttonAdd(context);
+          },
+          child: Text(
+            'Add $sender',
+            textAlign: TextAlign.left,
+            style: TextStyle(color: Colors.black, fontSize: 14),
+          )),
+    ) : Container(),
+    imageShowing ? Container(
+      alignment: Alignment.centerLeft,
+      child: TextButton(
+          onPressed: () {
+            buttonSaveImage(context);
+          },
+          child: Text(
+            'Save image to gallery',
+            textAlign: TextAlign.left,
+            style: TextStyle(color: Colors.black, fontSize: 14),
+          )),
+    ) : Container()
   ]);
 }

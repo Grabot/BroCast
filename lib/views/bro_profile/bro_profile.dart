@@ -7,8 +7,12 @@ import 'package:brocast/utils/new/utils.dart';
 import 'package:brocast/views/bro_home/bro_home.dart';
 import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
 import "package:flutter/material.dart";
+import 'package:flutter/scheduler.dart';
 import '../../objects/me.dart';
 import '../bro_settings/bro_settings.dart';
+import '../chat_view/messaging_change_notifier.dart';
+import 'package:brocast/constants/route_paths.dart' as routes;
+
 
 class BroProfile extends StatefulWidget {
   BroProfile({required Key key}) : super(key: key);
@@ -43,6 +47,8 @@ class _BroProfileState extends State<BroProfile> {
   void initState() {
     super.initState();
 
+    MessagingChangeNotifier().setBroupId(-1);
+
     storage = Storage();
     Me? me = settings.getMe();
     bromotionChangeController.addListener(bromotionListener);
@@ -50,6 +56,9 @@ class _BroProfileState extends State<BroProfile> {
       bromotionChangeController.text = me.getBromotion();
     }
     BackButtonInterceptor.add(myInterceptor);
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      settings.doneRoutes.add(routes.ProfileRoute);
+    });
   }
 
   bromotionListener() {

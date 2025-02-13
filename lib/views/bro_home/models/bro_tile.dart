@@ -7,6 +7,8 @@ import '../../../utils/new/locator.dart';
 import '../../../utils/new/utils.dart';
 import 'package:brocast/constants/route_paths.dart' as routes;
 
+import '../../chat_view/broup_messaging/broup_messaging.dart';
+
 
 class BroTile extends StatefulWidget {
   final Broup chat;
@@ -34,7 +36,16 @@ class _BroTileState extends State<BroTile> {
           // ModalRoute.withName(routes.ChatRoute)
       );
     } else {
-      // _navigationService.navigateTo(routes.BroRoute, arguments: widget.chat);
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => BroupMessaging(
+                key: UniqueKey(),
+                chat: widget.chat
+            )
+        ),
+        // ModalRoute.withName(routes.ChatRoute)
+      );
     }
   }
 

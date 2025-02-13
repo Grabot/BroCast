@@ -4,10 +4,11 @@ import 'package:brocast/utils/new/utils.dart';
 import 'package:brocast/views/bro_home/bro_home.dart';
 import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 
 import '../../objects/bro.dart';
 import '../../services/auth/auth_service_social.dart';
-import '../add_broup.dart';
+import '../add_broup/add_broup.dart';
 import '../bro_profile/bro_profile.dart';
 import '../bro_settings/bro_settings.dart';
 import 'models/bro_tile_search.dart';
@@ -43,6 +44,9 @@ class _FindBrosState extends State<FindBros> {
     super.initState();
     bromotionController.addListener(bromotionListener);
     BackButtonInterceptor.add(myInterceptor);
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      settings.doneRoutes.add(routes.FindBroRoute);
+    });
   }
 
   bromotionListener() {
@@ -79,7 +83,7 @@ class _FindBrosState extends State<FindBros> {
   }
 
   void addBroup() {
-    Navigator.pushReplacement(context,
+    Navigator.push(context,
         MaterialPageRoute(builder: (context) => AddBroup(key: UniqueKey())));
   }
 
@@ -118,12 +122,12 @@ class _FindBrosState extends State<FindBros> {
 
   Widget listOfBros() {
     return ListView.builder(
-            shrinkWrap: true,
-            itemCount: possibleNewBros.length,
-            itemBuilder: (context, index) {
-              return BroTileSearch(
-                  possibleNewBros[index], addNewBro);
-            });
+        shrinkWrap: true,
+        itemCount: possibleNewBros.length,
+        itemBuilder: (context, index) {
+          return BroTileSearch(
+              possibleNewBros[index], addNewBro);
+        });
   }
 
   addNewBro(int addBroId) {
@@ -136,10 +140,7 @@ class _FindBrosState extends State<FindBros> {
         clickedNewBro = false;
         if (value) {
           // The broup added, move to the home screen where it will be shown
-          Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => BroCastHome(key: UniqueKey())));
+          navigateToHome();
         } else {
           showToastMessage("Bro contact already in Bro list!");
           setState(() {
@@ -156,30 +157,7 @@ class _FindBrosState extends State<FindBros> {
         showEmojiKeyboard = false;
       });
     } else {
-      if (settings.doneRoutes.contains(routes.BroHomeRoute)) {
-        // We want to pop until we reach the BroHomeRoute
-        // We remove one, because it's this page.
-        settings.doneRoutes.removeLast();
-        for (int i = 0; i < 200; i++) {
-          String route = settings.doneRoutes.removeLast();
-          Navigator.pop(context);
-          if (route == routes.BroHomeRoute) {
-            break;
-          }
-          if (settings.doneRoutes.length == 0) {
-            break;
-          }
-        }
-      } else {
-        // TODO: How to test this?
-        settings.doneRoutes = [];
-        Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (context) => BroCastHome(key: UniqueKey())));
-      }
-      Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (context) => BroCastHome(key: UniqueKey())));
+      navigateToHome();
     }
   }
 
@@ -212,30 +190,27 @@ class _FindBrosState extends State<FindBros> {
     );
   }
 
-  void onSelect(BuildContext context, int item) {
+  onSelect(BuildContext context, int item) {
     switch (item) {
       case 0:
-        Navigator.pushReplacement(
+        Navigator.push(
             context,
             MaterialPageRoute(
                 builder: (context) => BroProfile(key: UniqueKey())));
         break;
       case 1:
-        Navigator.pushReplacement(
+        Navigator.push(
             context,
             MaterialPageRoute(
                 builder: (context) => BroSettings(key: UniqueKey())));
         break;
       case 2:
-        Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (context) => BroCastHome(key: UniqueKey())));
+        navigateToHome();
         break;
     }
   }
 
-  Widget addNewBroup() {
+  Widget addNewBroupWidget() {
     return InkWell(
       onTap: () {
         addBroup();
@@ -263,6 +238,29 @@ class _FindBrosState extends State<FindBros> {
             ]),
       ),
     );
+  }
+
+  navigateToHome() {
+    if (settings.doneRoutes.contains(routes.BroHomeRoute)) {
+      // We want to pop until we reach the BroHomeRoute
+      // We remove one, because it's this page.
+      settings.doneRoutes.removeLast();
+      for (int i = 0; i < 200; i++) {
+        String route = settings.doneRoutes.removeLast();
+        Navigator.pop(context);
+        if (route == routes.BroHomeRoute) {
+          break;
+        }
+        if (settings.doneRoutes.length == 0) {
+          break;
+        }
+      }
+    } else {
+      // TODO: How to test this?
+      settings.doneRoutes = [];
+      Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (context) => BroCastHome(key: UniqueKey())));
+    }
   }
 
   Widget assistantText() {
@@ -362,7 +360,7 @@ class _FindBrosState extends State<FindBros> {
       body: Container(
         child: Column(
           children: [
-            addNewBroup(),
+            addNewBroupWidget(),
             assistantText(),
             searchForBroWidget(),
             isLoading
