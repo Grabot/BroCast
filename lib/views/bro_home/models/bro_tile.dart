@@ -1,4 +1,3 @@
- import 'package:brocast/views/chat_view/bro_messaging/bro_messaging.dart';
 import 'package:flutter/material.dart';
 
 import '../../../objects/broup.dart';
@@ -7,7 +6,8 @@ import '../../../utils/new/locator.dart';
 import '../../../utils/new/utils.dart';
 import 'package:brocast/constants/route_paths.dart' as routes;
 
-import '../../chat_view/broup_messaging/broup_messaging.dart';
+import '../../chat_view/chat_messaging.dart';
+
 
 
 class BroTile extends StatefulWidget {
@@ -24,29 +24,16 @@ class _BroTileState extends State<BroTile> {
   var _tapPosition;
 
   selectBro(BuildContext context) {
-    if (widget.chat.isPrivate()) {
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => BroMessaging(
-                  key: UniqueKey(),
-                  chat: widget.chat
-              )
-          ),
-          // ModalRoute.withName(routes.ChatRoute)
-      );
-    } else {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => BroupMessaging(
-                key: UniqueKey(),
-                chat: widget.chat
-            )
-        ),
-        // ModalRoute.withName(routes.ChatRoute)
-      );
-    }
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => ChatMessaging(
+              key: UniqueKey(),
+              chat: widget.chat
+          )
+      ),
+      // ModalRoute.withName(routes.ChatRoute)
+    );
   }
 
   Color getColorStrength() {

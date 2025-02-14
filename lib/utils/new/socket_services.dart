@@ -102,8 +102,7 @@ class SocketServices extends ChangeNotifier {
       // so we don't account for that.
       Broup newBroup = Broup.fromJson(broup);
       Storage().addBroup(newBroup);
-      me.broups.add(newBroup);
-      joinRoomBroup(newBroup.getBroupId());
+      me.addBroup(newBroup);
     }
     BroHomeChangeNotifier().notify();
   }

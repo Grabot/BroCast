@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:brocast/services/auth/auth_service_social.dart';
 import 'package:brocast/utils/new/settings.dart';
 import 'package:brocast/utils/new/socket_services.dart';
@@ -50,7 +49,6 @@ class _BroCastHomeState extends State<BroCastHome> {
   @override
   void initState() {
     super.initState();
-    BackButtonInterceptor.add(myInterceptor);
     socketServices = SocketServices();
     settings = Settings();
     storage = Storage();
@@ -243,22 +241,15 @@ class _BroCastHomeState extends State<BroCastHome> {
     onChangedBroNameField(broNameController.text, bromotionController.text);
   }
 
-  bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
-    return backButtonFunctionality();
-  }
-
-  bool backButtonFunctionality() {
-    if (mounted) {
-      if (searchMode) {
-        setState(() {
-          searchMode = false;
-        });
-      } else {
-        exitApp();
-      }
-      return true;
+  backButtonFunctionality() {
+    print("back home");
+    if (searchMode) {
+      setState(() {
+        searchMode = false;
+      });
+    } else {
+      exitApp();
     }
-    return false;
   }
 
   exitApp() {
@@ -283,7 +274,6 @@ class _BroCastHomeState extends State<BroCastHome> {
 
   @override
   void dispose() {
-    BackButtonInterceptor.remove(myInterceptor);
     super.dispose();
   }
 
@@ -411,95 +401,104 @@ class _BroCastHomeState extends State<BroCastHome> {
       broName = me.getBroName();
       bromotion = me.getBromotion();
     }
-    return Scaffold(
-      appBar: appBarHome(context),
-      body: Container(
-          child: Stack(
-              children: [
-                Column(
-                    children: [
-                      Container(
-                        child: Material(
-                          child: InkWell(
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => BroProfile(key: UniqueKey())));
-                            },
-                            child: Container(
-                                color: Color(0x8b2d69a3),
-                                width: MediaQuery.of(context).size.width,
-                                height: 50,
-                                alignment: Alignment.center,
-                                child: Text(
-                                  "Hey $broName $bromotion!",
-                                  style: TextStyle(color: Colors.white, fontSize: 20),
-                                )),
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (bool didPop, result) {
+        print("didPop home: $didPop");
+        if (!didPop) {
+          backButtonFunctionality();
+        }
+      },
+      child: Scaffold(
+        appBar: appBarHome(context),
+        body: Container(
+            child: Stack(
+                children: [
+                  Column(
+                      children: [
+                        Container(
+                          child: Material(
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => BroProfile(key: UniqueKey())));
+                              },
+                              child: Container(
+                                  color: Color(0x8b2d69a3),
+                                  width: MediaQuery.of(context).size.width,
+                                  height: 50,
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    "Hey $broName $bromotion!",
+                                    style: TextStyle(color: Colors.white, fontSize: 20),
+                                  )),
+                            ),
+                            color: Colors.transparent,
                           ),
-                          color: Colors.transparent,
                         ),
-                      ),
-                      searchMode
-                          ? Container(
-                        child: Row(children: [
-                          Expanded(
-                            flex: 4,
-                            child: TextFormField(
-                              onTap: () {
-                                onTapTextField();
-                              },
-                              onChanged: (text) {
-                                onChangedBroNameField(text, bromotionController.text);
-                              },
-                              controller: broNameController,
-                              textAlign: TextAlign.center,
-                              style: simpleTextStyle(),
-                              decoration: textFieldInputDecoration("Bro name"),
+                        searchMode
+                            ? Container(
+                          child: Row(children: [
+                            Expanded(
+                              flex: 4,
+                              child: TextFormField(
+                                onTap: () {
+                                  onTapTextField();
+                                },
+                                onChanged: (text) {
+                                  onChangedBroNameField(text, bromotionController.text);
+                                },
+                                controller: broNameController,
+                                textAlign: TextAlign.center,
+                                style: simpleTextStyle(),
+                                decoration: textFieldInputDecoration("Bro name"),
+                              ),
                             ),
-                          ),
-                          SizedBox(width: 50),
-                          Expanded(
-                            flex: 1,
-                            child: TextFormField(
-                              onTap: () {
-                                onTapEmojiField();
-                              },
-                              controller: bromotionController,
-                              style: simpleTextStyle(),
-                              textAlign: TextAlign.center,
-                              decoration: textFieldInputDecoration("😀"),
-                              readOnly: true,
-                              showCursor: true,
+                            SizedBox(width: 50),
+                            Expanded(
+                              flex: 1,
+                              child: TextFormField(
+                                onTap: () {
+                                  onTapEmojiField();
+                                },
+                                controller: bromotionController,
+                                style: simpleTextStyle(),
+                                textAlign: TextAlign.center,
+                                decoration: textFieldInputDecoration("😀"),
+                                readOnly: true,
+                                showCursor: true,
+                              ),
                             ),
-                          ),
-                        ]),
-                      )
-                          : Container(),
-                      Container(
-                        child: Expanded(child: listOfBros()),
-                      ),
-                    ]
-                ),
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: EmojiKeyboard(
-                      emojiController: bromotionController,
-                      emojiKeyboardHeight: 300,
-                      showEmojiKeyboard: showEmojiKeyboard,
-                      darkMode: settings.getEmojiKeyboardDarkMode()),
-                ),
-              ]
-          )
-      ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.person_add),
-        onPressed: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => FindBros(key: UniqueKey())));
-        },
+                          ]),
+                        )
+                            : Container(),
+                        Container(
+                          child: Expanded(child: listOfBros()),
+                        ),
+                      ]
+                  ),
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    child: EmojiKeyboard(
+                        emojiController: bromotionController,
+                        emojiKeyboardHeight: 300,
+                        showEmojiKeyboard: showEmojiKeyboard,
+                        darkMode: settings.getEmojiKeyboardDarkMode()),
+                  ),
+                ]
+            )
+        ),
+        floatingActionButton: FloatingActionButton(
+          child: Icon(Icons.person_add),
+          onPressed: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => FindBros(key: UniqueKey())));
+          },
+        ),
       ),
     );
   }

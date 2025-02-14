@@ -8,6 +8,7 @@ class Bro {
   Uint8List? avatar;
   bool updateBro = false;
   bool added = false;  // If the bro has a private chat with the user
+  // TODO: Bro alias in private chat?
 
   Bro(this.id, this.broName, this.bromotion, this.added, this.avatar, this.updateBro);
 

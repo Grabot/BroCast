@@ -1,12 +1,7 @@
-import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:brocast/objects/broup.dart';
-import 'package:brocast/services/delete_broup.dart';
-import 'package:brocast/services/get_chat.dart';
-import 'package:brocast/services/report_bro.dart';
 import 'package:brocast/utils/new/settings.dart';
 import 'package:brocast/utils/new/socket_services.dart';
 import 'package:brocast/utils/new/utils.dart';
-import 'package:brocast/views/broup_add_participant.dart';
 import "package:flutter/material.dart";
 import 'package:flutter_circle_color_picker/flutter_circle_color_picker.dart';
 
@@ -15,7 +10,7 @@ import '../../../utils/new/storage.dart';
 import '../../bro_home/bro_home.dart';
 import '../../bro_profile/bro_profile.dart';
 import '../../bro_settings/bro_settings.dart';
-import '../broup_messaging/broup_messaging.dart';
+import '../chat_messaging.dart';
 import 'models/bro_tile_details.dart';
 
 class ChatDetails extends StatefulWidget {
@@ -67,7 +62,6 @@ class _ChatDetailsState extends State<ChatDetails> {
     amountInGroup = chat.getBroIds().length;
     socketServices.checkConnection();
     socketServices.addListener(socketListener);
-    BackButtonInterceptor.add(myInterceptor);
 
     chatDescriptionController.text = chat.broupDescription;
     chatAliasController.text = chat.alias;
@@ -149,10 +143,6 @@ class _ChatDetailsState extends State<ChatDetails> {
     showToastMessage("Broup muting failed at this time.");
   }
 
-  bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
-    backButtonFunctionality();
-    return true;
-  }
 
   void backButtonFunctionality() {
     if (changeDescription) {
@@ -172,13 +162,12 @@ class _ChatDetailsState extends State<ChatDetails> {
           context,
           MaterialPageRoute(
               builder: (context) =>
-                  BroupMessaging(key: UniqueKey(), chat: chat)));
+                  ChatMessaging(key: UniqueKey(), chat: chat)));
     }
   }
 
   @override
   void dispose() {
-    BackButtonInterceptor.remove(myInterceptor);
     socketServices.removeListener(socketListener);
     chatDescriptionController.dispose();
     chatAliasController.dispose();
@@ -234,7 +223,7 @@ class _ChatDetailsState extends State<ChatDetails> {
             context,
             MaterialPageRoute(
                 builder: (context) =>
-                    BroupMessaging(key: UniqueKey(), chat: chat)));
+                    ChatMessaging(key: UniqueKey(), chat: chat)));
         break;
       case 3:
         Navigator.push(
@@ -793,26 +782,34 @@ class _ChatDetailsState extends State<ChatDetails> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: appBarChatDetails(),
-        body: Container(
-          child: Column(children: [
-            Expanded(
-              child: SingleChildScrollView(
-                child: Column(children: [
-                  broCastLogo(),
-                  broupNameHeader(),
-                  SizedBox(height: 20),
-                  chat.hasLeft()
-                      ? broHasLeft()
-                      : chatDetailWidget(),
-                  reportBroupWidget(),
-                  SizedBox(height: 20),
-                ]),
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (bool didPop, result) {
+        if (!didPop) {
+          backButtonFunctionality();
+        }
+      },
+      child: Scaffold(
+          appBar: appBarChatDetails(),
+          body: Container(
+            child: Column(children: [
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(children: [
+                    broCastLogo(),
+                    broupNameHeader(),
+                    SizedBox(height: 20),
+                    chat.hasLeft()
+                        ? broHasLeft()
+                        : chatDetailWidget(),
+                    reportBroupWidget(),
+                    SizedBox(height: 20),
+                  ]),
+                ),
               ),
-            ),
-          ]),
-        ));
+            ]),
+          )),
+    );
   }
 
   void exitBroup() {

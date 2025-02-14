@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:brocast/utils/new/utils.dart';
 import 'package:brocast/views/sign_in/signin.dart';
 import "package:flutter/material.dart";
@@ -79,27 +78,15 @@ class _WebViewScreenState extends State<WebViewScreen> {
       );
     webViewController.loadRequest(widget.url);
     super.initState();
-    BackButtonInterceptor.add(myInterceptor);
-    // setState(() {});
-  }
-
-  bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
-    backButtonFunctionality();
-    return true;
   }
 
   @override
   void dispose() {
-    BackButtonInterceptor.remove(myInterceptor);
     super.dispose();
   }
 
   void backButtonFunctionality() {
-    Navigator.pushReplacement(context,
-        MaterialPageRoute(builder: (context) => SignIn(
-            key: UniqueKey(),
-            showRegister: widget.fromRegister,
-        )));
+    Navigator.pop(context);
   }
 
   void onSelect(BuildContext context, int item) {
@@ -116,30 +103,38 @@ class _WebViewScreenState extends State<WebViewScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Color(0xff145C9E),
-          leading: IconButton(
-              icon: Icon(Icons.arrow_back, color: Colors.white),
-              onPressed: () {
-                backButtonFunctionality();
-              }),
-          title: Container(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                  "BroCast Login",
-                  style: TextStyle(color: Colors.white)
-              )),
-          actions: [
-            PopupMenuButton<int>(
-                icon: Icon(Icons.more_vert, color: getTextColor(Colors.white)),
-                onSelected: (item) => onSelect(context, item),
-                itemBuilder: (context) => [
-                  PopupMenuItem<int>(value: 0, child: Text("Exit Brocast")),
-                ]),
-          ],
-        ),
-        body: WebViewWidget(controller: webViewController)
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (bool didPop, result) {
+        if (!didPop) {
+          backButtonFunctionality();
+        }
+      },
+      child: Scaffold(
+          appBar: AppBar(
+            backgroundColor: Color(0xff145C9E),
+            leading: IconButton(
+                icon: Icon(Icons.arrow_back, color: Colors.white),
+                onPressed: () {
+                  backButtonFunctionality();
+                }),
+            title: Container(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                    "BroCast Login",
+                    style: TextStyle(color: Colors.white)
+                )),
+            actions: [
+              PopupMenuButton<int>(
+                  icon: Icon(Icons.more_vert, color: getTextColor(Colors.white)),
+                  onSelected: (item) => onSelect(context, item),
+                  itemBuilder: (context) => [
+                    PopupMenuItem<int>(value: 0, child: Text("Exit Brocast")),
+                  ]),
+            ],
+          ),
+          body: WebViewWidget(controller: webViewController)
+      ),
     );
   }
 }

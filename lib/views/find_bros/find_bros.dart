@@ -1,4 +1,3 @@
-import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:brocast/utils/new/settings.dart';
 import 'package:brocast/utils/new/utils.dart';
 import 'package:brocast/views/bro_home/bro_home.dart';
@@ -43,7 +42,6 @@ class _FindBrosState extends State<FindBros> {
   void initState() {
     super.initState();
     bromotionController.addListener(bromotionListener);
-    BackButtonInterceptor.add(myInterceptor);
     SchedulerBinding.instance.addPostFrameCallback((_) {
       settings.doneRoutes.add(routes.FindBroRoute);
     });
@@ -62,16 +60,10 @@ class _FindBrosState extends State<FindBros> {
 
   @override
   void dispose() {
-    BackButtonInterceptor.remove(myInterceptor);
     bromotionController.removeListener(bromotionListener);
     broNameController.dispose();
     bromotionController.dispose();
     super.dispose();
-  }
-
-  bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
-    backButtonFunctionality();
-    return true;
   }
 
   void onTapTextField() {
@@ -355,31 +347,39 @@ class _FindBrosState extends State<FindBros> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: appBarFindBros(context),
-      body: Container(
-        child: Column(
-          children: [
-            addNewBroupWidget(),
-            assistantText(),
-            searchForBroWidget(),
-            isLoading
-                ? Center(child: Container(child: CircularProgressIndicator()))
-                : possibleNewBros.length == 0 && searchedBroNothingFound != ""
-                  ? Container(
-                child: Text("nothing found for $searchedBroNothingFound",
-                        style: simpleTextStyle()))
-                  : Container(),
-            Expanded(child: listOfBros()),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: EmojiKeyboard(
-                  emojiController: bromotionController,
-                  emojiKeyboardHeight: 300,
-                  showEmojiKeyboard: showEmojiKeyboard,
-                  darkMode: settings.getEmojiKeyboardDarkMode()),
-            ),
-          ],
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (bool didPop, result) {
+        if (!didPop) {
+          backButtonFunctionality();
+        }
+      },
+      child: Scaffold(
+        appBar: appBarFindBros(context),
+        body: Container(
+          child: Column(
+            children: [
+              addNewBroupWidget(),
+              assistantText(),
+              searchForBroWidget(),
+              isLoading
+                  ? Center(child: Container(child: CircularProgressIndicator()))
+                  : possibleNewBros.length == 0 && searchedBroNothingFound != ""
+                    ? Container(
+                  child: Text("nothing found for $searchedBroNothingFound",
+                          style: simpleTextStyle()))
+                    : Container(),
+              Expanded(child: listOfBros()),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: EmojiKeyboard(
+                    emojiController: bromotionController,
+                    emojiKeyboardHeight: 300,
+                    showEmojiKeyboard: showEmojiKeyboard,
+                    darkMode: settings.getEmojiKeyboardDarkMode()),
+              ),
+            ],
+          ),
         ),
       ),
     );

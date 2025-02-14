@@ -1,4 +1,3 @@
-import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:brocast/utils/new/settings.dart';
 import 'package:brocast/utils/new/shared.dart';
 import 'package:brocast/utils/new/socket_services.dart';
@@ -38,20 +37,13 @@ class _BroSettingsState extends State<BroSettings> {
 
     toggleSwitchKeyboard = settings.getEmojiKeyboardDarkMode();
 
-    BackButtonInterceptor.add(myInterceptor);
     SchedulerBinding.instance.addPostFrameCallback((_) {
       settings.doneRoutes.add(routes.ChatRoute);
     });
   }
 
-  bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
-    backButtonFunctionality();
-    return true;
-  }
-
   @override
   void dispose() {
-    BackButtonInterceptor.remove(myInterceptor);
     super.dispose();
   }
 
@@ -64,7 +56,8 @@ class _BroSettingsState extends State<BroSettings> {
     });
   }
 
-  void backButtonFunctionality() {
+  backButtonFunctionality() {
+    print("back settings");
     if (settings.doneRoutes.contains(routes.BroHomeRoute)) {
       settings.doneRoutes.removeLast();
       for (int i = 0; i < 200; i++) {
@@ -172,7 +165,15 @@ class _BroSettingsState extends State<BroSettings> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (bool didPop, result) {
+        print("didPop settings: $didPop");
+        if (!didPop) {
+          backButtonFunctionality();
+        }
+      },
+      child: Scaffold(
         appBar: appBarSettings(context),
         body: Container(
           child: Column(children: [
@@ -229,7 +230,9 @@ class _BroSettingsState extends State<BroSettings> {
               ),
             ),
           ]),
-        ));
+        )
+      ),
+    );
   }
 
   showDialogClearMessages(BuildContext context) {

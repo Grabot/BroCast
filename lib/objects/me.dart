@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:brocast/utils/new/socket_services.dart';
+
 import '../views/bro_home/bro_home_change_notifier.dart';
 import 'bro.dart';
 import 'broup.dart';
@@ -42,6 +44,11 @@ class Me extends Bro {
 
   Uint8List? getAvatar() {
     return this.avatar;
+  }
+
+  addBroup(Broup broup) {
+    broups.add(broup);
+    SocketServices().joinRoomBroup(broup.broupId);
   }
 
   Me.fromJson(Map<String, dynamic> json)

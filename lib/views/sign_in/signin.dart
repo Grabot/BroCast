@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:brocast/utils/new/settings.dart';
 import 'package:brocast/utils/new/storage.dart';
 import 'package:brocast/views/bro_home/bro_home.dart';
@@ -59,7 +58,6 @@ class _SignInState extends State<SignIn> {
     if (widget.showRegister) {
       signUpMode = true;
     }
-    BackButtonInterceptor.add(myInterceptor);
     bromotionController.addListener(bromotionListener);
 
     storage = Storage();
@@ -104,15 +102,13 @@ class _SignInState extends State<SignIn> {
     }
   }
 
-  bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
+  backButtonFunctionality() {
     if (showEmojiKeyboard) {
       setState(() {
         showEmojiKeyboard = false;
       });
-      return true;
     } else {
       exitApp();
-      return true;
     }
   }
 
@@ -150,7 +146,6 @@ class _SignInState extends State<SignIn> {
     emailController.dispose();
     bromotionController.dispose();
     passwordController.dispose();
-    BackButtonInterceptor.remove(myInterceptor);
     super.dispose();
   }
 
@@ -704,75 +699,83 @@ class _SignInState extends State<SignIn> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Color(0xff145C9E),
-          title: Container(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                  "BroCast",
-                  style: TextStyle(color: Colors.white)
-              )),
-          actions: [
-            PopupMenuButton<int>(
-                icon: Icon(Icons.more_vert, color: getTextColor(Colors.white)),
-                onSelected: (item) => onSelect(context, item),
-                itemBuilder: (context) => [
-                      PopupMenuItem<int>(value: 0, child: Text("Exit Brocast")),
-                    ]),
-          ],
-        ),
-        body: Stack(children: [
-            isLoading
-                ? Container(child: Center(child: CircularProgressIndicator()))
-                : Container(),
-            Container(
-              child: Column(children: [
-                Expanded(
-                  child: SingleChildScrollView(
-                    reverse: true,
-                    child: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 20),
-                      child: Column(
-                            children: [
-                              Container(
-                                  alignment: Alignment.center,
-                                  child: Image.asset(
-                                      "assets/images/brocast_transparent.png")
-                              ),
-                              Form(
-                                key: formKey,
-                                child: Column(
-                                  children: [
-                                    signUpMode ? registerView() : loginView(),
-                                    SizedBox(height: 20),
-                                    switchLoginRegister(),
-                                    SizedBox(height: 20),
-                                    signInButton(),
-                                    SizedBox(height:10),
-                                    dividerLogin(),
-                                    SizedBox(height:10),
-                                    loginAlternatives()
-                                  ],
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (bool didPop, result) {
+        if (!didPop) {
+          backButtonFunctionality();
+        }
+      },
+      child: Scaffold(
+          appBar: AppBar(
+            backgroundColor: Color(0xff145C9E),
+            title: Container(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                    "BroCast",
+                    style: TextStyle(color: Colors.white)
+                )),
+            actions: [
+              PopupMenuButton<int>(
+                  icon: Icon(Icons.more_vert, color: getTextColor(Colors.white)),
+                  onSelected: (item) => onSelect(context, item),
+                  itemBuilder: (context) => [
+                        PopupMenuItem<int>(value: 0, child: Text("Exit Brocast")),
+                      ]),
+            ],
+          ),
+          body: Stack(children: [
+              isLoading
+                  ? Container(child: Center(child: CircularProgressIndicator()))
+                  : Container(),
+              Container(
+                child: Column(children: [
+                  Expanded(
+                    child: SingleChildScrollView(
+                      reverse: true,
+                      child: Container(
+                        padding: EdgeInsets.symmetric(horizontal: 20),
+                        child: Column(
+                              children: [
+                                Container(
+                                    alignment: Alignment.center,
+                                    child: Image.asset(
+                                        "assets/images/brocast_transparent.png")
                                 ),
-                              ),
-                              SizedBox(height: 20),
-                            ],
-                          ),
+                                Form(
+                                  key: formKey,
+                                  child: Column(
+                                    children: [
+                                      signUpMode ? registerView() : loginView(),
+                                      SizedBox(height: 20),
+                                      switchLoginRegister(),
+                                      SizedBox(height: 20),
+                                      signInButton(),
+                                      SizedBox(height:10),
+                                      dividerLogin(),
+                                      SizedBox(height:10),
+                                      loginAlternatives()
+                                    ],
+                                  ),
+                                ),
+                                SizedBox(height: 20),
+                              ],
+                            ),
+                      ),
                     ),
                   ),
-                ),
-                Align(
-                    alignment: Alignment.bottomCenter,
-                    child: EmojiKeyboard(
-                        emojiController: bromotionController,
-                        emojiKeyboardHeight: 300,
-                        showEmojiKeyboard: showEmojiKeyboard,
-                        darkMode: emojiKeyboardDarkMode)),
-              ]),
-            ),
-          ]),
-        );
+                  Align(
+                      alignment: Alignment.bottomCenter,
+                      child: EmojiKeyboard(
+                          emojiController: bromotionController,
+                          emojiKeyboardHeight: 300,
+                          showEmojiKeyboard: showEmojiKeyboard,
+                          darkMode: emojiKeyboardDarkMode)),
+                ]),
+              ),
+            ]),
+          ),
+    );
   }
 
   Future<void> _launchUrl(Uri url) async {

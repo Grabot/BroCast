@@ -1,4 +1,3 @@
-import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:brocast/services/auth/auth_service_settings.dart';
 import 'package:brocast/utils/new/settings.dart';
 import 'package:brocast/utils/new/socket_services.dart';
@@ -55,7 +54,6 @@ class _BroProfileState extends State<BroProfile> {
     if (me != null) {
       bromotionChangeController.text = me.getBromotion();
     }
-    BackButtonInterceptor.add(myInterceptor);
     SchedulerBinding.instance.addPostFrameCallback((_) {
       settings.doneRoutes.add(routes.ProfileRoute);
     });
@@ -71,11 +69,6 @@ class _BroProfileState extends State<BroProfile> {
           bromotionChangeController.text.replaceFirst(lastEmoji, "");
       bromotionChangeController.text = newText;
     }
-  }
-
-  bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
-    backButtonFunctionality();
-    return true;
   }
 
   void onChangePassword() {
@@ -153,7 +146,6 @@ class _BroProfileState extends State<BroProfile> {
 
   @override
   void dispose() {
-    BackButtonInterceptor.remove(myInterceptor);
     bromotionChangeController.removeListener(bromotionListener);
     socketServices.socket.off('message_event_bromotion_change');
     socketServices.socket.off('message_event_password_change');
@@ -167,15 +159,29 @@ class _BroProfileState extends State<BroProfile> {
   }
 
   void backButtonFunctionality() {
+    print("back profile");
     if (showEmojiKeyboard) {
       setState(() {
         showEmojiKeyboard = false;
       });
     } else {
-      Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (context) => BroCastHome(key: UniqueKey())));
+      if (settings.doneRoutes.contains(routes.BroHomeRoute)) {
+        settings.doneRoutes.removeLast();
+        for (int i = 0; i < 200; i++) {
+          String route = settings.doneRoutes.removeLast();
+          Navigator.pop(context);
+          if (route == routes.BroHomeRoute) {
+            break;
+          }
+          if (settings.doneRoutes.length == 0) {
+            break;
+          }
+        }
+      } else {
+        settings.doneRoutes = [];
+        Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (context) => BroCastHome(key: UniqueKey())));
+      }
     }
   }
 
@@ -226,176 +232,184 @@ class _BroProfileState extends State<BroProfile> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: appBarProfile(context),
-        body: Container(
-          child: Column(children: [
-            Expanded(
-              child: SingleChildScrollView(
-                reverse: true,
-                child: Column(
-                    children: [
-                      Container(
-                          child: Text("BroCast",
-                              style: TextStyle(
-                                  color: Colors.white, fontSize: 30))),
-                  Container(
-                      alignment: Alignment.center,
-                      child:
-                          Image.asset("assets/images/brocast_transparent.png")),
-                  Container(
-                      alignment: Alignment.center,
-                      child: Text(
-                        // "${currentUser.broName}",
-                        "",
-                        style: TextStyle(color: Colors.white, fontSize: 25),
-                      )),
-                  SizedBox(height: 20),
-                  Container(
-                      width: 60,
-                      alignment: Alignment.center,
-                      child: TextFormField(
-                        key: bromotionValidator,
-                        validator: (value) {
-                          if (value == null ||
-                              value.isEmpty ||
-                              value.trim().isEmpty) {
-                            return '"😢?😄!"';
-                          }
-                          return null;
-                        },
-                        enabled: bromotionEnabled,
-                        focusNode: focusNodeBromotion,
-                        onTap: () {
-                          onTapEmojiField();
-                        },
-                        controller: bromotionChangeController,
-                        style: TextStyle(color: Colors.white, fontSize: 40),
-                        readOnly: true,
-                        showCursor: true,
-                      )),
-                  bromotionEnabled
-                      ? TextButton(
-                          style: ButtonStyle(
-                            foregroundColor:
-                                WidgetStateProperty.all<Color>(Colors.red),
-                          ),
-                          onPressed: () {
-                            onSaveBromotion();
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (bool didPop, result) {
+        if (!didPop) {
+          backButtonFunctionality();
+        }
+      },
+      child: Scaffold(
+          appBar: appBarProfile(context),
+          body: Container(
+            child: Column(children: [
+              Expanded(
+                child: SingleChildScrollView(
+                  reverse: true,
+                  child: Column(
+                      children: [
+                        Container(
+                            child: Text("BroCast",
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 30))),
+                    Container(
+                        alignment: Alignment.center,
+                        child:
+                            Image.asset("assets/images/brocast_transparent.png")),
+                    Container(
+                        alignment: Alignment.center,
+                        child: Text(
+                          // "${currentUser.broName}",
+                          "",
+                          style: TextStyle(color: Colors.white, fontSize: 25),
+                        )),
+                    SizedBox(height: 20),
+                    Container(
+                        width: 60,
+                        alignment: Alignment.center,
+                        child: TextFormField(
+                          key: bromotionValidator,
+                          validator: (value) {
+                            if (value == null ||
+                                value.isEmpty ||
+                                value.trim().isEmpty) {
+                              return '"😢?😄!"';
+                            }
+                            return null;
                           },
-                          child: Text('Save bromotion!'),
-                        )
-                      : TextButton(
-                          style: ButtonStyle(
-                            foregroundColor:
-                                WidgetStateProperty.all<Color>(Colors.blue),
-                          ),
-                          onPressed: () {
-                            onChangeBromotion();
+                          enabled: bromotionEnabled,
+                          focusNode: focusNodeBromotion,
+                          onTap: () {
+                            onTapEmojiField();
                           },
-                          child: Text('Change bromotion'),
-                        ),
-                  changePassword
-                      ? Container(
-                          child: Form(
-                          key: passwordFormValidator,
-                          child: Column(
-                            children: [
-                              TextFormField(
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Please enter some text';
-                                  }
-                                  return null;
-                                },
-                                obscureText: true,
-                                controller: oldPasswordController,
-                                style: simpleTextStyle(),
-                                textAlign: TextAlign.center,
-                                decoration:
-                                    textFieldInputDecoration("Old password"),
-                              ),
-                              TextFormField(
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Please enter some text';
-                                  }
-                                  if (newPasswordController2.text != value) {
-                                    return "Password confirmation doesn't match the password";
-                                  }
-                                  if (value == broPassword) {
-                                    return "password is the same as old password";
-                                  }
-                                  return null;
-                                },
-                                obscureText: true,
-                                controller: newPasswordController1,
-                                focusNode: focusNodePassword,
-                                style: simpleTextStyle(),
-                                textAlign: TextAlign.center,
-                                decoration:
-                                    textFieldInputDecoration("New password"),
-                              ),
-                              TextFormField(
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Please enter some text';
-                                  }
-                                  if (newPasswordController1.text != value) {
-                                    return "Password confirmation doesn't match the password";
-                                  }
-                                  if (value == broPassword) {
-                                    return "password is the same as old password";
-                                  }
-                                  return null;
-                                },
-                                obscureText: true,
-                                controller: newPasswordController2,
-                                style: simpleTextStyle(),
-                                textAlign: TextAlign.center,
-                                decoration: textFieldInputDecoration(
-                                    "Confirm new password"),
-                              )
-                            ],
+                          controller: bromotionChangeController,
+                          style: TextStyle(color: Colors.white, fontSize: 40),
+                          readOnly: true,
+                          showCursor: true,
+                        )),
+                    bromotionEnabled
+                        ? TextButton(
+                            style: ButtonStyle(
+                              foregroundColor:
+                                  WidgetStateProperty.all<Color>(Colors.red),
+                            ),
+                            onPressed: () {
+                              onSaveBromotion();
+                            },
+                            child: Text('Save bromotion!'),
+                          )
+                        : TextButton(
+                            style: ButtonStyle(
+                              foregroundColor:
+                                  WidgetStateProperty.all<Color>(Colors.blue),
+                            ),
+                            onPressed: () {
+                              onChangeBromotion();
+                            },
+                            child: Text('Change bromotion'),
                           ),
-                        ))
-                      : Container(),
-                  changePassword
-                      ? TextButton(
-                          style: ButtonStyle(
-                            foregroundColor:
-                                WidgetStateProperty.all<Color>(Colors.red),
+                    changePassword
+                        ? Container(
+                            child: Form(
+                            key: passwordFormValidator,
+                            child: Column(
+                              children: [
+                                TextFormField(
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Please enter some text';
+                                    }
+                                    return null;
+                                  },
+                                  obscureText: true,
+                                  controller: oldPasswordController,
+                                  style: simpleTextStyle(),
+                                  textAlign: TextAlign.center,
+                                  decoration:
+                                      textFieldInputDecoration("Old password"),
+                                ),
+                                TextFormField(
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Please enter some text';
+                                    }
+                                    if (newPasswordController2.text != value) {
+                                      return "Password confirmation doesn't match the password";
+                                    }
+                                    if (value == broPassword) {
+                                      return "password is the same as old password";
+                                    }
+                                    return null;
+                                  },
+                                  obscureText: true,
+                                  controller: newPasswordController1,
+                                  focusNode: focusNodePassword,
+                                  style: simpleTextStyle(),
+                                  textAlign: TextAlign.center,
+                                  decoration:
+                                      textFieldInputDecoration("New password"),
+                                ),
+                                TextFormField(
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Please enter some text';
+                                    }
+                                    if (newPasswordController1.text != value) {
+                                      return "Password confirmation doesn't match the password";
+                                    }
+                                    if (value == broPassword) {
+                                      return "password is the same as old password";
+                                    }
+                                    return null;
+                                  },
+                                  obscureText: true,
+                                  controller: newPasswordController2,
+                                  style: simpleTextStyle(),
+                                  textAlign: TextAlign.center,
+                                  decoration: textFieldInputDecoration(
+                                      "Confirm new password"),
+                                )
+                              ],
+                            ),
+                          ))
+                        : Container(),
+                    changePassword
+                        ? TextButton(
+                            style: ButtonStyle(
+                              foregroundColor:
+                                  WidgetStateProperty.all<Color>(Colors.red),
+                            ),
+                            onPressed: () {
+                              onSavePassword();
+                            },
+                            child: Text('Update password'),
+                          )
+                        : TextButton(
+                            style: ButtonStyle(
+                              foregroundColor:
+                                  WidgetStateProperty.all<Color>(Colors.blue),
+                            ),
+                            onPressed: () {
+                              onChangePassword();
+                            },
+                            child: Text('Change password'),
                           ),
-                          onPressed: () {
-                            onSavePassword();
-                          },
-                          child: Text('Update password'),
-                        )
-                      : TextButton(
-                          style: ButtonStyle(
-                            foregroundColor:
-                                WidgetStateProperty.all<Color>(Colors.blue),
-                          ),
-                          onPressed: () {
-                            onChangePassword();
-                          },
-                          child: Text('Change password'),
-                        ),
-                  bromotionEnabled || changePassword
-                      ? SizedBox(height: 30)
-                      : SizedBox(height: 170),
-                  Align(
-                    alignment: Alignment.bottomCenter,
-                    child: EmojiKeyboard(
-                        emojiController: bromotionChangeController,
-                        emojiKeyboardHeight: 300,
-                        showEmojiKeyboard: showEmojiKeyboard,
-                        darkMode: settings.getEmojiKeyboardDarkMode()),
-                  ),
-                ]),
+                    bromotionEnabled || changePassword
+                        ? SizedBox(height: 30)
+                        : SizedBox(height: 170),
+                    Align(
+                      alignment: Alignment.bottomCenter,
+                      child: EmojiKeyboard(
+                          emojiController: bromotionChangeController,
+                          emojiKeyboardHeight: 300,
+                          showEmojiKeyboard: showEmojiKeyboard,
+                          darkMode: settings.getEmojiKeyboardDarkMode()),
+                    ),
+                  ]),
+                ),
               ),
-            ),
-          ]),
-        ));
+            ]),
+          )),
+    );
   }
 }

@@ -275,7 +275,7 @@ class AuthServiceSocial {
           if (me.broups.indexWhere((element) => element.getBroupId() == json["broup"]["broup_id"]) == -1) {
             Broup newBroup = Broup.fromJson(json["broup"]);
             Storage().addBroup(newBroup);
-            me.broups.add(newBroup);
+            me.addBroup(newBroup);
           }
         }
       }

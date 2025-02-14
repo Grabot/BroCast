@@ -3,7 +3,6 @@ import 'package:brocast/utils/new/utils.dart';
 import 'package:brocast/views/bro_home/bro_home.dart';
 import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
 import 'package:flutter/material.dart';
-import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:flutter/scheduler.dart';
 import '../../objects/bro.dart';
 import '../../objects/broup.dart';
@@ -94,20 +93,23 @@ class _AddBroupState extends State<AddBroup> {
               storage.addBro(bro);
             }
           }
+          setState(() {
+            shownParticipants = participants;
+          });
         }
       });
     });
 
-    BackButtonInterceptor.add(myInterceptor);
     SchedulerBinding.instance.addPostFrameCallback((_) {
       settings.doneRoutes.add(routes.AddBroRoute);
-      shownParticipants = participants;
+      setState(() {
+        shownParticipants = participants;
+      });
     });
   }
 
   @override
   void dispose() {
-    BackButtonInterceptor.remove(myInterceptor);
     bromotionController.removeListener(bromotionListener);
     bromotionController.dispose();
     broNameController.dispose();
@@ -115,10 +117,6 @@ class _AddBroupState extends State<AddBroup> {
     super.dispose();
   }
 
-  bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
-    backButtonFunctionality();
-    return true;
-  }
 
   PreferredSize appBarFindBros(BuildContext context) {
     return PreferredSize(
@@ -441,11 +439,13 @@ class _AddBroupState extends State<AddBroup> {
     if (!pressedAddBroup) {
       if (broupValidator.currentState!.validate()) {
         pressedAddBroup = true;
-        Set<int> participantIds = {};
+        List<int> participantIds = [];
         for (ParticipantItem participant in broupParticipants) {
           for (int broId in participant.getBroup().broIds) {
-            print("adding bro ${broId}");
-            participantIds.add(broId);
+            // We will be added with the request
+            if (broId != settings.getMe()!.id) {
+              participantIds.add(broId);
+            }
           }
         }
         String broupName = broupNameController.text;
@@ -463,114 +463,122 @@ class _AddBroupState extends State<AddBroup> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: appBarFindBros(context),
-      body: Container(
-          width: MediaQuery.of(context).size.width,
-          child: Column(
-            children: [
-              Container(
-                alignment: Alignment.centerLeft,
-                child:
-                    Text("Participants in bro group", style: simpleTextStyle()),
-              ),
-              Container(height: 120, child: broupParticipantsList()),
-              SizedBox(height: 10),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 10),
-                child: Row(children: [
-                  Container(
-                    width: MediaQuery.of(context).size.width - 100,
-                    child: TextFormField(
-                      controller: broupNameController,
-                      key: broupValidator,
-                      validator: (val) {
-                        if (val == null ||
-                            val.isEmpty ||
-                            val.trimRight().isEmpty) {
-                          return "Please provide a Broup name";
-                        }
-                        if (broupParticipants.length <= 1) {
-                          return "Can't create broup with less than 2 bros";
-                        }
-                        return null;
-                      },
-                      textAlign: TextAlign.center,
-                      style: simpleTextStyle(),
-                      decoration:
-                          textFieldInputDecoration("Type Broup name here"),
-                    ),
-                  ),
-                  SizedBox(width: 15),
-                  Container(
-                      width: 50,
-                      height: 50,
-                      decoration: BoxDecoration(
-                          color: Colors.green,
-                          borderRadius: BorderRadius.all(Radius.circular(40))),
-                      child: IconButton(
-                        onPressed: () {
-                          addBroup();
-                        },
-                        icon: Icon(Icons.check, color: Colors.white),
-                      )),
-                  SizedBox(width: 15),
-                ]),
-              ),
-              SizedBox(height: 20),
-              Container(
-                alignment: Alignment.centerLeft,
-                child: Text("Search for your bro", style: simpleTextStyle()),
-              ),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 24, vertical: 0),
-                child: Row(
-                  children: [
-                    Expanded(
-                      flex: 4,
-                      child: TextFormField(
-                        onTap: () {
-                          onTapTextField();
-                        },
-                        onChanged: (text) {
-                          onChangedBroNameField(text, bromotionController.text);
-                        },
-                        controller: broNameController,
-                        textAlign: TextAlign.center,
-                        style: simpleTextStyle(),
-                        decoration: textFieldInputDecoration("Bro name"),
-                      ),
-                    ),
-                    SizedBox(width: 50),
-                    Expanded(
-                      flex: 1,
-                      child: TextFormField(
-                        onTap: () {
-                          onTapEmojiField();
-                        },
-                        controller: bromotionController,
-                        style: simpleTextStyle(),
-                        textAlign: TextAlign.center,
-                        decoration: textFieldInputDecoration("😀"),
-                        readOnly: true,
-                        showCursor: true,
-                      ),
-                    ),
-                  ],
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (bool didPop, result) {
+        if (!didPop) {
+          backButtonFunctionality();
+        }
+      },
+      child: Scaffold(
+        appBar: appBarFindBros(context),
+        body: Container(
+            width: MediaQuery.of(context).size.width,
+            child: Column(
+              children: [
+                Container(
+                  alignment: Alignment.centerLeft,
+                  child:
+                      Text("Participants in bro group", style: simpleTextStyle()),
                 ),
-              ),
-              SizedBox(height: 10),
-              Expanded(child: listOfBros()),
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: EmojiKeyboard(
-                    emojiController: bromotionController,
-                    emojiKeyboardHeight: 300,
-                    showEmojiKeyboard: showEmojiKeyboard,
-                    darkMode: settings.getEmojiKeyboardDarkMode()),
-              ),
-            ],
-          )),
+                Container(height: 120, child: broupParticipantsList()),
+                SizedBox(height: 10),
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 10),
+                  child: Row(children: [
+                    Container(
+                      width: MediaQuery.of(context).size.width - 100,
+                      child: TextFormField(
+                        controller: broupNameController,
+                        key: broupValidator,
+                        validator: (val) {
+                          if (val == null ||
+                              val.isEmpty ||
+                              val.trimRight().isEmpty) {
+                            return "Please provide a Broup name";
+                          }
+                          if (broupParticipants.length <= 1) {
+                            return "Can't create broup with less than 2 bros";
+                          }
+                          return null;
+                        },
+                        textAlign: TextAlign.center,
+                        style: simpleTextStyle(),
+                        decoration:
+                            textFieldInputDecoration("Type Broup name here"),
+                      ),
+                    ),
+                    SizedBox(width: 15),
+                    Container(
+                        width: 50,
+                        height: 50,
+                        decoration: BoxDecoration(
+                            color: Colors.green,
+                            borderRadius: BorderRadius.all(Radius.circular(40))),
+                        child: IconButton(
+                          onPressed: () {
+                            addBroup();
+                          },
+                          icon: Icon(Icons.check, color: Colors.white),
+                        )),
+                    SizedBox(width: 15),
+                  ]),
+                ),
+                SizedBox(height: 20),
+                Container(
+                  alignment: Alignment.centerLeft,
+                  child: Text("Search for your bro", style: simpleTextStyle()),
+                ),
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 24, vertical: 0),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        flex: 4,
+                        child: TextFormField(
+                          onTap: () {
+                            onTapTextField();
+                          },
+                          onChanged: (text) {
+                            onChangedBroNameField(text, bromotionController.text);
+                          },
+                          controller: broNameController,
+                          textAlign: TextAlign.center,
+                          style: simpleTextStyle(),
+                          decoration: textFieldInputDecoration("Bro name"),
+                        ),
+                      ),
+                      SizedBox(width: 50),
+                      Expanded(
+                        flex: 1,
+                        child: TextFormField(
+                          onTap: () {
+                            onTapEmojiField();
+                          },
+                          controller: bromotionController,
+                          style: simpleTextStyle(),
+                          textAlign: TextAlign.center,
+                          decoration: textFieldInputDecoration("😀"),
+                          readOnly: true,
+                          showCursor: true,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 10),
+                Expanded(child: listOfBros()),
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: EmojiKeyboard(
+                      emojiController: bromotionController,
+                      emojiKeyboardHeight: 300,
+                      showEmojiKeyboard: showEmojiKeyboard,
+                      darkMode: settings.getEmojiKeyboardDarkMode()),
+                ),
+              ],
+            )),
+      ),
     );
   }
 }

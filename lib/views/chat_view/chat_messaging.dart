@@ -1,6 +1,4 @@
 import 'dart:async';
-
-import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:brocast/constants/route_paths.dart' as routes;
 import 'package:brocast/objects/broup.dart';
 import 'package:brocast/objects/message.dart';
@@ -12,28 +10,26 @@ import 'package:brocast/views/bro_home/bro_home.dart';
 import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:intl/intl.dart';
-
 import '../../../objects/bro.dart';
 import '../../../services/auth/auth_service_social.dart';
 import '../../../utils/new/storage.dart';
-import '../../bro_profile/bro_profile.dart';
-import '../../bro_settings/bro_settings.dart';
-import '../chat_details/chat_details.dart';
-import '../chat_details/chat_details.dart';
-import '../message_util.dart';
+import '../bro_profile/bro_profile.dart';
+import '../bro_settings/bro_settings.dart';
+import 'chat_details/chat_details.dart';
+import 'message_util.dart';
+import 'models/bro_message_tile.dart';
 import 'models/broup_message_tile.dart';
 
-class BroupMessaging extends StatefulWidget {
+class ChatMessaging extends StatefulWidget {
   final Broup chat;
 
-  BroupMessaging({required Key key, required this.chat}) : super(key: key);
+  ChatMessaging({required Key key, required this.chat}) : super(key: key);
 
   @override
-  _BroupMessagingState createState() => _BroupMessagingState();
+  _ChatMessagingState createState() => _ChatMessagingState();
 }
 
-class _BroupMessagingState extends State<BroupMessaging> {
+class _ChatMessagingState extends State<ChatMessaging> {
   bool isLoadingBros = false;
   bool isLoadingMessages = false;
   GetMessages get = new GetMessages();
@@ -51,8 +47,6 @@ class _BroupMessagingState extends State<BroupMessaging> {
       new TextEditingController();
   final formKey = GlobalKey<FormState>();
 
-  List<Message> messages = [];
-
   late Broup chat;
   late Storage storage;
 
@@ -69,8 +63,6 @@ class _BroupMessagingState extends State<BroupMessaging> {
     storage = Storage();
     socketServices.checkConnection();
     socketServices.addListener(socketListener);
-
-    BackButtonInterceptor.add(myInterceptor);
 
     messageScrollController.addListener(() {
       if (!busyRetrieving && !allMessagesDBRetrieved) {
@@ -162,13 +154,7 @@ class _BroupMessagingState extends State<BroupMessaging> {
     socketServices.removeListener(socketListener);
     broMessageController.dispose();
     appendTextMessageController.dispose();
-    BackButtonInterceptor.remove(myInterceptor);
     super.dispose();
-  }
-
-  bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
-    backButtonFunctionality();
-    return true;
   }
 
   appendTextMessage() {
@@ -219,7 +205,7 @@ class _BroupMessagingState extends State<BroupMessaging> {
         chat.getBroupId(),
       );
       setState(() {
-        this.messages.insert(0, mes);
+        chat.messages.insert(0, mes);
       });
       String? messageData = null;
       AuthServiceSocial().sendMessage(chat.getBroupId(), message, textMessage, messageData).then((value) {
@@ -229,7 +215,7 @@ class _BroupMessagingState extends State<BroupMessaging> {
           // The message was not sent, we remove it from the list
           showToastMessage("there was an issue sending the message");
           setState(() {
-            this.chat.messages.removeAt(0);
+            chat.messages.removeAt(0);
           });
         }
       });
@@ -246,37 +232,30 @@ class _BroupMessagingState extends State<BroupMessaging> {
     }
   }
 
-  messageRead(var data) {
-    // TODO: copied?
-    var timeLastRead = DateTime.parse(data + 'Z').toLocal();
-    for (Message message in this.messages) {
-      if (timeLastRead.isAfter(message.getTimeStamp())) {
-        message.isRead = 1;
-      }
-    }
-    setState(() {
-      this.messages = this.messages;
-    });
-  }
-
-
   Widget messageList() {
-    return messages.isNotEmpty
+    return chat.messages.isNotEmpty
         ? ListView.builder(
-            itemCount: messages.length,
+            itemCount: chat.messages.length,
             shrinkWrap: true,
             reverse: true,
             controller: messageScrollController,
             itemBuilder: (context, index) {
-              return BroupMessageTile(
-                  key: UniqueKey(),
-                  message: messages[index],
-                  senderName: getSender(messages[index].senderId),
-                  senderId: messages[index].senderId,
-                  broAdded: getIsAdded(messages[index].senderId),
-                  // myMessage: messages[index].senderId == settings.getBroId(),
-                  myMessage: messages[index].senderId == 1,
-                  addNewBro: addNewBro);
+              if (chat.private) {
+                return BroMessageTile(
+                    key: UniqueKey(),
+                    message: chat.messages[index],
+                    myMessage: chat.messages[index].senderId == settings.getMe()!.getId());
+              } else {
+                return BroupMessageTile(
+                    key: UniqueKey(),
+                    message: chat.messages[index],
+                    senderName: getSender(chat.messages[index].senderId),
+                    senderId: chat.messages[index].senderId,
+                    broAdded: getIsAdded(chat.messages[index].senderId),
+                    myMessage: chat.messages[index].senderId ==
+                        settings.getMe()!.getId(),
+                    addNewBro: addNewBro);
+              }
             })
         : Container();
   }
@@ -294,21 +273,13 @@ class _BroupMessagingState extends State<BroupMessaging> {
   }
 
   String getSender(int senderId) {
-    // TODO: How is this used?
-    // String broName = "";
-    // for (Chat bro in broList.getBros()) {
-    //   if (!bro.isBroup()) {
-    //     if (bro.id == senderId) {
-    //       return bro.getBroNameOrAlias();
-    //     }
-    //   }
-    // }
-    // for (Bro bro in chat.getBroupBros()) {
-    //   if (bro.id == senderId) {
-    //     return bro.getFullName();
-    //   }
-    // }
-    return "broName";
+    String broName = "";
+    for (Bro bro in chat.broupBros) {
+      if (bro.id == senderId) {
+        return bro.getFullName();
+      }
+    }
+    return broName;
   }
 
   void onTapEmojiTextField() {
@@ -439,178 +410,186 @@ class _BroupMessagingState extends State<BroupMessaging> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: appBarChat(),
-      body: Container(
-        child: Column(
-          children: [
-            Expanded(
-                child: Stack(children: [
-              messageList(),
-              isLoadingBros || isLoadingMessages
-                  ? Center(
-                      child: Container(child: CircularProgressIndicator()))
-                  : Container()
-            ])),
-            Container(
-              child: Container(
-                alignment: Alignment.bottomCenter,
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (bool didPop, result) {
+        if (!didPop) {
+          backButtonFunctionality();
+        }
+      },
+      child: Scaffold(
+        appBar: appBarChat(),
+        body: Container(
+          child: Column(
+            children: [
+              Expanded(
+                  child: Stack(children: [
+                messageList(),
+                isLoadingBros || isLoadingMessages
+                    ? Center(
+                        child: Container(child: CircularProgressIndicator()))
+                    : Container()
+              ])),
+              Container(
                 child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 10),
+                  alignment: Alignment.bottomCenter,
                   child: Container(
                     padding: EdgeInsets.symmetric(horizontal: 10),
-                    decoration: BoxDecoration(
-                        color: Color(0x36FFFFFF),
-                        borderRadius: BorderRadius.circular(35)),
-                    child: Row(
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            appendTextMessage();
-                          },
-                          child: Container(
-                              height: 35,
-                              width: 35,
-                              decoration: BoxDecoration(
-                                  color: appendingMessage
-                                      ? Colors.green
-                                      : Colors.grey,
-                                  borderRadius: BorderRadius.circular(35)),
-                              padding: EdgeInsets.symmetric(horizontal: 6),
-                              child: Icon(Icons.text_snippet,
-                                  color: appendingMessage
-                                      ? Colors.white
-                                      : Color(0xFF616161))),
-                        ),
-                        Expanded(
-                          child: Container(
-                            padding: EdgeInsets.only(left: 15),
-                            child: Form(
-                              key: formKey,
-                              child: TextFormField(
-                                focusNode: focusEmojiTextField,
-                                validator: (val) {
-                                  if (val == null ||
-                                      val.isEmpty ||
-                                      val.trimRight().isEmpty) {
-                                    return "Can't send an empty message";
-                                  }
-                                  if (chat.hasLeft()) {
-                                    return "You're no longer a participant in this Broup";
-                                  }
-                                  if (chat.isBlocked()) {
-                                    return "Can't send messages to a blocked Broup";
-                                  }
-                                  return null;
-                                },
-                                onTap: () {
-                                  onTapEmojiTextField();
-                                },
-                                keyboardType: TextInputType.multiline,
-                                maxLines: null,
-                                controller: broMessageController,
-                                style: TextStyle(color: Colors.white),
-                                decoration: InputDecoration(
-                                    hintText: "Emoji message...",
-                                    hintStyle:
-                                        TextStyle(color: Colors.white54),
-                                    border: InputBorder.none),
-                                readOnly: true,
-                                showCursor: true,
+                    child: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      decoration: BoxDecoration(
+                          color: Color(0x36FFFFFF),
+                          borderRadius: BorderRadius.circular(35)),
+                      child: Row(
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              appendTextMessage();
+                            },
+                            child: Container(
+                                height: 35,
+                                width: 35,
+                                decoration: BoxDecoration(
+                                    color: appendingMessage
+                                        ? Colors.green
+                                        : Colors.grey,
+                                    borderRadius: BorderRadius.circular(35)),
+                                padding: EdgeInsets.symmetric(horizontal: 6),
+                                child: Icon(Icons.text_snippet,
+                                    color: appendingMessage
+                                        ? Colors.white
+                                        : Color(0xFF616161))),
+                          ),
+                          Expanded(
+                            child: Container(
+                              padding: EdgeInsets.only(left: 15),
+                              child: Form(
+                                key: formKey,
+                                child: TextFormField(
+                                  focusNode: focusEmojiTextField,
+                                  validator: (val) {
+                                    if (val == null ||
+                                        val.isEmpty ||
+                                        val.trimRight().isEmpty) {
+                                      return "Can't send an empty message";
+                                    }
+                                    if (chat.hasLeft()) {
+                                      return "You're no longer a participant in this Broup";
+                                    }
+                                    if (chat.isBlocked()) {
+                                      return "Can't send messages to a blocked Broup";
+                                    }
+                                    return null;
+                                  },
+                                  onTap: () {
+                                    onTapEmojiTextField();
+                                  },
+                                  keyboardType: TextInputType.multiline,
+                                  maxLines: null,
+                                  controller: broMessageController,
+                                  style: TextStyle(color: Colors.white),
+                                  decoration: InputDecoration(
+                                      hintText: "Emoji message...",
+                                      hintStyle:
+                                          TextStyle(color: Colors.white54),
+                                      border: InputBorder.none),
+                                  readOnly: true,
+                                  showCursor: true,
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                        GestureDetector(
-                          onTap: () async {
-                            // await availableCameras().then((value) => Navigator.pushReplacement(context,
-                            //     MaterialPageRoute(builder: (_) => CameraPage(
-                            //         chat: chat,
-                            //         cameras: value
-                            //     ))));
-                            // // pickImage();
-                          },
-                          child: Container(
-                              height: 35,
-                              width: 35,
-                              decoration: BoxDecoration(
-                                  color: Colors.grey,
-                                  borderRadius: BorderRadius.circular(35)),
-                              padding: EdgeInsets.symmetric(horizontal: 6),
-                              child: Icon(Icons.camera_alt,
-                                  color: Color(0xFF616161))),
-                        ),
-                        SizedBox(width: 5),
-                        GestureDetector(
-                          onTap: () {
-                            sendMessageBroup();
-                          },
-                          child: Container(
-                              height: 35,
-                              width: 35,
-                              decoration: BoxDecoration(
-                                  color: Color(0xFF34A843),
-                                  borderRadius: BorderRadius.circular(35)),
-                              padding: EdgeInsets.symmetric(horizontal: 6),
-                              child: Icon(
-                                Icons.send,
-                                color: Colors.white,
-                              )),
-                        )
-                      ],
+                          GestureDetector(
+                            onTap: () async {
+                              // await availableCameras().then((value) => Navigator.pushReplacement(context,
+                              //     MaterialPageRoute(builder: (_) => CameraPage(
+                              //         chat: chat,
+                              //         cameras: value
+                              //     ))));
+                              // // pickImage();
+                            },
+                            child: Container(
+                                height: 35,
+                                width: 35,
+                                decoration: BoxDecoration(
+                                    color: Colors.grey,
+                                    borderRadius: BorderRadius.circular(35)),
+                                padding: EdgeInsets.symmetric(horizontal: 6),
+                                child: Icon(Icons.camera_alt,
+                                    color: Color(0xFF616161))),
+                          ),
+                          SizedBox(width: 5),
+                          GestureDetector(
+                            onTap: () {
+                              sendMessageBroup();
+                            },
+                            child: Container(
+                                height: 35,
+                                width: 35,
+                                decoration: BoxDecoration(
+                                    color: Color(0xFF34A843),
+                                    borderRadius: BorderRadius.circular(35)),
+                                padding: EdgeInsets.symmetric(horizontal: 6),
+                                child: Icon(
+                                  Icons.send,
+                                  color: Colors.white,
+                                )),
+                          )
+                        ],
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-            Container(
-                child: appendingMessage
-                    ? Container(
-                        padding: EdgeInsets.symmetric(horizontal: 6),
-                        child: Container(
+              Container(
+                  child: appendingMessage
+                      ? Container(
                           padding: EdgeInsets.symmetric(horizontal: 6),
-                          decoration: BoxDecoration(
-                              color: Color(0x36FFFFFF),
-                              borderRadius: BorderRadius.circular(35)),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: Container(
-                                  padding: EdgeInsets.only(left: 15),
-                                  child: Form(
-                                    child: TextFormField(
-                                      onTap: () {
-                                        onTapAppendTextField();
-                                      },
-                                      focusNode: focusAppendText,
-                                      keyboardType: TextInputType.multiline,
-                                      maxLines: null,
-                                      controller: appendTextMessageController,
-                                      style: TextStyle(color: Colors.white),
-                                      decoration: InputDecoration(
-                                          hintText: "Append text message...",
-                                          hintStyle: TextStyle(
-                                              color: Colors.white54),
-                                          border: InputBorder.none),
+                          child: Container(
+                            padding: EdgeInsets.symmetric(horizontal: 6),
+                            decoration: BoxDecoration(
+                                color: Color(0x36FFFFFF),
+                                borderRadius: BorderRadius.circular(35)),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: Container(
+                                    padding: EdgeInsets.only(left: 15),
+                                    child: Form(
+                                      child: TextFormField(
+                                        onTap: () {
+                                          onTapAppendTextField();
+                                        },
+                                        focusNode: focusAppendText,
+                                        keyboardType: TextInputType.multiline,
+                                        maxLines: null,
+                                        controller: appendTextMessageController,
+                                        style: TextStyle(color: Colors.white),
+                                        decoration: InputDecoration(
+                                            hintText: "Append text message...",
+                                            hintStyle: TextStyle(
+                                                color: Colors.white54),
+                                            border: InputBorder.none),
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                      )
-                    : Container()),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: EmojiKeyboard(
-                emojiController: broMessageController,
-                emojiKeyboardHeight: 300,
-                showEmojiKeyboard: showEmojiKeyboard,
-                darkMode: settings.getEmojiKeyboardDarkMode(),
+                        )
+                      : Container()),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: EmojiKeyboard(
+                  emojiController: broMessageController,
+                  emojiKeyboardHeight: 300,
+                  showEmojiKeyboard: showEmojiKeyboard,
+                  darkMode: settings.getEmojiKeyboardDarkMode(),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
