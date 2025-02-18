@@ -107,6 +107,10 @@ class Broup {
     return false;
   }
 
+  newMembersBroup() {
+    retrievedBros = false;
+  }
+
   String getBroupNameOrAlias() {
     if (alias.isEmpty) {
       return broupName;
@@ -119,8 +123,25 @@ class Broup {
     return broIds;
   }
 
+  setBroIds(List<int> newBroIds) {
+    this.broIds = newBroIds;
+  }
+
+  addBroId(int broId) {
+    broIds.add(broId);
+  }
+
+  List<int> getAdminIds() {
+    return adminIds;
+  }
+
   List<Bro> getBroupBros() {
     return broupBros;
+  }
+
+  addBroupBro(Bro bro) {
+    broIds.add(bro.getId());
+    broupBros.add(bro);
   }
 
   setBroupName(String newBroupName) {
@@ -162,11 +183,11 @@ class Broup {
       if (chat_details.containsKey("avatar") && chat_details["avatar"] != null) {
         avatar = base64Decode(chat_details["avatar"].replaceAll("\n", ""));
       }
+      lastMessageId = json.containsKey("current_message_id") ? json["current_message_id"] : 0;
     }
     broupBros = [];
     messages = [];
     messageIds = [];
-    lastMessageId = 0;
   }
 
   Map<String, dynamic> toDbMap() {
@@ -324,13 +345,10 @@ class Broup {
               // TODO: send notification?
             } else {
               print("page was open when receiving");
-              // If the message was send by me we have already read it via the send.
-              if (message.senderId != Settings().getMe()!.id) {
-                // If it was send by someone else wa want to indicate that we read it.
-                // Because we had the correct page open
-                print("message received, so indicate that we read it");
-                readMessages();
-              }
+              // If it was send by someone else wa want to indicate that we read it.
+              // Because we had the correct page open
+              print("message received, so indicate that we read it");
+              readMessages();
             }
           } else {
             if (!newMessages) {

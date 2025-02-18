@@ -30,16 +30,11 @@ class _BroSettingsState extends State<BroSettings> {
   void initState() {
     super.initState();
 
-    MessagingChangeNotifier().setBroupId(-1);
-
     storage = Storage();
     socketServices.checkConnection();
 
     toggleSwitchKeyboard = settings.getEmojiKeyboardDarkMode();
 
-    SchedulerBinding.instance.addPostFrameCallback((_) {
-      settings.doneRoutes.add(routes.ChatRoute);
-    });
   }
 
   @override

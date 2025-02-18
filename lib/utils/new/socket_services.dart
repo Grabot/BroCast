@@ -88,7 +88,15 @@ class SocketServices extends ChangeNotifier {
       if (data.containsKey("new_broup_name")) {
         broup.setBroupName(data["new_broup_name"]);
       }
+      if (data.containsKey("new_bro_ids")) {
+        print("new bro ids ${data["new_bro_ids"]}");
+        int newMemberId = data["new_member_id"];
+        broup.addBroId(newMemberId);
+        broup.newMembersBroup();
+        print("broup should update?");
+      }
       Storage().updateBroup(broup);
+      print("storing update broup ${broup.broupId}  broIds ${broup.broIds}");
       notifyListeners();
     }
   }

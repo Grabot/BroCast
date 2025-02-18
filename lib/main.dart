@@ -1,5 +1,5 @@
 import 'package:brocast/router.dart' as router;
-import 'package:brocast/services/navigation_service.dart';
+import 'package:brocast/utils/new/navigation_service.dart';
 import 'package:brocast/utils/new/settings.dart';
 import 'package:brocast/utils/new/locator.dart';
 import 'package:brocast/views/opening_screen/opening_screen.dart';

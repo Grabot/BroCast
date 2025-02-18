@@ -15,6 +15,7 @@ class MessagingChangeNotifier extends ChangeNotifier {
   }
 
   setBroupId(int broupId) {
+    print("setting broup id on the listener $broupId");
     this.broupId = broupId;
   }
 

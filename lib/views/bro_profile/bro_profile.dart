@@ -46,17 +46,12 @@ class _BroProfileState extends State<BroProfile> {
   void initState() {
     super.initState();
 
-    MessagingChangeNotifier().setBroupId(-1);
-
     storage = Storage();
     Me? me = settings.getMe();
     bromotionChangeController.addListener(bromotionListener);
     if (me != null) {
       bromotionChangeController.text = me.getBromotion();
     }
-    SchedulerBinding.instance.addPostFrameCallback((_) {
-      settings.doneRoutes.add(routes.ProfileRoute);
-    });
   }
 
   bromotionListener() {

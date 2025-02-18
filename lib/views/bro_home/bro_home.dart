@@ -18,6 +18,7 @@ import '../../utils/new/secure_storage.dart';
 import '../../utils/new/storage.dart';
 import '../bro_profile/bro_profile.dart';
 import '../bro_settings/bro_settings.dart';
+import '../chat_view/messaging_change_notifier.dart';
 import 'bro_home_change_notifier.dart';
 import 'models/bro_tile.dart';
 import 'package:brocast/constants/route_paths.dart' as routes;
@@ -65,25 +66,23 @@ class _BroCastHomeState extends State<BroCastHome> {
 
   broHomeChangeListener() {
     print("listen to home");
-    if (mounted) {
-      Me? me = settings.getMe();
-      if (me != null) {
-        bros = me.broups;
-        // Set all bros to be shown, except when the bro is searching.
-        if (!searchMode && settings.retrievedData) {
-          shownBros = bros;
-        }
-        // Join Broups if not already joined.
-        for (Broup broup in bros) {
-          if (!broup.joinedBroupRoom) {
-            socketServices.joinRoomBroup(broup.getBroupId());
-            broup.joinedBroupRoom = true;
-          }
-        }
-        getBroData();
+    Me? me = settings.getMe();
+    if (me != null) {
+      bros = me.broups;
+      // Set all bros to be shown, except when the bro is searching.
+      if (!searchMode && settings.retrievedData) {
+        shownBros = bros;
       }
-      setState(() {});
+      // Join Broups if not already joined.
+      for (Broup broup in bros) {
+        if (!broup.joinedBroupRoom) {
+          socketServices.joinRoomBroup(broup.getBroupId());
+          broup.joinedBroupRoom = true;
+        }
+      }
+      getBroData();
     }
+    setState(() {});
   }
 
   getBroData() {
@@ -104,6 +103,7 @@ class _BroCastHomeState extends State<BroCastHome> {
           // Update the properties of the broup from me.bros with the properties from the database
           Broup? dbBroup = broupMap[broup.getBroupId().toString()];
           if (dbBroup != null) {
+            print("broup from db ${dbBroup.broupId}  ${dbBroup.broIds}");
             broup
               ..alias = dbBroup.alias
               ..broIds = dbBroup.broIds
@@ -274,6 +274,8 @@ class _BroCastHomeState extends State<BroCastHome> {
 
   @override
   void dispose() {
+    broHomeChangeNotifier.removeListener(broHomeChangeListener);
+    socketServices.removeListener(broHomeChangeListener);
     super.dispose();
   }
 
@@ -387,9 +389,19 @@ class _BroCastHomeState extends State<BroCastHome> {
         shrinkWrap: true,
         itemCount: shownBros.length,
         itemBuilder: (context, index) {
-          return BroTile(key: UniqueKey(), chat: shownBros[index]);
+          return BroTile(
+              key: UniqueKey(),
+              chat: shownBros[index],
+              callback: callback
+          );
         })
         : Container();
+  }
+
+  callback() {
+    setState(() {
+
+    });
   }
 
   @override

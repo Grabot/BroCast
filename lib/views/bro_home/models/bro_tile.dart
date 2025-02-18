@@ -1,19 +1,22 @@
 import 'package:flutter/material.dart';
 
 import '../../../objects/broup.dart';
-import '../../../services/navigation_service.dart';
+import '../../../utils/new/navigation_service.dart';
 import '../../../utils/new/locator.dart';
+import '../../../utils/new/settings.dart';
 import '../../../utils/new/utils.dart';
 import 'package:brocast/constants/route_paths.dart' as routes;
 
 import '../../chat_view/chat_messaging.dart';
+import '../../chat_view/messaging_change_notifier.dart';
 
 
 
 class BroTile extends StatefulWidget {
   final Broup chat;
+  final void Function() callback;
 
-  BroTile({required Key key, required this.chat}) : super(key: key);
+  BroTile({required Key key, required this.chat, required this.callback}) : super(key: key);
 
   @override
   _BroTileState createState() => _BroTileState();
@@ -24,6 +27,8 @@ class _BroTileState extends State<BroTile> {
   var _tapPosition;
 
   selectBro(BuildContext context) {
+    MessagingChangeNotifier().setBroupId(widget.chat.broupId);
+    Settings().doneRoutes.add(routes.ChatRoute);
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -33,7 +38,9 @@ class _BroTileState extends State<BroTile> {
           )
       ),
       // ModalRoute.withName(routes.ChatRoute)
-    );
+    ).then((value) {
+      widget.callback();
+    });
   }
 
   Color getColorStrength() {

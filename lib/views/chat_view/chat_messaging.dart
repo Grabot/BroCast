@@ -2,11 +2,11 @@ import 'dart:async';
 import 'package:brocast/constants/route_paths.dart' as routes;
 import 'package:brocast/objects/broup.dart';
 import 'package:brocast/objects/message.dart';
-import 'package:brocast/services/get_messages.dart';
 import 'package:brocast/utils/new/settings.dart';
 import 'package:brocast/utils/new/socket_services.dart';
 import 'package:brocast/utils/new/utils.dart';
 import 'package:brocast/views/bro_home/bro_home.dart';
+import 'package:brocast/views/chat_view/messaging_change_notifier.dart';
 import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -32,9 +32,9 @@ class ChatMessaging extends StatefulWidget {
 class _ChatMessagingState extends State<ChatMessaging> {
   bool isLoadingBros = false;
   bool isLoadingMessages = false;
-  GetMessages get = new GetMessages();
   Settings settings = Settings();
   SocketServices socketServices = SocketServices();
+  MessagingChangeNotifier messagingChangeNotifier = MessagingChangeNotifier();
 
   bool showEmojiKeyboard = false;
 
@@ -59,10 +59,12 @@ class _ChatMessagingState extends State<ChatMessaging> {
   @override
   void initState() {
     super.initState();
+    print("init chat");
     chat = widget.chat;
     storage = Storage();
     socketServices.checkConnection();
     socketServices.addListener(socketListener);
+    messagingChangeNotifier.addListener(socketListener);
 
     messageScrollController.addListener(() {
       if (!busyRetrieving && !allMessagesDBRetrieved) {
@@ -81,8 +83,6 @@ class _ChatMessagingState extends State<ChatMessaging> {
     });
 
     SchedulerBinding.instance.addPostFrameCallback((_) {
-      settings.doneRoutes.add(routes.ChatRoute);
-
       setState(() {
         isLoadingBros = true;
         isLoadingMessages = true;
@@ -110,6 +110,7 @@ class _ChatMessagingState extends State<ChatMessaging> {
   }
 
   socketListener() {
+    print("attempting to render chat $mounted");
     setState(() {});
   }
 
@@ -148,10 +149,10 @@ class _ChatMessagingState extends State<ChatMessaging> {
 
   @override
   void dispose() {
-    chat.unreadMessages = 0;
     focusAppendText.dispose();
     focusEmojiTextField.dispose();
     socketServices.removeListener(socketListener);
+    messagingChangeNotifier.removeListener(socketListener);
     broMessageController.dispose();
     appendTextMessageController.dispose();
     super.dispose();
@@ -301,22 +302,28 @@ class _ChatMessagingState extends State<ChatMessaging> {
   }
 
   navigateToHome() {
+    print("navigating to home");
+    messagingChangeNotifier.setBroupId(-1);
+    chat.unreadMessages = 0;
     if (settings.doneRoutes.contains(routes.BroHomeRoute)) {
+      print("navigating to home should work");
       // We want to pop until we reach the BroHomeRoute
       // We remove one, because it's this page.
       settings.doneRoutes.removeLast();
+      print("popped ${settings.doneRoutes}");
       for (int i = 0; i < 200; i++) {
         String route = settings.doneRoutes.removeLast();
-        Navigator.pop(context);
+        print("popped ${settings.doneRoutes}");
+        Navigator.of(context).pop(true);
         if (route == routes.BroHomeRoute) {
-          break;
-        }
-        if (settings.doneRoutes.length == 0) {
+          settings.doneRoutes.add(routes.BroHomeRoute);
+          print("should be back at home ${settings.doneRoutes}");
           break;
         }
       }
     } else {
       // TODO: How to test this?
+      print("navigation issues to home");
       settings.doneRoutes = [];
       Navigator.pushReplacement(context,
           MaterialPageRoute(builder: (context) => BroCastHome(key: UniqueKey())));
@@ -333,6 +340,21 @@ class _ChatMessagingState extends State<ChatMessaging> {
     }
   }
 
+  goToChatDetails() {
+    messagingChangeNotifier.setBroupId(-1);
+    settings.doneRoutes.add(routes.ChatDetailsRoute);
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) =>
+                ChatDetails(key: UniqueKey(), chat: chat))).then((value) {
+                  messagingChangeNotifier.setBroupId(chat.getBroupId());
+                  // If we go back here we want to re-render the chat
+                  print("got back from chat details");
+                  setState(() {});
+    });
+  }
+
   PreferredSize appBarChat() {
     return PreferredSize(
       preferredSize: const Size.fromHeight(50),
@@ -340,11 +362,7 @@ class _ChatMessagingState extends State<ChatMessaging> {
         color: chat.getColor(),
         child: InkWell(
           onTap: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) =>
-                        ChatDetails(key: UniqueKey(), chat: chat)));
+            goToChatDetails();
           },
           child: AppBar(
               leading: IconButton(
@@ -384,26 +402,23 @@ class _ChatMessagingState extends State<ChatMessaging> {
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => BroProfile(key: UniqueKey())));
+                builder: (context) => BroProfile(key: UniqueKey()))).then((value) {
+          messagingChangeNotifier.setBroupId(-1);
+        });
         break;
       case 1:
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => BroSettings(key: UniqueKey())));
+                builder: (context) => BroSettings(key: UniqueKey()))).then((value) {
+          messagingChangeNotifier.setBroupId(-1);
+        });
         break;
       case 2:
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) =>
-                    ChatDetails(key: UniqueKey(), chat: chat)));
+        goToChatDetails();
         break;
       case 3:
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => BroCastHome(key: UniqueKey())));
+        navigateToHome();
         break;
     }
   }

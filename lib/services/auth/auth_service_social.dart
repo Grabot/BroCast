@@ -75,7 +75,7 @@ class AuthServiceSocial {
           if (me.broups.indexWhere((element) => element.getBroupId() == json["broup"]["broup_id"]) == -1) {
             Broup newBroup = Broup.fromJson(json["broup"]);
             Storage().addBroup(newBroup);
-            me.broups.add(newBroup);
+            me.addBroup(newBroup);
           }
           Bro newBro = Bro.fromJson(json["bro"]);
           newBro.added = true;
@@ -279,6 +279,27 @@ class AuthServiceSocial {
           }
         }
       }
+      return json["result"];
+    }
+  }
+
+  Future<bool> addBroToBroup(int broupId, int broId) async {
+    String endPoint = "broup/add_bro";
+    var response = await AuthApi().dio.post(endPoint,
+        options: Options(headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+        }),
+        data: jsonEncode(<String, dynamic>{
+          "broup_id": broupId,
+          "bro_id": broId
+        }
+      )
+    );
+
+    Map<String, dynamic> json = response.data;
+    if (!json.containsKey("result")) {
+      return false;
+    } else {
       return json["result"];
     }
   }

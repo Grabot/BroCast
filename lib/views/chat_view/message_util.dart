@@ -8,8 +8,8 @@ import '../../services/auth/auth_service_social.dart';
 import '../../utils/new/storage.dart';
 
 
-getBros(Broup chat, Storage storage, Me me) async {
-  print("getting bros");
+Future<bool> getBros(Broup chat, Storage storage, Me me) async {
+  print("getting bros!!!!");
   // First retrieve from the db.
   if (chat.retrievedBros) {
     print("already retrieved");
@@ -61,7 +61,7 @@ getBros(Broup chat, Storage storage, Me me) async {
   // merge lists with preference for the server data.
   chat.broupBros = removeBroDuplicates(storageBros, brosServer, storage);
   // You are also part of the bros
-  chat.broupBros.add(me);
+  chat.broupBros.insert(0, me);
   chat.retrievedBros = true;
   return true;
 }

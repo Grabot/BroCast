@@ -6,6 +6,8 @@ import '../../../../utils/new/utils.dart';
 
 class BroTileDetails extends StatefulWidget {
   final Bro bro;
+  final bool broAdmin;
+  final bool broAdded;
   final int broupId;
   final bool userAdmin;
   final void Function(int) addNewBro;
@@ -13,6 +15,8 @@ class BroTileDetails extends StatefulWidget {
   BroTileDetails(
       {required Key key,
         required this.bro,
+        required this.broAdmin,
+        required this.broAdded,
         required this.broupId,
         required this.userAdmin,
         required this.addNewBro})
@@ -29,25 +33,37 @@ class _BroTileDetailsState extends State<BroTileDetails> {
 
   selectBro(BuildContext context) {
     if (widget.bro.id != settings.getMe()!.getId()) {
-      showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(actions: <Widget>[
-              widget.userAdmin
-                  ? getPopupItemsAdmin(
-                  context,
-                  widget.bro,
-                  widget.broupId,
-                  true,
-                  widget.addNewBro)
-                  : getPopupItemsNormal(
-                  context,
-                  widget.bro,
-                  widget.broupId,
-                  true,
-                  widget.addNewBro)
-            ]);
-          });
+      if (widget.userAdmin) {
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(actions: <Widget>[
+                getPopupItemsAdmin(
+                    context,
+                    widget.bro,
+                    widget.broupId,
+                    true,
+                    widget.broAdded,
+                    widget.broAdmin,
+                    widget.addNewBro)
+              ]);
+            });
+      } else {
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(actions: <Widget>[
+                getPopupItemsNormal(
+                    context,
+                    widget.bro,
+                    widget.broupId,
+                    true,
+                    widget.broAdded,
+                    widget.broAdmin,
+                    widget.addNewBro)
+              ]);
+            });
+      }
     }
   }
 
@@ -65,29 +81,24 @@ class _BroTileDetailsState extends State<BroTileDetails> {
             },
             child: Row(children: [
               Container(
-                width: MediaQuery.of(context).size.width,
+                width: widget.broAdmin
+                    ? MediaQuery.of(context).size.width - 124
+                    : MediaQuery.of(context).size.width,
                 padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
                 child: Text(widget.bro.getFullName(), style: simpleTextStyle()),
-              )
-              // Container(
-              //   width: widget.bro.isAdmin()
-              //       ? MediaQuery.of(context).size.width - 124
-              //       : MediaQuery.of(context).size.width,
-              //   padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-              //   child: Text(widget.broName, style: simpleTextStyle()),
-              // ),
-              // widget.bro.isAdmin()
-              //     ? Container(
-              //         width: 100,
-              //         padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-              //         decoration: BoxDecoration(
-              //             border: Border.all(color: Colors.green)),
-              //         child: Text(
-              //           "admin",
-              //           style: TextStyle(color: Colors.green, fontSize: 16),
-              //           textAlign: TextAlign.center,
-              //         ))
-              //     : Container(),
+              ),
+              widget.broAdmin
+                  ? Container(
+                      width: 100,
+                      padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+                      decoration: BoxDecoration(
+                          border: Border.all(color: Colors.green)),
+                      child: Text(
+                        "admin",
+                        style: TextStyle(color: Colors.green, fontSize: 16),
+                        textAlign: TextAlign.center,
+                      ))
+                  : Container(),
             ]),
           ),
         ),
@@ -110,6 +121,8 @@ class _BroTileDetailsState extends State<BroTileDetails> {
                 bro: widget.bro,
                 broupId: widget.broupId,
                 userAdmin: widget.userAdmin,
+                broAdded: widget.broAdded,
+                broAdmin: widget.broAdmin,
                 addNewBro: widget.addNewBro)
           ],
           position: RelativeRect.fromRect(_tapPosition & const Size(40, 40),
@@ -130,6 +143,8 @@ class BroupParticipantPopup extends PopupMenuEntry<int> {
   final Bro bro;
   final int broupId;
   final bool userAdmin;
+  final bool broAdded;
+  final bool broAdmin;
   final void Function(int) addNewBro;
 
   BroupParticipantPopup(
@@ -138,6 +153,8 @@ class BroupParticipantPopup extends PopupMenuEntry<int> {
         required this.bro,
         required this.broupId,
         required this.userAdmin,
+        required this.broAdded,
+        required this.broAdmin,
         required this.addNewBro})
       : super(key: key);
 
@@ -157,8 +174,8 @@ class BroupParticipantPopupState extends State<BroupParticipantPopup> {
   @override
   Widget build(BuildContext context) {
     return widget.userAdmin
-        ? getPopupItemsAdmin(context, widget.bro, widget.broupId, false, widget.addNewBro)
-        : getPopupItemsNormal(context, widget.bro, widget.broupId, false, widget.addNewBro);
+        ? getPopupItemsAdmin(context, widget.bro, widget.broupId, false, widget.broAdded, widget.broAdmin, widget.addNewBro)
+        : getPopupItemsNormal(context, widget.bro, widget.broupId, false, widget.broAdded, widget.broAdmin, widget.addNewBro);
   }
 }
 
@@ -183,7 +200,8 @@ void buttonMessage(BuildContext context, Bro bro, bool alertDialog) {
 }
 
 void buttonAddBro(
-    BuildContext context, Bro bro, bool alertDialog, String token, addNewBro) {
+    BuildContext context, Bro bro, bool alertDialog, addNewBro) {
+  print("button add bro ");
   addNewBro(bro.id);
   if (alertDialog) {
     Navigator.of(context).pop();
@@ -193,7 +211,7 @@ void buttonAddBro(
 }
 
 void buttonMakeAdmin(BuildContext context, Bro bro, int broupId,
-    bool alertDialog, String token) {
+    bool alertDialog) {
   if (alertDialog) {
     Navigator.of(context).pop();
   } else {
@@ -205,7 +223,7 @@ void buttonMakeAdmin(BuildContext context, Bro bro, int broupId,
 }
 
 void buttonDismissAdmin(BuildContext context, Bro bro, int broupId,
-    bool alertDialog, String token) {
+    bool alertDialog) {
   if (alertDialog) {
     Navigator.of(context).pop();
   } else {
@@ -216,8 +234,7 @@ void buttonDismissAdmin(BuildContext context, Bro bro, int broupId,
   //     {"token": token, "broup_id": broupId, "bro_id": bro.id});
 }
 
-void buttonRemove(BuildContext context, Bro bro, int broupId, bool alertDialog,
-    String token) {
+void buttonRemove(BuildContext context, Bro bro, int broupId, bool alertDialog) {
   if (alertDialog) {
     Navigator.of(context).pop();
   } else {
@@ -229,104 +246,104 @@ void buttonRemove(BuildContext context, Bro bro, int broupId, bool alertDialog,
 }
 
 Widget getPopupItemsAdmin(BuildContext context, Bro bro,
-    int broupId, bool alertDialog, addNewBro) {
+    int broupId, bool alertDialog, bool broAdded, bool broAdmin, addNewBro) {
   return Column(
     children: [
-      // bro is BroAdded
-      //     ? Container(
-      //         alignment: Alignment.centerLeft,
-      //         child: TextButton(
-      //             onPressed: () {
-      //               buttonMessage(context, bro, alertDialog);
-      //             },
-      //             child: Text(
-      //               'Message $broName',
-      //               textAlign: TextAlign.left,
-      //               style: TextStyle(color: Colors.black, fontSize: 14),
-      //             )),
-      //       )
-      //     : Container(
-      //         alignment: Alignment.centerLeft,
-      //         child: TextButton(
-      //             onPressed: () {
-      //               buttonAddBro(context, bro, alertDialog, token, addNewBro);
-      //             },
-      //             child: Text(
-      //               'Add $broName',
-      //               textAlign: TextAlign.left,
-      //               style: TextStyle(color: Colors.black, fontSize: 14),
-      //             )),
-      //       ),
-      // bro.isAdmin()
-      //     ? Container(
-      //         alignment: Alignment.centerLeft,
-      //         child: TextButton(
-      //             onPressed: () {
-      //               buttonDismissAdmin(
-      //                   context, bro, broupId, alertDialog, token);
-      //             },
-      //             child: Text(
-      //               'Dismiss as admin',
-      //               textAlign: TextAlign.left,
-      //               style: TextStyle(color: Colors.black, fontSize: 14),
-      //             )),
-      //       )
-      //     : Container(
-      //         alignment: Alignment.centerLeft,
-      //         child: TextButton(
-      //             onPressed: () {
-      //               buttonMakeAdmin(context, bro, broupId, alertDialog, token);
-      //             },
-      //             child: Text(
-      //               'Make Broup admin',
-      //               textAlign: TextAlign.left,
-      //               style: TextStyle(color: Colors.black, fontSize: 14),
-      //             )),
-      //       ),
-      // Container(
-      //   alignment: Alignment.centerLeft,
-      //   child: TextButton(
-      //       onPressed: () {
-      //         buttonRemove(context, bro, broupId, alertDialog, token);
-      //       },
-      //       child: Text(
-      //         'Remove $broName',
-      //         style: TextStyle(color: Colors.black, fontSize: 14),
-      //       )),
-      // )
+      broAdded
+          ? Container(
+              alignment: Alignment.centerLeft,
+              child: TextButton(
+                  onPressed: () {
+                    buttonMessage(context, bro, alertDialog);
+                  },
+                  child: Text(
+                    'Message ${bro.getFullName()}',
+                    textAlign: TextAlign.left,
+                    style: TextStyle(color: Colors.black, fontSize: 14),
+                  )),
+            )
+          : Container(
+              alignment: Alignment.centerLeft,
+              child: TextButton(
+                  onPressed: () {
+                    buttonAddBro(context, bro, alertDialog, addNewBro);
+                  },
+                  child: Text(
+                    'Add ${bro.getFullName()}',
+                    textAlign: TextAlign.left,
+                    style: TextStyle(color: Colors.black, fontSize: 14),
+                  )),
+            ),
+      broAdmin
+          ? Container(
+              alignment: Alignment.centerLeft,
+              child: TextButton(
+                  onPressed: () {
+                    buttonDismissAdmin(
+                        context, bro, broupId, alertDialog);
+                  },
+                  child: Text(
+                    'Dismiss as admin',
+                    textAlign: TextAlign.left,
+                    style: TextStyle(color: Colors.black, fontSize: 14),
+                  )),
+            )
+          : Container(
+              alignment: Alignment.centerLeft,
+              child: TextButton(
+                  onPressed: () {
+                    buttonMakeAdmin(context, bro, broupId, alertDialog);
+                  },
+                  child: Text(
+                    'Make ${bro.getFullName()} admin',
+                    textAlign: TextAlign.left,
+                    style: TextStyle(color: Colors.black, fontSize: 14),
+                  )),
+            ),
+      Container(
+        alignment: Alignment.centerLeft,
+        child: TextButton(
+            onPressed: () {
+              buttonRemove(context, bro, broupId, alertDialog);
+            },
+            child: Text(
+              'Remove ${bro.getFullName()}',
+              style: TextStyle(color: Colors.black, fontSize: 14),
+            )),
+      )
     ],
   );
 }
 
 Widget getPopupItemsNormal(BuildContext context, Bro bro,
-    int broupId, bool alertDialog, addNewBro) {
+    int broupId, bool alertDialog, bool broAdded, bool broAdmin, addNewBro) {
   return Column(
     children: [
-      // bro is BroAdded
-      //     ? Container(
-      //         alignment: Alignment.centerLeft,
-      //         child: TextButton(
-      //             onPressed: () {
-      //               buttonMessage(context, bro, alertDialog);
-      //             },
-      //             child: Text(
-      //               'Message $broName',
-      //               textAlign: TextAlign.left,
-      //               style: TextStyle(color: Colors.black, fontSize: 14),
-      //             )),
-      //       )
-      //     : Container(
-      //         alignment: Alignment.centerLeft,
-      //         child: TextButton(
-      //             onPressed: () {
-      //               buttonAddBro(context, bro, alertDialog, token, addNewBro);
-      //             },
-      //             child: Text(
-      //               'Add $broName',
-      //               textAlign: TextAlign.left,
-      //               style: TextStyle(color: Colors.black, fontSize: 14),
-      //             )),
-      //       ),
+      broAdded ?
+          Container(
+              alignment: Alignment.centerLeft,
+              child: TextButton(
+                  onPressed: () {
+                    buttonMessage(context, bro, alertDialog);
+                  },
+                  child: Text(
+                    'Message ${bro.getFullName()}',
+                    textAlign: TextAlign.left,
+                    style: TextStyle(color: Colors.black, fontSize: 14),
+                  )),
+            )
+          : Container(
+              alignment: Alignment.centerLeft,
+              child: TextButton(
+                  onPressed: () {
+                    // buttonAddBro(context, bro, alertDialog, token, addNewBro);
+                  },
+                  child: Text(
+                    'Add ${bro.getFullName()}',
+                    textAlign: TextAlign.left,
+                    style: TextStyle(color: Colors.black, fontSize: 14),
+                  )),
+            ),
     ],
   );
 }
