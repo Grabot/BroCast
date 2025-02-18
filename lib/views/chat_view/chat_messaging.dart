@@ -13,6 +13,7 @@ import 'package:flutter/scheduler.dart';
 import '../../../objects/bro.dart';
 import '../../../services/auth/auth_service_social.dart';
 import '../../../utils/new/storage.dart';
+import '../../objects/me.dart';
 import '../bro_profile/bro_profile.dart';
 import '../bro_settings/bro_settings.dart';
 import 'chat_details/chat_details.dart';
@@ -56,6 +57,10 @@ class _ChatMessagingState extends State<ChatMessaging> {
 
   var messageScrollController = ScrollController();
 
+  bool meAdmin = false;
+  Map<String, bool> broAdminStatus = {};
+  Map<String, bool> broAddedStatus = {};
+
   @override
   void initState() {
     super.initState();
@@ -83,68 +88,114 @@ class _ChatMessagingState extends State<ChatMessaging> {
     });
 
     SchedulerBinding.instance.addPostFrameCallback((_) {
-      setState(() {
-        isLoadingBros = true;
-        isLoadingMessages = true;
-      });
-      getMessages(0, chat, storage).then((value) {
-        allMessagesDBRetrieved = value;
-        setState(() {
-          if (chat.messages.length != 0) {
-            setDateTiles(chat);
-            if (chat.messages[0].messageId <= 0) {
-              chat.lastMessageId = chat.messages[1].messageId;
-            } else {
-              chat.lastMessageId = chat.messages[0].messageId;
+      retrieveData();
+    });
+  }
+
+  checkIsAdmin() {
+    for (Bro bro in chat.getBroupBros()) {
+      broAdminStatus[bro.id.toString()] = false;
+      broAddedStatus[bro.id.toString()] = false;
+    }
+    meAdmin = false;
+    for (int adminId in chat.getAdminIds()) {
+      if (adminId == settings.getMe()!.getId()) {
+        meAdmin = true;
+      }
+      for (Bro bro in chat.getBroupBros()) {
+        if (bro.id == adminId) {
+          broAdminStatus[bro.id.toString()] = true;
+        }
+      }
+    }
+    for (Broup broup in settings.getMe()!.broups) {
+      if (broup.private) {
+        for (int broId in broup.getBroIds()) {
+          if (broId != settings.getMe()!.getId()) {
+            if (broAddedStatus.containsKey(broId.toString())) {
+              broAddedStatus[broId.toString()] = true;
             }
           }
-          isLoadingMessages = false;
-        });
+        }
+      }
+    }
+  }
+
+  retrieveData() {
+    setState(() {
+      isLoadingBros = true;
+      isLoadingMessages = true;
+    });
+    getMessages(0, chat, storage).then((value) {
+      allMessagesDBRetrieved = value;
+      setState(() {
+        if (chat.messages.length != 0) {
+          setDateTiles(chat);
+          if (chat.messages[0].messageId <= 0) {
+            chat.lastMessageId = chat.messages[1].messageId;
+          } else {
+            chat.lastMessageId = chat.messages[0].messageId;
+          }
+        }
+        isLoadingMessages = false;
       });
-      getBros(chat, storage, settings.getMe()!).then((value) {
-        setState(() {
-          isLoadingBros = false;
-        });
+    });
+    getBros(chat, storage, settings.getMe()!).then((value) {
+      checkIsAdmin();
+      setState(() {
+        isLoadingBros = false;
       });
     });
   }
 
   socketListener() {
-    print("attempting to render chat $mounted");
+    checkIsAdmin();
     setState(() {});
   }
 
-  addNewBro(int addBroId) {
-    // socketServices.socket
-    //     .on('message_event_add_bro_success', (data) => broWasAdded(data));
-    // socketServices.socket.on('message_event_add_bro_failed', (data) {
-    //   broAddingFailed();
-    // });
-    // socketServices.socket.emit("message_event_add_bro",
-    //     {"token": settings.getToken(), "bros_bro_id": addBroId});
-  }
-
-  broWasAdded(data) {
-    // BroBros broBros = new BroBros(
-    //     data["bros_bro_id"],
-    //     data["chat_name"],
-    //     data["chat_description"],
-    //     data["alias"],
-    //     data["chat_colour"],
-    //     data["unread_messages"],
-    //     data["last_time_activity"],
-    //     data["room_name"],
-    //     data["blocked"] ? 1 : 0,
-    //     data["mute"] ? 1 : 0,
-    //     0);
-    // broList.addChat(broBros);
-    // storage.addChat(broBros).then((value) {
-    //   broList.updateBroupBrosForBroBros(broBros);
-    //   Navigator.pushReplacement(
-    //       context,
-    //       MaterialPageRoute(
-    //           builder: (context) => BroCastHome(key: UniqueKey())));
-    // });
+  broHandling(int delta, int addBroId) {
+    if (delta == 1) {
+      // Message the bro
+      Me? me = settings.getMe();
+      if (me != null ) {
+        for (Broup broup in me.broups) {
+          if (broup.private) {
+            for (int broId in broup.getBroIds()) {
+              if (broId == addBroId) {
+                // We are already in the chat window.
+                // We attempt to transfer the correct data here.
+                chat = broup;
+                retrieveData();
+                messagingChangeNotifier.setBroupId(chat.getBroupId());
+                setState(() {});
+              }
+            }
+          }
+        }
+      }
+    } else if (delta == 2) {
+      // Add the bro
+      AuthServiceSocial().addNewBro(addBroId).then((value) {
+        if (value) {
+          print("we have added a new bro :)");
+          // The broup added, move to the home screen where it will be shown
+          navigateToHome(context, settings);
+        } else {
+          showToastMessage("Bro contact already in Bro list!");
+        }
+      });
+    } else if (delta == 4) {
+      AuthServiceSocial().makeBroAdmin(chat.broupId, addBroId).then((value) {
+        if (value) {
+          setState(() {
+            chat.addAdminId(addBroId);
+            checkIsAdmin();
+          });
+        }
+      });
+    } else if (delta == 5) {
+      // Remove to admins?
+    }
   }
 
   @override
@@ -253,23 +304,27 @@ class _ChatMessagingState extends State<ChatMessaging> {
                     senderName: getSender(chat.messages[index].senderId),
                     senderId: chat.messages[index].senderId,
                     broAdded: getIsAdded(chat.messages[index].senderId),
+                    broAdmin: getIsAdmin(chat.messages[index].senderId),
                     myMessage: chat.messages[index].senderId ==
                         settings.getMe()!.getId(),
-                    addNewBro: addNewBro);
+                    userAdmin: meAdmin,
+                    broHandling: broHandling);
               }
             })
         : Container();
   }
 
   bool getIsAdded(int senderId) {
-    // TODO: How is this used?
-    // for (Chat bro in broList.getBros()) {
-    //   if (!bro.isBroup()) {
-    //     if (bro.id == senderId) {
-    //       return true;
-    //     }
-    //   }
-    // }
+    if (broAddedStatus[senderId.toString()] != null) {
+      return broAddedStatus[senderId.toString()]!;
+    }
+    return false;
+  }
+
+  bool getIsAdmin(int senderId) {
+    if (broAdminStatus[senderId.toString()] != null) {
+      return broAdminStatus[senderId.toString()]!;
+    }
     return false;
   }
 
@@ -301,42 +356,13 @@ class _ChatMessagingState extends State<ChatMessaging> {
     }
   }
 
-  navigateToHome() {
-    print("navigating to home");
-    messagingChangeNotifier.setBroupId(-1);
-    chat.unreadMessages = 0;
-    if (settings.doneRoutes.contains(routes.BroHomeRoute)) {
-      print("navigating to home should work");
-      // We want to pop until we reach the BroHomeRoute
-      // We remove one, because it's this page.
-      settings.doneRoutes.removeLast();
-      print("popped ${settings.doneRoutes}");
-      for (int i = 0; i < 200; i++) {
-        String route = settings.doneRoutes.removeLast();
-        print("popped ${settings.doneRoutes}");
-        Navigator.of(context).pop(true);
-        if (route == routes.BroHomeRoute) {
-          settings.doneRoutes.add(routes.BroHomeRoute);
-          print("should be back at home ${settings.doneRoutes}");
-          break;
-        }
-      }
-    } else {
-      // TODO: How to test this?
-      print("navigation issues to home");
-      settings.doneRoutes = [];
-      Navigator.pushReplacement(context,
-          MaterialPageRoute(builder: (context) => BroCastHome(key: UniqueKey())));
-    }
-  }
-
   void backButtonFunctionality() {
     if (showEmojiKeyboard) {
       setState(() {
         showEmojiKeyboard = false;
       });
     } else {
-      navigateToHome();
+      navigateToHome(context, settings);
     }
   }
 
@@ -348,6 +374,12 @@ class _ChatMessagingState extends State<ChatMessaging> {
         MaterialPageRoute(
             builder: (context) =>
                 ChatDetails(key: UniqueKey(), chat: chat))).then((value) {
+                  // It returned from the chat details. It's possible that
+                  // we changed the chat, in this case we update this screen.
+                  if (value is Broup) {
+                    chat = value;
+                    retrieveData();
+                  }
                   messagingChangeNotifier.setBroupId(chat.getBroupId());
                   // If we go back here we want to re-render the chat
                   print("got back from chat details");
@@ -418,7 +450,7 @@ class _ChatMessagingState extends State<ChatMessaging> {
         goToChatDetails();
         break;
       case 3:
-        navigateToHome();
+        navigateToHome(context, settings);
         break;
     }
   }

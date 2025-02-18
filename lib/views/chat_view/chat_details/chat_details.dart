@@ -7,7 +7,9 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter_circle_color_picker/flutter_circle_color_picker.dart';
 import 'package:brocast/constants/route_paths.dart' as routes;
 import '../../../objects/bro.dart';
+import '../../../objects/me.dart';
 import '../../../services/auth/auth_service_settings.dart';
+import '../../../services/auth/auth_service_social.dart';
 import '../../../utils/new/storage.dart';
 import '../../bro_home/bro_home.dart';
 import '../../bro_profile/bro_profile.dart';
@@ -55,9 +57,9 @@ class _ChatDetailsState extends State<ChatDetails> {
 
   late Storage storage;
 
-  bool meAdmin = false;
-
   double iconSize = 30;
+
+  bool meAdmin = false;
   Map<String, bool> broAdminStatus = {};
   // Not every bro in a broup will be in your personal bro list
   // In that case different options will be available
@@ -117,20 +119,42 @@ class _ChatDetailsState extends State<ChatDetails> {
   }
 
   socketListener() {
-    setState(() {
-
-    });
+    checkAdmin();
+    setState(() {});
   }
 
-  addNewBro(int addBroId) {
-    // socketServices.socket
-    //     .on('message_event_add_bro_success', (data) => broWasAdded(data));
-    // socketServices.socket.on('message_event_add_bro_failed', (data) {
-    //   broAddingFailed();
-    // });
-    // socketServices.socket.emit("message_event_add_bro",
-    //     {"token": settings.getToken(), "bros_bro_id": addBroId});
-    print("adding new bro");
+  broHandling(int delta, int broId) {
+    if (delta == 1) {
+      AuthServiceSocial().addNewBro(broId).then((value) {
+        if (value) {
+          print("we have added a new bro :)");
+          // The broup added, move to the home screen where it will be shown
+          navigateToHome(context, settings);
+        } else {
+          showToastMessage("Bro contact already in Bro list!");
+        }
+      });
+    } else if (delta == 2) {
+      print("making bro admin");
+      AuthServiceSocial().makeBroAdmin(chat.broupId, broId).then((value) {
+        if (value) {
+          setState(() {
+            chat.addAdminId(broId);
+            checkAdmin();
+          });
+        }
+      });
+    } else if (delta == 3) {
+      print('dismissing bro from admin');
+      AuthServiceSocial().dismissBroAdmin(chat.broupId, broId).then((value) {
+        if (value) {
+          setState(() {
+            chat.removeAdminId(broId);
+            checkAdmin();
+          });
+        }
+      });
+    }
   }
 
   broupWasMuted(var data) {
@@ -148,29 +172,7 @@ class _ChatDetailsState extends State<ChatDetails> {
     showToastMessage("Broup muting failed at this time.");
   }
 
-  navigateToHome() {
-    MessagingChangeNotifier().setBroupId(-1);
-    if (settings.doneRoutes.contains(routes.BroHomeRoute)) {
-      // We want to pop until we reach the BroHomeRoute
-      // We remove one, because it's this page.
-      settings.doneRoutes.removeLast();
-      for (int i = 0; i < 200; i++) {
-        String route = settings.doneRoutes.removeLast();
-        Navigator.pop(context);
-        if (route == routes.BroHomeRoute) {
-          settings.doneRoutes.add(routes.BroHomeRoute);
-          break;
-        }
-        if (settings.doneRoutes.length == 0) {
-          break;
-        }
-      }
-    } else {
-      settings.doneRoutes = [];
-      Navigator.pushReplacement(context,
-          MaterialPageRoute(builder: (context) => BroCastHome(key: UniqueKey())));
-    }
-  }
+
 
   navigateToChat() {
     MessagingChangeNotifier().setBroupId(chat.broupId);
@@ -272,7 +274,7 @@ class _ChatDetailsState extends State<ChatDetails> {
         navigateToChat();
         break;
       case 3:
-        navigateToHome();
+        navigateToHome(context, settings);
         break;
     }
   }
@@ -452,7 +454,7 @@ class _ChatDetailsState extends State<ChatDetails> {
                   broAdded: broAddedStatus[chat.getBroupBros()[index].id.toString()]!,
                   broupId: chat.broupId,
                   userAdmin: meAdmin,
-                  addNewBro: addNewBro
+                  broHandling: broHandling
               );
             })
         : Container();

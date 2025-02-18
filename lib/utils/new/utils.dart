@@ -6,11 +6,16 @@ import 'package:flutter/material.dart';
 import 'package:jwt_decode/jwt_decode.dart';
 import 'package:oktoast/oktoast.dart';
 
+import '../../objects/broup.dart';
 import '../../objects/me.dart';
 import '../../services/auth/models/login_response.dart';
+import '../../views/bro_home/bro_home.dart';
+import '../../views/chat_view/messaging_change_notifier.dart';
 import 'settings.dart';
 import 'socket_services.dart';
 import 'secure_storage.dart';
+import 'package:brocast/constants/route_paths.dart' as routes;
+
 
 InputDecoration textFieldInputDecoration(String hintText) {
   return InputDecoration(
@@ -178,4 +183,53 @@ class HexagonClipper extends CustomClipper<Path> {
 
   @override
   bool shouldReclip(HexagonClipper oldClipper) => false;
+}
+
+navigateToHome(BuildContext context, Settings settings) {
+  MessagingChangeNotifier().setBroupId(-1);
+  if (settings.doneRoutes.contains(routes.BroHomeRoute)) {
+    // We want to pop until we reach the BroHomeRoute
+    // We remove one, because it's this page.
+    settings.doneRoutes.removeLast();
+    for (int i = 0; i < 200; i++) {
+      String route = settings.doneRoutes.removeLast();
+      Navigator.pop(context);
+      if (route == routes.BroHomeRoute) {
+        settings.doneRoutes.add(routes.BroHomeRoute);
+        break;
+      }
+      if (settings.doneRoutes.length == 0) {
+        break;
+      }
+    }
+  } else {
+    settings.doneRoutes = [];
+    Navigator.pushReplacement(context,
+        MaterialPageRoute(builder: (context) => BroCastHome(key: UniqueKey())));
+  }
+}
+
+navigateToChat(BuildContext context, Broup chat) {
+  Settings settings = Settings();
+  MessagingChangeNotifier().setBroupId(chat.broupId);
+  if (settings.doneRoutes.contains(routes.ChatRoute)) {
+    // We want to pop until we reach the BroHomeRoute
+    // We remove one, because it's this page.
+    settings.doneRoutes.removeLast();
+    for (int i = 0; i < 200; i++) {
+      String route = settings.doneRoutes.removeLast();
+      Navigator.pop(context, chat);
+      if (route == routes.ChatRoute) {
+        settings.doneRoutes.add(routes.ChatRoute);
+        break;
+      }
+      if (settings.doneRoutes.length == 0) {
+        break;
+      }
+    }
+  } else {
+    settings.doneRoutes = [];
+    Navigator.pushReplacement(context,
+        MaterialPageRoute(builder: (context) => BroCastHome(key: UniqueKey())));
+  }
 }

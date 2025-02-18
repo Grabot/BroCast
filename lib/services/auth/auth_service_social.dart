@@ -303,4 +303,48 @@ class AuthServiceSocial {
       return json["result"];
     }
   }
+
+  Future<bool> makeBroAdmin(int broupId, int broId) async {
+    String endPoint = "broup/make_admin";
+    print("making bro admin $broId");
+    var response = await AuthApi().dio.post(endPoint,
+        options: Options(headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+        }),
+        data: jsonEncode(<String, dynamic>{
+          "broup_id": broupId,
+          "bro_id": broId
+        }
+      )
+    );
+
+    Map<String, dynamic> json = response.data;
+    if (!json.containsKey("result")) {
+      return false;
+    } else {
+      return json["result"];
+    }
+  }
+
+  Future<bool> dismissBroAdmin(int broupId, int broId) async {
+    String endPoint = "broup/dismiss_admin";
+    print("Dismissing bro admin $broId");
+    var response = await AuthApi().dio.post(endPoint,
+        options: Options(headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+        }),
+        data: jsonEncode(<String, dynamic>{
+          "broup_id": broupId,
+          "bro_id": broId
+        }
+      )
+    );
+
+    Map<String, dynamic> json = response.data;
+    if (!json.containsKey("result")) {
+      return false;
+    } else {
+      return json["result"];
+    }
+  }
 }

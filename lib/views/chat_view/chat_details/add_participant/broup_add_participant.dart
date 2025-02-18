@@ -507,7 +507,6 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> {
       }
     }
     if (newBroId != -1) {
-      List<int> currentBroIds = chat.getBroIds();
       AuthServiceSocial().addBroToBroup(chat.broupId, newBroId).then((value) {
         print("adding to broup: $value");
         if (value) {
@@ -523,14 +522,17 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> {
                 print("broupbros $broId");
                 if (broId == newBroId) {
                   broFound = true;
-                  currentBroIds.add(newBroId);
                   print("adding bro to chat");
-                  chat.setBroIds(currentBroIds);
+                  chat.addBroId(newBroId);
+                  // We want to again retrieve the bros
+                  // Because we have a new one
                   chat.retrievedBros = false;
                   for (Bro newBro in broup.broupBros) {
                     if (newBro.id == newBroId) {
                       print("found an object");
                       chat.broupBros.add(newBro);
+                      // We have already retrieved the bro so put the bool back.
+                      chat.retrievedBros = true;
                       break;
                     }
                   }

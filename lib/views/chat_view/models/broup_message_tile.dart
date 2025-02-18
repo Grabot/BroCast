@@ -15,8 +15,10 @@ class BroupMessageTile extends StatefulWidget {
   final String senderName;
   final int senderId;
   final bool broAdded;
+  final bool broAdmin;
   final bool myMessage;
-  final void Function(int) addNewBro;
+  final bool userAdmin;
+  final void Function(int, int) broHandling;
 
   BroupMessageTile(
       {required Key key,
@@ -24,8 +26,10 @@ class BroupMessageTile extends StatefulWidget {
         required this.senderName,
         required this.senderId,
         required this.broAdded,
+        required this.broAdmin,
         required this.myMessage,
-        required this.addNewBro})
+        required this.userAdmin,
+        required this.broHandling})
       : super(key: key);
 
   @override
@@ -251,6 +255,8 @@ class _BroupMessageTileState extends State<BroupMessageTile> {
                 myMessage: widget.myMessage,
                 sender: widget.senderName,
                 broAdded: widget.broAdded,
+                broAdmin: widget.broAdmin,
+                userAdmin: widget.userAdmin,
                 imageShowing: imageShowing
             )
           ],
@@ -258,25 +264,17 @@ class _BroupMessageTileState extends State<BroupMessageTile> {
               Offset.zero & overlay.size))
           .then((int? delta) {
         if (delta == 1) {
-          // TODO: how is this used?
-          // bool broTransition = false;
-          // BroList broList = BroList();
-          // for (Chat br0 in broList.getBros()) {
-          //   if (!br0.isBroup()) {
-          //     if (br0.id == widget.senderId) {
-          //       broTransition = true;
-          //       _navigationService.navigateTo(routes.BroRoute, arguments: br0);
-          //     }
-          //   }
-          // }
-          // if (!broTransition) {
-          //   _navigationService.navigateTo(routes.HomeRoute);
-          // }
+          print("messaging bro from the chat thingy");
+          widget.broHandling(delta!, widget.senderId);
         } else if (delta == 2) {
-          widget.addNewBro(widget.senderId);
+          widget.broHandling(delta!, widget.senderId);
         } else if (delta == 3) {
           // Save the image!
           saveImageToGallery();
+        } else if (delta == 4) {
+          widget.broHandling(delta!, widget.senderId);
+        } else if (delta == 5) {
+          widget.broHandling(delta!, widget.senderId);
         }
         return;
       });
@@ -313,6 +311,8 @@ class MessageDetailPopup extends PopupMenuEntry<int> {
   final String sender;
   final bool myMessage;
   final bool broAdded;
+  final bool broAdmin;
+  final bool userAdmin;
   final bool imageShowing;
 
   MessageDetailPopup(
@@ -321,6 +321,8 @@ class MessageDetailPopup extends PopupMenuEntry<int> {
         required this.myMessage,
         required this.sender,
         required this.broAdded,
+        required this.broAdmin,
+        required this.userAdmin,
         required this.imageShowing
       })
       : super(key: key);
@@ -338,7 +340,7 @@ class MessageDetailPopup extends PopupMenuEntry<int> {
 class MessageDetailPopupState extends State<MessageDetailPopup> {
   @override
   Widget build(BuildContext context) {
-    return getPopupItems(context, widget.sender, widget.broAdded, widget.imageShowing, widget.myMessage);
+    return getPopupItems(context, widget.sender, widget.broAdded, widget.broAdmin, widget.imageShowing, widget.myMessage, widget.userAdmin);
   }
 }
 
@@ -354,7 +356,15 @@ void buttonSaveImage(BuildContext context) {
   Navigator.pop<int>(context, 3);
 }
 
-Widget getPopupItems(BuildContext context, String sender, bool broAdded, bool imageShowing, bool myMessage) {
+void buttonAddToAdmin(BuildContext context) {
+  Navigator.pop<int>(context, 4);
+}
+
+void buttonRemoveToAdmin(BuildContext context) {
+  Navigator.pop<int>(context, 5);
+}
+
+Widget getPopupItems(BuildContext context, String sender, bool broAdded, bool broIsAdmin, bool imageShowing, bool myMessage, bool userAdmin) {
   return Column(children: [
     broAdded && !myMessage
         ? Container(
@@ -383,6 +393,30 @@ Widget getPopupItems(BuildContext context, String sender, bool broAdded, bool im
             style: TextStyle(color: Colors.black, fontSize: 14),
           )),
     ) : Container(),
+    userAdmin && !broIsAdmin ? Container(
+      alignment: Alignment.centerLeft,
+      child: TextButton(
+          onPressed: () {
+            buttonAddToAdmin(context);
+          },
+          child: Text(
+            'Make $sender admin',
+            textAlign: TextAlign.left,
+            style: TextStyle(color: Colors.black, fontSize: 14),
+          )),
+    ) : Container(),
+    broIsAdmin ? Container(
+      alignment: Alignment.centerLeft,
+      child: TextButton(
+          onPressed: () {
+            buttonRemoveToAdmin(context);
+          },
+          child: Text(
+            'Dismiss $sender from admins',
+            textAlign: TextAlign.left,
+            style: TextStyle(color: Colors.black, fontSize: 14),
+          )),
+    ) : Container(),
     imageShowing ? Container(
       alignment: Alignment.centerLeft,
       child: TextButton(
@@ -394,6 +428,6 @@ Widget getPopupItems(BuildContext context, String sender, bool broAdded, bool im
             textAlign: TextAlign.left,
             style: TextStyle(color: Colors.black, fontSize: 14),
           )),
-    ) : Container()
+    ) : Container(),
   ]);
 }

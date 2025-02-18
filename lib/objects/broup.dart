@@ -128,7 +128,22 @@ class Broup {
   }
 
   addBroId(int broId) {
-    broIds.add(broId);
+    // If the bro was added by me it is already in the list.
+    if (!broIds.contains(broId)) {
+      broIds.add(broId);
+    }
+  }
+
+  addAdminId(int adminId) {
+    if (!adminIds.contains(adminId)) {
+      adminIds.add(adminId);
+    }
+  }
+
+  removeAdminId(int adminId) {
+    if (adminIds.contains(adminId)) {
+      adminIds.remove(adminId);
+    }
   }
 
   List<int> getAdminIds() {
@@ -173,6 +188,7 @@ class Broup {
     mute = json.containsKey("mute") ? json["mute"] : false;
     left = json.containsKey("left") ? json["left"] : false;
     // These are the core chat values. Stored in a coupling table on the server
+    lastMessageId = 0;
     if (json.containsKey("chat")) {
       Map<String, dynamic> chat_details = json["chat"];
       broupDescription = chat_details["broup_description"];
