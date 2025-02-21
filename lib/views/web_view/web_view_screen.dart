@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:brocast/utils/new/utils.dart';
+import 'package:brocast/utils/utils.dart';
 import 'package:brocast/views/sign_in/signin.dart';
 import "package:flutter/material.dart";
 import 'package:flutter/services.dart';

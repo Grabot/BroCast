@@ -1,16 +1,16 @@
 import 'dart:io';
 
 import 'package:brocast/constants/base_url.dart';
-import 'package:brocast/utils/new/utils.dart';
-import 'package:brocast/utils/new/shared.dart';
+import 'package:brocast/utils/utils.dart';
+import 'package:brocast/utils/shared.dart';
 import 'package:brocast/views/bro_home/bro_home.dart';
 import 'package:brocast/views/sign_in/signin.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:jwt_decode/jwt_decode.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../../utils/new/game_start_login.dart';
-import '../../utils/new/secure_storage.dart';
+import '../../utils/game_start_login.dart';
+import '../../utils/secure_storage.dart';
 import 'package:brocast/constants/route_paths.dart' as routes;
 
 class OpeningScreen extends StatefulWidget {

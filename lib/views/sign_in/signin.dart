@@ -1,6 +1,6 @@
 import 'dart:io';
-import 'package:brocast/utils/new/settings.dart';
-import 'package:brocast/utils/new/storage.dart';
+import 'package:brocast/utils/settings.dart';
+import 'package:brocast/utils/storage.dart';
 import 'package:brocast/views/bro_home/bro_home.dart';
 import 'package:brocast/views/web_view/web_view_screen.dart';
 import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
@@ -16,8 +16,8 @@ import '../../services/auth/auth_service_login.dart';
 import '../../services/auth/models/login_bro_name_request.dart';
 import '../../services/auth/models/login_email_request.dart';
 import '../../services/auth/models/register_request.dart';
-import '../../utils/new/utils.dart';
-import '../../utils/new/secure_storage.dart';
+import '../../utils/utils.dart';
+import '../../utils/secure_storage.dart';
 
 class SignIn extends StatefulWidget {
 

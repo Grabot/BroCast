@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
 import '../../../objects/broup.dart';
-import '../../../utils/new/navigation_service.dart';
-import '../../../utils/new/locator.dart';
-import '../../../utils/new/settings.dart';
-import '../../../utils/new/utils.dart';
+import '../../../utils/navigation_service.dart';
+import '../../../utils/locator.dart';
+import '../../../utils/settings.dart';
+import '../../../utils/utils.dart';
 import 'package:brocast/constants/route_paths.dart' as routes;
 
 import '../../chat_view/chat_messaging.dart';

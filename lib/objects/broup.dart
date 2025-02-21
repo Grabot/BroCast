@@ -7,8 +7,8 @@ import 'package:brocast/views/bro_home/bro_home_change_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '../utils/new/settings.dart';
-import '../utils/new/storage.dart';
+import '../utils/settings.dart';
+import '../utils/storage.dart';
 import '../views/chat_view/message_util.dart';
 import '../views/chat_view/messaging_change_notifier.dart';
 import 'bro.dart';

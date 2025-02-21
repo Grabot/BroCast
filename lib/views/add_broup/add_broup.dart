@@ -1,5 +1,5 @@
-import 'package:brocast/utils/new/settings.dart';
-import 'package:brocast/utils/new/utils.dart';
+import 'package:brocast/utils/settings.dart';
+import 'package:brocast/utils/utils.dart';
 import 'package:brocast/views/bro_home/bro_home.dart';
 import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +8,7 @@ import '../../objects/bro.dart';
 import '../../objects/broup.dart';
 import '../../objects/me.dart';
 import '../../services/auth/auth_service_social.dart';
-import '../../utils/new/storage.dart';
+import '../../utils/storage.dart';
 import '../bro_profile/bro_profile.dart';
 import '../bro_settings/bro_settings.dart';
 import 'package:brocast/constants/route_paths.dart' as routes;

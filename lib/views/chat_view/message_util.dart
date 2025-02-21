@@ -5,7 +5,7 @@ import '../../objects/broup.dart';
 import '../../objects/me.dart';
 import '../../objects/message.dart';
 import '../../services/auth/auth_service_social.dart';
-import '../../utils/new/storage.dart';
+import '../../utils/storage.dart';
 
 
 Future<bool> getBroupUpdate(Broup chat, Storage storage) async {

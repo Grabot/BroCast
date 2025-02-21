@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:brocast/utils/new/socket_services.dart';
+import 'package:brocast/utils/socket_services.dart';
 
 import '../views/bro_home/bro_home_change_notifier.dart';
 import 'bro.dart';

@@ -1,6 +1,6 @@
 // A class to store anything that might be useful at any point in the app.
 import 'package:brocast/objects/me.dart';
-import 'package:brocast/utils/new/shared.dart';
+import 'package:brocast/utils/shared.dart';
 
 class Settings {
   static final Settings _instance = Settings._internal();

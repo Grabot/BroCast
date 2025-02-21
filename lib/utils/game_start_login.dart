@@ -1,6 +1,6 @@
 import 'package:jwt_decode/jwt_decode.dart';
-import '../../services/auth/auth_service_login.dart';
-import '../../services/auth/models/login_response.dart';
+import '../services/auth/auth_service_login.dart';
+import '../services/auth/models/login_response.dart';
 import 'utils.dart';
 import 'secure_storage.dart';
 

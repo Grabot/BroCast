@@ -2,9 +2,9 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 
 import '../../constants/base_url.dart';
-import '../../utils/new/secure_storage.dart';
-import '../../utils/new/utils.dart';
-import '../../utils/new/settings.dart';
+import '../../utils/secure_storage.dart';
+import '../../utils/utils.dart';
+import '../../utils/settings.dart';
 import 'models/login_response.dart';
 
 

@@ -3,7 +3,7 @@ import 'package:brocast/objects/message.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
-import '../../objects/bro.dart';
+import '../objects/bro.dart';
 
 class Storage {
   static const _dbName = "brocast.db";

@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:dio/dio.dart';
-import '../../utils/new/utils.dart';
-import '../../utils/new/settings.dart';
+import '../../utils/utils.dart';
+import '../../utils/settings.dart';
 import 'auth_api.dart';
 import 'models/base_response.dart';
 import 'models/login_bro_name_request.dart';

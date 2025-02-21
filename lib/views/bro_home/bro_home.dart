@@ -1,9 +1,9 @@
 import 'dart:io';
 
 import 'package:brocast/services/auth/auth_service_social.dart';
-import 'package:brocast/utils/new/settings.dart';
-import 'package:brocast/utils/new/socket_services.dart';
-import 'package:brocast/utils/new/utils.dart';
+import 'package:brocast/utils/settings.dart';
+import 'package:brocast/utils/socket_services.dart';
+import 'package:brocast/utils/utils.dart';
 import 'package:brocast/views/add_broup/add_broup.dart';
 import 'package:brocast/views/find_bros/find_bros.dart';
 import 'package:brocast/views/sign_in/signin.dart';
@@ -15,8 +15,8 @@ import 'package:flutter/services.dart';
 import '../../objects/bro.dart';
 import '../../objects/broup.dart';
 import '../../objects/me.dart';
-import '../../utils/new/secure_storage.dart';
-import '../../utils/new/storage.dart';
+import '../../utils/secure_storage.dart';
+import '../../utils/storage.dart';
 import '../bro_profile/bro_profile.dart';
 import '../bro_settings/bro_settings.dart';
 import '../chat_view/messaging_change_notifier.dart';

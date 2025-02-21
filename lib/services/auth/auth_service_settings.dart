@@ -1,14 +1,14 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:brocast/utils/new/utils.dart';
+import 'package:brocast/utils/utils.dart';
 import 'package:dio/dio.dart';
 
 import '../../objects/bro.dart';
 import '../../objects/broup.dart';
 import '../../objects/me.dart';
-import '../../utils/new/settings.dart';
-import '../../utils/new/storage.dart';
+import '../../utils/settings.dart';
+import '../../utils/storage.dart';
 import 'auth_api.dart';
 
 class AuthServiceSettings {

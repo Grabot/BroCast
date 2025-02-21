@@ -1,8 +1,8 @@
-import 'package:brocast/utils/new/settings.dart';
-import 'package:brocast/utils/new/shared.dart';
-import 'package:brocast/utils/new/socket_services.dart';
-import 'package:brocast/utils/new/storage.dart';
-import 'package:brocast/utils/new/utils.dart';
+import 'package:brocast/utils/settings.dart';
+import 'package:brocast/utils/shared.dart';
+import 'package:brocast/utils/socket_services.dart';
+import 'package:brocast/utils/storage.dart';
+import 'package:brocast/utils/utils.dart';
 import "package:flutter/material.dart";
 
 class BroSettings extends StatefulWidget {

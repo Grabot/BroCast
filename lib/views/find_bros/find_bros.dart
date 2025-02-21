@@ -1,5 +1,5 @@
-import 'package:brocast/utils/new/settings.dart';
-import 'package:brocast/utils/new/utils.dart';
+import 'package:brocast/utils/settings.dart';
+import 'package:brocast/utils/utils.dart';
 import 'package:brocast/views/bro_home/bro_home.dart';
 import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
 import 'package:flutter/material.dart';

@@ -7,7 +7,7 @@ import 'package:linkable/linkable.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../../../../objects/message.dart';
-import '../../../../utils/new/utils.dart';
+import '../../../utils/utils.dart';
 
 
 class BroupMessageTile extends StatefulWidget {

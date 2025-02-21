@@ -1,15 +1,15 @@
 import 'package:brocast/constants/base_url.dart';
 import 'package:brocast/services/auth/auth_service_social.dart';
-import 'package:brocast/utils/new/socket_services_util.dart';
+import 'package:brocast/utils/socket_services_util.dart';
 import 'package:brocast/views/bro_home/bro_home_change_notifier.dart';
 import 'package:brocast/views/chat_view/messaging_change_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:socket_io_client/socket_io_client.dart' as io;
 
-import '../../objects/bro.dart';
-import '../../objects/message.dart';
-import '../../objects/broup.dart';
-import '../../objects/me.dart';
+import '../objects/bro.dart';
+import '../objects/message.dart';
+import '../objects/broup.dart';
+import '../objects/me.dart';
 import 'storage.dart';
 import 'settings.dart';
 

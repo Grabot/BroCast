@@ -1,9 +1,9 @@
-import 'package:brocast/utils/new/storage.dart';
+import 'package:brocast/utils/storage.dart';
 
-import '../../objects/bro.dart';
-import '../../objects/broup.dart';
-import '../../objects/me.dart';
-import '../../services/auth/auth_service_social.dart';
+import '../objects/bro.dart';
+import '../objects/broup.dart';
+import '../objects/me.dart';
+import '../services/auth/auth_service_social.dart';
 
 broUpdatedBromotion(Me me, int broId, String newBromotion) async {
   for (Broup broup in me.broups) {
