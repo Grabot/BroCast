@@ -198,7 +198,7 @@ void buttonMessage(BuildContext context, Bro bro, bool alertDialog) {
         for (int broId in broup.broIds) {
           if (broId != me.getId()) {
             if (broId == bro.id) {
-              navigateToChat(context, broup);
+              navigateToChat(context, settings, broup);
               return;
             }
           }
@@ -239,15 +239,13 @@ void buttonDismissAdmin(BuildContext context, Bro bro, int broupId,
   broHandling(3, bro.id);
 }
 
-void buttonRemove(BuildContext context, Bro bro, int broupId, bool alertDialog) {
+void buttonRemove(BuildContext context, Bro bro, int broupId, bool alertDialog, broHandling) {
   if (alertDialog) {
     Navigator.of(context).pop();
   } else {
     Navigator.pop<int>(context, 3);
   }
-  // SocketServices socketServices = SocketServices();
-  // socketServices.socket.emit("message_event_change_broup_remove_bro",
-  //     {"token": token, "broup_id": broupId, "bro_id": bro.id});
+  broHandling(4, bro.id);
 }
 
 Widget getPopupItemsAdmin(BuildContext context, Bro bro,
@@ -328,7 +326,7 @@ Widget getPopupItemsAdmin(BuildContext context, Bro bro,
           width: double.infinity,
           child: TextButton(
               onPressed: () {
-                buttonRemove(context, bro, broupId, alertDialog);
+                buttonRemove(context, bro, broupId, alertDialog, broHandling);
               },
               child: Text(
                 'Remove ${bro.getFullName()}',

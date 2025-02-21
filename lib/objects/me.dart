@@ -16,7 +16,7 @@ class Me extends Bro {
   late List<Broup> broups;
 
   Me(this.id, this.broName, this.bromotion, this.origin, this.avatar, this.broups)
-      : super(id, broName, bromotion, false, null, false);
+      : super(id, broName, bromotion, false, null);
 
   getId() {
     return id;
@@ -52,7 +52,7 @@ class Me extends Bro {
   }
 
   Me.fromJson(Map<String, dynamic> json)
-      : super(json["id"], json["bro_name"], json["bromotion"], false, null, false) {
+      : super(json["id"], json["bro_name"], json["bromotion"], false, null) {
     id = json["id"];
     broName = json["bro_name"];
     bromotion = json["bromotion"];

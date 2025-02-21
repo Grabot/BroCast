@@ -9,4 +9,4 @@ const String SignInRoute = 'SignIn';
 const String ProfileRoute = 'Profile';
 const String SettingsRoute = 'Settings';
 const String FindBroRoute = 'FindBro';
-const String AddBroRoute = 'AddBro';
+const String AddBroupRoute = 'AddBroup';

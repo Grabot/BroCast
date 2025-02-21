@@ -3,13 +3,7 @@ import 'package:brocast/utils/new/shared.dart';
 import 'package:brocast/utils/new/socket_services.dart';
 import 'package:brocast/utils/new/storage.dart';
 import 'package:brocast/utils/new/utils.dart';
-import 'package:brocast/views/bro_home/bro_home.dart';
 import "package:flutter/material.dart";
-import 'package:flutter/scheduler.dart';
-import '../bro_profile/bro_profile.dart';
-import 'package:brocast/constants/route_paths.dart' as routes;
-
-import '../chat_view/messaging_change_notifier.dart';
 
 class BroSettings extends StatefulWidget {
   BroSettings({required Key key}) : super(key: key);
@@ -52,24 +46,7 @@ class _BroSettingsState extends State<BroSettings> {
   }
 
   backButtonFunctionality() {
-    print("back settings");
-    if (settings.doneRoutes.contains(routes.BroHomeRoute)) {
-      settings.doneRoutes.removeLast();
-      for (int i = 0; i < 200; i++) {
-        String route = settings.doneRoutes.removeLast();
-        Navigator.pop(context);
-        if (route == routes.BroHomeRoute) {
-          break;
-        }
-        if (settings.doneRoutes.length == 0) {
-          break;
-        }
-      }
-    } else {
-      settings.doneRoutes = [];
-      Navigator.pushReplacement(context,
-          MaterialPageRoute(builder: (context) => BroCastHome(key: UniqueKey())));
-    }
+    navigateToHome(context, settings);
   }
 
   PreferredSize appBarSettings(BuildContext context) {
@@ -103,51 +80,10 @@ class _BroSettingsState extends State<BroSettings> {
   void onSelect(BuildContext context, int item) {
     switch (item) {
       case 0:
-        // Navigate to profile. It's possible he's been there before.
-        if (settings.doneRoutes.contains(routes.ProfileRoute)) {
-          // We want to pop until we reach the BroHomeRoute
-          // We remove one, because it's this page.
-          settings.doneRoutes.removeLast();
-          for (int i = 0; i < 200; i++) {
-            String route = settings.doneRoutes.removeLast();
-            Navigator.pop(context);
-            if (route == routes.ProfileRoute) {
-              break;
-            }
-            if (settings.doneRoutes.length == 0) {
-              break;
-            }
-          }
-        } else {
-          // Probably he's not been there before, so we just push it.
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => BroProfile(key: UniqueKey())));
-        }
+        navigateToProfile(context, settings);
         break;
       case 1:
-        // Navigate to Home
-        if (settings.doneRoutes.contains(routes.BroHomeRoute)) {
-          // We want to pop until we reach the BroHomeRoute
-          // We remove one, because it's this page.
-          settings.doneRoutes.removeLast();
-          for (int i = 0; i < 200; i++) {
-            String route = settings.doneRoutes.removeLast();
-            Navigator.pop(context);
-            if (route == routes.BroHomeRoute) {
-              break;
-            }
-            if (settings.doneRoutes.length == 0) {
-              break;
-            }
-          }
-        } else {
-          // TODO: How to test this?
-          settings.doneRoutes = [];
-          Navigator.pushReplacement(context,
-              MaterialPageRoute(builder: (context) => BroCastHome(key: UniqueKey())));
-        }
+        navigateToHome(context, settings);
         break;
     }
   }

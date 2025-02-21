@@ -118,9 +118,48 @@ class _ChatDetailsState extends State<ChatDetails> {
     }
   }
 
-  socketListener() {
+  participantChange() {
     checkAdmin();
+    amountInGroup = chat.getBroupBros().length;
     setState(() {});
+  }
+
+  socketListener() {
+    if (chat.getBroupBros().length < chat.broIds.length) {
+      // There is probably a new bro in the broup.
+      // It would have retrieved the bros in the previous screen, so there was
+      // a new bro id added via sockets.
+      // We will find which id and retrieve it.
+      // First we will check if it's in the DB
+      List<int> broIdsToRetrieve = [...chat.getBroIds()];
+      for (Bro bro in chat.getBroupBros()) {
+        broIdsToRetrieve.remove(bro.id);
+      }
+      print("ids missing from broup: $broIdsToRetrieve");
+      storage.fetchBros(broIdsToRetrieve).then((value) {
+        if (value.isNotEmpty) {
+          for (Bro bro in value) {
+            chat.addBro(bro);
+            broIdsToRetrieve.remove(bro.id);
+          }
+        }
+        print("ids missing from broup after db check: $broIdsToRetrieve");
+        if (broIdsToRetrieve.isEmpty) {
+          participantChange();
+        }
+        AuthServiceSocial().retrieveBros(broIdsToRetrieve).then((value) {
+          if (value.isNotEmpty) {
+            for (Bro bro in value) {
+              chat.addBro(bro);
+              storage.addBro(bro);
+            }
+          }
+          participantChange();
+        });
+      });
+    } else {
+      participantChange();
+    }
   }
 
   broHandling(int delta, int broId) {
@@ -151,6 +190,17 @@ class _ChatDetailsState extends State<ChatDetails> {
           setState(() {
             chat.removeAdminId(broId);
             checkAdmin();
+          });
+        }
+      });
+    } else if (delta == 4) {
+      print('Remove bro from chat.');
+      AuthServiceSocial().removeBroToBroup(chat.broupId, broId).then((value) {
+        if (value) {
+          setState(() {
+            chat.removeBro(broId);
+            amountInGroup = chat.getBroupBros().length;
+            print("bro has been removed :'(");
           });
         }
       });
@@ -257,18 +307,10 @@ class _ChatDetailsState extends State<ChatDetails> {
   onSelectChat(BuildContext context, int item) {
     switch (item) {
       case 0:
-        settings.doneRoutes.add(routes.ProfileRoute);
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => BroProfile(key: UniqueKey())));
+        navigateToProfile(context, settings);
         break;
       case 1:
-        settings.doneRoutes.add(routes.SettingsRoute);
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => BroSettings(key: UniqueKey())));
+        navigateToSettings(context, settings);
         break;
       case 2:
         navigateToChat();
@@ -471,8 +513,7 @@ class _ChatDetailsState extends State<ChatDetails> {
                   // Check if we added a new participant.
                   getBros(chat, Storage(), settings.getMe()!).then((value) {
                     setState(() {
-                      checkAdmin();
-                      amountInGroup = chat.getBroupBros().length;
+                      socketListener();
                     });
                   });
     });
@@ -501,7 +542,7 @@ class _ChatDetailsState extends State<ChatDetails> {
             padding: EdgeInsets.symmetric(horizontal: 24),
             alignment: Alignment.center,
             child: Text(
-              "${chat.broupName}",
+              "${chat.getBroupName()}",
               style: TextStyle(
                   color: Colors.white, fontSize: 16),
             ))
@@ -511,7 +552,7 @@ class _ChatDetailsState extends State<ChatDetails> {
           padding: EdgeInsets.symmetric(horizontal: 24),
           alignment: Alignment.center,
           child: Text(
-            "${chat.broupName}",
+            "${chat.getBroupName()}",
             style: TextStyle(color: Colors.white, fontSize: 25),
           ));
     }
@@ -793,7 +834,7 @@ class _ChatDetailsState extends State<ChatDetails> {
               Colors.red),
         ),
         onPressed: () {
-          showDialogExitBroup(context, chat.broupName);
+          showDialogExitBroup(context, chat.getBroupName());
         },
         child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -849,6 +890,14 @@ class _ChatDetailsState extends State<ChatDetails> {
             ]));
   }
 
+  Widget shownDetails() {
+    if (chat.isRemoved()) {
+      return broHasLeft();
+    } else {
+      return chatDetailWidget();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return PopScope(
@@ -868,9 +917,7 @@ class _ChatDetailsState extends State<ChatDetails> {
                     broCastLogo(),
                     broupNameHeader(),
                     SizedBox(height: 20),
-                    chat.hasLeft()
-                        ? broHasLeft()
-                        : chatDetailWidget(),
+                    shownDetails(),
                     reportBroupWidget(),
                     SizedBox(height: 20),
                   ]),
@@ -882,11 +929,17 @@ class _ChatDetailsState extends State<ChatDetails> {
   }
 
   void exitBroup() {
-    // socketServices.socket.emit("message_event_change_broup_remove_bro", {
-    //   "token": settings.getToken(),
-    //   "broup_id": chat.id,
-    //   "bro_id": settings.getBroId()
-    // });
+    print("going to leave the broup");
+    AuthServiceSocial().leaveBroup(chat.broupId).then((value) {
+      if (value) {
+        setState(() {
+          chat.removeBro(settings.getMe()!.getId());
+          chat.removed = true;
+          amountInGroup = chat.getBroupBros().length;
+          navigateToHome(context, settings);
+        });
+      }
+    });
     Navigator.of(context).pop();
   }
 

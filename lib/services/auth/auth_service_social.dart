@@ -65,6 +65,7 @@ class AuthServiceSocial {
       )
     );
 
+    Storage storage = Storage();
     Map<String, dynamic> json = response.data;
     if (!json.containsKey("result")) {
       return false;
@@ -72,14 +73,15 @@ class AuthServiceSocial {
       if (json.containsKey("broup") && json.containsKey("bro")) {
         Me? me = Settings().getMe();
         if (me != null) {
-          if (me.broups.indexWhere((element) => element.getBroupId() == json["broup"]["broup_id"]) == -1) {
-            Broup newBroup = Broup.fromJson(json["broup"]);
-            Storage().addBroup(newBroup);
-            me.addBroup(newBroup);
-          }
           Bro newBro = Bro.fromJson(json["bro"]);
           newBro.added = true;
-          Storage().addBro(newBro);
+          storage.addBro(newBro);
+          if (me.broups.indexWhere((element) => element.getBroupId() == json["broup"]["broup_id"]) == -1) {
+            Broup newBroup = Broup.fromJson(json["broup"]);
+            storage.addBroup(newBroup);
+            newBroup.addBro(newBro);
+            me.addBroup(newBroup);
+          }
         }
       }
       return json["result"];
@@ -219,7 +221,63 @@ class AuthServiceSocial {
     }
   }
 
-  Future<List<Bro>> getBrosServer(List<int> broIds) async {
+  Future<Broup?> retrieveBroup(int broupId) async {
+    String endPoint = "broup/get/single";
+    var response = await AuthApi().dio.post(endPoint,
+        options: Options(headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+        }),
+        data: jsonEncode(<String, dynamic> {
+          "broup_id": broupId
+        }
+      )
+    );
+
+    Map<String, dynamic> json = response.data;
+    if (!json.containsKey("result")) {
+      return null;
+    } else {
+      if (json["result"]) {
+        if (json.containsKey("broup")) {
+          return Broup.fromJson(json["broup"]);
+        } else {
+          return null;
+        }
+      } else {
+        return null;
+      }
+    }
+  }
+
+  Future<Bro?> retrieveBro(int broId) async {
+    String endPoint = "bro/get/single";
+    var response = await AuthApi().dio.post(endPoint,
+        options: Options(headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+        }),
+        data: jsonEncode(<String, dynamic> {
+          "bro_id": broId
+        }
+      )
+    );
+
+    Map<String, dynamic> json = response.data;
+    if (!json.containsKey("result")) {
+      return null;
+    } else {
+      if (json["result"]) {
+        if (json.containsKey("bro")) {
+          return Bro.fromJson(json["bro"]);
+        } else {
+          return null;
+        }
+      } else {
+        return null;
+      }
+    }
+  }
+
+  Future<List<Bro>> retrieveBros(List<int> broIds) async {
     String endPoint = "bro/get";
     var response = await AuthApi().dio.post(endPoint,
         options: Options(headers: {
@@ -336,6 +394,67 @@ class AuthServiceSocial {
         data: jsonEncode(<String, dynamic>{
           "broup_id": broupId,
           "bro_id": broId
+        }
+      )
+    );
+
+    Map<String, dynamic> json = response.data;
+    if (!json.containsKey("result")) {
+      return false;
+    } else {
+      return json["result"];
+    }
+  }
+
+  Future<bool> removeBroToBroup(int broupId, int broId) async {
+    String endPoint = "broup/remove_bro";
+    var response = await AuthApi().dio.post(endPoint,
+        options: Options(headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+        }),
+        data: jsonEncode(<String, dynamic>{
+          "broup_id": broupId,
+          "bro_id": broId
+        }
+      )
+    );
+
+    Map<String, dynamic> json = response.data;
+    if (!json.containsKey("result")) {
+      return false;
+    } else {
+      return json["result"];
+    }
+  }
+
+  Future<bool> leaveBroup(int broupId) async {
+    String endPoint = "broup/leave";
+    var response = await AuthApi().dio.post(endPoint,
+        options: Options(headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+        }),
+        data: jsonEncode(<String, dynamic>{
+          "broup_id": broupId,
+        }
+      )
+    );
+
+    Map<String, dynamic> json = response.data;
+    if (!json.containsKey("result")) {
+      return false;
+    } else {
+      return json["result"];
+    }
+  }
+
+  Future<bool> broupBrosRetrieved(int broupId) async {
+    String endPoint = "broup/bros_retrieved";
+    var response = await AuthApi().dio.post(endPoint,
+        options: Options(headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+        }),
+        data: jsonEncode(<String, dynamic>{
+          "broup_id": broupId,
         }
       )
     );

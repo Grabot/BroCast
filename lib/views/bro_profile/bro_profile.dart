@@ -23,19 +23,22 @@ class BroProfile extends StatefulWidget {
 class _BroProfileState extends State<BroProfile> {
   final passwordFormValidator = GlobalKey<FormState>();
   final bromotionValidator = GlobalKey<FormFieldState>();
+  final bronameValidator = GlobalKey<FormFieldState>();
 
   Settings settings = Settings();
   SocketServices socketServices = SocketServices();
 
   bool showEmojiKeyboard = false;
   bool bromotionEnabled = false;
+  bool broNameEnabled = false;
   bool changePassword = false;
 
-  String broPassword = "";
-
+  FocusNode focusNodeBroname = new FocusNode();
   FocusNode focusNodeBromotion = new FocusNode();
   FocusNode focusNodePassword = new FocusNode();
+
   TextEditingController bromotionChangeController = new TextEditingController();
+  TextEditingController broNameController = new TextEditingController();
   TextEditingController oldPasswordController = new TextEditingController();
   TextEditingController newPasswordController1 = new TextEditingController();
   TextEditingController newPasswordController2 = new TextEditingController();
@@ -69,7 +72,10 @@ class _BroProfileState extends State<BroProfile> {
   void onChangePassword() {
     focusNodePassword.requestFocus();
     setState(() {
+      showEmojiKeyboard = false;
       changePassword = true;
+      broNameEnabled = false;
+      bromotionEnabled = false;
     });
   }
 
@@ -84,12 +90,105 @@ class _BroProfileState extends State<BroProfile> {
         }
         oldPasswordController.text = "";
         newPasswordController1.text = "";
+        newPasswordController2.text = "";
         setState(() {
           changePassword = false;
         });
       }).catchError((error) {
         showToastMessage("an unknown Error has occurred");
       });
+    }
+  }
+
+
+  changeBroname() {
+    String newBroname = broNameController.text;
+    print("changing bro name to $newBroname");
+    AuthServiceSettings().changeBroname(newBroname).then((value) {
+      if (value == "Bro name changed") {
+        showToastMessage("bro name changed successfully");
+        setState(() {
+          settings.getMe()!.setBroName(newBroname);
+        });
+      } else {
+        showToastMessage(value);
+      }
+    });
+    setState(() {
+      bromotionEnabled = false;
+      showEmojiKeyboard = false;
+      broNameEnabled = false;
+    });
+  }
+
+  showDialogChangeBroname(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: new Text("Are you sure!?"),
+            content: RichText(
+              textAlign: TextAlign.center,
+              text: TextSpan(
+                children: [
+                  TextSpan(
+                    text: "You want to change your bro name from\n",
+                    style: TextStyle(color: Colors.black, fontSize: 16),
+                  ),
+                  TextSpan(
+                    text: "${Settings().getMe()!.getBroName()}\n",
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 24
+                    ),
+                  ),
+                  TextSpan(
+                    text: "to",
+                    style: TextStyle(color: Colors.black, fontSize: 16),
+                  ),
+                  TextSpan(
+                    text: "\n${broNameController.text}",
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 24
+                    ),
+                  ),
+                  TextSpan(
+                    text: "\nChanging your bro name might cause confusion for your bros. Make sure they know about your name change!",
+                    style: TextStyle(color: Colors.black, fontSize: 16),
+                  )
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              new TextButton(
+                child: new Text("Cancel"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  setState(() {
+                    bromotionEnabled = false;
+                    showEmojiKeyboard = false;
+                    broNameEnabled = false;
+                  });
+                },
+              ),
+              new TextButton(
+                child: new Text("Change Bro name"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  changeBroname();
+                },
+              ),
+            ],
+          );
+        });
+  }
+
+  onSaveBroname(BuildContext context) {
+    if (bronameValidator.currentState!.validate()) {
+      showDialogChangeBroname(context);
     }
   }
 
@@ -117,6 +216,7 @@ class _BroProfileState extends State<BroProfile> {
       setState(() {
         bromotionEnabled = false;
         showEmojiKeyboard = false;
+        broNameEnabled = false;
       });
     }
   }
@@ -126,6 +226,18 @@ class _BroProfileState extends State<BroProfile> {
     setState(() {
       bromotionEnabled = true;
       showEmojiKeyboard = true;
+      changePassword = false;
+      broNameEnabled = false;
+    });
+  }
+
+  onChangeBroname() {
+    focusNodeBroname.requestFocus();
+    setState(() {
+      showEmojiKeyboard = false;
+      broNameEnabled = true;
+      changePassword = false;
+      bromotionEnabled = false;
     });
   }
 
@@ -142,41 +254,26 @@ class _BroProfileState extends State<BroProfile> {
   @override
   void dispose() {
     bromotionChangeController.removeListener(bromotionListener);
-    socketServices.socket.off('message_event_bromotion_change');
-    socketServices.socket.off('message_event_password_change');
     bromotionChangeController.dispose();
     oldPasswordController.dispose();
     newPasswordController1.dispose();
     newPasswordController2.dispose();
     focusNodeBromotion.dispose();
+    focusNodeBroname.dispose();
     focusNodePassword.dispose();
     super.dispose();
   }
 
+
   void backButtonFunctionality() {
-    print("back profile");
     if (showEmojiKeyboard) {
       setState(() {
+        bromotionEnabled = false;
         showEmojiKeyboard = false;
+        broNameEnabled = false;
       });
     } else {
-      if (settings.doneRoutes.contains(routes.BroHomeRoute)) {
-        settings.doneRoutes.removeLast();
-        for (int i = 0; i < 200; i++) {
-          String route = settings.doneRoutes.removeLast();
-          Navigator.pop(context);
-          if (route == routes.BroHomeRoute) {
-            break;
-          }
-          if (settings.doneRoutes.length == 0) {
-            break;
-          }
-        }
-      } else {
-        settings.doneRoutes = [];
-        Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (context) => BroCastHome(key: UniqueKey())));
-      }
+      navigateToHome(context, settings);
     }
   }
 
@@ -211,17 +308,263 @@ class _BroProfileState extends State<BroProfile> {
   void onSelect(BuildContext context, int item) {
     switch (item) {
       case 0:
-        Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (context) => BroSettings(key: UniqueKey())));
+        navigateToSettings(context, settings);
         break;
       case 1:
-        Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (context) => BroCastHome(key: UniqueKey())));
+        navigateToHome(context, settings);
         break;
+    }
+  }
+
+  Widget showBromotionWithOverflow() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Container(
+            alignment: Alignment.center,
+            child: Text(
+              Settings().getMe()!.bromotion,
+              style: TextStyle(color: Colors.white, fontSize: 35),
+            )
+        ),
+      ],
+    );
+  }
+
+  bool hasTextOverflow(
+      String text,
+      TextStyle style,
+      double textScaleFactor,
+      double minWidth,
+      double maxWidth,
+      int maxLines,
+      ) {
+    final TextPainter textPainter = TextPainter(
+      text: TextSpan(text: text, style: style),
+      maxLines: maxLines,
+      textDirection: TextDirection.ltr,
+    )..layout(minWidth: minWidth, maxWidth: maxWidth);
+    return textPainter.didExceedMaxLines;
+  }
+
+  Widget currentUserDetails() {
+    String nameString = "${settings.getMe()!.broName} ${settings.getMe()!.bromotion}";
+    TextStyle textStyle = TextStyle(color: Colors.white, fontSize: 35);
+    bool broNameOverflow = false;
+    if (hasTextOverflow(nameString, textStyle, 1.0, 60, MediaQuery.of(context).size.width, 2)) {
+      broNameOverflow = true;
+    }
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+                constraints: BoxConstraints(minWidth: 60, maxWidth: MediaQuery.of(context).size.width),
+                alignment: Alignment.center,
+                child: Text(
+                  nameString,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 2,
+                  style: TextStyle(color: Colors.white, fontSize: 35),
+                )
+            ),
+          ],
+        ),
+        broNameOverflow ? showBromotionWithOverflow() : Container(),
+      ]
+    );
+  }
+
+  Widget passwordWidget() {
+    if (changePassword) {
+      return Column(
+        children: [
+          Container(
+              child: Form(
+                key: passwordFormValidator,
+                child: Column(
+                  children: [
+                    TextFormField(
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter some text';
+                        }
+                        return null;
+                      },
+                      obscureText: true,
+                      controller: oldPasswordController,
+                      style: simpleTextStyle(),
+                      textAlign: TextAlign.center,
+                      decoration:
+                      textFieldInputDecoration("Old password"),
+                    ),
+                    TextFormField(
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter some text';
+                        }
+                        if (newPasswordController2.text != value) {
+                          return "Password confirmation doesn't match the password";
+                        }
+                        return null;
+                      },
+                      obscureText: true,
+                      controller: newPasswordController1,
+                      focusNode: focusNodePassword,
+                      style: simpleTextStyle(),
+                      textAlign: TextAlign.center,
+                      decoration:
+                      textFieldInputDecoration("New password"),
+                    ),
+                    TextFormField(
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter some text';
+                        }
+                        if (newPasswordController1.text != value) {
+                          return "Password confirmation doesn't match the password";
+                        }
+                        return null;
+                      },
+                      obscureText: true,
+                      controller: newPasswordController2,
+                      style: simpleTextStyle(),
+                      textAlign: TextAlign.center,
+                      decoration: textFieldInputDecoration(
+                          "Confirm new password"),
+                    )
+                  ],
+                ),
+              )
+          ),
+          TextButton(
+            style: ButtonStyle(
+              foregroundColor:
+              WidgetStateProperty.all<Color>(Colors.red),
+            ),
+            onPressed: () {
+              onSavePassword();
+            },
+            child: Text('Update password'),
+          )
+        ],
+      );
+    } else {
+      return TextButton(
+        style: ButtonStyle(
+          foregroundColor:
+          WidgetStateProperty.all<Color>(Colors.blue),
+        ),
+        onPressed: () {
+          onChangePassword();
+        },
+        child: Text('Change password'),
+      );
+    }
+  }
+
+  Widget bromotionWidget() {
+    if (bromotionEnabled) {
+      return Column(
+        children: [
+          Container(
+              width: 60,
+              alignment: Alignment.center,
+              child: TextFormField(
+                key: bromotionValidator,
+                validator: (value) {
+                  if (value == null ||
+                      value.isEmpty ||
+                      value.trim().isEmpty) {
+                    return '"😢?😄!"';
+                  }
+                  return null;
+                },
+                enabled: bromotionEnabled,
+                focusNode: focusNodeBromotion,
+                onTap: () {
+                  onTapEmojiField();
+                },
+                controller: bromotionChangeController,
+                style: TextStyle(color: Colors.white, fontSize: 40),
+                readOnly: true,
+                showCursor: true,
+              )
+          ),
+          TextButton(
+            style: ButtonStyle(
+              foregroundColor:
+              WidgetStateProperty.all<Color>(Colors.red),
+            ),
+            onPressed: () {
+              onSaveBromotion();
+            },
+            child: Text('Save new bromotion!'),
+          ),
+        ]
+      );
+    } else {
+      return TextButton(
+        style: ButtonStyle(
+          foregroundColor:
+          WidgetStateProperty.all<Color>(Colors.blue),
+        ),
+        onPressed: () {
+          onChangeBromotion();
+        },
+        child: Text('Change bromotion'),
+      );
+    }
+  }
+
+  Widget broNameWidget() {
+    if (broNameEnabled) {
+      return Column(
+        children: [
+          Column(
+            children: [
+              TextFormField(
+                key: bronameValidator,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter some text';
+                  }
+                  return null;
+                },
+                obscureText: true,
+                controller: broNameController,
+                focusNode: focusNodeBroname,
+                style: simpleTextStyle(),
+                textAlign: TextAlign.center,
+                decoration:
+                textFieldInputDecoration("New bro name"),
+              ),
+            ],
+          ),
+          TextButton(
+            style: ButtonStyle(
+              foregroundColor:
+              WidgetStateProperty.all<Color>(Colors.red),
+            ),
+            onPressed: () {
+              onSaveBroname(context);
+            },
+            child: Text('Save new bro name!'),
+          )
+        ]
+      );
+    } else {
+      return TextButton(
+        style: ButtonStyle(
+          foregroundColor:
+          WidgetStateProperty.all<Color>(Colors.blue),
+        ),
+        onPressed: () {
+          onChangeBroname();
+        },
+        child: Text('Change bro name'),
+      );
     }
   }
 
@@ -236,175 +579,56 @@ class _BroProfileState extends State<BroProfile> {
       },
       child: Scaffold(
           appBar: appBarProfile(context),
-          body: Container(
-            child: Column(children: [
-              Expanded(
-                child: SingleChildScrollView(
-                  reverse: true,
-                  child: Column(
-                      children: [
-                        Container(
-                            child: Text("BroCast",
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 30))),
-                    Container(
-                        alignment: Alignment.center,
-                        child:
-                            Image.asset("assets/images/brocast_transparent.png")),
-                    Container(
-                        alignment: Alignment.center,
-                        child: Text(
-                          // "${currentUser.broName}",
-                          "",
-                          style: TextStyle(color: Colors.white, fontSize: 25),
-                        )),
-                    SizedBox(height: 20),
-                    Container(
-                        width: 60,
-                        alignment: Alignment.center,
-                        child: TextFormField(
-                          key: bromotionValidator,
-                          validator: (value) {
-                            if (value == null ||
-                                value.isEmpty ||
-                                value.trim().isEmpty) {
-                              return '"😢?😄!"';
-                            }
-                            return null;
-                          },
-                          enabled: bromotionEnabled,
-                          focusNode: focusNodeBromotion,
-                          onTap: () {
-                            onTapEmojiField();
-                          },
-                          controller: bromotionChangeController,
-                          style: TextStyle(color: Colors.white, fontSize: 40),
-                          readOnly: true,
-                          showCursor: true,
-                        )),
-                    bromotionEnabled
-                        ? TextButton(
-                            style: ButtonStyle(
-                              foregroundColor:
-                                  WidgetStateProperty.all<Color>(Colors.red),
-                            ),
-                            onPressed: () {
-                              onSaveBromotion();
-                            },
-                            child: Text('Save bromotion!'),
+          body: Stack(
+            children: [
+              Container(
+              child: Column(
+                  children: [
+                Expanded(
+                  child: SingleChildScrollView(
+                    reverse: true,
+                    child: Column(
+                        children: [
+                          Container(
+                              child: Text("BroCast",
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 30))),
+                      Container(
+                          alignment: Alignment.center,
+                          child:
+                              Image.asset("assets/images/brocast_transparent.png")),
+                      Container(
+                          alignment: Alignment.center,
+                          child: Text(
+                            "Heey",
+                            style: TextStyle(color: Colors.white, fontSize: 20),
                           )
-                        : TextButton(
-                            style: ButtonStyle(
-                              foregroundColor:
-                                  WidgetStateProperty.all<Color>(Colors.blue),
-                            ),
-                            onPressed: () {
-                              onChangeBromotion();
-                            },
-                            child: Text('Change bromotion'),
-                          ),
-                    changePassword
-                        ? Container(
-                            child: Form(
-                            key: passwordFormValidator,
-                            child: Column(
-                              children: [
-                                TextFormField(
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'Please enter some text';
-                                    }
-                                    return null;
-                                  },
-                                  obscureText: true,
-                                  controller: oldPasswordController,
-                                  style: simpleTextStyle(),
-                                  textAlign: TextAlign.center,
-                                  decoration:
-                                      textFieldInputDecoration("Old password"),
-                                ),
-                                TextFormField(
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'Please enter some text';
-                                    }
-                                    if (newPasswordController2.text != value) {
-                                      return "Password confirmation doesn't match the password";
-                                    }
-                                    if (value == broPassword) {
-                                      return "password is the same as old password";
-                                    }
-                                    return null;
-                                  },
-                                  obscureText: true,
-                                  controller: newPasswordController1,
-                                  focusNode: focusNodePassword,
-                                  style: simpleTextStyle(),
-                                  textAlign: TextAlign.center,
-                                  decoration:
-                                      textFieldInputDecoration("New password"),
-                                ),
-                                TextFormField(
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'Please enter some text';
-                                    }
-                                    if (newPasswordController1.text != value) {
-                                      return "Password confirmation doesn't match the password";
-                                    }
-                                    if (value == broPassword) {
-                                      return "password is the same as old password";
-                                    }
-                                    return null;
-                                  },
-                                  obscureText: true,
-                                  controller: newPasswordController2,
-                                  style: simpleTextStyle(),
-                                  textAlign: TextAlign.center,
-                                  decoration: textFieldInputDecoration(
-                                      "Confirm new password"),
-                                )
-                              ],
-                            ),
-                          ))
-                        : Container(),
-                    changePassword
-                        ? TextButton(
-                            style: ButtonStyle(
-                              foregroundColor:
-                                  WidgetStateProperty.all<Color>(Colors.red),
-                            ),
-                            onPressed: () {
-                              onSavePassword();
-                            },
-                            child: Text('Update password'),
-                          )
-                        : TextButton(
-                            style: ButtonStyle(
-                              foregroundColor:
-                                  WidgetStateProperty.all<Color>(Colors.blue),
-                            ),
-                            onPressed: () {
-                              onChangePassword();
-                            },
-                            child: Text('Change password'),
-                          ),
-                    bromotionEnabled || changePassword
-                        ? SizedBox(height: 30)
-                        : SizedBox(height: 170),
-                    Align(
-                      alignment: Alignment.bottomCenter,
-                      child: EmojiKeyboard(
-                          emojiController: bromotionChangeController,
-                          emojiKeyboardHeight: 300,
-                          showEmojiKeyboard: showEmojiKeyboard,
-                          darkMode: settings.getEmojiKeyboardDarkMode()),
+                      ),
+                          SizedBox(height: 20),
+                      currentUserDetails(),
+                          SizedBox(height: 20),
+                        broNameWidget(),
+                      bromotionWidget(),
+                      passwordWidget(),
+                          showEmojiKeyboard ? SizedBox(height: 400) : SizedBox(height: 100),
+                        ]
                     ),
-                  ]),
+                  ),
                 ),
+              ]
               ),
-            ]),
-          )),
+            ),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: EmojiKeyboard(
+                    emojiController: bromotionChangeController,
+                    emojiKeyboardHeight: 300,
+                    showEmojiKeyboard: showEmojiKeyboard,
+                    darkMode: settings.getEmojiKeyboardDarkMode()),
+              )
+            ]
+          )
+      ),
     );
   }
 }

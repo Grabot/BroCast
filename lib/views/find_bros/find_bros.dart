@@ -42,9 +42,6 @@ class _FindBrosState extends State<FindBros> {
   void initState() {
     super.initState();
     bromotionController.addListener(bromotionListener);
-    SchedulerBinding.instance.addPostFrameCallback((_) {
-      settings.doneRoutes.add(routes.FindBroRoute);
-    });
   }
 
   bromotionListener() {
@@ -74,7 +71,8 @@ class _FindBrosState extends State<FindBros> {
     }
   }
 
-  void addBroup() {
+  addBroup() {
+    settings.doneRoutes.add(routes.AddBroupRoute);
     Navigator.push(context,
         MaterialPageRoute(builder: (context) => AddBroup(key: UniqueKey())));
   }
@@ -132,7 +130,7 @@ class _FindBrosState extends State<FindBros> {
         clickedNewBro = false;
         if (value) {
           // The broup added, move to the home screen where it will be shown
-          navigateToHome();
+          navigateToHome(context, settings);
         } else {
           showToastMessage("Bro contact already in Bro list!");
           setState(() {
@@ -149,7 +147,7 @@ class _FindBrosState extends State<FindBros> {
         showEmojiKeyboard = false;
       });
     } else {
-      navigateToHome();
+      navigateToHome(context, settings);
     }
   }
 
@@ -185,19 +183,13 @@ class _FindBrosState extends State<FindBros> {
   onSelect(BuildContext context, int item) {
     switch (item) {
       case 0:
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => BroProfile(key: UniqueKey())));
+        navigateToProfile(context, settings);
         break;
       case 1:
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => BroSettings(key: UniqueKey())));
+        navigateToSettings(context, settings);
         break;
       case 2:
-        navigateToHome();
+        navigateToHome(context, settings);
         break;
     }
   }
@@ -230,29 +222,6 @@ class _FindBrosState extends State<FindBros> {
             ]),
       ),
     );
-  }
-
-  navigateToHome() {
-    if (settings.doneRoutes.contains(routes.BroHomeRoute)) {
-      // We want to pop until we reach the BroHomeRoute
-      // We remove one, because it's this page.
-      settings.doneRoutes.removeLast();
-      for (int i = 0; i < 200; i++) {
-        String route = settings.doneRoutes.removeLast();
-        Navigator.pop(context);
-        if (route == routes.BroHomeRoute) {
-          break;
-        }
-        if (settings.doneRoutes.length == 0) {
-          break;
-        }
-      }
-    } else {
-      // TODO: How to test this?
-      settings.doneRoutes = [];
-      Navigator.pushReplacement(context,
-          MaterialPageRoute(builder: (context) => BroCastHome(key: UniqueKey())));
-    }
   }
 
   Widget assistantText() {

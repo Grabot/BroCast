@@ -101,10 +101,38 @@ class AuthServiceSettings {
       if (json["result"]) {
         return "Bromotion changed";
       } else {
-        if (!json.containsKey("message")) {
+        if (json.containsKey("message")) {
           return json["message"];
         }
         return "Bromotion not changed";
+      }
+    }
+  }
+
+  Future<String> changeBroname(String broname) async {
+    String endPoint = "change/broname";
+    var response = await AuthApi().dio.post(endPoint,
+        options: Options(headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+        }),
+        data: jsonEncode(<String, dynamic>{
+          "broname": broname,
+        }
+      )
+    );
+
+    Map<String, dynamic> json = response.data;
+    if (!json.containsKey("result")) {
+      return "Something went wrong";
+    } else {
+      if (json["result"]) {
+        // TODO: actually change broname
+        return "Broname changed";
+      } else {
+        if (json.containsKey("message")) {
+          return json["message"];
+        }
+        return "Something went wrong, broname not changed";
       }
     }
   }
@@ -129,7 +157,7 @@ class AuthServiceSettings {
       if (json["result"]) {
         return "Password changed";
       } else {
-        if (!json.containsKey("message")) {
+        if (json.containsKey("message")) {
           return json["message"];
         }
         return "Password not changed";

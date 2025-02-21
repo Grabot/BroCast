@@ -11,6 +11,7 @@ import 'package:flutter/scheduler.dart';
 import '../../../../objects/bro.dart';
 import '../../../../objects/broup.dart';
 import '../../../../objects/me.dart';
+import '../../../../utils/new/storage.dart';
 import '../../../bro_home/bro_home.dart';
 import '../../../bro_profile/bro_profile.dart';
 import '../../../bro_settings/bro_settings.dart';
@@ -66,7 +67,7 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> {
             }
           }
         }
-        print("bro ${myBro.broupName} In broup: $inBroup");
+        print("bro ${myBro.getBroupName()} In broup: $inBroup");
         BroupAddBro broupAddBro =
             new BroupAddBro(false, inBroup, myBro);
         broupAddBros.add(broupAddBro);
@@ -86,6 +87,7 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> {
   @override
   void dispose() {
     socketServices.removeListener(socketListener);
+    bromotionController.removeListener(bromotionListener);
     bromotionController.dispose();
     broNameController.dispose();
     super.dispose();
@@ -139,30 +141,6 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> {
       broupAddBrosShownBros = broupAddBros;
     }
     setState(() {});
-  }
-
-  navigateToHome() {
-    if (settings.doneRoutes.contains(routes.BroHomeRoute)) {
-      // We want to pop until we reach the BroHomeRoute
-      // We remove one, because it's this page.
-      settings.doneRoutes.removeLast();
-      for (int i = 0; i < 200; i++) {
-        String route = settings.doneRoutes.removeLast();
-        Navigator.pop(context);
-        if (route == routes.BroHomeRoute) {
-          settings.doneRoutes.add(routes.BroHomeRoute);
-          break;
-        }
-        if (settings.doneRoutes.length == 0) {
-          break;
-        }
-      }
-    } else {
-      // TODO: How to test this?
-      settings.doneRoutes = [];
-      Navigator.pushReplacement(context,
-          MaterialPageRoute(builder: (context) => BroCastHome(key: UniqueKey())));
-    }
   }
 
   navigateToChat() {
@@ -259,25 +237,16 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> {
   void onSelectBroupAddParticipant(BuildContext context, int item) {
     switch (item) {
       case 0:
-        Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (context) => BroProfile(key: UniqueKey())));
+        navigateToProfile(context, settings);
         break;
       case 1:
-        Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (context) => BroSettings(key: UniqueKey())));
+        navigateToSettings(context, settings);
         break;
       case 2:
         navigateToDetails();
         break;
       case 3:
-        Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (context) => BroCastHome(key: UniqueKey())));
+        navigateToHome(context, settings);
         break;
     }
   }
@@ -338,7 +307,7 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> {
                                       child: Text(
                                           broupAddBrosShownBros[index]
                                               .getBroBros()
-                                              .broupName,
+                                              .getBroupName(),
                                           overflow: TextOverflow.ellipsis,
                                           style: TextStyle(
                                               color: getTextColor(broupAddBrosShownBros[index].getBroBros().getColor()),
@@ -510,42 +479,35 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> {
       AuthServiceSocial().addBroToBroup(chat.broupId, newBroId).then((value) {
         print("adding to broup: $value");
         if (value) {
-          bool broFound = false;
-          Me? me = settings.getMe();
-          if (me != null) {
-            print("me not null");
-            // New data is send via sockets.
-            // But add the bro anyway, because we know who it is.
-            for (Broup broup in me.broups) {
-              print("looping over broups ${broup.broupName}");
-              for (int broId in broup.broIds) {
-                print("broupbros $broId");
-                if (broId == newBroId) {
-                  broFound = true;
-                  print("adding bro to chat");
-                  chat.addBroId(newBroId);
-                  // We want to again retrieve the bros
-                  // Because we have a new one
-                  chat.retrievedBros = false;
-                  for (Bro newBro in broup.broupBros) {
-                    if (newBro.id == newBroId) {
-                      print("found an object");
-                      chat.broupBros.add(newBro);
-                      // We have already retrieved the bro so put the bool back.
-                      chat.retrievedBros = true;
-                      break;
-                    }
+          List<int> broIdsToRetrieve = [...chat.getBroIds()];
+          for (Bro bro in chat.getBroupBros()) {
+            broIdsToRetrieve.remove(bro.id);
+          }
+          for (Broup broup in me!.broups) {
+            if (broup.private) {
+              for (Bro bro in broup.getBroupBros()) {
+                if (bro.id == newBroId) {
+                  chat.addBro(bro);
+                  broIdsToRetrieve.remove(newBroId);
+                  if (broIdsToRetrieve.isEmpty) {
+                    chat.retrievedBros = true;
+                    break;
                   }
-                  break;
                 }
-                if (broFound) {
-                  break;
-                }
-              }
-              if (broFound) {
-                break;
               }
             }
+          }
+          // broIdsToRetrieve should be length 1 with newBroId,
+          // but we check anyway. If there are more still, we retrieve them
+          if (broIdsToRetrieve.isNotEmpty) {
+            AuthServiceSocial().retrieveBros(broIdsToRetrieve).then((value) {
+              if (value.isNotEmpty) {
+                for (Bro bro in value) {
+                  chat.addBro(bro);
+                  Storage().addBro(bro);
+                }
+              }
+            });
           }
           navigateToDetails();
         }

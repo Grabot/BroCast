@@ -14,7 +14,8 @@ class Settings {
   bool emojiKeyboardDarkMode = false;
 
   List<String> doneRoutes = [];
-  bool retrievedData = false;
+  bool retrievedBroData = false;
+  bool retrievedBroupData = false;
 
   Settings._internal() {
     HelperFunction.getDarkKeyboard().then((value) {

@@ -59,10 +59,11 @@ class Storage {
             unreadMessages INTEGER,
             private INTEGER,
             mute INTEGER,
-            left INTEGER,
-            blocked INTEGER,
+            deleted INTEGER,
+            removed INTEGER,
             lastMessageId INTEGER,
             updateBroup INTEGER,
+            brosUpdate TEXT,
             newMessages INTEGER,
             avatar BLOB,
             messages TEXT,
@@ -97,7 +98,6 @@ class Storage {
             broName TEXT,
             bromotion TEXT,
             added INTEGER,
-            updateBro INTEGER,
             avatar BLOB,
             UNIQUE(broId) ON CONFLICT REPLACE
           );
@@ -227,9 +227,11 @@ class Storage {
 
   clearDatabase() async {
     Database database = await this.database;
+    await database.execute("DROP TABLE IF EXISTS Bro");
     await database.execute("DROP TABLE IF EXISTS Broup");
     await database.execute("DROP TABLE IF EXISTS Message");
     await createTableBroup(database);
+    await createTableBro(database);
     await createTableMessage(database);
   }
 

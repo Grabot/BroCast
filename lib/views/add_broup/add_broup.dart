@@ -71,13 +71,12 @@ class _AddBroupState extends State<AddBroup> {
     }
 
     for (Bro bro in currentBros) {
-      if (!bro.updateBro) {
-        broIdsToRetrieve.remove(bro.id);
-      }
+      broIdsToRetrieve.remove(bro.id);
     }
 
+    // TODO: Check if bro is retrieved from storage to then not retrieve from server?
     storage.fetchAllBros().then((brosDB) {
-      AuthServiceSocial().getBrosServer(broIdsToRetrieve).then((value) {
+      AuthServiceSocial().retrieveBros(broIdsToRetrieve).then((value) {
         print("got bros from the server ${value}");
         if (value.isNotEmpty) {
           bool foundInDB = false;
@@ -101,7 +100,6 @@ class _AddBroupState extends State<AddBroup> {
     });
 
     SchedulerBinding.instance.addPostFrameCallback((_) {
-      settings.doneRoutes.add(routes.AddBroRoute);
       setState(() {
         shownParticipants = participants;
       });
@@ -165,49 +163,20 @@ class _AddBroupState extends State<AddBroup> {
         showEmojiKeyboard = false;
       });
     } else {
-      navigateToHome();
-    }
-  }
-
-  navigateToHome() {
-    if (settings.doneRoutes.contains(routes.BroHomeRoute)) {
-      // We want to pop until we reach the BroHomeRoute
-      // We remove one, because it's this page.
-      settings.doneRoutes.removeLast();
-      for (int i = 0; i < 200; i++) {
-        String route = settings.doneRoutes.removeLast();
-        Navigator.pop(context);
-        if (route == routes.BroHomeRoute) {
-          break;
-        }
-        if (settings.doneRoutes.length == 0) {
-          break;
-        }
-      }
-    } else {
-      // TODO: How to test this?
-      settings.doneRoutes = [];
-      Navigator.pushReplacement(context,
-          MaterialPageRoute(builder: (context) => BroCastHome(key: UniqueKey())));
+      navigateToHome(context, settings);
     }
   }
 
   void onSelect(BuildContext context, int item) {
     switch (item) {
       case 0:
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => BroProfile(key: UniqueKey())));
+        navigateToProfile(context, settings);
         break;
       case 1:
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => BroSettings(key: UniqueKey())));
+        navigateToSettings(context, settings);
         break;
       case 2:
-        navigateToHome();
+        navigateToHome(context, settings);
         break;
     }
   }
@@ -452,7 +421,7 @@ class _AddBroupState extends State<AddBroup> {
         AuthServiceSocial().addNewBroup(participantIds.toList(), broupName).then((value) {
           pressedAddBroup = false;
           if (value) {
-            navigateToHome();
+            navigateToHome(context, settings);
           } else {
             showToastMessage("something went wrong, please try again");
           }

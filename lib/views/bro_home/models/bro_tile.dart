@@ -39,6 +39,7 @@ class _BroTileState extends State<BroTile> {
       ),
       // ModalRoute.withName(routes.ChatRoute)
     ).then((value) {
+      widget.chat.unreadMessages = 0;
       widget.callback();
     });
   }
@@ -69,15 +70,7 @@ class _BroTileState extends State<BroTile> {
             selectBro(context);
           },
           child: Container(
-              color: widget.chat.unreadMessages < 4
-                  ? widget.chat.unreadMessages < 3
-                  ? widget.chat.unreadMessages < 2
-                  ? widget.chat.unreadMessages < 1
-                  ? widget.chat.getColor().withOpacity(0.6)
-                  : widget.chat.getColor().withOpacity(0.7)
-                  : widget.chat.getColor().withOpacity(0.8)
-                  : widget.chat.getColor().withOpacity(0.9)
-                  : widget.chat.getColor().withOpacity(1),
+              color: getColorStrength(),
               padding: EdgeInsets.only(top: 16, bottom: 16, right: 24, left: 4),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -85,20 +78,16 @@ class _BroTileState extends State<BroTile> {
                   Row(
                     children: [
                       widget.chat.isMuted() ||
-                          widget.chat.isBlocked() ||
-                          widget.chat.hasLeft()
+                          widget.chat.isRemoved()
                           ? Container(
                           width: 35,
                           child: Column(children: [
-                            widget.chat.isBlocked() || widget.chat.hasLeft()
+                            widget.chat.isRemoved()
                                 ? Icon(
-                                widget.chat.hasLeft()
-                                    ? Icons.person_remove
-                                    : Icons
-                                    .block, // Block or left can't both be true
+                                Icons.person_remove, // Block or left can't both be true
                                 color:
                                 getTextColor(widget.chat.getColor())
-                                    .withOpacity(0.6))
+                                    .withAlpha(160))
                                 : Container(
                               height: 20,
                             ),
@@ -106,7 +95,7 @@ class _BroTileState extends State<BroTile> {
                                 ? Icon(Icons.volume_off,
                                 color:
                                 getTextColor(widget.chat.getColor())
-                                    .withOpacity(0.6))
+                                    .withAlpha(160))
                                 : Container(
                               height: 20,
                             ),

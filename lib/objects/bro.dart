@@ -6,11 +6,10 @@ class Bro {
   late String broName;
   late String bromotion;
   Uint8List? avatar;
-  bool updateBro = false;
   bool added = false;  // If the bro has a private chat with the user
   // TODO: Bro alias in private chat?
 
-  Bro(this.id, this.broName, this.bromotion, this.added, this.avatar, this.updateBro);
+  Bro(this.id, this.broName, this.bromotion, this.added, this.avatar);
 
   getId() {
     return id;
@@ -48,7 +47,6 @@ class Bro {
     id = json["id"];
     broName = json["bro_name"];
     bromotion = json["bromotion"];
-    updateBro = json.containsKey("update_bro") ? json["update_bro"] : false;
     if (json.containsKey("avatar") && json["avatar"] != null) {
       avatar = base64Decode(json["avatar"].replaceAll("\n", ""));
     }
@@ -61,7 +59,6 @@ class Bro {
     map['broName'] = broName;
     map['bromotion'] = bromotion;
     map["added"] = added ? 1 : 0;
-    map['updateBro'] = updateBro ? 1 : 0;
     map['avatar'] = avatar;
     return map;
   }
@@ -71,7 +68,6 @@ class Bro {
     broName = map['broName'];
     bromotion = map['bromotion'];
     added = map['added'] == 1;
-    updateBro = map['updateBro'] == 1;
     avatar = map['avatar'];
   }
 }

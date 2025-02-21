@@ -1,9 +1,12 @@
 import 'package:brocast/constants/base_url.dart';
+import 'package:brocast/services/auth/auth_service_social.dart';
+import 'package:brocast/utils/new/socket_services_util.dart';
 import 'package:brocast/views/bro_home/bro_home_change_notifier.dart';
 import 'package:brocast/views/chat_view/messaging_change_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:socket_io_client/socket_io_client.dart' as io;
 
+import '../../objects/bro.dart';
 import '../../objects/message.dart';
 import '../../objects/broup.dart';
 import '../../objects/me.dart';
@@ -92,6 +95,9 @@ class SocketServices extends ChangeNotifier {
         int newMemberId = data["new_member_id"];
         broup.addBroId(newMemberId);
         broup.newMembersBroup();
+        if (Settings().getMe()!.getId() == newMemberId) {
+          broup.removed = false;
+        }
       }
       if (data.containsKey("new_admin_id")) {
         print("new admin! ${data["new_admin_id"]}");
@@ -102,8 +108,20 @@ class SocketServices extends ChangeNotifier {
         int dismissedMemberId = data["dismissed_admin_id"];
         broup.removeAdminId(dismissedMemberId);
       }
+      if (data.containsKey("remove_bro_id")) {
+        int removedBroId = data["remove_bro_id"];
+        broup.removeBro(removedBroId);
+        // It's possible that you have been removed from the broup
+        if (Settings().getMe()!.getId() == removedBroId) {
+          broup.removed = true;
+        }
+      }
+      if (data.containsKey("broup_updated")) {
+        // probably True, we should update broup
+        bool broupUpdated = data["broup_updated"];
+        broup.setUpdateBroup(broupUpdated);
+      }
       Storage().updateBroup(broup);
-      print("storing update broup ${broup.broupId}  broIds ${broup.broIds}");
       notifyListeners();
     }
   }
@@ -118,6 +136,22 @@ class SocketServices extends ChangeNotifier {
       Broup newBroup = Broup.fromJson(broup);
       Storage().addBroup(newBroup);
       me.addBroup(newBroup);
+
+      if (newBroup.private) {
+        for (int broId in newBroup.broIds) {
+          if (broId != me.getId()) {
+            // For private chats we want to retrieve the bro object.
+            AuthServiceSocial().retrieveBro(broId).then((bro) {
+              if (bro != null) {
+                newBroup.addBro(bro);
+                Storage().addBro(bro);
+                notifyListeners();
+              }
+            });
+            break;
+          }
+        }
+      }
     }
     BroHomeChangeNotifier().notify();
   }
@@ -131,9 +165,11 @@ class SocketServices extends ChangeNotifier {
     Me? me = Settings().getMe();
     if (me != null) {
       Broup broup = me.broups.firstWhere((element) => element.broupId == broupId);
-      broup.updateMessages(message);
-      storage.updateBroup(broup);
-      notifyListeners();
+      if (!broup.removed) {
+        broup.updateMessages(message);
+        storage.updateBroup(broup);
+        notifyListeners();
+      }
     }
   }
 
@@ -146,6 +182,24 @@ class SocketServices extends ChangeNotifier {
       Broup broup = me.broups.firstWhere((element) => element.broupId == broupId);
       broup.updateLastReadMessages(timestamp);
       Storage().updateBroup(broup);
+      notifyListeners();
+    }
+  }
+
+  broUpdated(data) async {
+    print("bro updated $data");
+    Me? me = Settings().getMe();
+    if (me != null) {
+      if (data.containsKey("bromotion")) {
+        String newBromotion = data["bromotion"];
+        int broId = data["bro_id"];
+        broUpdatedBromotion(me, broId, newBromotion);
+      }
+      if (data.containsKey("broname")) {
+        String newBroname = data["broname"];
+        int broId = data["bro_id"];
+        broUpdatedBroname(me, broId, newBroname);
+      }
       notifyListeners();
     }
   }
@@ -168,8 +222,9 @@ class SocketServices extends ChangeNotifier {
     this.socket.on('chat_added', (data) {
       chatAdded(data);
     });
-    // these messages will be send in the broup rooms,
-    // but we need to listen to it here
+    this.socket.on('bro_update', (data) {
+      broUpdated(data);
+    });
     this.socket.on('message_received', (data) {
       messageReceived(data);
     });

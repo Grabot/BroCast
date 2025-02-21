@@ -10,6 +10,8 @@ import '../../objects/broup.dart';
 import '../../objects/me.dart';
 import '../../services/auth/models/login_response.dart';
 import '../../views/bro_home/bro_home.dart';
+import '../../views/bro_profile/bro_profile.dart';
+import '../../views/bro_settings/bro_settings.dart';
 import '../../views/chat_view/messaging_change_notifier.dart';
 import 'settings.dart';
 import 'socket_services.dart';
@@ -209,8 +211,7 @@ navigateToHome(BuildContext context, Settings settings) {
   }
 }
 
-navigateToChat(BuildContext context, Broup chat) {
-  Settings settings = Settings();
+navigateToChat(BuildContext context, Settings settings, Broup chat) {
   MessagingChangeNotifier().setBroupId(chat.broupId);
   if (settings.doneRoutes.contains(routes.ChatRoute)) {
     // We want to pop until we reach the BroHomeRoute
@@ -231,5 +232,57 @@ navigateToChat(BuildContext context, Broup chat) {
     settings.doneRoutes = [];
     Navigator.pushReplacement(context,
         MaterialPageRoute(builder: (context) => BroCastHome(key: UniqueKey())));
+  }
+}
+
+navigateToProfile(BuildContext context, Settings settings) {
+  MessagingChangeNotifier().setBroupId(-1);
+  if (settings.doneRoutes.contains(routes.ProfileRoute)) {
+    // We want to pop until we reach the BroHomeRoute
+    // We remove one, because it's this page.
+    settings.doneRoutes.removeLast();
+    for (int i = 0; i < 200; i++) {
+      String route = settings.doneRoutes.removeLast();
+      Navigator.pop(context);
+      if (route == routes.ProfileRoute) {
+        settings.doneRoutes.add(routes.ProfileRoute);
+        break;
+      }
+      if (settings.doneRoutes.length == 0) {
+        break;
+      }
+    }
+  } else {
+    settings.doneRoutes.add(routes.ProfileRoute);
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => BroProfile(key: UniqueKey())));
+  }
+}
+
+navigateToSettings(BuildContext context, Settings settings) {
+  MessagingChangeNotifier().setBroupId(-1);
+  if (settings.doneRoutes.contains(routes.SettingsRoute)) {
+    // We want to pop until we reach the BroHomeRoute
+    // We remove one, because it's this page.
+    settings.doneRoutes.removeLast();
+    for (int i = 0; i < 200; i++) {
+      String route = settings.doneRoutes.removeLast();
+      Navigator.pop(context);
+      if (route == routes.SettingsRoute) {
+        settings.doneRoutes.add(routes.SettingsRoute);
+        break;
+      }
+      if (settings.doneRoutes.length == 0) {
+        break;
+      }
+    }
+  } else {
+    settings.doneRoutes.add(routes.SettingsRoute);
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => BroSettings(key: UniqueKey())));
   }
 }

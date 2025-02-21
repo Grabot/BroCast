@@ -126,24 +126,26 @@ class _ChatMessagingState extends State<ChatMessaging> {
       isLoadingBros = true;
       isLoadingMessages = true;
     });
-    getMessages(0, chat, storage).then((value) {
-      allMessagesDBRetrieved = value;
-      setState(() {
-        if (chat.messages.length != 0) {
-          setDateTiles(chat);
-          if (chat.messages[0].messageId <= 0) {
-            chat.lastMessageId = chat.messages[1].messageId;
-          } else {
-            chat.lastMessageId = chat.messages[0].messageId;
+    getBroupUpdate(chat, storage).then((value) {
+      getMessages(0, chat, storage).then((value) {
+        allMessagesDBRetrieved = value;
+        setState(() {
+          if (chat.messages.length != 0) {
+            setDateTiles(chat);
+            if (chat.messages[0].messageId <= 0) {
+              chat.lastMessageId = chat.messages[1].messageId;
+            } else {
+              chat.lastMessageId = chat.messages[0].messageId;
+            }
           }
-        }
-        isLoadingMessages = false;
+          isLoadingMessages = false;
+        });
       });
-    });
-    getBros(chat, storage, settings.getMe()!).then((value) {
-      checkIsAdmin();
-      setState(() {
-        isLoadingBros = false;
+      getBros(chat, storage, settings.getMe()!).then((value) {
+        checkIsAdmin();
+        setState(() {
+          isLoadingBros = false;
+        });
       });
     });
   }
@@ -194,7 +196,14 @@ class _ChatMessagingState extends State<ChatMessaging> {
         }
       });
     } else if (delta == 5) {
-      // Remove to admins?
+      AuthServiceSocial().dismissBroAdmin(chat.broupId, addBroId).then((value) {
+        if (value) {
+          setState(() {
+            chat.removeAdminId(addBroId);
+            checkIsAdmin();
+          });
+        }
+      });
     }
   }
 
@@ -431,20 +440,10 @@ class _ChatMessagingState extends State<ChatMessaging> {
   void onSelectChat(BuildContext context, int item) {
     switch (item) {
       case 0:
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => BroProfile(key: UniqueKey()))).then((value) {
-          messagingChangeNotifier.setBroupId(-1);
-        });
+        navigateToProfile(context, settings);
         break;
       case 1:
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => BroSettings(key: UniqueKey()))).then((value) {
-          messagingChangeNotifier.setBroupId(-1);
-        });
+        navigateToSettings(context, settings);
         break;
       case 2:
         goToChatDetails();
@@ -520,11 +519,8 @@ class _ChatMessagingState extends State<ChatMessaging> {
                                         val.trimRight().isEmpty) {
                                       return "Can't send an empty message";
                                     }
-                                    if (chat.hasLeft()) {
+                                    if (chat.isRemoved()) {
                                       return "You're no longer a participant in this Broup";
-                                    }
-                                    if (chat.isBlocked()) {
-                                      return "Can't send messages to a blocked Broup";
                                     }
                                     return null;
                                   },

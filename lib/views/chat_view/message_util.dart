@@ -8,6 +8,22 @@ import '../../services/auth/auth_service_social.dart';
 import '../../utils/new/storage.dart';
 
 
+Future<bool> getBroupUpdate(Broup chat, Storage storage) async {
+  if (chat.updateBroup) {
+    chat.updateBroup = false;
+    Broup? broupServer = await AuthServiceSocial().retrieveBroup(chat.broupId);
+    if (broupServer != null) {
+      // We have retrieved a new broup object,
+      // but we want to update the existing one
+      chat.updateBroupDataServer(broupServer);
+      chat.updateBroup = false;
+      storage.updateBroup(chat);
+    }
+    return true;
+  }
+  return true;
+}
+
 Future<bool> getBros(Broup chat, Storage storage, Me me) async {
   print("getting bros!!!!");
   // First retrieve from the db.
@@ -21,9 +37,7 @@ Future<bool> getBros(Broup chat, Storage storage, Me me) async {
   // Copy the list so you're not making changes.
   List<int> broIdsToRetrieveServer = [...chat.broIds];
   for (Bro bro in storageBros) {
-    if (!bro.updateBro) {
-      broIdsToRetrieveServer.remove(bro.id);
-    }
+    broIdsToRetrieveServer.remove(bro.id);
   }
   if (broIdsToRetrieveServer.contains(me.id)) {
     broIdsToRetrieveServer.remove(me.id);
@@ -32,12 +46,11 @@ Future<bool> getBros(Broup chat, Storage storage, Me me) async {
   // Then retrieve from the server the bros that have to be updated.
   List<Bro> brosServer = [];
   if (broIdsToRetrieveServer.isNotEmpty) {
-    brosServer = await AuthServiceSocial().getBrosServer(broIdsToRetrieveServer);
+    brosServer = await AuthServiceSocial().retrieveBros(broIdsToRetrieveServer);
   }
 
   print("got bros from the server ${brosServer}");
   for (Bro bro in brosServer) {
-    bro.updateBro = false;
     // We retrieved the bro for this chat, which is private.
     // This means it has have been added.
     for (Broup broup in me.broups) {
@@ -59,7 +72,7 @@ Future<bool> getBros(Broup chat, Storage storage, Me me) async {
     }
   }
   // merge lists with preference for the server data.
-  chat.broupBros = removeBroDuplicates(storageBros, brosServer, storage);
+  chat.broupBros = removeBroDuplicates(brosServer, storageBros, storage);
   // You are also part of the bros
   chat.broupBros.insert(0, me);
   chat.retrievedBros = true;
