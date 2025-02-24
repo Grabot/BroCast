@@ -15,6 +15,7 @@ import 'package:flutter/services.dart';
 import '../../objects/bro.dart';
 import '../../objects/broup.dart';
 import '../../objects/me.dart';
+import '../../utils/notification_util.dart';
 import '../../utils/secure_storage.dart';
 import '../../utils/storage.dart';
 import '../bro_profile/bro_profile.dart';
@@ -58,10 +59,14 @@ class _BroCastHomeState extends State<BroCastHome> {
     broHomeChangeNotifier = BroHomeChangeNotifier();
     broHomeChangeNotifier.addListener(broHomeChangeListener);
     socketServices.addListener(broHomeChangeListener);
+
     // Wait until page is loaded and then call the broHomeChangeListener
-    SchedulerBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      print("add routes home 1");
       settings.doneRoutes.add(routes.BroHomeRoute);
       broHomeChangeListener();
+
+      NotificationUtil().initializeNotificationUtil();
     });
   }
 
@@ -142,12 +147,16 @@ class _BroCastHomeState extends State<BroCastHome> {
     // ensure that we only call this once.
     Me? me = settings.getMe();
     // `loggingIn` is set to false when we have finished logging in
+    print("test1 ${settings.retrievedBroupData}");
+    print("test2 ${settings.loggingIn}");
     if (me != null && !settings.loggingIn && !settings.retrievedBroupData) {
       settings.retrievedBroupData = true;
       storage.fetchAllBroups().then((broups) {
+        print("broups: ${broups.length}");
         List<int> broupIdsToRetrieve = me.broups.map((broup) => broup.broupId).toList();
+        print("broupIdsToRetrieve: $broupIdsToRetrieve");
         Map<String, Broup> broupMap = {for (var broup in broups) broup.getBroupId().toString(): broup};
-        for (Broup broup in settings.getMe()!.broups) {
+        for (Broup broup in me.broups) {
           // Update the properties of the broup from me.bros with the properties from the database
           Broup? dbBroup = broupMap[broup.getBroupId().toString()];
           if (dbBroup != null) {
@@ -181,7 +190,7 @@ class _BroCastHomeState extends State<BroCastHome> {
             }
           }
         }
-        shownBros = settings.getMe()!.broups;
+        shownBros = me.broups;
         if (broupIdsToRetrieve.isNotEmpty) {
           retrieveServerBroups(broupIdsToRetrieve);
         }
@@ -529,7 +538,7 @@ class _BroCastHomeState extends State<BroCastHome> {
                     alignment: Alignment.bottomCenter,
                     child: EmojiKeyboard(
                         emojiController: bromotionController,
-                        emojiKeyboardHeight: 300,
+                        emojiKeyboardHeight: 400,
                         showEmojiKeyboard: showEmojiKeyboard,
                         darkMode: settings.getEmojiKeyboardDarkMode()),
                   ),

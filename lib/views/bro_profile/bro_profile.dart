@@ -1,16 +1,12 @@
 import 'package:brocast/services/auth/auth_service_settings.dart';
+import 'package:brocast/utils/secure_storage.dart';
 import 'package:brocast/utils/settings.dart';
 import 'package:brocast/utils/socket_services.dart';
 import 'package:brocast/utils/storage.dart';
 import 'package:brocast/utils/utils.dart';
-import 'package:brocast/views/bro_home/bro_home.dart';
 import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
 import "package:flutter/material.dart";
-import 'package:flutter/scheduler.dart';
 import '../../objects/me.dart';
-import '../bro_settings/bro_settings.dart';
-import '../chat_view/messaging_change_notifier.dart';
-import 'package:brocast/constants/route_paths.dart' as routes;
 
 
 class BroProfile extends StatefulWidget {
@@ -84,6 +80,7 @@ class _BroProfileState extends State<BroProfile> {
       AuthServiceSettings().changePassword(
           oldPasswordController.text, newPasswordController1.text).then((value) {
         if (value == "Password changed") {
+          SecureStorage().setPassword(newPasswordController1.text);
           showToastMessage("Password changed successfully");
         } else {
           showToastMessage(value);
@@ -107,6 +104,7 @@ class _BroProfileState extends State<BroProfile> {
     AuthServiceSettings().changeBroname(newBroname).then((value) {
       if (value == "Bro name changed") {
         showToastMessage("bro name changed successfully");
+        SecureStorage().setBroName(newBroname);
         setState(() {
           settings.getMe()!.setBroName(newBroname);
         });
@@ -194,12 +192,13 @@ class _BroProfileState extends State<BroProfile> {
 
   onSaveBromotion() {
     if (bromotionValidator.currentState!.validate()) {
-      print("changing to ${bromotionChangeController.text}");
-      AuthServiceSettings().changeBromotion(bromotionChangeController.text).then((value) {
+      String newBromotion = bromotionChangeController.text;
+      AuthServiceSettings().changeBromotion(newBromotion).then((value) {
         if (value == "Bromotion changed") {
           showToastMessage("bromotion changed successfully");
+          SecureStorage().setBromotion(newBromotion);
           setState(() {
-            settings.getMe()!.setBromotion(bromotionChangeController.text);
+            settings.getMe()!.setBromotion(newBromotion);
           });
         } else {
           showToastMessage(value);
@@ -622,7 +621,7 @@ class _BroProfileState extends State<BroProfile> {
                 alignment: Alignment.bottomCenter,
                 child: EmojiKeyboard(
                     emojiController: bromotionChangeController,
-                    emojiKeyboardHeight: 300,
+                    emojiKeyboardHeight: 400,
                     showEmojiKeyboard: showEmojiKeyboard,
                     darkMode: settings.getEmojiKeyboardDarkMode()),
               )

@@ -7,6 +7,7 @@ class SecureStorage {
 
   final String _keyAccessToken = 'accessToken';
   final String _keyRefreshToken = 'refreshToken';
+  final String _keyFCMToken = 'FCMToken';
   final String _broName = 'broName';
   final String _bromotion = 'bromotion';
   final String _password = 'password';
@@ -26,6 +27,14 @@ class SecureStorage {
 
   Future<String?> getRefreshToken() async {
     return await storage.read(key: _keyRefreshToken);
+  }
+
+  Future setFCMToken(String fcmToken) async {
+    await storage.write(key: _keyFCMToken, value: fcmToken);
+  }
+
+  Future<String?> getFCMToken() async {
+    return await storage.read(key: _keyFCMToken);
   }
 
   Future setBroName(String broName) async {

@@ -225,6 +225,20 @@ class Storage {
     return List.empty();
   }
 
+  Future<Broup?> fetchBroup(int broupId) async {
+    Database database = await this.database;
+    List<Map<String, dynamic>> maps = await database.query(
+      'Broup',
+      where: 'broupId = ?',
+      whereArgs: [broupId],
+    );
+    if (maps.isNotEmpty) {
+      return Broup.fromDbMap(maps.first);
+    } else {
+      return null;
+    }
+  }
+
   clearDatabase() async {
     Database database = await this.database;
     await database.execute("DROP TABLE IF EXISTS Bro");

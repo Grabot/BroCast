@@ -2,29 +2,15 @@
 class LoginEmailRequest {
   late String email;
   late String password;
+  late int platform;
 
-  LoginEmailRequest(this.email, this.password);
-
-  setEmail(String email) {
-    this.email = email;
-  }
-
-  String getEmail() {
-    return email;
-  }
-
-  setPassword(String password) {
-    this.password = password;
-  }
-
-  String getPassword() {
-    return password;
-  }
+  LoginEmailRequest(this.email, this.password, this.platform);
 
   Map<String, dynamic> toJson() {
     var json = <String, dynamic>{};
     json['email'] = email;
     json['password'] = password;
+    json["platform"] = platform;
     return json;
   }
 }

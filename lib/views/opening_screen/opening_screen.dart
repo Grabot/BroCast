@@ -53,7 +53,7 @@ class _OpeningScreenState extends State<OpeningScreen> {
     // TODO: If the user logs in with a different user that is in the storage. Make sure you clear the storage before adding the new data.
     loginCheck().then((loggedIn) {
       if (loggedIn) {
-        Navigator.push(
+        Navigator.pushReplacement(
             context,
             MaterialPageRoute(
                 builder: (context) => BroCastHome(
@@ -64,7 +64,7 @@ class _OpeningScreenState extends State<OpeningScreen> {
         );
         return;
       } else {
-        Navigator.push(
+        Navigator.pushReplacement(
             context,
             MaterialPageRoute(
                 builder: (context) => SignIn(

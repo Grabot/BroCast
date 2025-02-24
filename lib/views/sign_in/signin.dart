@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:brocast/utils/notification_util.dart';
 import 'package:brocast/utils/settings.dart';
 import 'package:brocast/utils/storage.dart';
 import 'package:brocast/views/bro_home/bro_home.dart';
@@ -44,6 +45,11 @@ class _SignInState extends State<SignIn> {
   TextEditingController bromotionController = new TextEditingController();
   TextEditingController passwordController = new TextEditingController();
 
+  ScrollController signScrollController = ScrollController();
+  FocusNode focusBromotion = FocusNode();
+  FocusNode focusEmail = FocusNode();
+  FocusNode focusBroname = FocusNode();
+
   bool emojiKeyboardDarkMode = false;
 
   late Storage storage;
@@ -51,6 +57,7 @@ class _SignInState extends State<SignIn> {
   bool loginBroName = true;
   bool signUpMode = false;
 
+  NotificationUtil? notificationUtil;
   SecureStorage secureStorage = SecureStorage();
 
   @override
@@ -65,11 +72,52 @@ class _SignInState extends State<SignIn> {
     setState(() {
       emojiKeyboardDarkMode = settings.getEmojiKeyboardDarkMode();
     });
-    super.initState();
 
-    WidgetsBinding.instance.addPostFrameCallback((_){
-      fillFields();
+    notificationUtil = NotificationUtil();
+    notificationUtil!.initializeNotificationUtil();
+
+    // We're adding listeners to the focusnodes to keep these widgets in view
+    focusEmail.addListener(() {
+      Future.delayed(Duration(milliseconds: 600)).then((value) {
+        if (signScrollController.hasClients) {
+          if (focusEmail.hasFocus) {
+            signScrollController.animateTo(
+                150,
+                duration: Duration(milliseconds: 500),
+                curve: Curves.easeOut);
+          }
+        }
+      });
     });
+    focusBroname.addListener(() {
+      Future.delayed(Duration(milliseconds: 600)).then((value) {
+        if (signScrollController.hasClients) {
+          if (focusBroname.hasFocus) {
+            signScrollController.animateTo(
+                150,
+                duration: Duration(milliseconds: 500),
+                curve: Curves.easeOut);
+          }
+        }
+      });
+    });
+    focusBromotion.addListener(() {
+      Future.delayed(Duration(milliseconds: 600)).then((value) {
+        if (signScrollController.hasClients) {
+          if (focusBromotion.hasFocus) {
+            signScrollController.animateTo(
+                150,
+                duration: Duration(milliseconds: 500),
+                curve: Curves.easeOut);
+          }
+        }
+      });
+    });
+
+    WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {
+      fillFields();
+    }));
+    super.initState();
   }
 
   fillFields() async {
@@ -182,7 +230,13 @@ class _SignInState extends State<SignIn> {
     }
     isLoading = true;
     AuthServiceLogin authService = AuthServiceLogin();
-    RegisterRequest registerRequest = RegisterRequest(emailRegister, broNameRegister, bromotionRegister, passwordRegister);
+    // We get the FCM token to send it to the server with the registration
+    String? FCMToken;
+    if (notificationUtil != null) {
+      FCMToken = await notificationUtil!.FCMTokenDevice;
+    }
+    int platform = Platform.isAndroid ? 0 : 1;
+    RegisterRequest registerRequest = RegisterRequest(emailRegister, broNameRegister, bromotionRegister, passwordRegister, FCMToken, platform);
     authService.getRegister(registerRequest).then((loginResponse) {
       if (loginResponse.getResult()) {
         // We securely store information locally on the phone
@@ -224,8 +278,9 @@ class _SignInState extends State<SignIn> {
     isLoading = true;
     AuthServiceLogin authService = AuthServiceLogin();
     if (loginBroName) {
+      int platform = Platform.isAndroid ? 0 : 1;
       LoginBroNameRequest loginBroNameRequest = LoginBroNameRequest(
-          broNameLogin, bromotionLogin, passwordLogin);
+          broNameLogin, bromotionLogin, passwordLogin, platform);
       authService.getLoginBroName(loginBroNameRequest).then((loginResponse) {
         if (loginResponse.getResult()) {
           isLoading = false;
@@ -234,6 +289,13 @@ class _SignInState extends State<SignIn> {
           secureStorage.setBromotion(bromotionLogin);
           secureStorage.setPassword(passwordLogin);
           goToBroCastHome();
+          // We also update the FCM token
+          // We only do that here, if the user logs in via tokens we don't
+          // check the FCM token since it will probably be the same.
+          // We assume that getting the local fcm token was set
+          if (notificationUtil != null) {
+            notificationUtil!.getFCMTokenNotificationUtil(loginResponse.getFCMToken());
+          }
         } else if (!loginResponse.getResult()) {
           showToastMessage(loginResponse.getMessage());
           isLoading = false;
@@ -243,8 +305,9 @@ class _SignInState extends State<SignIn> {
         isLoading = false;
       });
     } else {
+      int platform = Platform.isAndroid ? 0 : 1;
       LoginEmailRequest loginEmailRequest = LoginEmailRequest(
-          emailLogin, passwordLogin);
+          emailLogin, passwordLogin, platform);
       authService.getLoginEmail(loginEmailRequest).then((loginResponse) {
         if (loginResponse.getResult()) {
           isLoading = false;
@@ -277,6 +340,7 @@ class _SignInState extends State<SignIn> {
   Widget broNameTextField() {
     return Expanded(
       child: TextFormField(
+        focusNode: focusBroname,
         onTap: () {
           if (!isLoading) {
             onTapTextField();
@@ -300,6 +364,7 @@ class _SignInState extends State<SignIn> {
       width: 50,
       height: 50,
       child: TextFormField(
+        focusNode: focusBromotion,
         onTap: () {
           if (!isLoading) {
             onTapEmojiField();
@@ -335,6 +400,7 @@ class _SignInState extends State<SignIn> {
   Widget emailTextField() {
     return Expanded(
       child: TextFormField(
+        focusNode: focusEmail,
         onTap: () {
           if (!isLoading) {
             onTapTextField();
@@ -732,6 +798,7 @@ class _SignInState extends State<SignIn> {
                 child: Column(children: [
                   Expanded(
                     child: SingleChildScrollView(
+                      controller: signScrollController,
                       reverse: true,
                       child: Container(
                         padding: EdgeInsets.symmetric(horizontal: 20),
@@ -768,7 +835,7 @@ class _SignInState extends State<SignIn> {
                       alignment: Alignment.bottomCenter,
                       child: EmojiKeyboard(
                           emojiController: bromotionController,
-                          emojiKeyboardHeight: 300,
+                          emojiKeyboardHeight: 400,
                           showEmojiKeyboard: showEmojiKeyboard,
                           darkMode: emojiKeyboardDarkMode)),
                 ]),

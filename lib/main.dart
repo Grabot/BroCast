@@ -1,45 +1,41 @@
 import 'package:brocast/router.dart' as router;
 import 'package:brocast/utils/navigation_service.dart';
-import 'package:brocast/utils/notification_util.dart';
+import 'package:brocast/utils/secure_storage.dart';
 import 'package:brocast/utils/settings.dart';
 import 'package:brocast/utils/locator.dart';
 import 'package:brocast/views/opening_screen/opening_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
-// import 'package:firebase_core/firebase_core.dart';
-// import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:oktoast/oktoast.dart';
+
+import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  Settings();
-  setupLocator();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform
+  );
 
-  // await Firebase.initializeApp();
-  // await NotificationUtil.instance.initialize();
+  // Initialize some singleton classes so we don't have to wait later.
+  Settings();
+  SecureStorage();
+
+  setupLocator();
 
   runApp(OKToast(child: MyApp()));
 }
-
-// void firebaseBackgroundInitialization() async {
-//   await Firebase.initializeApp();
-//   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-// }
-//
-// Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {}
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: "Brocast",
-      debugShowCheckedModeBanner: false,
+      title: "BroCast",
       onGenerateRoute: router.generateRoute,
       navigatorKey: locator<NavigationService>().navigatorKey,
       theme: ThemeData(
         primaryColor: Color(0xff145C9E),
-        scaffoldBackgroundColor: Color(0xff292a38),
+        scaffoldBackgroundColor: Color(0xff393b57),
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),

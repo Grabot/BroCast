@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 import '../../../objects/broup.dart';
@@ -23,7 +25,6 @@ class BroTile extends StatefulWidget {
 }
 
 class _BroTileState extends State<BroTile> {
-  final NavigationService _navigationService = locator<NavigationService>();
   var _tapPosition;
 
   selectBro(BuildContext context) {
@@ -302,11 +303,15 @@ class _BroTileState extends State<BroTile> {
         .then((int? delta) {
       if (delta == 1) {
         if (!widget.chat.isPrivate()) {
-          _navigationService.navigateTo(routes.BroupRoute,
-              arguments: widget.chat);
+          // TODO: what is this?
+          exit(0);
+          // _navigationService.navigateTo(routes.BroupRoute,
+          //     arguments: widget.chat);
         } else {
-          _navigationService.navigateTo(routes.BroHomeRoute,
-              arguments: widget.chat);
+          // TODO: what is this?
+          exit(0);
+          // _navigationService.navigateTo(routes.BroHomeRoute,
+          //     arguments: widget.chat);
         }
       } else if (delta == 2) {
         showDialogMuteChat(context);

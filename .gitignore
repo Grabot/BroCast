@@ -50,3 +50,9 @@ base_url.dart
 google-services.json
 GoogleService-Info.plist
 key.properties
+
+# firebase stuff
+firebase.json
+lib/firebase_options.dart
+/android/app/.cxx
+/android/app/.cxx/*

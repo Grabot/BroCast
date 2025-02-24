@@ -42,7 +42,7 @@ class Settings {
     refreshToken = "";
     accessTokenExpiration = 0;
     me = null;
-    loggingIn = false;
+    loggingIn = true;
   }
 
   setMe(Me me) {

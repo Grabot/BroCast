@@ -18,7 +18,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.5.0+26
 
 environment:
-  sdk: ">=2.12.0 <3.7.0"
+  sdk: ">=2.12.0 <4.0.0"
 
 dependencies:
   flutter:
@@ -29,7 +29,7 @@ dependencies:
   socket_io_client: ^3.0.2
   intl: ^0.20.1
   tuple: ^2.0.2
-  emoji_keyboard_flutter: ^1.5.3
+  emoji_keyboard_flutter: ^1.6.2
   firebase_messaging: ^15.2.3
   flutter_local_notifications: ^18.0.1
   firebase_core: ^3.12.0
@@ -44,7 +44,6 @@ dependencies:
   camera: ^0.11.0+2
   image_picker: ^1.1.2
   #  gallery_saver: ^2.3.2
-  path_provider: ^2.1.5
   oktoast: ^3.4.0
   dio: ^5.7.0
   flutter_secure_storage: ^9.2.4
@@ -57,7 +56,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  flutter_launcher_icons: ^0.9.0
+  flutter_launcher_icons: ^0.14.3
 
 flutter_icons:
   ios: true
@@ -90,7 +89,6 @@ flutter:
     - assets/images/apple_button.png
     - assets/images/reddit_button.png
     - assets/images/default_avatar.png
-    - assets/sound/res_brodio.m4a
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

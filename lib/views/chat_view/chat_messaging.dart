@@ -622,11 +622,14 @@ class _ChatMessagingState extends State<ChatMessaging> {
                           ),
                         )
                       : Container()),
+              !showEmojiKeyboard ? SizedBox(
+                height: MediaQuery.of(context).padding.bottom,
+              ) : Container(),
               Align(
                 alignment: Alignment.bottomCenter,
                 child: EmojiKeyboard(
                   emojiController: broMessageController,
-                  emojiKeyboardHeight: 300,
+                  emojiKeyboardHeight: 400,
                   showEmojiKeyboard: showEmojiKeyboard,
                   darkMode: settings.getEmojiKeyboardDarkMode(),
                 ),

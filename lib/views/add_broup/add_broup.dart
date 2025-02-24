@@ -541,7 +541,7 @@ class _AddBroupState extends State<AddBroup> {
                   alignment: Alignment.bottomCenter,
                   child: EmojiKeyboard(
                       emojiController: bromotionController,
-                      emojiKeyboardHeight: 300,
+                      emojiKeyboardHeight: 400,
                       showEmojiKeyboard: showEmojiKeyboard,
                       darkMode: settings.getEmojiKeyboardDarkMode()),
                 ),

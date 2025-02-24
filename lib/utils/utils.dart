@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'dart:typed_data';
 
+import 'package:brocast/utils/notification_util.dart';
 import 'package:brocast/views/bro_home/bro_home_change_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:jwt_decode/jwt_decode.dart';
@@ -189,6 +190,7 @@ class HexagonClipper extends CustomClipper<Path> {
 
 navigateToHome(BuildContext context, Settings settings) {
   MessagingChangeNotifier().setBroupId(-1);
+  print("settings done routes: ${settings.doneRoutes}");
   if (settings.doneRoutes.contains(routes.BroHomeRoute)) {
     // We want to pop until we reach the BroHomeRoute
     // We remove one, because it's this page.
@@ -205,6 +207,7 @@ navigateToHome(BuildContext context, Settings settings) {
       }
     }
   } else {
+    print("going to home");
     settings.doneRoutes = [];
     Navigator.pushReplacement(context,
         MaterialPageRoute(builder: (context) => BroCastHome(key: UniqueKey())));

@@ -466,4 +466,24 @@ class AuthServiceSocial {
       return json["result"];
     }
   }
+
+  Future<bool> updateFCMToken(String newFCMToken) async {
+    String endPoint = "change/fcm_token";
+    var response = await AuthApi().dio.post(endPoint,
+        options: Options(headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+        }),
+        data: jsonEncode(<String, dynamic>{
+          "fcm_token": newFCMToken,
+        }
+      )
+    );
+
+    Map<String, dynamic> json = response.data;
+    if (!json.containsKey("result")) {
+      return false;
+    } else {
+      return json["result"];
+    }
+  }
 }

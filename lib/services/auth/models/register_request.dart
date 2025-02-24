@@ -4,40 +4,10 @@ class RegisterRequest {
   late String broName;
   late String bromotion;
   late String password;
+  late int platform;  // 0 for Android, 1 for iOS
+  String? FCMToken;
 
-  RegisterRequest(this.email, this.broName, this.bromotion, this.password);
-
-  setEmail(String email) {
-    this.email = email;
-  }
-
-  String getEmail() {
-    return email;
-  }
-
-  setBroName(String broName) {
-    this.broName = broName;
-  }
-
-  String getBroName() {
-    return broName;
-  }
-
-  setPassword(String password) {
-    this.password = password;
-  }
-
-  String getPassword() {
-    return password;
-  }
-
-  setBroMotion(String bromotion) {
-    this.bromotion = bromotion;
-  }
-
-  String getBromotion() {
-    return bromotion;
-  }
+  RegisterRequest(this.email, this.broName, this.bromotion, this.password, this.FCMToken, this.platform);
 
   Map<String, dynamic> toJson() {
     var json = <String, dynamic>{};
@@ -46,6 +16,8 @@ class RegisterRequest {
     json['bro_name'] = broName;
     json['bromotion'] = bromotion;
     json['password'] = password;
+    json["platform"] = platform;
+    json["fcm_token"] = FCMToken;
 
     return json;
   }
