@@ -59,18 +59,16 @@ class _BroProfileState extends State<BroProfile> {
   }
 
   notificationListener() {
-    if (mounted) {
-      if (notificationController.navigateChat) {
-        notificationController.navigateChat = false;
-        int chatId = notificationController.navigateChatId;
-        storage.fetchBroup(chatId).then((broup) {
-          if (broup != null) {
-            notificationController.navigateChat = false;
-            notificationController.navigateChatId = -1;
-            navigateToChat(context, settings, broup);
-          }
-        });
-      }
+    if (notificationController.navigateChat) {
+      notificationController.navigateChat = false;
+      int chatId = notificationController.navigateChatId;
+      storage.fetchBroup(chatId).then((broup) {
+        if (broup != null) {
+          notificationController.navigateChat = false;
+          notificationController.navigateChatId = -1;
+          navigateToChat(context, settings, broup);
+        }
+      });
     }
   }
 
@@ -275,6 +273,7 @@ class _BroProfileState extends State<BroProfile> {
   void dispose() {
     bromotionChangeController.removeListener(bromotionListener);
     bromotionChangeController.dispose();
+    notificationController.removeListener(notificationListener);
     oldPasswordController.dispose();
     newPasswordController1.dispose();
     newPasswordController2.dispose();
@@ -283,7 +282,6 @@ class _BroProfileState extends State<BroProfile> {
     focusNodePassword.dispose();
     super.dispose();
   }
-
 
   void backButtonFunctionality() {
     if (showEmojiKeyboard) {

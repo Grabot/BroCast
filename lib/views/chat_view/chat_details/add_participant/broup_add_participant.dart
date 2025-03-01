@@ -91,18 +91,16 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> {
   }
 
   notificationListener() {
-    if (mounted) {
-      if (notificationController.navigateChat) {
-        notificationController.navigateChat = false;
-        int chatId = notificationController.navigateChatId;
-        Storage().fetchBroup(chatId).then((broup) {
-          if (broup != null) {
-            notificationController.navigateChat = false;
-            notificationController.navigateChatId = -1;
-            navigateToChat(context, settings, broup);
-          }
-        });
-      }
+    if (notificationController.navigateChat) {
+      notificationController.navigateChat = false;
+      int chatId = notificationController.navigateChatId;
+      Storage().fetchBroup(chatId).then((broup) {
+        if (broup != null) {
+          notificationController.navigateChat = false;
+          notificationController.navigateChatId = -1;
+          navigateToChat(context, settings, broup);
+        }
+      });
     }
   }
 
@@ -111,6 +109,7 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> {
     socketServices.removeListener(socketListener);
     bromotionController.removeListener(bromotionListener);
     bromotionController.dispose();
+    notificationController.removeListener(notificationListener);
     broNameController.dispose();
     super.dispose();
   }
@@ -166,27 +165,12 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> {
   }
 
   navigateToDetails() {
-    if (settings.doneRoutes.contains(routes.ChatDetailsRoute)) {
-      // We want to pop until we reach the BroHomeRoute
-      // We remove one, because it's this page.
-      settings.doneRoutes.removeLast();
-      for (int i = 0; i < 200; i++) {
-        String route = settings.doneRoutes.removeLast();
-        Navigator.pop(context);
-        if (route == routes.ChatDetailsRoute) {
-          settings.doneRoutes.add(routes.ChatDetailsRoute);
-          break;
-        }
-        if (settings.doneRoutes.length == 0) {
-          break;
-        }
-      }
-    } else {
-      // TODO: How to test this?
-      settings.doneRoutes = [];
-      Navigator.pushReplacement(context,
-          MaterialPageRoute(builder: (context) => BroCastHome(key: UniqueKey())));
-    }
+    Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+            builder: (context) => ChatDetails(
+                key: UniqueKey(),
+                chat: chat)));
   }
 
   void backButtonFunctionality() {

@@ -60,26 +60,23 @@ class _BroCastHomeState extends State<BroCastHome> {
 
     // Wait until page is loaded and then call the broHomeChangeListener
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      settings.doneRoutes.add(routes.BroHomeRoute);
       broHomeChangeListener();
     });
   }
 
   notificationListener() {
-    if (mounted) {
-      if (notificationController.navigateChat) {
-        print("notification listener ${notificationController.navigateChatId}");
-        notificationController.navigateChat = false;
-        int chatId = notificationController.navigateChatId;
-        storage.fetchBroup(chatId).then((broup) {
-          print("after broup fetching $broup");
-          if (broup != null) {
-            notificationController.navigateChat = false;
-            notificationController.navigateChatId = -1;
-            navigateToChat(context, settings, broup);
-          }
-        });
-      }
+    if (notificationController.navigateChat) {
+      print("notification listener ${notificationController.navigateChatId}");
+      notificationController.navigateChat = false;
+      int chatId = notificationController.navigateChatId;
+      storage.fetchBroup(chatId).then((broup) {
+        print("after broup fetching $broup");
+        if (broup != null) {
+          notificationController.navigateChat = false;
+          notificationController.navigateChatId = -1;
+          navigateToChat(context, settings, broup);
+        }
+      });
     }
   }
 
@@ -347,6 +344,7 @@ class _BroCastHomeState extends State<BroCastHome> {
   @override
   void dispose() {
     broHomeChangeNotifier.removeListener(broHomeChangeListener);
+    notificationController.removeListener(notificationListener);
     socketServices.removeListener(broHomeChangeListener);
     super.dispose();
   }
@@ -409,16 +407,14 @@ class _BroCastHomeState extends State<BroCastHome> {
   }
 
   navigateToFindBros() {
-    settings.doneRoutes.add(routes.FindBroRoute);
-    Navigator.push(
+    Navigator.pushReplacement(
         context,
         MaterialPageRoute(
             builder: (context) => FindBros(key: UniqueKey())));
   }
 
   navigateToAddBroup() {
-    settings.doneRoutes.add(routes.AddBroupRoute);
-    Navigator.push(
+    Navigator.pushReplacement(
         context,
         MaterialPageRoute(
             builder: (context) => AddBroup(key: UniqueKey())));

@@ -191,107 +191,34 @@ class HexagonClipper extends CustomClipper<Path> {
 
 navigateToHome(BuildContext context, Settings settings) {
   MessagingChangeNotifier().setBroupId(-1);
-  print("settings done routes: ${settings.doneRoutes}");
-  if (settings.doneRoutes.contains(routes.BroHomeRoute)) {
-    // We want to pop until we reach the BroHomeRoute
-    // We remove one, because it's this page.
-    settings.doneRoutes.removeLast();
-    for (int i = 0; i < 200; i++) {
-      String route = settings.doneRoutes.removeLast();
-      Navigator.pop(context);
-      if (route == routes.BroHomeRoute) {
-        settings.doneRoutes.add(routes.BroHomeRoute);
-        break;
-      }
-      if (settings.doneRoutes.length == 0) {
-        break;
-      }
-    }
-  } else {
-    print("going to home");
-    settings.doneRoutes = [];
     Navigator.pushReplacement(context,
         MaterialPageRoute(builder: (context) => BroCastHome(key: UniqueKey())));
-  }
 }
 
 navigateToChat(BuildContext context, Settings settings, Broup chat) {
   MessagingChangeNotifier().setBroupId(chat.broupId);
-  if (settings.doneRoutes.contains(routes.ChatRoute)) {
-    // We want to pop until we reach the BroHomeRoute
-    // We remove one, because it's this page.
-    settings.doneRoutes.removeLast();
-    for (int i = 0; i < 200; i++) {
-      String route = settings.doneRoutes.removeLast();
-      Navigator.pop(context, chat);
-      if (route == routes.ChatRoute) {
-        settings.doneRoutes.add(routes.ChatRoute);
-        break;
-      }
-      if (settings.doneRoutes.length == 0) {
-        break;
-      }
-    }
-  } else {
-    settings.doneRoutes.add(routes.ChatRoute);
-    Navigator.push(context, MaterialPageRoute(
-          builder: (context) => ChatMessaging(
-          key: UniqueKey(),
-          chat: chat
-        )
-      ),
-    );
-  }
+
+  Navigator.pushReplacement(context, MaterialPageRoute(
+        builder: (context) => ChatMessaging(
+        key: UniqueKey(),
+        chat: chat
+      )
+    ),
+  );
 }
 
 navigateToProfile(BuildContext context, Settings settings) {
   MessagingChangeNotifier().setBroupId(-1);
-  if (settings.doneRoutes.contains(routes.ProfileRoute)) {
-    // We want to pop until we reach the BroHomeRoute
-    // We remove one, because it's this page.
-    settings.doneRoutes.removeLast();
-    for (int i = 0; i < 200; i++) {
-      String route = settings.doneRoutes.removeLast();
-      Navigator.pop(context);
-      if (route == routes.ProfileRoute) {
-        settings.doneRoutes.add(routes.ProfileRoute);
-        break;
-      }
-      if (settings.doneRoutes.length == 0) {
-        break;
-      }
-    }
-  } else {
-    settings.doneRoutes.add(routes.ProfileRoute);
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => BroProfile(key: UniqueKey())));
-  }
+  Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+          builder: (context) => BroProfile(key: UniqueKey())));
 }
 
 navigateToSettings(BuildContext context, Settings settings) {
   MessagingChangeNotifier().setBroupId(-1);
-  if (settings.doneRoutes.contains(routes.SettingsRoute)) {
-    // We want to pop until we reach the BroHomeRoute
-    // We remove one, because it's this page.
-    settings.doneRoutes.removeLast();
-    for (int i = 0; i < 200; i++) {
-      String route = settings.doneRoutes.removeLast();
-      Navigator.pop(context);
-      if (route == routes.SettingsRoute) {
-        settings.doneRoutes.add(routes.SettingsRoute);
-        break;
-      }
-      if (settings.doneRoutes.length == 0) {
-        break;
-      }
-    }
-  } else {
-    settings.doneRoutes.add(routes.SettingsRoute);
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => BroSettings(key: UniqueKey())));
-  }
+  Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+          builder: (context) => BroSettings(key: UniqueKey())));
 }

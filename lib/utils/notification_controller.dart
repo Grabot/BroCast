@@ -289,7 +289,6 @@ class NotificationController extends ChangeNotifier {
             Storage().fetchBroup(broupId).then((value) {
               if (value != null) {
                 print("going to broup");
-                Settings().doneRoutes = [];
                 _instance._navigationService.navigateTo(routes.ChatRoute,
                     arguments: value);
               } else {

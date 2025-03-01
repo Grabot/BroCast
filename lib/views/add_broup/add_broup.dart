@@ -117,6 +117,7 @@ class _AddBroupState extends State<AddBroup> {
   void dispose() {
     bromotionController.removeListener(bromotionListener);
     bromotionController.dispose();
+    notificationController.removeListener(notificationListener);
     broNameController.dispose();
     broupNameController.dispose();
     super.dispose();
@@ -124,17 +125,15 @@ class _AddBroupState extends State<AddBroup> {
 
   notificationListener() {
     if (notificationController.navigateChat) {
-      if (mounted) {
-        notificationController.navigateChat = false;
-        int chatId = notificationController.navigateChatId;
-        storage.fetchBroup(chatId).then((broup) {
-          if (broup != null) {
-            notificationController.navigateChat = false;
-            notificationController.navigateChatId = -1;
-            navigateToChat(context, settings, broup);
-          }
-        });
-      }
+      notificationController.navigateChat = false;
+      int chatId = notificationController.navigateChatId;
+      storage.fetchBroup(chatId).then((broup) {
+        if (broup != null) {
+          notificationController.navigateChat = false;
+          notificationController.navigateChatId = -1;
+          navigateToChat(context, settings, broup);
+        }
+      });
     }
   }
 

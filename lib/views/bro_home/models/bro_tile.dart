@@ -29,8 +29,7 @@ class _BroTileState extends State<BroTile> {
 
   selectBro(BuildContext context) {
     MessagingChangeNotifier().setBroupId(widget.chat.broupId);
-    Settings().doneRoutes.add(routes.ChatRoute);
-    Navigator.push(
+    Navigator.pushReplacement(
       context,
       MaterialPageRoute(
           builder: (context) => ChatMessaging(
@@ -39,10 +38,7 @@ class _BroTileState extends State<BroTile> {
           )
       ),
       // ModalRoute.withName(routes.ChatRoute)
-    ).then((value) {
-      widget.chat.unreadMessages = 0;
-      widget.callback();
-    });
+    );
   }
 
   Color getColorStrength() {

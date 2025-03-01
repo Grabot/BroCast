@@ -1,19 +1,14 @@
 import 'package:brocast/utils/settings.dart';
 import 'package:brocast/utils/utils.dart';
-import 'package:brocast/views/bro_home/bro_home.dart';
 import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 
 import '../../objects/bro.dart';
 import '../../services/auth/auth_service_social.dart';
 import '../../utils/notification_controller.dart';
 import '../../utils/storage.dart';
 import '../add_broup/add_broup.dart';
-import '../bro_profile/bro_profile.dart';
-import '../bro_settings/bro_settings.dart';
 import 'models/bro_tile_search.dart';
-import 'package:brocast/constants/route_paths.dart' as routes;
 
 
 class FindBros extends StatefulWidget {
@@ -66,24 +61,23 @@ class _FindBrosState extends State<FindBros> {
   @override
   void dispose() {
     bromotionController.removeListener(bromotionListener);
+    notificationController.removeListener(notificationListener);
     broNameController.dispose();
     bromotionController.dispose();
     super.dispose();
   }
 
   notificationListener() {
-    if (mounted) {
-      if (notificationController.navigateChat) {
-        notificationController.navigateChat = false;
-        int chatId = notificationController.navigateChatId;
-        Storage().fetchBroup(chatId).then((broup) {
-          if (broup != null) {
-            notificationController.navigateChat = false;
-            notificationController.navigateChatId = -1;
-            navigateToChat(context, settings, broup);
-          }
-        });
-      }
+    if (notificationController.navigateChat) {
+      notificationController.navigateChat = false;
+      int chatId = notificationController.navigateChatId;
+      Storage().fetchBroup(chatId).then((broup) {
+        if (broup != null) {
+          notificationController.navigateChat = false;
+          notificationController.navigateChatId = -1;
+          navigateToChat(context, settings, broup);
+        }
+      });
     }
   }
 
@@ -96,8 +90,7 @@ class _FindBrosState extends State<FindBros> {
   }
 
   addBroup() {
-    settings.doneRoutes.add(routes.AddBroupRoute);
-    Navigator.push(context,
+    Navigator.pushReplacement(context,
         MaterialPageRoute(builder: (context) => AddBroup(key: UniqueKey())));
   }
 

@@ -13,7 +13,6 @@ class Settings {
   Me? me;
   bool emojiKeyboardDarkMode = false;
 
-  List<String> doneRoutes = [];
   bool retrievedBroData = false;
   bool retrievedBroupData = false;
 

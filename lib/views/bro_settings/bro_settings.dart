@@ -39,22 +39,21 @@ class _BroSettingsState extends State<BroSettings> {
 
   @override
   void dispose() {
+    notificationController.removeListener(notificationListener);
     super.dispose();
   }
 
   notificationListener() {
-    if (mounted) {
-      if (notificationController.navigateChat) {
-        notificationController.navigateChat = false;
-        int chatId = notificationController.navigateChatId;
-        storage.fetchBroup(chatId).then((broup) {
-          if (broup != null) {
-            notificationController.navigateChat = false;
-            notificationController.navigateChatId = -1;
-            navigateToChat(context, settings, broup);
-          }
-        });
-      }
+    if (notificationController.navigateChat) {
+      notificationController.navigateChat = false;
+      int chatId = notificationController.navigateChatId;
+      storage.fetchBroup(chatId).then((broup) {
+        if (broup != null) {
+          notificationController.navigateChat = false;
+          notificationController.navigateChatId = -1;
+          navigateToChat(context, settings, broup);
+        }
+      });
     }
   }
 

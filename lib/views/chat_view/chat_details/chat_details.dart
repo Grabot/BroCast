@@ -96,18 +96,16 @@ class _ChatDetailsState extends State<ChatDetails> {
   }
 
   notificationListener() {
-    if (mounted) {
-      if (notificationController.navigateChat) {
-        notificationController.navigateChat = false;
-        int chatId = notificationController.navigateChatId;
-        storage.fetchBroup(chatId).then((broup) {
-          if (broup != null) {
-            notificationController.navigateChat = false;
-            notificationController.navigateChatId = -1;
-            navigateToChat(context, settings, broup);
-          }
-        });
-      }
+    if (notificationController.navigateChat) {
+      notificationController.navigateChat = false;
+      int chatId = notificationController.navigateChatId;
+      storage.fetchBroup(chatId).then((broup) {
+        if (broup != null) {
+          notificationController.navigateChat = false;
+          notificationController.navigateChatId = -1;
+          navigateToChat(context, settings, broup);
+        }
+      });
     }
   }
 
@@ -265,6 +263,7 @@ class _ChatDetailsState extends State<ChatDetails> {
   @override
   void dispose() {
     socketServices.removeListener(socketListener);
+    notificationController.removeListener(notificationListener);
     chatDescriptionController.dispose();
     chatAliasController.dispose();
     focusNodeDescription.dispose();
@@ -438,20 +437,11 @@ class _ChatDetailsState extends State<ChatDetails> {
   }
 
   addParticipant() {
-    settings.doneRoutes.add(routes.ChatAddParticipantsRoute);
-    Navigator.push(
+    Navigator.pushReplacement(
         context,
         MaterialPageRoute(
             builder: (context) =>
-                BroupAddParticipant(key: UniqueKey(), chat: chat))).then((value) {
-                  print("got back from adding a participant");
-                  // Check if we added a new participant.
-                  getBros(chat, Storage(), settings.getMe()!).then((value) {
-                    setState(() {
-                      socketListener();
-                    });
-                  });
-    });
+                BroupAddParticipant(key: UniqueKey(), chat: chat)));
   }
 
   Widget broCastLogo() {

@@ -95,27 +95,25 @@ class _ChatMessagingState extends State<ChatMessaging> {
   }
 
   notificationListener() {
-    print("chat notification listener ${notificationController.navigateChat}  $mounted");
-    if (mounted) {
-      if (notificationController.navigateChat) {
-        notificationController.navigateChat = false;
-        int chatId = notificationController.navigateChatId;
-        storage.fetchBroup(chatId).then((broup) {
-          if (broup != null) {
-            notificationController.navigateChat = false;
-            notificationController.navigateChatId = -1;
+    print("chat notification listener ${notificationController.navigateChat}");
+    if (notificationController.navigateChat) {
+      notificationController.navigateChat = false;
+      int chatId = notificationController.navigateChatId;
+      storage.fetchBroup(chatId).then((broup) {
+        if (broup != null) {
+          notificationController.navigateChat = false;
+          notificationController.navigateChatId = -1;
 
-            print("navigating to chat???");
-            if (broup.broupId != chat.broupId) {
-              print("changing chat object");
-              chat = broup;
-              retrieveData();
-              messagingChangeNotifier.setBroupId(chat.getBroupId());
-              setState(() {});
-            }
+          print("navigating to chat???");
+          if (broup.broupId != chat.broupId) {
+            print("changing chat object");
+            chat = broup;
+            retrieveData();
+            messagingChangeNotifier.setBroupId(chat.getBroupId());
+            setState(() {});
           }
-        });
-      }
+        }
+      });
     }
   }
 
@@ -239,6 +237,7 @@ class _ChatMessagingState extends State<ChatMessaging> {
 
   @override
   void dispose() {
+    notificationController.removeListener(notificationListener);
     focusAppendText.dispose();
     focusEmojiTextField.dispose();
     socketServices.removeListener(socketListener);
@@ -407,23 +406,11 @@ class _ChatMessagingState extends State<ChatMessaging> {
 
   goToChatDetails() {
     messagingChangeNotifier.setBroupId(-1);
-    settings.doneRoutes.add(routes.ChatDetailsRoute);
-    Navigator.push(
+    Navigator.pushReplacement(
         context,
         MaterialPageRoute(
             builder: (context) =>
-                ChatDetails(key: UniqueKey(), chat: chat))).then((value) {
-                  // It returned from the chat details. It's possible that
-                  // we changed the chat, in this case we update this screen.
-                  if (value is Broup) {
-                    chat = value;
-                    retrieveData();
-                  }
-                  messagingChangeNotifier.setBroupId(chat.getBroupId());
-                  // If we go back here we want to re-render the chat
-                  print("got back from chat details");
-                  setState(() {});
-    });
+                ChatDetails(key: UniqueKey(), chat: chat)));
   }
 
   PreferredSize appBarChat() {
