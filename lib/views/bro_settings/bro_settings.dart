@@ -5,6 +5,8 @@ import 'package:brocast/utils/storage.dart';
 import 'package:brocast/utils/utils.dart';
 import "package:flutter/material.dart";
 
+import '../../utils/notification_controller.dart';
+
 class BroSettings extends StatefulWidget {
   BroSettings({required Key key}) : super(key: key);
 
@@ -19,6 +21,7 @@ class _BroSettingsState extends State<BroSettings> {
   SocketServices socketServices = SocketServices();
 
   Storage storage = Storage();
+  late NotificationController notificationController;
 
   @override
   void initState() {
@@ -27,6 +30,9 @@ class _BroSettingsState extends State<BroSettings> {
     storage = Storage();
     socketServices.checkConnection();
 
+    notificationController = NotificationController();
+    notificationController.addListener(notificationListener);
+
     toggleSwitchKeyboard = settings.getEmojiKeyboardDarkMode();
 
   }
@@ -34,6 +40,22 @@ class _BroSettingsState extends State<BroSettings> {
   @override
   void dispose() {
     super.dispose();
+  }
+
+  notificationListener() {
+    if (mounted) {
+      if (notificationController.navigateChat) {
+        notificationController.navigateChat = false;
+        int chatId = notificationController.navigateChatId;
+        storage.fetchBroup(chatId).then((broup) {
+          if (broup != null) {
+            notificationController.navigateChat = false;
+            notificationController.navigateChatId = -1;
+            navigateToChat(context, settings, broup);
+          }
+        });
+      }
+    }
   }
 
   void toggledEmojiKeyboardDarkMode(darkValue) {

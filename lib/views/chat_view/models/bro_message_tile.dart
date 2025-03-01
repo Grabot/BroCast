@@ -2,9 +2,10 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:intl/intl.dart';
-import 'package:linkable/linkable.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../objects/message.dart';
 import '../../../utils/utils.dart';
@@ -71,6 +72,12 @@ class _BroMessageTileState extends State<BroMessageTile> {
     return borderColour;
   }
 
+  Future<void> _onOpen(LinkableElement link) async {
+    if (!await launchUrl(Uri.parse(link.url))) {
+      throw Exception('Could not launch ${link.url}');
+    }
+  }
+
   Widget getMessageContent() {
     // We show the normal body, unless it's clicked. Than we show the extra info
     if (widget.message.clicked) {
@@ -80,10 +87,10 @@ class _BroMessageTileState extends State<BroMessageTile> {
           return Column(
               children: [
                 test!,
-                Linkable(
+                Linkify(
+                    onOpen: _onOpen,
                     text: widget.message.textMessage!,
-                    textColor: Colors.white,
-                    linkColor: Colors.blue[200],
+                    linkStyle: TextStyle(color: Color(0xffD3D3D3), fontSize: 18),
                     style: simpleTextStyle()
                 )
               ]
@@ -92,17 +99,18 @@ class _BroMessageTileState extends State<BroMessageTile> {
           return test!;
         }
       } else {
-        return Linkable(
+        return Linkify(
+            onOpen: _onOpen,
             text: widget.message.textMessage!,
-            textColor: Colors.white,
-            linkColor: Colors.blue[200],
+            linkStyle: TextStyle(color: Color(0xffD3D3D3), fontSize: 18),
             style: simpleTextStyle()
         );
       }
     } else {
       return Text(
           widget.message.body,
-          style: simpleTextStyle());
+          style: simpleTextStyle()
+      );
     }
   }
 
@@ -114,14 +122,29 @@ class _BroMessageTileState extends State<BroMessageTile> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Container(
-              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-              decoration: BoxDecoration(
-                  gradient: LinearGradient(colors: [
-                    const Color(0x55D3D3D3),
-                    const Color(0x55C0C0C0)
-                  ]),
-                  borderRadius: BorderRadius.all(Radius.circular(12))),
-              child: Text(widget.message.body, style: simpleTextStyle()))
+            constraints: BoxConstraints(minWidth: 10, maxWidth: MediaQuery.of(context).size.width),
+            child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                decoration: BoxDecoration(
+                    gradient: LinearGradient(colors: [
+                      const Color(0x55D3D3D3),
+                      const Color(0x55C0C0C0)
+                    ]),
+                    borderRadius: BorderRadius.all(Radius.circular(12))),
+                child: RichText(
+                  textAlign: TextAlign.center,
+                  text: TextSpan(
+                    children: [
+                      TextSpan(
+                        text: widget.message.body,
+                        style: TextStyle(
+                            color: Colors.white70, fontSize: 16),
+                      ),
+                    ],
+                  ),
+                ),
+            ),
+          )
         ])
         : Container(
         child: new Material(

@@ -8,6 +8,7 @@ import '../../objects/bro.dart';
 import '../../objects/broup.dart';
 import '../../objects/me.dart';
 import '../../services/auth/auth_service_social.dart';
+import '../../utils/notification_controller.dart';
 import '../../utils/storage.dart';
 import '../bro_profile/bro_profile.dart';
 import '../bro_settings/bro_settings.dart';
@@ -36,6 +37,8 @@ class _AddBroupState extends State<AddBroup> {
   TextEditingController broNameController = new TextEditingController();
   TextEditingController broupNameController = new TextEditingController();
 
+  late NotificationController notificationController;
+
   bool showEmojiKeyboard = false;
   bool pressedAddBroup = false;
 
@@ -43,6 +46,10 @@ class _AddBroupState extends State<AddBroup> {
   void initState() {
     super.initState();
     bromotionController.addListener(bromotionListener);
+
+    notificationController = NotificationController();
+    notificationController.addListener(notificationListener);
+
     // Loop over the broups and add all the bro's in those in your id list.
     // It should only be the private chats, so the bro's you have added.
     List<Bro> currentBros = [];
@@ -115,6 +122,21 @@ class _AddBroupState extends State<AddBroup> {
     super.dispose();
   }
 
+  notificationListener() {
+    if (notificationController.navigateChat) {
+      if (mounted) {
+        notificationController.navigateChat = false;
+        int chatId = notificationController.navigateChatId;
+        storage.fetchBroup(chatId).then((broup) {
+          if (broup != null) {
+            notificationController.navigateChat = false;
+            notificationController.navigateChatId = -1;
+            navigateToChat(context, settings, broup);
+          }
+        });
+      }
+    }
+  }
 
   PreferredSize appBarFindBros(BuildContext context) {
     return PreferredSize(

@@ -9,18 +9,13 @@ import 'package:brocast/views/find_bros/find_bros.dart';
 import 'package:brocast/views/sign_in/signin.dart';
 import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 
 import '../../objects/bro.dart';
 import '../../objects/broup.dart';
 import '../../objects/me.dart';
-import '../../utils/notification_util.dart';
-import '../../utils/secure_storage.dart';
+import '../../utils/notification_controller.dart';
 import '../../utils/storage.dart';
-import '../bro_profile/bro_profile.dart';
-import '../bro_settings/bro_settings.dart';
-import '../chat_view/messaging_change_notifier.dart';
 import 'bro_home_change_notifier.dart';
 import 'models/bro_tile.dart';
 import 'package:brocast/constants/route_paths.dart' as routes;
@@ -45,29 +40,47 @@ class _BroCastHomeState extends State<BroCastHome> {
   late Storage storage;
 
   late BroHomeChangeNotifier broHomeChangeNotifier;
+  late NotificationController notificationController;
 
   List<Broup> shownBros = [];
 
   Me? me;
+
   @override
   void initState() {
     super.initState();
     socketServices = SocketServices();
     settings = Settings();
     storage = Storage();
-
+    notificationController = NotificationController();
+    notificationController.addListener(notificationListener);
     broHomeChangeNotifier = BroHomeChangeNotifier();
     broHomeChangeNotifier.addListener(broHomeChangeListener);
     socketServices.addListener(broHomeChangeListener);
 
     // Wait until page is loaded and then call the broHomeChangeListener
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      print("add routes home 1");
       settings.doneRoutes.add(routes.BroHomeRoute);
       broHomeChangeListener();
-
-      NotificationUtil().initializeNotificationUtil();
     });
+  }
+
+  notificationListener() {
+    if (mounted) {
+      if (notificationController.navigateChat) {
+        print("notification listener ${notificationController.navigateChatId}");
+        notificationController.navigateChat = false;
+        int chatId = notificationController.navigateChatId;
+        storage.fetchBroup(chatId).then((broup) {
+          print("after broup fetching $broup");
+          if (broup != null) {
+            notificationController.navigateChat = false;
+            notificationController.navigateChatId = -1;
+            navigateToChat(context, settings, broup);
+          }
+        });
+      }
+    }
   }
 
   broHomeChangeListener() {
@@ -95,6 +108,7 @@ class _BroCastHomeState extends State<BroCastHome> {
     if (me != null && !settings.loggingIn && !settings.retrievedBroData) {
       settings.retrievedBroData = true;
       storage.fetchAllBros().then((brosDB) {
+        print("bros retrieved from db ${brosDB.length}");
         // Map with broId as key
         Map<String, Bro> broMap = {for (var bro in brosDB) bro.getId().toString(): bro};
         List<int> broIdsToRetrieve = [];
@@ -110,6 +124,7 @@ class _BroCastHomeState extends State<BroCastHome> {
             }
           }
         }
+        print("broIdsToRetrieve1: $broIdsToRetrieve");
 
         for (Broup broup in settings.getMe()!.broups) {
           for (int broId in broup.broIds) {
@@ -121,12 +136,14 @@ class _BroCastHomeState extends State<BroCastHome> {
           }
         }
 
+        print("broIdsToRetrieve2: $broIdsToRetrieve");
         if (broIdsToRetrieve.isNotEmpty) {
           AuthServiceSocial().retrieveBros(broIdsToRetrieve).then((brosServer) {
             for (Bro bro in brosServer) {
               for (Broup broup in me.broups) {
                 broup.addBro(bro);
               }
+              print("add bro to db ${bro.getId()}");
               storage.addBro(bro);
             }
             setState(() {});
@@ -147,8 +164,6 @@ class _BroCastHomeState extends State<BroCastHome> {
     // ensure that we only call this once.
     Me? me = settings.getMe();
     // `loggingIn` is set to false when we have finished logging in
-    print("test1 ${settings.retrievedBroupData}");
-    print("test2 ${settings.loggingIn}");
     if (me != null && !settings.loggingIn && !settings.retrievedBroupData) {
       settings.retrievedBroupData = true;
       storage.fetchAllBroups().then((broups) {
@@ -159,7 +174,11 @@ class _BroCastHomeState extends State<BroCastHome> {
         for (Broup broup in me.broups) {
           // Update the properties of the broup from me.bros with the properties from the database
           Broup? dbBroup = broupMap[broup.getBroupId().toString()];
-          if (dbBroup != null) {
+          if (dbBroup == null) {
+            // This is a new broup
+            print("This is a new broup");
+            storage.addBroup(broup);
+          } else {
             print("broup from db ${dbBroup.broupId}  ${dbBroup.broIds}");
             broup
               ..alias = dbBroup.alias
@@ -185,6 +204,7 @@ class _BroCastHomeState extends State<BroCastHome> {
 
             // Only update it if we have to.
             // If it's not in the db yet we update it anyway
+            print("broup update broup ${broup.broupId} ${broup.updateBroup}");
             if (!broup.updateBroup) {
               broupIdsToRetrieve.remove(broup.getBroupId());
             }
@@ -193,9 +213,11 @@ class _BroCastHomeState extends State<BroCastHome> {
         shownBros = me.broups;
         if (broupIdsToRetrieve.isNotEmpty) {
           retrieveServerBroups(broupIdsToRetrieve);
+        } else {
+          print("get bros 1");
+          getBroData();
+          setState(() {});
         }
-        getBroData();
-        setState(() {});
       });
     }
   }
@@ -214,6 +236,7 @@ class _BroCastHomeState extends State<BroCastHome> {
               break;
             }
           }
+          print("retrieved broup ${broup.getBroupId()}");
           if (serverBroup != null) {
             // We update like this to not lost existing properties like messages
             broup.updateBroupDataServer(serverBroup);
@@ -223,6 +246,8 @@ class _BroCastHomeState extends State<BroCastHome> {
           }
         }
       }
+      print("get bros 2");
+      getBroData();
       setState(() {});
     });
   }
@@ -417,6 +442,7 @@ class _BroCastHomeState extends State<BroCastHome> {
         exitApp();
         break;
       case 5:
+        // TODO: remove all messages? Add warning about removing all messages?
         Me? me = settings.getMe();
         if (me != null) {
           socketServices.leaveRoomSolo(me.getId());
@@ -424,6 +450,7 @@ class _BroCastHomeState extends State<BroCastHome> {
         settings.logout();
         settings.setLoggingIn(true);
         settings.retrievedBroupData = false;
+        settings.retrievedBroData = false;
         // TODO: put this back only for debugging
         // SecureStorage().logout();
         storage.clearDatabase();

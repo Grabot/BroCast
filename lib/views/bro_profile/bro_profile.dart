@@ -7,6 +7,7 @@ import 'package:brocast/utils/utils.dart';
 import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
 import "package:flutter/material.dart";
 import '../../objects/me.dart';
+import '../../utils/notification_controller.dart';
 
 
 class BroProfile extends StatefulWidget {
@@ -40,16 +41,36 @@ class _BroProfileState extends State<BroProfile> {
   TextEditingController newPasswordController2 = new TextEditingController();
 
   late Storage storage;
+  late NotificationController notificationController;
 
   @override
   void initState() {
     super.initState();
+
+    notificationController = NotificationController();
+    notificationController.addListener(notificationListener);
 
     storage = Storage();
     Me? me = settings.getMe();
     bromotionChangeController.addListener(bromotionListener);
     if (me != null) {
       bromotionChangeController.text = me.getBromotion();
+    }
+  }
+
+  notificationListener() {
+    if (mounted) {
+      if (notificationController.navigateChat) {
+        notificationController.navigateChat = false;
+        int chatId = notificationController.navigateChatId;
+        storage.fetchBroup(chatId).then((broup) {
+          if (broup != null) {
+            notificationController.navigateChat = false;
+            notificationController.navigateChatId = -1;
+            navigateToChat(context, settings, broup);
+          }
+        });
+      }
     }
   }
 

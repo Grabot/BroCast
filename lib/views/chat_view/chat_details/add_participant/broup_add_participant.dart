@@ -11,6 +11,7 @@ import 'package:flutter/scheduler.dart';
 import '../../../../objects/bro.dart';
 import '../../../../objects/broup.dart';
 import '../../../../objects/me.dart';
+import '../../../../utils/notification_controller.dart';
 import '../../../../utils/storage.dart';
 import '../../../bro_home/bro_home.dart';
 import '../../../bro_profile/bro_profile.dart';
@@ -41,6 +42,8 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> {
   TextEditingController bromotionController = new TextEditingController();
   TextEditingController broNameController = new TextEditingController();
 
+  late NotificationController notificationController;
+
   @override
   void initState() {
     super.initState();
@@ -48,6 +51,9 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> {
     socketServices.checkConnection();
     socketServices.addListener(socketListener);
     bromotionController.addListener(bromotionListener);
+
+    notificationController = NotificationController();
+    notificationController.addListener(notificationListener);
 
     broupAddBros.clear();
     broupAddBrosShownBros.clear();
@@ -82,6 +88,22 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> {
   }
 
   socketListener() {
+  }
+
+  notificationListener() {
+    if (mounted) {
+      if (notificationController.navigateChat) {
+        notificationController.navigateChat = false;
+        int chatId = notificationController.navigateChatId;
+        Storage().fetchBroup(chatId).then((broup) {
+          if (broup != null) {
+            notificationController.navigateChat = false;
+            notificationController.navigateChatId = -1;
+            navigateToChat(context, settings, broup);
+          }
+        });
+      }
+    }
   }
 
   @override
@@ -141,30 +163,6 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> {
       broupAddBrosShownBros = broupAddBros;
     }
     setState(() {});
-  }
-
-  navigateToChat() {
-    if (settings.doneRoutes.contains(routes.ChatRoute)) {
-      // We want to pop until we reach the BroHomeRoute
-      // We remove one, because it's this page.
-      settings.doneRoutes.removeLast();
-      for (int i = 0; i < 200; i++) {
-        String route = settings.doneRoutes.removeLast();
-        Navigator.pop(context);
-        if (route == routes.ChatRoute) {
-          settings.doneRoutes.add(routes.ChatRoute);
-          break;
-        }
-        if (settings.doneRoutes.length == 0) {
-          break;
-        }
-      }
-    } else {
-      // TODO: How to test this?
-      settings.doneRoutes = [];
-      Navigator.pushReplacement(context,
-          MaterialPageRoute(builder: (context) => BroCastHome(key: UniqueKey())));
-    }
   }
 
   navigateToDetails() {

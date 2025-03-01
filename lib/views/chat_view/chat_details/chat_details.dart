@@ -10,6 +10,7 @@ import '../../../objects/bro.dart';
 import '../../../objects/me.dart';
 import '../../../services/auth/auth_service_settings.dart';
 import '../../../services/auth/auth_service_social.dart';
+import '../../../utils/notification_controller.dart';
 import '../../../utils/storage.dart';
 import '../../bro_home/bro_home.dart';
 import '../../bro_profile/bro_profile.dart';
@@ -65,6 +66,8 @@ class _ChatDetailsState extends State<ChatDetails> {
   // In that case different options will be available
   Map<String, bool> broAddedStatus = {};
 
+  late NotificationController notificationController;
+
   @override
   void initState() {
     super.initState();
@@ -73,6 +76,9 @@ class _ChatDetailsState extends State<ChatDetails> {
     amountInGroup = chat.getBroIds().length;
     socketServices.checkConnection();
     socketServices.addListener(socketListener);
+
+    notificationController = NotificationController();
+    notificationController.addListener(notificationListener);
 
     chatDescriptionController.text = chat.broupDescription;
     chatAliasController.text = chat.alias;
@@ -87,6 +93,22 @@ class _ChatDetailsState extends State<ChatDetails> {
       setState(() {});
     });
 
+  }
+
+  notificationListener() {
+    if (mounted) {
+      if (notificationController.navigateChat) {
+        notificationController.navigateChat = false;
+        int chatId = notificationController.navigateChatId;
+        storage.fetchBroup(chatId).then((broup) {
+          if (broup != null) {
+            notificationController.navigateChat = false;
+            notificationController.navigateChatId = -1;
+            navigateToChat(context, settings, broup);
+          }
+        });
+      }
+    }
   }
 
   checkAdmin() {
@@ -222,32 +244,6 @@ class _ChatDetailsState extends State<ChatDetails> {
     showToastMessage("Broup muting failed at this time.");
   }
 
-
-
-  navigateToChat() {
-    MessagingChangeNotifier().setBroupId(chat.broupId);
-    if (settings.doneRoutes.contains(routes.ChatRoute)) {
-      // We want to pop until we reach the BroHomeRoute
-      // We remove one, because it's this page.
-      settings.doneRoutes.removeLast();
-      for (int i = 0; i < 200; i++) {
-        String route = settings.doneRoutes.removeLast();
-        Navigator.pop(context);
-        if (route == routes.ChatRoute) {
-          settings.doneRoutes.add(routes.ChatRoute);
-          break;
-        }
-        if (settings.doneRoutes.length == 0) {
-          break;
-        }
-      }
-    } else {
-      settings.doneRoutes = [];
-      Navigator.pushReplacement(context,
-          MaterialPageRoute(builder: (context) => ChatMessaging(key: UniqueKey(), chat: chat)));
-    }
-  }
-
   void backButtonFunctionality() {
     if (changeDescription) {
       setState(() {
@@ -262,7 +258,7 @@ class _ChatDetailsState extends State<ChatDetails> {
         FocusScope.of(context).unfocus();
       });
     } else {
-      navigateToChat();
+      navigateToChat(context, settings, chat);
     }
   }
 
@@ -313,7 +309,7 @@ class _ChatDetailsState extends State<ChatDetails> {
         navigateToSettings(context, settings);
         break;
       case 2:
-        navigateToChat();
+        navigateToChat(context, settings, chat);
         break;
       case 3:
         navigateToHome(context, settings);
@@ -340,7 +336,6 @@ class _ChatDetailsState extends State<ChatDetails> {
   updateDescription() {
     if (previousDescription != chatDescriptionController.text) {
       String newBroupDescription = chatDescriptionController.text;
-      print("changing the description to $newBroupDescription");
       AuthServiceSettings().changeDescriptionBroup(chat.getBroupId(), newBroupDescription).then((val) {
         if (val) {
           // The details are updated via sockets.
@@ -363,7 +358,6 @@ class _ChatDetailsState extends State<ChatDetails> {
   updateAlias() {
     if (previousAlias != chatAliasController.text) {
       String newBroupAlias = chatAliasController.text;
-      print("changing the alias to $newBroupAlias");
       AuthServiceSettings().changeAliasBroup(chat.getBroupId(), newBroupAlias).then((val) {
         if (val) {
           // Since this is only visible for the bro
@@ -405,7 +399,6 @@ class _ChatDetailsState extends State<ChatDetails> {
   saveColour() {
     if (currentColor != chat.getColor()) {
       String newBroupColour = toHex(currentColor);
-      print("New colour: $newBroupColour");
       AuthServiceSettings().changeColourBroup(chat.getBroupId(), newBroupColour).then((val) {
         if (val) {
           // The details are updated via sockets.
@@ -420,66 +413,8 @@ class _ChatDetailsState extends State<ChatDetails> {
     }
   }
 
-  void broupAliasUpdateFailed() {
-    chatAliasController.text = previousAlias;
-    showToastMessage("Updating the bro alias has failed");
-  }
-
-  void broupDetailUpdateFailed() {
-    currentColor = previousColor!;
-    circleColorPickerController.color = previousColor!;
-    showToastMessage("Updating the bro chat has failed");
-  }
-
-  void broupAddAdminFailed() {
-    showToastMessage("Adding the bro as admin has failed");
-  }
-
-  void broupDismissAdminSuccess(var data) {
-    if (data.containsKey("result")) {
-      bool result = data["result"];
-      if (result) {
-        // for (Bro bro in chat.getBroupBros()) {
-        //   if (bro.id == data["old_admin"]) {
-        //     bro.setAdmin(false);
-        //     chat.dismissAdmin(data["old_admin"]);
-        //     // if (settings.getBroId() == data["old_admin"]) {
-        //     //   meAdmin = false;
-        //     // }
-        //     break;
-        //   }
-        // }
-        setState(() {});
-      } else {
-        broupAddAdminFailed();
-      }
-    } else {
-      broupAddAdminFailed();
-    }
-  }
-
-  void broupDismissAdminFailed() {
-    showToastMessage("Dismissing the bro from his admin role has failed");
-  }
-
-  void broupRemoveBroFailed() {
-    showToastMessage("Removing the bro from the broup has failed");
-  }
-
-  void broupColourUpdateFailed() {
-    chatDescriptionController.text = previousDescription;
-    showToastMessage("Updating the bro colour has failed");
-  }
-
   onColorChange(Color colour) {
     currentColor = colour;
-  }
-
-  Widget participantsList() {
-    return Container(
-        alignment: Alignment.center,
-        child: brosInBroupList()
-    );
   }
 
   Widget brosInBroupList() {
@@ -740,6 +675,26 @@ class _ChatDetailsState extends State<ChatDetails> {
     );
   }
 
+  Widget chatDetailsBro() {
+    return Column(
+      children: [
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 24),
+          alignment: Alignment.centerLeft,
+          child: Text(
+              "Bro",
+              style: simpleTextStyle()),
+        ),
+        SizedBox(height: 10),
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 24),
+          alignment: Alignment.center,
+          child: brosInBroupList(),
+        ),
+      ],
+    );
+  }
+
   Widget chatDetailsParticipants() {
     return Column(
       children: [
@@ -826,6 +781,30 @@ class _ChatDetailsState extends State<ChatDetails> {
             ]));
   }
 
+  Widget blockBroupWidget() {
+    // only for private messages, basically the same as leaving the broup
+    return TextButton(
+        style: ButtonStyle(
+          foregroundColor:
+          WidgetStateProperty.all<Color>(
+              Colors.red),
+        ),
+        onPressed: () {
+          showDialogBlockBro(context, chat.getBroupName());
+        },
+        child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.block,
+                  color: Colors.red),
+              SizedBox(width: 20),
+              Text(
+                'Block Bro',
+                style: simpleTextStyle(),
+              ),
+            ]));
+  }
+
   Widget leaveBroupWidget() {
     return TextButton(
         style: ButtonStyle(
@@ -859,11 +838,11 @@ class _ChatDetailsState extends State<ChatDetails> {
             SizedBox(height: 20),
             broupDescriptionWidget(),
             SizedBox(height: 50),
-            chatDetailsParticipants(),
+            chat.private ? Container() : chatDetailsParticipants(),
             SizedBox(height: 10),
             muteChatWidget(),
             SizedBox(height: 10),
-            leaveBroupWidget(),
+            chat.private ? blockBroupWidget() : leaveBroupWidget(),
             SizedBox(height: 10),
       ]),
     );
@@ -919,7 +898,7 @@ class _ChatDetailsState extends State<ChatDetails> {
                     SizedBox(height: 20),
                     shownDetails(),
                     reportBroupWidget(),
-                    SizedBox(height: 20),
+                    SizedBox(height: 200),
                   ]),
                 ),
               ),
@@ -941,6 +920,32 @@ class _ChatDetailsState extends State<ChatDetails> {
       }
     });
     Navigator.of(context).pop();
+  }
+
+  showDialogBlockBro(BuildContext context, String broName) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: new Text("Block Bro $broName!"),
+          content: new Text("Are you sure you want to block this bro? The former bro will no longer be able to send you messages."),
+          actions: <Widget>[
+            new TextButton(
+              child: new Text("Cancel"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            new TextButton(
+              child: new Text("Block"),
+              onPressed: () {
+                exitBroup();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   void showDialogExitBroup(BuildContext context, String broupName) {

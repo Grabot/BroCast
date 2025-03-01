@@ -1,4 +1,3 @@
-const String BroupRoute = 'Broup';
 const String BroHomeRoute = 'Home';
 const String ChatRoute = 'Chat';
 const String ChatDetailsRoute = 'ChatDetails';
@@ -10,3 +9,6 @@ const String ProfileRoute = 'Profile';
 const String SettingsRoute = 'Settings';
 const String FindBroRoute = 'FindBro';
 const String AddBroupRoute = 'AddBroup';
+
+const String TestPage1Route = 'TestPage1';
+const String TestPage2Route = 'TestPage2';

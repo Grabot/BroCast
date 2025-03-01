@@ -146,7 +146,6 @@ Future<bool> getMessages(int page, Broup chat, Storage storage) async {
   return allMessagesDBRetrieved;
 }
 
-
 Future<bool> fetchExtraMessages(int offSet, Broup chat, Storage storage) async {
   bool allMessagesDBRetrieved = false;
   List<Message> newMessages = await storage.fetchMessages(chat.getBroupId(), offSet);

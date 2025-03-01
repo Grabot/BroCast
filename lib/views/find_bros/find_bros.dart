@@ -7,6 +7,8 @@ import 'package:flutter/scheduler.dart';
 
 import '../../objects/bro.dart';
 import '../../services/auth/auth_service_social.dart';
+import '../../utils/notification_controller.dart';
+import '../../utils/storage.dart';
 import '../add_broup/add_broup.dart';
 import '../bro_profile/bro_profile.dart';
 import '../bro_settings/bro_settings.dart';
@@ -38,9 +40,15 @@ class _FindBrosState extends State<FindBros> {
 
   String searchedBroNothingFound = "";
 
+  late NotificationController notificationController;
+
   @override
   void initState() {
     super.initState();
+
+    notificationController = NotificationController();
+    notificationController.addListener(notificationListener);
+
     bromotionController.addListener(bromotionListener);
   }
 
@@ -61,6 +69,22 @@ class _FindBrosState extends State<FindBros> {
     broNameController.dispose();
     bromotionController.dispose();
     super.dispose();
+  }
+
+  notificationListener() {
+    if (mounted) {
+      if (notificationController.navigateChat) {
+        notificationController.navigateChat = false;
+        int chatId = notificationController.navigateChatId;
+        Storage().fetchBroup(chatId).then((broup) {
+          if (broup != null) {
+            notificationController.navigateChat = false;
+            notificationController.navigateChatId = -1;
+            navigateToChat(context, settings, broup);
+          }
+        });
+      }
+    }
   }
 
   void onTapTextField() {

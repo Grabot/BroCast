@@ -2,10 +2,10 @@ import 'dart:async';
 import 'package:brocast/constants/route_paths.dart' as routes;
 import 'package:brocast/objects/broup.dart';
 import 'package:brocast/objects/message.dart';
+import 'package:brocast/utils/notification_controller.dart';
 import 'package:brocast/utils/settings.dart';
 import 'package:brocast/utils/socket_services.dart';
 import 'package:brocast/utils/utils.dart';
-import 'package:brocast/views/bro_home/bro_home.dart';
 import 'package:brocast/views/chat_view/messaging_change_notifier.dart';
 import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
 import 'package:flutter/material.dart';
@@ -14,8 +14,6 @@ import '../../../objects/bro.dart';
 import '../../../services/auth/auth_service_social.dart';
 import '../../utils/storage.dart';
 import '../../objects/me.dart';
-import '../bro_profile/bro_profile.dart';
-import '../bro_settings/bro_settings.dart';
 import 'chat_details/chat_details.dart';
 import 'message_util.dart';
 import 'models/bro_message_tile.dart';
@@ -50,6 +48,7 @@ class _ChatMessagingState extends State<ChatMessaging> {
 
   late Broup chat;
   late Storage storage;
+  late NotificationController notificationController;
 
   int amountViewed = 0;
   bool allMessagesDBRetrieved = false;
@@ -71,6 +70,9 @@ class _ChatMessagingState extends State<ChatMessaging> {
     socketServices.addListener(socketListener);
     messagingChangeNotifier.addListener(socketListener);
 
+    notificationController = NotificationController();
+    notificationController.addListener(notificationListener);
+
     messageScrollController.addListener(() {
       if (!busyRetrieving && !allMessagesDBRetrieved) {
         double distanceToTop =
@@ -90,6 +92,31 @@ class _ChatMessagingState extends State<ChatMessaging> {
     SchedulerBinding.instance.addPostFrameCallback((_) {
       retrieveData();
     });
+  }
+
+  notificationListener() {
+    print("chat notification listener ${notificationController.navigateChat}  $mounted");
+    if (mounted) {
+      if (notificationController.navigateChat) {
+        notificationController.navigateChat = false;
+        int chatId = notificationController.navigateChatId;
+        storage.fetchBroup(chatId).then((broup) {
+          if (broup != null) {
+            notificationController.navigateChat = false;
+            notificationController.navigateChatId = -1;
+
+            print("navigating to chat???");
+            if (broup.broupId != chat.broupId) {
+              print("changing chat object");
+              chat = broup;
+              retrieveData();
+              messagingChangeNotifier.setBroupId(chat.getBroupId());
+              setState(() {});
+            }
+          }
+        });
+      }
+    }
   }
 
   checkIsAdmin() {
@@ -141,6 +168,9 @@ class _ChatMessagingState extends State<ChatMessaging> {
           isLoadingMessages = false;
         });
       });
+      print("chat id: ${chat.broupId}");
+      Me? me = settings.getMe();
+      print("me: $me");
       getBros(chat, storage, settings.getMe()!).then((value) {
         checkIsAdmin();
         setState(() {

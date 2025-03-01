@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'package:brocast/utils/notification_util.dart';
+import 'package:brocast/utils/notification_controller.dart';
 import 'package:brocast/utils/settings.dart';
 import 'package:brocast/utils/storage.dart';
 import 'package:brocast/views/bro_home/bro_home.dart';
@@ -9,9 +9,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:url_launcher/url_launcher.dart';
-
 import '../../constants/base_url.dart';
 import '../../services/auth/auth_service_login.dart';
 import '../../services/auth/models/login_bro_name_request.dart';
@@ -57,7 +55,6 @@ class _SignInState extends State<SignIn> {
   bool loginBroName = true;
   bool signUpMode = false;
 
-  NotificationUtil? notificationUtil;
   SecureStorage secureStorage = SecureStorage();
 
   @override
@@ -73,8 +70,8 @@ class _SignInState extends State<SignIn> {
       emojiKeyboardDarkMode = settings.getEmojiKeyboardDarkMode();
     });
 
-    notificationUtil = NotificationUtil();
-    notificationUtil!.initializeNotificationUtil();
+    NotificationController.requestFirebaseToken();
+    NotificationController.requestPermission();
 
     // We're adding listeners to the focusnodes to keep these widgets in view
     focusEmail.addListener(() {
@@ -231,10 +228,8 @@ class _SignInState extends State<SignIn> {
     isLoading = true;
     AuthServiceLogin authService = AuthServiceLogin();
     // We get the FCM token to send it to the server with the registration
-    String? FCMToken;
-    if (notificationUtil != null) {
-      FCMToken = await notificationUtil!.FCMTokenDevice;
-    }
+    String FCMToken = NotificationController().firebaseTokenDevice;
+    // String? FCMToken = "";
     int platform = Platform.isAndroid ? 0 : 1;
     RegisterRequest registerRequest = RegisterRequest(emailRegister, broNameRegister, bromotionRegister, passwordRegister, FCMToken, platform);
     authService.getRegister(registerRequest).then((loginResponse) {
@@ -293,9 +288,9 @@ class _SignInState extends State<SignIn> {
           // We only do that here, if the user logs in via tokens we don't
           // check the FCM token since it will probably be the same.
           // We assume that getting the local fcm token was set
-          if (notificationUtil != null) {
-            notificationUtil!.getFCMTokenNotificationUtil(loginResponse.getFCMToken());
-          }
+
+          NotificationController().getFCMTokenNotificationUtil(loginResponse.getFCMToken());
+
         } else if (!loginResponse.getResult()) {
           showToastMessage(loginResponse.getMessage());
           isLoading = false;

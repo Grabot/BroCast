@@ -7,11 +7,9 @@ import 'package:brocast/views/bro_home/bro_home.dart';
 import 'package:brocast/views/sign_in/signin.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:jwt_decode/jwt_decode.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../utils/game_start_login.dart';
-import '../../utils/secure_storage.dart';
-import 'package:brocast/constants/route_paths.dart' as routes;
+import '../../utils/notification_controller.dart';
 
 class OpeningScreen extends StatefulWidget {
   @override
@@ -24,6 +22,7 @@ class _OpeningScreenState extends State<OpeningScreen> {
 
   @override
   void initState() {
+    NotificationController.startListeningNotificationEvents();
     HelperFunction.getEULA().then((val) {
       if (val == null || val == false) {
         // first time opening this app!

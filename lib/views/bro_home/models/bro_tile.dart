@@ -85,7 +85,7 @@ class _BroTileState extends State<BroTile> {
                           child: Column(children: [
                             widget.chat.isRemoved()
                                 ? Icon(
-                                Icons.person_remove, // Block or left can't both be true
+                                Icons.block,
                                 color:
                                 getTextColor(widget.chat.getColor())
                                     .withAlpha(160))

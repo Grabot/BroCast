@@ -25,6 +25,10 @@ class Broup {
   bool mute = false;
   bool deleted = false;
   bool removed = false;
+  // The `blocked` boolean might be confusing, it's only true for the bro that did the blocking
+  // This can only be true in a private chat
+  // Both bros will have their broup set to `removed` but only the blocker can unblock it again
+  bool blocked = false;
   Uint8List? avatar;
   late List<Bro> broupBros;
   // Chat details. Initialized with empty values
@@ -241,6 +245,13 @@ class Broup {
         avatar = base64Decode(chat_details["avatar"].replaceAll("\n", ""));
       }
       lastMessageId = chat_details.containsKey("current_message_id") ? chat_details["current_message_id"] : 0;
+      if (private && removed) {
+        if (adminIds.contains(Settings().getMe()!.getId())) {
+          // In a private chat the admin id is not needed, so it is repurposed for the blocked status
+          // The id of the bro that blocked the chat is stored in the adminIds
+          this.blocked = true;
+        }
+      }
     }
     broupBros = [];
     messages = [];
@@ -268,6 +279,7 @@ class Broup {
     map['mute'] = mute ? 1 : 0;
     map['deleted'] = deleted ? 1 : 0;
     map['removed'] = removed ? 1 : 0;
+    map['blocked'] = blocked ? 1 : 0;
     map['lastMessageId'] = lastMessageId;
     map['updateBroup'] = updateBroup ? 1 : 0;
     map['newMessages'] = newMessages ? 1 : 0;
@@ -299,6 +311,7 @@ class Broup {
     mute = map['mute'] == 1;
     deleted = map['deleted'] == 1;
     removed = map['removed'] == 1;
+    blocked = map['blocked'] == 1;
     lastMessageId = map['lastMessageId'];
     updateBroup = map['updateBroup'] == 1;
     newMessages = map['newMessages'] == 1;
@@ -331,6 +344,13 @@ class Broup {
       ..lastMessageId = this.lastMessageId
       ..messages = this.messages
       ..avatar = this.avatar;
+    if (serverBroup.private && serverBroup.removed) {
+      if (serverBroup.adminIds.contains(Settings().getMe()!.getId())) {
+        // In a private chat the admin id is not needed, so it is repurposed for the blocked status
+        // The id of the bro that blocked the chat is stored in the adminIds
+        this.blocked = true;
+      }
+    }
   }
 
   updateDateTiles(Message message) {
@@ -394,9 +414,7 @@ class Broup {
     // `isRead` 0 indicates it was successfully send to the server
     message.isRead = 0;
     this.messages.insert(0, message);
-    if (!message.isInformation()) {
-      checkReceivedMessages(message);
-    }
+    checkReceivedMessages(message);
   }
 
   checkReceivedMessages(Message message) {
@@ -478,6 +496,7 @@ class Broup {
   readMessages() {
     AuthServiceSocial().readMessages(getBroupId()).then((value) {
       if (value) {
+        unreadMessages = 0;
         if (MessagingChangeNotifier().getBroupId() == broupId) {
           MessagingChangeNotifier().notify();
         }

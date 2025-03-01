@@ -18,7 +18,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.5.0+26
 
 environment:
-  sdk: ">=2.12.0 <4.0.0"
+  sdk: ">=2.17.0 <4.0.0"
 
 dependencies:
   flutter:
@@ -30,11 +30,16 @@ dependencies:
   intl: ^0.20.1
   tuple: ^2.0.2
   emoji_keyboard_flutter: ^1.6.2
-  firebase_messaging: ^15.2.3
-  flutter_local_notifications: ^18.0.1
+#  firebase_messaging: ^15.2.3
+#  flutter_local_notifications: ^18.0.1
+  awesome_notifications_core: ^0.10.1
+  awesome_notifications: ^0.10.1
+  awesome_notifications_fcm: ^0.10.1
   firebase_core: ^3.12.0
+  firebase_analytics: ^11.4.4
+  firebase_crashlytics: ^4.3.4
   flutter_circle_color_picker: ^0.3.0
-  linkable: ^3.0.2
+  flutter_linkify: ^6.0.0
   url_launcher: ^6.3.1
   get_it: ^8.0.3
   #  notification_permissions: ^0.6.1

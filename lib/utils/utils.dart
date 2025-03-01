@@ -1,7 +1,7 @@
 import 'dart:math';
 import 'dart:typed_data';
 
-import 'package:brocast/utils/notification_util.dart';
+import 'package:brocast/utils/notification_controller.dart';
 import 'package:brocast/views/bro_home/bro_home_change_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:jwt_decode/jwt_decode.dart';
@@ -13,6 +13,7 @@ import '../services/auth/models/login_response.dart';
 import '../views/bro_home/bro_home.dart';
 import '../views/bro_profile/bro_profile.dart';
 import '../views/bro_settings/bro_settings.dart';
+import '../views/chat_view/chat_messaging.dart';
 import '../views/chat_view/messaging_change_notifier.dart';
 import 'settings.dart';
 import 'socket_services.dart';
@@ -35,7 +36,7 @@ InputDecoration textFieldInputDecoration(String hintText) {
 }
 
 TextStyle simpleTextStyle() {
-  return TextStyle(color: Colors.white, fontSize: 16);
+  return TextStyle(color: Colors.white, fontSize: 18);
 }
 
 showToastMessage(String message) {
@@ -232,9 +233,14 @@ navigateToChat(BuildContext context, Settings settings, Broup chat) {
       }
     }
   } else {
-    settings.doneRoutes = [];
-    Navigator.pushReplacement(context,
-        MaterialPageRoute(builder: (context) => BroCastHome(key: UniqueKey())));
+    settings.doneRoutes.add(routes.ChatRoute);
+    Navigator.push(context, MaterialPageRoute(
+          builder: (context) => ChatMessaging(
+          key: UniqueKey(),
+          chat: chat
+        )
+      ),
+    );
   }
 }
 

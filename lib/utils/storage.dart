@@ -61,6 +61,7 @@ class Storage {
             mute INTEGER,
             deleted INTEGER,
             removed INTEGER,
+            blocked INTEGER,
             lastMessageId INTEGER,
             updateBroup INTEGER,
             brosUpdate TEXT,

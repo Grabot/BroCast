@@ -121,6 +121,18 @@ class SocketServices extends ChangeNotifier {
         bool broupUpdated = data["broup_updated"];
         broup.setUpdateBroup(broupUpdated);
       }
+
+      if (data.containsKey("chat_blocked")) {
+        // Block chat can only be a private chat
+        if (broup.private) {
+          int chatBlockedId = data["chat_blocked"];
+          // Chat blocked is an id, of which bro did the blocking.
+          if (Settings().getMe()!.getId() == chatBlockedId) {
+            broup.blocked = true;
+          }
+          broup.removed = true;
+        }
+      }
       Storage().updateBroup(broup);
       notifyListeners();
     }

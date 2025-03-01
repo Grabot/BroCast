@@ -2,9 +2,10 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:intl/intl.dart';
-import 'package:linkable/linkable.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../objects/message.dart';
 import '../../../utils/utils.dart';
@@ -83,6 +84,12 @@ class _BroupMessageTileState extends State<BroupMessageTile> {
     return borderColour;
   }
 
+  Future<void> _onOpen(LinkableElement link) async {
+    if (!await launchUrl(Uri.parse(link.url))) {
+      throw Exception('Could not launch ${link.url}');
+    }
+  }
+
   Widget getMessageContent() {
     // We show the normal body, unless it's clicked. Than we show the extra info
     if (widget.message.clicked) {
@@ -92,10 +99,10 @@ class _BroupMessageTileState extends State<BroupMessageTile> {
           return Column(
               children: [
                 test!,
-                Linkable(
+                Linkify(
+                  onOpen: _onOpen,
                     text: widget.message.textMessage!,
-                    textColor: Colors.white,
-                    linkColor: Colors.blue[200],
+                    linkStyle: TextStyle(color: Color(0xffFFC0CB), fontSize: 18),
                     style: simpleTextStyle()
                 )
               ]
@@ -104,17 +111,18 @@ class _BroupMessageTileState extends State<BroupMessageTile> {
           return test!;
         }
       } else {
-        return Linkable(
+        return Linkify(
+            onOpen: _onOpen,
             text: widget.message.textMessage!,
-            textColor: Colors.white,
-            linkColor: Colors.blue[200],
+            linkStyle: TextStyle(color: Color(0xffFFC0CB), fontSize: 18),
             style: simpleTextStyle()
         );
       }
     } else {
       return Text(
           widget.message.body,
-          style: simpleTextStyle());
+          style: simpleTextStyle()
+      );
     }
   }
 
@@ -126,6 +134,8 @@ class _BroupMessageTileState extends State<BroupMessageTile> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Container(
+            constraints: BoxConstraints(minWidth: 10, maxWidth: MediaQuery.of(context).size.width),
+            child: Container(
               padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
               decoration: BoxDecoration(
                   gradient: LinearGradient(colors: [
@@ -133,7 +143,20 @@ class _BroupMessageTileState extends State<BroupMessageTile> {
                     const Color(0x55C0C0C0)
                   ]),
                   borderRadius: BorderRadius.all(Radius.circular(12))),
-              child: Text(widget.message.body, style: simpleTextStyle()))
+              child: RichText(
+                textAlign: TextAlign.center,
+                text: TextSpan(
+                  children: [
+                    TextSpan(
+                      text: widget.message.body,
+                      style: TextStyle(
+                          color: Colors.white70, fontSize: 16),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
         ])
         : Container(
         margin: EdgeInsets.only(top: 12),
@@ -160,43 +183,45 @@ class _BroupMessageTileState extends State<BroupMessageTile> {
                 ),
               ),
             ),
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 12),
-              width: MediaQuery.of(context).size.width,
-              alignment: widget.myMessage
-                  ? Alignment.bottomRight
-                  : Alignment.bottomLeft,
-              child: new InkWell(
-                customBorder: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(42),
-                ),
-                onLongPress: _showMessageDetailPopupMenu,
-                onTapDown: _storePosition,
-                onTap: () {
-                  selectMessage(context);
-                },
-                child: Container(
-                  padding:
-                  EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                  decoration: BoxDecoration(
-                      border: Border.all(
-                        color: getBorderColour(),
-                        width: 2,
-                      ),
-                      color: widget.myMessage
-                          ? Color(0xFF009E00)
-                          : Color(0xFF0060BB),
-                      borderRadius: widget.myMessage
-                          ? BorderRadius.only(
-                          topLeft: Radius.circular(42),
-                          topRight: Radius.circular(42),
-                          bottomLeft: Radius.circular(42))
-                          : BorderRadius.only(
-                          topLeft: Radius.circular(42),
-                          topRight: Radius.circular(42),
-                          bottomRight: Radius.circular(42))),
+            GestureDetector(
+              onTap: () {
+                print("Message clicked");
+              },
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 12),
+                width: MediaQuery.of(context).size.width,
+                alignment: widget.myMessage
+                    ? Alignment.bottomRight
+                    : Alignment.bottomLeft,
+                child: GestureDetector(
+                  onLongPress: _showMessageDetailPopupMenu,
+                  onTapDown: _storePosition,
+                  onTap: () {
+                    selectMessage(context);
+                  },
                   child: Container(
+                    padding:
+                    EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                    decoration: BoxDecoration(
+                        border: Border.all(
+                          color: getBorderColour(),
+                          width: 2,
+                        ),
+                        color: widget.myMessage
+                            ? Color(0xFF009E00)
+                            : Color(0xFF0060BB),
+                        borderRadius: widget.myMessage
+                            ? BorderRadius.only(
+                            topLeft: Radius.circular(42),
+                            topRight: Radius.circular(42),
+                            bottomLeft: Radius.circular(42))
+                            : BorderRadius.only(
+                            topLeft: Radius.circular(42),
+                            topRight: Radius.circular(42),
+                            bottomRight: Radius.circular(42))),
+                    child: Container(
                       child: getMessageContent()
+                    ),
                   ),
                 ),
               ),
