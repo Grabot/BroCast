@@ -12,6 +12,8 @@ class SecureStorage {
   final String _bromotion = 'bromotion';
   final String _password = 'password';
   final String _email = 'email';
+  final String _avatar = 'avatar';
+  final String _avatarDefault = 'avatarDefault';
 
   Future setAccessToken(String accessToken) async {
     await storage.write(key: _keyAccessToken, value: accessToken);
@@ -69,6 +71,22 @@ class SecureStorage {
     return await storage.read(key: _email);
   }
 
+  Future setAvatar(String avatar) async {
+    await storage.write(key: _avatar, value: avatar);
+  }
+
+  Future<String?> getAvatar() async {
+    return await storage.read(key: _avatar);
+  }
+
+  Future setAvatarDefault(String avatarDefault) async {
+    await storage.write(key: _avatarDefault, value: avatarDefault);
+  }
+
+  Future<String?> getAvatarDefault() async {
+    return await storage.read(key: _avatarDefault);
+  }
+
   Future logout() async {
     await storage.write(key: _keyAccessToken, value: null);
     await storage.write(key: _keyRefreshToken, value: null);
@@ -76,5 +94,7 @@ class SecureStorage {
     await storage.write(key: _bromotion, value: null);
     await storage.write(key: _password, value: null);
     await storage.write(key: _email, value: null);
+    await storage.write(key: _avatar, value: null);
+    await storage.write(key: _avatarDefault, value: null);
   }
 }

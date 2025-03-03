@@ -15,6 +15,7 @@ import '../../../utils/storage.dart';
 import '../../bro_home/bro_home.dart';
 import '../../bro_profile/bro_profile.dart';
 import '../../bro_settings/bro_settings.dart';
+import '../../change_avatar/change_avatar.dart';
 import '../chat_messaging.dart';
 import '../message_util.dart';
 import '../messaging_change_notifier.dart';
@@ -282,9 +283,25 @@ class _ChatDetailsState extends State<ChatDetails> {
                 backButtonFunctionality();
               }),
           backgroundColor: chat.getColor(),
-          title: Text(chat.getBroupNameOrAlias(),
-              style: TextStyle(
-                  color: getTextColor(chat.getColor()), fontSize: 20)),
+          title: Row(
+            children: [
+              Container(
+                width: 50,
+                height: 50,
+                child: avatarBox(50, 50, chat.getAvatar()),
+              ),
+              SizedBox(width: 5),
+              Container(
+                  alignment: Alignment.centerLeft,
+                  color: Colors.transparent,
+                  child: Text(chat.getBroupNameOrAlias(),
+                      style: TextStyle(
+                          color: getTextColor(chat.getColor()),
+                          fontSize: 20)
+                  )
+              )
+            ],
+          ),
           actions: [
             PopupMenuButton<int>(
                 onSelected: (item) => onSelectChat(context, item),
@@ -416,6 +433,19 @@ class _ChatDetailsState extends State<ChatDetails> {
     currentColor = colour;
   }
 
+  onTapPhotoField() {
+    Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+            builder: (context) => ChangeAvatar(
+              key: UniqueKey(),
+              isMe: false,
+              avatar: chat.avatar!,
+              isDefault: chat.avatarDefault,
+              chat: chat,
+            )));
+  }
+
   Widget brosInBroupList() {
     return chat.getBroupBros().isNotEmpty
         ? ListView.builder(
@@ -451,6 +481,36 @@ class _ChatDetailsState extends State<ChatDetails> {
         Image.asset("assets/images/brocast_transparent.png"));
   }
 
+  Widget broupAvatar() {
+    double width = MediaQuery.of(context).size.width;
+    double avatarWidth = (width/8)*5;
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        Container(
+          width: iconSize,
+          height: iconSize,
+        ),
+        avatarBox(avatarWidth, avatarWidth, chat.getAvatar()),
+      meAdmin ? Container(
+          width: iconSize,
+          height: iconSize,
+          child: IconButton(
+              iconSize: iconSize,
+              icon: Icon(
+                  Icons.camera_alt,
+                  color: Colors.white
+              ),
+              onPressed: () {
+                onTapPhotoField();
+              }),
+        ) : Container(
+        width: iconSize,
+        height: iconSize,)
+      ],
+    );
+  }
+
   Widget broupNameHeader() {
     if (chat.alias.isNotEmpty) {
       return Column(children: [
@@ -483,6 +543,17 @@ class _ChatDetailsState extends State<ChatDetails> {
     }
   }
 
+  bool isBlocker() {
+    if (chat.private) {
+      for (int broId in chat.getAdminIds()) {
+        if (broId == settings.getMe()!.getId()) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
   Widget broHasLeft() {
     return Column(
       children: [
@@ -493,6 +564,28 @@ class _ChatDetailsState extends State<ChatDetails> {
             "You're no longer a participant in this Broup",
             style: TextStyle(color: Colors.grey, fontSize: 16),
           )),
+        isBlocker() ? Container(
+          child: TextButton(
+              style: ButtonStyle(
+                foregroundColor:
+                WidgetStateProperty.all<Color>(
+                    Colors.red),
+              ),
+              onPressed: () {
+                showDialogUnBlock(
+                    context, chat.getBroupNameOrAlias());
+              },
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.lock_open_outlined, color: Colors.red),
+                    SizedBox(width: 20),
+                    Text(
+                      'Unblock Bro',
+                      style: simpleTextStyle(),
+                    ),
+                  ])),
+        ) : Container(),
         Container(
           child: TextButton(
               style: ButtonStyle(
@@ -510,7 +603,7 @@ class _ChatDetailsState extends State<ChatDetails> {
                     Icon(Icons.delete, color: Colors.red),
                     SizedBox(width: 20),
                     Text(
-                      'Delete Broup',
+                      widget.chat.private ? 'Delete Bro' : 'Delete Broup',
                       style: simpleTextStyle(),
                     ),
                   ])),
@@ -885,6 +978,7 @@ class _ChatDetailsState extends State<ChatDetails> {
                   child: Column(children: [
                     broCastLogo(),
                     broupNameHeader(),
+                    broupAvatar(),
                     SizedBox(height: 20),
                     shownDetails(),
                     reportBroupWidget(),
@@ -902,7 +996,15 @@ class _ChatDetailsState extends State<ChatDetails> {
     AuthServiceSocial().leaveBroup(chat.broupId).then((value) {
       if (value) {
         setState(() {
-          chat.removeBro(settings.getMe()!.getId());
+          if (!chat.private) {
+            chat.removeBro(settings.getMe()!.getId());
+          } else {
+            // In a private chat when you "leave" the broup you block the other bro
+            // We use the admin Id to indicate who did the blocking.
+            // This is the only bro that can unblock it later.
+            chat.addAdminId(settings.getMe()!.getId());
+            chat.blocked = true;
+          }
           chat.removed = true;
           amountInGroup = chat.getBroupBros().length;
           navigateToHome(context, settings);
@@ -991,6 +1093,32 @@ class _ChatDetailsState extends State<ChatDetails> {
     );
   }
 
+  showDialogUnBlock(BuildContext context, String chatName) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: new Text("Unblock bro $chatName!"),
+          content: new Text("Are you sure you want to unblock this bro?"),
+          actions: <Widget>[
+            new TextButton(
+              child: new Text("Cancel"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            new TextButton(
+              child: new Text("Unblock"),
+              onPressed: () {
+                UnblockTheBro();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   void showDialogDelete(BuildContext context, String chatName) {
     showDialog(
       context: context,
@@ -1015,6 +1143,29 @@ class _ChatDetailsState extends State<ChatDetails> {
         );
       },
     );
+  }
+
+  UnblockTheBro() {
+    int unblockBroId = -1;
+    for (int broId in chat.getBroIds()) {
+      if (broId != Settings().getMe()!.getId()) {
+        unblockBroId = broId;
+      }
+    }
+    if (unblockBroId == -1) {
+      showToastMessage("something went wrong with unblocking the bro. Please try again later.");
+      return;
+    }
+    AuthServiceSocial().unblockBro(chat.broupId, unblockBroId).then((value) {
+      if (value) {
+        setState(() {
+          chat.removed = false;
+          chat.blocked = false;
+          navigateToChat(context, settings, chat);
+        });
+      }
+    });
+    Navigator.of(context).pop();
   }
 
   void deleteTheBroup() {

@@ -1,8 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:dio/dio.dart';
+import '../../objects/me.dart';
+import '../../utils/storage.dart';
 import '../../utils/utils.dart';
 import '../../utils/settings.dart';
+import '../../views/bro_home/bro_home_change_notifier.dart';
 import 'auth_api.dart';
 import 'models/base_response.dart';
 import 'models/login_bro_name_request.dart';
@@ -212,5 +216,44 @@ class AuthServiceLogin {
       successfulLogin(loginResponse);
     }
     return loginResponse;
+  }
+
+  Future<bool> getAvatarMe() async {
+    String endPoint = "get/avatar/me";
+    var response = await AuthApi().dio.post(endPoint,
+        options: Options(headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+        }),
+        data: jsonEncode(<String, String>{
+        }
+      )
+    );
+
+    Map<String, dynamic> json = response.data;
+    if (!json.containsKey("result")) {
+      return false;
+    } else {
+      if (json["result"]) {
+        if (!json.containsKey("avatar") && json["avatar"] != null) {
+          return false;
+        } else {
+          bool isDefault = true;
+          if (json.containsKey("is_default") && json["is_default"] != null) {
+            isDefault = json["is_default"];
+          }
+          Uint8List avatar = base64Decode(json["avatar"].replaceAll("\n", ""));
+          Me? me = Settings().getMe();
+          if (me != null) {
+            me.setAvatar(avatar);
+            me.setAvatarDefault(isDefault);
+            Storage().updateBro(me);
+          }
+          BroHomeChangeNotifier().notify();
+          return true;
+        }
+      } else {
+        return false;
+      }
+    }
   }
 }

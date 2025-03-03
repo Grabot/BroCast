@@ -51,13 +51,6 @@ Future<bool> getBros(Broup chat, Storage storage, Me me) async {
 
   print("got bros from the server ${brosServer}");
   for (Bro bro in brosServer) {
-    // We retrieved the bro for this chat, which is private.
-    // This means it has have been added.
-    for (Broup broup in me.broups) {
-      if (broup.private && broup.broIds.contains(bro.id)) {
-        bro.added = true;
-      }
-    }
     // Check if the bro is already in the local database
     bool foundInDb = false;
     for (Bro storageBro in storageBros) {
@@ -74,7 +67,7 @@ Future<bool> getBros(Broup chat, Storage storage, Me me) async {
   // merge lists with preference for the server data.
   chat.broupBros = removeBroDuplicates(brosServer, storageBros, storage);
   // You are also part of the bros
-  chat.broupBros.insert(0, me);
+  chat.addBro(me);
   chat.retrievedBros = true;
   return true;
 }

@@ -68,9 +68,7 @@ class _AddBroupState extends State<AddBroup> {
           }
           for (Bro bro in broup.broupBros) {
             if (me.id != bro.id) {
-              if (bro.added) {
-                currentBros.add(bro);
-              }
+              currentBros.add(bro);
             }
           }
         }

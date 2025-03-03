@@ -1,7 +1,10 @@
+import 'dart:convert';
 import 'dart:math';
 import 'dart:typed_data';
 
+import 'package:brocast/services/auth/auth_service_login.dart';
 import 'package:brocast/utils/notification_controller.dart';
+import 'package:brocast/utils/storage.dart';
 import 'package:brocast/views/bro_home/bro_home_change_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:jwt_decode/jwt_decode.dart';
@@ -9,6 +12,7 @@ import 'package:oktoast/oktoast.dart';
 
 import '../objects/broup.dart';
 import '../objects/me.dart';
+import '../services/auth/auth_service_social.dart';
 import '../services/auth/models/login_response.dart';
 import '../views/bro_home/bro_home.dart';
 import '../views/bro_profile/bro_profile.dart';
@@ -103,6 +107,55 @@ successfulLogin(LoginResponse loginResponse) async {
 
   settings.setLoggingIn(false);
   BroHomeChangeNotifier().notify();
+
+  // Fetch the Bro object which matches the Me object.
+  // This should hold extra information about the user.
+  // Like the avatar, which we don't send with login response.
+  Storage().fetchBro(me!.getId()).then((bro) {
+    // We also check the local storage for the avatar.
+    secureStorage.getAvatarDefault().then((avatarDefault) {
+      bool avatarDefaultBool = true;
+      if (avatarDefault != null) {
+        int avatarDefaultInt = int.parse(avatarDefault);
+        avatarDefaultBool = avatarDefaultInt == 1;
+      }
+      me.setAvatarDefault(avatarDefaultBool);
+      if (bro != null) {
+        if (bro.getAvatar() != null) {
+          me.setAvatar(bro.getAvatar()!);
+          Storage().updateBro(me);
+          BroHomeChangeNotifier().notify();
+        } else {
+          retrieveAvatar(me);
+        }
+      } else {
+        // Not stored yet, likely because the user is new.
+        // Store what is know in the database
+        Storage().addBro(me);
+        // If the avatar is not known we should retrieve it.
+        if (me.getAvatar() == null) {
+          retrieveAvatar(me);
+        }
+      }
+    });
+  });
+}
+
+retrieveAvatar(Me me) {
+  // If the user has just registered it will receive a notice when the
+  // avatar is created and it will retrieve it via that path.
+  // So we will give it a little time to be created before we retrieve it.
+  print("going to retrieve avatar");
+  Future.delayed(Duration(seconds: 2), () {
+    if (me.getAvatar() == null) {
+      print("going to retrieve avatar for real");
+      AuthServiceLogin().getAvatarMe().then((avatarValue) {
+        if (avatarValue) {
+          BroHomeChangeNotifier().notify();
+        }
+      });
+    }
+  });
 }
 
 Widget zwaarDevelopersLogo(double width, bool normalMode) {
@@ -221,4 +274,29 @@ navigateToSettings(BuildContext context, Settings settings) {
       context,
       MaterialPageRoute(
           builder: (context) => BroSettings(key: UniqueKey())));
+}
+
+ButtonStyle buttonStyle(bool active, MaterialColor buttonColor) {
+  return ButtonStyle(
+      overlayColor: WidgetStateProperty.resolveWith<Color?>(
+            (Set<WidgetState> states) {
+          if (states.contains(WidgetState.hovered)) {
+            return buttonColor.shade600;
+          }
+          if (states.contains(WidgetState.pressed)) {
+            return buttonColor.shade300;
+          }
+          return null;
+        },
+      ),
+      backgroundColor: WidgetStateProperty.resolveWith<Color?>(
+              (Set<WidgetState> states) {
+            return active? buttonColor.shade800 : buttonColor;
+          }),
+      shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+          RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30.0),
+          )
+      )
+  );
 }

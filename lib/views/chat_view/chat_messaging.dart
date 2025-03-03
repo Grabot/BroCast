@@ -430,13 +430,25 @@ class _ChatMessagingState extends State<ChatMessaging> {
                     backButtonFunctionality();
                   }),
               backgroundColor: Colors.transparent,
-              title: Container(
-                  alignment: Alignment.centerLeft,
-                  color: Colors.transparent,
-                  child: Text(chat.getBroupNameOrAlias(),
-                      style: TextStyle(
-                          color: getTextColor(chat.getColor()),
-                          fontSize: 20))),
+              title: Row(
+                children: [
+                  Container(
+                    width: 50,
+                    height: 50,
+                    child: avatarBox(50, 50, chat.getAvatar()),
+                  ),
+                  SizedBox(width: 5),
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    color: Colors.transparent,
+                    child: Text(chat.getBroupNameOrAlias(),
+                        style: TextStyle(
+                            color: getTextColor(chat.getColor()),
+                            fontSize: 20)
+                    )
+                  )
+                ],
+              ),
               actions: [
                 PopupMenuButton<int>(
                     icon: Icon(Icons.more_vert, color: getTextColor(chat.getColor())),

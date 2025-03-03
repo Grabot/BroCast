@@ -58,7 +58,7 @@ class _BroCastHomeState extends State<BroCastHome> {
     broHomeChangeNotifier.addListener(broHomeChangeListener);
     socketServices.addListener(broHomeChangeListener);
 
-    // Wait until page is loaded and then call the broHomeChangeListener
+    // Wait until page is loaded
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       broHomeChangeListener();
     });
@@ -138,7 +138,9 @@ class _BroCastHomeState extends State<BroCastHome> {
           AuthServiceSocial().retrieveBros(broIdsToRetrieve).then((brosServer) {
             for (Bro bro in brosServer) {
               for (Broup broup in me.broups) {
-                broup.addBro(bro);
+                if (broup.broIds.contains(bro.getId())) {
+                  broup.addBro(bro);
+                }
               }
               print("add bro to db ${bro.getId()}");
               storage.addBro(bro);
@@ -177,27 +179,35 @@ class _BroCastHomeState extends State<BroCastHome> {
             storage.addBroup(broup);
           } else {
             print("broup from db ${dbBroup.broupId}  ${dbBroup.broIds}");
+
+            // Keep the following properties are they are determined locally
+            // If they need to be updated they will be done so separately.
+            broup
+              ..lastMessageId = dbBroup.lastMessageId
+              ..avatar = dbBroup.avatar
+              ..avatarDefault = dbBroup.avatarDefault
+              ..deleted = dbBroup.deleted
+              ..messages = dbBroup.messages;
+
+            // Only update these when updateBroup is true. But we will update it later.
             broup
               ..alias = dbBroup.alias
               ..broIds = dbBroup.broIds
               ..adminIds = dbBroup.adminIds
               ..broupName = dbBroup.broupName
+              ..private = dbBroup.private
               ..broupDescription = dbBroup.broupDescription
               ..broupColour = dbBroup.broupColour
-              ..private = dbBroup.private
-              ..lastMessageId = dbBroup.lastMessageId
-              ..avatar = dbBroup.avatar
-              ..deleted = dbBroup.deleted
               ..removed = dbBroup.removed
-              ..messages = dbBroup.messages;
+              ..mute = dbBroup.mute;
 
-            // Keep the following properties from me.bros
+            // Keep the following properties from me.broup
             // These are from the server and are up to date.
             broup
               ..unreadMessages = broup.unreadMessages
               ..updateBroup = broup.updateBroup
               ..newMessages = broup.newMessages
-              ..mute = broup.mute;
+              ..newAvatar = broup.newAvatar;
 
             // Only update it if we have to.
             // If it's not in the db yet we update it anyway
@@ -480,6 +490,65 @@ class _BroCastHomeState extends State<BroCastHome> {
     });
   }
 
+  Widget profileHeader() {
+    return Container(
+      child: Material(
+        child: InkWell(
+          onTap: () {
+            navigateToProfile(context, settings);
+          },
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    color: Color(0x8b2d69a3),
+                    width: 80,
+                    height: 80,
+                    child: avatarBox(80, 80, settings.getMe()!.getAvatar()),
+                  ),
+                  Column(
+                    children: [
+                      Container(
+                        padding: EdgeInsets.only(left: 10, top: 5),
+                          color: Color(0x8b2d69a3),
+                          width: MediaQuery.of(context).size.width-80,
+                          height: 30,
+                          // alignment: Alignment.center,
+                          child: Text(
+                            "Hey",
+                            style: TextStyle(color: Colors.white, fontSize: 16),
+                          )
+                      ),
+                      Container(
+                          padding: EdgeInsets.only(left: 10, top: 5),
+                        color: Color(0x8b2d69a3),
+                        width: MediaQuery.of(context).size.width-80,
+                        height: 50,
+                        // alignment: Alignment.center,
+                        child: Text(
+                          "${settings.getMe()!.getBroName()} ${settings.getMe()!.getBromotion()}!",
+                          style: TextStyle(color: Colors.white, fontSize: 22),
+                        )
+                      ),
+                    ]
+                  ),
+                ]
+              ),
+              Container(
+                width: MediaQuery.of(context).size.width,
+                height: 2,
+                color: Colors.white,
+              )
+            ]
+          ),
+        ),
+        color: Colors.transparent,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return PopScope(
@@ -497,25 +566,7 @@ class _BroCastHomeState extends State<BroCastHome> {
                 children: [
                   Column(
                       children: [
-                        Container(
-                          child: Material(
-                            child: InkWell(
-                              onTap: () {
-                                navigateToProfile(context, settings);
-                              },
-                              child: Container(
-                                  color: Color(0x8b2d69a3),
-                                  width: MediaQuery.of(context).size.width,
-                                  height: 50,
-                                  alignment: Alignment.center,
-                                  child: Text(
-                                    "Hey ${settings.getMe()!.getBroName()} ${settings.getMe()!.getBromotion()}!",
-                                    style: TextStyle(color: Colors.white, fontSize: 20),
-                                  )),
-                            ),
-                            color: Colors.transparent,
-                          ),
-                        ),
+                        profileHeader(),
                         searchMode
                             ? Container(
                           child: Row(children: [

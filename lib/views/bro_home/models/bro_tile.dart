@@ -1,17 +1,9 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
-
 import '../../../objects/broup.dart';
-import '../../../utils/navigation_service.dart';
-import '../../../utils/locator.dart';
-import '../../../utils/settings.dart';
 import '../../../utils/utils.dart';
-import 'package:brocast/constants/route_paths.dart' as routes;
-
 import '../../chat_view/chat_messaging.dart';
 import '../../chat_view/messaging_change_notifier.dart';
-
 
 
 class BroTile extends StatefulWidget {
@@ -43,21 +35,31 @@ class _BroTileState extends State<BroTile> {
 
   Color getColorStrength() {
     if (widget.chat.unreadMessages == 0) {
-      return widget.chat.getColor().withOpacity(0.6);
+      return widget.chat.getColor().withAlpha(153);
     }
     if (widget.chat.unreadMessages == 1) {
-      return widget.chat.getColor().withOpacity(0.7);
+      return widget.chat.getColor().withAlpha(180);
     }
     if (widget.chat.unreadMessages == 2) {
-      return widget.chat.getColor().withOpacity(0.8);
+      return widget.chat.getColor().withAlpha(205);
     }
     if (widget.chat.unreadMessages == 3) {
-      return widget.chat.getColor().withOpacity(0.9);
+      return widget.chat.getColor().withAlpha(230);
     }
-    return widget.chat.getColor().withOpacity(1);
+    return widget.chat.getColor().withAlpha(255);
   }
+
+  Widget broAvatarBox(double avatarSize) {
+    return Container(
+      width: avatarSize,
+      height: avatarSize,
+      child: avatarBox(avatarSize, avatarSize, widget.chat.getAvatar()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    double avatarSize = 60;
     return Container(
       child: Material(
         child: InkWell(
@@ -77,7 +79,7 @@ class _BroTileState extends State<BroTile> {
                       widget.chat.isMuted() ||
                           widget.chat.isRemoved()
                           ? Container(
-                          width: 35,
+                          width: 25,
                           child: Column(children: [
                             widget.chat.isRemoved()
                                 ? Icon(
@@ -97,15 +99,18 @@ class _BroTileState extends State<BroTile> {
                               height: 20,
                             ),
                           ]))
-                          : SizedBox(width: 35),
+                          : SizedBox(width: 25),
+                      broAvatarBox(avatarSize),
+                      SizedBox(width: 10),
                       Container(
+                        width: MediaQuery.of(context).size.width - (103 + avatarSize + 35),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Container(
                               // All the padding and sizedboxes (and message bal) added up it's 103.
                               // We need to make the width the total width of the screen minus 103 at least to not get an overflow.
-                              width: MediaQuery.of(context).size.width - 110,
+                              width: MediaQuery.of(context).size.width - (103 + avatarSize + 35),
                               child: Text(widget.chat.getBroupNameOrAlias(),
                                   overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
@@ -116,7 +121,7 @@ class _BroTileState extends State<BroTile> {
                               // If there is an alias, we want to show the name of the bro as well.
                               // We will do that in smaller letters underneath
                               width:
-                              MediaQuery.of(context).size.width - 110,
+                              MediaQuery.of(context).size.width - (103 + avatarSize + 35),
                               child: Text("     -" + widget.chat.getBroupName(),
                                   style: TextStyle(
                                       color: getTextColor(
@@ -129,7 +134,7 @@ class _BroTileState extends State<BroTile> {
                               // All the padding and sizedboxes (and message bal) added up it's 103.
                               // We need to make the width the total width of the screen minus 103 at least to not get an overflow.
                               width:
-                              MediaQuery.of(context).size.width - 110,
+                              MediaQuery.of(context).size.width - (103 + avatarSize + 35),
                               child: Text(widget.chat.getBroupDescription(),
                                   style: TextStyle(
                                       color: getTextColor(
@@ -298,17 +303,7 @@ class _BroTileState extends State<BroTile> {
             _tapPosition & const Size(40, 40), Offset.zero & overlay.size))
         .then((int? delta) {
       if (delta == 1) {
-        if (!widget.chat.isPrivate()) {
-          // TODO: what is this?
-          exit(0);
-          // _navigationService.navigateTo(routes.BroupRoute,
-          //     arguments: widget.chat);
-        } else {
-          // TODO: what is this?
-          exit(0);
-          // _navigationService.navigateTo(routes.BroHomeRoute,
-          //     arguments: widget.chat);
-        }
+        selectBro(context);
       } else if (delta == 2) {
         showDialogMuteChat(context);
       } else if (delta == 3) {

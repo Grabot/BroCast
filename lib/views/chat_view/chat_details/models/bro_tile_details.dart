@@ -73,8 +73,17 @@ class _BroTileDetailsState extends State<BroTileDetails> {
     }
   }
 
+  Widget broAvatarBox(double avatarSize) {
+    return Container(
+      width: avatarSize,
+      height: avatarSize,
+      child: avatarBox(avatarSize, avatarSize, widget.bro.getAvatar()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    double avatarSize = 60;
     return Container(
       child: Material(
         child: GestureDetector(
@@ -85,11 +94,13 @@ class _BroTileDetailsState extends State<BroTileDetails> {
               selectBro(context);
             },
             child: Row(children: [
+              SizedBox(width: 10),
+              broAvatarBox(avatarSize),
               Container(
                 width: widget.broAdmin
-                    ? MediaQuery.of(context).size.width - 124
-                    : MediaQuery.of(context).size.width,
-                padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                    ? MediaQuery.of(context).size.width - 170
+                    : MediaQuery.of(context).size.width - 70,
+                padding: EdgeInsets.symmetric(vertical: 16),
                 child: Text(widget.bro.getFullName(), style: simpleTextStyle()),
               ),
               widget.broAdmin

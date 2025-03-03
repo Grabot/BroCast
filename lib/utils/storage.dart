@@ -67,6 +67,7 @@ class Storage {
             brosUpdate TEXT,
             newMessages INTEGER,
             avatar BLOB,
+            avatarDefault INTEGER,
             messages TEXT,
             UNIQUE(broupId) ON CONFLICT REPLACE
           );
@@ -98,7 +99,6 @@ class Storage {
             broId INTEGER,
             broName TEXT,
             bromotion TEXT,
-            added INTEGER,
             avatar BLOB,
             UNIQUE(broId) ON CONFLICT REPLACE
           );
@@ -224,6 +224,20 @@ class Storage {
       return maps.map((map) => Bro.fromDbMap(map)).toList();
     }
     return List.empty();
+  }
+
+  Future<Bro?> fetchBro(int broId) async {
+    Database database = await this.database;
+    List<Map<String, dynamic>> maps = await database.query(
+      'Bro',
+      where: 'broId = ?',
+      whereArgs: [broId],
+    );
+    if (maps.isNotEmpty) {
+      return Bro.fromDbMap(maps.first);
+    } else {
+      return null;
+    }
   }
 
   Future<Broup?> fetchBroup(int broupId) async {

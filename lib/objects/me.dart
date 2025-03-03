@@ -14,9 +14,10 @@ class Me extends Bro {
   late bool origin;
   Uint8List? avatar;
   late List<Broup> broups;
+  bool avatarDefault = true;
 
   Me(this.id, this.broName, this.bromotion, this.origin, this.avatar, this.broups)
-      : super(id, broName, bromotion, false, null);
+      : super(id, broName, bromotion, avatar);
 
   getId() {
     return id;
@@ -42,6 +43,10 @@ class Me extends Bro {
     this.avatar = avatar;
   }
 
+  setAvatarDefault(bool avatarDefault) {
+    this.avatarDefault = avatarDefault;
+  }
+
   Uint8List? getAvatar() {
     return this.avatar;
   }
@@ -52,13 +57,16 @@ class Me extends Bro {
   }
 
   Me.fromJson(Map<String, dynamic> json)
-      : super(json["id"], json["bro_name"], json["bromotion"], false, null) {
+      : super(json["id"], json["bro_name"], json["bromotion"], null) {
     id = json["id"];
     broName = json["bro_name"];
     bromotion = json["bromotion"];
     origin = json["origin"];
     if (json.containsKey("avatar") && json["avatar"] != null) {
       avatar = base64Decode(json["avatar"].replaceAll("\n", ""));
+    }
+    if (json.containsKey("avatar_default") && json["avatar_default"] != null) {
+      avatarDefault = json["avatar_default"];
     }
     broups = [];
     if (json.containsKey("broups")) {

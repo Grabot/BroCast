@@ -2,14 +2,12 @@ import 'package:brocast/constants/base_url.dart';
 import 'package:brocast/services/auth/auth_service_social.dart';
 import 'package:brocast/utils/socket_services_util.dart';
 import 'package:brocast/views/bro_home/bro_home_change_notifier.dart';
-import 'package:brocast/views/chat_view/messaging_change_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:socket_io_client/socket_io_client.dart' as io;
-
-import '../objects/bro.dart';
 import '../objects/message.dart';
 import '../objects/broup.dart';
 import '../objects/me.dart';
+import '../services/auth/auth_service_login.dart';
 import 'storage.dart';
 import 'settings.dart';
 
@@ -23,6 +21,8 @@ class SocketServices extends ChangeNotifier {
   SocketServices._internal() {
     startSockConnection();
   }
+
+  int changedBroupAvatar = -1;
 
   factory SocketServices() {
     return _instance;
@@ -45,10 +45,27 @@ class SocketServices extends ChangeNotifier {
     });
 
     socket.on('message_event', (data) {
-      print(data);
+      print("message event $data");
+      checkMessageEvent(data);
     });
 
     socket.open();
+  }
+
+  retrieveAvatar() {
+    AuthServiceLogin().getAvatarMe().then((value) {
+      if (value) {
+        notifyListeners();
+      }
+    }).onError((error, stackTrace) {
+      // TODO: What to do on an error? Reset?
+    });
+  }
+
+  void checkMessageEvent(data) {
+    if (data == "Avatar creation done!") {
+      retrieveAvatar();
+    }
   }
 
   bool isConnected() {
@@ -74,6 +91,31 @@ class SocketServices extends ChangeNotifier {
     // This is to prevent multiple joins
     leaveSocketsSolo();
     joinSocketsSolo();
+  }
+
+  checkAvatarChange(data) {
+    // TODO: Check when using server?
+    // Here we indicate that an avatar is changed such that we can retrieve it.
+    print("Avatar changed $data");
+    Me? me = Settings().getMe();
+    if (me != null) {
+      if (data.containsKey("broup_id")) {
+        int broupId = data["broup_id"];
+        AuthServiceSocial().getAvatarBroup(broupId).then((value) {
+          if (value) {
+            notifyListeners();
+          }
+        });
+      }
+      if (data.containsKey("bro_id")) {
+        int broId = data["bro_id"];
+        AuthServiceSocial().getAvatarBro(broId).then((value) {
+          if (value) {
+            notifyListeners();
+          }
+        });
+      }
+    }
   }
 
   chatChanged(data) async {
@@ -133,35 +175,93 @@ class SocketServices extends ChangeNotifier {
           broup.removed = true;
         }
       }
+      if (data.containsKey("chat_unblocked")) {
+        // Chat unblocked can only be a private chat
+        if (broup.private) {
+          int chatUnblockedId = data["chat_unblocked"];
+          // Chat unblocked is an id, of which bro did the unblocking.
+          if (Settings().getMe()!.getId() == chatUnblockedId) {
+            broup.blocked = false;
+          }
+          broup.adminIds = [];
+          broup.removed = false;
+        }
+      }
+      if (data.containsKey("new_avatar")) {
+        print("gotten a new avatar for a broup!");
+        bool newAvatar = data["new_avatar"];
+        // We assume the newAvatar is True
+        print("gotten a new avatar! $newAvatar  $changedBroupAvatar  $broupId");
+        // If changedBroupAvatar is equal to the broupId
+        // it means we just changed it ourselves.
+        if (newAvatar && !(changedBroupAvatar == broupId)) {
+          AuthServiceSocial().getAvatarBroup(broupId).then((value) {
+            if (value) {
+              // Objects updated in db and on the `me` list.
+              notifyListeners();
+            }
+          });
+        } else if (changedBroupAvatar == broupId) {
+          // We just changed the avatar, so we set it back to -1.
+          print("setting it back to -1");
+          changedBroupAvatar = -1;
+        }
+      }
       Storage().updateBroup(broup);
       notifyListeners();
     }
   }
 
+  setWeChangedAvatar(int avatarBroupId) {
+    print("changing we avatar $avatarBroupId");
+    changedBroupAvatar = avatarBroupId;
+    // Put it back after 5 seconds, this should be enough time to
+    // ignore incoming socket updates and not interfere with
+    // future socket updates in the same broup
+    Future.delayed(Duration(seconds: 5)).then((value) {
+      if (changedBroupAvatar != -1) {
+        changedBroupAvatar = -1;
+      }
+    });
+  }
+
   chatAdded(data) async {
     print("chat added $data");
-    var broup = data["broup"];
+    // TODO: If you received the broup via sockets we should set `broup_updated` to false?
     Me? me = Settings().getMe();
     if (me != null) {
       // Add the broup. It's not possible that it already exists
       // so we don't account for that.
-      Broup newBroup = Broup.fromJson(broup);
-      Storage().addBroup(newBroup);
-      me.addBroup(newBroup);
+      if (data.containsKey("broup")) {
+        Broup newBroup = Broup.fromJson(data["broup"]);
+        Storage().addBroup(newBroup);
+        me.addBroup(newBroup);
 
-      if (newBroup.private) {
-        for (int broId in newBroup.broIds) {
-          if (broId != me.getId()) {
-            // For private chats we want to retrieve the bro object.
-            AuthServiceSocial().retrieveBro(broId).then((bro) {
-              if (bro != null) {
-                newBroup.addBro(bro);
-                Storage().addBro(bro);
+        if (newBroup.private) {
+          for (int broId in newBroup.broIds) {
+            if (broId != me.getId()) {
+              // For private chats we want to retrieve the bro object.
+              AuthServiceSocial().retrieveBro(broId).then((bro) {
+                if (bro != null) {
+                  newBroup.addBro(bro);
+                  Storage().addBro(bro);
+                  notifyListeners();
+                }
+              });
+              break;
+            }
+          }
+        } else {
+          // Retrieve avatar (in private chats, it's the avatar of the bro)
+          // Give some delay to make sure the avatar is created.
+          Future.delayed(Duration(seconds: 2)).then((value) {
+            AuthServiceSocial().getAvatarBroup(newBroup.broupId).then((value) {
+              if (value) {
+                // Data is retrieved, and updated on the broup db object.
                 notifyListeners();
               }
             });
-            break;
-          }
+          });
         }
       }
     }
@@ -212,6 +312,21 @@ class SocketServices extends ChangeNotifier {
         int broId = data["bro_id"];
         broUpdatedBroname(me, broId, newBroname);
       }
+      if (data.containsKey("new_avatar")) {
+        print("gotten a new avatar! ");
+        int broId = data["bro_id"];
+        bool newAvatar = data["new_avatar"];
+        // We assume the newAvatar is True
+        print("gotten a new avatar! $newAvatar");
+        if (newAvatar) {
+          AuthServiceSocial().getAvatarBro(broId).then((value) {
+            if (value) {
+              // The bro is stored in the db. We retrieve it and update the corresponding broups.
+              // TODO: notify the server that new_avatar is done?
+            }
+          });
+        }
+      }
       notifyListeners();
     }
   }
@@ -242,6 +357,9 @@ class SocketServices extends ChangeNotifier {
     });
     this.socket.on('message_read', (data) {
       messageRead(data);
+    });
+    this.socket.on('avatar_change', (data) {
+      checkAvatarChange(data);
     });
   }
 

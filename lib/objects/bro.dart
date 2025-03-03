@@ -6,10 +6,8 @@ class Bro {
   late String broName;
   late String bromotion;
   Uint8List? avatar;
-  bool added = false;  // If the bro has a private chat with the user
-  // TODO: Bro alias in private chat?
 
-  Bro(this.id, this.broName, this.bromotion, this.added, this.avatar);
+  Bro(this.id, this.broName, this.bromotion, this.avatar);
 
   getId() {
     return id;
@@ -50,7 +48,6 @@ class Bro {
     if (json.containsKey("avatar") && json["avatar"] != null) {
       avatar = base64Decode(json["avatar"].replaceAll("\n", ""));
     }
-    added = false;
   }
 
   Map<String, dynamic> toDbMap() {
@@ -58,7 +55,6 @@ class Bro {
     map['broId'] = id;
     map['broName'] = broName;
     map['bromotion'] = bromotion;
-    map["added"] = added ? 1 : 0;
     map['avatar'] = avatar;
     return map;
   }
@@ -67,7 +63,6 @@ class Bro {
     id = map['broId'];
     broName = map['broName'];
     bromotion = map['bromotion'];
-    added = map['added'] == 1;
     avatar = map['avatar'];
   }
 }

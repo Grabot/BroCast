@@ -1,7 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:brocast/utils/utils.dart';
+import 'package:brocast/views/bro_home/bro_home.dart';
+import 'package:brocast/views/bro_home/bro_home_change_notifier.dart';
 import 'package:dio/dio.dart';
 
 import '../../objects/bro.dart';
@@ -73,14 +76,19 @@ class AuthServiceSocial {
       if (json.containsKey("broup") && json.containsKey("bro")) {
         Me? me = Settings().getMe();
         if (me != null) {
+          // The bro should have the avatar with the request
           Bro newBro = Bro.fromJson(json["bro"]);
-          newBro.added = true;
           storage.addBro(newBro);
+          if (newBro.avatar == null) {
+            getAvatarBro(newBro.id);
+          }
           if (me.broups.indexWhere((element) => element.getBroupId() == json["broup"]["broup_id"]) == -1) {
             Broup newBroup = Broup.fromJson(json["broup"]);
             storage.addBroup(newBroup);
             newBroup.addBro(newBro);
             me.addBroup(newBroup);
+          } else {
+            // TODO: What if the broup object exists? Is it possible?
           }
         }
       }
@@ -334,6 +342,18 @@ class AuthServiceSocial {
             Broup newBroup = Broup.fromJson(json["broup"]);
             Storage().addBroup(newBroup);
             me.addBroup(newBroup);
+            // New broup. Give the server some time to generate the avatar.
+            Future.delayed(Duration(seconds: 2)).then((value) {
+              getAvatarBroup(newBroup.broupId).then((value) {
+                if (value) {
+                  // Data is retrieved, and updated on the broup db object.
+                  // TODO: update new_avatar false?
+                }
+              });
+            });
+            BroHomeChangeNotifier().notify();
+          } else {
+            // TODO: What if the broup object exists? Is it possible?
           }
         }
       }
@@ -475,6 +495,168 @@ class AuthServiceSocial {
         }),
         data: jsonEncode(<String, dynamic>{
           "fcm_token": newFCMToken,
+        }
+      )
+    );
+
+    Map<String, dynamic> json = response.data;
+    if (!json.containsKey("result")) {
+      return false;
+    } else {
+      return json["result"];
+    }
+  }
+
+  Future<bool> getAvatarBro(int broId) async {
+    String endPoint = "get/avatar/bro";
+    var response = await AuthApi().dio.post(endPoint,
+        options: Options(headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+        }),
+        data: jsonEncode(<String, dynamic>{
+          "bro_id": broId,
+        }
+      )
+    );
+
+    Map<String, dynamic> json = response.data;
+    if (!json.containsKey("result")) {
+      return false;
+    } else {
+      if (json["result"]) {
+        if (!json.containsKey("avatar") && json["avatar"] != null) {
+          return false;
+        } else {
+          Uint8List avatar = base64Decode(json["avatar"].replaceAll("\n", ""));
+          Bro? bro = await Storage().fetchBro(broId);
+          if (bro != null) {
+            bro.setAvatar(avatar);
+            Storage().updateBro(bro);
+            Me? me = Settings().getMe();
+            if (me != null) {
+              for (Broup broup in me.broups) {
+                if (broup.broIds.contains(broId)) {
+                  // This will replace the bro object if it exists already.
+                  broup.addBro(bro);
+                }
+              }
+              BroHomeChangeNotifier().notify();
+            }
+            return true;
+          } else {
+            // For some reason we don't have the bro stored yet. Retrieve it first.
+            Bro? bro = await AuthServiceSocial().retrieveBro(broId);
+            if (bro != null) {
+              bro.setAvatar(avatar);
+              Storage().addBro(bro);
+              Me? me = Settings().getMe();
+              if (me != null) {
+                for (Broup broup in me.broups) {
+                  if (broup.broIds.contains(broId)) {
+                    broup.addBro(bro);
+                  }
+                }
+                BroHomeChangeNotifier().notify();
+              }
+              return true;
+            } else {
+              return false;
+            }
+          }
+        }
+      } else {
+        return false;
+      }
+    }
+  }
+
+  Future<bool> getAvatarBroup(int broupId) async {
+    String endPoint = "get/avatar/broup";
+    var response = await AuthApi().dio.post(endPoint,
+        options: Options(headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+        }),
+        data: jsonEncode(<String, dynamic> {
+          "broup_id": broupId,
+        }
+      )
+    );
+
+    Map<String, dynamic> json = response.data;
+    if (!json.containsKey("result")) {
+      return false;
+    } else {
+      if (json["result"]) {
+        if (!json.containsKey("avatar") && json["avatar"] != null) {
+          return false;
+        } else {
+          bool isDefault = true;
+          if (json.containsKey("is_default") && json["is_default"] != null) {
+            isDefault = json["is_default"];
+          }
+          Uint8List avatar = base64Decode(json["avatar"].replaceAll("\n", ""));
+          Broup? broup = await Storage().fetchBroup(broupId);
+          if (broup != null) {
+            print("get avatar broup found");
+            print("avatar default $isDefault");
+            broup.setAvatar(avatar);
+            broup.setAvatarDefault(isDefault);
+            Storage().updateBroup(broup);
+            // Find the object corresponding with this broup and update the avatar
+            Me? me = Settings().getMe();
+            if (me != null) {
+              for (Broup meBroup in me.broups) {
+                if (meBroup.getBroupId() == broupId) {
+                  meBroup.setAvatar(avatar);
+                  meBroup.setAvatarDefault(isDefault);
+                  break;
+                }
+              }
+            }
+            BroHomeChangeNotifier().notify();
+            return true;
+          } else {
+            print("get avatar broup NOT found");
+            // For some reason we don't have the bro stored yet. Retrieve it first.
+            Broup? broup = await AuthServiceSocial().retrieveBroup(broupId);
+            if (broup != null) {
+              broup.setAvatar(avatar);
+              broup.setAvatarDefault(isDefault);
+              Storage().addBroup(broup);
+              // Find the object corresponding with this broup and update the avatar
+              Me? me = Settings().getMe();
+              if (me != null) {
+                for (Broup meBroup in me.broups) {
+                  if (meBroup.getBroupId() == broupId) {
+                    meBroup.setAvatar(avatar);
+                    meBroup.setAvatarDefault(isDefault);
+                    break;
+                  }
+                }
+              }
+              BroHomeChangeNotifier().notify();
+              return true;
+            } else {
+              return false;
+            }
+          }
+        }
+      } else {
+        return false;
+      }
+    }
+  }
+
+
+  Future<bool> unblockBro(int broupId, int broId) async {
+    String endPoint = "bro/unblock";
+    var response = await AuthApi().dio.post(endPoint,
+        options: Options(headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+        }),
+        data: jsonEncode(<String, dynamic>{
+          "broup_id": broupId,
+          "bro_id": broId,
         }
       )
     );

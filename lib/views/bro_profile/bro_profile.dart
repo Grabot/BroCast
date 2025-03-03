@@ -8,6 +8,7 @@ import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
 import "package:flutter/material.dart";
 import '../../objects/me.dart';
 import '../../utils/notification_controller.dart';
+import '../change_avatar/change_avatar.dart';
 
 
 class BroProfile extends StatefulWidget {
@@ -365,6 +366,15 @@ class _BroProfileState extends State<BroProfile> {
     return textPainter.didExceedMaxLines;
   }
 
+  Widget broAvatarBox() {
+    double totalWidth = MediaQuery.of(context).size.width;
+    return Container(
+      width: totalWidth-200,
+      height: totalWidth-200,
+      child: avatarBox(totalWidth-200, totalWidth-200, settings.getMe()!.avatar),
+    );
+  }
+
   Widget currentUserDetails() {
     String nameString = "${settings.getMe()!.broName} ${settings.getMe()!.bromotion}";
     TextStyle textStyle = TextStyle(color: Colors.white, fontSize: 35);
@@ -390,7 +400,35 @@ class _BroProfileState extends State<BroProfile> {
           ],
         ),
         broNameOverflow ? showBromotionWithOverflow() : Container(),
+        broAvatarBox(),
       ]
+    );
+  }
+
+  Widget avatarWidget() {
+    return Column(
+      children: [
+        Container(
+          child: TextButton(
+            style: ButtonStyle(
+              foregroundColor:
+              WidgetStateProperty.all<Color>(Colors.blue),
+            ),
+            onPressed: () {
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => ChangeAvatar(
+                        key: UniqueKey(),
+                        isMe: true,
+                        avatar: settings.getMe()!.avatar!,
+                        isDefault: settings.getMe()!.avatarDefault,
+                      )));
+            },
+            child: Text('Change avatar'),
+          ),
+        ),
+      ],
     );
   }
 
@@ -604,13 +642,8 @@ class _BroProfileState extends State<BroProfile> {
                   children: [
                 Expanded(
                   child: SingleChildScrollView(
-                    reverse: true,
                     child: Column(
                         children: [
-                          Container(
-                              child: Text("BroCast",
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 30))),
                       Container(
                           alignment: Alignment.center,
                           child:
@@ -623,11 +656,12 @@ class _BroProfileState extends State<BroProfile> {
                           )
                       ),
                           SizedBox(height: 20),
-                      currentUserDetails(),
+                          currentUserDetails(),
                           SizedBox(height: 20),
-                        broNameWidget(),
-                      bromotionWidget(),
-                      passwordWidget(),
+                          broNameWidget(),
+                          bromotionWidget(),
+                          avatarWidget(),
+                          passwordWidget(),
                           showEmojiKeyboard ? SizedBox(height: 400) : SizedBox(height: 100),
                         ]
                     ),
