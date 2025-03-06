@@ -128,6 +128,7 @@ class _CropEditorState extends State<_CropEditor> {
     imageLoaded = false;
     _resetCroppingArea(1.0);
     resetMobile(widget.image, false);
+    print("did change dependencies");
     super.didChangeDependencies();
   }
 
@@ -138,10 +139,12 @@ class _CropEditorState extends State<_CropEditor> {
       await Future.delayed(const Duration(milliseconds: 10));
     }
     widget.onStatusChanged?.call(CropStatus.loading);
+    print("reset image!");
     resetMobile(targetImage, true);
   }
 
   resizeImage(int width, int height, image.Image converted) {
+    print("resize image!");
     if (width < height) {
       converted = image.copyResize(converted, height: maxSize);
     } else {
@@ -152,6 +155,7 @@ class _CropEditorState extends State<_CropEditor> {
   }
 
   setImage(bool resetCrop, image.Image converted) {
+    print("setting image");
     setState(() {
       _targetImage = converted;
     });
@@ -167,6 +171,7 @@ class _CropEditorState extends State<_CropEditor> {
   }
 
   resetMobile(Uint8List targetImage, bool resetCrop) {
+    print("reset mobile");
     final future = compute(_fromByteData, targetImage);
     _lastComputed = future;
     future.then((converted) {
@@ -222,6 +227,7 @@ class _CropEditorState extends State<_CropEditor> {
 
   /// crop given image with given area.
   Future<void> _crop() async {
+    print("going to crop");
     cropping = true;
     widget.onStatusChanged?.call(CropStatus.cropping);
     // Wait until _targetImage is not null
@@ -246,6 +252,7 @@ class _CropEditorState extends State<_CropEditor> {
   }
 
   cropMobile(List rectangle) {
+    print("cropping mobile!");
     compute(
       doCrop,
       [

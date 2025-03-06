@@ -44,7 +44,6 @@ TextStyle simpleTextStyle() {
 }
 
 showToastMessage(String message) {
-  print("showing toast?");
   showToast(
     message,
     duration: const Duration(milliseconds: 2000),

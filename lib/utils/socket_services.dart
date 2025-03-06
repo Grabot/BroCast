@@ -321,6 +321,7 @@ class SocketServices extends ChangeNotifier {
         if (newAvatar) {
           AuthServiceSocial().getAvatarBro(broId).then((value) {
             if (value) {
+              notifyListeners();
               // The bro is stored in the db. We retrieve it and update the corresponding broups.
               // TODO: notify the server that new_avatar is done?
             }

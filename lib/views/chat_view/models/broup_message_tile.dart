@@ -8,11 +8,13 @@ import 'package:path_provider/path_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../objects/message.dart';
+import '../../../objects/bro.dart';
 import '../../../utils/utils.dart';
 
 
 class BroupMessageTile extends StatefulWidget {
   final Message message;
+  final Bro? bro;
   final String senderName;
   final int senderId;
   final bool broAdded;
@@ -24,6 +26,7 @@ class BroupMessageTile extends StatefulWidget {
   BroupMessageTile(
       {required Key key,
         required this.message,
+        required this.bro,
         required this.senderName,
         required this.senderId,
         required this.broAdded,
@@ -126,10 +129,8 @@ class _BroupMessageTileState extends State<BroupMessageTile> {
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return widget.message.isInformation()
-        ? Row(
+  Widget informationMessage() {
+    return Row(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
@@ -157,112 +158,176 @@ class _BroupMessageTileState extends State<BroupMessageTile> {
               ),
             ),
           ),
-        ])
-        : Container(
-        margin: EdgeInsets.only(top: 12),
-        child: new Material(
-          child: Column(children: [
-            widget.myMessage
-                ? Container()
-                : Container(
-              child: Align(
-                alignment: Alignment.bottomLeft,
-                child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 12),
-                  child: RichText(
-                    text: TextSpan(
-                      children: [
-                        TextSpan(
-                          text: widget.senderName,
-                          style: TextStyle(
-                              color: Colors.white70, fontSize: 16),
-                        ),
-                      ],
-                    ),
-                  ),
+        ]
+    );
+  }
+
+  Widget senderIndicator(double messageWidth) {
+    return Container(
+      width: messageWidth,
+      child: Align(
+        alignment: Alignment.topLeft,
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 12),
+          child: RichText(
+            text: TextSpan(
+              children: [
+                TextSpan(
+                  text: widget.senderName,
+                  style: TextStyle(
+                      color: Colors.white70, fontSize: 16),
                 ),
-              ),
+              ],
             ),
-            GestureDetector(
-              onTap: () {
-                print("Message clicked");
-              },
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 12),
-                width: MediaQuery.of(context).size.width,
-                alignment: widget.myMessage
-                    ? Alignment.bottomRight
-                    : Alignment.bottomLeft,
-                child: GestureDetector(
-                  onLongPress: _showMessageDetailPopupMenu,
-                  onTapDown: _storePosition,
-                  onTap: () {
-                    selectMessage(context);
-                  },
-                  child: Container(
-                    padding:
-                    EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                    decoration: BoxDecoration(
-                        border: Border.all(
-                          color: getBorderColour(),
-                          width: 2,
-                        ),
-                        color: widget.myMessage
-                            ? Color(0xFF009E00)
-                            : Color(0xFF0060BB),
-                        borderRadius: widget.myMessage
-                            ? BorderRadius.only(
-                            topLeft: Radius.circular(42),
-                            topRight: Radius.circular(42),
-                            bottomLeft: Radius.circular(42))
-                            : BorderRadius.only(
-                            topLeft: Radius.circular(42),
-                            topRight: Radius.circular(42),
-                            bottomRight: Radius.circular(42))),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget broTimeIndicator(double messageWidth) {
+    return Container(
+      width: messageWidth,
+      child: Align(
+        alignment: Alignment.bottomLeft,
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 12),
+          child: RichText(
+            text: TextSpan(
+              children: [
+                TextSpan(
+                  text: DateFormat('HH:mm')
+                      .format(widget.message.getTimeStamp()),
+                  style: TextStyle(
+                      color: Colors.white54, fontSize: 12),
+                ),
+                WidgetSpan(child: Container()),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget myTimeIndicator(double messageWidth) {
+    return Container(
+      width: messageWidth,
+      child: Align(
+        alignment: Alignment.bottomRight,
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 12),
+          child: RichText(
+            text: TextSpan(
+              children: [
+                TextSpan(
+                  text: DateFormat('HH:mm')
+                      .format(widget.message.getTimeStamp()),
+                  style: TextStyle(
+                      color: Colors.white54, fontSize: 12),
+                ),
+                widget.message.messageId != -1
+                    ? WidgetSpan(
+                    child: Icon(Icons.done_all,
+                        color: widget.message.hasBeenRead()
+                            ? Colors.blue
+                            : Colors.white54,
+                        size: 18))
+                    : WidgetSpan(
+                    child: Icon(Icons.done,
+                        color: Colors.white54, size: 18))
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget timeIndicator(double messageWidth) {
+    return widget.myMessage ? myTimeIndicator(messageWidth) : broTimeIndicator(messageWidth);
+  }
+
+  Widget regularMessage() {
+    double avatarSize = 50;
+    double messageWidth = MediaQuery.of(context).size.width - avatarSize;
+    Uint8List? broAvatar = null;
+    if (widget.bro != null) {
+      broAvatar = widget.bro!.getAvatar();
+    }
+    return Container(
+        margin: EdgeInsets.only(top: 6),
+        child: Container(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                padding: EdgeInsets.symmetric(vertical: 20),
+                width: avatarSize,
+                child: widget.myMessage ? Container() : avatarBox(avatarSize, avatarSize, broAvatar)
+              ),
+              Material(
+                child: Column(
+                    children: [
+                  widget.myMessage
+                      ? Container()
+                      : senderIndicator(messageWidth),
+                  GestureDetector(
+                    onTap: () {
+                      print("Message clicked");
+                    },
                     child: Container(
-                      child: getMessageContent()
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            Container(
-              child: Align(
-                alignment: widget.myMessage
-                    ? Alignment.bottomRight
-                    : Alignment.bottomLeft,
-                child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 12),
-                  child: RichText(
-                    text: TextSpan(
-                      children: [
-                        TextSpan(
-                          text: DateFormat('HH:mm')
-                              .format(widget.message.getTimeStamp()),
-                          style: TextStyle(
-                              color: Colors.white54, fontSize: 12),
+                      width: messageWidth,
+                      alignment: widget.myMessage
+                          ? Alignment.bottomRight
+                          : Alignment.bottomLeft,
+                      child: GestureDetector(
+                        onLongPress: _showMessageDetailPopupMenu,
+                        onTapDown: _storePosition,
+                        onTap: () {
+                          selectMessage(context);
+                        },
+                        child: Container(
+                          padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                          decoration: BoxDecoration(
+                              border: Border.all(
+                                color: getBorderColour(),
+                                width: 2,
+                              ),
+                              color: widget.myMessage
+                                  ? Color(0xFF009E00)
+                                  : Color(0xFF0060BB),
+                              borderRadius: widget.myMessage
+                                  ? BorderRadius.only(
+                                  topLeft: Radius.circular(42),
+                                  bottomRight: Radius.circular(42),
+                                  bottomLeft: Radius.circular(42))
+                                  : BorderRadius.only(
+                                  bottomLeft: Radius.circular(42),
+                                  topRight: Radius.circular(42),
+                                  bottomRight: Radius.circular(42))),
+                          child: Container(
+                              child: getMessageContent()
+                          ),
                         ),
-                        widget.myMessage
-                            ? widget.message.messageId != -1
-                            ? WidgetSpan(
-                            child: Icon(Icons.done_all,
-                                color: widget.message.hasBeenRead()
-                                    ? Colors.blue
-                                    : Colors.white54,
-                                size: 18))
-                            : WidgetSpan(
-                            child: Icon(Icons.done,
-                                color: Colors.white54, size: 18))
-                            : WidgetSpan(child: Container()),
-                      ],
+                      ),
                     ),
                   ),
-                ),
-              ),
+                  timeIndicator(messageWidth),
+                ]),
+                color: Colors.transparent,
             ),
-          ]),
-          color: Colors.transparent,
-        ));
+            ]
+          ),
+        )
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return widget.message.isInformation()
+        ? informationMessage()
+        : regularMessage();
   }
 
   void _showMessageDetailPopupMenu() {

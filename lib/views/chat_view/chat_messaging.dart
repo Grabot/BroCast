@@ -59,6 +59,7 @@ class _ChatMessagingState extends State<ChatMessaging> {
   bool meAdmin = false;
   Map<String, bool> broAdminStatus = {};
   Map<String, bool> broAddedStatus = {};
+  Map<String, Bro> broMapping = {};
 
   @override
   void initState() {
@@ -121,6 +122,7 @@ class _ChatMessagingState extends State<ChatMessaging> {
     for (Bro bro in chat.getBroupBros()) {
       broAdminStatus[bro.id.toString()] = false;
       broAddedStatus[bro.id.toString()] = false;
+      broMapping[bro.id.toString()] = bro;
     }
     meAdmin = false;
     for (int adminId in chat.getAdminIds()) {
@@ -339,6 +341,7 @@ class _ChatMessagingState extends State<ChatMessaging> {
                 return BroupMessageTile(
                     key: UniqueKey(),
                     message: chat.messages[index],
+                    bro: getBro(chat.messages[index].senderId),
                     senderName: getSender(chat.messages[index].senderId),
                     senderId: chat.messages[index].senderId,
                     broAdded: getIsAdded(chat.messages[index].senderId),
@@ -350,6 +353,10 @@ class _ChatMessagingState extends State<ChatMessaging> {
               }
             })
         : Container();
+  }
+
+  Bro? getBro(int senderId) {
+    return broMapping[senderId.toString()];
   }
 
   bool getIsAdded(int senderId) {

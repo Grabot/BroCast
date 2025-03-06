@@ -532,32 +532,14 @@ class AuthServiceSocial {
           if (bro != null) {
             bro.setAvatar(avatar);
             Storage().updateBro(bro);
-            Me? me = Settings().getMe();
-            if (me != null) {
-              for (Broup broup in me.broups) {
-                if (broup.broIds.contains(broId)) {
-                  // This will replace the bro object if it exists already.
-                  broup.addBro(bro);
-                }
-              }
-              BroHomeChangeNotifier().notify();
-            }
+            updateBroups(bro);
             return true;
           } else {
             // For some reason we don't have the bro stored yet. Retrieve it first.
             Bro? bro = await AuthServiceSocial().retrieveBro(broId);
             if (bro != null) {
               bro.setAvatar(avatar);
-              Storage().addBro(bro);
-              Me? me = Settings().getMe();
-              if (me != null) {
-                for (Broup broup in me.broups) {
-                  if (broup.broIds.contains(broId)) {
-                    broup.addBro(bro);
-                  }
-                }
-                BroHomeChangeNotifier().notify();
-              }
+              updateBroups(bro);
               return true;
             } else {
               return false;
@@ -567,6 +549,22 @@ class AuthServiceSocial {
       } else {
         return false;
       }
+    }
+  }
+
+  updateBroups(Bro bro) {
+    Storage().addBro(bro);
+    Me? me = Settings().getMe();
+    if (me != null) {
+      for (Broup broup in me.broups) {
+        if (broup.broIds.contains(bro.id)) {
+          broup.addBro(bro);
+          if (broup.private) {
+            // TODO: `new_avatar` back to false?
+          }
+        }
+      }
+      BroHomeChangeNotifier().notify();
     }
   }
 

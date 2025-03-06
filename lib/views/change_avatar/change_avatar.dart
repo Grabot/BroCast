@@ -6,6 +6,7 @@ import 'package:brocast/utils/socket_services.dart';
 import 'package:brocast/utils/storage.dart';
 import 'package:brocast/utils/utils.dart';
 import 'package:brocast/views/chat_view/chat_details/chat_details.dart';
+import 'package:camera/camera.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -14,6 +15,7 @@ import '../../../objects/me.dart';
 import '../../../services/auth/auth_service_settings.dart';
 import '../../objects/broup.dart';
 import '../../objects/message.dart';
+import '../camera_page/camera_page.dart';
 import '../ui_util/crop/controller.dart';
 import '../ui_util/crop/crop.dart';
 
@@ -43,10 +45,12 @@ class _ChangeAvatarState extends State<ChangeAvatar> {
 
   late bool isDefault;
 
-  CropController cropController = CropController();
+  late CropController cropController;
 
   late Uint8List imageMain;
   late Uint8List imageCrop;
+
+  bool changesMade = false;
 
   @override
   void initState() {
@@ -54,6 +58,7 @@ class _ChangeAvatarState extends State<ChangeAvatar> {
     imageMain = widget.avatar;
     imageCrop = widget.avatar;
     isDefault = widget.isDefault;
+    cropController = CropController();
     super.initState();
   }
 
@@ -318,7 +323,8 @@ class _ChangeAvatarState extends State<ChangeAvatar> {
         controller: cropController,
         hexCrop: true,
         onStatusChanged: (status) {
-          // TODO: add loading box?
+          print("status: $status");
+          changesMade = true;
           if (status == CropStatus.cropping || status == CropStatus.loading) {
             isLoading = true;
           } else if (status == CropStatus.ready) {
@@ -326,6 +332,7 @@ class _ChangeAvatarState extends State<ChangeAvatar> {
           }
         },
         onResize: (imageData) {
+          changesMade = true;
           showToastMessage("Image too large, resizing...");
           setState(() {
             imageCrop = imageData;
@@ -334,6 +341,7 @@ class _ChangeAvatarState extends State<ChangeAvatar> {
           });
         },
         onCropped: (image) {
+          print("cropped");
           setState(() {
             imageCrop = image;
           });
@@ -342,25 +350,38 @@ class _ChangeAvatarState extends State<ChangeAvatar> {
     );
   }
 
-  Widget uploadNewImageButton(double buttonWidth, double buttonHeight) {
-    return SizedBox(
-      width: buttonWidth,
-      height: buttonHeight,
-      child: ElevatedButton(
-        style: buttonStyle(false, Colors.blue),
-        child: Container(
-            alignment: Alignment.center,
-            child: Text(
-                'Upload a new image',
-                style: simpleTextStyle()
-            )
+  takePicture() async {
+    await availableCameras().then((value) => Navigator.pushReplacement(context, MaterialPageRoute(
+          builder: (context) => CameraPage(
+            key: UniqueKey(),
+            chat: widget.chat,
+            isMe: widget.isMe,
+            cameras: value,
+          )
         ),
-        onPressed: () async {
-          if (!isLoading) {
-            imageLoaded();
-          }
-        },
-      ),
+      )
+    );
+  }
+
+  Widget uploadNewImageButton(double buttonWidth, double buttonHeight) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        IconButton(
+          onPressed: takePicture,
+          iconSize: 60,
+          padding: EdgeInsets.zero,
+          constraints: const BoxConstraints(),
+          icon: const Icon(Icons.camera_alt, color: Colors.blue),
+        ),
+        IconButton(
+          onPressed: imageLoaded,
+          iconSize: 60,
+          padding: EdgeInsets.zero,
+          constraints: const BoxConstraints(),
+          icon: const Icon(Icons.image, color: Colors.blue),
+        )
+      ],
     );
   }
 
@@ -390,7 +411,7 @@ class _ChangeAvatarState extends State<ChangeAvatar> {
   }
 
   Widget saveImageButton(double buttonWidth, double buttonHeight) {
-    return SizedBox(
+    return changesMade ? SizedBox(
       width: buttonWidth,
       height: buttonHeight,
       child: ElevatedButton(
@@ -408,7 +429,7 @@ class _ChangeAvatarState extends State<ChangeAvatar> {
           ),
         ),
       ),
-    );
+    ) : Container();
   }
 
   Widget changeAvatar(double width, double height) {
