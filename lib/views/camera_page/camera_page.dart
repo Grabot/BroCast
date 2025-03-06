@@ -59,33 +59,38 @@ class _CameraPageState extends State<CameraPage> {
     try {
       final XFile? picture = await ImagePicker().pickImage(source: ImageSource.gallery);
       if (picture != null) {
-        final Image test = Image.file(File(picture.path), fit: BoxFit.cover, width: MediaQuery.of(context).size.width - 100);
+        // final Image test = Image.file(File(picture.path), fit: BoxFit.cover, width: MediaQuery.of(context).size.width - 100);
+        // turn Image to bytes
         Uint8List imageBytes = await picture.readAsBytes();
-        if (widget.chat != null) {
-          Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                  builder: (context) =>
-                      PreviewPageChat(
-                        isMe: widget.isMe,
-                        chat: widget.chat,
-                        picture: test,
-                        pictureData: picture,
-                        pictureName: picture.name,
-                      )));
-        } else {
-          Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                  builder: (context) =>
-                      ChangeAvatar(
-                          key: UniqueKey(),
-                          isMe: widget.isMe,
-                          avatar: imageBytes,
-                          isDefault: false,
-                          chat: null
-                      )));
-        }
+        // TODO: Test this?!?!?
+        Navigator.of(context).pop(imageBytes);
+        // if (widget.chat != null) {
+        //   Navigator.of(context).pop(imageBytes);
+        //   // Navigator.pushReplacement(
+        //   //     context,
+        //   //     MaterialPageRoute(
+        //   //         builder: (context) =>
+        //   //             PreviewPageChat(
+        //   //               isMe: widget.isMe,
+        //   //               chat: widget.chat,
+        //   //               picture: test,
+        //   //               pictureData: picture,
+        //   //               pictureName: picture.name,
+        //   //             )));
+        // } else {
+        //   Navigator.of(context).pop(imageBytes);
+        //   // Navigator.pushReplacement(
+        //   //     context,
+        //   //     MaterialPageRoute(
+        //   //         builder: (context) =>
+        //   //             ChangeAvatar(
+        //   //                 key: UniqueKey(),
+        //   //                 isMe: widget.isMe,
+        //   //                 avatar: imageBytes,
+        //   //                 isDefault: false,
+        //   //                 chat: null
+        //   //             )));
+        // }
       } else {
         print("Image gallery error!");
       }
@@ -111,7 +116,10 @@ class _CameraPageState extends State<CameraPage> {
       final FlashMode flashMode = _flash == 0 ? FlashMode.off : _flash == 1 ? FlashMode.always : FlashMode.auto;
       await _cameraController.setFlashMode(flashMode);
       final XFile picture = await _cameraController.takePicture();
-      final Image test = Image.file(File(picture.path), fit: BoxFit.cover, width: MediaQuery.of(context).size.width - 100);
+      Uint8List imageBytes = await picture.readAsBytes();
+      // TODO: Test this?!?!?
+      Navigator.of(context).pop(imageBytes);
+      // final Image test = Image.file(File(picture.path), fit: BoxFit.cover, width: MediaQuery.of(context).size.width - 100);
       // Navigator.pushReplacement(
       //     context,
       //     MaterialPageRoute(

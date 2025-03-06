@@ -351,7 +351,7 @@ class _ChangeAvatarState extends State<ChangeAvatar> {
   }
 
   takePicture() async {
-    await availableCameras().then((value) => Navigator.pushReplacement(context, MaterialPageRoute(
+    await availableCameras().then((value) => Navigator.push(context, MaterialPageRoute(
           builder: (context) => CameraPage(
             key: UniqueKey(),
             chat: widget.chat,
@@ -359,7 +359,14 @@ class _ChangeAvatarState extends State<ChangeAvatar> {
             cameras: value,
           )
         ),
-      )
+      ).then((value) {
+        isLoading = true;
+        setState(() {
+          imageCrop = value;
+          imageMain = value;
+          cropController.image = imageMain;
+        });
+      })
     );
   }
 
