@@ -556,6 +556,9 @@ class _AddBroupState extends State<AddBroup> {
                 ),
                 SizedBox(height: 10),
                 Expanded(child: listOfBros()),
+                !showEmojiKeyboard ? SizedBox(
+                  height: MediaQuery.of(context).padding.bottom,
+                ) : Container(),
                 Align(
                   alignment: Alignment.bottomCenter,
                   child: EmojiKeyboard(

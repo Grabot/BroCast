@@ -790,7 +790,8 @@ class _SignInState extends State<SignIn> {
                   ? Container(child: Center(child: CircularProgressIndicator()))
                   : Container(),
               Container(
-                child: Column(children: [
+                child: Column(
+                    children: [
                   Expanded(
                     child: SingleChildScrollView(
                       controller: signScrollController,
@@ -826,14 +827,19 @@ class _SignInState extends State<SignIn> {
                       ),
                     ),
                   ),
+                  !showEmojiKeyboard ? SizedBox(
+                    height: MediaQuery.of(context).padding.bottom,
+                  ) : Container(),
                   Align(
                       alignment: Alignment.bottomCenter,
                       child: EmojiKeyboard(
                           emojiController: bromotionController,
                           emojiKeyboardHeight: 400,
                           showEmojiKeyboard: showEmojiKeyboard,
-                          darkMode: emojiKeyboardDarkMode)),
-                ]),
+                          darkMode: emojiKeyboardDarkMode)
+                  ),
+                ]
+                ),
               ),
             ]),
           ),

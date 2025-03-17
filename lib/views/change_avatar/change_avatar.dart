@@ -351,7 +351,8 @@ class _ChangeAvatarState extends State<ChangeAvatar> {
   }
 
   takePicture() async {
-    await availableCameras().then((value) => Navigator.push(context, MaterialPageRoute(
+    availableCameras().then((value) {
+      Navigator.push(context, MaterialPageRoute(
           builder: (context) => CameraPage(
             key: UniqueKey(),
             chat: widget.chat,
@@ -359,15 +360,17 @@ class _ChangeAvatarState extends State<ChangeAvatar> {
             cameras: value,
           )
         ),
-      ).then((value) {
-        isLoading = true;
-        setState(() {
-          imageCrop = value;
-          imageMain = value;
-          cropController.image = imageMain;
-        });
-      })
-    );
+      ).then((value) async {
+        if (value != null) {
+          isLoading = true;
+          setState(() {
+            imageCrop = value;
+            imageMain = value;
+            cropController.image = imageMain;
+          });
+        };
+      });
+    });
   }
 
   Widget uploadNewImageButton(double buttonWidth, double buttonHeight) {
@@ -454,9 +457,9 @@ class _ChangeAvatarState extends State<ChangeAvatar> {
       margin: EdgeInsets.only(left: sidePadding, right: sidePadding),
       child: Column(
           children: [
-            SizedBox(height: 30),
+            SizedBox(height: 10),
             cropWidget(cropResultWidth),
-            SizedBox(height: 30),
+            SizedBox(height: 10),
             SizedBox(
                 width: width,
                 height: 30,
@@ -477,7 +480,7 @@ class _ChangeAvatarState extends State<ChangeAvatar> {
             saveImageButton(buttonWidth, buttonHeight),
             SizedBox(height: buttonHeight/3),
             resetDefaultImageButton(buttonWidth, buttonHeight),
-            SizedBox(height: 30),
+            SizedBox(height: 10),
           ]
       ),
     );

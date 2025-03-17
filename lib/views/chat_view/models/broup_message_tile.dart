@@ -1,10 +1,10 @@
 import 'dart:convert';
-import 'dart:io';
 import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
+import 'package:gal/gal.dart';
 import 'package:intl/intl.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../objects/message.dart';
@@ -52,15 +52,14 @@ class _BroupMessageTileState extends State<BroupMessageTile> {
     }
   }
 
-  Image? test;
+  Image? broImage;
 
   @override
   void initState() {
     super.initState();
     if (widget.message.data != null && widget.message.data != "") {
       Uint8List decoded = base64.decode(widget.message.data!);
-      test = Image.memory(decoded);
-      // test = Image.memory(decoded, fit: BoxFit.cover, width: MediaQuery.of(context).size.width - 100);
+      broImage = Image.memory(decoded);
       isImage = true;
     }
   }
@@ -101,7 +100,7 @@ class _BroupMessageTileState extends State<BroupMessageTile> {
         if (widget.message.textMessage != null && widget.message.textMessage!.isNotEmpty) {
           return Column(
               children: [
-                test!,
+                broImage!,
                 Linkify(
                   onOpen: _onOpen,
                     text: widget.message.textMessage!,
@@ -111,7 +110,7 @@ class _BroupMessageTileState extends State<BroupMessageTile> {
               ]
           );
         } else {
-          return test!;
+          return broImage!;
         }
       } else {
         return Linkify(
@@ -354,7 +353,6 @@ class _BroupMessageTileState extends State<BroupMessageTile> {
               Offset.zero & overlay.size))
           .then((int? delta) {
         if (delta == 1) {
-          print("messaging bro from the chat thingy");
           widget.broHandling(delta!, widget.senderId);
         } else if (delta == 2) {
           widget.broHandling(delta!, widget.senderId);
@@ -371,25 +369,32 @@ class _BroupMessageTileState extends State<BroupMessageTile> {
     }
   }
 
-  saveImageToGallery() async {
-    // code for image storing
-    Uint8List decoded = base64.decode(widget.message.data!);
-    // First we save it to the local application folder
-    Directory appDocDirectory = await getApplicationDocumentsDirectory();
-    String dir = appDocDirectory.path;
+  Future<bool> requestPermissions() async {
+    final hasAccess = await Gal.hasAccess();
+    if (!hasAccess) {
+      return await Gal.requestAccess();
+    } else {
+      return true;
+    }
+  }
 
-    String imageName = "brocast_" + DateTime.now().toUtc().toString();
-    String fullPath = '$dir/$imageName.png';
-    // We create the file once we have the full path
-    File file = File(fullPath);
-    // We store the image on the file
-    await file.writeAsBytes(decoded);
-    // We now save to image gallery
-    // await GallerySaver.saveImage(file.path, albumName: "Brocast").then((value) {
-    //   // We have save the image to the gallery, remove it from the application folder
-    //   file.delete();
-    //   ShowToastComponent.showDialog("Image was saved!", context);
-    // });
+  Future<void> saveImageToGallery() async {
+    try {
+      bool access = await requestPermissions();
+      if (!access) {
+        showToastMessage("No access to gallery");
+        return;
+      }
+      // Code for image storing
+      Uint8List decoded = base64.decode(widget.message.data!);
+      // We now save to image gallery in a custom album
+      final albumName = "Brocast";
+      await Gal.putImageBytes(decoded, album: albumName);
+
+      showToastMessage("Image saved");
+    } catch (e) {
+      showToastMessage("Failed to save image: $e");
+    }
   }
 
   void _storePosition(TapDownDetails details) {

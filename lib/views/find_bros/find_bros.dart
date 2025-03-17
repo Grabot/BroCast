@@ -356,6 +356,9 @@ class _FindBrosState extends State<FindBros> {
                           style: simpleTextStyle()))
                     : Container(),
               Expanded(child: listOfBros()),
+              !showEmojiKeyboard ? SizedBox(
+                height: MediaQuery.of(context).padding.bottom,
+              ) : Container(),
               Align(
                 alignment: Alignment.bottomCenter,
                 child: EmojiKeyboard(

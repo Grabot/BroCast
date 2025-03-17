@@ -44,6 +44,8 @@ class _BroProfileState extends State<BroProfile> {
   late Storage storage;
   late NotificationController notificationController;
 
+  ScrollController scrollController = ScrollController();
+
   @override
   void initState() {
     super.initState();
@@ -247,6 +249,15 @@ class _BroProfileState extends State<BroProfile> {
       showEmojiKeyboard = true;
       changePassword = false;
       broNameEnabled = false;
+    });
+    Future.delayed(Duration(milliseconds: 100)).then((value) {
+      if (scrollController.hasClients) {
+        scrollController.animateTo(
+          scrollController.position.maxScrollExtent,
+          duration: Duration(milliseconds: 500),
+          curve: Curves.easeOut,
+        );
+      }
     });
   }
 
@@ -642,6 +653,7 @@ class _BroProfileState extends State<BroProfile> {
                   children: [
                 Expanded(
                   child: SingleChildScrollView(
+                    controller: scrollController,
                     child: Column(
                         children: [
                       Container(

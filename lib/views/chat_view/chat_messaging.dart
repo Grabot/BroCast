@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:typed_data';
 import 'package:brocast/constants/route_paths.dart' as routes;
 import 'package:brocast/objects/broup.dart';
 import 'package:brocast/objects/message.dart';
@@ -7,13 +8,18 @@ import 'package:brocast/utils/settings.dart';
 import 'package:brocast/utils/socket_services.dart';
 import 'package:brocast/utils/utils.dart';
 import 'package:brocast/views/chat_view/messaging_change_notifier.dart';
+import 'package:camera/camera.dart';
 import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import '../../../objects/bro.dart';
 import '../../../services/auth/auth_service_social.dart';
+import '../../utils/popup_menu_override.dart';
 import '../../utils/storage.dart';
 import '../../objects/me.dart';
+import '../camera_page/camera_page.dart';
+import '../preview_page_chat/preview_page_chat.dart';
 import 'chat_details/chat_details.dart';
 import 'message_util.dart';
 import 'models/bro_message_tile.dart';
@@ -61,6 +67,13 @@ class _ChatMessagingState extends State<ChatMessaging> {
   Map<String, bool> broAddedStatus = {};
   Map<String, Bro> broMapping = {};
 
+  NavigatorState? navigator;
+  String barrierLabel = "";
+  CapturedThemes? capturedThemes;
+
+  // The key for the photo Icon
+  GlobalKey photoKey = GlobalKey();
+
   @override
   void initState() {
     super.initState();
@@ -92,6 +105,10 @@ class _ChatMessagingState extends State<ChatMessaging> {
 
     SchedulerBinding.instance.addPostFrameCallback((_) {
       retrieveData();
+      navigator = Navigator.of(context, rootNavigator: false);
+      barrierLabel = MaterialLocalizations.of(context).modalBarrierDismissLabel;
+      capturedThemes =
+          InheritedTheme.capture(from: context, to: navigator!.context);
     });
   }
 
@@ -272,8 +289,7 @@ class _ChatMessagingState extends State<ChatMessaging> {
     }
   }
 
-  sendMessageBroup() {
-    // TODO: copied?
+  sendMessage(String? messageData) {
     if (formKey.currentState!.validate()) {
       String message = broMessageController.text;
       String textMessage = appendTextMessageController.text;
@@ -297,9 +313,11 @@ class _ChatMessagingState extends State<ChatMessaging> {
         chat.getBroupId(),
       );
       setState(() {
-        chat.messages.insert(0, mes);
+        if (messageData == null) {
+          // only do this for regular messages, because they will be deleted again if we receive the message. Which is not done for messages with data.
+          chat.messages.insert(0, mes);
+        }
       });
-      String? messageData = null;
       AuthServiceSocial().sendMessage(chat.getBroupId(), message, textMessage, messageData).then((value) {
         if (value) {
           // message send
@@ -307,7 +325,9 @@ class _ChatMessagingState extends State<ChatMessaging> {
           // The message was not sent, we remove it from the list
           showToastMessage("there was an issue sending the message");
           setState(() {
-            chat.messages.removeAt(0);
+            if (messageData == null) {
+              chat.messages.removeAt(0);
+            }
           });
         }
       });
@@ -321,6 +341,148 @@ class _ChatMessagingState extends State<ChatMessaging> {
           appendingMessage = false;
         });
       }
+    }
+  }
+
+  imageLoaded() async {
+    FilePickerResult? picked = await FilePicker.platform.pickFiles(withData: true);
+
+    if (picked != null) {
+      String? extension = picked.files.first.extension;
+      if (extension != "png" && extension != "jpg" && extension != "jpeg") {
+        showToastMessage("Can only upload images with extension .png, .jpg or .jpeg");
+      } else {
+        Uint8List photoData = picked.files.first.bytes!;
+
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) =>
+              PreviewPageChat(
+                key: UniqueKey(),
+                chat: widget.chat,
+                image: photoData,
+              ),
+            ),
+        ).then((imageData) {
+          if (imageData != null) {
+            // imageData should be a list of 3 strings, the image, bro message and possible text message
+            String imageString = imageData[0];
+            String broMessage = imageData[1];
+            String appendTextMessage = imageData[2];
+
+            broMessageController.text = broMessage;
+            appendTextMessageController.text = appendTextMessage;
+            sendMessage(imageString);
+          } else {
+            showToastMessage("image not send");
+          }
+        });
+      }
+    }
+  }
+
+  List<Icon> popupItems = [
+    Icon(
+        Icons.camera_alt,
+        color: Color(0xFF616161)
+    ),
+    Icon(
+        Icons.image,
+        color: Color(0xFF616161)
+    )
+  ];
+
+  sendMessageData(Uint8List imageData) {
+    print("sending message with data");
+    // clear the text field because it is taken from the preview page.
+    broMessageController.text = "";
+    appendTextMessageController.text = "";
+    // Returned from the camera with the image
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) =>
+            PreviewPageChat(
+              key: UniqueKey(),
+              chat: widget.chat,
+              image: imageData,
+            ),
+      ),
+    ).then((imageData) {
+      if (imageData != null) {
+        // imageData should be a list of 3 strings, the image, bro message and possible text message
+        String imageString = imageData[0];
+        String broMessage = imageData[1];
+        String appendTextMessage = imageData[2];
+
+        broMessageController.text = broMessage;
+        appendTextMessageController.text = appendTextMessage;
+        sendMessage(imageString);
+      } else {
+        showToastMessage("image not send");
+      }
+    });
+  }
+
+  addNewComponent(int popupIndex) {
+    Navigator.of(context).pop();
+    if (popupIndex == 0) {
+      availableCameras().then((value) {
+        Navigator.push(context, MaterialPageRoute(
+          builder: (context) => CameraPage(
+            key: UniqueKey(),
+            chat: widget.chat,
+            isMe: false,
+            cameras: value,
+          )
+        ),
+        ).then((imageData) async {
+          if (imageData != null) {
+            sendMessageData(imageData);
+          }
+        });
+      });
+    } else {
+      imageLoaded();
+    }
+  }
+
+  _showPopupPhoto(GlobalKey keyKey) async {
+    RenderBox? box = keyKey.currentContext!.findRenderObject() as RenderBox?;
+
+    Offset position = box!.localToGlobal(Offset.zero);
+
+    double xPos = MediaQuery.of(context).size.width / 2;
+    double yPos = position.dy - 20;
+
+    // We want space for 2 buttons, gallery and camera
+    double widthPopup = 140;
+    double heightPopup = 70;
+
+    RelativeRect popupPosition = RelativeRect.fromLTRB(
+        xPos - widthPopup / 2,
+        yPos - heightPopup,
+        xPos + widthPopup / 2,
+        yPos - heightPopup
+    );
+
+    if (navigator != null && capturedThemes != null) {
+      showMenuOverride(
+        position: popupPosition,
+        widthPopup: widthPopup,
+        heightPopup: heightPopup,
+        navigator: navigator!,
+        barrierLabel: barrierLabel,
+        capturedThemes: capturedThemes!,
+        items: [
+          ComponentDetailPopup(
+              key: UniqueKey(),
+              components: popupItems,
+              addNewComponent: addNewComponent
+          )
+        ],
+      ).then((value) {
+        return;
+      });
     }
   }
 
@@ -505,13 +667,18 @@ class _ChatMessagingState extends State<ChatMessaging> {
           child: Column(
             children: [
               Expanded(
-                  child: Stack(children: [
-                messageList(),
-                isLoadingBros || isLoadingMessages
-                    ? Center(
-                        child: Container(child: CircularProgressIndicator()))
-                    : Container()
-              ])),
+                  child: Stack(
+                      children: [
+                        messageList(),
+                        isLoadingBros || isLoadingMessages
+                            ? Center(
+                            child: Container(
+                                child: CircularProgressIndicator()
+                            )
+                        ) : Container(),
+                      ]
+                  )
+              ),
               Container(
                 child: Container(
                   alignment: Alignment.bottomCenter,
@@ -580,27 +747,26 @@ class _ChatMessagingState extends State<ChatMessaging> {
                           ),
                           GestureDetector(
                             onTap: () async {
-                              // await availableCameras().then((value) => Navigator.pushReplacement(context,
-                              //     MaterialPageRoute(builder: (_) => CameraPage(
-                              //         chat: chat,
-                              //         cameras: value
-                              //     ))));
-                              // // pickImage();
+                              _showPopupPhoto(photoKey);
                             },
                             child: Container(
+                                key: photoKey,
                                 height: 35,
                                 width: 35,
                                 decoration: BoxDecoration(
                                     color: Colors.grey,
                                     borderRadius: BorderRadius.circular(35)),
                                 padding: EdgeInsets.symmetric(horizontal: 6),
-                                child: Icon(Icons.camera_alt,
-                                    color: Color(0xFF616161))),
+                                child: Icon(
+                                    Icons.attach_file,
+                                    color: Color(0xFF616161)
+                                )
+                            ),
                           ),
                           SizedBox(width: 5),
                           GestureDetector(
                             onTap: () {
-                              sendMessageBroup();
+                              sendMessage(null);
                             },
                             child: Container(
                                 height: 35,

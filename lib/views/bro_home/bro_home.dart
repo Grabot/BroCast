@@ -608,13 +608,20 @@ class _BroCastHomeState extends State<BroCastHome> {
                         ),
                       ]
                   ),
-                  Align(
-                    alignment: Alignment.bottomCenter,
-                    child: EmojiKeyboard(
-                        emojiController: bromotionController,
-                        emojiKeyboardHeight: 400,
-                        showEmojiKeyboard: showEmojiKeyboard,
-                        darkMode: settings.getEmojiKeyboardDarkMode()),
+                  Column(
+                    children: [
+                      !showEmojiKeyboard ? SizedBox(
+                        height: MediaQuery.of(context).padding.bottom,
+                      ) : Container(),
+                      Align(
+                        alignment: Alignment.bottomCenter,
+                        child: EmojiKeyboard(
+                            emojiController: bromotionController,
+                            emojiKeyboardHeight: 400,
+                            showEmojiKeyboard: showEmojiKeyboard,
+                            darkMode: settings.getEmojiKeyboardDarkMode()),
+                      ),
+                    ]
                   ),
                 ]
             )
