@@ -465,7 +465,7 @@ class ComponentDetailPopupState extends State<ComponentDetailPopup> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        color: Colors.grey,
+        color: Colors.black,
         child: GridView.builder(
             shrinkWrap: true,
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -476,7 +476,7 @@ class ComponentDetailPopupState extends State<ComponentDetailPopup> {
               return Container(
                 height: 70,
                 width: 70,
-                color: Colors.grey,
+                color: Colors.black,
                 child: Material(
                   color: Colors.transparent,
                   child: InkWell(
@@ -486,7 +486,7 @@ class ComponentDetailPopupState extends State<ComponentDetailPopup> {
                           index, widget.addNewComponent);
                     },
                     child: Container(
-                      padding: EdgeInsets.all(4),
+                      padding: EdgeInsets.all(14),
                       child: FittedBox(
                         fit: BoxFit.fitWidth,
                         child: widget.components[index],

@@ -57,7 +57,7 @@ class _AddBroupState extends State<AddBroup> {
     Me? me = settings.getMe();
     if (me != null) {
       for (Broup broup in me.broups) {
-        if (broup.private) {
+        if (broup.private && !broup.removed) {
           participants.add(ParticipantItem(false, broup));
           for (int broId in broup.broIds) {
             if (broId != me.id) {

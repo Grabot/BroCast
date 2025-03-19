@@ -37,8 +37,6 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> {
   List<BroupAddBro> broupAddBros = [];
   List<BroupAddBro> broupAddBrosShownBros = [];
 
-  late Broup chat;
-
   TextEditingController bromotionController = new TextEditingController();
   TextEditingController broNameController = new TextEditingController();
 
@@ -47,7 +45,6 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> {
   @override
   void initState() {
     super.initState();
-    chat = widget.chat;
     socketServices.checkConnection();
     socketServices.addListener(socketListener);
     bromotionController.addListener(bromotionListener);
@@ -65,7 +62,7 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> {
           // In a private chat there are 2 ids, me and the other bro
           if (participantId != me.getId()) {
             // Check if the ID of `myBro` is in the `chat.getBroIds()`
-            for (int chatParticipantId in chat.getBroIds()) {
+            for (int chatParticipantId in widget.chat.getBroIds()) {
               if (participantId == chatParticipantId) {
                 inBroup = true;
                 break;
@@ -170,7 +167,7 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> {
         MaterialPageRoute(
             builder: (context) => ChatDetails(
                 key: UniqueKey(),
-                chat: chat)));
+                chat: widget.chat)));
   }
 
   void backButtonFunctionality() {
@@ -189,17 +186,17 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> {
       child: AppBar(
           leading: IconButton(
               icon:
-                  Icon(Icons.arrow_back, color: getTextColor(chat.getColor())),
+                  Icon(Icons.arrow_back, color: getTextColor(widget.chat.getColor())),
               onPressed: () {
                 backButtonFunctionality();
               }),
           backgroundColor:
-              chat.getColor() != null ? chat.getColor() : Color(0xff145C9E),
+          widget.chat.getColor() != null ? widget.chat.getColor() : Color(0xff145C9E),
           title: Column(children: [
             Container(
                 child: Text("Add participants",
                     style: TextStyle(
-                        color: getTextColor(chat.getColor()), fontSize: 20)))
+                        color: getTextColor(widget.chat.getColor()), fontSize: 20)))
           ]),
           actions: [
             PopupMenuButton<int>(
@@ -461,21 +458,21 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> {
       }
     }
     if (newBroId != -1) {
-      AuthServiceSocial().addBroToBroup(chat.broupId, newBroId).then((value) {
+      AuthServiceSocial().addBroToBroup(widget.chat.broupId, newBroId).then((value) {
         print("adding to broup: $value");
         if (value) {
-          List<int> broIdsToRetrieve = [...chat.getBroIds()];
-          for (Bro bro in chat.getBroupBros()) {
+          List<int> broIdsToRetrieve = [...widget.chat.getBroIds()];
+          for (Bro bro in widget.chat.getBroupBros()) {
             broIdsToRetrieve.remove(bro.id);
           }
           for (Broup broup in me!.broups) {
             if (broup.private) {
               for (Bro bro in broup.getBroupBros()) {
                 if (bro.id == newBroId) {
-                  chat.addBro(bro);
+                  widget.chat.addBro(bro);
                   broIdsToRetrieve.remove(newBroId);
                   if (broIdsToRetrieve.isEmpty) {
-                    chat.retrievedBros = true;
+                    widget.chat.retrievedBros = true;
                     break;
                   }
                 }
@@ -488,7 +485,7 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> {
             AuthServiceSocial().retrieveBros(broIdsToRetrieve).then((value) {
               if (value.isNotEmpty) {
                 for (Bro bro in value) {
-                  chat.addBro(bro);
+                  widget.chat.addBro(bro);
                   Storage().addBro(bro);
                 }
               }

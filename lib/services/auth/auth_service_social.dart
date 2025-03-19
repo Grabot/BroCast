@@ -666,4 +666,67 @@ class AuthServiceSocial {
       return json["result"];
     }
   }
+
+  Future<bool> deleteBroup(int broupId) async {
+    String endPoint = "broup/delete";
+    var response = await AuthApi().dio.post(endPoint,
+        options: Options(headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+        }),
+        data: jsonEncode(<String, dynamic>{
+          "broup_id": broupId,
+        }
+      )
+    );
+
+    Map<String, dynamic> json = response.data;
+    if (!json.containsKey("result")) {
+      return false;
+    } else {
+      return json["result"];
+    }
+  }
+
+  Future<bool> muteBroup(int broupId, int muteTime) async {
+    String endPoint = "broup/mute";
+    var response = await AuthApi().dio.post(endPoint,
+        options: Options(headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+        }),
+        data: jsonEncode(<String, dynamic>{
+          "broup_id": broupId,
+          "mute_time": muteTime,
+        }
+      )
+    );
+
+    Map<String, dynamic> json = response.data;
+    if (!json.containsKey("result")) {
+      return false;
+    } else {
+      return json["result"];
+    }
+  }
+
+  Future<bool> reportBroup(int broupId, List<String> reportMessages, String broupName) async {
+    String endPoint = "broup/report";
+    var response = await AuthApi().dio.post(endPoint,
+        options: Options(headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+        }),
+        data: jsonEncode(<String, dynamic>{
+          "broup_id": broupId,
+          "report_messages": reportMessages,
+          "broup_name": broupName
+        }
+      )
+    );
+
+    Map<String, dynamic> json = response.data;
+    if (!json.containsKey("result")) {
+      return false;
+    } else {
+      return json["result"];
+    }
+  }
 }

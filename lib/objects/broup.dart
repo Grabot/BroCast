@@ -25,6 +25,7 @@ class Broup {
   // This is because the broup objects are updated later
   // This might cause an initialization error
   bool mute = false;
+  String? muteValue;
   bool deleted = false;
   bool removed = false;
   // The `blocked` boolean might be confusing, it's only true for the bro that did the blocking
@@ -246,6 +247,19 @@ class Broup {
     updateBroup = update;
   }
 
+  setMuted(bool mute) {
+    this.mute = mute;
+  }
+
+  setMuteValue(String? muteUntil) {
+    if (muteUntil != null) {
+      if (!muteUntil.endsWith("Z")) {
+        muteUntil = muteUntil + "Z";
+      }
+    }
+    this.muteValue = muteUntil;
+  }
+
   Broup.fromJson(Map<String, dynamic> json) {
     // These 4 values should always be present
     broupId = json["broup_id"];
@@ -323,6 +337,7 @@ class Broup {
     map['unreadMessages'] = unreadMessages;
     map['private'] = private ? 1 : 0;
     map['mute'] = mute ? 1 : 0;
+    map['muteValue'] = muteValue;
     map['deleted'] = deleted ? 1 : 0;
     map['removed'] = removed ? 1 : 0;
     map['blocked'] = blocked ? 1 : 0;
@@ -336,6 +351,40 @@ class Broup {
     print("message ids $messageIds");
     map['messages'] = jsonEncode(messageIds);
     return map;
+  }
+
+  updateMute() {
+    Storage().fetchBroup(broupId).then((dbBroup) {
+      if (dbBroup != null) {
+        // We want to update the db object and the current broup object
+        dbBroup.mute = false;
+        dbBroup.muteValue = null;
+        Storage().updateBroup(dbBroup).then((value) {
+          for (Broup checkBroup in Settings().getMe()!.broups) {
+            if (checkBroup.getBroupId() == broupId) {
+              checkBroup.mute = false;
+              checkBroup.muteValue = null;
+              break;
+            }
+          }
+          BroHomeChangeNotifier().notify();
+        });
+      }
+    });
+  }
+
+  checkMute() {
+    // We set a time until the muteValue is reached
+    DateTime muteDateTime = DateTime.parse(muteValue!).toLocal();
+    Duration remainingTime = muteDateTime.difference(DateTime.now());
+    if (remainingTime.inSeconds > 0) {
+      // The mute is still active
+      Future.delayed(remainingTime).then((value) {
+        updateMute();
+      });
+    } else {
+      updateMute();
+    }
   }
 
   Broup.fromDbMap(Map<String, dynamic> map) {
@@ -355,6 +404,10 @@ class Broup {
     unreadMessages = map['unreadMessages'];
     private = map['private'] == 1;
     mute = map['mute'] == 1;
+    muteValue = map['muteValue'];
+    if (muteValue != null) {
+      checkMute();
+    }
     deleted = map['deleted'] == 1;
     removed = map['removed'] == 1;
     blocked = map['blocked'] == 1;
@@ -371,6 +424,20 @@ class Broup {
   }
 
   updateBroupDataServer(Broup serverBroup) {
+    if (serverBroup.removed) {
+      if (serverBroup.private) {
+        if (serverBroup.adminIds.contains(Settings().getMe()!.getId())) {
+          // In a private chat the admin id is not needed, so it is repurposed for the blocked status
+          // The id of the bro that blocked the chat is stored in the adminIds
+          this.blocked = true;
+        }
+      }
+      // If the broup is now removed we want to set the flag, but also add a block message
+      // If it's no longer removed we want to updated it again.
+      if (checkRemoved(serverBroup)) {
+        return;
+      }
+    }
     // From the server we want to update most of the data.
     this
       ..broIds = serverBroup.broIds
@@ -393,13 +460,51 @@ class Broup {
       ..messages = this.messages
       ..avatarDefault = this.avatarDefault
       ..avatar = this.avatar;
-    if (serverBroup.private && serverBroup.removed) {
-      if (serverBroup.adminIds.contains(Settings().getMe()!.getId())) {
-        // In a private chat the admin id is not needed, so it is repurposed for the blocked status
-        // The id of the bro that blocked the chat is stored in the adminIds
-        this.blocked = true;
-      }
+  }
+
+  checkRemoved(Broup serverBroup) {
+    // If the bro did not have their phone active when this message was send
+    // They will not have the message in their chat
+    // In this specific case we will add indication that the chat is blocked
+    if (!this.removed && serverBroup.removed) {
+      // Add block message
+      Message blockMessage = Message(
+        serverBroup.lastMessageId + 1,
+        0,
+        "Chat is blocked! 😭",
+        "",
+        DateTime.now().toUtc().toString(),
+        null,
+        true,
+        serverBroup.getBroupId(),
+      );
+      Storage().addMessage(blockMessage);
+      this.messages.insert(
+          0,
+          blockMessage);
+      this.removed = serverBroup.removed;
+      this.unreadMessages = 0;
+    } else if (this.removed && !serverBroup.removed) {
+      // no longer removed
+      Message unBlockMessage = Message(
+        serverBroup.lastMessageId + 1,
+        0,
+        "Chat is no longer blocked! 🥰",
+        "",
+        DateTime.now().toUtc().toString(),
+        null,
+        true,
+        serverBroup.getBroupId(),
+      );
+      Storage().addMessage(unBlockMessage);
+      this.messages.insert(
+          0,
+          unBlockMessage);
+      this.removed = serverBroup.removed;
+      return false;
     }
+    // Return true, because if the broup is removed we don't want any updates.
+    return true;
   }
 
   updateDateTiles(Message message) {

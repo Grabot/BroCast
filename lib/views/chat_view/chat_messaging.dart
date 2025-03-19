@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:typed_data';
-import 'package:brocast/constants/route_paths.dart' as routes;
 import 'package:brocast/objects/broup.dart';
 import 'package:brocast/objects/message.dart';
 import 'package:brocast/utils/notification_controller.dart';
@@ -52,7 +51,6 @@ class _ChatMessagingState extends State<ChatMessaging> {
       new TextEditingController();
   final formKey = GlobalKey<FormState>();
 
-  late Broup chat;
   late Storage storage;
   late NotificationController notificationController;
 
@@ -78,7 +76,6 @@ class _ChatMessagingState extends State<ChatMessaging> {
   void initState() {
     super.initState();
     print("init chat");
-    chat = widget.chat;
     storage = Storage();
     socketServices.checkConnection();
     socketServices.addListener(socketListener);
@@ -92,10 +89,12 @@ class _ChatMessagingState extends State<ChatMessaging> {
         double distanceToTop =
             messageScrollController.position.maxScrollExtent -
                 messageScrollController.position.pixels;
+        print("distance to top: $distanceToTop");
         if (distanceToTop < 1000) {
           busyRetrieving = true;
           amountViewed += 1;
-          fetchExtraMessages(amountViewed, chat, storage).then((value) {
+          print("fetching extra messages!");
+          fetchExtraMessages(amountViewed, widget.chat, storage).then((value) {
             allMessagesDBRetrieved = value;
             busyRetrieving = false;
           });
@@ -115,38 +114,39 @@ class _ChatMessagingState extends State<ChatMessaging> {
   notificationListener() {
     print("chat notification listener ${notificationController.navigateChat}");
     if (notificationController.navigateChat) {
-      notificationController.navigateChat = false;
-      int chatId = notificationController.navigateChatId;
-      storage.fetchBroup(chatId).then((broup) {
-        if (broup != null) {
-          notificationController.navigateChat = false;
-          notificationController.navigateChatId = -1;
-
-          print("navigating to chat???");
-          if (broup.broupId != chat.broupId) {
-            print("changing chat object");
-            chat = broup;
-            retrieveData();
-            messagingChangeNotifier.setBroupId(chat.getBroupId());
-            setState(() {});
-          }
-        }
-      });
+      // TODO: Fix navigation via notification
+      // notificationController.navigateChat = false;
+      // int chatId = notificationController.navigateChatId;
+      // storage.fetchBroup(chatId).then((broup) {
+      //   if (broup != null) {
+      //     notificationController.navigateChat = false;
+      //     notificationController.navigateChatId = -1;
+      //
+      //     print("navigating to chat???");
+      //     if (broup.broupId != widget.chat.broupId) {
+      //       print("changing chat object");
+      //       widget.chat = broup;
+      //       retrieveData();
+      //       messagingChangeNotifier.setBroupId(widget.chat.getBroupId());
+      //       setState(() {});
+      //     }
+      //   }
+      // });
     }
   }
 
   checkIsAdmin() {
-    for (Bro bro in chat.getBroupBros()) {
+    for (Bro bro in widget.chat.getBroupBros()) {
       broAdminStatus[bro.id.toString()] = false;
       broAddedStatus[bro.id.toString()] = false;
       broMapping[bro.id.toString()] = bro;
     }
     meAdmin = false;
-    for (int adminId in chat.getAdminIds()) {
+    for (int adminId in widget.chat.getAdminIds()) {
       if (adminId == settings.getMe()!.getId()) {
         meAdmin = true;
       }
-      for (Bro bro in chat.getBroupBros()) {
+      for (Bro bro in widget.chat.getBroupBros()) {
         if (bro.id == adminId) {
           broAdminStatus[bro.id.toString()] = true;
         }
@@ -170,25 +170,25 @@ class _ChatMessagingState extends State<ChatMessaging> {
       isLoadingBros = true;
       isLoadingMessages = true;
     });
-    getBroupUpdate(chat, storage).then((value) {
-      getMessages(0, chat, storage).then((value) {
+    getBroupUpdate(widget.chat, storage).then((value) {
+      getMessages(0, widget.chat, storage).then((value) {
         allMessagesDBRetrieved = value;
         setState(() {
-          if (chat.messages.length != 0) {
-            setDateTiles(chat);
-            if (chat.messages[0].messageId <= 0) {
-              chat.lastMessageId = chat.messages[1].messageId;
+          if (widget.chat.messages.length != 0) {
+            setDateTiles(widget.chat);
+            if (widget.chat.messages[0].messageId <= 0) {
+              widget.chat.lastMessageId = widget.chat.messages[1].messageId;
             } else {
-              chat.lastMessageId = chat.messages[0].messageId;
+              widget.chat.lastMessageId = widget.chat.messages[0].messageId;
             }
           }
           isLoadingMessages = false;
         });
       });
-      print("chat id: ${chat.broupId}");
+      print("chat id: ${widget.chat.broupId}");
       Me? me = settings.getMe();
       print("me: $me");
-      getBros(chat, storage, settings.getMe()!).then((value) {
+      getBros(widget.chat, storage, settings.getMe()!).then((value) {
         checkIsAdmin();
         setState(() {
           isLoadingBros = false;
@@ -211,12 +211,13 @@ class _ChatMessagingState extends State<ChatMessaging> {
           if (broup.private) {
             for (int broId in broup.getBroIds()) {
               if (broId == addBroId) {
-                // We are already in the chat window.
-                // We attempt to transfer the correct data here.
-                chat = broup;
-                retrieveData();
-                messagingChangeNotifier.setBroupId(chat.getBroupId());
-                setState(() {});
+                // TODO: Fix via regular navigation?
+                // // We are already in the chat window.
+                // // We attempt to transfer the correct data here.
+                // widget.chat = broup;
+                // retrieveData();
+                // messagingChangeNotifier.setBroupId(widget.chat.getBroupId());
+                // setState(() {});
               }
             }
           }
@@ -234,19 +235,19 @@ class _ChatMessagingState extends State<ChatMessaging> {
         }
       });
     } else if (delta == 4) {
-      AuthServiceSocial().makeBroAdmin(chat.broupId, addBroId).then((value) {
+      AuthServiceSocial().makeBroAdmin(widget.chat.broupId, addBroId).then((value) {
         if (value) {
           setState(() {
-            chat.addAdminId(addBroId);
+            widget.chat.addAdminId(addBroId);
             checkIsAdmin();
           });
         }
       });
     } else if (delta == 5) {
-      AuthServiceSocial().dismissBroAdmin(chat.broupId, addBroId).then((value) {
+      AuthServiceSocial().dismissBroAdmin(widget.chat.broupId, addBroId).then((value) {
         if (value) {
           setState(() {
-            chat.removeAdminId(addBroId);
+            widget.chat.removeAdminId(addBroId);
             checkIsAdmin();
           });
         }
@@ -295,12 +296,13 @@ class _ChatMessagingState extends State<ChatMessaging> {
       String textMessage = appendTextMessageController.text;
       // We add the message already as being send.
       // If it is received we remove this message and show 'received'
-      String timestampString = DateTime.now().toUtc().toString();
-      // The 'Z' indicates that it's UTC but we'll already add it in the message
-      if (timestampString.endsWith('Z')) {
-        timestampString =
-            timestampString.substring(0, timestampString.length - 1);
-      }
+      // TODO: Remove this code? Obsolete?
+      // String timestampString = DateTime.now().toUtc().toString();
+      // // The 'Z' indicates that it's UTC but we'll already add it in the message
+      // if (timestampString.endsWith('Z')) {
+      //   timestampString =
+      //       timestampString.substring(0, timestampString.length - 1);
+      // }
       // We set the id to be "-1". For date tiles it is "0", these will be filtered.
       Message mes = new Message(
         -1,
@@ -310,15 +312,15 @@ class _ChatMessagingState extends State<ChatMessaging> {
         DateTime.now().toUtc().toString(),
         null,
         false,
-        chat.getBroupId(),
+        widget.chat.getBroupId(),
       );
       setState(() {
         if (messageData == null) {
           // only do this for regular messages, because they will be deleted again if we receive the message. Which is not done for messages with data.
-          chat.messages.insert(0, mes);
+          widget.chat.messages.insert(0, mes);
         }
       });
-      AuthServiceSocial().sendMessage(chat.getBroupId(), message, textMessage, messageData).then((value) {
+      AuthServiceSocial().sendMessage(widget.chat.getBroupId(), message, textMessage, messageData).then((value) {
         if (value) {
           // message send
         } else {
@@ -326,7 +328,7 @@ class _ChatMessagingState extends State<ChatMessaging> {
           showToastMessage("there was an issue sending the message");
           setState(() {
             if (messageData == null) {
-              chat.messages.removeAt(0);
+              widget.chat.messages.removeAt(0);
             }
           });
         }
@@ -383,12 +385,12 @@ class _ChatMessagingState extends State<ChatMessaging> {
 
   List<Icon> popupItems = [
     Icon(
-        Icons.camera_alt,
-        color: Color(0xFF616161)
+      Icons.camera_alt,
+      color: Colors.blue,
     ),
     Icon(
-        Icons.image,
-        color: Color(0xFF616161)
+      Icons.image,
+      color: Colors.blue,
     )
   ];
 
@@ -470,6 +472,7 @@ class _ChatMessagingState extends State<ChatMessaging> {
         position: popupPosition,
         widthPopup: widthPopup,
         heightPopup: heightPopup,
+        color: Colors.black,
         navigator: navigator!,
         barrierLabel: barrierLabel,
         capturedThemes: capturedThemes!,
@@ -487,28 +490,28 @@ class _ChatMessagingState extends State<ChatMessaging> {
   }
 
   Widget messageList() {
-    return chat.messages.isNotEmpty
+    return widget.chat.messages.isNotEmpty
         ? ListView.builder(
-            itemCount: chat.messages.length,
+            itemCount: widget.chat.messages.length,
             shrinkWrap: true,
             reverse: true,
             controller: messageScrollController,
             itemBuilder: (context, index) {
-              if (chat.private) {
+              if (widget.chat.private) {
                 return BroMessageTile(
                     key: UniqueKey(),
-                    message: chat.messages[index],
-                    myMessage: chat.messages[index].senderId == settings.getMe()!.getId());
+                    message: widget.chat.messages[index],
+                    myMessage: widget.chat.messages[index].senderId == settings.getMe()!.getId());
               } else {
                 return BroupMessageTile(
                     key: UniqueKey(),
-                    message: chat.messages[index],
-                    bro: getBro(chat.messages[index].senderId),
-                    senderName: getSender(chat.messages[index].senderId),
-                    senderId: chat.messages[index].senderId,
-                    broAdded: getIsAdded(chat.messages[index].senderId),
-                    broAdmin: getIsAdmin(chat.messages[index].senderId),
-                    myMessage: chat.messages[index].senderId ==
+                    message: widget.chat.messages[index],
+                    bro: getBro(widget.chat.messages[index].senderId),
+                    senderName: getSender(widget.chat.messages[index].senderId),
+                    senderId: widget.chat.messages[index].senderId,
+                    broAdded: getIsAdded(widget.chat.messages[index].senderId),
+                    broAdmin: getIsAdmin(widget.chat.messages[index].senderId),
+                    myMessage: widget.chat.messages[index].senderId ==
                         settings.getMe()!.getId(),
                     userAdmin: meAdmin,
                     broHandling: broHandling);
@@ -537,7 +540,7 @@ class _ChatMessagingState extends State<ChatMessaging> {
 
   String getSender(int senderId) {
     String broName = "";
-    for (Bro bro in chat.broupBros) {
+    for (Bro bro in widget.chat.broupBros) {
       if (bro.id == senderId) {
         return bro.getFullName();
       }
@@ -579,14 +582,14 @@ class _ChatMessagingState extends State<ChatMessaging> {
         context,
         MaterialPageRoute(
             builder: (context) =>
-                ChatDetails(key: UniqueKey(), chat: chat)));
+                ChatDetails(key: UniqueKey(), chat: widget.chat)));
   }
 
   PreferredSize appBarChat() {
     return PreferredSize(
       preferredSize: const Size.fromHeight(50),
       child: Ink(
-        color: chat.getColor(),
+        color: widget.chat.getColor(),
         child: InkWell(
           onTap: () {
             goToChatDetails();
@@ -594,7 +597,7 @@ class _ChatMessagingState extends State<ChatMessaging> {
           child: AppBar(
               leading: IconButton(
                   icon:
-                      Icon(Icons.arrow_back, color: getTextColor(chat.getColor())),
+                      Icon(Icons.arrow_back, color: getTextColor(widget.chat.getColor())),
                   onPressed: () {
                     backButtonFunctionality();
                   }),
@@ -604,15 +607,15 @@ class _ChatMessagingState extends State<ChatMessaging> {
                   Container(
                     width: 50,
                     height: 50,
-                    child: avatarBox(50, 50, chat.getAvatar()),
+                    child: avatarBox(50, 50, widget.chat.getAvatar()),
                   ),
                   SizedBox(width: 5),
                   Container(
                     alignment: Alignment.centerLeft,
                     color: Colors.transparent,
-                    child: Text(chat.getBroupNameOrAlias(),
+                    child: Text(widget.chat.getBroupNameOrAlias(),
                         style: TextStyle(
-                            color: getTextColor(chat.getColor()),
+                            color: getTextColor(widget.chat.getColor()),
                             fontSize: 20)
                     )
                   )
@@ -620,7 +623,7 @@ class _ChatMessagingState extends State<ChatMessaging> {
               ),
               actions: [
                 PopupMenuButton<int>(
-                    icon: Icon(Icons.more_vert, color: getTextColor(chat.getColor())),
+                    icon: Icon(Icons.more_vert, color: getTextColor(widget.chat.getColor())),
                     onSelected: (item) => onSelectChat(context, item),
                     itemBuilder: (context) => [
                           PopupMenuItem<int>(value: 0, child: Text("Profile")),
@@ -722,7 +725,7 @@ class _ChatMessagingState extends State<ChatMessaging> {
                                         val.trimRight().isEmpty) {
                                       return "Can't send an empty message";
                                     }
-                                    if (chat.isRemoved()) {
+                                    if (widget.chat.isRemoved()) {
                                       return "You're no longer a participant in this Broup";
                                     }
                                     return null;

@@ -1,9 +1,7 @@
-import 'dart:convert';
 import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:brocast/services/auth/auth_service_login.dart';
-import 'package:brocast/utils/notification_controller.dart';
 import 'package:brocast/utils/storage.dart';
 import 'package:brocast/views/bro_home/bro_home_change_notifier.dart';
 import 'package:flutter/material.dart';
@@ -12,17 +10,15 @@ import 'package:oktoast/oktoast.dart';
 
 import '../objects/broup.dart';
 import '../objects/me.dart';
-import '../services/auth/auth_service_social.dart';
 import '../services/auth/models/login_response.dart';
 import '../views/bro_home/bro_home.dart';
 import '../views/bro_profile/bro_profile.dart';
 import '../views/bro_settings/bro_settings.dart';
 import '../views/chat_view/chat_messaging.dart';
 import '../views/chat_view/messaging_change_notifier.dart';
+import 'secure_storage.dart';
 import 'settings.dart';
 import 'socket_services.dart';
-import 'secure_storage.dart';
-import 'package:brocast/constants/route_paths.dart' as routes;
 
 
 InputDecoration textFieldInputDecoration(String hintText) {

@@ -14,6 +14,7 @@ import 'package:flutter/services.dart';
 import '../../objects/bro.dart';
 import '../../objects/broup.dart';
 import '../../objects/me.dart';
+import '../../objects/message.dart';
 import '../../utils/notification_controller.dart';
 import '../../utils/storage.dart';
 import 'bro_home_change_notifier.dart';
@@ -86,7 +87,7 @@ class _BroCastHomeState extends State<BroCastHome> {
     if (me != null) {
       // Set all bros to be shown, except when the bro is searching.
       if (!searchMode && (settings.retrievedBroupData && settings.retrievedBroData)) {
-        shownBros = me!.broups;
+        shownBros = me!.broups.where((group) => !group.deleted).toList();
       }
       // Join Broups if not already joined.
       for (Broup broup in me!.broups) {
@@ -187,6 +188,8 @@ class _BroCastHomeState extends State<BroCastHome> {
               ..avatar = dbBroup.avatar
               ..avatarDefault = dbBroup.avatarDefault
               ..deleted = dbBroup.deleted
+              ..mute = dbBroup.mute  // The bro always mutes the broups and these values are stored in the local db.
+              ..muteValue = dbBroup.muteValue
               ..messages = dbBroup.messages;
 
             // Only update these when updateBroup is true. But we will update it later.
@@ -198,8 +201,7 @@ class _BroCastHomeState extends State<BroCastHome> {
               ..private = dbBroup.private
               ..broupDescription = dbBroup.broupDescription
               ..broupColour = dbBroup.broupColour
-              ..removed = dbBroup.removed
-              ..mute = dbBroup.mute;
+              ..removed = dbBroup.removed;
 
             // Keep the following properties from me.broup
             // These are from the server and are up to date.
@@ -212,16 +214,16 @@ class _BroCastHomeState extends State<BroCastHome> {
             // Only update it if we have to.
             // If it's not in the db yet we update it anyway
             print("broup update broup ${broup.broupId} ${broup.updateBroup}");
+
             if (!broup.updateBroup) {
               broupIdsToRetrieve.remove(broup.getBroupId());
             }
           }
         }
-        shownBros = me.broups;
+        shownBros = me.broups.where((broup) => !broup.deleted).toList();
         if (broupIdsToRetrieve.isNotEmpty) {
           retrieveServerBroups(broupIdsToRetrieve);
         } else {
-          print("get bros 1");
           getBroData();
           setState(() {});
         }
@@ -284,25 +286,29 @@ class _BroCastHomeState extends State<BroCastHome> {
         shownBros = me!.broups
             .where((element) =>
             element
-                .getBroupNameOrAlias().toLowerCase()
-                .contains(typedText.toLowerCase()))
+            .getBroupNameOrAlias().toLowerCase()
+            .contains(typedText.toLowerCase()))
+            .where((group) => !group.deleted).toList()
             .toList();
       } else if (emojiField.isNotEmpty && typedText.isEmpty) {
         shownBros = me!.broups
             .where((element) =>
             element.getBroupNameOrAlias().toLowerCase().contains(emojiField))
+            .where((group) => !group.deleted).toList()
             .toList();
       } else if (emojiField.isNotEmpty && typedText.isNotEmpty) {
         shownBros = me!.broups
             .where((element) =>
-        element
+            element
             .getBroupNameOrAlias().toLowerCase()
             .contains(typedText.toLowerCase()) &&
             element.getBroupNameOrAlias().toLowerCase().contains(emojiField))
+            .where((group) => !group.deleted).toList()
             .toList();
       } else {
         // both empty
-        shownBros = me!.broups;
+        // the broup objects from `me.broups` where the deleted is false.
+        shownBros = me!.broups.where((group) => !group.deleted).toList();
       }
     }
     setState(() {});

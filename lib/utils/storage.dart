@@ -59,6 +59,7 @@ class Storage {
             unreadMessages INTEGER,
             private INTEGER,
             mute INTEGER,
+            muteValue TEXT,
             deleted INTEGER,
             removed INTEGER,
             blocked INTEGER,

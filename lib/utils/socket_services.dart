@@ -124,92 +124,116 @@ class SocketServices extends ChangeNotifier {
     Me? me = Settings().getMe();
     if (me != null) {
       Broup broup = me.broups.firstWhere((element) => element.broupId == broupId);
-      if (data.containsKey("new_broup_colour")) {
-        broup.setBroupColor(data["new_broup_colour"]);
-      }
-      if (data.containsKey("new_broup_description")) {
-        broup.setBroupDescription(data["new_broup_description"]);
-      }
-      if (data.containsKey("new_broup_name")) {
-        broup.setBroupName(data["new_broup_name"]);
-      }
-      if (data.containsKey("new_member_id")) {
-        int newMemberId = data["new_member_id"];
-        broup.addBroId(newMemberId);
-        broup.newMembersBroup();
-        if (Settings().getMe()!.getId() == newMemberId) {
-          broup.removed = false;
-        }
-      }
-      if (data.containsKey("new_admin_id")) {
-        print("new admin! ${data["new_admin_id"]}");
-        int newAdminId = data["new_admin_id"];
-        broup.addAdminId(newAdminId);
-      }
-      if (data.containsKey("dismissed_admin_id")) {
-        int dismissedMemberId = data["dismissed_admin_id"];
-        broup.removeAdminId(dismissedMemberId);
-      }
-      if (data.containsKey("remove_bro_id")) {
-        int removedBroId = data["remove_bro_id"];
-        broup.removeBro(removedBroId);
-        // It's possible that you have been removed from the broup
-        if (Settings().getMe()!.getId() == removedBroId) {
-          broup.removed = true;
-        }
-      }
-      if (data.containsKey("broup_updated")) {
-        // probably True, we should update broup
-        bool broupUpdated = data["broup_updated"];
-        broup.setUpdateBroup(broupUpdated);
-      }
-
-      if (data.containsKey("chat_blocked")) {
-        // Block chat can only be a private chat
-        if (broup.private) {
-          int chatBlockedId = data["chat_blocked"];
-          // Chat blocked is an id, of which bro did the blocking.
-          if (Settings().getMe()!.getId() == chatBlockedId) {
-            broup.blocked = true;
-          }
-          broup.removed = true;
-        }
-      }
-      if (data.containsKey("chat_unblocked")) {
-        // Chat unblocked can only be a private chat
-        if (broup.private) {
-          int chatUnblockedId = data["chat_unblocked"];
-          // Chat unblocked is an id, of which bro did the unblocking.
-          if (Settings().getMe()!.getId() == chatUnblockedId) {
+      // blocked is the flag if you blocked to other. removed is the flag if you are blocked
+      if (broup.removed) {
+        if (data.containsKey("chat_blocked")) {
+          // Chat unblocked can only be a private chat
+          bool chatBlocked = data["chat_blocked"];
+          if (broup.private && !chatBlocked) {
+            // I am unblocked!
             broup.blocked = false;
+            broup.removed = false;
+            broup.adminIds = [];
+            addUnBlockMessage(broup);
+            notifyListeners();
           }
-          broup.adminIds = [];
-          broup.removed = false;
         }
-      }
-      if (data.containsKey("new_avatar")) {
-        print("gotten a new avatar for a broup!");
-        bool newAvatar = data["new_avatar"];
-        // We assume the newAvatar is True
-        print("gotten a new avatar! $newAvatar  $changedBroupAvatar  $broupId");
-        // If changedBroupAvatar is equal to the broupId
-        // it means we just changed it ourselves.
-        if (newAvatar && !(changedBroupAvatar == broupId)) {
-          AuthServiceSocial().getAvatarBroup(broupId).then((value) {
-            if (value) {
-              // Objects updated in db and on the `me` list.
-              notifyListeners();
-            }
-          });
-        } else if (changedBroupAvatar == broupId) {
-          // We just changed the avatar, so we set it back to -1.
-          print("setting it back to -1");
-          changedBroupAvatar = -1;
+      } else if (broup.blocked || broup.deleted) {
+        return;
+      } else {
+        if (data.containsKey("new_broup_colour")) {
+          broup.setBroupColor(data["new_broup_colour"]);
         }
+        if (data.containsKey("new_broup_description")) {
+          broup.setBroupDescription(data["new_broup_description"]);
+        }
+        if (data.containsKey("new_broup_name")) {
+          broup.setBroupName(data["new_broup_name"]);
+        }
+        if (data.containsKey("new_member_id")) {
+          int newMemberId = data["new_member_id"];
+          broup.addBroId(newMemberId);
+          broup.newMembersBroup();
+          if (Settings().getMe()!.getId() == newMemberId) {
+            broup.removed = false;
+          }
+        }
+        if (data.containsKey("new_admin_id")) {
+          print("new admin! ${data["new_admin_id"]}");
+          int newAdminId = data["new_admin_id"];
+          broup.addAdminId(newAdminId);
+        }
+        if (data.containsKey("dismissed_admin_id")) {
+          int dismissedMemberId = data["dismissed_admin_id"];
+          broup.removeAdminId(dismissedMemberId);
+        }
+        if (data.containsKey("remove_bro_id")) {
+          int removedBroId = data["remove_bro_id"];
+          broup.removeBro(removedBroId);
+          // It's possible that you have been removed from the broup
+          if (Settings().getMe()!.getId() == removedBroId) {
+            broup.removed = true;
+            broup.unreadMessages = 0;
+          }
+        }
+        if (data.containsKey("broup_updated")) {
+          // probably True, we should update broup
+          bool broupUpdated = data["broup_updated"];
+          broup.setUpdateBroup(broupUpdated);
+        }
+
+        if (data.containsKey("chat_blocked")) {
+          // Block chat can only be a private chat
+          bool chatBlocked = data["chat_blocked"];
+          if (broup.private && chatBlocked) {
+            // In a private chat both chats will be blocked
+            broup.removed = true;
+            broup.unreadMessages = 0;
+          }
+        }
+        if (data.containsKey("new_avatar")) {
+          print("gotten a new avatar for a broup!");
+          bool newAvatar = data["new_avatar"];
+          // We assume the newAvatar is True
+          print(
+              "gotten a new avatar! $newAvatar  $changedBroupAvatar  $broupId");
+          // If changedBroupAvatar is equal to the broupId
+          // it means we just changed it ourselves.
+          if (newAvatar && !(changedBroupAvatar == broupId)) {
+            AuthServiceSocial().getAvatarBroup(broupId).then((value) {
+              if (value) {
+                // Objects updated in db and on the `me` list.
+                notifyListeners();
+              }
+            });
+          } else if (changedBroupAvatar == broupId) {
+            // We just changed the avatar, so we set it back to -1.
+            print("setting it back to -1");
+            changedBroupAvatar = -1;
+          }
+        }
+        Storage().updateBroup(broup);
+        notifyListeners();
       }
-      Storage().updateBroup(broup);
-      notifyListeners();
     }
+  }
+
+  addUnBlockMessage(Broup broup) {
+    Message unBlockMessage = Message(
+      broup.lastMessageId + 1,
+      0,
+      "Chat is unblocked! 🥰",
+      "",
+      DateTime.now().toUtc().toString(),
+      null,
+      true,
+      broup.getBroupId(),
+    );
+    Storage().addMessage(unBlockMessage);
+    broup.messages.insert(
+        0,
+        unBlockMessage);
+    broup.unreadMessages = 0;
   }
 
   setWeChangedAvatar(int avatarBroupId) {
@@ -276,6 +300,7 @@ class SocketServices extends ChangeNotifier {
     int broupId = message.broupId;
     Me? me = Settings().getMe();
     if (me != null) {
+      print("going to check broup!");
       Broup broup = me.broups.firstWhere((element) => element.broupId == broupId);
       if (!broup.removed) {
         broup.updateMessages(message);

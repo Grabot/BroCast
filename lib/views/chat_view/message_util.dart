@@ -9,7 +9,7 @@ import '../../utils/storage.dart';
 
 
 Future<bool> getBroupUpdate(Broup chat, Storage storage) async {
-  if (chat.updateBroup) {
+  if (chat.updateBroup && !chat.removed) {
     chat.updateBroup = false;
     Broup? broupServer = await AuthServiceSocial().retrieveBroup(chat.broupId);
     if (broupServer != null) {
@@ -29,6 +29,9 @@ Future<bool> getBros(Broup chat, Storage storage, Me me) async {
   // First retrieve from the db.
   if (chat.retrievedBros) {
     print("already retrieved");
+    return true;
+  }
+  if (chat.removed) {
     return true;
   }
   List<Bro> storageBros = await storage.fetchBros(chat.getBroIds());
@@ -119,19 +122,25 @@ Future<bool> getMessages(int page, Broup chat, Storage storage) async {
     messagesDB = localMessages;
   }
   // get messages from the server
-  if (chat.newMessages) {
-    print("get from server");
-    List<Message> retrievedMessages = await AuthServiceSocial().retrieveMessages(chat.getBroupId(), chat.lastMessageId);
+  if (!chat.removed) {
+    if (chat.newMessages) {
+      print("get from server");
+      List<Message> retrievedMessages = await AuthServiceSocial()
+          .retrieveMessages(chat.getBroupId(), chat.lastMessageId);
 
-    if (retrievedMessages.isNotEmpty) {
-      messagesServer = retrievedMessages;
-      // The max id of the retrieved messages HAS to be the last message id
-      chat.lastMessageId = messagesServer.fold(0, (max, message) => message.messageId > max ? message.messageId : max);
+      if (retrievedMessages.isNotEmpty) {
+        messagesServer = retrievedMessages;
+        // The max id of the retrieved messages HAS to be the last message id
+        chat.lastMessageId = messagesServer.fold(0, (max, message) =>
+        message.messageId > max
+            ? message.messageId
+            : max);
+      }
+    } else {
+      print("no new messages");
+      // When the page is loaded we consider all messages as read
+      chat.readMessages();
     }
-  } else {
-    print("no new messages");
-    // When the page is loaded we consider all messages as read
-    chat.readMessages();
   }
 
   mergeMessages(messagesServer + messagesDB, chat);
@@ -167,7 +176,7 @@ mergeMessages(List<Message> incomingMessages, Broup chat) {
     chat.messages = chat.messages.where((x) => x.messageId != 0).toList();
   }
   chat.messages.addAll(newMessages);
-  chat.messages.sort((b, a) => a.timestamp.compareTo(b.timestamp));
+  chat.messages.sort((b, a) => a.getTimeStamp().compareTo(b.getTimeStamp()));
   // Set date tiles, but only if all the messages are retrieved
 
 }

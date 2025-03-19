@@ -1,6 +1,9 @@
 import 'dart:io';
+import 'package:brocast/views/bro_home/bro_home_change_notifier.dart';
 import 'package:flutter/material.dart';
 import '../../../objects/broup.dart';
+import '../../../services/auth/auth_service_social.dart';
+import '../../../utils/storage.dart';
 import '../../../utils/utils.dart';
 import '../../chat_view/chat_messaging.dart';
 import '../../chat_view/messaging_change_notifier.dart';
@@ -168,7 +171,7 @@ class _BroTileState extends State<BroTile> {
     );
   }
 
-  void showDialogUnMuteChat(BuildContext context) {
+  showDialogUnMuteChat(BuildContext context) {
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -184,7 +187,7 @@ class _BroTileState extends State<BroTile> {
               new TextButton(
                 child: new Text("Unmute"),
                 onPressed: () {
-                  unmuteTheChat();
+                  muteTheChat(-1);
                 },
               ),
             ],
@@ -253,43 +256,42 @@ class _BroTileState extends State<BroTile> {
         });
   }
 
-  void unmuteTheChat() {
-    // TODO: add mute functionality
-    // if (widget.chat is BroBros) {
-    //   socketServices.socket.emit("message_event_change_chat_mute", {
-    //     "token": settings.getToken(),
-    //     "bros_bro_id": widget.chat.id,
-    //     "bro_id": settings.getBroId(),
-    //     "mute": -1
-    //   });
-    // } else {
-    //   socketServices.socket.emit("message_event_change_broup_mute", {
-    //     "token": settings.getToken(),
-    //     "broup_id": widget.chat.id,
-    //     "bro_id": settings.getBroId(),
-    //     "mute": -1
-    //   });
-    // }
-    Navigator.of(context).pop();
-  }
-
-  void muteTheChat(int selectedRadio) {
-    // TODO: add mute functionality
-    // if (widget.chat is BroBros) {
-    //   socketServices.socket.emit("message_event_change_chat_mute", {
-    //     "token": settings.getToken(),
-    //     "bros_bro_id": widget.chat.id,
-    //     "bro_id": settings.getBroId(),
-    //     "mute": selectedRadio
-    //   });
-    // } else {
-    //   socketServices.socket.emit("message_event_change_broup_mute", {
-    //     "token": settings.getToken(),
-    //     "broup_id": widget.chat.id,
-    //     "bro_id": settings.getBroId(),
-    //     "mute": selectedRadio
-    //   });
-    // }
+  muteTheChat(int muteValue) {
+    AuthServiceSocial().muteBroup(widget.chat.broupId, muteValue).then((value) {
+      if (value) {
+        setState(() {
+          widget.chat.setMuted(muteValue >= 0);
+        });
+        // 0 is 1 hour 1 is 8 hours 2 is 1 week 3 is indefinitely
+        DateTime now = DateTime.now().toUtc();
+        if (muteValue == 0) {
+          widget.chat.setMuteValue(now.add(Duration(hours: 1)).toString());
+          widget.chat.checkMute();
+        } else if (muteValue == 1) {
+          widget.chat.setMuteValue(now.add(Duration(hours: 8)).toString());
+          widget.chat.checkMute();
+        } else if (muteValue == 2) {
+          widget.chat.setMuteValue(now.add(Duration(days: 7)).toString());
+          widget.chat.checkMute();
+        }
+        Storage().fetchBroup(widget.chat.broupId).then((dbBroup) {
+          if (dbBroup != null) {
+            dbBroup.mute = widget.chat.mute;
+            dbBroup.muteValue = widget.chat.muteValue;
+            Storage().updateBroup(dbBroup).then((value) {
+              print("Broup muting updated in local DB");
+              BroHomeChangeNotifier().notify();
+            });
+          }
+          // Broup listBroup = settings.getMe()!.broups.firstWhere((element) => element.broupId == widget.chat.broupId);
+          // listBroup.mute = widget.chat.mute;
+          // listBroup.muteValue = widget.chat.muteValue;
+        });
+        BroHomeChangeNotifier().notify();
+      } else {
+        showToastMessage("Broup muting failed at this time.");
+      }
+    });
     Navigator.of(context).pop();
   }
 

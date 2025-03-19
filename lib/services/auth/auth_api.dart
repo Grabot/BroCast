@@ -1,9 +1,9 @@
 import 'dart:io';
 import 'package:dio/dio.dart';
+import 'package:jwt_decode/jwt_decode.dart';
 
 import '../../constants/base_url.dart';
 import '../../utils/secure_storage.dart';
-import '../../utils/utils.dart';
 import '../../utils/settings.dart';
 import 'models/login_response.dart';
 
@@ -51,7 +51,12 @@ class AppInterceptors extends Interceptor {
     } else {
       String? accessToken = await SecureStorage().getAccessToken();
 
-      if (accessToken != null) {
+      if (accessToken == null) {
+        DioException dioError = DioException(requestOptions: options,
+            type: DioExceptionType.cancel,
+            error: "User not authorized");
+        return handler.reject(dioError, true);
+      } else {
         int current = (DateTime
             .now()
             .millisecondsSinceEpoch / 1000).round();
@@ -90,7 +95,23 @@ class AppInterceptors extends Interceptor {
 
             LoginResponse loginRefresh = LoginResponse.fromJson(response.data);
             if (loginRefresh.getResult()) {
-              successfulLogin(loginRefresh);
+              SecureStorage secureStorage = SecureStorage();
+              // With a token refresh we don't want to update all the bro settings, only the tokens
+              String? accessToken = loginRefresh.getAccessToken();
+              if (accessToken != null) {
+                // the access token will be set in memory and local storage.
+                settings.setAccessToken(accessToken);
+                settings.setAccessTokenExpiration(Jwt.parseJwt(accessToken)['exp']);
+                await secureStorage.setAccessToken(accessToken);
+              }
+
+              String? refreshToken = loginRefresh.getRefreshToken();
+              if (refreshToken != null) {
+                // the refresh token will only be set in memory.
+                settings.setRefreshToken(refreshToken);
+                settings.setRefreshTokenExpiration(Jwt.parseJwt(refreshToken)['exp']);
+                await secureStorage.setRefreshToken(refreshToken);
+              }
             } else {
               DioException dioError = DioException(requestOptions: options,
                   type: DioExceptionType.cancel,
@@ -99,12 +120,10 @@ class AppInterceptors extends Interceptor {
             }
           }
         }
-
         options.headers['Authorization'] = 'Bearer: $accessToken';
+        return handler.next(options);
       }
     }
-
-    return handler.next(options);
   }
 
   @override
