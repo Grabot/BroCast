@@ -177,6 +177,7 @@ class _BroCastHomeState extends State<BroCastHome> {
           if (dbBroup == null) {
             // This is a new broup
             print("This is a new broup");
+            addInformationMessage(broup, "Welcome to the Chat! 🥰");
             storage.addBroup(broup);
           } else {
             print("broup from db ${dbBroup.broupId}  ${dbBroup.broIds}");
@@ -245,6 +246,7 @@ class _BroCastHomeState extends State<BroCastHome> {
               break;
             }
           }
+          // TODO: identify brand new broups? For welcome message?
           print("retrieved broup ${broup.getBroupId()}");
           if (serverBroup != null) {
             // We update like this to not lost existing properties like messages

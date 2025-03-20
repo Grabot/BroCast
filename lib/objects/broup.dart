@@ -272,6 +272,7 @@ class Broup {
     deleted = json.containsKey("deleted") ? json["deleted"] : false;
     removed = json.containsKey("removed") ? json["removed"] : false;
     newAvatar = json.containsKey("new_avatar") ? json["new_avatar"] : false;
+    print("new avatar $newAvatar");
 
     // These are the core chat values. Stored in a coupling table on the server
     broupName = "";
@@ -312,15 +313,41 @@ class Broup {
     // It's possible that the avatar was already sent with the rest of the data
     // But we usually don't to keep thing moving.
     // We will retrieve it if it's necessary here.
-    if (newAvatar && !avatarRetrieved && !private) {
+    if (newAvatar && !avatarRetrieved) {
       avatarRetrieved = true;
       newAvatar = false;
       print("going to retrieve avatar right now baby ${getBroupName()}");
-      AuthServiceSocial().getAvatarBroup(broupId).then((value) {
-        if (value) {
-          // TODO: Send update to server that the avatar was retrieved?
+      if (private) {
+        for (int broId in broIds) {
+          if (broId != Settings().getMe()!.getId()) {
+            // For private chats we want to retrieve the bro object.
+            // TODO: Check if the bro is already in storage?
+            AuthServiceSocial().retrieveBro(broId).then((bro) {
+              // This should also retrieve the avatar
+              print("retrieved bro :)");
+              if (bro != null) {
+                Storage().addBro(bro).then((value) {
+                  print("bro adding: $value");
+                });
+                for (Broup checkBroup in Settings().getMe()!.broups) {
+                  if (checkBroup.broupId == this.broupId) {
+                    checkBroup.addBro(bro);
+                    break;
+                  }
+                }
+                BroHomeChangeNotifier().notify();
+              }
+            });
+            break;
+          }
         }
-      });
+      } else {
+        AuthServiceSocial().getAvatarBroup(broupId).then((value) {
+          if (value) {
+            // TODO: Send update to server that the avatar was retrieved?
+          }
+        });
+      }
     }
   }
 
@@ -432,11 +459,22 @@ class Broup {
           this.blocked = true;
         }
       }
-      // If the broup is now removed we want to set the flag, but also add a block message
-      // If it's no longer removed we want to updated it again.
-      if (checkRemoved(serverBroup)) {
-        return;
+      // In the edge case when a broup is added and blocked before the user opens the app
+      // we want to retrieve some details anyway. We identify this by an empty broupColour
+      // This can only happen in this edge case and we will update some details
+      if (broupColour.isEmpty) {
+        this
+          ..broIds = serverBroup.broIds
+          ..adminIds = serverBroup.adminIds
+          ..broupName = serverBroup.broupName
+          ..broupColour = serverBroup.broupColour
+          ..private = serverBroup.private;
       }
+    }
+    // If the broup is removed we want to set the flag, but also add a block message
+    // If it's no longer removed we want to updated it again.
+    if (checkRemoved(serverBroup)) {
+      return;
     }
     // From the server we want to update most of the data.
     this
@@ -468,10 +506,14 @@ class Broup {
     // In this specific case we will add indication that the chat is blocked
     if (!this.removed && serverBroup.removed) {
       // Add block message
+      String blockMessageText = "Chat is blocked! 😭";
+      if (!serverBroup.private) {
+        blockMessageText = "You are removed from the broup! 😭";
+      }
       Message blockMessage = Message(
-        serverBroup.lastMessageId + 1,
+        lastMessageId + 1,
         0,
-        "Chat is blocked! 😭",
+        blockMessageText,
         "",
         DateTime.now().toUtc().toString(),
         null,
@@ -482,12 +524,13 @@ class Broup {
       this.messages.insert(
           0,
           blockMessage);
+      this.lastMessageId += 1;
       this.removed = serverBroup.removed;
       this.unreadMessages = 0;
     } else if (this.removed && !serverBroup.removed) {
       // no longer removed
       Message unBlockMessage = Message(
-        serverBroup.lastMessageId + 1,
+        lastMessageId + 1,
         0,
         "Chat is no longer blocked! 🥰",
         "",
@@ -500,11 +543,12 @@ class Broup {
       this.messages.insert(
           0,
           unBlockMessage);
+      this.lastMessageId += 1;
       this.removed = serverBroup.removed;
       return false;
     }
-    // Return true, because if the broup is removed we don't want any updates.
-    return true;
+    // Return removed, because if the broup is removed we don't want any updates.
+    return serverBroup.removed;
   }
 
   updateDateTiles(Message message) {

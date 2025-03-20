@@ -10,6 +10,7 @@ import 'package:oktoast/oktoast.dart';
 
 import '../objects/broup.dart';
 import '../objects/me.dart';
+import '../objects/message.dart';
 import '../services/auth/models/login_response.dart';
 import '../views/bro_home/bro_home.dart';
 import '../views/bro_profile/bro_profile.dart';
@@ -294,4 +295,24 @@ ButtonStyle buttonStyle(bool active, MaterialColor buttonColor) {
           )
       )
   );
+}
+
+addInformationMessage(Broup broup, String infoMessage) {
+  print("adding information message $infoMessage");
+  Message unBlockMessage = Message(
+    broup.lastMessageId + 1,
+    0,
+    infoMessage,
+    "",
+    DateTime.now().toUtc().toString(),
+    null,
+    true,
+    broup.getBroupId(),
+  );
+  broup.lastMessageId += 1;
+  Storage().addMessage(unBlockMessage);
+  broup.messages.insert(
+      0,
+      unBlockMessage);
+  broup.unreadMessages = 0;
 }

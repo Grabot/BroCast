@@ -56,7 +56,7 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> {
     broupAddBrosShownBros.clear();
     Me? me = Settings().getMe();
     for (Broup myBro in me!.broups) {
-      if (myBro.private) {
+      if (myBro.private && !myBro.removed) {
         bool inBroup = false;
         for (int participantId in myBro.getBroIds()) {
           // In a private chat there are 2 ids, me and the other bro

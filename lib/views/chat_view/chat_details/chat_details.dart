@@ -1023,7 +1023,8 @@ class _ChatDetailsState extends State<ChatDetails> {
           }
           widget.chat.removed = true;
           amountInGroup = widget.chat.getBroupBros().length;
-
+          // No longer part of the broup, so leave the socket room
+          socketServices.leaveRoomBroup(widget.chat.broupId);
           navigateToHome(context, settings);
         });
       }
@@ -1218,6 +1219,8 @@ class _ChatDetailsState extends State<ChatDetails> {
           widget.chat.removed = false;
           widget.chat.blocked = false;
           widget.chat.adminIds = [];
+          addInformationMessage(widget.chat, "Chat is unblocked! 🥰");
+          socketServices.joinRoomBroup(widget.chat.broupId);
           navigateToChat(context, settings, widget.chat);
         });
       }

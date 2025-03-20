@@ -1,6 +1,7 @@
 import 'package:brocast/constants/base_url.dart';
 import 'package:brocast/services/auth/auth_service_social.dart';
 import 'package:brocast/utils/socket_services_util.dart';
+import 'package:brocast/utils/utils.dart';
 import 'package:brocast/views/bro_home/bro_home_change_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:socket_io_client/socket_io_client.dart' as io;
@@ -125,16 +126,16 @@ class SocketServices extends ChangeNotifier {
     if (me != null) {
       Broup broup = me.broups.firstWhere((element) => element.broupId == broupId);
       // blocked is the flag if you blocked to other. removed is the flag if you are blocked
-      if (broup.removed) {
+      if (broup.removed && !broup.deleted) {
         if (data.containsKey("chat_blocked")) {
-          // Chat unblocked can only be a private chat
           bool chatBlocked = data["chat_blocked"];
           if (broup.private && !chatBlocked) {
             // I am unblocked!
             broup.blocked = false;
             broup.removed = false;
             broup.adminIds = [];
-            addUnBlockMessage(broup);
+            addInformationMessage(broup, "Chat is unblocked! 🥰");
+            joinRoomBroup(broup.broupId);
             notifyListeners();
           }
         }
@@ -174,6 +175,8 @@ class SocketServices extends ChangeNotifier {
           if (Settings().getMe()!.getId() == removedBroId) {
             broup.removed = true;
             broup.unreadMessages = 0;
+            // We leave the socket to not receive broup updates anymore.
+            leaveRoomBroup(broup.broupId);
           }
         }
         if (data.containsKey("broup_updated")) {
@@ -189,6 +192,8 @@ class SocketServices extends ChangeNotifier {
             // In a private chat both chats will be blocked
             broup.removed = true;
             broup.unreadMessages = 0;
+            // We leave the socket to not receive broup updates anymore.
+            leaveRoomBroup(broup.broupId);
           }
         }
         if (data.containsKey("new_avatar")) {
@@ -218,24 +223,6 @@ class SocketServices extends ChangeNotifier {
     }
   }
 
-  addUnBlockMessage(Broup broup) {
-    Message unBlockMessage = Message(
-      broup.lastMessageId + 1,
-      0,
-      "Chat is unblocked! 🥰",
-      "",
-      DateTime.now().toUtc().toString(),
-      null,
-      true,
-      broup.getBroupId(),
-    );
-    Storage().addMessage(unBlockMessage);
-    broup.messages.insert(
-        0,
-        unBlockMessage);
-    broup.unreadMessages = 0;
-  }
-
   setWeChangedAvatar(int avatarBroupId) {
     print("changing we avatar $avatarBroupId");
     changedBroupAvatar = avatarBroupId;
@@ -254,8 +241,8 @@ class SocketServices extends ChangeNotifier {
     // TODO: If you received the broup via sockets we should set `broup_updated` to false?
     Me? me = Settings().getMe();
     if (me != null) {
-      // Add the broup. It's not possible that it already exists
-      // so we don't account for that.
+      // Add the broup. If it already exists, for instance because we left or were removed
+      // we will add it as normal and it will be replaced and updated.
       if (data.containsKey("broup")) {
         Broup newBroup = Broup.fromJson(data["broup"]);
         Storage().addBroup(newBroup);
@@ -265,6 +252,7 @@ class SocketServices extends ChangeNotifier {
           for (int broId in newBroup.broIds) {
             if (broId != me.getId()) {
               // For private chats we want to retrieve the bro object.
+              // TODO: Check if the bro is already in storage?
               AuthServiceSocial().retrieveBro(broId).then((bro) {
                 if (bro != null) {
                   newBroup.addBro(bro);
@@ -302,11 +290,10 @@ class SocketServices extends ChangeNotifier {
     if (me != null) {
       print("going to check broup!");
       Broup broup = me.broups.firstWhere((element) => element.broupId == broupId);
-      if (!broup.removed) {
-        broup.updateMessages(message);
-        storage.updateBroup(broup);
-        notifyListeners();
-      }
+      // Always add the message, if the broup is removed it should not be listening to the sockets anymore.
+      broup.updateMessages(message);
+      storage.updateBroup(broup);
+      notifyListeners();
     }
   }
 

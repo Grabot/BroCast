@@ -88,7 +88,7 @@ class Storage {
             timestamp TEXT,
             isRead INTEGER,
             data TEXT,
-            UNIQUE(messageId, broupId) ON CONFLICT REPLACE
+            UNIQUE(messageId, broupId, info) ON CONFLICT REPLACE
           );
           ''');
   }

@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:brocast/utils/socket_services.dart';
 
+import '../utils/utils.dart';
 import '../views/bro_home/bro_home_change_notifier.dart';
 import 'bro.dart';
 import 'broup.dart';
@@ -52,7 +53,15 @@ class Me extends Bro {
   }
 
   addBroup(Broup broup) {
-    broups.add(broup);
+    if (!broups.any((element) => element.getBroupId() == broup.getBroupId())) {
+      // no entry exists, add it.
+      addInformationMessage(broup, "Welcome to the Chat! 🥰");
+      broups.add(broup);
+    } else {
+      // entry exists, remove it and add it again.
+      broups.removeWhere((element) => element.getBroupId() == broup.getBroupId());
+      broups.add(broup);
+    }
     SocketServices().joinRoomBroup(broup.broupId);
   }
 
