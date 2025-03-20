@@ -278,6 +278,10 @@ Widget getPopupItemsAdmin(BuildContext context, Bro bro,
                     onPressed: () {
                       buttonMessage(context, bro, alertDialog);
                     },
+                    style: TextButton.styleFrom(
+                      alignment: Alignment.centerLeft,
+                      minimumSize: Size(double.infinity, 0), // Make the button take full width
+                    ),
                     child: Text(
                       'Message ${bro.getFullName()}',
                       overflow: TextOverflow.ellipsis,
@@ -293,6 +297,10 @@ Widget getPopupItemsAdmin(BuildContext context, Bro bro,
                     onPressed: () {
                       buttonAddBro(context, bro, alertDialog, broHandling);
                     },
+                    style: TextButton.styleFrom(
+                      alignment: Alignment.centerLeft,
+                      minimumSize: Size(double.infinity, 0), // Make the button take full width
+                    ),
                     child: Text(
                       'Add ${bro.getFullName()}',
                       overflow: TextOverflow.ellipsis,
@@ -310,6 +318,10 @@ Widget getPopupItemsAdmin(BuildContext context, Bro bro,
                       buttonDismissAdmin(
                           context, bro, broupId, alertDialog, broHandling);
                     },
+                    style: TextButton.styleFrom(
+                      alignment: Alignment.centerLeft,
+                      minimumSize: Size(double.infinity, 0), // Make the button take full width
+                    ),
                     child: Text(
                       'Dismiss ${bro.getFullName()} from admins',
                       style: TextStyle(color: Colors.black, fontSize: 14),
@@ -324,6 +336,10 @@ Widget getPopupItemsAdmin(BuildContext context, Bro bro,
                     onPressed: () {
                       buttonMakeAdmin(context, bro, broupId, alertDialog, broHandling);
                     },
+                    style: TextButton.styleFrom(
+                      alignment: Alignment.centerLeft,
+                      minimumSize: Size(double.infinity, 0), // Make the button take full width
+                    ),
                     child: Text(
                       'Make ${bro.getFullName()} admin',
                       overflow: TextOverflow.ellipsis,
@@ -339,6 +355,10 @@ Widget getPopupItemsAdmin(BuildContext context, Bro bro,
               onPressed: () {
                 buttonRemove(context, bro, broupId, alertDialog, broHandling);
               },
+              style: TextButton.styleFrom(
+                alignment: Alignment.centerLeft,
+                minimumSize: Size(double.infinity, 0), // Make the button take full width
+              ),
               child: Text(
                 'Remove ${bro.getFullName()}',
                 overflow: TextOverflow.ellipsis,
@@ -369,6 +389,10 @@ Widget getPopupItemsNormal(BuildContext context, Bro bro,
                 onPressed: () {
                   buttonMessage(context, bro, alertDialog);
                 },
+                style: TextButton.styleFrom(
+                  alignment: Alignment.centerLeft,
+                  minimumSize: Size(double.infinity, 0), // Make the button take full width
+                ),
                 child: Text(
                   'Message ${bro.getFullName()}',
                   overflow: TextOverflow.ellipsis,
@@ -385,6 +409,10 @@ Widget getPopupItemsNormal(BuildContext context, Bro bro,
                     onPressed: () {
                       buttonAddBro(context, bro, alertDialog, broHandling);
                     },
+                    style: TextButton.styleFrom(
+                      alignment: Alignment.centerLeft,
+                      minimumSize: Size(double.infinity, 0), // Make the button take full width
+                    ),
                     child: Text(
                       'Add ${bro.getFullName()}',
                       overflow: TextOverflow.ellipsis,

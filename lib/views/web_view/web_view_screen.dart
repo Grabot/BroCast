@@ -126,7 +126,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
                 )),
             actions: [
               PopupMenuButton<int>(
-                  icon: Icon(Icons.more_vert, color: getTextColor(Colors.white)),
+                  icon: Icon(Icons.more_vert, color: Colors.white),
                   onSelected: (item) => onSelect(context, item),
                   itemBuilder: (context) => [
                     PopupMenuItem<int>(value: 0, child: Text("Exit Brocast")),

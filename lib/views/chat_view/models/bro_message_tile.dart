@@ -322,6 +322,10 @@ Widget getPopupItems(BuildContext context) {
           onPressed: () {
             buttonMessage(context);
           },
+          style: TextButton.styleFrom(
+            alignment: Alignment.centerLeft,
+            minimumSize: Size(double.infinity, 0), // Make the button take full width
+          ),
           child: Text(
             'Save image to gallery',
             textAlign: TextAlign.left,

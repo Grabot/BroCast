@@ -37,6 +37,14 @@ class Message {
     return DateTime.parse(timestamp).toLocal();
   }
 
+  setTimeStamp(String newTimestamp) {
+    if (!newTimestamp.endsWith("Z")) {
+      this.timestamp = newTimestamp + "Z";
+    } else {
+      this.timestamp = newTimestamp;
+    }
+  }
+
   bool isInformation() {
     return info;
   }

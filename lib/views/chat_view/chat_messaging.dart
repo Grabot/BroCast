@@ -174,7 +174,10 @@ class _ChatMessagingState extends State<ChatMessaging> {
         allMessagesDBRetrieved = value;
         setState(() {
           if (widget.chat.messages.length != 0) {
-            setDateTiles(widget.chat);
+            if (!widget.chat.dateTilesAdded) {
+              widget.chat.dateTilesAdded = true;
+              setDateTiles(widget.chat);
+            }
             if (widget.chat.messages[0].messageId <= 0) {
               widget.chat.lastMessageId = widget.chat.messages[1].messageId;
             } else {
@@ -257,7 +260,11 @@ class _ChatMessagingState extends State<ChatMessaging> {
   @override
   void dispose() {
     // If you are on the page and you leave than you have read the messages.
-    widget.chat.unreadMessages = 0;
+    if (widget.chat.unreadMessages != 0) {
+      widget.chat.unreadMessages = 0;
+      storage.updateBroup(widget.chat);
+    }
+
     notificationController.removeListener(notificationListener);
     focusAppendText.dispose();
     focusEmojiTextField.dispose();
@@ -616,7 +623,7 @@ class _ChatMessagingState extends State<ChatMessaging> {
               ),
               actions: [
                 PopupMenuButton<int>(
-                    icon: Icon(Icons.more_vert, color: getTextColor(widget.chat.getColor())),
+                    icon: Icon(Icons.more_vert, color: widget.chat.getColor()),
                     onSelected: (item) => onSelectChat(context, item),
                     itemBuilder: (context) => [
                           PopupMenuItem<int>(value: 0, child: Text("Profile")),

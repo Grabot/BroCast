@@ -57,7 +57,7 @@ Color getTextColor(Color? color) {
   }
 
   double luminance =
-      (0.299 * color.r + 0.587 * color.g + 0.114 * color.b) / 255;
+      (0.299 * (color.r * 255) + 0.587 * (color.g * 255) + 0.114 * (color.b * 255)) / 255;
 
   // If the color is very bright we make the text colour black.
   // We set the limit high because we want it to be white mostly
@@ -80,6 +80,29 @@ successfulLogin(LoginResponse loginResponse) async {
 
   Me? me = loginResponse.getMe();
   if (me != null) {
+    // Also retrieve the broups that are in the local db.
+    Storage().fetchAllBroups().then((dbBroups) {
+      if (dbBroups.isNotEmpty) {
+        for (Broup dbBroup in dbBroups) {
+          bool found = false;
+          if (me.broups.isNotEmpty) {
+            for (Broup broupMe in me.broups) {
+              if (broupMe.broupId == dbBroup.broupId) {
+                // If the broup was send with the login we want to update it.
+                // In this case we don't add the db broup data yet
+                // because it will be added in the BroHome notifier.
+                found = true;
+                break;
+              }
+            }
+          }
+          if (!found) {
+            // This broup is unchanged, so it was not send with the login.
+            me.broups.add(dbBroup);
+          }
+        }
+      }
+    });
     settings.setMe(me);
     SocketServices().joinRoomSolo(me.getId());
   }

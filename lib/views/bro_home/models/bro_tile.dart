@@ -117,7 +117,7 @@ class _BroTileState extends State<BroTile> {
                               child: Text(widget.chat.getBroupNameOrAlias(),
                                   overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
-                                      color: Colors.white, fontSize: 20)),
+                                      color: getTextColor(widget.chat.getColor()), fontSize: 20)),
                             ),
                             widget.chat.alias != ""
                                 ? Container(
@@ -355,30 +355,42 @@ void buttonUnmute(BuildContext context) {
 }
 
 Widget getPopupItems(BuildContext context, Broup chat) {
-  return Column(children: [
-    Container(
-      alignment: Alignment.centerLeft,
-      child: TextButton(
-          onPressed: () {
-            buttonMessage(context);
-          },
-          child: Text(
-            'Message ${chat.getBroupNameOrAlias()}',
-            textAlign: TextAlign.left,
-            style: TextStyle(color: Colors.black, fontSize: 14),
-          )),
-    ),
-    Container(
-      alignment: Alignment.centerLeft,
-      child: TextButton(
-          onPressed: () {
-            chat.isMuted() ? buttonUnmute(context) : buttonMute(context);
-          },
-          child: Text(
-            chat.isMuted() ? 'Unmute chat' : 'Mute chat',
-            textAlign: TextAlign.left,
-            style: TextStyle(color: Colors.black, fontSize: 14),
-          )),
-    ),
-  ]);
+  return Column(
+      children: [
+        Container(
+          alignment: Alignment.centerLeft,
+          child: TextButton(
+              onPressed: () {
+                buttonMessage(context);
+              },
+              style: TextButton.styleFrom(
+                alignment: Alignment.centerLeft,
+                minimumSize: Size(double.infinity, 0), // Make the button take full width
+              ),
+              child: Text(
+                'Message ${chat.getBroupNameOrAlias()}',
+                textAlign: TextAlign.left,
+                style: TextStyle(color: Colors.black, fontSize: 14),
+              )
+          ),
+        ),
+        Container(
+          alignment: Alignment.centerLeft,
+          child: TextButton(
+              onPressed: () {
+                chat.isMuted() ? buttonUnmute(context) : buttonMute(context);
+              },
+              style: TextButton.styleFrom(
+                alignment: Alignment.centerLeft,
+                minimumSize: Size(double.infinity, 0), // Make the button take full width
+              ),
+              child: Text(
+                chat.isMuted() ? 'Unmute chat' : 'Mute chat',
+                textAlign: TextAlign.left,
+                style: TextStyle(color: Colors.black, fontSize: 14),
+              )
+          ),
+        ),
+      ]
+  );
 }

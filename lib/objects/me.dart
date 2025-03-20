@@ -59,7 +59,7 @@ class Me extends Bro {
       broups.add(broup);
     } else {
       // entry exists, remove it and add it again.
-      broups.where((element) => element.getBroupId() == broup.getBroupId());
+      broups.removeWhere((element) => element.getBroupId() == broup.getBroupId());
       // Leave the socket room, just to be sure.
       SocketServices().leaveRoomBroup(broup.broupId);
       broups.add(broup);

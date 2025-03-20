@@ -402,7 +402,7 @@ class _BroCastHomeState extends State<BroCastHome> {
                       });
                     }),
             PopupMenuButton<int>(
-                icon: Icon(Icons.more_vert, color: getTextColor(Colors.white)),
+                icon: Icon(Icons.more_vert, color: Colors.white),
                 onSelected: (item) => onSelect(context, item),
                 itemBuilder: (context) => [
                       PopupMenuItem<int>(value: 0, child: Text("Profile")),

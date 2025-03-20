@@ -99,13 +99,11 @@ class AuthServiceLogin {
           "access_token": accessToken,
           "refresh_token": refreshToken
         }
-        )
+      )
     );
 
+    // TODO: this will only give a brand new access token. Now log in correctly!
     LoginResponse loginResponse = LoginResponse.fromJson(response.data);
-    if (loginResponse.getResult()) {
-      successfulLogin(loginResponse);
-    }
     return loginResponse;
   }
 

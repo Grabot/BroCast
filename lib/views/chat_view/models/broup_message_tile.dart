@@ -468,6 +468,10 @@ Widget getPopupItems(BuildContext context, String sender, bool broAdded, bool br
           onPressed: () {
             buttonMessage(context);
           },
+          style: TextButton.styleFrom(
+            alignment: Alignment.centerLeft,
+            minimumSize: Size(double.infinity, 0), // Make the button take full width
+          ),
           child: Text(
             'Message $sender',
             textAlign: TextAlign.left,
@@ -482,6 +486,10 @@ Widget getPopupItems(BuildContext context, String sender, bool broAdded, bool br
           onPressed: () {
             buttonAdd(context);
           },
+          style: TextButton.styleFrom(
+            alignment: Alignment.centerLeft,
+            minimumSize: Size(double.infinity, 0), // Make the button take full width
+          ),
           child: Text(
             'Add $sender',
             textAlign: TextAlign.left,
@@ -494,6 +502,10 @@ Widget getPopupItems(BuildContext context, String sender, bool broAdded, bool br
           onPressed: () {
             buttonAddToAdmin(context);
           },
+          style: TextButton.styleFrom(
+            alignment: Alignment.centerLeft,
+            minimumSize: Size(double.infinity, 0), // Make the button take full width
+          ),
           child: Text(
             'Make $sender admin',
             textAlign: TextAlign.left,
@@ -506,6 +518,10 @@ Widget getPopupItems(BuildContext context, String sender, bool broAdded, bool br
           onPressed: () {
             buttonRemoveToAdmin(context);
           },
+          style: TextButton.styleFrom(
+            alignment: Alignment.centerLeft,
+            minimumSize: Size(double.infinity, 0), // Make the button take full width
+          ),
           child: Text(
             'Dismiss $sender from admins',
             textAlign: TextAlign.left,
@@ -518,6 +534,10 @@ Widget getPopupItems(BuildContext context, String sender, bool broAdded, bool br
           onPressed: () {
             buttonSaveImage(context);
           },
+          style: TextButton.styleFrom(
+            alignment: Alignment.centerLeft,
+            minimumSize: Size(double.infinity, 0), // Make the button take full width
+          ),
           child: Text(
             'Save image to gallery',
             textAlign: TextAlign.left,

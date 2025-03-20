@@ -19,7 +19,7 @@ class Broup {
   late int unreadMessages;
   late bool updateBroup;
   late bool newMessages;
-  late bool newAvatar;
+  bool newAvatar = false;
 
   // We initialize variables with empty values
   // This is because the broup objects are updated later
@@ -47,7 +47,7 @@ class Broup {
 
   // Simple solution to not add multiple "today" message tiles
   // And to not retrieve the Bro objects from the db multiple times
-  bool todayTileAdded = false;
+  bool dateTilesAdded = false;
   bool retrievedBros = false;
 
   bool joinedBroupRoom = false;
@@ -272,7 +272,6 @@ class Broup {
     deleted = json.containsKey("deleted") ? json["deleted"] : false;
     removed = json.containsKey("removed") ? json["removed"] : false;
     newAvatar = json.containsKey("new_avatar") ? json["new_avatar"] : false;
-    print("new avatar $newAvatar");
 
     // These are the core chat values. Stored in a coupling table on the server
     broupName = "";
@@ -553,6 +552,9 @@ class Broup {
 
   updateDateTiles(Message message) {
     // If the day tiles need to be updated after sending a message it will be the today tile.
+    if (this.messages.isEmpty) {
+      return;
+    }
     Message messageFirst = this.messages.first;
     DateTime dayFirst = DateTime(messageFirst.getTimeStamp().year,
         messageFirst.getTimeStamp().month, messageFirst.getTimeStamp().day);
@@ -570,15 +572,12 @@ class Broup {
         0,
         "Today",
         "",
-        DateTime.now().toUtc().toString(),
+        message.getTimeStamp().subtract(Duration(seconds: 1)).toUtc().toString(),
         null,
         true,
         getBroupId(),
       );
-      if (!todayTileAdded) {
-        todayTileAdded = true;
-        this.messages.insert(0, timeMessage);
-      }
+      this.messages.insert(0, timeMessage);
     }
   }
 

@@ -92,7 +92,28 @@ class AppInterceptors extends Interceptor {
             LoginResponse loginRefresh = LoginResponse.fromJson(response.data);
             if (loginRefresh.getResult()) {
               accessToken = loginRefresh.getAccessToken();
-              successfulLogin(loginRefresh);
+              String endPoint = "login/token";
+              var response2 = await Dio(
+                  BaseOptions(
+                    baseUrl: apiUrl_v1_0,
+                    receiveTimeout: const Duration(milliseconds: 15000),
+                    connectTimeout: const Duration(milliseconds: 15000),
+                    sendTimeout: const Duration(milliseconds: 15000),
+                  )
+              ).post(endPoint,
+                  options: Options(headers: {
+                    HttpHeaders.contentTypeHeader: "application/json",
+                  }),
+                  data: {
+                    "access_token": accessToken,
+                  }
+              ).catchError((error, stackTrace) {
+                return handler.reject(error, true);
+              });
+              LoginResponse loginAccess = LoginResponse.fromJson(response2.data);
+              if (loginAccess.getResult()) {
+                successfulLogin(loginAccess);
+              }
             } else {
               DioException dioError = DioException(requestOptions: options,
                   type: DioExceptionType.cancel,

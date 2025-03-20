@@ -53,7 +53,11 @@ Future<bool> refreshTokenLogin(String accessToken, String refreshToken) async {
   try {
     LoginResponse loginResponse = await AuthServiceLogin().getRefresh(accessToken, refreshToken);
     if (loginResponse.getResult()) {
-      return true;
+      if (loginResponse.getAccessToken() != null) {
+        return await accessTokenLogin(loginResponse.getAccessToken()!);
+      } else {
+        return false;
+      }
     } else if (!loginResponse.getResult()) {
       // refresh token NOT valid!
       return false;

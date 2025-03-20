@@ -31,9 +31,6 @@ Future<bool> getBros(Broup chat, Storage storage, Me me) async {
     print("already retrieved");
     return true;
   }
-  if (chat.removed) {
-    return true;
-  }
   List<Bro> storageBros = await storage.fetchBros(chat.getBroIds());
 
   print("got bros from the db ${storageBros}");
@@ -178,7 +175,6 @@ mergeMessages(List<Message> incomingMessages, Broup chat) {
   chat.messages.addAll(newMessages);
   chat.messages.sort((b, a) => a.getTimeStamp().compareTo(b.getTimeStamp()));
   // Set date tiles, but only if all the messages are retrieved
-
 }
 
 List<Message> removeDuplicates(List<Message> newMessages, Broup chat) {
@@ -240,10 +236,7 @@ setDateTiles(Broup chat) {
       }
 
       if (timeMessage.body == "Today") {
-        if (!chat.todayTileAdded) {
-          chat.todayTileAdded = true;
-          chat.messages.insert(i, timeMessage);
-        }
+        chat.messages.insert(i, timeMessage);
       } else {
         chat.messages.insert(i, timeMessage);
       }
@@ -254,7 +247,7 @@ setDateTiles(Broup chat) {
         0,
         timeMessageTile,
         "",
-        DateTime.now().toUtc().toString(),
+        dayMessage.toUtc().toString(),
         null,
         true,
         chat.getBroupId(),
@@ -262,12 +255,8 @@ setDateTiles(Broup chat) {
     }
   }
 
-  if (timeMessage.body == "Today") {
-    if (!chat.todayTileAdded) {
-      chat.todayTileAdded = true;
-      chat.messages.insert(chat.messages.length, timeMessage);
-    }
-  } else {
-    chat.messages.insert(chat.messages.length, timeMessage);
-  }
+  DateTime currentDayMessage = DateTime(messageFirst.getTimeStamp().year,
+      messageFirst.getTimeStamp().month, messageFirst.getTimeStamp().day);
+  timeMessage.setTimeStamp(currentDayMessage.toUtc().toString());
+  chat.messages.insert(chat.messages.length, timeMessage);
 }
