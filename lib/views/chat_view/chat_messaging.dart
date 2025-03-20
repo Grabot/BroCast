@@ -77,7 +77,6 @@ class _ChatMessagingState extends State<ChatMessaging> {
     super.initState();
     print("init chat");
     storage = Storage();
-    socketServices.checkConnection();
     socketServices.addListener(socketListener);
     messagingChangeNotifier.addListener(socketListener);
 
@@ -102,7 +101,7 @@ class _ChatMessagingState extends State<ChatMessaging> {
       }
     });
 
-    SchedulerBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       retrieveData();
       navigator = Navigator.of(context, rootNavigator: false);
       barrierLabel = MaterialLocalizations.of(context).modalBarrierDismissLabel;
@@ -257,6 +256,8 @@ class _ChatMessagingState extends State<ChatMessaging> {
 
   @override
   void dispose() {
+    // If you are on the page and you leave than you have read the messages.
+    widget.chat.unreadMessages = 0;
     notificationController.removeListener(notificationListener);
     focusAppendText.dispose();
     focusEmojiTextField.dispose();
@@ -294,18 +295,8 @@ class _ChatMessagingState extends State<ChatMessaging> {
     if (formKey.currentState!.validate()) {
       String message = broMessageController.text;
       String textMessage = appendTextMessageController.text;
-      // We add the message already as being send.
-      // If it is received we remove this message and show 'received'
-      // TODO: Remove this code? Obsolete?
-      // String timestampString = DateTime.now().toUtc().toString();
-      // // The 'Z' indicates that it's UTC but we'll already add it in the message
-      // if (timestampString.endsWith('Z')) {
-      //   timestampString =
-      //       timestampString.substring(0, timestampString.length - 1);
-      // }
-      // We set the id to be "-1". For date tiles it is "0", these will be filtered.
       Message mes = new Message(
-        -1,
+        widget.chat.lastMessageId + 1,
         settings.getMe()!.getId(),
         message,
         textMessage,
@@ -314,6 +305,7 @@ class _ChatMessagingState extends State<ChatMessaging> {
         false,
         widget.chat.getBroupId(),
       );
+      mes.isRead = 2;
       setState(() {
         if (messageData == null) {
           // only do this for regular messages, because they will be deleted again if we receive the message. Which is not done for messages with data.
@@ -322,6 +314,7 @@ class _ChatMessagingState extends State<ChatMessaging> {
       });
       AuthServiceSocial().sendMessage(widget.chat.getBroupId(), message, textMessage, messageData).then((value) {
         if (value) {
+          mes.isRead = 0;
           // message send
         } else {
           // The message was not sent, we remove it from the list

@@ -553,7 +553,18 @@ class Broup {
 
   updateDateTiles(Message message) {
     // If the day tiles need to be updated after sending a message it will be the today tile.
-    if (this.messages.length == 0) {
+    Message messageFirst = this.messages.first;
+    DateTime dayFirst = DateTime(messageFirst.getTimeStamp().year,
+        messageFirst.getTimeStamp().month, messageFirst.getTimeStamp().day);
+    String chatTimeTile = DateFormat.yMMMMd('en_US').format(dayFirst);
+
+    DateTime current = message.getTimeStamp();
+    DateTime dayMessage = DateTime(current.year, current.month, current.day);
+    String currentDayMessage = DateFormat.yMMMMd('en_US').format(dayMessage);
+
+    if (chatTimeTile != currentDayMessage) {
+      chatTimeTile = DateFormat.yMMMMd('en_US').format(dayMessage);
+
       Message timeMessage = new Message(
         0,
         0,
@@ -567,34 +578,6 @@ class Broup {
       if (!todayTileAdded) {
         todayTileAdded = true;
         this.messages.insert(0, timeMessage);
-      }
-    } else {
-      Message messageFirst = this.messages.first;
-      DateTime dayFirst = DateTime(messageFirst.getTimeStamp().year,
-          messageFirst.getTimeStamp().month, messageFirst.getTimeStamp().day);
-      String chatTimeTile = DateFormat.yMMMMd('en_US').format(dayFirst);
-
-      DateTime current = message.getTimeStamp();
-      DateTime dayMessage = DateTime(current.year, current.month, current.day);
-      String currentDayMessage = DateFormat.yMMMMd('en_US').format(dayMessage);
-
-      if (chatTimeTile != currentDayMessage) {
-        chatTimeTile = DateFormat.yMMMMd('en_US').format(dayMessage);
-
-        Message timeMessage = new Message(
-          0,
-          0,
-          "Today",
-          "",
-          DateTime.now().toUtc().toString(),
-          null,
-          true,
-          getBroupId(),
-        );
-        if (!todayTileAdded) {
-          todayTileAdded = true;
-          this.messages.insert(0, timeMessage);
-        }
       }
     }
   }
@@ -641,8 +624,9 @@ class Broup {
             print("Check if the user has the broup page open. if not send a notification");
             if (MessagingChangeNotifier().getBroupId() != broupId) {
               print("page was NOT open add unread messages");
-              unreadMessages++;
-              // TODO: send notification?
+              if (!message.isInformation()) {
+                unreadMessages++;
+              }
             } else {
               print("page was open when receiving");
               // If it was send by someone else wa want to indicate that we read it.
@@ -662,8 +646,10 @@ class Broup {
         });
       }
     } else {
-      unreadMessages++;
-      newMessages = true;
+      if (!message.isInformation()) {
+        unreadMessages++;
+        newMessages = true;
+      }
     }
   }
 

@@ -5,6 +5,7 @@ import 'package:brocast/utils/storage.dart';
 import 'package:brocast/utils/utils.dart';
 import "package:flutter/material.dart";
 
+import '../../objects/me.dart';
 import '../../utils/notification_controller.dart';
 
 class BroSettings extends StatefulWidget {
@@ -28,13 +29,10 @@ class _BroSettingsState extends State<BroSettings> {
     super.initState();
 
     storage = Storage();
-    socketServices.checkConnection();
-
     notificationController = NotificationController();
     notificationController.addListener(notificationListener);
 
     toggleSwitchKeyboard = settings.getEmojiKeyboardDarkMode();
-
   }
 
   @override

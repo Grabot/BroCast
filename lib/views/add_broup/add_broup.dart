@@ -9,6 +9,7 @@ import '../../objects/broup.dart';
 import '../../objects/me.dart';
 import '../../services/auth/auth_service_social.dart';
 import '../../utils/notification_controller.dart';
+import '../../utils/socket_services.dart';
 import '../../utils/storage.dart';
 import '../bro_profile/bro_profile.dart';
 import '../bro_settings/bro_settings.dart';
@@ -104,7 +105,7 @@ class _AddBroupState extends State<AddBroup> {
       });
     });
 
-    SchedulerBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       setState(() {
         shownParticipants = participants;
       });

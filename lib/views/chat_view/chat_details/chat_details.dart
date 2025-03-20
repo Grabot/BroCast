@@ -76,7 +76,6 @@ class _ChatDetailsState extends State<ChatDetails> {
     super.initState();
     storage = Storage();
     amountInGroup = widget.chat.getBroIds().length;
-    socketServices.checkConnection();
     socketServices.addListener(socketListener);
 
     notificationController = NotificationController();
@@ -91,7 +90,7 @@ class _ChatDetailsState extends State<ChatDetails> {
       initialColor: widget.chat.getColor(),
     );
     currentColor = widget.chat.getColor();
-    SchedulerBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       setState(() {});
     });
 
@@ -1220,7 +1219,10 @@ class _ChatDetailsState extends State<ChatDetails> {
           widget.chat.blocked = false;
           widget.chat.adminIds = [];
           addInformationMessage(widget.chat, "Chat is unblocked! 🥰");
-          socketServices.joinRoomBroup(widget.chat.broupId);
+          if (!widget.chat.joinedBroupRoom) {
+            socketServices.joinRoomBroup(widget.chat.broupId);
+            widget.chat.joinedBroupRoom = true;
+          }
           navigateToChat(context, settings, widget.chat);
         });
       }

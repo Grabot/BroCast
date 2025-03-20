@@ -81,7 +81,6 @@ successfulLogin(LoginResponse loginResponse) async {
   Me? me = loginResponse.getMe();
   if (me != null) {
     settings.setMe(me);
-    // don't store email because we don't know it.
     SocketServices().joinRoomSolo(me.getId());
   }
 
@@ -295,6 +294,25 @@ ButtonStyle buttonStyle(bool active, MaterialColor buttonColor) {
           )
       )
   );
+}
+
+addWelcomeMessage(Broup broup) {
+  Message unBlockMessage = Message(
+    broup.lastMessageId + 1,
+    0,
+    "Welcome to the Chat! 🥰",
+    "",
+    DateTime.now().toUtc().toString(),
+    null,
+    true,
+    broup.getBroupId(),
+  );
+  broup.lastMessageId += 1;
+  Storage().addMessage(unBlockMessage);
+  broup.messages.insert(
+      0,
+      unBlockMessage);
+  broup.unreadMessages = 0;
 }
 
 addInformationMessage(Broup broup, String infoMessage) {

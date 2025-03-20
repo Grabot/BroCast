@@ -225,16 +225,16 @@ class _BroupMessageTileState extends State<BroupMessageTile> {
                   style: TextStyle(
                       color: Colors.white54, fontSize: 12),
                 ),
-                widget.message.messageId != -1
+                widget.message.isRead == 2
                     ? WidgetSpan(
+                    child: Icon(Icons.done,
+                        color: Colors.white54, size: 18))
+                    : WidgetSpan(
                     child: Icon(Icons.done_all,
                         color: widget.message.hasBeenRead()
                             ? Colors.blue
                             : Colors.white54,
                         size: 18))
-                    : WidgetSpan(
-                    child: Icon(Icons.done,
-                        color: Colors.white54, size: 18))
               ],
             ),
           ),

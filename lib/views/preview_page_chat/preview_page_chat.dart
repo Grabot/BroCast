@@ -8,6 +8,8 @@ import 'package:flutter/material.dart';
 import '../../../objects/broup.dart';
 import '../../../utils/settings.dart';
 import '../../../utils/socket_services.dart';
+import '../../objects/me.dart';
+import '../../utils/utils.dart';
 
 
 class PreviewPageChat extends StatefulWidget {
@@ -54,7 +56,6 @@ class _PreviewPageChatState extends State<PreviewPageChat> {
   void initState() {
     super.initState();
     broMessageController.text = "📸";
-    socketServices.checkConnection();
     setState(() {});
   }
 

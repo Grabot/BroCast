@@ -45,7 +45,6 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> {
   @override
   void initState() {
     super.initState();
-    socketServices.checkConnection();
     socketServices.addListener(socketListener);
     bromotionController.addListener(bromotionListener);
 
@@ -55,32 +54,34 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> {
     broupAddBros.clear();
     broupAddBrosShownBros.clear();
     Me? me = Settings().getMe();
-    for (Broup myBro in me!.broups) {
-      if (myBro.private && !myBro.removed) {
-        bool inBroup = false;
-        for (int participantId in myBro.getBroIds()) {
-          // In a private chat there are 2 ids, me and the other bro
-          if (participantId != me.getId()) {
-            // Check if the ID of `myBro` is in the `chat.getBroIds()`
-            for (int chatParticipantId in widget.chat.getBroIds()) {
-              if (participantId == chatParticipantId) {
-                inBroup = true;
-                break;
+    if (me != null) {
+      for (Broup myBro in me!.broups) {
+        if (myBro.private && !myBro.removed) {
+          bool inBroup = false;
+          for (int participantId in myBro.getBroIds()) {
+            // In a private chat there are 2 ids, me and the other bro
+            if (participantId != me.getId()) {
+              // Check if the ID of `myBro` is in the `chat.getBroIds()`
+              for (int chatParticipantId in widget.chat.getBroIds()) {
+                if (participantId == chatParticipantId) {
+                  inBroup = true;
+                  break;
+                }
               }
             }
           }
+          print("bro ${myBro.getBroupName()} In broup: $inBroup");
+          BroupAddBro broupAddBro =
+          new BroupAddBro(false, inBroup, myBro);
+          broupAddBros.add(broupAddBro);
         }
-        print("bro ${myBro.getBroupName()} In broup: $inBroup");
-        BroupAddBro broupAddBro =
-            new BroupAddBro(false, inBroup, myBro);
-        broupAddBros.add(broupAddBro);
       }
     }
-    setState(() {
-      broupAddBrosShownBros = broupAddBros;
-    });
-    SchedulerBinding.instance.addPostFrameCallback((_) {
-      setState(() {});
+    broupAddBrosShownBros = broupAddBros;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {
+      });
     });
   }
 

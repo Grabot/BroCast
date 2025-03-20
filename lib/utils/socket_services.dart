@@ -39,6 +39,13 @@ class SocketServices extends ChangeNotifier {
 
     socket.onConnect((_) {
       socket.emit('message_event', 'Connected!');
+      // We are connected, this is good :)
+      // But it's also possible something went wrong in the backend?
+      // So rejoin the channels and rooms
+      Me? me = Settings().getMe();
+      if (me != null) {
+        joinRooms(me);
+      }
     });
 
     socket.onDisconnect((_) {
@@ -51,6 +58,23 @@ class SocketServices extends ChangeNotifier {
     });
 
     socket.open();
+  }
+
+  joinRooms(Me me) {
+    // First leave all rooms, to be sure.
+    leaveRoomSolo(me.getId());
+    for (Broup meBroup in me.broups) {
+      leaveRoomBroup(meBroup.getBroupId());
+    }
+    // rejoin all socket rooms.
+    joinRoomSolo(me.getId());
+    joinedSoloRoom = true;
+    for (Broup meBroup in me.broups) {
+      if (!meBroup.removed && !meBroup.deleted) {
+        joinRoomBroup(meBroup.getBroupId());
+        meBroup.joinedBroupRoom = true;
+      }
+    }
   }
 
   retrieveAvatar() {
@@ -71,12 +95,6 @@ class SocketServices extends ChangeNotifier {
 
   bool isConnected() {
     return socket.connected;
-  }
-
-  void checkConnection() {
-    if (!isConnected()) {
-      startSockConnection();
-    }
   }
 
   void joinRoomSolo(int broId) {
@@ -135,7 +153,10 @@ class SocketServices extends ChangeNotifier {
             broup.removed = false;
             broup.adminIds = [];
             addInformationMessage(broup, "Chat is unblocked! 🥰");
-            joinRoomBroup(broup.broupId);
+            if (!broup.joinedBroupRoom) {
+              broup.joinedBroupRoom = true;
+              joinRoomBroup(broup.broupId);
+            }
             notifyListeners();
           }
         }
@@ -176,7 +197,10 @@ class SocketServices extends ChangeNotifier {
             broup.removed = true;
             broup.unreadMessages = 0;
             // We leave the socket to not receive broup updates anymore.
-            leaveRoomBroup(broup.broupId);
+            if (broup.joinedBroupRoom) {
+              broup.joinedBroupRoom = false;
+              leaveRoomBroup(broup.broupId);
+            }
           }
         }
         if (data.containsKey("broup_updated")) {
@@ -193,7 +217,10 @@ class SocketServices extends ChangeNotifier {
             broup.removed = true;
             broup.unreadMessages = 0;
             // We leave the socket to not receive broup updates anymore.
-            leaveRoomBroup(broup.broupId);
+            if (broup.joinedBroupRoom) {
+              broup.joinedBroupRoom = false;
+              leaveRoomBroup(broup.broupId);
+            }
           }
         }
         if (data.containsKey("new_avatar")) {

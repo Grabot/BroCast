@@ -55,14 +55,19 @@ class Me extends Bro {
   addBroup(Broup broup) {
     if (!broups.any((element) => element.getBroupId() == broup.getBroupId())) {
       // no entry exists, add it.
-      addInformationMessage(broup, "Welcome to the Chat! 🥰");
+      addWelcomeMessage(broup);
       broups.add(broup);
     } else {
       // entry exists, remove it and add it again.
-      broups.removeWhere((element) => element.getBroupId() == broup.getBroupId());
+      broups.where((element) => element.getBroupId() == broup.getBroupId());
+      // Leave the socket room, just to be sure.
+      SocketServices().leaveRoomBroup(broup.broupId);
       broups.add(broup);
     }
-    SocketServices().joinRoomBroup(broup.broupId);
+    if (!broup.joinedBroupRoom) {
+      broup.joinedBroupRoom = true;
+      SocketServices().joinRoomBroup(broup.broupId);
+    }
   }
 
   Me.fromJson(Map<String, dynamic> json)

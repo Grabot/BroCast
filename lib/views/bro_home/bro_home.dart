@@ -87,11 +87,11 @@ class _BroCastHomeState extends State<BroCastHome> {
     if (me != null) {
       // Set all bros to be shown, except when the bro is searching.
       if (!searchMode && (settings.retrievedBroupData && settings.retrievedBroData)) {
-        shownBros = me!.broups.where((group) => !group.deleted).toList();
+        shownBros = me!.broups.where((broup) => !broup.deleted).toList();
       }
       // Join Broups if not already joined.
       for (Broup broup in me!.broups) {
-        if (!broup.joinedBroupRoom) {
+        if (!broup.joinedBroupRoom && !broup.removed && !broup.deleted) {
           socketServices.joinRoomBroup(broup.getBroupId());
           broup.joinedBroupRoom = true;
         }
@@ -177,7 +177,7 @@ class _BroCastHomeState extends State<BroCastHome> {
           if (dbBroup == null) {
             // This is a new broup
             print("This is a new broup");
-            addInformationMessage(broup, "Welcome to the Chat! 🥰");
+            addWelcomeMessage(broup);
             storage.addBroup(broup);
           } else {
             print("broup from db ${dbBroup.broupId}  ${dbBroup.broIds}");
