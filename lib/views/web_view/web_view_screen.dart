@@ -64,7 +64,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
                         context,
                         MaterialPageRoute(
                             builder: (context) =>
-                                BroCastHome(key: UniqueKey())));
+                                BrocastHome(key: UniqueKey())));
                   } else {
                     showToastMessage("Failed to log in.");
                   }

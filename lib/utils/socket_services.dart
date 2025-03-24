@@ -1,5 +1,6 @@
 import 'package:brocast/constants/base_url.dart';
 import 'package:brocast/services/auth/auth_service_social.dart';
+import 'package:brocast/utils/life_cycle_service.dart';
 import 'package:brocast/utils/socket_services_util.dart';
 import 'package:brocast/utils/utils.dart';
 import 'package:brocast/views/bro_home/bro_home_change_notifier.dart';
@@ -118,7 +119,9 @@ class SocketServices extends ChangeNotifier {
     print("Avatar changed $data");
     Me? me = Settings().getMe();
     if (me != null) {
+      print("me is not null");
       if (data.containsKey("broup_id")) {
+        print("it was a broup");
         int broupId = data["broup_id"];
         AuthServiceSocial().getAvatarBroup(broupId).then((value) {
           if (value) {
@@ -127,12 +130,21 @@ class SocketServices extends ChangeNotifier {
         });
       }
       if (data.containsKey("bro_id")) {
+        print("it was a bro");
         int broId = data["bro_id"];
-        AuthServiceSocial().getAvatarBro(broId).then((value) {
-          if (value) {
-            notifyListeners();
-          }
-        });
+        if (Settings().getMe()!.id == broId) {
+          AuthServiceLogin().getAvatarMe().then((value) {
+            if (value) {
+              notifyListeners();
+            }
+          });
+        } else {
+          AuthServiceSocial().getAvatarBro(broId).then((value) {
+            if (value) {
+              notifyListeners();
+            }
+          });
+        }
       }
     }
   }
@@ -206,7 +218,9 @@ class SocketServices extends ChangeNotifier {
         if (data.containsKey("broup_updated")) {
           // probably True, we should update broup
           bool broupUpdated = data["broup_updated"];
-          broup.setUpdateBroup(broupUpdated);
+          if (broupUpdated) {
+            // TODO: update the broup
+          }
         }
 
         if (data.containsKey("chat_blocked")) {
@@ -243,6 +257,9 @@ class SocketServices extends ChangeNotifier {
             print("setting it back to -1");
             changedBroupAvatar = -1;
           }
+        }
+        if (LifeCycleService().getAppStatus() != 1) {
+          broup.updateBroup = true;
         }
         Storage().updateBroup(broup);
         notifyListeners();
@@ -317,6 +334,7 @@ class SocketServices extends ChangeNotifier {
     if (me != null) {
       print("going to check broup!");
       Broup broup = me.broups.firstWhere((element) => element.broupId == broupId);
+      print("checking message received");
       // Always add the message, if the broup is removed it should not be listening to the sockets anymore.
       broup.updateMessages(message);
       storage.updateBroup(broup);
@@ -409,8 +427,10 @@ class SocketServices extends ChangeNotifier {
   leaveSocketsSolo() {
     this.socket.off('chat_changed');
     this.socket.off('chat_added');
+    this.socket.off('bro_update');
     this.socket.off('message_received');
     this.socket.off('message_read');
+    this.socket.off('avatar_change');
   }
 
   leaveSocketsBroup() {

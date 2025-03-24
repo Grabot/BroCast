@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
@@ -81,10 +82,10 @@ class AppInterceptors extends Interceptor {
                 options: Options(headers: {
                   HttpHeaders.contentTypeHeader: "application/json",
                 }),
-                data: {
+                data: jsonEncode(<String, String> {
                   "access_token": accessToken,
                   "refresh_token": refreshToken
-                }
+                })
             ).catchError((error, stackTrace) {
               return handler.reject(error, true);
             });
@@ -92,6 +93,12 @@ class AppInterceptors extends Interceptor {
             LoginResponse loginRefresh = LoginResponse.fromJson(response.data);
             if (loginRefresh.getResult()) {
               accessToken = loginRefresh.getAccessToken();
+              if (accessToken == null ) {
+                DioException dioError = DioException(requestOptions: options,
+                    type: DioExceptionType.cancel,
+                    error: "User not authorized");
+                return handler.reject(dioError, true);
+              }
               String endPoint = "login/token";
               var response2 = await Dio(
                   BaseOptions(
@@ -104,9 +111,9 @@ class AppInterceptors extends Interceptor {
                   options: Options(headers: {
                     HttpHeaders.contentTypeHeader: "application/json",
                   }),
-                  data: {
-                    "access_token": accessToken,
-                  }
+                  data: jsonEncode(<String, String> {
+                    "access_token": accessToken
+                  })
               ).catchError((error, stackTrace) {
                 return handler.reject(error, true);
               });

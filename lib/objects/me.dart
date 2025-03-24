@@ -85,6 +85,8 @@ class Me extends Bro {
     broups = [];
     if (json.containsKey("broups")) {
       for (var bro in json["broups"]) {
+        // We pass the meId to the broup because we might need it but `me` is not yet set on the Settings.
+        bro["meId"] = id;
         broups.add(Broup.fromJson(bro));
       }
     }

@@ -80,6 +80,7 @@ successfulLogin(LoginResponse loginResponse) async {
 
   Me? me = loginResponse.getMe();
   if (me != null) {
+    print("me is not null");
     // Also retrieve the broups that are in the local db.
     Storage().fetchAllBroups().then((dbBroups) {
       if (dbBroups.isNotEmpty) {
@@ -92,6 +93,7 @@ successfulLogin(LoginResponse loginResponse) async {
                 // In this case we don't add the db broup data yet
                 // because it will be added in the BroHome notifier.
                 found = true;
+                broupMe.updateBroupLocalDB(dbBroup);
                 break;
               }
             }
@@ -104,6 +106,22 @@ successfulLogin(LoginResponse loginResponse) async {
       }
     });
     settings.setMe(me);
+    Storage().fetchBro(me.id).then((dbBro) {
+      if (dbBro != null) {
+        // We have loaded all the broups, but regular information was probably not send
+        // We will take what we know from the db and update the me object.
+        me.avatar = dbBro.avatar;
+        me.id = dbBro.id;
+        me.broName = dbBro.broName;
+        me.bromotion = dbBro.bromotion;
+        me.avatar = dbBro.avatar;
+        // nothing to update in the db.
+      } else {
+        // If the bro is not stored yet, likely because the user is new.
+        // Store what is know in the database
+        Storage().addBro(me);
+      }
+    });
     SocketServices().joinRoomSolo(me.getId());
   }
 
@@ -261,9 +279,10 @@ class HexagonClipper extends CustomClipper<Path> {
 }
 
 navigateToHome(BuildContext context, Settings settings) {
+  print("we are now going to home");
   MessagingChangeNotifier().setBroupId(-1);
     Navigator.pushReplacement(context,
-        MaterialPageRoute(builder: (context) => BroCastHome(key: UniqueKey())));
+        MaterialPageRoute(builder: (context) => BrocastHome(key: UniqueKey())));
 }
 
 navigateToChat(BuildContext context, Settings settings, Broup chat) {
@@ -320,12 +339,14 @@ ButtonStyle buttonStyle(bool active, MaterialColor buttonColor) {
 }
 
 addWelcomeMessage(Broup broup) {
+  DateTime now = DateTime.now();
+  DateTime currentDayMessage = DateTime(now.year, now.month, now.day);
   Message unBlockMessage = Message(
     broup.lastMessageId + 1,
     0,
     "Welcome to the Chat! 🥰",
     "",
-    DateTime.now().toUtc().toString(),
+    currentDayMessage.toUtc().toString(),
     null,
     true,
     broup.getBroupId(),
@@ -350,7 +371,6 @@ addInformationMessage(Broup broup, String infoMessage) {
     true,
     broup.getBroupId(),
   );
-  broup.lastMessageId += 1;
   Storage().addMessage(unBlockMessage);
   broup.messages.insert(
       0,

@@ -9,24 +9,32 @@ Future<bool> loginCheck() async {
   String? accessToken = await secureStorage.getAccessToken();
   int current = (DateTime.now().millisecondsSinceEpoch / 1000).round();
   if (accessToken != null && accessToken != "") {
-    int expiration = Jwt.parseJwt(accessToken)['exp'];
-    if ((expiration - current) > 0) {
-      // token valid! Attempt to login with it.
-      bool accessTokenSuccessful = await accessTokenLogin(accessToken);
-      if (accessTokenSuccessful) {
-        return true;
+    Map<String, dynamic> accessPayload = Jwt.parseJwt(accessToken);
+    // check if exp is in payload
+    if (accessPayload.containsKey('exp')) {
+      int expiration = accessPayload['exp'];
+      if ((expiration - current) > 10) {
+        // token valid! Attempt to login with it.
+        bool accessTokenSuccessful = await accessTokenLogin(accessToken);
+        if (accessTokenSuccessful) {
+          return true;
+        }
       }
     }
 
     // If there is an access token but it is not valid we might be able to refresh the tokens.
     String? refreshToken = await secureStorage.getRefreshToken();
     if (refreshToken != null && refreshToken != "") {
-      int expirationRefresh = Jwt.parseJwt(refreshToken)['exp'];
-      if ((expirationRefresh - current) > 0) {
-        // refresh token valid! Attempt to refresh tokens and login with it.
-        bool refreshTokenSuccessful = await refreshTokenLogin(accessToken, refreshToken);
-        if (refreshTokenSuccessful) {
-          return true;
+      Map<String, dynamic> refreshPayload = Jwt.parseJwt(refreshToken);
+      if (refreshPayload.containsKey('exp')) {
+        int expirationRefresh = refreshPayload['exp'];
+        if ((expirationRefresh - current) > 10) {
+          // refresh token valid! Attempt to refresh tokens and login with it.
+          bool refreshTokenSuccessful = await refreshTokenLogin(
+              accessToken, refreshToken);
+          if (refreshTokenSuccessful) {
+            return true;
+          }
         }
       }
     }

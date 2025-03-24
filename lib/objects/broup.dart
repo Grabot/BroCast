@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:brocast/objects/me.dart';
 import 'package:brocast/objects/message.dart';
 import 'package:brocast/services/auth/auth_service_social.dart';
+import 'package:brocast/utils/life_cycle_service.dart';
 import 'package:brocast/views/bro_home/bro_home_change_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -17,8 +18,8 @@ import 'bro.dart';
 class Broup {
   late int broupId;
   late int unreadMessages;
-  late bool updateBroup;
-  late bool newMessages;
+  bool updateBroup = false;
+  bool newMessages = false;
   bool newAvatar = false;
 
   // We initialize variables with empty values
@@ -53,7 +54,7 @@ class Broup {
   bool joinedBroupRoom = false;
   late List<int> messageIds;
   late List<Message> messages;
-  late int lastMessageId;
+  int lastMessageId = 0;
 
   Broup(
       this.broupId,
@@ -67,8 +68,6 @@ class Broup {
       this.mute,
       this.private,
       this.deleted,
-      this.updateBroup,
-      this.newMessages,
       this.avatar,
       this.avatarDefault
       ) {
@@ -91,6 +90,7 @@ class Broup {
   }
 
   setAvatar(Uint8List avatar) {
+    newAvatar = false;
     this.avatar = avatar;
   }
 
@@ -243,10 +243,6 @@ class Broup {
     messages.add(message);
   }
 
-  setUpdateBroup(bool update) {
-    updateBroup = update;
-  }
-
   setMuted(bool mute) {
     this.mute = mute;
   }
@@ -264,19 +260,18 @@ class Broup {
     // These 4 values should always be present
     broupId = json["broup_id"];
     unreadMessages = json["unread_messages"];
-    updateBroup = json["broup_updated"];
-    newMessages = json["new_messages"];
+    updateBroup = json.containsKey("broup_updated") ? json["broup_updated"] : false;
+    newMessages = json.containsKey("new_messages") ? json["new_messages"] : false;
+    print("broup id $broupId  new messages $newMessages");
     // These might not be present
     alias = json.containsKey("alias") ? json["alias"] : "";
     mute = json.containsKey("mute") ? json["mute"] : false;
     deleted = json.containsKey("deleted") ? json["deleted"] : false;
     removed = json.containsKey("removed") ? json["removed"] : false;
-    newAvatar = json.containsKey("new_avatar") ? json["new_avatar"] : false;
+    bool newAvatar = json.containsKey("new_avatar") ? json["new_avatar"] : false;
 
     // These are the core chat values. Stored in a coupling table on the server
     broupName = "";
-    lastMessageId = 0;
-    bool avatarRetrieved = false;
     if (json.containsKey("chat")) {
       Map<String, dynamic> chat_details = json["chat"];
       broupName = chat_details.containsKey("broup_name") ? chat_details["broup_name"] : "";
@@ -285,13 +280,6 @@ class Broup {
       private = chat_details["private"];
       broIds = chat_details["bro_ids"].cast<int>();
       adminIds = chat_details["admin_ids"].cast<int>();
-      if (chat_details.containsKey("avatar") && chat_details["avatar"] != null) {
-        avatar = base64Decode(chat_details["avatar"].replaceAll("\n", ""));
-        // This variable can only ever be here if the avatar was send as well.
-        avatarDefault = chat_details.containsKey("avatar_default") ? chat_details["avatar_default"] : true;
-        avatarRetrieved = true;
-      }
-      lastMessageId = chat_details.containsKey("current_message_id") ? chat_details["current_message_id"] : 0;
       if (private && removed) {
         if (adminIds.contains(Settings().getMe()!.getId())) {
           // In a private chat the admin id is not needed, so it is repurposed for the blocked status
@@ -312,13 +300,24 @@ class Broup {
     // It's possible that the avatar was already sent with the rest of the data
     // But we usually don't to keep thing moving.
     // We will retrieve it if it's necessary here.
-    if (newAvatar && !avatarRetrieved) {
-      avatarRetrieved = true;
+    if (newAvatar) {
       newAvatar = false;
-      print("going to retrieve avatar right now baby ${getBroupName()}");
       if (private) {
+        Me? me = Settings().getMe();
+        int meId = me != null ? me.getId() : -1;
+        // We also build up the broups when logging in, in this case the `me` object is not yet set
+        // In this specific case we will pass the meId with this broup json object
+        if (meId == -1) {
+          print("meId is -1");
+          meId = json.containsKey("meId") ? json["meId"] : -1;
+          print("meId is now $meId");
+          if (meId == -1) {
+            // If it's still -1 we will give up.
+            return;
+          }
+        }
         for (int broId in broIds) {
-          if (broId != Settings().getMe()!.getId()) {
+          if (broId != meId) {
             // For private chats we want to retrieve the bro object.
             // TODO: Check if the bro is already in storage?
             AuthServiceSocial().retrieveBro(broId).then((bro) {
@@ -368,8 +367,6 @@ class Broup {
     map['removed'] = removed ? 1 : 0;
     map['blocked'] = blocked ? 1 : 0;
     map['lastMessageId'] = lastMessageId;
-    map['updateBroup'] = updateBroup ? 1 : 0;
-    map['newMessages'] = newMessages ? 1 : 0;
     map['avatar'] = avatar;
     map['avatarDefault'] = avatarDefault ? 1 : 0;
     // Get the ids of all the messages in a list
@@ -438,8 +435,6 @@ class Broup {
     removed = map['removed'] == 1;
     blocked = map['blocked'] == 1;
     lastMessageId = map['lastMessageId'];
-    updateBroup = map['updateBroup'] == 1;
-    newMessages = map['newMessages'] == 1;
     avatar = map['avatar'];
     avatarDefault = map['avatarDefault'] == 1;
     List<dynamic> messageIds = jsonDecode(map['messages']);
@@ -447,6 +442,38 @@ class Broup {
     this.messageIds = messageIdsList;
     broupBros = [];
     messages = [];
+  }
+
+  updateBroupLocalDB(Broup localBroup) {
+    // Take almost all the values from the DB. the only values we don't want to take are the
+    // messages and the lastMessageId since these might be changed and not updated in the db since.
+    // We also want to keep the updateBroup or updateMessage if they are true.
+    // On a minimal login we might only get updateBroup and updateMessage
+    if (!this.updateBroup) {
+      this.updateBroup = localBroup.updateBroup;
+    }
+    if (!this.newMessages) {
+      this.newMessages = localBroup.newMessages;
+    }
+    // We might get more data, this is handled later
+    this
+      ..broIds = localBroup.broIds
+      ..adminIds = localBroup.adminIds
+      ..alias = localBroup.alias
+      ..unreadMessages = localBroup.unreadMessages
+      ..deleted = localBroup.deleted
+      ..removed = localBroup.removed
+      ..mute = localBroup.mute
+      ..broupName = localBroup.broupName
+      ..broupDescription = localBroup.broupDescription
+      ..private = localBroup.private
+      ..newAvatar = localBroup.newAvatar
+      ..avatarDefault = localBroup.avatarDefault
+      ..avatar = localBroup.avatar;
+
+    this
+      ..messages = this.messages
+      ..lastMessageId = this.lastMessageId;
   }
 
   updateBroupDataServer(Broup serverBroup) {
@@ -523,7 +550,6 @@ class Broup {
       this.messages.insert(
           0,
           blockMessage);
-      this.lastMessageId += 1;
       this.removed = serverBroup.removed;
       this.unreadMessages = 0;
     } else if (this.removed && !serverBroup.removed) {
@@ -542,7 +568,6 @@ class Broup {
       this.messages.insert(
           0,
           unBlockMessage);
-      this.lastMessageId += 1;
       this.removed = serverBroup.removed;
       return false;
     }

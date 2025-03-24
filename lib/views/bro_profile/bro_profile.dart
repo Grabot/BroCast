@@ -42,7 +42,6 @@ class _BroProfileState extends State<BroProfile> {
   TextEditingController newPasswordController2 = new TextEditingController();
 
   late Storage storage;
-  late NotificationController notificationController;
 
   ScrollController scrollController = ScrollController();
 
@@ -50,28 +49,11 @@ class _BroProfileState extends State<BroProfile> {
   void initState() {
     super.initState();
 
-    notificationController = NotificationController();
-    notificationController.addListener(notificationListener);
-
     storage = Storage();
     Me? me = settings.getMe();
     bromotionChangeController.addListener(bromotionListener);
     if (me != null) {
       bromotionChangeController.text = me.getBromotion();
-    }
-  }
-
-  notificationListener() {
-    if (notificationController.navigateChat) {
-      notificationController.navigateChat = false;
-      int chatId = notificationController.navigateChatId;
-      storage.fetchBroup(chatId).then((broup) {
-        if (broup != null) {
-          notificationController.navigateChat = false;
-          notificationController.navigateChatId = -1;
-          navigateToChat(context, settings, broup);
-        }
-      });
     }
   }
 
@@ -285,7 +267,6 @@ class _BroProfileState extends State<BroProfile> {
   void dispose() {
     bromotionChangeController.removeListener(bromotionListener);
     bromotionChangeController.dispose();
-    notificationController.removeListener(notificationListener);
     oldPasswordController.dispose();
     newPasswordController1.dispose();
     newPasswordController2.dispose();

@@ -114,4 +114,9 @@ class Message {
         && other.textMessage == textMessage
         && other.data == data;
   }
+
+  @override
+  String toString() {
+    return 'Message{messageId: $messageId, senderId: $senderId, body: $body, textMessage: $textMessage, timestamp: $timestamp, isRead: $isRead, clicked: $clicked, info: $info, broupId: $broupId, data: ${data != null}';
+  }
 }

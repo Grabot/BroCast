@@ -8,7 +8,7 @@ import 'package:brocast/views/sign_in/signin.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../../utils/game_start_login.dart';
+import '../../utils/start_login.dart';
 import '../../utils/notification_controller.dart';
 
 class OpeningScreen extends StatefulWidget {
@@ -46,16 +46,13 @@ class _OpeningScreenState extends State<OpeningScreen> {
   }
 
   void startUp(bool showRegister) {
-    setState(() {
-      isLoading = true;
-    });
     // TODO: If the user logs in with a different user that is in the storage. Make sure you clear the storage before adding the new data.
     loginCheck().then((loggedIn) {
       if (loggedIn) {
         Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-                builder: (context) => BroCastHome(
+                builder: (context) => BrocastHome(
                     key: UniqueKey(),
                 )
             ),
@@ -79,9 +76,14 @@ class _OpeningScreenState extends State<OpeningScreen> {
   }
 
   void agreeAndContinue() {
-    HelperFunction.setEULA(true).then((val) {
-      startUp(true);
-    });
+    if (!isLoading) {
+      setState(() {
+        isLoading = true;
+      });
+      HelperFunction.setEULA(true).then((val) {
+        startUp(true);
+      });
+    }
   }
 
   @override
@@ -104,12 +106,15 @@ class _OpeningScreenState extends State<OpeningScreen> {
             title: Container(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                    "BroCast",
+                    "Brocast",
                     style: TextStyle(color: Colors.white)
                 )
             )),
         body: Stack(
           children: [
+            isLoading
+                ? Container(child: Center(child: CircularProgressIndicator()))
+                : Container(),
             acceptEULA
                 ? Container(
                     child: Container(
@@ -121,7 +126,7 @@ class _OpeningScreenState extends State<OpeningScreen> {
                             child: Column(children: [
                               SizedBox(height: 40),
                               Container(
-                                  child: Text("Welcome to BroCast!",
+                                  child: Text("Welcome to Brocast!",
                                       style: TextStyle(
                                           color: Colors.white, fontSize: 30))),
                               Container(

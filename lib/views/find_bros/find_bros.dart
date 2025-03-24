@@ -37,14 +37,9 @@ class _FindBrosState extends State<FindBros> {
 
   String searchedBroNothingFound = "";
 
-  late NotificationController notificationController;
-
   @override
   void initState() {
     super.initState();
-
-    notificationController = NotificationController();
-    notificationController.addListener(notificationListener);
 
     bromotionController.addListener(bromotionListener);
   }
@@ -63,24 +58,9 @@ class _FindBrosState extends State<FindBros> {
   @override
   void dispose() {
     bromotionController.removeListener(bromotionListener);
-    notificationController.removeListener(notificationListener);
     broNameController.dispose();
     bromotionController.dispose();
     super.dispose();
-  }
-
-  notificationListener() {
-    if (notificationController.navigateChat) {
-      notificationController.navigateChat = false;
-      int chatId = notificationController.navigateChatId;
-      Storage().fetchBroup(chatId).then((broup) {
-        if (broup != null) {
-          notificationController.navigateChat = false;
-          notificationController.navigateChatId = -1;
-          navigateToChat(context, settings, broup);
-        }
-      });
-    }
   }
 
   void onTapTextField() {
@@ -108,6 +88,7 @@ class _FindBrosState extends State<FindBros> {
   }
 
   searchBros() {
+    isLoading = true;
     if (formSearchKey.currentState!.validate()) {
       searchedBroNothingFound = "";
       setState(() {
@@ -118,6 +99,7 @@ class _FindBrosState extends State<FindBros> {
       String bromotionSearch = bromotionController.text;
 
       AuthServiceSocial().searchPossibleBro(broNameSearch, bromotionSearch).then((bros) {
+        isLoading = false;
         if (bros.length == 0) {
           searchedBroNothingFound = broNameSearch;
         }

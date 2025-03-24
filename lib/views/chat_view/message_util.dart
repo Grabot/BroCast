@@ -110,6 +110,8 @@ Future<bool> getMessages(int page, Broup chat, Storage storage) async {
 
   // get messages from local db
   List<Message> localMessages = await storage.fetchMessages(chat.getBroupId(), 0);
+  print("first message id: ${localMessages.first.messageId}");
+  print("last message id: ${localMessages.last.messageId}");
   // Limit set to 50. If it retrieves less it means that it can't and all the messages have been retrieved.
   print("length of retrieved messages: ${localMessages.length}");
   if (localMessages.length != 50) {
@@ -127,20 +129,23 @@ Future<bool> getMessages(int page, Broup chat, Storage storage) async {
 
       if (retrievedMessages.isNotEmpty) {
         messagesServer = retrievedMessages;
-        // The max id of the retrieved messages HAS to be the last message id
+        // The max id of the retrieved messages HAS to be the last message id from the server
         chat.lastMessageId = messagesServer.fold(0, (max, message) =>
         message.messageId > max
             ? message.messageId
             : max);
       }
-    } else {
-      print("no new messages");
-      // When the page is loaded we consider all messages as read
-      chat.readMessages();
     }
   }
 
-  mergeMessages(messagesServer + messagesDB, chat);
+  List<Message> incomingMessages = messagesServer;
+  List<int> seenMessageServerIds = incomingMessages.map((e) => e.messageId).toList();
+  for (Message messageDB in messagesDB) {
+    if (!seenMessageServerIds.contains(messageDB.messageId)) {
+      incomingMessages.add(messageDB);
+    }
+  }
+  mergeMessages(incomingMessages, chat);
 
   return allMessagesDBRetrieved;
 }
@@ -150,27 +155,41 @@ Future<bool> fetchExtraMessages(int offSet, Broup chat, Storage storage) async {
   List<Message> newMessages = await storage.fetchMessages(chat.getBroupId(), offSet);
   // Limit set to 50. If it retrieves less it means that it can't
   // and all the messages have been retrieved.
+  if (newMessages.isEmpty) {
+    return true;
+  }
   if (newMessages.length != 50) {
     allMessagesDBRetrieved = true;
   }
-  if (newMessages.length != 0) {
-    mergeMessages(newMessages, chat);
+  // We assume there are messages
+  newMessages.sort((b, a) => a.getTimeStamp().compareTo(b.getTimeStamp()));
+  // We will combine all the messages, the last message will probably be a date tile
+  // We will check this and remove this because it will be reapplied later.
+  if (chat.messages.isNotEmpty) {
+    if (chat.messages.last.isInformation() && chat.messages.last.messageId == 0) {
+      chat.messages.removeLast();
+    }
   }
+  removeDuplicates(newMessages, chat);
+  chat.messages.addAll(newMessages);
   return allMessagesDBRetrieved;
 }
 
 mergeMessages(List<Message> incomingMessages, Broup chat) {
   List<Message> newMessages = removeDuplicates(incomingMessages, chat);
-  if (chat.messages.length != 0 && newMessages.isNotEmpty) {
-    // id 0 is a date tile
-    int lastId = chat.messages[chat.messages.length - 1].messageId;
-    if (lastId == 0) {
-      lastId = chat.messages[chat.messages.length - 2].messageId;
+  if (chat.messages.isNotEmpty && newMessages.isNotEmpty) {
+    int lastId = chat.messages.last.messageId;
+    // the message Id's should be descending, so the first messageId is the highest
+    int maxNewMessage = newMessages.fold(0, (max, message) =>
+      message.messageId > max
+      ? message.messageId
+          : max);
+    if (lastId < maxNewMessage) {
+      // We assume that if the id is the same that it is the same message
+      // And that it is correctly stored locally.
+      // If we, for some reason, retrieve it again from the server we just ignore it.
+      newMessages = newMessages.where((x) => x.messageId > lastId).toList();
     }
-    if (lastId <= newMessages[0].messageId) {
-      newMessages = newMessages.where((x) => x.messageId < lastId).toList();
-    }
-    chat.messages = chat.messages.where((x) => x.messageId != 0).toList();
   }
   chat.messages.addAll(newMessages);
   chat.messages.sort((b, a) => a.getTimeStamp().compareTo(b.getTimeStamp()));
@@ -192,11 +211,11 @@ List<Message> removeDuplicates(List<Message> newMessages, Broup chat) {
   return noDuplicates;
 }
 
-setDateTiles(Broup chat) {
+setDateTiles(Broup chat, int fromIndex) {
   DateTime now = DateTime.now();
   DateTime today = DateTime(now.year, now.month, now.day);
   DateTime yesterday = DateTime(now.year, now.month, now.day - 1);
-  Message messageFirst = chat.messages.first;
+  Message messageFirst = chat.messages[fromIndex];
   DateTime dayFirst = DateTime(messageFirst.getTimeStamp().year,
       messageFirst.getTimeStamp().month, messageFirst.getTimeStamp().day);
   String chatTimeTile = DateFormat.yMMMMd('en_US').format(dayFirst);
@@ -219,7 +238,7 @@ setDateTiles(Broup chat) {
     true,
     chat.getBroupId(),
   );
-  for (int i = 0; i < chat.messages.length; i++) {
+  for (int i = fromIndex; i < chat.messages.length; i++) {
     DateTime current = chat.messages[i].getTimeStamp();
     DateTime dayMessage = DateTime(current.year, current.month, current.day);
     String currentDayMessage = DateFormat.yMMMMd('en_US').format(dayMessage);
@@ -233,12 +252,6 @@ setDateTiles(Broup chat) {
       }
       if (dayMessage == yesterday) {
         timeMessageTile = "Yesterday";
-      }
-
-      if (timeMessage.body == "Today") {
-        chat.messages.insert(i, timeMessage);
-      } else {
-        chat.messages.insert(i, timeMessage);
       }
 
       chat.messages.insert(i, timeMessage);

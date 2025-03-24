@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:typed_data';
+
 import 'package:brocast/objects/broup.dart';
 import 'package:brocast/objects/message.dart';
-import 'package:brocast/utils/notification_controller.dart';
 import 'package:brocast/utils/settings.dart';
 import 'package:brocast/utils/socket_services.dart';
 import 'package:brocast/utils/utils.dart';
@@ -11,12 +11,13 @@ import 'package:camera/camera.dart';
 import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
+
 import '../../../objects/bro.dart';
 import '../../../services/auth/auth_service_social.dart';
+import '../../objects/me.dart';
+import '../../utils/life_cycle_service.dart';
 import '../../utils/popup_menu_override.dart';
 import '../../utils/storage.dart';
-import '../../objects/me.dart';
 import '../camera_page/camera_page.dart';
 import '../preview_page_chat/preview_page_chat.dart';
 import 'chat_details/chat_details.dart';
@@ -39,6 +40,7 @@ class _ChatMessagingState extends State<ChatMessaging> {
   Settings settings = Settings();
   SocketServices socketServices = SocketServices();
   MessagingChangeNotifier messagingChangeNotifier = MessagingChangeNotifier();
+  late LifeCycleService lifeCycleService;
 
   bool showEmojiKeyboard = false;
 
@@ -52,7 +54,6 @@ class _ChatMessagingState extends State<ChatMessaging> {
   final formKey = GlobalKey<FormState>();
 
   late Storage storage;
-  late NotificationController notificationController;
 
   int amountViewed = 0;
   bool allMessagesDBRetrieved = false;
@@ -79,9 +80,10 @@ class _ChatMessagingState extends State<ChatMessaging> {
     storage = Storage();
     socketServices.addListener(socketListener);
     messagingChangeNotifier.addListener(socketListener);
+    messagingChangeNotifier.setBroupId(widget.chat.broupId);
 
-    notificationController = NotificationController();
-    notificationController.addListener(notificationListener);
+    lifeCycleService = LifeCycleService();
+    lifeCycleService.addListener(lifeCycleChangeListener);
 
     messageScrollController.addListener(() {
       if (!busyRetrieving && !allMessagesDBRetrieved) {
@@ -94,8 +96,11 @@ class _ChatMessagingState extends State<ChatMessaging> {
           amountViewed += 1;
           print("fetching extra messages!");
           fetchExtraMessages(amountViewed, widget.chat, storage).then((value) {
+            setDateTiles(widget.chat, (50 * amountViewed));
             allMessagesDBRetrieved = value;
-            busyRetrieving = false;
+            setState(() {
+              busyRetrieving = false;
+            });
           });
         }
       }
@@ -110,28 +115,9 @@ class _ChatMessagingState extends State<ChatMessaging> {
     });
   }
 
-  notificationListener() {
-    print("chat notification listener ${notificationController.navigateChat}");
-    if (notificationController.navigateChat) {
-      // TODO: Fix navigation via notification
-      // notificationController.navigateChat = false;
-      // int chatId = notificationController.navigateChatId;
-      // storage.fetchBroup(chatId).then((broup) {
-      //   if (broup != null) {
-      //     notificationController.navigateChat = false;
-      //     notificationController.navigateChatId = -1;
-      //
-      //     print("navigating to chat???");
-      //     if (broup.broupId != widget.chat.broupId) {
-      //       print("changing chat object");
-      //       widget.chat = broup;
-      //       retrieveData();
-      //       messagingChangeNotifier.setBroupId(widget.chat.getBroupId());
-      //       setState(() {});
-      //     }
-      //   }
-      // });
-    }
+  lifeCycleChangeListener() {
+    // Is called when the app is resumed
+    retrieveData();
   }
 
   checkIsAdmin() {
@@ -176,20 +162,16 @@ class _ChatMessagingState extends State<ChatMessaging> {
           if (widget.chat.messages.length != 0) {
             if (!widget.chat.dateTilesAdded) {
               widget.chat.dateTilesAdded = true;
-              setDateTiles(widget.chat);
-            }
-            if (widget.chat.messages[0].messageId <= 0) {
-              widget.chat.lastMessageId = widget.chat.messages[1].messageId;
-            } else {
-              widget.chat.lastMessageId = widget.chat.messages[0].messageId;
+              setDateTiles(widget.chat, 0);
             }
           }
+          // We have retrieved the messages, so the unread messages are 0.
+          widget.chat.unreadMessages = 0;
+          storage.updateBroup(widget.chat);
+
           isLoadingMessages = false;
         });
       });
-      print("chat id: ${widget.chat.broupId}");
-      Me? me = settings.getMe();
-      print("me: $me");
       getBros(widget.chat, storage, settings.getMe()!).then((value) {
         checkIsAdmin();
         setState(() {
@@ -259,17 +241,12 @@ class _ChatMessagingState extends State<ChatMessaging> {
 
   @override
   void dispose() {
-    // If you are on the page and you leave than you have read the messages.
-    if (widget.chat.unreadMessages != 0) {
-      widget.chat.unreadMessages = 0;
-      storage.updateBroup(widget.chat);
-    }
-
-    notificationController.removeListener(notificationListener);
+    messagingChangeNotifier.setBroupId(-1);
     focusAppendText.dispose();
     focusEmojiTextField.dispose();
     socketServices.removeListener(socketListener);
     messagingChangeNotifier.removeListener(socketListener);
+    lifeCycleService.removeListener(lifeCycleChangeListener);
     broMessageController.dispose();
     appendTextMessageController.dispose();
     super.dispose();
@@ -321,7 +298,9 @@ class _ChatMessagingState extends State<ChatMessaging> {
       });
       AuthServiceSocial().sendMessage(widget.chat.getBroupId(), message, textMessage, messageData).then((value) {
         if (value) {
-          mes.isRead = 0;
+          setState(() {
+            mes.isRead = 0;
+          });
           // message send
         } else {
           // The message was not sent, we remove it from the list
@@ -623,7 +602,7 @@ class _ChatMessagingState extends State<ChatMessaging> {
               ),
               actions: [
                 PopupMenuButton<int>(
-                    icon: Icon(Icons.more_vert, color: widget.chat.getColor()),
+                    icon: Icon(Icons.more_vert, color: getTextColor(widget.chat.getColor())),
                     onSelected: (item) => onSelectChat(context, item),
                     itemBuilder: (context) => [
                           PopupMenuItem<int>(value: 0, child: Text("Profile")),

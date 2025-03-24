@@ -69,17 +69,12 @@ class _ChatDetailsState extends State<ChatDetails> {
   // In that case different options will be available
   Map<String, bool> broAddedStatus = {};
 
-  late NotificationController notificationController;
-
   @override
   void initState() {
     super.initState();
     storage = Storage();
     amountInGroup = widget.chat.getBroIds().length;
     socketServices.addListener(socketListener);
-
-    notificationController = NotificationController();
-    notificationController.addListener(notificationListener);
 
     chatDescriptionController.text = widget.chat.broupDescription;
     chatAliasController.text = widget.chat.alias;
@@ -94,20 +89,6 @@ class _ChatDetailsState extends State<ChatDetails> {
       setState(() {});
     });
 
-  }
-
-  notificationListener() {
-    if (notificationController.navigateChat) {
-      notificationController.navigateChat = false;
-      int chatId = notificationController.navigateChatId;
-      storage.fetchBroup(chatId).then((broup) {
-        if (broup != null) {
-          notificationController.navigateChat = false;
-          notificationController.navigateChatId = -1;
-          navigateToChat(context, settings, broup);
-        }
-      });
-    }
   }
 
   checkAdmin() {
@@ -249,7 +230,6 @@ class _ChatDetailsState extends State<ChatDetails> {
   @override
   void dispose() {
     socketServices.removeListener(socketListener);
-    notificationController.removeListener(notificationListener);
     chatDescriptionController.dispose();
     chatAliasController.dispose();
     focusNodeDescription.dispose();
@@ -289,6 +269,7 @@ class _ChatDetailsState extends State<ChatDetails> {
           ),
           actions: [
             PopupMenuButton<int>(
+                icon: Icon(Icons.more_vert, color: getTextColor(widget.chat.getColor())),
                 onSelected: (item) => onSelectChat(context, item),
                 itemBuilder: (context) => [
                       PopupMenuItem<int>(value: 0, child: Text("Profile")),

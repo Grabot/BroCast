@@ -15,7 +15,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return MaterialPageRoute(builder: (context) => SignIn(key: UniqueKey(), showRegister: false));
     case routes.BroHomeRoute:
       return MaterialPageRoute(
-          builder: (context) => BroCastHome(key: UniqueKey()));
+          builder: (context) => BrocastHome(key: UniqueKey()));
     case routes.ChatRoute:
       Broup chat = settings.arguments as Broup;
       return MaterialPageRoute(

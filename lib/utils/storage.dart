@@ -46,6 +46,7 @@ class Storage {
   createTableBroup(Database db) async {
     // Save all the broup information in the database
     // The messages will be a list with message ids
+    // TODO: do we need to store `newMessages`? Just false by default and retrieve when it's true from server. Similar for `updateBroup`.
     await db.execute('''
           CREATE TABLE Broup (
             id INTEGER PRIMARY KEY,
@@ -64,9 +65,7 @@ class Storage {
             removed INTEGER,
             blocked INTEGER,
             lastMessageId INTEGER,
-            updateBroup INTEGER,
             brosUpdate TEXT,
-            newMessages INTEGER,
             avatar BLOB,
             avatarDefault INTEGER,
             messages TEXT,

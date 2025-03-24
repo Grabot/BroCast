@@ -142,6 +142,7 @@ class AuthServiceSocial {
   }
 
   Future<bool> readMessages(int broupId) async {
+    print("sending read messages");
     String endPoint = "message/read";
     var response = await AuthApi().dio.post(endPoint,
         options: Options(headers: {
@@ -338,23 +339,19 @@ class AuthServiceSocial {
       if (json.containsKey("broup")) {
         Me? me = Settings().getMe();
         if (me != null) {
-          if (me.broups.indexWhere((element) => element.getBroupId() == json["broup"]["broup_id"]) == -1) {
-            Broup newBroup = Broup.fromJson(json["broup"]);
-            Storage().addBroup(newBroup);
-            me.addBroup(newBroup);
-            // New broup. Give the server some time to generate the avatar.
-            Future.delayed(Duration(seconds: 2)).then((value) {
-              getAvatarBroup(newBroup.broupId).then((value) {
-                if (value) {
-                  // Data is retrieved, and updated on the broup db object.
-                  // TODO: update new_avatar false?
-                }
-              });
+          Broup newBroup = Broup.fromJson(json["broup"]);
+          Storage().addBroup(newBroup);
+          me.addBroup(newBroup);
+          // New broup. Give the server some time to generate the avatar.
+          Future.delayed(Duration(seconds: 2)).then((value) {
+            getAvatarBroup(newBroup.broupId).then((value) {
+              if (value) {
+                // Data is retrieved, and updated on the broup db object.
+                // TODO: update new_avatar false?
+              }
             });
-            BroHomeChangeNotifier().notify();
-          } else {
-            // TODO: What if the broup object exists? Is it possible?
-          }
+          });
+          BroHomeChangeNotifier().notify();
         }
       }
       return json["result"];
@@ -614,7 +611,6 @@ class AuthServiceSocial {
             BroHomeChangeNotifier().notify();
             return true;
           } else {
-            print("get avatar broup NOT found");
             // For some reason we don't have the bro stored yet. Retrieve it first.
             Broup? broup = await AuthServiceSocial().retrieveBroup(broupId);
             if (broup != null) {

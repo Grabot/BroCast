@@ -4,6 +4,7 @@ import 'package:brocast/utils/notification_controller.dart';
 import 'package:brocast/utils/secure_storage.dart';
 import 'package:brocast/utils/settings.dart';
 import 'package:brocast/utils/locator.dart';
+import 'package:brocast/views/life_cycle/life_cycle.dart';
 import 'package:brocast/views/opening_screen/opening_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -22,20 +23,22 @@ void main() async {
   );
 
   await NotificationController.initializeRemoteNotifications(debug: false);
+  await NotificationController.startListeningNotificationEvents();
   await NotificationController.initializeIsolateReceivePort();
   await NotificationController.getInitialNotificationAction();
   // Initialize some singleton classes so we don't have to wait later.
   Settings();
   SecureStorage();
 
-  runApp(OKToast(child: MyApp()));
+  runApp(OKToast(child: LifeCycle(child: MyApp())));
 }
 
 class MyApp extends StatelessWidget {
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: "BroCast",
+      title: "Brocast",
       onGenerateRoute: router.generateRoute,
       navigatorKey: locator.get<NavigationService>().navigatorKey,
       theme: ThemeData(

@@ -40,16 +40,11 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> {
   TextEditingController bromotionController = new TextEditingController();
   TextEditingController broNameController = new TextEditingController();
 
-  late NotificationController notificationController;
-
   @override
   void initState() {
     super.initState();
     socketServices.addListener(socketListener);
     bromotionController.addListener(bromotionListener);
-
-    notificationController = NotificationController();
-    notificationController.addListener(notificationListener);
 
     broupAddBros.clear();
     broupAddBrosShownBros.clear();
@@ -88,26 +83,11 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> {
   socketListener() {
   }
 
-  notificationListener() {
-    if (notificationController.navigateChat) {
-      notificationController.navigateChat = false;
-      int chatId = notificationController.navigateChatId;
-      Storage().fetchBroup(chatId).then((broup) {
-        if (broup != null) {
-          notificationController.navigateChat = false;
-          notificationController.navigateChatId = -1;
-          navigateToChat(context, settings, broup);
-        }
-      });
-    }
-  }
-
   @override
   void dispose() {
     socketServices.removeListener(socketListener);
     bromotionController.removeListener(bromotionListener);
     bromotionController.dispose();
-    notificationController.removeListener(notificationListener);
     broNameController.dispose();
     super.dispose();
   }
@@ -192,7 +172,7 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> {
                 backButtonFunctionality();
               }),
           backgroundColor:
-          widget.chat.getColor() != null ? widget.chat.getColor() : Color(0xff145C9E),
+          widget.chat.getColor(),
           title: Column(children: [
             Container(
                 child: Text("Add participants",
@@ -201,6 +181,7 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> {
           ]),
           actions: [
             PopupMenuButton<int>(
+                icon: Icon(Icons.more_vert, color: getTextColor(widget.chat.getColor())),
                 onSelected: (item) =>
                     onSelectBroupAddParticipant(context, item),
                 itemBuilder: (context) => [

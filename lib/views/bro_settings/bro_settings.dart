@@ -22,37 +22,19 @@ class _BroSettingsState extends State<BroSettings> {
   SocketServices socketServices = SocketServices();
 
   Storage storage = Storage();
-  late NotificationController notificationController;
 
   @override
   void initState() {
     super.initState();
 
     storage = Storage();
-    notificationController = NotificationController();
-    notificationController.addListener(notificationListener);
 
     toggleSwitchKeyboard = settings.getEmojiKeyboardDarkMode();
   }
 
   @override
   void dispose() {
-    notificationController.removeListener(notificationListener);
     super.dispose();
-  }
-
-  notificationListener() {
-    if (notificationController.navigateChat) {
-      notificationController.navigateChat = false;
-      int chatId = notificationController.navigateChatId;
-      storage.fetchBroup(chatId).then((broup) {
-        if (broup != null) {
-          notificationController.navigateChat = false;
-          notificationController.navigateChatId = -1;
-          navigateToChat(context, settings, broup);
-        }
-      });
-    }
   }
 
   void toggledEmojiKeyboardDarkMode(darkValue) {
@@ -133,7 +115,7 @@ class _BroSettingsState extends State<BroSettings> {
                 child: Column(
                     children: [
                       Container(
-                          child: Text("BroCast",
+                          child: Text("Brocast",
                               style: TextStyle(
                                   color: Colors.white, fontSize: 30))),
                   Container(

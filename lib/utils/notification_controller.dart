@@ -3,20 +3,21 @@ import 'dart:ui';
 
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:awesome_notifications_fcm/awesome_notifications_fcm.dart';
+import 'package:brocast/constants/route_paths.dart' as routes;
 import 'package:brocast/utils/secure_storage.dart';
 import 'package:brocast/utils/settings.dart';
 import 'package:brocast/utils/storage.dart';
-import 'package:brocast/utils/utils.dart';
-import 'package:firebase_core/firebase_core.dart';
+import 'package:brocast/views/chat_view/messaging_change_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+
 import '../constants/base_url.dart';
-import '../main.dart';
+import '../objects/broup.dart';
+import '../objects/me.dart';
 import '../services/auth/auth_service_social.dart';
-import 'game_start_login.dart';
+import 'start_login.dart';
 import 'locator.dart';
 import 'navigation_service.dart';
-import 'package:brocast/constants/route_paths.dart' as routes;
 
 
 
@@ -59,6 +60,8 @@ class NotificationController extends ChangeNotifier {
   // After the user logs in we see if the token has to be updated
   bool updateTokenServer = false;
 
+  bool navigateChat = false;
+  int navigateChatId = -1;
   final NavigationService _navigationService = locator<NavigationService>();
 
   /// *********************************************
@@ -72,7 +75,7 @@ class NotificationController extends ChangeNotifier {
         NotificationChannel(
           channelKey: 'channel_bro',
           channelName: 'Bro Channel',
-          channelDescription: 'Notification channel for BroCast',
+          channelDescription: 'Notification channel for Brocast',
           importance: NotificationImportance.High,
           defaultPrivacy: NotificationPrivacy.Private,
           defaultColor: Colors.deepPurple,
@@ -240,28 +243,41 @@ class NotificationController extends ChangeNotifier {
     return onActionReceivedImplementationMethod(receivedAction);
   }
 
-  bool navigateChat = false;
-  int navigateChatId = -1;
   static Future<void> onActionReceivedImplementationMethod(
       ReceivedAction receivedAction) async {
     print('Notification action received: $receivedAction');
     // App is open, handle the notification
     if (receivedAction.payload != null) {
-      String? broup_id = receivedAction.payload!['broup_id'];
-      if (broup_id != null) {
-        int broupId = int.parse(broup_id);
-        Storage().fetchBroup(broupId).then((value) {
-          if (value != null) {
-            _instance.navigateChat = true;
-            _instance.navigateChatId = broupId;
-            _instance.notifyListeners();
+      if (receivedAction.payload!.containsKey('broup_id')) {
+        String? broup_id = receivedAction.payload!['broup_id'];
+        if (broup_id != null) {
+          int broupId = int.parse(broup_id);
+          if (MessagingChangeNotifier().getBroupId() == broupId) {
+            // The chat is already open, so we don't need to navigate to it.
+            return;
           }
-        });
+          Storage().fetchBroup(broupId).then((value) {
+            if (value != null) {
+              // The app should be open if it comes here, so there should be broups in the settings.
+              Me? me = Settings().getMe();
+              if (me != null) {
+                for (Broup meBroup in me.broups) {
+                  if (meBroup.broupId == broupId) {
+                    _instance._navigationService.navigateTo(routes.ChatRoute,
+                        arguments: meBroup);
+                    return;
+                  }
+                }
+              }
+            }
+          });
+        }
       }
     }
   }
 
   checkNotification(ReceivedAction receivedAction) {
+    // The app is not open yet, so quickly log in first.
     loginCheck().then((loggedIn) {
       if (receivedAction.payload != null) {
         String? broup_id = receivedAction.payload!['broup_id'];
@@ -269,14 +285,12 @@ class NotificationController extends ChangeNotifier {
           int broupId = int.parse(broup_id);
           if (loggedIn) {
             Storage().fetchBroup(broupId).then((value) {
-              if (value != null) {
-                print("going to broup");
-                _instance._navigationService.navigateTo(routes.ChatRoute,
-                    arguments: value);
-              } else {
-                print("going to home");
-                _instance._navigationService.navigateTo(routes.BroHomeRoute);
-              }
+              _instance.navigateChat = true;
+              _instance.navigateChatId = broupId;
+              // The direct navigation to the chat is wonky, so we will instead navigate to home
+              // From the home screen we will identify the navigation and navigate to the chat there.
+              print("navigating!");
+              _instance._navigationService.navigateTo(routes.BroHomeRoute);
               return;
             });
           } else {
@@ -343,69 +357,6 @@ class NotificationController extends ChangeNotifier {
     final re = await http.get(url);
     print(re.body);
     print("long task done");
-  }
-
-  ///  *********************************************
-  ///     REQUEST NOTIFICATION PERMISSIONS
-  ///  *********************************************
-
-  static Future<bool> displayNotificationRationale(BuildContext context) async {
-    bool userAuthorized = false;
-    // BuildContext context = MyApp.navigatorKey.currentContext!;
-    await showDialog(
-        context: context,
-        builder: (BuildContext ctx) {
-          return AlertDialog(
-            title: Text('Get Notified!',
-                style: Theme.of(context).textTheme.titleLarge),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: Image.asset(
-                        'assets/animated-bell.gif',
-                        height: MediaQuery.of(context).size.height * 0.3,
-                        fit: BoxFit.fitWidth,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 20),
-                const Text(
-                    'Allow Awesome Notifications to send you beautiful notifications!'),
-              ],
-            ),
-            actions: [
-              TextButton(
-                  onPressed: () {
-                    Navigator.of(ctx).pop();
-                  },
-                  child: Text(
-                    'Deny',
-                    style: Theme.of(context)
-                        .textTheme
-                        .titleLarge
-                        ?.copyWith(color: Colors.red),
-                  )),
-              TextButton(
-                  onPressed: () async {
-                    userAuthorized = true;
-                    Navigator.of(ctx).pop();
-                  },
-                  child: Text(
-                    'Allow',
-                    style: Theme.of(context)
-                        .textTheme
-                        .titleLarge
-                        ?.copyWith(color: Colors.deepPurple),
-                  )),
-            ],
-          );
-        });
-    return userAuthorized &&
-        await AwesomeNotifications().requestPermissionToSendNotifications();
   }
 
   static Future<void> requestPermission() async {

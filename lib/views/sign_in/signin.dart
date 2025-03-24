@@ -206,12 +206,12 @@ class _SignInState extends State<SignIn> {
     }
   }
 
-  goToBroCastHome() {
+  goToBrocastHome() {
     Navigator.pushReplacement(
         context,
         MaterialPageRoute(
             builder: (context) =>
-                BroCastHome(key: UniqueKey())));
+                BrocastHome(key: UniqueKey())));
   }
 
   register() async {
@@ -240,7 +240,7 @@ class _SignInState extends State<SignIn> {
         secureStorage.setPassword(passwordRegister);
         secureStorage.setEmail(emailRegister);
         isLoading = false;
-        goToBroCastHome();
+        goToBrocastHome();
       } else if (!loginResponse.getResult()) {
         showToastMessage(loginResponse.getMessage());
         isLoading = false;
@@ -283,7 +283,7 @@ class _SignInState extends State<SignIn> {
           secureStorage.setBroName(broNameLogin);
           secureStorage.setBromotion(bromotionLogin);
           secureStorage.setPassword(passwordLogin);
-          goToBroCastHome();
+          goToBrocastHome();
           // We also update the FCM token
           // We only do that here, if the user logs in via tokens we don't
           // check the FCM token since it will probably be the same.
@@ -309,7 +309,7 @@ class _SignInState extends State<SignIn> {
           // We securely store information locally on the phone
           secureStorage.setEmail(emailLogin);
           secureStorage.setPassword(passwordLogin);
-          goToBroCastHome();
+          goToBrocastHome();
         } else if (!loginResponse.getResult()) {
           showToastMessage(loginResponse.getMessage());
           isLoading = false;
@@ -925,7 +925,7 @@ class _SignInState extends State<SignIn> {
     AuthServiceLogin().getLoginGoogle(googleAccessToken).then((
         loginResponse) {
       if (loginResponse.getResult()) {
-        goToBroCastHome();
+        goToBrocastHome();
         setState(() {
           isLoading = false;
         });

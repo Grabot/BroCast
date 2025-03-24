@@ -15,20 +15,21 @@ import '../../objects/bro.dart';
 import '../../objects/broup.dart';
 import '../../objects/me.dart';
 import '../../objects/message.dart';
+import '../../utils/life_cycle_service.dart';
 import '../../utils/notification_controller.dart';
 import '../../utils/storage.dart';
 import 'bro_home_change_notifier.dart';
 import 'models/bro_tile.dart';
 import 'package:brocast/constants/route_paths.dart' as routes;
 
-class BroCastHome extends StatefulWidget {
-  BroCastHome({required Key key}) : super(key: key);
+class BrocastHome extends StatefulWidget {
+  BrocastHome({required Key key}) : super(key: key);
 
   @override
-  _BroCastHomeState createState() => _BroCastHomeState();
+  _BrocastHomeState createState() => _BrocastHomeState();
 }
 
-class _BroCastHomeState extends State<BroCastHome> {
+class _BrocastHomeState extends State<BrocastHome> {
 
   bool showEmojiKeyboard = false;
   bool searchMode = false;
@@ -42,6 +43,7 @@ class _BroCastHomeState extends State<BroCastHome> {
 
   late BroHomeChangeNotifier broHomeChangeNotifier;
   late NotificationController notificationController;
+  late LifeCycleService lifeCycleService;
 
   List<Broup> shownBros = [];
 
@@ -54,31 +56,43 @@ class _BroCastHomeState extends State<BroCastHome> {
     settings = Settings();
     storage = Storage();
     notificationController = NotificationController();
-    notificationController.addListener(notificationListener);
     broHomeChangeNotifier = BroHomeChangeNotifier();
     broHomeChangeNotifier.addListener(broHomeChangeListener);
+    lifeCycleService = LifeCycleService();
+    lifeCycleService.addListener(lifeCycleChangeListener);
     socketServices.addListener(broHomeChangeListener);
 
     // Wait until page is loaded
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       broHomeChangeListener();
+      checkNotificationListener();
     });
   }
 
-  notificationListener() {
+  checkNotificationListener() {
+    print("checking a notification listen event");
     if (notificationController.navigateChat) {
       print("notification listener ${notificationController.navigateChatId}");
       notificationController.navigateChat = false;
       int chatId = notificationController.navigateChatId;
-      storage.fetchBroup(chatId).then((broup) {
-        print("after broup fetching $broup");
-        if (broup != null) {
-          notificationController.navigateChat = false;
-          notificationController.navigateChatId = -1;
+      Me? me = settings.getMe();
+      print("me: $me");
+      if (me != null) {
+        Broup broup = me.broups.firstWhere((element) => element.getBroupId() == chatId);
+        print("broup: $broup");
+        if (broup.getBroupId() == chatId) {
+          print("navigating to chatcc!!!");
           navigateToChat(context, settings, broup);
         }
-      });
+      }
     }
+  }
+
+  lifeCycleChangeListener() {
+    // To be sure we check the broups again when the app is resumed.
+    settings.retrievedBroupData = false;
+    settings.retrievedBroData = false;
+    getBroupData();
   }
 
   broHomeChangeListener() {
@@ -362,8 +376,8 @@ class _BroCastHomeState extends State<BroCastHome> {
   @override
   void dispose() {
     broHomeChangeNotifier.removeListener(broHomeChangeListener);
-    notificationController.removeListener(notificationListener);
     socketServices.removeListener(broHomeChangeListener);
+    lifeCycleService.removeListener(lifeCycleChangeListener);
     super.dispose();
   }
 
@@ -390,6 +404,9 @@ class _BroCastHomeState extends State<BroCastHome> {
                 ? IconButton(
                     icon: Icon(Icons.search_off, color: Colors.white),
                     onPressed: () {
+                      broNameController.text = "";
+                      bromotionController.text = "";
+                      onChangedBroNameField(broNameController.text, bromotionController.text);
                       setState(() {
                         searchMode = false;
                       });

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import '../../objects/me.dart';
+import '../../utils/secure_storage.dart';
 import '../../utils/storage.dart';
 import '../../utils/utils.dart';
 import '../../utils/settings.dart';
@@ -122,6 +123,7 @@ class AuthServiceLogin {
 
     LoginResponse loginResponse = LoginResponse.fromJson(response.data);
     if (loginResponse.getResult()) {
+      print("token login success");
       successfulLogin(loginResponse);
     }
     return loginResponse;
@@ -244,6 +246,9 @@ class AuthServiceLogin {
           if (me != null) {
             me.setAvatar(avatar);
             me.setAvatarDefault(isDefault);
+            SecureStorage secureStorage = SecureStorage();
+            secureStorage.setAvatar(base64Encode(avatar));
+            secureStorage.setAvatarDefault(isDefault ? "1" : "0");
             Storage().updateBro(me);
           }
           BroHomeChangeNotifier().notify();
