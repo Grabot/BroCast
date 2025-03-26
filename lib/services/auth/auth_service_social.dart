@@ -259,6 +259,7 @@ class AuthServiceSocial {
   }
 
   Future<Bro?> retrieveBro(int broId) async {
+    print("retrieving bro");
     String endPoint = "bro/get/single";
     var response = await AuthApi().dio.post(endPoint,
         options: Options(headers: {

@@ -218,14 +218,17 @@ class _SignInState extends State<SignIn> {
     String broNameRegister = broNameController.text.trimRight();
     String bromotionRegister = bromotionController.text;
     String passwordRegister = passwordController.text;
-    String emailRegister = emailController.text;
+    String emailRegister = emailController.text.trimRight();
 
     // This issue should not be possible, but check if the required fields are filled anyway
     if (emailRegister == "" || broNameRegister == "" || bromotionRegister == "" || passwordRegister == "") {
       showToastMessage("Please fill in the email, bro name, bromotion and password field");
       return;
     }
-    isLoading = true;
+    setState(() {
+      isLoading = true;
+      showEmojiKeyboard = false;
+    });
     AuthServiceLogin authService = AuthServiceLogin();
     // We get the FCM token to send it to the server with the registration
     String FCMToken = NotificationController().firebaseTokenDevice;
@@ -239,15 +242,21 @@ class _SignInState extends State<SignIn> {
         secureStorage.setBromotion(bromotionRegister);
         secureStorage.setPassword(passwordRegister);
         secureStorage.setEmail(emailRegister);
-        isLoading = false;
+        setState(() {
+          isLoading = false;
+        });
         goToBrocastHome();
       } else if (!loginResponse.getResult()) {
         showToastMessage(loginResponse.getMessage());
-        isLoading = false;
+        setState(() {
+          isLoading = false;
+        });
       }
     }).onError((error, stackTrace) {
       showToastMessage(error.toString());
-      isLoading = false;
+      setState(() {
+        isLoading = false;
+      });
     });
   }
 
@@ -255,7 +264,7 @@ class _SignInState extends State<SignIn> {
     String broNameLogin = broNameController.text.trimRight();
     String bromotionLogin = bromotionController.text;
     String passwordLogin = passwordController.text;
-    String emailLogin = emailController.text;
+    String emailLogin = emailController.text.trimRight();
 
     if (loginBroName) {
       // This issue should not be possible, but check if the required fields are filled anyway
@@ -269,8 +278,10 @@ class _SignInState extends State<SignIn> {
         return;
       }
     }
-
-    isLoading = true;
+    setState(() {
+      isLoading = true;
+      showEmojiKeyboard = false;
+    });
     AuthServiceLogin authService = AuthServiceLogin();
     if (loginBroName) {
       int platform = Platform.isAndroid ? 0 : 1;
@@ -293,11 +304,15 @@ class _SignInState extends State<SignIn> {
 
         } else if (!loginResponse.getResult()) {
           showToastMessage(loginResponse.getMessage());
-          isLoading = false;
+          setState(() {
+            isLoading = false;
+          });
         }
       }).onError((error, stackTrace) {
         showToastMessage(error.toString());
-        isLoading = false;
+        setState(() {
+          isLoading = false;
+        });
       });
     } else {
       int platform = Platform.isAndroid ? 0 : 1;
@@ -305,18 +320,24 @@ class _SignInState extends State<SignIn> {
           emailLogin, passwordLogin, platform);
       authService.getLoginEmail(loginEmailRequest).then((loginResponse) {
         if (loginResponse.getResult()) {
-          isLoading = false;
+          setState(() {
+            isLoading = false;
+          });
           // We securely store information locally on the phone
           secureStorage.setEmail(emailLogin);
           secureStorage.setPassword(passwordLogin);
           goToBrocastHome();
         } else if (!loginResponse.getResult()) {
           showToastMessage(loginResponse.getMessage());
-          isLoading = false;
+          setState(() {
+            isLoading = false;
+          });
         }
       }).onError((error, stackTrace) {
         showToastMessage(error.toString());
-        isLoading = false;
+        setState(() {
+          isLoading = false;
+        });
       });
     }
   }
@@ -834,7 +855,7 @@ class _SignInState extends State<SignIn> {
                       alignment: Alignment.bottomCenter,
                       child: EmojiKeyboard(
                           emojiController: bromotionController,
-                          emojiKeyboardHeight: 400,
+                          emojiKeyboardHeight: 350,
                           showEmojiKeyboard: showEmojiKeyboard,
                           darkMode: emojiKeyboardDarkMode)
                   ),

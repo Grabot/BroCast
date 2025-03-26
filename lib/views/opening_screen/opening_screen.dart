@@ -8,6 +8,8 @@ import 'package:brocast/views/sign_in/signin.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../utils/secure_storage.dart';
+import '../../utils/settings.dart';
 import '../../utils/start_login.dart';
 import '../../utils/notification_controller.dart';
 
@@ -47,32 +49,71 @@ class _OpeningScreenState extends State<OpeningScreen> {
 
   void startUp(bool showRegister) {
     // TODO: If the user logs in with a different user that is in the storage. Make sure you clear the storage before adding the new data.
-    loginCheck().then((loggedIn) {
-      if (loggedIn) {
-        Navigator.pushReplacement(
+    if (showRegister) {
+      // If `showRegister` is true, it's probably the first time so we don't do the token login
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+            builder: (context) => SignIn(
+                key: UniqueKey(),
+                showRegister: showRegister
+            )
+        ),
+        // ModalRoute.withName(routes.SignInRoute)
+      );
+      return;
+    } else {
+      SecureStorage().getAccessToken().then((value) {
+        if (value == null) {
+          Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-                builder: (context) => BrocastHome(
-                    key: UniqueKey(),
-                )
+                builder: (context) =>
+                    SignIn(
+                        key: UniqueKey(),
+                        showRegister: showRegister
+                    )
             ),
-            // ModalRoute.withName(routes.BroHomeRoute)
-        );
-        return;
-      } else {
-        Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (context) => SignIn(
-                  key: UniqueKey(),
-                  showRegister: showRegister
-                )
-            ),
-            // ModalRoute.withName(routes.SignInRoute)
-        );
-        return;
-      }
-    });
+          );
+          return;
+        } else {
+          Settings settings = Settings();
+          if (settings.loggingIn) {
+            // Already logging in, we assume that after that other login
+            // process is done it will navigate somewhere
+            return;
+          }
+          settings.setLoggingIn(true);
+          loginCheck().then((loggedIn) {
+            settings.setLoggingIn(false);
+            if (loggedIn) {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>
+                        BrocastHome(
+                          key: UniqueKey(),
+                        )
+                ),
+              );
+              return;
+            } else {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>
+                        SignIn(
+                            key: UniqueKey(),
+                            showRegister: showRegister
+                        )
+                ),
+              );
+              return;
+            }
+          });
+        }
+      });
+    }
   }
 
   void agreeAndContinue() {

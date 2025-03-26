@@ -42,16 +42,29 @@ class _LifeCycleState extends State<LifeCycle> with WidgetsBindingObserver {
           // There are some issues when resuming the app. The socket connection is not sturdy or something.
           // We will check if any new events have been missed by logging in again.
           print("App resumed");
+          if (LifeCycleService().getAppStatus() == 1) {
+            // The app was inactive, we don't want to login again.
+            return;
+          }
           lifeCycleLoggingIn = true;
           Me? me = Settings().getMe();
           if (me != null) {
+            // we want to login again, but not if the previous state was
+            // inactive, since it's just a short periodic look away state
+            Settings settings = Settings();
+            if (settings.loggingIn) {
+              // Already logging in, we assume that after that other login
+              // process is done it will navigate somewhere
+              LifeCycleService().setAppStatus(1);
+              return;
+            }
+            settings.setLoggingIn(true);
             loginCheck().then((loggedIn) {
+              settings.setLoggingIn(false);
               lifeCycleLoggingIn = false;
-              if (loggedIn) {
-                print("App resumed logged in");
-                LifeCycleService().setAppStatus(1);
-              } else {
-                showToastMessage("There was an issue, please log in again");
+              LifeCycleService().setAppStatus(1);
+              print("App resumed logged in $loggedIn");
+              if (!loggedIn) {
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
@@ -65,7 +78,7 @@ class _LifeCycleState extends State<LifeCycle> with WidgetsBindingObserver {
               }
             });
           } else {
-            print("snelle check");
+            LifeCycleService().setAppStatus(1);
           }
           break;
         case AppLifecycleState.detached:
@@ -76,7 +89,10 @@ class _LifeCycleState extends State<LifeCycle> with WidgetsBindingObserver {
           break;
         case AppLifecycleState.inactive:
           if (!lifeCycleLoggingIn) {
-            LifeCycleService().setAppStatus(3);
+            // We don't actually care about the inactive state.
+            // It means the app is running, but not in the foreground right now.
+            // We will take this as active.
+            // LifeCycleService().setAppStatus(3);
             print("App inactive");
           }
           break;

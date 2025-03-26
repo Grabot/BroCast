@@ -1,21 +1,19 @@
-import 'dart:io';
 import 'package:dio/dio.dart';
-import 'package:jwt_decode/jwt_decode.dart';
 
 import '../../constants/base_url.dart';
 import '../../utils/secure_storage.dart';
 import '../../utils/settings.dart';
-import 'models/login_response.dart';
 
-
-class AuthApi {
+// When registering or logging in there are not tokens available yet.
+// But they are also not needed, so send a clean request.
+class AuthApiLogin {
   final dio = createDio();
 
-  AuthApi._internal();
+  AuthApiLogin._internal();
 
-  static final _singleton = AuthApi._internal();
+  static final _singleton = AuthApiLogin._internal();
 
-  factory AuthApi() => _singleton;
+  factory AuthApiLogin() => _singleton;
 
   static Dio createDio() {
     var dio = Dio(
@@ -47,88 +45,7 @@ class AppInterceptors extends Interceptor {
   void onRequest(
       RequestOptions options, RequestInterceptorHandler handler) async {
 
-    int expiration = settings.getAccessTokenExpiration();
-    String? accessToken = await secureStorage.getAccessToken();
-
-    print("Access token: $accessToken");
-    if (accessToken == null || accessToken == "") {
-      DioException dioError = DioException(requestOptions: options,
-          type: DioExceptionType.cancel,
-          error: "User not authorized");
-      print("reject 1");
-      return handler.reject(dioError, true);
-    } else {
-      int current = (DateTime
-          .now()
-          .millisecondsSinceEpoch / 1000).round();
-
-      if ((expiration - current) < 60) {
-        // We see that the access token is almost expired. We should refresh it.
-        String? refreshToken = await secureStorage.getRefreshToken();
-        print("refresh token: $refreshToken");
-
-        if (refreshToken == null || refreshToken == "") {
-          // We don't have a refresh token. We should log the user out.
-          DioException dioError = DioException(requestOptions: options,
-              type: DioExceptionType.cancel,
-              error: "User not authorized");
-          print("reject 2");
-          return handler.reject(dioError, true);
-        } else {
-          settings.setLoggingIn(true);
-          print("refresh action 1");
-          String endPoint = "refresh";
-          var response = await Dio(
-              BaseOptions(
-                baseUrl: apiUrl_v1_4,
-                receiveTimeout: const Duration(milliseconds: 15000),
-                connectTimeout: const Duration(milliseconds: 15000),
-                sendTimeout: const Duration(milliseconds: 15000),
-              )
-          ).post(endPoint,
-              options: Options(headers: {
-                HttpHeaders.contentTypeHeader: "application/json",
-              }),
-              data: {
-                "access_token": accessToken,
-                "refresh_token": refreshToken
-              }
-          ).catchError((error, stackTrace) {
-            print("reject 3");
-            return handler.reject(error, true);
-          });
-
-          LoginResponse loginRefresh = LoginResponse.fromJson(response.data);
-          if (loginRefresh.getResult()) {
-            // With a token refresh we don't want to update all the bro settings, only the tokens
-            String? newAccessToken = loginRefresh.getAccessToken();
-            if (newAccessToken != null) {
-              // the access token will be set in memory and local storage.
-              settings.setAccessToken(newAccessToken);
-              settings.setAccessTokenExpiration(Jwt.parseJwt(newAccessToken)['exp']);
-              await secureStorage.setAccessToken(newAccessToken);
-              accessToken = newAccessToken;
-            }
-
-            String? refreshToken = loginRefresh.getRefreshToken();
-            if (refreshToken != null) {
-              // the refresh token will only be set in memory.
-              settings.setRefreshToken(refreshToken);
-              settings.setRefreshTokenExpiration(Jwt.parseJwt(refreshToken)['exp']);
-              await secureStorage.setRefreshToken(refreshToken);
-            }
-          } else {
-            DioException dioError = DioException(requestOptions: options,
-                type: DioExceptionType.cancel,
-                error: "User not authorized");
-            print("reject 4");
-            return handler.reject(dioError, true);
-          }
-        }
-      }
-      options.headers['Authorization'] = 'Bearer: $accessToken';
       return handler.next(options);
-    }
   }
 
   @override

@@ -5,6 +5,7 @@ import 'package:brocast/services/auth/auth_service_login.dart';
 import 'package:brocast/utils/storage.dart';
 import 'package:brocast/views/bro_home/bro_home_change_notifier.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:jwt_decode/jwt_decode.dart';
 import 'package:oktoast/oktoast.dart';
 
@@ -41,6 +42,7 @@ TextStyle simpleTextStyle() {
 }
 
 showToastMessage(String message) {
+  // TODO: add duration paramater?
   showToast(
     message,
     duration: const Duration(milliseconds: 2000),
@@ -78,16 +80,61 @@ successfulLogin(LoginResponse loginResponse) async {
   SecureStorage secureStorage = SecureStorage();
   Settings settings = Settings();
 
-  Me? me = loginResponse.getMe();
-  if (me != null) {
-    print("me is not null");
+  // It's possible that there is already a 'me' on the settings. Like when the app was just minimized or something
+  // In this case we want to keep most of the settingsMe broup objects and update them with the newMe broup objects.
+  Me? settingsMe = settings.getMe();
+  Me? newMe = loginResponse.getMe();
+  if (settingsMe != null && newMe != null) {
+    if (newMe.broups.isNotEmpty) {
+      for (Broup newMeBroup in newMe.broups) {
+        bool found = false;
+        if (settingsMe.broups.isNotEmpty) {
+          for (Broup settingsMeBroup in settingsMe.broups) {
+            if (settingsMeBroup.broupId == newMeBroup.broupId) {
+              // If the broup was send with the login we want to update it.
+              // In this case we don't add the db broup data yet
+              // because it will be added in the BroHome notifier.
+              found = true;
+              if (newMeBroup.updateBroup) {
+                settingsMeBroup.updateBroupDataServer(newMeBroup);
+              } else if (newMeBroup.newMessages) {
+                settingsMeBroup.newMessages = true;
+                settingsMeBroup.unreadMessages = newMeBroup.unreadMessages;
+                settingsMeBroup.dateTilesAdded = false;
+                if (settingsMeBroup.messages.isNotEmpty) {
+                  settingsMeBroup.messages.removeWhere((element) => element.messageId == 0);
+                }
+              }
+              break;
+            }
+          }
+        }
+        if (!found) {
+          // This broup is unchanged, so it was not send with the login.
+          settingsMe.broups.add(newMeBroup);
+        }
+      }
+    }
+  }
+  // We have updated the `me` on the settings object, but with a new login we
+  // probably won't have an settingsMe so we will set the newMe as the settingsMe.
+  if (settingsMe == null) {
+    if (newMe != null) {
+      settingsMe = newMe;
+      settings.setMe(settingsMe);
+    }
+  }
+  // The `newMe` should always be available in a successful login so
+  // here the `settingsMe` should always be available.
+  if (settingsMe != null) {
     // Also retrieve the broups that are in the local db.
+    // We want to update the `settingsMe` with the local db data.
     Storage().fetchAllBroups().then((dbBroups) {
       if (dbBroups.isNotEmpty) {
         for (Broup dbBroup in dbBroups) {
           bool found = false;
-          if (me.broups.isNotEmpty) {
-            for (Broup broupMe in me.broups) {
+          if (settingsMe!.broups.isNotEmpty) {
+            for (Broup broupMe in settingsMe.broups) {
               if (broupMe.broupId == dbBroup.broupId) {
                 // If the broup was send with the login we want to update it.
                 // In this case we don't add the db broup data yet
@@ -100,29 +147,60 @@ successfulLogin(LoginResponse loginResponse) async {
           }
           if (!found) {
             // This broup is unchanged, so it was not send with the login.
-            me.broups.add(dbBroup);
+            settingsMe.broups.add(dbBroup);
           }
         }
       }
     });
-    settings.setMe(me);
-    Storage().fetchBro(me.id).then((dbBro) {
+
+    // We will retrieve the data of the bro that logged in
+    // If there is nothing we add it, if there is some data we update it.
+    Storage().fetchBro(settingsMe.id).then((dbBro) {
       if (dbBro != null) {
-        // We have loaded all the broups, but regular information was probably not send
-        // We will take what we know from the db and update the me object.
-        me.avatar = dbBro.avatar;
-        me.id = dbBro.id;
-        me.broName = dbBro.broName;
-        me.bromotion = dbBro.bromotion;
-        me.avatar = dbBro.avatar;
-        // nothing to update in the db.
+        // We take most of the data from the db, since we won't send this with the login.
+        settingsMe!.avatar = dbBro.avatar;
+        settingsMe.id = dbBro.id;
+        settingsMe.broName = dbBro.broName;
+        settingsMe.bromotion = dbBro.bromotion;
+
+        // Set the avatar, unless it's not there. Then retrieve it.
+        if (dbBro.avatar != null) {
+          settingsMe.avatar = dbBro.avatar;
+        } else {
+          retrieveAvatar(settingsMe);
+        }
+
+        // We don't store the `avatarDefault` in the local db. We keep track of this using app storage.
+        secureStorage.getAvatarDefault().then((avatarDefault) {
+          bool avatarDefaultBool = true;
+          if (avatarDefault != null) {
+            int avatarDefaultInt = int.parse(avatarDefault);
+            avatarDefaultBool = avatarDefaultInt == 1;
+          }
+          settingsMe!.setAvatarDefault(avatarDefaultBool);
+        });
       } else {
-        // If the bro is not stored yet, likely because the user is new.
+        // Not stored yet, likely because the user is new.
         // Store what is know in the database
-        Storage().addBro(me);
+        Storage().addBro(settingsMe!);
+        // If the avatar is not known we should retrieve it.
+        if (settingsMe.getAvatar() == null) {
+          retrieveAvatar(settingsMe);
+        }
       }
     });
-    SocketServices().joinRoomSolo(me.getId());
+    SocketServices().joinRoomSolo(settingsMe.getId());
+
+    // We will set a check for midnight here.
+    // At midnight we will alter any existing date time tiles.
+    // Today will be yesterday and yesterday will the the date formatting.
+    // If the app is not open any date tiles are removed and re-added on opening
+    DateTime now = DateTime.now();
+    DateTime midnight = DateTime(now.year, now.month, now.day+1);
+    Duration timeUntilMidnight = midnight.difference(now);
+    Future.delayed(timeUntilMidnight, () {
+      alterDateTimeTiles(settingsMe);
+    });
   }
 
   String? accessToken = loginResponse.getAccessToken();
@@ -143,39 +221,34 @@ successfulLogin(LoginResponse loginResponse) async {
 
   settings.setLoggingIn(false);
   BroHomeChangeNotifier().notify();
+}
 
-  // Fetch the Bro object which matches the Me object.
-  // This should hold extra information about the user.
-  // Like the avatar, which we don't send with login response.
-  Storage().fetchBro(me!.getId()).then((bro) {
-    // We also check the local storage for the avatar.
-    secureStorage.getAvatarDefault().then((avatarDefault) {
-      bool avatarDefaultBool = true;
-      if (avatarDefault != null) {
-        int avatarDefaultInt = int.parse(avatarDefault);
-        avatarDefaultBool = avatarDefaultInt == 1;
-      }
-      me.setAvatarDefault(avatarDefaultBool);
-      if (bro != null) {
-        if (bro.getAvatar() != null) {
-          me.setAvatar(bro.getAvatar()!);
-          Storage().updateBro(me);
-          BroHomeChangeNotifier().notify();
-        } else {
-          retrieveAvatar(me);
-        }
-      } else {
-        // Not stored yet, likely because the user is new.
-        // Store what is know in the database
-        Storage().addBro(me);
-        // If the avatar is not known we should retrieve it.
-        if (me.getAvatar() == null) {
-          retrieveAvatar(me);
+alterDateTimeTiles(Me? me) {
+  if (me != null) {
+    for (Broup meBroup in me!.broups) {
+      for (Message broupMessage in meBroup.messages) {
+        if (broupMessage.isInformation()) {
+          if (broupMessage.body == "Today") {
+            broupMessage.body = "Yesterday";
+          } else if (broupMessage.body == "Yesterday") {
+            DateTime dayMessage = DateTime(broupMessage.getTimeStamp().year,
+                broupMessage.getTimeStamp().month, broupMessage.getTimeStamp().day);
+            String chatTimeTile = DateFormat.yMMMMd('en_US').format(dayMessage);
+            broupMessage.body = chatTimeTile;
+          }
         }
       }
-    });
+    }
+  }
+  // Restart the check in case the app is open for more than a day
+  DateTime now = DateTime.now();
+  DateTime midnight = DateTime(now.year, now.month, now.day+1);
+  Duration timeUntilMidnight = midnight.difference(now);
+  Future.delayed(timeUntilMidnight, () {
+    alterDateTimeTiles(me);
   });
 }
+
 
 retrieveAvatar(Me me) {
   // If the user has just registered it will receive a notice when the

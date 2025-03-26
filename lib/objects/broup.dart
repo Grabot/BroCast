@@ -46,8 +46,6 @@ class Broup {
   String broupColour = "";
   bool private = false;
 
-  // Simple solution to not add multiple "today" message tiles
-  // And to not retrieve the Bro objects from the db multiple times
   bool dateTilesAdded = false;
   bool retrievedBros = false;
 
@@ -262,7 +260,7 @@ class Broup {
     unreadMessages = json["unread_messages"];
     updateBroup = json.containsKey("broup_updated") ? json["broup_updated"] : false;
     newMessages = json.containsKey("new_messages") ? json["new_messages"] : false;
-    print("broup id $broupId  new messages $newMessages");
+    print("broup id $broupId  upodate bruoup $updateBroup   new messages $newMessages   unread messages $unreadMessages");
     // These might not be present
     alias = json.containsKey("alias") ? json["alias"] : "";
     mute = json.containsKey("mute") ? json["mute"] : false;
@@ -445,35 +443,70 @@ class Broup {
   }
 
   updateBroupLocalDB(Broup localBroup) {
-    // Take almost all the values from the DB. the only values we don't want to take are the
-    // messages and the lastMessageId since these might be changed and not updated in the db since.
-    // We also want to keep the updateBroup or updateMessage if they are true.
-    // On a minimal login we might only get updateBroup and updateMessage
-    if (!this.updateBroup) {
-      this.updateBroup = localBroup.updateBroup;
+    // If updateBroup was true, these values should be taken from the server, which are now on `this` broup object.
+    if (this.updateBroup) {
+      this
+        ..alias = this.alias
+        ..unreadMessages = this.unreadMessages
+        ..removed = this.removed
+        ..mute = this.mute
+        ..updateBroup = this.updateBroup
+        ..newMessages = this.newMessages
+        ..newAvatar = this.newAvatar
+        ..broIds = this.broIds
+        ..adminIds = this.adminIds
+        ..broupName = this.broupName
+        ..private = this.private
+        ..broupDescription = this.broupDescription
+        ..broupColour = this.broupColour;
+    } else if (this.newMessages) {
+      // If newMessages is true, (and updateBroup is false) we want to take the
+      // `newMessages` and `unreadMessages` from the server
+      // Which means we take everything from the db except these values.
+      this
+        ..newMessages = this.newMessages
+        ..unreadMessages = this.unreadMessages;
+
+      this
+        ..removed = localBroup.removed
+        ..mute = localBroup.mute
+        ..updateBroup = localBroup.updateBroup
+        ..newAvatar = localBroup.newAvatar
+        ..broIds = localBroup.broIds
+        ..adminIds = localBroup.adminIds
+        ..broupName = localBroup.broupName
+        ..private = localBroup.private
+        ..broupDescription = localBroup.broupDescription
+        ..broupColour = localBroup.broupColour;
+    } else {
+      // If both updateBroup and newMessages are false we will take almost everything from the db.
+      // Since probably nothing has changed.
+      this
+        ..alias = localBroup.alias
+        ..unreadMessages = localBroup.unreadMessages
+        ..removed = localBroup.removed
+        ..mute = localBroup.mute
+        ..updateBroup = localBroup.updateBroup
+        ..newMessages = localBroup.newMessages
+        ..newAvatar = localBroup.newAvatar
+        ..broIds = localBroup.broIds
+        ..adminIds = localBroup.adminIds
+        ..broupName = localBroup.broupName
+        ..private = localBroup.private
+        ..broupDescription = localBroup.broupDescription
+        ..broupColour = localBroup.broupColour;
     }
-    if (!this.newMessages) {
-      this.newMessages = localBroup.newMessages;
+
+    // If there are messages on this chat we want to ensure that the date tiles are set correctly.
+    // It might be cleared but we will remove all the date tiles and set the chat to reapply them.
+    dateTilesAdded = false;
+    if (messages.isNotEmpty) {
+      messages.removeWhere((element) => element.messageId == 0);
     }
-    // We might get more data, this is handled later
+    // Always take these values locally.
     this
-      ..broIds = localBroup.broIds
-      ..adminIds = localBroup.adminIds
-      ..alias = localBroup.alias
-      ..unreadMessages = localBroup.unreadMessages
-      ..deleted = localBroup.deleted
-      ..removed = localBroup.removed
-      ..mute = localBroup.mute
-      ..broupName = localBroup.broupName
-      ..broupDescription = localBroup.broupDescription
-      ..private = localBroup.private
-      ..newAvatar = localBroup.newAvatar
       ..avatarDefault = localBroup.avatarDefault
       ..avatar = localBroup.avatar;
-
-    this
-      ..messages = this.messages
-      ..lastMessageId = this.lastMessageId;
   }
 
   updateBroupDataServer(Broup serverBroup) {
@@ -519,6 +552,12 @@ class Broup {
       ..newAvatar = serverBroup.newAvatar
       ..newMessages = serverBroup.newMessages;
 
+    // If there are messages on this chat we want to ensure that the date tiles are set correctly.
+    // It might be cleared but we will remove all the date tiles and set the chat to reapply them.
+    dateTilesAdded = false;
+    if (messages.isNotEmpty) {
+      messages.removeWhere((element) => element.messageId == 0);
+    }
     this
       ..lastMessageId = this.lastMessageId
       ..messages = this.messages
@@ -611,6 +650,7 @@ class Broup {
       // We added it immediately as a placeholder.
       // When we get it from the server we add it for real and remove the placeholder
       // Do a few simple extra checks, like body comparison
+      print("length messages ${this.messages.length}");
       if (messages[0] == message) {
         this.messages.removeAt(0);
       }
@@ -656,7 +696,10 @@ class Broup {
               // If it was send by someone else wa want to indicate that we read it.
               // Because we had the correct page open
               print("message received, so indicate that we read it");
-              readMessages();
+
+              if (LifeCycleService().getAppStatus() == 1) {
+                readMessages();
+              }
             }
           } else {
             if (!newMessages) {

@@ -329,12 +329,12 @@ class SocketServices extends ChangeNotifier {
     Message message = Message.fromJson(data);
     Storage storage = Storage();
     storage.addMessage(message);
+    // We only want to do the receive update when the app is opened.
+    print("life cycle status ${LifeCycleService().getAppStatus()}");
     int broupId = message.broupId;
     Me? me = Settings().getMe();
     if (me != null) {
-      print("going to check broup!");
       Broup broup = me.broups.firstWhere((element) => element.broupId == broupId);
-      print("checking message received");
       // Always add the message, if the broup is removed it should not be listening to the sockets anymore.
       broup.updateMessages(message);
       storage.updateBroup(broup);

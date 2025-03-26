@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:brocast/utils/start_login.dart';
 import 'package:brocast/utils/utils.dart';
 import 'package:brocast/views/sign_in/signin.dart';
 import "package:flutter/material.dart";
@@ -59,12 +60,18 @@ class _WebViewScreenState extends State<WebViewScreen> {
                 AuthServiceLogin authService = AuthServiceLogin();
                 authService.getRefresh(accessToken, refreshToken).then((loginResponse) {
                   if (loginResponse.getResult()) {
-                    // user logged in, so go to the home screen
-                    Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                BrocastHome(key: UniqueKey())));
+                    loginCheck().then((loggedIn) {
+                      if (loggedIn) {
+                        // user logged in, so go to the home screen
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    BrocastHome(key: UniqueKey())));
+                      } else {
+                        showToastMessage("Failed to log in.");
+                      }
+                    });
                   } else {
                     showToastMessage("Failed to log in.");
                   }

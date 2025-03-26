@@ -89,10 +89,9 @@ class _BrocastHomeState extends State<BrocastHome> {
   }
 
   lifeCycleChangeListener() {
+    print("life cycle change listener");
     // To be sure we check the broups again when the app is resumed.
-    settings.retrievedBroupData = false;
-    settings.retrievedBroData = false;
-    getBroupData();
+    broHomeChangeListener();
   }
 
   broHomeChangeListener() {
@@ -260,8 +259,6 @@ class _BrocastHomeState extends State<BrocastHome> {
               break;
             }
           }
-          // TODO: identify brand new broups? For welcome message?
-          print("retrieved broup ${broup.getBroupId()}");
           if (serverBroup != null) {
             // We update like this to not lost existing properties like messages
             broup.updateBroupDataServer(serverBroup);
@@ -642,7 +639,7 @@ class _BrocastHomeState extends State<BrocastHome> {
                         alignment: Alignment.bottomCenter,
                         child: EmojiKeyboard(
                             emojiController: bromotionController,
-                            emojiKeyboardHeight: 400,
+                            emojiKeyboardHeight: 350,
                             showEmojiKeyboard: showEmojiKeyboard,
                             darkMode: settings.getEmojiKeyboardDarkMode()),
                       ),

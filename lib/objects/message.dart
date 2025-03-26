@@ -16,6 +16,7 @@ class Message {
   // bool isPrivate = true;
 
   String? data;
+  int? dataType;
 
   Message(this.messageId, this.senderId, this.body, this.textMessage, this.timestamp,
       this.data, this.info, this.broupId) {
@@ -93,8 +94,14 @@ class Message {
     if (!timestamp.endsWith("Z")) {
       this.timestamp = timestamp + "Z";
     }
-    if (json.containsKey('data')) {
-      data = json['data'];
+    if (json.containsKey('data') && json["data"] != null) {
+      Map<String, dynamic> messageData = json['data'];
+      if (messageData.containsKey('data') && messageData['data'] != null) {
+        data = messageData['data'].replaceAll("\n", "");
+      }
+      if (messageData.containsKey('type')) {
+        dataType = messageData['type'];
+      }
     }
     isRead = 0;
     clicked = false;

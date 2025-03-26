@@ -45,8 +45,6 @@ class LoginResponse {
         accessToken = json["access_token"];
         refreshToken = json["refresh_token"];
         if (json.containsKey("fcm_token")) {
-          print("it cointained fcm tokne :)");
-          print(json["fcm_token"]);
           FCMToken = json["fcm_token"];
         }
         if (json.containsKey("bro")) {

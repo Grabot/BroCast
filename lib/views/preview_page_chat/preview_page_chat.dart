@@ -304,7 +304,7 @@ class _PreviewPageChatState extends State<PreviewPageChat> {
                   alignment: Alignment.bottomCenter,
                   child: EmojiKeyboard(
                     emojiController: broMessageController,
-                    emojiKeyboardHeight: 300,
+                    emojiKeyboardHeight: 350,
                     showEmojiKeyboard: showEmojiKeyboard,
                     darkMode: settings.getEmojiKeyboardDarkMode(),
                   ),

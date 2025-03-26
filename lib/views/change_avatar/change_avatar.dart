@@ -135,21 +135,16 @@ class _ChangeAvatarState extends State<ChangeAvatar> {
       isLoading = true;
     });
     // first downsize to 512 x 512
-    // and create another even more downsized small variant.
-    // This cropped version should be a perfect square
     image.Image regular = image.decodePng(imageCrop)!;
     int width = regular.width;
     if (width > 512) {
       regular = image.copyResize(regular, width: 512);
     }
-    image.Image small = image.copyResize(regular, width: 64);
     Uint8List regularImage = image.encodePng(regular);
-    Uint8List smallImage = image.encodePng(small);
     String newAvatarRegular = base64Encode(regularImage);
-    String newAvatarSmall = base64Encode(smallImage);
     if (widget.isMe) {
       AuthServiceSettings()
-          .changeAvatar(newAvatarRegular, newAvatarSmall)
+          .changeAvatar(newAvatarRegular)
           .then((response) {
         Uint8List changedAvatar = base64Decode(newAvatarRegular);
         isLoading = false;
@@ -174,7 +169,7 @@ class _ChangeAvatarState extends State<ChangeAvatar> {
       if (widget.chat != null) {
         SocketServices().setWeChangedAvatar(widget.chat!.broupId);
         AuthServiceSettings()
-            .changeAvatarBroup(newAvatarRegular, newAvatarSmall, widget.chat!.broupId)
+            .changeAvatarBroup(newAvatarRegular, widget.chat!.broupId)
             .then((response) {
           // We will receive an avatar update via the socket.
           // Indicate to not update because we changed it.
@@ -333,7 +328,7 @@ class _ChangeAvatarState extends State<ChangeAvatar> {
         },
         onResize: (imageData) {
           changesMade = true;
-          showToastMessage("Image too large, resizing...");
+          showToastMessage("Image too large, resized...");
           setState(() {
             imageCrop = imageData;
             imageMain = imageData;
@@ -490,7 +485,6 @@ class _ChangeAvatarState extends State<ChangeAvatar> {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
-    // TODO: remove the singlechildscrollview to not interfer with crop scrolling?
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (bool didPop, result) {

@@ -166,7 +166,7 @@ class AuthServiceSettings {
     }
   }
 
-  Future<BaseResponse> changeAvatar(String newAvatarRegular, String newAvatarSmall) async {
+  Future<BaseResponse> changeAvatar(String newAvatarRegular) async {
     String endPoint = "change/avatar";
     var response = await AuthApi().dio.post(endPoint,
         options: Options(headers: {
@@ -174,7 +174,6 @@ class AuthServiceSettings {
         }),
         data: jsonEncode(<String, String>{
           "avatar": newAvatarRegular,
-          "avatar_small": newAvatarSmall,
         }
       )
     );
@@ -183,7 +182,7 @@ class AuthServiceSettings {
     return baseResponse;
   }
 
-  Future<BaseResponse> changeAvatarBroup(String newAvatarRegular, String newAvatarSmall, int broupId) async {
+  Future<BaseResponse> changeAvatarBroup(String newAvatarRegular, int broupId) async {
     String endPoint = "change/avatar/broup";
     var response = await AuthApi().dio.post(endPoint,
         options: Options(headers: {
@@ -191,7 +190,6 @@ class AuthServiceSettings {
         }),
         data: jsonEncode(<String, dynamic>{
           "avatar": newAvatarRegular,
-          "avatar_small": newAvatarSmall,
           "broup_id": broupId
         }
       )

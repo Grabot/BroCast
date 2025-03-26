@@ -253,6 +253,7 @@ class NotificationController extends ChangeNotifier {
         if (broup_id != null) {
           int broupId = int.parse(broup_id);
           if (MessagingChangeNotifier().getBroupId() == broupId) {
+            print("notification for current chat");
             // The chat is already open, so we don't need to navigate to it.
             return;
           }
@@ -278,7 +279,15 @@ class NotificationController extends ChangeNotifier {
 
   checkNotification(ReceivedAction receivedAction) {
     // The app is not open yet, so quickly log in first.
+    Settings settings = Settings();
+    if (settings.loggingIn) {
+      // Already logging in, we assume that after that other login
+      // process is done it will navigate somewhere
+      return;
+    }
+    settings.setLoggingIn(true);
     loginCheck().then((loggedIn) {
+      settings.setLoggingIn(false);
       if (receivedAction.payload != null) {
         String? broup_id = receivedAction.payload!['broup_id'];
         if (broup_id != null) {

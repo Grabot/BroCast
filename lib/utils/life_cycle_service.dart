@@ -1,3 +1,4 @@
+import 'package:brocast/utils/settings.dart';
 import 'package:flutter/material.dart';
 
 
@@ -18,9 +19,16 @@ class LifeCycleService extends ChangeNotifier {
   }
 
   setAppStatus(int newAppStatus) {
-    this.appStatus = appStatus;
+    print("Setting app status to $newAppStatus");
+    this.appStatus = newAppStatus;
     if (this.appStatus == 1) {
       notifyListeners();
+    } else {
+      // Just in case we set the broups to be retrieved again.
+      // If the app is opened again there will be another login in which details can change.
+      Settings settings = Settings();
+      settings.retrievedBroupData = false;
+      settings.retrievedBroData = false;
     }
   }
 

@@ -121,25 +121,28 @@ Future<bool> getMessages(int page, Broup chat, Storage storage) async {
     messagesDB = localMessages;
   }
   // get messages from the server
-  if (!chat.removed) {
-    if (chat.newMessages) {
-      print("get from server");
-      List<Message> retrievedMessages = await AuthServiceSocial()
-          .retrieveMessages(chat.getBroupId(), chat.lastMessageId);
+  if (chat.removed) {
+    return true;
+  }
 
-      if (retrievedMessages.isNotEmpty) {
-        messagesServer = retrievedMessages;
-        // The max id of the retrieved messages HAS to be the last message id from the server
-        chat.lastMessageId = messagesServer.fold(0, (max, message) =>
-        message.messageId > max
-            ? message.messageId
-            : max);
-      }
+  if (chat.newMessages) {
+    chat.newMessages = false;
+    print("get from server");
+    List<Message> retrievedMessages = await AuthServiceSocial()
+        .retrieveMessages(chat.getBroupId(), chat.lastMessageId);
+
+    if (retrievedMessages.isNotEmpty) {
+      messagesServer = retrievedMessages;
+      // The max id of the retrieved messages HAS to be the last message id from the server
+      chat.lastMessageId = messagesServer.fold(0, (max, message) =>
+      message.messageId > max
+          ? message.messageId
+          : max);
     }
   }
 
   List<Message> incomingMessages = messagesServer;
-  List<int> seenMessageServerIds = incomingMessages.map((e) => e.messageId).toList();
+  Set<int> seenMessageServerIds = Set<int>.from(incomingMessages.map((e) => e.messageId));
   for (Message messageDB in messagesDB) {
     if (!seenMessageServerIds.contains(messageDB.messageId)) {
       incomingMessages.add(messageDB);

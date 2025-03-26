@@ -116,6 +116,7 @@ class _ChatMessagingState extends State<ChatMessaging> {
   }
 
   lifeCycleChangeListener() {
+    print("life cycle change listener chat");
     // Is called when the app is resumed
     retrieveData();
   }
@@ -159,13 +160,15 @@ class _ChatMessagingState extends State<ChatMessaging> {
       getMessages(0, widget.chat, storage).then((value) {
         allMessagesDBRetrieved = value;
         setState(() {
-          if (widget.chat.messages.length != 0) {
+          if (widget.chat.messages.isNotEmpty) {
             if (!widget.chat.dateTilesAdded) {
               widget.chat.dateTilesAdded = true;
               setDateTiles(widget.chat, 0);
+              widget.chat.messages.sort((b, a) => a.getTimeStamp().compareTo(b.getTimeStamp()));
             }
           }
           // We have retrieved the messages, so the unread messages are 0.
+          widget.chat.readMessages();
           widget.chat.unreadMessages = 0;
           storage.updateBroup(widget.chat);
 
@@ -297,6 +300,7 @@ class _ChatMessagingState extends State<ChatMessaging> {
         }
       });
       AuthServiceSocial().sendMessage(widget.chat.getBroupId(), message, textMessage, messageData).then((value) {
+        isLoadingMessages = false;
         if (value) {
           setState(() {
             mes.isRead = 0;
@@ -394,6 +398,10 @@ class _ChatMessagingState extends State<ChatMessaging> {
         String imageString = imageData[0];
         String broMessage = imageData[1];
         String appendTextMessage = imageData[2];
+
+        setState(() {
+          isLoadingMessages = true;
+        });
 
         broMessageController.text = broMessage;
         appendTextMessageController.text = appendTextMessage;
@@ -813,7 +821,7 @@ class _ChatMessagingState extends State<ChatMessaging> {
                 alignment: Alignment.bottomCenter,
                 child: EmojiKeyboard(
                   emojiController: broMessageController,
-                  emojiKeyboardHeight: 400,
+                  emojiKeyboardHeight: 350,
                   showEmojiKeyboard: showEmojiKeyboard,
                   darkMode: settings.getEmojiKeyboardDarkMode(),
                 ),

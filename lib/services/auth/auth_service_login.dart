@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:brocast/services/auth/auth_api_login.dart';
 import 'package:dio/dio.dart';
+import 'package:jwt_decode/jwt_decode.dart';
 import '../../objects/me.dart';
 import '../../utils/secure_storage.dart';
 import '../../utils/storage.dart';
@@ -26,7 +28,7 @@ class AuthServiceLogin {
   Future<LoginResponse> getLoginEmail(LoginEmailRequest loginEmailRequest) async {
     Settings().setLoggingIn(true);
     String endPoint = "login";
-    var response = await AuthApi().dio.post(endPoint,
+    var response = await AuthApiLogin().dio.post(endPoint,
         options: Options(headers: {
           HttpHeaders.contentTypeHeader: "application/json",
         }),
@@ -43,7 +45,7 @@ class AuthServiceLogin {
   Future<LoginResponse> getLoginBroName(LoginBroNameRequest loginBroNameRequest) async {
     Settings().setLoggingIn(true);
     String endPoint = "login";
-    var response = await AuthApi().dio.post(endPoint,
+    var response = await AuthApiLogin().dio.post(endPoint,
         options: Options(headers: {
           HttpHeaders.contentTypeHeader: "application/json",
         }),
@@ -60,7 +62,7 @@ class AuthServiceLogin {
   Future<LoginResponse> getRegister(RegisterRequest registerRequest) async {
     Settings().setLoggingIn(true);
     String endPoint = "register";
-    var response = await AuthApi().dio.post(endPoint,
+    var response = await AuthApiLogin().dio.post(endPoint,
         options: Options(headers: {
           HttpHeaders.contentTypeHeader: "application/json",
         }),
@@ -74,6 +76,8 @@ class AuthServiceLogin {
     return loginResponse;
   }
 
+  // The methods below should use the AuthApi class instead of AuthApiLogin.
+  // This will send a token with the request to do the authentication.
   Future<BaseResponse> logout() async {
     String endPoint = "logout";
     var response = await AuthApi().dio.post(endPoint,
@@ -90,9 +94,11 @@ class AuthServiceLogin {
   }
 
   Future<LoginResponse> getRefresh(String accessToken, String refreshToken) async {
-    Settings().setLoggingIn(true);
+    Settings settings = Settings();
+    settings.setLoggingIn(true);
+    print("refresh action 2");
     String endPoint = "refresh";
-    var response = await AuthApi().dio.post(endPoint,
+    var response = await AuthApiLogin().dio.post(endPoint,
         options: Options(headers: {
           HttpHeaders.contentTypeHeader: "application/json",
         }),
@@ -103,27 +109,39 @@ class AuthServiceLogin {
       )
     );
 
-    // TODO: this will only give a brand new access token. Now log in correctly!
     LoginResponse loginResponse = LoginResponse.fromJson(response.data);
+    String? newAccessToken = loginResponse.getAccessToken();
+    SecureStorage secureStorage = SecureStorage();
+    if (newAccessToken != null) {
+      // the access token will be set in memory and local storage.
+      settings.setAccessToken(newAccessToken);
+      settings.setAccessTokenExpiration(Jwt.parseJwt(newAccessToken)['exp']);
+      await secureStorage.setAccessToken(newAccessToken);
+    }
+
+    String? newRefreshToken = loginResponse.getRefreshToken();
+    if (newRefreshToken != null) {
+      // the refresh token will only be set in memory.
+      settings.setRefreshToken(newRefreshToken);
+      settings.setRefreshTokenExpiration(Jwt.parseJwt(newRefreshToken)['exp']);
+      await secureStorage.setRefreshToken(newRefreshToken);
+    }
     return loginResponse;
   }
 
-  Future<LoginResponse> getTokenLogin(String accessToken) async {
+  Future<LoginResponse> getTokenLogin() async {
     Settings().setLoggingIn(true);
     String endPoint = "login/token";
     var response = await AuthApi().dio.post(endPoint,
         options: Options(headers: {
           HttpHeaders.contentTypeHeader: "application/json",
         }),
-        data: jsonEncode(<String, String> {
-          "access_token": accessToken
-        }
+        data: jsonEncode(<String, String> {}
       )
     );
 
     LoginResponse loginResponse = LoginResponse.fromJson(response.data);
     if (loginResponse.getResult()) {
-      print("token login success");
       successfulLogin(loginResponse);
     }
     return loginResponse;
