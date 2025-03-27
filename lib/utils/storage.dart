@@ -159,7 +159,10 @@ class Storage {
 
   Future<List<Broup>> fetchAllBroups() async {
     Database database = await this.database;
-    List<Map<String, dynamic>> maps = await database.query('Broup');
+    List<Map<String, dynamic>> maps = await database.query(
+      'Broup',
+      where: 'deleted = 0',
+    );
     if (maps.isNotEmpty) {
       return maps
           .map((map) => Broup.fromDbMap(map))
@@ -189,6 +192,15 @@ class Storage {
   }
 
   Future<int> deleteChat(int broupId) async {
+    Database database = await this.database;
+    return database.delete(
+      'Broup',
+      where: 'broupId = ?',
+      whereArgs: [broupId],
+    );
+  }
+
+  Future<int> deleteChatMessages(int broupId) async {
     Database database = await this.database;
     return database.delete(
       'Message',

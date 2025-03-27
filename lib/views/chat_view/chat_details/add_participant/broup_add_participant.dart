@@ -235,12 +235,21 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> {
             .getColor()
             .withOpacity(0.6),
         child: Row(children: [
-          SizedBox(width: 15),
+          SizedBox(width: 10),
           Container(
-            width: MediaQuery.of(context).size.width - 15,
+            width: 50,
+            height: 50,
+            child: avatarBox(
+                50,
+                50,
+                broupAddBrosShownBros[index].broBros.getAvatar()
+            ),
+          ),
+          Container(
+            width: MediaQuery.of(context).size.width - 60,
             child: Material(
               child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                  padding: EdgeInsets.symmetric(horizontal: 4, vertical: 16),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -249,7 +258,7 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Container(
-                              width: MediaQuery.of(context).size.width - 63,
+                              width: MediaQuery.of(context).size.width - 108,
                               child: broupAddBrosShownBros[index].getBroBros().alias != null &&
                                       broupAddBrosShownBros[index]
                                           .getBroBros()

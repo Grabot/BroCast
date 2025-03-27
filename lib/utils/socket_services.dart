@@ -163,8 +163,8 @@ class SocketServices extends ChangeNotifier {
             // I am unblocked!
             broup.blocked = false;
             broup.removed = false;
+            broup.newMessages = true;
             broup.adminIds = [];
-            addInformationMessage(broup, "Chat is unblocked! 🥰");
             if (!broup.joinedBroupRoom) {
               broup.joinedBroupRoom = true;
               joinRoomBroup(broup.broupId);

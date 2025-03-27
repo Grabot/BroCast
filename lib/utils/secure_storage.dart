@@ -7,6 +7,8 @@ class SecureStorage {
 
   final String _keyAccessToken = 'accessToken';
   final String _keyRefreshToken = 'refreshToken';
+  final String _keyAccessTokenExpiration = 'accessTokenExpiration';
+  final String _keyRefreshTokenExpiration = 'refreshTokenExpiration';
   final String _keyFCMToken = 'FCMToken';
   final String _broName = 'broName';
   final String _bromotion = 'bromotion';
@@ -23,12 +25,33 @@ class SecureStorage {
     return await storage.read(key: _keyAccessToken);
   }
 
+  Future setAccessTokenExpiration(int expiration) async {
+    print("setting expiration: $expiration");
+    await storage.write(key: _keyAccessTokenExpiration, value: expiration.toString());
+  }
+
+  Future<int?> getAccessTokenExpiration() async {
+    String? expiration = await storage.read(key: _keyAccessTokenExpiration);
+    print("getting expiration: $expiration");
+    return expiration != null ? int.parse(expiration) : null;
+  }
+
   Future setRefreshToken(String refreshToken) async {
     await storage.write(key: _keyRefreshToken, value: refreshToken);
   }
 
   Future<String?> getRefreshToken() async {
     return await storage.read(key: _keyRefreshToken);
+  }
+
+  Future setRefreshTokenExpiration(int expiration) async {
+    print("setting expiration refresh: $expiration");
+    await storage.write(key: _keyRefreshTokenExpiration, value: expiration.toString());
+  }
+
+  Future<int?> getRefreshTokenExpiration() async {
+    String? expiration = await storage.read(key: _keyRefreshTokenExpiration);
+    return expiration != null ? int.parse(expiration) : null;
   }
 
   Future setFCMToken(String fcmToken) async {

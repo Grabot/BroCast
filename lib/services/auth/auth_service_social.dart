@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:brocast/services/auth/models/base_response.dart';
 import 'package:brocast/utils/utils.dart';
 import 'package:brocast/views/bro_home/bro_home.dart';
 import 'package:brocast/views/bro_home/bro_home_change_notifier.dart';
@@ -56,7 +57,7 @@ class AuthServiceSocial {
     }
   }
 
-  Future<bool> addNewBro(int broId) async {
+  Future<BaseResponse> addNewBro(int broId) async {
     String endPoint = "bro/add";
     var response = await AuthApi().dio.post(endPoint,
         options: Options(headers: {
@@ -68,11 +69,10 @@ class AuthServiceSocial {
       )
     );
 
-    Storage storage = Storage();
-    Map<String, dynamic> json = response.data;
-    if (!json.containsKey("result")) {
-      return false;
-    } else {
+    BaseResponse baseResponse = BaseResponse.fromJson(response.data);
+    if (baseResponse.getResult()) {
+      Storage storage = Storage();
+      Map<String, dynamic> json = response.data;
       if (json.containsKey("broup") && json.containsKey("bro")) {
         Me? me = Settings().getMe();
         if (me != null) {
@@ -82,18 +82,14 @@ class AuthServiceSocial {
           if (newBro.avatar == null) {
             getAvatarBro(newBro.id);
           }
-          if (me.broups.indexWhere((element) => element.getBroupId() == json["broup"]["broup_id"]) == -1) {
-            Broup newBroup = Broup.fromJson(json["broup"]);
-            storage.addBroup(newBroup);
-            newBroup.addBro(newBro);
-            me.addBroup(newBroup);
-          } else {
-            // TODO: What if the broup object exists? Is it possible?
-          }
+          Broup newBroup = Broup.fromJson(json["broup"]);
+          storage.addBroup(newBroup);
+          newBroup.addBro(newBro);
+          me.addBroup(newBroup);
         }
       }
-      return json["result"];
     }
+    return baseResponse;
   }
 
   Future<bool> sendMessage(int broupId, String message, String? textMessage, String? messageData) async {

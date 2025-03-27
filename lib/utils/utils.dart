@@ -206,17 +206,21 @@ successfulLogin(LoginResponse loginResponse) async {
   String? accessToken = loginResponse.getAccessToken();
   if (accessToken != null) {
     // the access token will be set in memory and local storage.
+    int accessExpiration = Jwt.parseJwt(accessToken)['exp'];
     settings.setAccessToken(accessToken);
-    settings.setAccessTokenExpiration(Jwt.parseJwt(accessToken)['exp']);
+    settings.setAccessTokenExpiration(accessExpiration);
     await secureStorage.setAccessToken(accessToken);
+    await secureStorage.setAccessTokenExpiration(accessExpiration);
   }
 
   String? refreshToken = loginResponse.getRefreshToken();
   if (refreshToken != null) {
     // the refresh token will only be set in memory.
+    int refreshExpiration = Jwt.parseJwt(refreshToken)['exp'];
     settings.setRefreshToken(refreshToken);
-    settings.setRefreshTokenExpiration(Jwt.parseJwt(refreshToken)['exp']);
+    settings.setRefreshTokenExpiration(refreshExpiration);
     await secureStorage.setRefreshToken(refreshToken);
+    await secureStorage.setRefreshTokenExpiration(refreshExpiration);
   }
 
   settings.setLoggingIn(false);

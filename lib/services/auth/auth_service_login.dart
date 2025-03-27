@@ -114,23 +114,26 @@ class AuthServiceLogin {
     SecureStorage secureStorage = SecureStorage();
     if (newAccessToken != null) {
       // the access token will be set in memory and local storage.
+      int expirationAccess = Jwt.parseJwt(newAccessToken)['exp'];
       settings.setAccessToken(newAccessToken);
-      settings.setAccessTokenExpiration(Jwt.parseJwt(newAccessToken)['exp']);
+      settings.setAccessTokenExpiration(expirationAccess);
       await secureStorage.setAccessToken(newAccessToken);
+      await secureStorage.setAccessTokenExpiration(expirationAccess);
     }
 
     String? newRefreshToken = loginResponse.getRefreshToken();
     if (newRefreshToken != null) {
       // the refresh token will only be set in memory.
+      int refreshExpiration = Jwt.parseJwt(newRefreshToken)['exp'];
       settings.setRefreshToken(newRefreshToken);
-      settings.setRefreshTokenExpiration(Jwt.parseJwt(newRefreshToken)['exp']);
+      settings.setRefreshTokenExpiration(refreshExpiration);
       await secureStorage.setRefreshToken(newRefreshToken);
+      await secureStorage.setRefreshTokenExpiration(refreshExpiration);
     }
     return loginResponse;
   }
 
   Future<LoginResponse> getTokenLogin() async {
-    Settings().setLoggingIn(true);
     String endPoint = "login/token";
     var response = await AuthApi().dio.post(endPoint,
         options: Options(headers: {
@@ -141,6 +144,7 @@ class AuthServiceLogin {
     );
 
     LoginResponse loginResponse = LoginResponse.fromJson(response.data);
+    print("got response from token login ${loginResponse.getResult()}");
     if (loginResponse.getResult()) {
       successfulLogin(loginResponse);
     }

@@ -166,13 +166,12 @@ class _ChatDetailsState extends State<ChatDetails> {
 
   broHandling(int delta, int broId) {
     if (delta == 1) {
-      AuthServiceSocial().addNewBro(broId).then((value) {
-        if (value) {
-          print("we have added a new bro :)");
+      AuthServiceSocial().addNewBro(broId).then((response) {
+        if (response.getResult()) {
           // The broup added, move to the home screen where it will be shown
           navigateToHome(context, settings);
         } else {
-          showToastMessage("Bro contact already in Bro list!");
+          showToastMessage(response.getMessage());
         }
       });
     } else if (delta == 2) {
@@ -1039,7 +1038,7 @@ class _ChatDetailsState extends State<ChatDetails> {
   }
 
   clearMessagesBroup() async {
-    await storage.deleteChat(widget.chat.broupId);
+    await storage.deleteChatMessages(widget.chat.broupId);
     widget.chat.messages = [];
     showToastMessage("Messages cleared in broup ${widget.chat.getBroupNameOrAlias()}");
     Navigator.of(context).pop();
@@ -1183,6 +1182,7 @@ class _ChatDetailsState extends State<ChatDetails> {
   }
 
   UnblockTheBro() {
+    Navigator.of(context).pop();
     int unblockBroId = -1;
     for (int broId in widget.chat.getBroIds()) {
       if (broId != Settings().getMe()!.getId()) {
@@ -1196,26 +1196,30 @@ class _ChatDetailsState extends State<ChatDetails> {
     AuthServiceSocial().unblockBro(widget.chat.broupId, unblockBroId).then((value) {
       if (value) {
         setState(() {
+          socketServices.leaveRoomBroup(widget.chat.broupId);
           widget.chat.removed = false;
           widget.chat.blocked = false;
           widget.chat.adminIds = [];
-          addInformationMessage(widget.chat, "Chat is unblocked! 🥰");
-          if (!widget.chat.joinedBroupRoom) {
+          widget.chat.newMessages = true;
+          // Slight delay to not interfere with anything.
+          Future.delayed(Duration(milliseconds: 200), () {
             socketServices.joinRoomBroup(widget.chat.broupId);
             widget.chat.joinedBroupRoom = true;
-          }
-          navigateToChat(context, settings, widget.chat);
+            navigateToChat(context, settings, widget.chat);
+          });
         });
+      } else {
+        showToastMessage("something went wrong with unblocking the bro. Please try again later.");
       }
     });
-    Navigator.of(context).pop();
   }
 
   void deleteTheBroup() {
     AuthServiceSocial().deleteBroup(widget.chat.broupId).then((value) {
       if (value) {
         setState(() {
-          widget.chat.deleted = true;
+          storage.deleteChat(widget.chat.broupId);
+          Settings().getMe()!.removeBroup(widget.chat.broupId);
           navigateToHome(context, settings);
         });
       }

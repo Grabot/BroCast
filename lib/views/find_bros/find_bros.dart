@@ -127,16 +127,17 @@ class _FindBrosState extends State<FindBros> {
       setState(() {
         isLoading = true;
       });
-      AuthServiceSocial().addNewBro(addBroId).then((value) {
+      AuthServiceSocial().addNewBro(addBroId).then((response) {
         clickedNewBro = false;
-        if (value) {
+        setState(() {
+          isLoading = false;
+        });
+        if (response.getResult()) {
           // The broup added, move to the home screen where it will be shown
           navigateToHome(context, settings);
         } else {
-          showToastMessage("Bro contact already in Bro list!");
-          setState(() {
-            isLoading = false;
-          });
+          showToastMessage(response.getMessage());
+          navigateToHome(context, settings);
         }
       });
     }

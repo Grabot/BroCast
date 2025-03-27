@@ -48,11 +48,11 @@ class AppInterceptors extends Interceptor {
   void onRequest(
       RequestOptions options, RequestInterceptorHandler handler) async {
 
-    int expiration = settings.getAccessTokenExpiration();
+    int? expiration = await secureStorage.getAccessTokenExpiration();
     String? accessToken = await secureStorage.getAccessToken();
 
     print("Access token: $accessToken");
-    if (accessToken == null || accessToken == "") {
+    if (accessToken == null || accessToken == "" || expiration == null) {
       DioException dioError = DioException(requestOptions: options,
           type: DioExceptionType.cancel,
           error: "User not authorized");
@@ -96,7 +96,7 @@ class AppInterceptors extends Interceptor {
               }
           ).catchError((error, stackTrace) {
             print("reject 3 clean");
-            return handler.reject(error, true);
+            throw error;
           });
 
           LoginResponse loginRefresh = LoginResponse.fromJson(response.data);
@@ -108,15 +108,17 @@ class AppInterceptors extends Interceptor {
               settings.setAccessToken(newAccessToken);
               settings.setAccessTokenExpiration(Jwt.parseJwt(newAccessToken)['exp']);
               await secureStorage.setAccessToken(newAccessToken);
+              await secureStorage.setAccessTokenExpiration(Jwt.parseJwt(newAccessToken)['exp']);
               accessToken = newAccessToken;
             }
 
-            String? refreshToken = loginRefresh.getRefreshToken();
-            if (refreshToken != null) {
+            String? newRefreshToken = loginRefresh.getRefreshToken();
+            if (newRefreshToken != null) {
               // the refresh token will only be set in memory.
-              settings.setRefreshToken(refreshToken);
-              settings.setRefreshTokenExpiration(Jwt.parseJwt(refreshToken)['exp']);
-              await secureStorage.setRefreshToken(refreshToken);
+              settings.setRefreshToken(newRefreshToken);
+              settings.setRefreshTokenExpiration(Jwt.parseJwt(newRefreshToken)['exp']);
+              await secureStorage.setRefreshToken(newRefreshToken);
+              await secureStorage.setRefreshTokenExpiration(Jwt.parseJwt(newRefreshToken)['exp']);
             }
           } else {
             DioException dioError = DioException(requestOptions: options,

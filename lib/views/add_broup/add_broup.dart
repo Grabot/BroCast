@@ -311,10 +311,17 @@ class _AddBroupState extends State<AddBroup> {
             ),
           ),
           Container(
-            width: MediaQuery.of(context).size.width - 50,
+            child: avatarBox(
+                50,
+                50,
+                shownParticipants[index].broup.getAvatar()
+            ),
+          ),
+          Container(
+            width: MediaQuery.of(context).size.width - 100,
             child: Material(
               child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                  padding: EdgeInsets.symmetric(horizontal: 4, vertical: 16),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [

@@ -18,8 +18,6 @@ class BaseResponse {
     if (json.containsKey("result")) {
       result = json["result"];
     }
-    if (json.containsKey("message")) {
-      message = json["message"];
-    }
+    message = json["message"] ?? "";
   }
 }

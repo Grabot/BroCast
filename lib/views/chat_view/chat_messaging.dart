@@ -186,6 +186,10 @@ class _ChatMessagingState extends State<ChatMessaging> {
 
   socketListener() {
     checkIsAdmin();
+    // We have received a new message, which might not have been picked up with the sockets
+    if (widget.chat.newMessages) {
+      retrieveData();
+    }
     setState(() {});
   }
 
@@ -212,13 +216,13 @@ class _ChatMessagingState extends State<ChatMessaging> {
       }
     } else if (delta == 2) {
       // Add the bro
-      AuthServiceSocial().addNewBro(addBroId).then((value) {
-        if (value) {
+      AuthServiceSocial().addNewBro(addBroId).then((response) {
+        if (response.getResult()) {
           print("we have added a new bro :)");
           // The broup added, move to the home screen where it will be shown
           navigateToHome(context, settings);
         } else {
-          showToastMessage("Bro contact already in Bro list!");
+          showToastMessage(response.getMessage());
         }
       });
     } else if (delta == 4) {

@@ -121,23 +121,23 @@ Future<bool> getMessages(int page, Broup chat, Storage storage) async {
     messagesDB = localMessages;
   }
   // get messages from the server
-  if (chat.removed) {
-    return true;
-  }
+  print("chat removed ${chat.removed}");
+  if (!chat.removed) {
+    print("chat new messages ${chat.newMessages}");
+    if (chat.newMessages) {
+      chat.newMessages = false;
+      print("get from server");
+      List<Message> retrievedMessages = await AuthServiceSocial()
+          .retrieveMessages(chat.getBroupId(), chat.lastMessageId);
 
-  if (chat.newMessages) {
-    chat.newMessages = false;
-    print("get from server");
-    List<Message> retrievedMessages = await AuthServiceSocial()
-        .retrieveMessages(chat.getBroupId(), chat.lastMessageId);
-
-    if (retrievedMessages.isNotEmpty) {
-      messagesServer = retrievedMessages;
-      // The max id of the retrieved messages HAS to be the last message id from the server
-      chat.lastMessageId = messagesServer.fold(0, (max, message) =>
-      message.messageId > max
-          ? message.messageId
-          : max);
+      if (retrievedMessages.isNotEmpty) {
+        messagesServer = retrievedMessages;
+        // The max id of the retrieved messages HAS to be the last message id from the server
+        chat.lastMessageId = messagesServer.fold(0, (max, message) =>
+        message.messageId > max
+            ? message.messageId
+            : max);
+      }
     }
   }
 
@@ -231,12 +231,14 @@ setDateTiles(Broup chat, int fromIndex) {
     timeMessageFirst = "Yesterday";
   }
 
+  DateTime datetimeTimeMessage = DateTime(messageFirst.getTimeStamp().year,
+      messageFirst.getTimeStamp().month, messageFirst.getTimeStamp().day);
   Message timeMessage = new Message(
     0,
     0,
     timeMessageFirst,
     "",
-    DateTime.now().toUtc().toString(),
+    datetimeTimeMessage.toUtc().toString(),
     null,
     true,
     chat.getBroupId(),
@@ -271,8 +273,5 @@ setDateTiles(Broup chat, int fromIndex) {
     }
   }
 
-  DateTime currentDayMessage = DateTime(messageFirst.getTimeStamp().year,
-      messageFirst.getTimeStamp().month, messageFirst.getTimeStamp().day);
-  timeMessage.setTimeStamp(currentDayMessage.toUtc().toString());
   chat.messages.insert(chat.messages.length, timeMessage);
 }

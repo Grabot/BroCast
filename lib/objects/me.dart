@@ -70,12 +70,17 @@ class Me extends Bro {
     }
   }
 
+  removeBroup(int broupId) {
+    broups.removeWhere((element) => element.getBroupId() == broupId);
+  }
+
   Me.fromJson(Map<String, dynamic> json)
       : super(json["id"], json["bro_name"], json["bromotion"], null) {
     id = json["id"];
     broName = json["bro_name"];
     bromotion = json["bromotion"];
     origin = json["origin"];
+    print("set 4 basic values");
     if (json.containsKey("avatar") && json["avatar"] != null) {
       avatar = base64Decode(json["avatar"].replaceAll("\n", ""));
     }
@@ -90,6 +95,8 @@ class Me extends Bro {
         broups.add(Broup.fromJson(bro));
       }
     }
+    print("bro home change");
     BroHomeChangeNotifier().notify();
+    print("bro home change done");
   }
 }

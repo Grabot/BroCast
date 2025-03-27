@@ -279,7 +279,9 @@ class Broup {
       broIds = chat_details["bro_ids"].cast<int>();
       adminIds = chat_details["admin_ids"].cast<int>();
       if (private && removed) {
-        if (adminIds.contains(Settings().getMe()!.getId())) {
+        Me? me = Settings().getMe();
+        int meId = me != null ? me.getId() : -1;
+        if (adminIds.contains(meId)) {
           // In a private chat the admin id is not needed, so it is repurposed for the blocked status
           // The id of the bro that blocked the chat is stored in the adminIds
           this.blocked = true;
@@ -325,10 +327,12 @@ class Broup {
                 Storage().addBro(bro).then((value) {
                   print("bro adding: $value");
                 });
-                for (Broup checkBroup in Settings().getMe()!.broups) {
-                  if (checkBroup.broupId == this.broupId) {
-                    checkBroup.addBro(bro);
-                    break;
+                if (me != null) {
+                  for (Broup checkBroup in me.broups) {
+                    if (checkBroup.broupId == this.broupId) {
+                      checkBroup.addBro(bro);
+                      break;
+                    }
                   }
                 }
                 BroHomeChangeNotifier().notify();
@@ -591,24 +595,6 @@ class Broup {
           blockMessage);
       this.removed = serverBroup.removed;
       this.unreadMessages = 0;
-    } else if (this.removed && !serverBroup.removed) {
-      // no longer removed
-      Message unBlockMessage = Message(
-        lastMessageId + 1,
-        0,
-        "Chat is no longer blocked! 🥰",
-        "",
-        DateTime.now().toUtc().toString(),
-        null,
-        true,
-        serverBroup.getBroupId(),
-      );
-      Storage().addMessage(unBlockMessage);
-      this.messages.insert(
-          0,
-          unBlockMessage);
-      this.removed = serverBroup.removed;
-      return false;
     }
     // Return removed, because if the broup is removed we don't want any updates.
     return serverBroup.removed;
@@ -629,14 +615,15 @@ class Broup {
     String currentDayMessage = DateFormat.yMMMMd('en_US').format(dayMessage);
 
     if (chatTimeTile != currentDayMessage) {
-      chatTimeTile = DateFormat.yMMMMd('en_US').format(dayMessage);
 
+      DateTime datetimeTimeMessage = DateTime(message.getTimeStamp().year,
+          message.getTimeStamp().month, message.getTimeStamp().day);
       Message timeMessage = new Message(
         0,
         0,
         "Today",
         "",
-        message.getTimeStamp().subtract(Duration(seconds: 1)).toUtc().toString(),
+        datetimeTimeMessage.toUtc().toString(),
         null,
         true,
         getBroupId(),
@@ -684,8 +671,6 @@ class Broup {
           if (value) {
             // The message that was received really was the last one so no update required
             newMessages = false;
-            // Check if the user has the broup page open. if not send a notification
-            print("Check if the user has the broup page open. if not send a notification");
             if (MessagingChangeNotifier().getBroupId() != broupId) {
               print("page was NOT open add unread messages");
               if (!message.isInformation()) {
@@ -704,7 +689,6 @@ class Broup {
           } else {
             if (!newMessages) {
               newMessages = true;
-              // TODO: If page is open do update immediately?
             }
           }
           // notify the home screen because the call
@@ -763,15 +747,18 @@ class Broup {
       for (Bro bro in bros) {
         storage.updateBro(bro);
       }
-      for (Broup broup in Settings().getMe()!.broups) {
-        if (broup.getBroupId() == broupId) {
-          for (Bro bro in bros) {
-            broup.addBro(bro);
+      Me? me = Settings().getMe();
+      if (me != null) {
+        for (Broup broup in me.broups) {
+          if (broup.getBroupId() == broupId) {
+            for (Bro bro in bros) {
+              broup.addBro(bro);
+            }
+            broup.retrievedBros = true;
+            BroHomeChangeNotifier().notify();
+            AuthServiceSocial().broupBrosRetrieved(broupId);
+            break;
           }
-          broup.retrievedBros = true;
-          BroHomeChangeNotifier().notify();
-          AuthServiceSocial().broupBrosRetrieved(broupId);
-          break;
         }
       }
     });
