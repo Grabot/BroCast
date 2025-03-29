@@ -7,6 +7,7 @@ import 'package:dio/dio.dart';
 import '../../objects/bro.dart';
 import '../../objects/broup.dart';
 import '../../objects/me.dart';
+import '../../utils/secure_storage.dart';
 import '../../utils/settings.dart';
 import '../../utils/storage.dart';
 import 'auth_api.dart';
@@ -110,7 +111,7 @@ class AuthServiceSettings {
     }
   }
 
-  Future<String> changeBroname(String broname) async {
+  Future<bool> changeBroname(String broname) async {
     String endPoint = "change/broname";
     var response = await AuthApi().dio.post(endPoint,
         options: Options(headers: {
@@ -124,16 +125,19 @@ class AuthServiceSettings {
 
     Map<String, dynamic> json = response.data;
     if (!json.containsKey("result")) {
-      return "Something went wrong";
+      return false;
     } else {
       if (json["result"]) {
-        // TODO: actually change broname
-        return "Broname changed";
+        SecureStorage().setBroName(broname);
+        Settings settings = Settings();
+        settings.getMe()!.setBroName(broname);
+        Storage().updateBro(settings.getMe()!);
+        return true;
       } else {
         if (json.containsKey("message")) {
-          return json["message"];
+          showToastMessage(json["message"]);
         }
-        return "Something went wrong, broname not changed";
+        return false;
       }
     }
   }

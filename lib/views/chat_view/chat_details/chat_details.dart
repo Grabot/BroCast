@@ -200,6 +200,8 @@ class _ChatDetailsState extends State<ChatDetails> {
         if (value) {
           setState(() {
             widget.chat.removeBro(broId);
+            widget.chat.retrievedBros = false;
+            widget.chat.checkedRemainingBros = false;
             amountInGroup = widget.chat.getBroupBros().length;
             print("bro has been removed :'(");
           });

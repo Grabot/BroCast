@@ -71,6 +71,15 @@ class _BroProfileState extends State<BroProfile> {
 
   void onChangePassword() {
     focusNodePassword.requestFocus();
+    Future.delayed(Duration(milliseconds: 800)).then((value) {
+      if (scrollController.hasClients) {
+        scrollController.animateTo(
+          scrollController.position.maxScrollExtent,
+          duration: Duration(milliseconds: 500),
+          curve: Curves.easeOut,
+        );
+      }
+    });
     setState(() {
       showEmojiKeyboard = false;
       changePassword = true;
@@ -101,19 +110,23 @@ class _BroProfileState extends State<BroProfile> {
     }
   }
 
+  onCancelPassword() {
+    setState(() {
+      oldPasswordController.text = "";
+      newPasswordController1.text = "";
+      newPasswordController2.text = "";
+      changePassword = false;
+    });
+  }
 
   changeBroname() {
     String newBroname = broNameController.text;
     print("changing bro name to $newBroname");
     AuthServiceSettings().changeBroname(newBroname).then((value) {
-      if (value == "Bro name changed") {
+      if (value) {
         showToastMessage("bro name changed successfully");
-        SecureStorage().setBroName(newBroname);
-        setState(() {
-          settings.getMe()!.setBroName(newBroname);
-        });
-      } else {
-        showToastMessage(value);
+        broNameController.text = "";
+        setState(() {});
       }
     });
     setState(() {
@@ -194,6 +207,13 @@ class _BroProfileState extends State<BroProfile> {
     }
   }
 
+  onCancelBroname() {
+    setState(() {
+      broNameController.text = "";
+      broNameEnabled = false;
+    });
+  }
+
   onSaveBromotion() {
     if (bromotionValidator.currentState!.validate()) {
       String newBromotion = bromotionChangeController.text;
@@ -232,7 +252,7 @@ class _BroProfileState extends State<BroProfile> {
       changePassword = false;
       broNameEnabled = false;
     });
-    Future.delayed(Duration(milliseconds: 100)).then((value) {
+    Future.delayed(Duration(milliseconds: 300)).then((value) {
       if (scrollController.hasClients) {
         scrollController.animateTo(
           scrollController.position.maxScrollExtent,
@@ -245,6 +265,15 @@ class _BroProfileState extends State<BroProfile> {
 
   onChangeBroname() {
     focusNodeBroname.requestFocus();
+    Future.delayed(Duration(milliseconds: 800)).then((value) {
+      if (scrollController.hasClients) {
+        scrollController.animateTo(
+          scrollController.position.maxScrollExtent-80,
+          duration: Duration(milliseconds: 500),
+          curve: Curves.easeOut,
+        );
+      }
+    });
     setState(() {
       showEmojiKeyboard = false;
       broNameEnabled = true;
@@ -277,11 +306,12 @@ class _BroProfileState extends State<BroProfile> {
   }
 
   void backButtonFunctionality() {
+    broNameEnabled = false;
+    changePassword = false;
+    bromotionEnabled = false;
     if (showEmojiKeyboard) {
       setState(() {
-        bromotionEnabled = false;
         showEmojiKeyboard = false;
-        broNameEnabled = false;
       });
     } else {
       navigateToHome(context, settings);
@@ -494,7 +524,17 @@ class _BroProfileState extends State<BroProfile> {
             onPressed: () {
               onSavePassword();
             },
-            child: Text('Update password'),
+            child: Text('Update password!'),
+          ),
+          TextButton(
+            style: ButtonStyle(
+              foregroundColor:
+              WidgetStateProperty.all<Color>(Colors.red),
+            ),
+            onPressed: () {
+              onCancelPassword();
+            },
+            child: Text('Cancel password update'),
           )
         ],
       );
@@ -580,7 +620,6 @@ class _BroProfileState extends State<BroProfile> {
                   }
                   return null;
                 },
-                obscureText: true,
                 controller: broNameController,
                 focusNode: focusNodeBroname,
                 style: simpleTextStyle(),
@@ -599,6 +638,16 @@ class _BroProfileState extends State<BroProfile> {
               onSaveBroname(context);
             },
             child: Text('Save new bro name!'),
+          ),
+          TextButton(
+            style: ButtonStyle(
+              foregroundColor:
+              WidgetStateProperty.all<Color>(Colors.red),
+            ),
+            onPressed: () {
+              onCancelBroname();
+            },
+            child: Text('Cancel bro name change!'),
           )
         ]
       );

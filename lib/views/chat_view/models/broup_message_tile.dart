@@ -15,8 +15,6 @@ import '../../../utils/utils.dart';
 class BroupMessageTile extends StatefulWidget {
   final Message message;
   final Bro? bro;
-  final String senderName;
-  final int senderId;
   final bool broAdded;
   final bool broAdmin;
   final bool myMessage;
@@ -27,8 +25,6 @@ class BroupMessageTile extends StatefulWidget {
       {required Key key,
         required this.message,
         required this.bro,
-        required this.senderName,
-        required this.senderId,
         required this.broAdded,
         required this.broAdmin,
         required this.myMessage,
@@ -172,7 +168,7 @@ class _BroupMessageTileState extends State<BroupMessageTile> {
             text: TextSpan(
               children: [
                 TextSpan(
-                  text: widget.senderName,
+                  text: widget.bro != null ? widget.bro!.getFullName() : "",
                   style: TextStyle(
                       color: Colors.white70, fontSize: 16),
                 ),
@@ -342,7 +338,7 @@ class _BroupMessageTileState extends State<BroupMessageTile> {
             MessageDetailPopup(
                 key: UniqueKey(),
                 myMessage: widget.myMessage,
-                sender: widget.senderName,
+                sender: widget.bro != null ? widget.bro!.getFullName() : "",
                 broAdded: widget.broAdded,
                 broAdmin: widget.broAdmin,
                 userAdmin: widget.userAdmin,
@@ -353,16 +349,24 @@ class _BroupMessageTileState extends State<BroupMessageTile> {
               Offset.zero & overlay.size))
           .then((int? delta) {
         if (delta == 1) {
-          widget.broHandling(delta!, widget.senderId);
+          if (widget.bro != null) {
+            widget.broHandling(delta!, widget.bro!.getId());
+          }
         } else if (delta == 2) {
-          widget.broHandling(delta!, widget.senderId);
+          if (widget.bro != null) {
+            widget.broHandling(delta!, widget.bro!.getId());
+          }
         } else if (delta == 3) {
           // Save the image!
           saveImageToGallery();
         } else if (delta == 4) {
-          widget.broHandling(delta!, widget.senderId);
+          if (widget.bro != null) {
+            widget.broHandling(delta!, widget.bro!.getId());
+          }
         } else if (delta == 5) {
-          widget.broHandling(delta!, widget.senderId);
+          if (widget.bro != null) {
+            widget.broHandling(delta!, widget.bro!.getId());
+          }
         }
         return;
       });
@@ -512,7 +516,7 @@ Widget getPopupItems(BuildContext context, String sender, bool broAdded, bool br
             style: TextStyle(color: Colors.black, fontSize: 14),
           )),
     ) : Container(),
-    broIsAdmin ? Container(
+    userAdmin && broIsAdmin ? Container(
       alignment: Alignment.centerLeft,
       child: TextButton(
           onPressed: () {

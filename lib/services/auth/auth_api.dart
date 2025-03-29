@@ -47,7 +47,6 @@ class AppInterceptors extends Interceptor {
   void onRequest(
       RequestOptions options, RequestInterceptorHandler handler) async {
 
-    print("Making some request right now");
     int? expiration = await secureStorage.getAccessTokenExpiration();
     String? accessToken = await secureStorage.getAccessToken();
 

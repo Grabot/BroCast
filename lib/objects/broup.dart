@@ -11,7 +11,7 @@ import 'package:intl/intl.dart';
 
 import '../utils/settings.dart';
 import '../utils/storage.dart';
-import '../views/chat_view/message_util.dart';
+import 'package:collection/collection.dart';
 import '../views/chat_view/messaging_change_notifier.dart';
 import 'bro.dart';
 
@@ -37,6 +37,7 @@ class Broup {
   bool avatarDefault = true;
 
   late List<Bro> broupBros;
+  List<Bro> messageBroRemaining = [];
   // Chat details. Initialized with empty values
   List<int> broIds = [];
   List<int> adminIds = [];
@@ -48,6 +49,7 @@ class Broup {
 
   bool dateTilesAdded = false;
   bool retrievedBros = false;
+  bool checkedRemainingBros = false;
 
   bool joinedBroupRoom = false;
   late List<int> messageIds;
@@ -127,10 +129,6 @@ class Broup {
 
   bool isRemoved() {
     return removed;
-  }
-
-  newMembersBroup() {
-    retrievedBros = false;
   }
 
   String getBroupNameOrAlias() {
@@ -260,13 +258,13 @@ class Broup {
     unreadMessages = json["unread_messages"];
     updateBroup = json.containsKey("broup_updated") ? json["broup_updated"] : false;
     newMessages = json.containsKey("new_messages") ? json["new_messages"] : false;
-    print("broup id $broupId  upodate bruoup $updateBroup   new messages $newMessages   unread messages $unreadMessages");
     // These might not be present
     alias = json.containsKey("alias") ? json["alias"] : "";
     mute = json.containsKey("mute") ? json["mute"] : false;
     deleted = json.containsKey("deleted") ? json["deleted"] : false;
     removed = json.containsKey("removed") ? json["removed"] : false;
     bool newAvatar = json.containsKey("new_avatar") ? json["new_avatar"] : false;
+    print("broup id $broupId  upodate bruoup $updateBroup   new messages $newMessages   unread messages $unreadMessages   new avatar $newAvatar");
 
     // These are the core chat values. Stored in a coupling table on the server
     broupName = "";
@@ -319,18 +317,15 @@ class Broup {
         for (int broId in broIds) {
           if (broId != meId) {
             // For private chats we want to retrieve the bro object.
-            // TODO: Check if the bro is already in storage?
-            AuthServiceSocial().retrieveBro(broId).then((bro) {
+            AuthServiceSocial().retrieveBroAvatar(broId).then((broServer) {
               // This should also retrieve the avatar
               print("retrieved bro :)");
-              if (bro != null) {
-                Storage().addBro(bro).then((value) {
-                  print("bro adding: $value");
-                });
+              if (broServer != null) {
+                Storage().addBro(broServer);
                 if (me != null) {
                   for (Broup checkBroup in me.broups) {
                     if (checkBroup.broupId == this.broupId) {
-                      checkBroup.addBro(bro);
+                      checkBroup.addBro(broServer);
                       break;
                     }
                   }
@@ -685,6 +680,7 @@ class Broup {
               if (LifeCycleService().getAppStatus() == 1) {
                 readMessages();
               }
+              MessagingChangeNotifier().notify();
             }
           } else {
             if (!newMessages) {
@@ -741,18 +737,36 @@ class Broup {
 
   retrieveBros(List<int> brosIds) async {
     Storage storage = Storage();
-    AuthServiceSocial().retrieveBros(brosIds).then((bros) {
+    AuthServiceSocial().retrieveBros(brosIds).then((brosServer) {
       // We might update it on a broup object which is overridden
       // We update the bro in the storage and then update the broup list.
-      for (Bro bro in bros) {
-        storage.updateBro(bro);
-      }
+      storage.fetchBros(brosIds).then((brosDb) {
+        for (Bro broServer in brosServer) {
+          bool found = false;
+          for (Bro broDb in brosDb) {
+            if (broServer.getId() == broDb.getId()) {
+              found = true;
+              // Here we only update the broname or the bromotion
+              // So we take the avatar from the db
+              if (broDb.getAvatar() != null ) {
+                broServer.setAvatar(broDb.getAvatar()!);
+              }
+              break;
+            }
+          }
+          if (found) {
+            storage.updateBro(broServer);
+          } else {
+            storage.addBro(broServer);
+          }
+        }
+      });
       Me? me = Settings().getMe();
       if (me != null) {
         for (Broup broup in me.broups) {
           if (broup.getBroupId() == broupId) {
-            for (Bro bro in bros) {
-              broup.addBro(bro);
+            for (Bro broServer in brosServer) {
+              broup.addBro(broServer);
             }
             broup.retrievedBros = true;
             BroHomeChangeNotifier().notify();

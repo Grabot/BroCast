@@ -79,7 +79,7 @@ class _ChatMessagingState extends State<ChatMessaging> {
     print("init chat");
     storage = Storage();
     socketServices.addListener(socketListener);
-    messagingChangeNotifier.addListener(socketListener);
+    messagingChangeNotifier.addListener(messagingListener);
     messagingChangeNotifier.setBroupId(widget.chat.broupId);
 
     lifeCycleService = LifeCycleService();
@@ -127,6 +127,12 @@ class _ChatMessagingState extends State<ChatMessaging> {
       broAddedStatus[bro.id.toString()] = false;
       broMapping[bro.id.toString()] = bro;
     }
+    for (Bro broRemaining in widget.chat.messageBroRemaining) {
+      // These bros are not in the broupBros list, but they have messages send in the broup
+      // So we need to display them correctly.
+      broAddedStatus[broRemaining.id.toString()] = false;
+      broMapping[broRemaining.id.toString()] = broRemaining;
+    }
     meAdmin = false;
     for (int adminId in widget.chat.getAdminIds()) {
       if (adminId == settings.getMe()!.getId()) {
@@ -166,6 +172,10 @@ class _ChatMessagingState extends State<ChatMessaging> {
               setDateTiles(widget.chat, 0);
               widget.chat.messages.sort((b, a) => a.getTimeStamp().compareTo(b.getTimeStamp()));
             }
+            if (!widget.chat.checkedRemainingBros) {
+              widget.chat.checkedRemainingBros = true;
+              checkMessageBroIds();
+            }
           }
           // We have retrieved the messages, so the unread messages are 0.
           widget.chat.readMessages();
@@ -184,13 +194,80 @@ class _ChatMessagingState extends State<ChatMessaging> {
     });
   }
 
+  messagingListener() {
+    setState(() {});
+  }
+
   socketListener() {
+    print("socket listener is called");
     checkIsAdmin();
     // We have received a new message, which might not have been picked up with the sockets
-    if (widget.chat.newMessages) {
+    print("new messages ${widget.chat.newMessages}   retrieved bros ${widget.chat.retrievedBros}");
+    if (widget.chat.newMessages || !widget.chat.retrievedBros) {
+      print("retrieve data");
       retrieveData();
     }
     setState(() {});
+  }
+
+  // It's possible that a bro send a message and then left.
+  // In this case we still want to correctly display the message.
+  // So we retrieve it from the db to present the correct data.
+  // If the data is not present yet, we will retrieve it.
+  checkMessageBroIds() {
+    List<int> messageBroIds = widget.chat.messages.map((message) => message.senderId).toSet().toList();
+    print("message bro ids: $messageBroIds");
+    // These are information messages, so we don't need to check them
+    if (messageBroIds.contains(0)) {
+      messageBroIds.remove(0);
+    }
+    if (messageBroIds.contains(settings.getMe()!.getId())) {
+      messageBroIds.remove(settings.getMe()!.getId());
+    }
+    for (Bro chatBro in widget.chat.broupBros) {
+      print("broup bro id: ${chatBro.getId()}");
+      if (messageBroIds.contains(chatBro.getId())) {
+        messageBroIds.remove(chatBro.getId());
+      }
+    }
+    print("message bro ids remaining db: $messageBroIds");
+    if (messageBroIds.isNotEmpty) {
+      storage.fetchBros(messageBroIds).then((brosDb) {
+        for (Bro broDb in brosDb) {
+          print("add bro from db ${broDb.getId()}");
+          if (!widget.chat.messageBroRemaining.any((element) => element.getId() == broDb.getId())) {
+            widget.chat.messageBroRemaining.add(broDb);
+          }
+          messageBroIds.remove(broDb.getId());
+        }
+        print("message bro ids remaining server: $messageBroIds");
+        if (messageBroIds.isNotEmpty) {
+          // If there are still id's remaining we have never retrieved them.
+          // So retrieve them now because we want to show the correct message data.
+          AuthServiceSocial().retrieveBros(messageBroIds).then((brosServer) {
+            for (Bro broServer in brosServer) {
+              Me? me = settings.getMe();
+              if (me != null) {
+                for (Broup broup in me.broups) {
+                  if (broup.broIds.contains(broServer.getId())) {
+                    broup.addBro(broServer);
+                  }
+                }
+              }
+              if (!widget.chat.messageBroRemaining.any((element) => element.getId() == broServer.getId())) {
+                widget.chat.messageBroRemaining.add(broServer);
+              }
+              print("add bro to db ${broServer.getId()}");
+              storage.addBro(broServer);
+            }
+            checkIsAdmin();
+            setState(() {});
+          });
+        }
+        checkIsAdmin();
+        setState(() {});
+      });
+    }
   }
 
   broHandling(int delta, int addBroId) {
@@ -252,7 +329,7 @@ class _ChatMessagingState extends State<ChatMessaging> {
     focusAppendText.dispose();
     focusEmojiTextField.dispose();
     socketServices.removeListener(socketListener);
-    messagingChangeNotifier.removeListener(socketListener);
+    messagingChangeNotifier.removeListener(messagingListener);
     lifeCycleService.removeListener(lifeCycleChangeListener);
     broMessageController.dispose();
     appendTextMessageController.dispose();
@@ -498,8 +575,6 @@ class _ChatMessagingState extends State<ChatMessaging> {
                     key: UniqueKey(),
                     message: widget.chat.messages[index],
                     bro: getBro(widget.chat.messages[index].senderId),
-                    senderName: getSender(widget.chat.messages[index].senderId),
-                    senderId: widget.chat.messages[index].senderId,
                     broAdded: getIsAdded(widget.chat.messages[index].senderId),
                     broAdmin: getIsAdmin(widget.chat.messages[index].senderId),
                     myMessage: widget.chat.messages[index].senderId ==
@@ -527,16 +602,6 @@ class _ChatMessagingState extends State<ChatMessaging> {
       return broAdminStatus[senderId.toString()]!;
     }
     return false;
-  }
-
-  String getSender(int senderId) {
-    String broName = "";
-    for (Bro bro in widget.chat.broupBros) {
-      if (bro.id == senderId) {
-        return bro.getFullName();
-      }
-    }
-    return broName;
   }
 
   void onTapEmojiTextField() {

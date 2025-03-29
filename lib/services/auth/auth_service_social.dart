@@ -254,6 +254,36 @@ class AuthServiceSocial {
     }
   }
 
+  Future<Bro?> retrieveBroAvatar(int broId) async {
+    print("retrieving bro avatar");
+    String endPoint = "bro/get/single";
+    var response = await AuthApi().dio.post(endPoint,
+        options: Options(headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+        }),
+        data: jsonEncode(<String, dynamic> {
+          "bro_id": broId,
+          "with_avatar": true
+        }
+      )
+    );
+
+    Map<String, dynamic> json = response.data;
+    if (!json.containsKey("result")) {
+      return null;
+    } else {
+      if (json["result"]) {
+        if (json.containsKey("bro")) {
+          return Bro.fromJson(json["bro"]);
+        } else {
+          return null;
+        }
+      } else {
+        return null;
+      }
+    }
+  }
+
   Future<Bro?> retrieveBro(int broId) async {
     print("retrieving bro");
     String endPoint = "bro/get/single";
@@ -262,7 +292,8 @@ class AuthServiceSocial {
           HttpHeaders.contentTypeHeader: "application/json",
         }),
         data: jsonEncode(<String, dynamic> {
-          "bro_id": broId
+          "bro_id": broId,
+          "with_avatar": false
         }
       )
     );
@@ -469,6 +500,46 @@ class AuthServiceSocial {
         }),
         data: jsonEncode(<String, dynamic>{
           "broup_id": broupId,
+        }
+      )
+    );
+
+    Map<String, dynamic> json = response.data;
+    if (!json.containsKey("result")) {
+      return false;
+    } else {
+      return json["result"];
+    }
+  }
+
+  Future<bool> broupRetrieved(int broupId) async {
+    String endPoint = "broup/retrieved";
+    var response = await AuthApi().dio.post(endPoint,
+        options: Options(headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+        }),
+        data: jsonEncode(<String, dynamic>{
+          "broup_id": broupId,
+        }
+      )
+    );
+
+    Map<String, dynamic> json = response.data;
+    if (!json.containsKey("result")) {
+      return false;
+    } else {
+      return json["result"];
+    }
+  }
+
+  Future<bool> broRetrieved(int broId) async {
+    String endPoint = "bro/retrieved";
+    var response = await AuthApi().dio.post(endPoint,
+        options: Options(headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+        }),
+        data: jsonEncode(<String, dynamic>{
+          "bro_id": broId,
         }
       )
     );

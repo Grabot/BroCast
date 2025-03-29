@@ -24,24 +24,27 @@ class Me extends Bro {
     return id;
   }
 
-  setBroName(String broName) {
-    this.broName = broName;
+  setBroName(String newBroName) {
+    this.broName = newBroName;
+    super.broName = newBroName;
   }
 
   String getBroName() {
     return this.broName;
   }
 
-  setBromotion(String bromotion) {
-    this.bromotion = bromotion;
+  setBromotion(String newBromotion) {
+    this.bromotion = newBromotion;
+    super.bromotion = newBromotion;
   }
 
   String getBromotion() {
     return this.bromotion;
   }
 
-  setAvatar(Uint8List avatar) {
-    this.avatar = avatar;
+  setAvatar(Uint8List newAvatar) {
+    this.avatar = newAvatar;
+    super.avatar = newAvatar;
   }
 
   setAvatarDefault(bool avatarDefault) {
