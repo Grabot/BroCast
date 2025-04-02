@@ -41,6 +41,10 @@ class Broup {
   // Chat details. Initialized with empty values
   List<int> broIds = [];
   List<int> adminIds = [];
+  List<int> updateBroIds = [];
+  List<int> newUpdateBroIds = [];
+  List<int> updateBroAvatarIds = [];
+  List<int> newUpdateBroAvatarIds = [];
   String broupName = "";
   String broupDescription = "";
   String alias = "";
@@ -48,7 +52,6 @@ class Broup {
   bool private = false;
 
   bool dateTilesAdded = false;
-  bool retrievedBros = false;
   bool checkedRemainingBros = false;
 
   bool joinedBroupRoom = false;
@@ -71,13 +74,14 @@ class Broup {
       this.avatar,
       this.avatarDefault
       ) {
+    print("cleared broupbros 2");
     broupBros = [];
     messages = [];
     messageIds = [];
     lastMessageId = 0;
   }
 
-  getBroupId() {
+  int getBroupId() {
     return broupId;
   }
 
@@ -179,20 +183,24 @@ class Broup {
     }
   }
 
+  insertBro(Bro bro) {
+    if (bro is Me) {
+      print("inserting me");
+      broupBros.insert(0, bro);
+    } else {
+      broupBros.add(bro);
+    }
+  }
+
   addBro(Bro bro) {
     if (!broIds.contains(bro.getId())) {
       broIds.add(bro.getId());
     }
     if (!broupBros.any((element) => element.getId() == bro.getId())) {
-      broupBros.add(bro);
+      insertBro(bro);
     } else {
       broupBros.removeWhere((element) => element.getId() == bro.getId());
-      if (bro is Me) {
-        print("inserting me");
-        broupBros.insert(0, bro);
-      } else {
-        broupBros.add(bro);
-      }
+      insertBro(bro);
     }
   }
 
@@ -255,7 +263,7 @@ class Broup {
   Broup.fromJson(Map<String, dynamic> json) {
     // These 4 values should always be present
     broupId = json["broup_id"];
-    unreadMessages = json["unread_messages"];
+    unreadMessages = json.containsKey("unread_messages") ? json["unread_messages"] : 0;
     updateBroup = json.containsKey("broup_updated") ? json["broup_updated"] : false;
     newMessages = json.containsKey("new_messages") ? json["new_messages"] : false;
     // These might not be present
@@ -263,7 +271,7 @@ class Broup {
     mute = json.containsKey("mute") ? json["mute"] : false;
     deleted = json.containsKey("deleted") ? json["deleted"] : false;
     removed = json.containsKey("removed") ? json["removed"] : false;
-    bool newAvatar = json.containsKey("new_avatar") ? json["new_avatar"] : false;
+    newAvatar = json.containsKey("new_avatar") ? json["new_avatar"] : false;
     print("broup id $broupId  upodate bruoup $updateBroup   new messages $newMessages   unread messages $unreadMessages   new avatar $newAvatar");
 
     // These are the core chat values. Stored in a coupling table on the server
@@ -285,73 +293,33 @@ class Broup {
           this.blocked = true;
         }
       }
+      if (chat_details.containsKey("avatar") && chat_details["avatar"] != null) {
+        avatar = base64Decode(chat_details["avatar"].replaceAll("\n", ""));
+        // This variable can only ever be here if the avatar was send as well.
+        avatarDefault = chat_details.containsKey("avatar_default") ? chat_details["avatar_default"] : true;
+      }
     }
     broupBros = [];
     messages = [];
     messageIds = [];
+
     if (json.containsKey("update_bros") && json["update_bros"] != null) {
       List<int> brosUpdate = json["update_bros"].cast<int>();
-      if (brosUpdate.isNotEmpty) {
-        retrieveBros(brosUpdate);
-      }
+      newUpdateBroIds = brosUpdate;
     }
-    // It's possible that the avatar was already sent with the rest of the data
-    // But we usually don't to keep thing moving.
-    // We will retrieve it if it's necessary here.
-    if (newAvatar) {
-      newAvatar = false;
-      if (private) {
-        Me? me = Settings().getMe();
-        int meId = me != null ? me.getId() : -1;
-        // We also build up the broups when logging in, in this case the `me` object is not yet set
-        // In this specific case we will pass the meId with this broup json object
-        if (meId == -1) {
-          print("meId is -1");
-          meId = json.containsKey("meId") ? json["meId"] : -1;
-          print("meId is now $meId");
-          if (meId == -1) {
-            // If it's still -1 we will give up.
-            return;
-          }
-        }
-        for (int broId in broIds) {
-          if (broId != meId) {
-            // For private chats we want to retrieve the bro object.
-            AuthServiceSocial().retrieveBroAvatar(broId).then((broServer) {
-              // This should also retrieve the avatar
-              print("retrieved bro :)");
-              if (broServer != null) {
-                Storage().addBro(broServer);
-                if (me != null) {
-                  for (Broup checkBroup in me.broups) {
-                    if (checkBroup.broupId == this.broupId) {
-                      checkBroup.addBro(broServer);
-                      break;
-                    }
-                  }
-                }
-                BroHomeChangeNotifier().notify();
-              }
-            });
-            break;
-          }
-        }
-      } else {
-        AuthServiceSocial().getAvatarBroup(broupId).then((value) {
-          if (value) {
-            // TODO: Send update to server that the avatar was retrieved?
-          }
-        });
-      }
+    if (json.containsKey("update_bros_avatar") && json["update_bros_avatar"] != null) {
+      List<int> brosAvatarUpdate = json["update_bros_avatar"].cast<int>();
+      newUpdateBroAvatarIds = brosAvatarUpdate;
     }
   }
 
   Map<String, dynamic> toDbMap() {
-    print("mapping broup");
     var map = Map<String, dynamic>();
     map['broupId'] = broupId;
     map['broIds'] = jsonEncode(broIds);
     map['adminIds'] = jsonEncode(adminIds);
+    map['updateBroIds'] = jsonEncode(updateBroIds);
+    map['updateBroAvatarIds'] = jsonEncode(updateBroAvatarIds);
     map['broupName'] = broupName;
     map['broupDescription'] = broupDescription;
     map['alias'] = alias;
@@ -417,6 +385,13 @@ class Broup {
     List<int> broAdminIdList = broAdminsIds.map((s) => s as int).toList();
     this.adminIds = broAdminIdList;
 
+    List<dynamic> updateBroIds = jsonDecode(map['updateBroIds']);
+    List<int> updateBroIdsList = updateBroIds.map((s) => s as int).toList();
+    this.updateBroIds = updateBroIdsList;
+    List<dynamic> updateBroAvatarIds = jsonDecode(map['updateBroAvatarIds']);
+    List<int> updateBroAvatarIdsList = updateBroAvatarIds.map((s) => s as int).toList();
+    this.updateBroAvatarIds = updateBroAvatarIdsList;
+
     broupName = map['broupName'];
     broupDescription = map['broupDescription'];
     alias = map['alias'];
@@ -442,6 +417,29 @@ class Broup {
   }
 
   updateBroupLocalDB(Broup localBroup) {
+    // Check if the data from the server indicates that the bro is now blocked from the chat.
+    if (this.removed && localBroup.removed) {
+      // Add block message
+      String blockMessageText = "Chat is blocked! 😭";
+      if (!localBroup.private) {
+        blockMessageText = "You are removed from the broup! 😭";
+      }
+      Message blockMessage = Message(
+        lastMessageId + 1,
+        0,
+        blockMessageText,
+        "",
+        DateTime.now().toUtc().toString(),
+        null,
+        true,
+        localBroup.getBroupId(),
+      );
+      Storage().addMessage(blockMessage);
+      this.messages.insert(
+          0,
+          blockMessage);
+    }
+
     // If updateBroup was true, these values should be taken from the server, which are now on `this` broup object.
     if (this.updateBroup) {
       this
@@ -502,8 +500,26 @@ class Broup {
     if (messages.isNotEmpty) {
       messages.removeWhere((element) => element.messageId == 0);
     }
+    // We might have some new bros to update, add them to the `updateBroIds`
+    if (newUpdateBroIds.isNotEmpty) {
+      // The updateBroIds is only additive. Once the broup is opened, these are retrieved.
+      for (int broId in newUpdateBroIds) {
+        if (!localBroup.updateBroIds.contains(broId)) {
+          localBroup.updateBroIds.add(broId);
+        }
+      }
+    }
+    if (newUpdateBroAvatarIds.isNotEmpty) {
+      for (int broAvatarId in newUpdateBroAvatarIds) {
+        if (!localBroup.updateBroAvatarIds.contains(broAvatarId)) {
+          localBroup.updateBroAvatarIds.add(broAvatarId);
+        }
+      }
+    }
     // Always take these values locally.
     this
+      ..updateBroIds = localBroup.updateBroIds
+      ..updateBroAvatarIds = localBroup.updateBroAvatarIds
       ..avatarDefault = localBroup.avatarDefault
       ..avatar = localBroup.avatar;
   }
@@ -558,6 +574,8 @@ class Broup {
       messages.removeWhere((element) => element.messageId == 0);
     }
     this
+      ..updateBroIds = this.updateBroIds
+      ..updateBroAvatarIds = this.updateBroAvatarIds
       ..lastMessageId = this.lastMessageId
       ..messages = this.messages
       ..avatarDefault = this.avatarDefault
@@ -768,9 +786,8 @@ class Broup {
             for (Bro broServer in brosServer) {
               broup.addBro(broServer);
             }
-            broup.retrievedBros = true;
             BroHomeChangeNotifier().notify();
-            AuthServiceSocial().broupBrosRetrieved(broupId);
+            AuthServiceSocial().broupBrosRetrieved(broupId, brosIds);
             break;
           }
         }

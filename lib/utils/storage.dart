@@ -53,6 +53,8 @@ class Storage {
             broupId INTEGER,
             broIds TEXT,
             adminIds TEXT,
+            updateBroIds TEXT,
+            updateBroAvatarIds TEXT,
             broupName TEXT NOT NULL,
             broupDescription TEXT,
             alias TEXT,
@@ -107,6 +109,7 @@ class Storage {
   }
 
   Future<int> addBro(Bro bro) async {
+    print("adding bro ${bro.broName} ${bro.bromotion}");
     Database database = await this.database;
     return database.insert(
       'Bro',
@@ -147,6 +150,7 @@ class Storage {
   }
 
   Future<int> updateBroup(Broup broup) async {
+    print("updating broup  ${broup.broupId} ${broup.avatar}");
     Database database = await this.database;
     return database.update(
       'Broup',
@@ -251,6 +255,16 @@ class Storage {
     } else {
       return null;
     }
+  }
+
+  Future<List<Broup>> fetchBroups(List<int> broupIds) async {
+    Database database = await this.database;
+    String query = "SELECT * FROM Broup WHERE broupId IN (${broupIds.join(',')})";
+    List<Map<String, dynamic>> maps = await database.rawQuery(query);
+    if (maps.isNotEmpty) {
+      return maps.map((map) => Broup.fromDbMap(map)).toList();
+    }
+    return List.empty();
   }
 
   Future<Broup?> fetchBroup(int broupId) async {

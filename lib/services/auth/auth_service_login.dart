@@ -37,7 +37,7 @@ class AuthServiceLogin {
 
     LoginResponse loginResponse = LoginResponse.fromJson(response.data);
     if (loginResponse.getResult()) {
-      successfulLogin(loginResponse);
+      successfulLoginLogin(loginResponse);
     }
     return loginResponse;
   }
@@ -54,7 +54,7 @@ class AuthServiceLogin {
 
     LoginResponse loginResponse = LoginResponse.fromJson(response.data);
     if (loginResponse.getResult()) {
-      successfulLogin(loginResponse);
+      successfulLoginLogin(loginResponse);
     }
     return loginResponse;
   }
@@ -71,7 +71,7 @@ class AuthServiceLogin {
 
     LoginResponse loginResponse = LoginResponse.fromJson(response.data);
     if (loginResponse.getResult()) {
-      successfulLogin(loginResponse);
+      successfulLoginLogin(loginResponse);
     }
     return loginResponse;
   }
@@ -134,6 +134,7 @@ class AuthServiceLogin {
   }
 
   Future<LoginResponse> getTokenLogin() async {
+    print("doing token login");
     String endPoint = "login/token";
     var response = await AuthApi().dio.post(endPoint,
         options: Options(headers: {
@@ -142,11 +143,12 @@ class AuthServiceLogin {
         data: jsonEncode(<String, String> {}
       )
     );
+    print("doing token login 2");
 
     LoginResponse loginResponse = LoginResponse.fromJson(response.data);
     print("got response from token login ${loginResponse.getResult()}");
     if (loginResponse.getResult()) {
-      successfulLogin(loginResponse);
+      successfulLoginToken(loginResponse);
     }
     return loginResponse;
   }
@@ -235,7 +237,7 @@ class AuthServiceLogin {
 
     LoginResponse loginResponse = LoginResponse.fromJson(response.data);
     if (loginResponse.getResult()) {
-      successfulLogin(loginResponse);
+      successfulLoginLogin(loginResponse);
     }
     return loginResponse;
   }
@@ -273,6 +275,7 @@ class AuthServiceLogin {
             secureStorage.setAvatarDefault(isDefault ? "1" : "0");
             Storage().updateBro(me);
           }
+          Settings().retrievedBroupData = false;
           BroHomeChangeNotifier().notify();
           return true;
         }

@@ -96,7 +96,11 @@ class AppInterceptors extends Interceptor {
               }
           ).catchError((error, stackTrace) {
             print("reject 3 clean");
-            throw error;
+            DioException dioError = DioException(requestOptions: options,
+                type: DioExceptionType.cancel,
+                error: "User not authorized");
+            print("reject 4 clean");
+            return handler.reject(dioError, true);
           });
 
           LoginResponse loginRefresh = LoginResponse.fromJson(response.data);

@@ -193,10 +193,13 @@ class NotificationController extends ChangeNotifier {
   }
 
   updateServer(String newFCMToken) {
-    AuthServiceSocial().updateFCMToken(newFCMToken).then((value) {
-      if (value) {
-        print("FCM token updated on server");
-      }
+    // We will update the FCM token, but with a delay to allow the login process to finish.
+    Future.delayed(Duration(seconds: 2), () {
+      AuthServiceSocial().updateFCMToken(newFCMToken).then((value) {
+        if (value) {
+          print("FCM token updated on server");
+        }
+      });
     });
   }
 

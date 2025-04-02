@@ -279,15 +279,10 @@ class _BroTileState extends State<BroTile> {
             dbBroup.mute = widget.chat.mute;
             dbBroup.muteValue = widget.chat.muteValue;
             Storage().updateBroup(dbBroup).then((value) {
-              print("Broup muting updated in local DB");
               BroHomeChangeNotifier().notify();
             });
           }
-          // Broup listBroup = settings.getMe()!.broups.firstWhere((element) => element.broupId == widget.chat.broupId);
-          // listBroup.mute = widget.chat.mute;
-          // listBroup.muteValue = widget.chat.muteValue;
         });
-        BroHomeChangeNotifier().notify();
       } else {
         showToastMessage("Broup muting failed at this time.");
       }

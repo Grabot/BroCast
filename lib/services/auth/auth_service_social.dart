@@ -6,6 +6,7 @@ import 'package:brocast/services/auth/models/base_response.dart';
 import 'package:brocast/utils/utils.dart';
 import 'package:brocast/views/bro_home/bro_home.dart';
 import 'package:brocast/views/bro_home/bro_home_change_notifier.dart';
+import 'package:brocast/views/chat_view/messaging_change_notifier.dart';
 import 'package:dio/dio.dart';
 
 import '../../objects/bro.dart';
@@ -373,10 +374,7 @@ class AuthServiceSocial {
           // New broup. Give the server some time to generate the avatar.
           Future.delayed(Duration(seconds: 2)).then((value) {
             getAvatarBroup(newBroup.broupId).then((value) {
-              if (value) {
-                // Data is retrieved, and updated on the broup db object.
-                // TODO: update new_avatar false?
-              }
+              // updated in db and broup list.
             });
           });
           BroHomeChangeNotifier().notify();
@@ -492,8 +490,358 @@ class AuthServiceSocial {
     }
   }
 
-  Future<bool> broupBrosRetrieved(int broupId) async {
+  Future<bool> broupBrosRetrieved(int broupId, List<int> broIds) async {
     String endPoint = "broup/bros_retrieved";
+    var response = await AuthApi().dio.post(endPoint,
+        options: Options(headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+        }),
+        data: jsonEncode(<String, dynamic>{
+          "broup_id": broupId,
+          "bro_ids": broIds
+        }
+      )
+    );
+
+    Map<String, dynamic> json = response.data;
+    if (!json.containsKey("result")) {
+      return false;
+    } else {
+      return json["result"];
+    }
+  }
+
+  broDetailsDone(List<int> brosToUpdate, List<int> broAvatarsToUpdate, int? broupId) {
+    Settings settings = Settings();
+    settings.retrievedBroData = false;
+    settings.retrievedBroupData = false;
+    BroHomeChangeNotifier().notify();
+    // All the bro id's in the lists are updated, if they are in some broup updateBroId lists we can remove them there.
+
+    if (broupId != null) {
+      for (Broup broupMe in settings.getMe()!.broups) {
+        if (broupMe.getBroupId() == broupId) {
+          Set<int> combinedSet = Set<int>.from(brosToUpdate)
+            ..addAll(broAvatarsToUpdate);
+          List<int> combinedList = combinedSet.toList();
+          Storage().fetchBros(combinedList).then((brosDb) {
+            for (Bro broDb in brosDb) {
+              if (broupMe.getBroIds().contains(broDb.getId())) {
+                print("adding a bro in the broupbros");
+                broupMe.addBro(broDb);
+              } else {
+                print("a bro was no longer found in the broId list");
+                // check if broDb is in the bro remaining list
+                if (!broupMe.messageBroRemaining.any((element) =>
+                element.getId() == broDb.getId())) {
+                  print("bro ${broDb.getBroName()} ${broDb.getBromotion()}");
+                  print("adding it to remaining bros!");
+                  broupMe.messageBroRemaining.add(broDb);
+                }
+              }
+            }
+            MessagingChangeNotifier().notify();
+          });
+        }
+      }
+    }
+
+    for (Broup broupMe in settings.getMe()!.broups) {
+      for (int broUpdateId in brosToUpdate) {
+        if (broupMe.updateBroIds.contains(broUpdateId)) {
+          broupMe.updateBroIds.remove(broUpdateId);
+        }
+      }
+      for (int broAvatarUpdateId in broAvatarsToUpdate) {
+        if (broupMe.updateBroAvatarIds.contains(broAvatarUpdateId)) {
+          broupMe.updateBroAvatarIds.remove(broAvatarUpdateId);
+        }
+      }
+    }
+  }
+
+  Future<void> broDetails(List<int> brosToUpdate, List<int> broAvatarsToUpdate, int? broupId) async {
+    String endPoint = "bro/details";
+
+    var response = await AuthApi().dio.post(endPoint,
+        options: Options(headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+        }),
+        data: jsonEncode(<String, dynamic>{
+          "bro_update_ids": brosToUpdate,
+          "bro_avatar_update_ids": broAvatarsToUpdate,
+        }
+      )
+    );
+
+    print("broToUpdate $brosToUpdate");
+    print("broAvatarsToUpdate $broAvatarsToUpdate");
+
+    // We take the list and remove entries until everything is gone. That's how we know we're done.
+    // We still want the original lists for later checks, so we copy them here.
+    List<int> brosToUpdateCheck = [...brosToUpdate];
+    List<int> broAvatarsToUpdateCheck = [...broAvatarsToUpdate];
+    Set<int> combinedSet = Set<int>.from(brosToUpdateCheck)
+      ..addAll(broAvatarsToUpdateCheck);
+    List<int> combinedList = combinedSet.toList();
+
+    Storage storage = Storage();
+    Map<String, dynamic> json = response.data;
+    storage.fetchBros(combinedList).then((dbBros) {
+      Map<String, Bro> brosDbMap = {for (var bro in dbBros) bro.getId().toString(): bro};
+      if (!json.containsKey("result")) {
+        // TODO: What to do if it goes wrong?
+        // return false;
+      } else {
+        // We'll gather the bro data and store it in the db here.
+        if (!json.containsKey("bros")) {
+          // TODO: What to do if it goes wrong?
+          // return false;
+        } else {
+          for (var bro in json["bros"]) {
+            Bro newBro = Bro.fromJson(bro);
+            print("new bro ${newBro.broName}  ${newBro.bromotion}");
+            if (broAvatarsToUpdateCheck.contains(newBro.id)) {
+              // Bro with avatar. Here we'll have all the bro data so just override in the db.
+              storage.addBro(newBro);
+
+              broAvatarsToUpdateCheck.remove(newBro.id);
+              if (brosToUpdateCheck.contains(newBro.id)) {
+                brosToUpdateCheck.remove(newBro.id);
+              }
+
+              if (brosToUpdateCheck.isEmpty && broAvatarsToUpdateCheck.isEmpty) {
+                broDetailsDone(brosToUpdate, broAvatarsToUpdate, broupId);
+              }
+            } else if (brosToUpdateCheck.contains(newBro.id)) {
+              Bro? storedBro = brosDbMap[newBro.id.toString()];
+              if (storedBro != null) {
+                // Bro with avatar.
+                newBro.avatar = storedBro.avatar;
+                storage.updateBro(newBro);
+              } else {
+                storage.addBro(newBro);
+              }
+              brosToUpdateCheck.remove(newBro.id);
+              if (brosToUpdateCheck.isEmpty && broAvatarsToUpdateCheck.isEmpty) {
+                broDetailsDone(brosToUpdate, broAvatarsToUpdate, broupId);
+              }
+            } else {
+              // Bro not in the lists, should not be possible
+            }
+          }
+        }
+      }
+    });
+  }
+
+  broupDetailsDone(List<int> combinedList) {
+    Me? me = Settings().getMe();
+    if (me != null) {
+      // Create a set of broup IDs from me.broups for efficient lookup
+      Set<int> meBroupIds = {for (Broup broupMe in me.broups) broupMe.getBroupId()};
+
+      // Find the IDs from combinedList that are not in me.broups
+      List<int> missingIds = combinedList.where((id) => !meBroupIds.contains(id)).toList();
+      print("missingIds $missingIds");
+      if (missingIds.isNotEmpty) {
+        // There were broups missing! They should be in the db now
+        Storage().fetchBroups(missingIds).then((broupDbs) {
+          for (Broup broupDb in broupDbs) {
+            // Add the missing broup to me.broups
+            me.addBroup(broupDb);
+          }
+          // After adding the broups we check if the avatars need to be retrieved.
+          List<int> broAvatarsToUpdate = [];
+          for (Broup broupDb in broupDbs) {
+            if (broupDb.private) {
+              for (int broId in broupDb.getBroIds()) {
+                if (broId != me.id) {
+                  broAvatarsToUpdate.add(broId);
+                }
+              }
+            } else {
+              // Since it's probably a clean login here we will set all the bros to be updated in broups.
+              // After this we will subtract the available private chats and me since they are retrieved now.
+              broupDb.updateBroIds = [...broupDb.broIds];
+              broupDb.updateBroAvatarIds = [...broupDb.broIds];
+              print("setting broIds to be updated ${broupDb.updateBroIds}");
+              for (Broup broupDb2 in broupDbs) {
+                if (broupDb2.private) {
+                  for (int broId in broupDb2.getBroIds()) {
+                    if (broId != me.id) {
+                      if (broupDb.updateBroIds.contains(broId)) {
+                        print("removing broId $broId from updateBroIds ${broupDb.updateBroIds}");
+                        broupDb.updateBroIds.remove(broId);
+                        broupDb.updateBroAvatarIds.remove(broId);
+                      }
+                    }
+                  }
+                }
+              }
+              if (broupDb.updateBroIds.contains(me.getId())) {
+                print("removing me ${me.getId()} from updateBroIds ${broupDb.updateBroIds}");
+                broupDb.updateBroIds.remove(me.getId());
+                broupDb.updateBroAvatarIds.remove(me.getId());
+              }
+            }
+            Storage().updateBroup(broupDb);
+          }
+          Settings().retrievedBroupData = false;
+          BroHomeChangeNotifier().notify();
+          broDetails(broAvatarsToUpdate, broAvatarsToUpdate, null);
+        });
+      }
+    }
+    Settings().retrievedBroupData = false;
+    BroHomeChangeNotifier().notify();
+  }
+
+  Future<void> broupDetails(List<int> broupsToUpdate, List<int> broupAvatarsToUpdate) async {
+    String endPoint = "broup/details";
+
+    var response = await AuthApi().dio.post(endPoint,
+        options: Options(headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+        }),
+        data: jsonEncode(<String, dynamic>{
+          "broup_update_ids": broupsToUpdate,
+          "broup_avatar_update_ids": broupAvatarsToUpdate,
+        }
+      )
+    );
+
+    // We take the list and remove entries until everything is gone. That's how we know we're done.
+    // We still want the original lists for later checks, so we copy them here.
+    List<int> broupsToUpdateCheck = [...broupsToUpdate];
+    List<int> broupAvatarsToUpdateCheck = [...broupAvatarsToUpdate];
+
+    Set<int> combinedSet = Set<int>.from(broupsToUpdateCheck)
+      ..addAll(broupAvatarsToUpdateCheck);
+    List<int> combinedList = combinedSet.toList();
+    Storage storage = Storage();
+    print("combinedList $combinedList");
+    storage.fetchBroups(combinedList).then((dbBroups) async {
+      Map<String, Broup> broupDbMap = {for (var broup in dbBroups) broup.getBroupId().toString(): broup};
+      Map<String, dynamic> json = response.data;
+      if (!json.containsKey("result")) {
+        // TODO: What if it goes wrong?
+        // return false;
+      } else {
+        // We'll gather the bro data and store it in the db here.
+        if (!json.containsKey("broups")) {
+          // TODO: What if it goes wrong?
+          // return false;
+        } else {
+          print("just printing everything");
+          print(json["broups"]);
+          for (var broup in json["broups"]) {
+            int broupId = broup["broup_id"];
+            if (broupAvatarsToUpdateCheck.contains(broupId) && broupsToUpdateCheck.contains(broupId)) {
+              Broup newBroup = Broup.fromJson(broup);
+              Broup? existingBroup = broupDbMap[broupId.toString()];
+              if (existingBroup != null) {
+                // Broup with avatar.
+                existingBroup.updateBroupDataServer(newBroup);
+                // Make sure that the avatar is transferred, since it was send with the request.
+                existingBroup.avatar = newBroup.avatar;
+                existingBroup.avatarDefault = newBroup.avatarDefault;
+                await storage.updateBroup(existingBroup);
+              } else {
+                await storage.addBroup(newBroup);
+              }
+              broupAvatarsToUpdateCheck.remove(broupId);
+              broupsToUpdateCheck.remove(broupId);
+              if (broupsToUpdateCheck.isEmpty && broupAvatarsToUpdateCheck.isEmpty) {
+                broupDetailsDone(combinedList);
+                return;
+              }
+            } else if (broupAvatarsToUpdateCheck.contains(broupId)) {
+              print("broupAvatarsToUpdateCheck");
+              Map<String, dynamic> chat_details = broup["chat"];
+              if (chat_details.containsKey("avatar") && chat_details["avatar"] != null) {
+                Uint8List avatar = base64Decode(chat_details["avatar"].replaceAll("\n", ""));
+                // This variable can only ever be here if the avatar was send as well.
+                bool avatarDefault = chat_details.containsKey("avatar_default") ? chat_details["avatar_default"] : true;
+                Broup? existingBroup = broupDbMap[broupId.toString()];
+                if (existingBroup != null) {
+                  existingBroup
+                    ..avatar = avatar
+                    ..avatarDefault = avatarDefault;
+                  print("updating existing broup  ${existingBroup.broupId} ${existingBroup.avatar}");
+                  await storage.updateBroup(existingBroup);
+                }
+                broupDbMap.remove(broupId.toString());
+                broupAvatarsToUpdateCheck.remove(broupId);
+                if (broupsToUpdateCheck.isEmpty && broupAvatarsToUpdateCheck.isEmpty) {
+                  broupDetailsDone(combinedList);
+                  return;
+                }
+              } else {
+                print("Huge problem?!");
+              }
+            } else if (broupsToUpdateCheck.contains(broupId)) {
+              broupsToUpdateCheck.remove(broupId);
+              Broup newBroup = Broup.fromJson(broup);
+              Broup? existingBroup = broupDbMap[broupId.toString()];
+              if (existingBroup != null) {
+                // Broup with avatar.
+                existingBroup.updateBroupDataServer(newBroup);
+                await storage.updateBroup(existingBroup);
+              } else {
+                await storage.addBroup(newBroup);
+              }
+              if (broupsToUpdateCheck.isEmpty && broupAvatarsToUpdateCheck.isEmpty) {
+                broupDetailsDone(combinedList);
+                return;
+              }
+            } else {
+              // Bro not in the lists, should not be possible
+            }
+          }
+        }
+      }
+    });
+  }
+
+  Future<bool> broupsBroIdsReceived(List<int> broupIds) async {
+    String endPoint = "broups/received/broids";
+    var response = await AuthApi().dio.post(endPoint,
+        options: Options(headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+        }),
+        data: jsonEncode(<String, dynamic>{
+          "broup_ids": broupIds,
+        }
+      )
+    );
+
+    Map<String, dynamic> json = response.data;
+    if (!json.containsKey("result")) {
+      return false;
+    } else {
+      return json["result"];
+    }
+  }
+
+  setBroupsReceived(List<int> broupsReceived) {
+    if (broupsReceived.length == 1) {
+      broupBroIdsReceived(broupsReceived[0]).then((value) {
+        if (value) {
+          print("broupBroIdsReceived success");
+        }
+      });
+    } else {
+      broupsBroIdsReceived(broupsReceived).then((value) {
+        if (value) {
+          print("broupsBroIdsReceived success");
+        }
+      });
+    }
+  }
+
+  Future<bool> broupBroIdsReceived(int broupId) async {
+    String endPoint = "broup/received/broids";
     var response = await AuthApi().dio.post(endPoint,
         options: Options(headers: {
           HttpHeaders.contentTypeHeader: "application/json",

@@ -8,6 +8,7 @@ class LoginResponse {
   String? accessToken;
   String? refreshToken;
   String? FCMToken;
+  List<int> broupIds = [];
   Me? me;
 
   LoginResponse(this.result, this.message, this.accessToken, this.refreshToken, this.FCMToken, this.me);
@@ -50,6 +51,9 @@ class LoginResponse {
         if (json.containsKey("bro")) {
           Map<String, dynamic> userJson = json["bro"];
           me = Me.fromJson(userJson);
+        }
+        if (json.containsKey("broup_ids") && json["broup_ids"] != null) {
+          broupIds = json["broup_ids"].cast<int>();
         }
       }
     }

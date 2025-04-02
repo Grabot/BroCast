@@ -200,7 +200,8 @@ class _ChatDetailsState extends State<ChatDetails> {
         if (value) {
           setState(() {
             widget.chat.removeBro(broId);
-            widget.chat.retrievedBros = false;
+            // TODO: reset the bros on the broup?
+            // widget.chat.retrievedBros = false;
             widget.chat.checkedRemainingBros = false;
             amountInGroup = widget.chat.getBroupBros().length;
             print("bro has been removed :'(");
@@ -1366,9 +1367,6 @@ class _ChatDetailsState extends State<ChatDetails> {
               BroHomeChangeNotifier().notify();
             });
           }
-          // Broup listBroup = settings.getMe()!.broups.firstWhere((element) => element.broupId == widget.chat.broupId);
-          // listBroup.mute = widget.chat.mute;
-          // listBroup.muteValue = widget.chat.muteValue;
         });
         navigateToHome(context, settings);
       } else {

@@ -7,68 +7,80 @@ import '../../objects/message.dart';
 import '../../services/auth/auth_service_social.dart';
 import '../../utils/storage.dart';
 
-
-Future<bool> getBroupUpdate(Broup chat, Storage storage) async {
-  if (chat.updateBroup && !chat.removed) {
-    chat.updateBroup = false;
-    Broup? broupServer = await AuthServiceSocial().retrieveBroup(chat.broupId);
-    if (broupServer != null) {
-      // We have retrieved a new broup object,
-      // but we want to update the existing one
-      chat.updateBroupDataServer(broupServer);
-      chat.updateBroup = false;
-      storage.updateBroup(chat);
-    }
-    return true;
-  }
+Future<bool> getBroupDataBroup(Broup chat, Storage storage, Me? me) async {
+  storage.fetchBroup(chat.broupId).then((broupDb) {
+    print("bro ids ${chat.broIds}");
+    storage.fetchBros(chat.broIds).then((brosDb) {
+      Map<String, Bro> broMap = {for (var bro in brosDb) bro.getId().toString(): bro};
+      if (me != null) {
+        for (Broup meBroup in me.broups) {
+          if (meBroup.broupId == chat.broupId) {
+            print("found broup in me going to update");
+            print("broMap $broMap");
+            if (broupDb == null) {
+              // TODO: New broup found here? Is this possible?
+            } else {
+              if (chat.avatar != broupDb.avatar) {
+                chat.avatar = broupDb.avatar;
+                chat.avatarDefault = broupDb.avatarDefault;
+              }
+              for (int broId in chat.broIds) {
+                Bro? dbBro = broMap[broId.toString()];
+                if (dbBro != null) {
+                  print("found a dbBro ${dbBro.getBroName()}");
+                  if (!chat.broupBros.any((element) => element.getId() == dbBro.getId())) {
+                    print("adding a dbBro ${dbBro.getBroName()} ${dbBro.getBromotion()}");
+                    chat.addBro(dbBro);
+                  }
+                }
+              }
+            }
+            break;
+          }
+        }
+      }
+    });
+  });
   return true;
 }
 
 Future<bool> getBros(Broup chat, Storage storage, Me me) async {
-  print("getting bros!!!!");
-  // First retrieve from the db.
-  if (chat.retrievedBros) {
-    print("already retrieved");
-    return true;
+  // first check if one of the updateBros might not be needed to retrieve anymore, if he left for instance.
+  print("current bro ids to update ${chat.updateBroIds}");
+  print("current bro avatar ids to update ${chat.updateBroAvatarIds}");
+  for (int broToUpdateId in [...chat.updateBroIds]) {
+    if (!chat.getBroIds().contains(broToUpdateId)) {
+      // The broToUpdateId is no longer in the broIds, so we remove it.
+      chat.updateBroIds.remove(broToUpdateId);
+    }
   }
-  List<Bro> storageBros = await storage.fetchBros(chat.getBroIds());
+  for (int broAvatarToUpdateId in [...chat.updateBroAvatarIds]) {
+    if (!chat.getBroIds().contains(broAvatarToUpdateId)) {
+      chat.updateBroAvatarIds.remove(broAvatarToUpdateId);
+    }
+  }
+  if (chat.updateBroIds.contains(me.getId())) {
+    chat.updateBroIds.remove(me.getId());
+  }
+  if (chat.updateBroAvatarIds.contains(me.getId())) {
+    chat.updateBroAvatarIds.remove(me.getId());
+  }
 
-  print("got bros from the db ${storageBros}");
-  // Copy the list so you're not making changes.
-  List<int> broIdsToRetrieveServer = [...chat.broIds];
-  for (Bro bro in storageBros) {
-    broIdsToRetrieveServer.remove(bro.id);
-  }
-  if (broIdsToRetrieveServer.contains(me.id)) {
-    broIdsToRetrieveServer.remove(me.id);
-  }
+  print("getting bros!!!!");
+  List<int> broIdsToRetrieveServer = [...chat.updateBroIds];
+  List<int> broAvatarIdsToRetrieveServer = [...chat.updateBroAvatarIds];
+  print("broIdsToRetrieveServer: $broIdsToRetrieveServer");
+  print("broAvatarIdsToRetrieveServer: $broAvatarIdsToRetrieveServer");
 
   // Then retrieve from the server the bros that have to be updated.
-  List<Bro> brosServer = [];
-  if (broIdsToRetrieveServer.isNotEmpty) {
-    brosServer = await AuthServiceSocial().retrieveBros(broIdsToRetrieveServer);
+  if (!chat.removed) {
+    if (broIdsToRetrieveServer.isNotEmpty || broAvatarIdsToRetrieveServer.isNotEmpty) {
+      // get bro details of a single broup
+      AuthServiceSocial().broDetails(
+          broIdsToRetrieveServer, broAvatarIdsToRetrieveServer, chat.broupId);
+    }
   }
 
-  print("got bros from the server ${brosServer}");
-  for (Bro bro in brosServer) {
-    // Check if the bro is already in the local database
-    bool foundInDb = false;
-    for (Bro storageBro in storageBros) {
-      if (storageBro.id == bro.id) {
-        storage.updateBro(bro);
-        foundInDb = true;
-        break;
-      }
-    }
-    if (!foundInDb) {
-      storage.addBro(bro);
-    }
-  }
-  // merge lists with preference for the server data.
-  chat.broupBros = removeBroDuplicates(brosServer, storageBros, storage);
-  // You are also part of the bros
-  chat.addBro(me);
-  chat.retrievedBros = true;
   return true;
 }
 
@@ -110,10 +122,7 @@ Future<bool> getMessages(int page, Broup chat, Storage storage) async {
 
   // get messages from local db
   List<Message> localMessages = await storage.fetchMessages(chat.getBroupId(), 0);
-  print("first message id: ${localMessages.first.messageId}");
-  print("last message id: ${localMessages.last.messageId}");
   // Limit set to 50. If it retrieves less it means that it can't and all the messages have been retrieved.
-  print("length of retrieved messages: ${localMessages.length}");
   if (localMessages.length != 50) {
     allMessagesDBRetrieved = true;
   }
@@ -121,12 +130,9 @@ Future<bool> getMessages(int page, Broup chat, Storage storage) async {
     messagesDB = localMessages;
   }
   // get messages from the server
-  print("chat removed ${chat.removed}");
   if (!chat.removed) {
-    print("chat new messages ${chat.newMessages}");
     if (chat.newMessages) {
       chat.newMessages = false;
-      print("get from server");
       List<Message> retrievedMessages = await AuthServiceSocial()
           .retrieveMessages(chat.getBroupId(), chat.lastMessageId);
 

@@ -73,6 +73,8 @@ class _ChatMessagingState extends State<ChatMessaging> {
   // The key for the photo Icon
   GlobalKey photoKey = GlobalKey();
 
+  Me? me;
+
   @override
   void initState() {
     super.initState();
@@ -81,6 +83,8 @@ class _ChatMessagingState extends State<ChatMessaging> {
     socketServices.addListener(socketListener);
     messagingChangeNotifier.addListener(messagingListener);
     messagingChangeNotifier.setBroupId(widget.chat.broupId);
+
+    me = Settings().getMe();
 
     lifeCycleService = LifeCycleService();
     lifeCycleService.addListener(lifeCycleChangeListener);
@@ -123,11 +127,13 @@ class _ChatMessagingState extends State<ChatMessaging> {
 
   checkIsAdmin() {
     for (Bro bro in widget.chat.getBroupBros()) {
+      print("broup bros: ${bro.getId()}  ${bro.getBroName()} ${bro.getBromotion()}");
       broAdminStatus[bro.id.toString()] = false;
       broAddedStatus[bro.id.toString()] = false;
       broMapping[bro.id.toString()] = bro;
     }
     for (Bro broRemaining in widget.chat.messageBroRemaining) {
+      print("remaining bros: ${broRemaining.getId()}  ${broRemaining.getBroName()} ${broRemaining.getBromotion()}  ${broRemaining.getAvatar()}");
       // These bros are not in the broupBros list, but they have messages send in the broup
       // So we need to display them correctly.
       broAddedStatus[broRemaining.id.toString()] = false;
@@ -162,7 +168,7 @@ class _ChatMessagingState extends State<ChatMessaging> {
       isLoadingBros = true;
       isLoadingMessages = true;
     });
-    getBroupUpdate(widget.chat, storage).then((value) {
+    getBroupDataBroup(widget.chat, storage, me).then((value) {
       getMessages(0, widget.chat, storage).then((value) {
         allMessagesDBRetrieved = value;
         setState(() {
@@ -187,6 +193,7 @@ class _ChatMessagingState extends State<ChatMessaging> {
       });
       getBros(widget.chat, storage, settings.getMe()!).then((value) {
         checkIsAdmin();
+        storage.updateBroup(widget.chat);
         setState(() {
           isLoadingBros = false;
         });
@@ -195,6 +202,7 @@ class _ChatMessagingState extends State<ChatMessaging> {
   }
 
   messagingListener() {
+    checkIsAdmin();
     setState(() {});
   }
 
@@ -202,8 +210,8 @@ class _ChatMessagingState extends State<ChatMessaging> {
     print("socket listener is called");
     checkIsAdmin();
     // We have received a new message, which might not have been picked up with the sockets
-    print("new messages ${widget.chat.newMessages}   retrieved bros ${widget.chat.retrievedBros}");
-    if (widget.chat.newMessages || !widget.chat.retrievedBros) {
+    // TODO: check the bros on the broup? Reset?
+    if (widget.chat.newMessages ) {
       print("retrieve data");
       retrieveData();
     }
@@ -215,7 +223,14 @@ class _ChatMessagingState extends State<ChatMessaging> {
   // So we retrieve it from the db to present the correct data.
   // If the data is not present yet, we will retrieve it.
   checkMessageBroIds() {
-    List<int> messageBroIds = widget.chat.messages.map((message) => message.senderId).toSet().toList();
+    List<int> messageBroIds = widget.chat.messages
+        .where((message) => !message.info)
+        .map((message) => message.senderId)
+        .toSet()
+        .toList();
+    for (Message message in widget.chat.messages) {
+      print("message bro id: ${message.senderId} ${message.body}");
+    }
     print("message bro ids: $messageBroIds");
     // These are information messages, so we don't need to check them
     if (messageBroIds.contains(0)) {
@@ -225,48 +240,38 @@ class _ChatMessagingState extends State<ChatMessaging> {
       messageBroIds.remove(settings.getMe()!.getId());
     }
     for (Bro chatBro in widget.chat.broupBros) {
-      print("broup bro id: ${chatBro.getId()}");
       if (messageBroIds.contains(chatBro.getId())) {
         messageBroIds.remove(chatBro.getId());
       }
     }
     print("message bro ids remaining db: $messageBroIds");
     if (messageBroIds.isNotEmpty) {
-      storage.fetchBros(messageBroIds).then((brosDb) {
-        for (Bro broDb in brosDb) {
-          print("add bro from db ${broDb.getId()}");
-          if (!widget.chat.messageBroRemaining.any((element) => element.getId() == broDb.getId())) {
-            widget.chat.messageBroRemaining.add(broDb);
-          }
-          messageBroIds.remove(broDb.getId());
+      for (Bro bro in widget.chat.broupBros) {
+        if (messageBroIds.contains(bro.getId())) {
+          messageBroIds.remove(bro.getId());
         }
-        print("message bro ids remaining server: $messageBroIds");
-        if (messageBroIds.isNotEmpty) {
-          // If there are still id's remaining we have never retrieved them.
-          // So retrieve them now because we want to show the correct message data.
-          AuthServiceSocial().retrieveBros(messageBroIds).then((brosServer) {
-            for (Bro broServer in brosServer) {
-              Me? me = settings.getMe();
-              if (me != null) {
-                for (Broup broup in me.broups) {
-                  if (broup.broIds.contains(broServer.getId())) {
-                    broup.addBro(broServer);
-                  }
-                }
-              }
-              if (!widget.chat.messageBroRemaining.any((element) => element.getId() == broServer.getId())) {
-                widget.chat.messageBroRemaining.add(broServer);
-              }
-              print("add bro to db ${broServer.getId()}");
-              storage.addBro(broServer);
+      }
+      if (messageBroIds.isNotEmpty) {
+        print("retrieving message bros from db");
+        storage.fetchBros(messageBroIds).then((brosDb) {
+          for (Bro broDb in brosDb) {
+            print("add bro from db ${broDb.getId()}");
+            if (!widget.chat.messageBroRemaining.any((element) =>
+            element.getId() == broDb.getId())) {
+              widget.chat.messageBroRemaining.add(broDb);
             }
-            checkIsAdmin();
-            setState(() {});
-          });
-        }
-        checkIsAdmin();
-        setState(() {});
-      });
+            messageBroIds.remove(broDb.getId());
+          }
+          print("message bro ids remaining server: $messageBroIds");
+          if (messageBroIds.isNotEmpty) {
+            // If there are still id's remaining we have never retrieved them.
+            // So retrieve them now because we want to show the correct message data.
+            AuthServiceSocial().broDetails([], messageBroIds, widget.chat.broupId);
+          }
+          checkIsAdmin();
+          setState(() {});
+        });
+      }
     }
   }
 

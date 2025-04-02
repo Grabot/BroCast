@@ -98,8 +98,5 @@ class Me extends Bro {
         broups.add(Broup.fromJson(bro));
       }
     }
-    print("bro home change");
-    BroHomeChangeNotifier().notify();
-    print("bro home change done");
   }
 }

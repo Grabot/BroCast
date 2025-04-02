@@ -463,7 +463,8 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> {
                   widget.chat.addBro(bro);
                   broIdsToRetrieve.remove(newBroId);
                   if (broIdsToRetrieve.isEmpty) {
-                    widget.chat.retrievedBros = true;
+                    // TODO: reset the bros on the broup?
+                    // widget.chat.retrievedBros = true;
                     break;
                   }
                 }

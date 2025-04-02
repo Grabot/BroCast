@@ -5,14 +5,6 @@ import '../objects/broup.dart';
 import '../objects/me.dart';
 import '../services/auth/auth_service_social.dart';
 
-broHasBeenRetrieved(int broId) {
-  AuthServiceSocial().broRetrieved(broId).then((value) {
-    if (value) {
-
-    }
-  });
-}
-
 broUpdatedBromotion(Me me, int broId, String newBromotion) async {
   for (Broup broup in me.broups) {
     for (int broupBroId in broup.broIds) {
@@ -24,7 +16,7 @@ broUpdatedBromotion(Me me, int broId, String newBromotion) async {
             bro.bromotion = newBromotion;
             if (broup.private) {
               Storage().updateBro(bro);
-              AuthServiceSocial().broupBrosRetrieved(broup.broupId);
+              AuthServiceSocial().broupBrosRetrieved(broup.broupId, [broId]);
             }
           }
         }
@@ -37,7 +29,6 @@ broUpdatedBromotion(Me me, int broId, String newBromotion) async {
       }
     }
   }
-  broHasBeenRetrieved(broId);
 }
 
 broUpdatedBroname(Me me, int broId, String newBroname) async {
@@ -51,7 +42,7 @@ broUpdatedBroname(Me me, int broId, String newBroname) async {
             bro.broName = newBroname;
             if (broup.private) {
               Storage().updateBro(bro);
-              AuthServiceSocial().broupBrosRetrieved(broup.broupId);
+              AuthServiceSocial().broupBrosRetrieved(broup.broupId, [broId]);
             }
           }
         }
@@ -64,5 +55,4 @@ broUpdatedBroname(Me me, int broId, String newBroname) async {
       }
     }
   }
-  broHasBeenRetrieved(broId);
 }
