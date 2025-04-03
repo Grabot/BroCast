@@ -284,28 +284,36 @@ class SocketServices extends ChangeNotifier {
             }
           }
         }
-        // TODO: This is send via sockets right? So not needed?
-        // if (data.containsKey("new_avatar")) {
-        //   print("gotten a new avatar for a broup!");
-        //   bool newAvatar = data["new_avatar"];
-        //   // We assume the newAvatar is True
-        //   print(
-        //       "gotten a new avatar! $newAvatar  $changedBroupAvatar  $broupId");
-        //   // If changedBroupAvatar is equal to the broupId
-        //   // it means we just changed it ourselves.
-        //   if (newAvatar && !(changedBroupAvatar == broupId)) {
-        //     AuthServiceSocial().getAvatarBroup(broupId).then((value) {
-        //       if (value) {
-        //         // Objects updated in db and on the `me` list.
-        //         notifyListeners();
-        //       }
-        //     });
-        //   } else if (changedBroupAvatar == broupId) {
-        //     // We just changed the avatar, so we set it back to -1.
-        //     print("setting it back to -1");
-        //     changedBroupAvatar = -1;
-        //   }
-        // }
+
+        if (data.containsKey("new_avatar")) {
+          print("gotten a new avatar for a broup!");
+          bool newAvatar = data["new_avatar"];
+          broup.newAvatar = newAvatar;
+          // We assume the newAvatar is True
+          print(
+              "gotten a new avatar! $newAvatar  $changedBroupAvatar  $broupId");
+          // If changedBroupAvatar is equal to the broupId
+          // it means we just changed it ourselves.
+          if (newAvatar && !(changedBroupAvatar == broupId)) {
+            Future.delayed(Duration(seconds: 2)).then((value) {
+              // It might be send via sockets during the delay, in that case don't retrieve it again.
+              // In that case the `newAvatar` is set to false.
+              Broup checkBroup = me.broups.firstWhere((element) => element.broupId == broupId);
+              if (checkBroup.newAvatar) {
+                AuthServiceSocial().getAvatarBroup(broupId).then((value) {
+                  if (value) {
+                    // Objects updated in db and on the `me` list.
+                    notifyListeners();
+                  }
+                });
+              }
+            });
+          } else if (changedBroupAvatar == broupId) {
+            // We just changed the avatar, so we set it back to -1.
+            print("setting it back to -1");
+            changedBroupAvatar = -1;
+          }
+        }
       }
 
       AuthServiceSocial().broupRetrieved(broup.broupId).then((value) {

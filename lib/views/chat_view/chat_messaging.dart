@@ -545,7 +545,7 @@ class _ChatMessagingState extends State<ChatMessaging> {
         position: popupPosition,
         widthPopup: widthPopup,
         heightPopup: heightPopup,
-        color: Colors.black,
+        color: Colors.transparent,
         navigator: navigator!,
         barrierLabel: barrierLabel,
         capturedThemes: capturedThemes!,

@@ -66,6 +66,42 @@ class _BrocastHomeState extends State<BrocastHome> {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       broHomeChangeListener();
       checkNotificationListener();
+
+      // A hacky way to check if all the avatars are available.
+      // If one of the private or broup chats do not have a avatar after a few seconds we can assume something went wrong.
+      Future.delayed(Duration(seconds: 4)).then((value) {
+        if (me != null) {
+          List<int> broAvatarIds = [];
+          List<int> broupAvatarIds = [];
+          for (Broup meBroup in me!.broups) {
+            if (meBroup.private) {
+              if (meBroup.getAvatar() == null) {
+                for (int broId in meBroup.broIds) {
+                  if (broId != me!.getId()) {
+                    if (!broAvatarIds.contains(broId)) {
+                      broAvatarIds.add(broId);
+                    }
+                  }
+                }
+              }
+            } else {
+              if (meBroup.getAvatar() == null) {
+                if (!broupAvatarIds.contains(meBroup.getBroupId())) {
+                  broupAvatarIds.add(meBroup.getBroupId());
+                }
+              }
+            }
+          }
+          print("broAvatarIds: $broAvatarIds");
+          print("broupAvatarIds: $broupAvatarIds");
+          if (broAvatarIds.isNotEmpty) {
+            AuthServiceSocial().broDetails([], broAvatarIds, null);
+          }
+          if (broupAvatarIds.isNotEmpty) {
+            AuthServiceSocial().broupDetails([], broupAvatarIds);
+          }
+        }
+      });
     });
   }
 
@@ -318,13 +354,9 @@ class _BrocastHomeState extends State<BrocastHome> {
         if (me != null) {
           socketServices.leaveRoomSolo(me.getId());
         }
-        settings.logout();
-        settings.setLoggingIn(true);
+        settings.setLoggingIn(false);
         settings.retrievedBroupData = false;
         settings.retrievedBroData = false;
-        // TODO: put this back only for debugging
-        // SecureStorage().logout();
-        // storage.clearDatabase();
         Navigator.pushReplacement(context,
             MaterialPageRoute(builder: (context) => SignIn(
                 key: UniqueKey(),

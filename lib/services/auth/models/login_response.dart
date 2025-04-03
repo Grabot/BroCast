@@ -4,7 +4,7 @@ import '../../../objects/me.dart';
 
 class LoginResponse {
   late bool result;
-  late String message;
+  String? message;
   String? accessToken;
   String? refreshToken;
   String? FCMToken;
@@ -18,7 +18,7 @@ class LoginResponse {
   }
 
   String getMessage() {
-    return message;
+    return message ?? "";
   }
 
   String? getAccessToken() {
@@ -38,10 +38,8 @@ class LoginResponse {
   }
 
   LoginResponse.fromJson(Map<String, dynamic> json) {
-    if (json.containsKey("result") &&
-        json.containsKey("message")) {
+    if (json.containsKey("result")) {
       result = json["result"];
-      message = json["message"];
       if (result) {
         accessToken = json["access_token"];
         refreshToken = json["refresh_token"];
@@ -54,6 +52,10 @@ class LoginResponse {
         }
         if (json.containsKey("broup_ids") && json["broup_ids"] != null) {
           broupIds = json["broup_ids"].cast<int>();
+        }
+      } else {
+        if (json.containsKey("message")) {
+          message = json["message"];
         }
       }
     }

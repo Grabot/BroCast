@@ -150,21 +150,28 @@ setBroupsAfterLogin(Me settingsMe, List<int>? broupIds) {
             } else {
               // A large broup, update with the bros that are not in the local db.
               // But no need to retrieve them yet, not until the bro opens the broup
-              List<int> brosToUpdate = [...broupMe.getBroIds()];
-              List<int> brosAvatarToUpdate = [...broupMe.getBroIds()];
-              for (Bro broDB in brosDB) {
-                if (brosToUpdate.contains(broDB.getId())) {
-                  brosToUpdate.remove(broDB.getId());
-                  if (broDB.avatar != null) {
-                    brosAvatarToUpdate.remove(broDB.getId());
+              List<int> brosToUpdateBroup = [...broupMe.getBroIds()];
+              List<int> brosAvatarToUpdateBroup = [...broupMe.getBroIds()];
+              for (Broup broupMe2 in settingsMe.broups) {
+                if (broupMe2.private) {
+                  for (int broBroupMeId in broupMe2.broIds) {
+                    if (broBroupMeId != settingsMe.getId()) {
+                      // If the broId is a private chat of this bro than we know that that bro is up to date
+                      if (brosToUpdateBroup.contains(broBroupMeId)) {
+                        brosToUpdateBroup.remove(broBroupMeId);
+                      }
+                      if (brosAvatarToUpdateBroup.contains(broBroupMeId)) {
+                        brosAvatarToUpdateBroup.remove(broBroupMeId);
+                      }
+                    }
                   }
                 }
               }
-              print("new broup updating bros $brosToUpdate");
-              if (brosToUpdate.isNotEmpty) {
-                broupMe.updateBroIds = brosToUpdate;
-                broupMe.updateBroAvatarIds = brosAvatarToUpdate;
-                print("added broup updating bros $brosToUpdate");
+              print("new broup updating bros $brosToUpdateBroup");
+              if (brosToUpdateBroup.isNotEmpty) {
+                broupMe.updateBroIds = brosToUpdateBroup;
+                broupMe.updateBroAvatarIds = brosAvatarToUpdateBroup;
+                print("added broup updating bros $brosToUpdateBroup");
               }
               broupAvatarsToUpdate.add(broupMe.broupId);
             }
@@ -181,11 +188,14 @@ setBroupsAfterLogin(Me settingsMe, List<int>? broupIds) {
                 if (broupMe.newUpdateBroIds.isNotEmpty) {
                   for (int broId in broupMe.newUpdateBroIds) {
                     if (settingsMe.getId() != broId) {
+                      print("adding bro to update! $broId");
                       brosToUpdate.add(broId);
                     }
                   }
                 }
+                print("private chat new avatar?");
                 if (broupMe.newAvatar) {
+                  print("yes!");
                   for (int broId in broupMe.broIds) {
                     if (settingsMe.getId() != broId) {
                       broAvatarsToUpdate.add(broId);
@@ -222,6 +232,7 @@ setBroupsAfterLogin(Me settingsMe, List<int>? broupIds) {
           settingsMe.broups.add(broupDb);
         }
       }
+      print("broIdsToUpdate: $brosToUpdate");
       if (brosToUpdate.isNotEmpty || broAvatarsToUpdate.isNotEmpty) {
         AuthServiceSocial().broDetails(brosToUpdate, broAvatarsToUpdate, null);
       }
@@ -566,8 +577,8 @@ class HexagonClipper extends CustomClipper<Path> {
 navigateToHome(BuildContext context, Settings settings) {
   print("we are now going to home");
   MessagingChangeNotifier().setBroupId(-1);
-    Navigator.pushReplacement(context,
-        MaterialPageRoute(builder: (context) => BrocastHome(key: UniqueKey())));
+  Navigator.pushReplacement(context,
+      MaterialPageRoute(builder: (context) => BrocastHome(key: UniqueKey())));
 }
 
 navigateToChat(BuildContext context, Settings settings, Broup chat) {
@@ -641,26 +652,6 @@ addWelcomeMessage(Broup broup) {
   broup.messages.insert(
       0,
       unBlockMessage);
-  broup.unreadMessages = 0;
-}
-
-addInformationMessage(Broup broup, String infoMessage) {
-  print("adding information message $infoMessage");
-  Message unBlockMessage = Message(
-    broup.lastMessageId + 1,
-    0,
-    infoMessage,
-    "",
-    DateTime.now().toUtc().toString(),
-    null,
-    true,
-    broup.getBroupId(),
-  );
-  Storage().addMessage(unBlockMessage);
-  broup.messages.insert(
-      0,
-      unBlockMessage);
-  broup.unreadMessages = 0;
 }
 
 getBroupData(Storage storage, Me me) {

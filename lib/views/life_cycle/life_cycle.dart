@@ -1,10 +1,16 @@
+import 'dart:io';
+
 import 'package:brocast/utils/start_login.dart';
 import 'package:brocast/utils/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:brocast/constants/route_paths.dart' as routes;
 
 import '../../objects/me.dart';
 import '../../utils/life_cycle_service.dart';
+import '../../utils/locator.dart';
+import '../../utils/navigation_service.dart';
 import '../../utils/settings.dart';
+import '../bro_home/bro_home.dart';
 import '../sign_in/signin.dart';
 
 class LifeCycle extends StatefulWidget {
@@ -26,6 +32,7 @@ class _LifeCycleState extends State<LifeCycle> with WidgetsBindingObserver {
   }
 
   bool lifeCycleLoggingIn = false;
+  final NavigationService _navigationService = locator<NavigationService>();
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
@@ -35,9 +42,9 @@ class _LifeCycleState extends State<LifeCycle> with WidgetsBindingObserver {
         case AppLifecycleState.paused:
           if (!lifeCycleLoggingIn) {
             LifeCycleService().setAppStatus(0);
-            print("App paused");
+            // At this point we just exit the app.
           }
-          break;
+          exit(0);
         case AppLifecycleState.resumed:
           // There are some issues when resuming the app. The socket connection is not sturdy or something.
           // We will check if any new events have been missed by logging in again.
@@ -65,16 +72,7 @@ class _LifeCycleState extends State<LifeCycle> with WidgetsBindingObserver {
               LifeCycleService().setAppStatus(1);
               print("App resumed logged in $loggedIn");
               if (!loggedIn) {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          SignIn(
-                              key: UniqueKey(),
-                              showRegister: false
-                          )
-                  ),
-                );
+                _navigationService.navigateTo(routes.SignInRoute);
               }
             });
           } else {

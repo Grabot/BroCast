@@ -1,11 +1,15 @@
 import 'dart:io';
+import 'package:brocast/utils/utils.dart';
 import 'package:dio/dio.dart';
 import 'package:jwt_decode/jwt_decode.dart';
 
 import '../../constants/base_url.dart';
+import '../../utils/locator.dart';
+import '../../utils/navigation_service.dart';
 import '../../utils/secure_storage.dart';
 import '../../utils/settings.dart';
 import 'models/login_response.dart';
+import 'package:brocast/constants/route_paths.dart' as routes;
 
 
 class AuthApi {
@@ -41,6 +45,8 @@ class AppInterceptors extends Interceptor {
   Settings settings = Settings();
   SecureStorage secureStorage = SecureStorage();
 
+  final NavigationService _navigationService = locator<NavigationService>();
+
   AppInterceptors(this.dio);
 
   @override
@@ -50,12 +56,13 @@ class AppInterceptors extends Interceptor {
     int? expiration = await secureStorage.getAccessTokenExpiration();
     String? accessToken = await secureStorage.getAccessToken();
 
-    print("Access token: $accessToken");
     if (accessToken == null || accessToken == "" || expiration == null) {
       DioException dioError = DioException(requestOptions: options,
           type: DioExceptionType.cancel,
           error: "User not authorized");
       print("reject 1");
+      showToastMessage("There was an issue with authorization, please log in again");
+      _navigationService.navigateTo(routes.SignInRoute);
       return handler.reject(dioError, true);
     } else {
       int current = (DateTime
@@ -72,13 +79,14 @@ class AppInterceptors extends Interceptor {
           DioException dioError = DioException(requestOptions: options,
               type: DioExceptionType.cancel,
               error: "User not authorized");
-          print("reject 2");
+          showToastMessage("There was an issue with authorization, please log in again");
+          _navigationService.navigateTo(routes.SignInRoute);
           return handler.reject(dioError, true);
         } else {
           settings.setLoggingIn(true);
           print("refresh action 1");
           String endPoint = "refresh";
-          var response = await Dio(
+          var responseRefresh = await Dio(
               BaseOptions(
                 baseUrl: apiUrl_v1_4,
                 receiveTimeout: const Duration(milliseconds: 15000),
@@ -95,13 +103,12 @@ class AppInterceptors extends Interceptor {
               }
           ).catchError((error, stackTrace) {
             print("reject 3");
-            DioException dioError = DioException(requestOptions: options,
-                type: DioExceptionType.cancel,
-                error: "User not authorized");
-            return handler.reject(dioError);
+            showToastMessage("There was an issue with authorization, please log in again");
+            _navigationService.navigateTo(routes.SignInRoute);
+            return handler.reject(error, true);
           });
 
-          LoginResponse loginRefresh = LoginResponse.fromJson(response.data);
+          LoginResponse loginRefresh = LoginResponse.fromJson(responseRefresh.data);
           if (loginRefresh.getResult()) {
             // With a token refresh we don't want to update all the bro settings, only the tokens
             String? newAccessToken = loginRefresh.getAccessToken();
@@ -123,11 +130,11 @@ class AppInterceptors extends Interceptor {
               await secureStorage.setRefreshTokenExpiration(Jwt.parseJwt(newRefreshToken)['exp']);
             }
           } else {
-            DioException dioError = DioException(requestOptions: options,
-                type: DioExceptionType.cancel,
-                error: "User not authorized");
             print("reject 4");
-            return handler.reject(dioError, true);
+            showToastMessage("There was an issue with authorization, please log in again");
+            _navigationService.navigateTo(routes.SignInRoute);
+            return;
+            // return handler.reject(dioError, true);
           }
         }
       }

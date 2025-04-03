@@ -4,9 +4,13 @@ import 'package:dio/dio.dart';
 import 'package:jwt_decode/jwt_decode.dart';
 
 import '../../constants/base_url.dart';
+import '../../utils/locator.dart';
+import '../../utils/navigation_service.dart';
 import '../../utils/secure_storage.dart';
 import '../../utils/settings.dart';
+import '../../utils/utils.dart';
 import 'models/login_response.dart';
+import 'package:brocast/constants/route_paths.dart' as routes;
 
 
 class AuthApiClean {
@@ -42,6 +46,8 @@ class AppInterceptors extends Interceptor {
   Settings settings = Settings();
   SecureStorage secureStorage = SecureStorage();
 
+  final NavigationService _navigationService = locator<NavigationService>();
+
   AppInterceptors(this.dio);
 
   @override
@@ -57,6 +63,8 @@ class AppInterceptors extends Interceptor {
           type: DioExceptionType.cancel,
           error: "User not authorized");
       print("reject 1 clean");
+      showToastMessage("There was an issue with authorization, please log in again");
+      _navigationService.navigateTo(routes.SignInRoute);
       return handler.reject(dioError, true);
     } else {
       int current = (DateTime
@@ -74,6 +82,8 @@ class AppInterceptors extends Interceptor {
               type: DioExceptionType.cancel,
               error: "User not authorized");
           print("reject 2 clean");
+          showToastMessage("There was an issue with authorization, please log in again");
+          _navigationService.navigateTo(routes.SignInRoute);
           return handler.reject(dioError, true);
         } else {
           settings.setLoggingIn(true);
@@ -100,6 +110,8 @@ class AppInterceptors extends Interceptor {
                 type: DioExceptionType.cancel,
                 error: "User not authorized");
             print("reject 4 clean");
+            showToastMessage("There was an issue with authorization, please log in again");
+            _navigationService.navigateTo(routes.SignInRoute);
             return handler.reject(dioError, true);
           });
 
@@ -129,6 +141,8 @@ class AppInterceptors extends Interceptor {
                 type: DioExceptionType.cancel,
                 error: "User not authorized");
             print("reject 4 clean");
+            showToastMessage("There was an issue with authorization, please log in again");
+            _navigationService.navigateTo(routes.SignInRoute);
             return handler.reject(dioError, true);
           }
         }

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:brocast/services/auth/models/base_response.dart';
+import 'package:brocast/utils/life_cycle_service.dart';
 import 'package:brocast/utils/utils.dart';
 import 'package:brocast/views/bro_home/bro_home.dart';
 import 'package:brocast/views/bro_home/bro_home_change_notifier.dart';
@@ -861,6 +862,10 @@ class AuthServiceSocial {
   }
 
   Future<bool> broupRetrieved(int broupId) async {
+    if (LifeCycleService().getAppStatus() != 1) {
+      // App is not in foreground, we don't want to indicate broup retrieval
+      return false;
+    }
     String endPoint = "broup/retrieved";
     var response = await AuthApi().dio.post(endPoint,
         options: Options(headers: {
@@ -1012,6 +1017,7 @@ class AuthServiceSocial {
             print("avatar default $isDefault");
             broup.setAvatar(avatar);
             broup.setAvatarDefault(isDefault);
+            broup.newAvatar = false;
             Storage().updateBroup(broup);
             // Find the object corresponding with this broup and update the avatar
             Me? me = Settings().getMe();
@@ -1020,6 +1026,7 @@ class AuthServiceSocial {
                 if (meBroup.getBroupId() == broupId) {
                   meBroup.setAvatar(avatar);
                   meBroup.setAvatarDefault(isDefault);
+                  meBroup.newAvatar = false;
                   break;
                 }
               }
@@ -1032,6 +1039,7 @@ class AuthServiceSocial {
             if (broup != null) {
               broup.setAvatar(avatar);
               broup.setAvatarDefault(isDefault);
+              broup.newAvatar = false;
               Storage().addBroup(broup);
               // Find the object corresponding with this broup and update the avatar
               Me? me = Settings().getMe();
@@ -1040,6 +1048,7 @@ class AuthServiceSocial {
                   if (meBroup.getBroupId() == broupId) {
                     meBroup.setAvatar(avatar);
                     meBroup.setAvatarDefault(isDefault);
+                    meBroup.newAvatar = false;
                     break;
                   }
                 }

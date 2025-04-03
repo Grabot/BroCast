@@ -143,10 +143,8 @@ class AuthServiceLogin {
         data: jsonEncode(<String, String> {}
       )
     );
-    print("doing token login 2");
 
     LoginResponse loginResponse = LoginResponse.fromJson(response.data);
-    print("got response from token login ${loginResponse.getResult()}");
     if (loginResponse.getResult()) {
       successfulLoginToken(loginResponse);
     }

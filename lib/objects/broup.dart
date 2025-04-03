@@ -456,6 +456,22 @@ class Broup {
         ..private = this.private
         ..broupDescription = this.broupDescription
         ..broupColour = this.broupColour;
+    } else if (this.newAvatar) {
+      this
+        ..unreadMessages = this.unreadMessages
+        ..newMessages = this.newMessages
+        ..newAvatar = this.newAvatar;
+
+      this
+        ..removed = localBroup.removed
+        ..mute = localBroup.mute
+        ..updateBroup = localBroup.updateBroup
+        ..broIds = localBroup.broIds
+        ..adminIds = localBroup.adminIds
+        ..broupName = localBroup.broupName
+        ..private = localBroup.private
+        ..broupDescription = localBroup.broupDescription
+        ..broupColour = localBroup.broupColour;
     } else if (this.newMessages) {
       // If newMessages is true, (and updateBroup is false) we want to take the
       // `newMessages` and `unreadMessages` from the server
