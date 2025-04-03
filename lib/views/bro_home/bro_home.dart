@@ -317,6 +317,67 @@ class _BrocastHomeState extends State<BrocastHome> {
     );
   }
 
+  actuallyLogout() {
+    Me? me = settings.getMe();
+    if (me != null) {
+      socketServices.leaveRoomSolo(me.getId());
+    }
+    AuthServiceSocial().updateFCMToken("").then((value) {
+      if (value) {
+        print("FCM token updated on server");
+      }
+    });
+    settings.setLoggingIn(false);
+    settings.retrievedBroupData = false;
+    settings.retrievedBroData = false;
+    Navigator.pushReplacement(context,
+        MaterialPageRoute(builder: (context) => SignIn(
+            key: UniqueKey(),
+            showRegister: false
+        )));
+  }
+
+  showDialogLogout(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: new Text("Are you sure!?"),
+            content: RichText(
+              textAlign: TextAlign.center,
+              text: TextSpan(
+                children: [
+                  TextSpan(
+                    text: "You want to logout of Brocast.\n",
+                    style: TextStyle(color: Colors.black, fontSize: 16),
+                  ),
+                  TextSpan(
+                    text: "This means you will not receive any messages while you're logged out.\n",
+                    style: TextStyle(color: Colors.black, fontSize: 16),
+                  )
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              new TextButton(
+                child: new Text("Cancel"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  setState(() {});
+                },
+              ),
+              new TextButton(
+                child: new Text("Logout"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  actuallyLogout();
+                },
+              ),
+            ],
+          );
+        });
+  }
+
   navigateToFindBros() {
     Navigator.pushReplacement(
         context,
@@ -350,18 +411,8 @@ class _BrocastHomeState extends State<BrocastHome> {
         break;
       case 5:
       // TODO: remove all messages? Add warning about removing all messages?
-        Me? me = settings.getMe();
-        if (me != null) {
-          socketServices.leaveRoomSolo(me.getId());
-        }
-        settings.setLoggingIn(false);
-        settings.retrievedBroupData = false;
-        settings.retrievedBroData = false;
-        Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (context) => SignIn(
-                key: UniqueKey(),
-                showRegister: false
-            )));
+      showDialogLogout(context);
+
         break;
     }
   }

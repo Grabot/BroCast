@@ -116,6 +116,7 @@ class _ChatMessagingState extends State<ChatMessaging> {
       barrierLabel = MaterialLocalizations.of(context).modalBarrierDismissLabel;
       capturedThemes =
           InheritedTheme.capture(from: context, to: navigator!.context);
+      AuthServiceSocial().chatOpen(widget.chat.broupId, true);
     });
   }
 
@@ -331,6 +332,7 @@ class _ChatMessagingState extends State<ChatMessaging> {
   @override
   void dispose() {
     messagingChangeNotifier.setBroupId(-1);
+    AuthServiceSocial().chatOpen(widget.chat.broupId, false);
     focusAppendText.dispose();
     focusEmojiTextField.dispose();
     socketServices.removeListener(socketListener);

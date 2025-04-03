@@ -2,10 +2,13 @@ import 'dart:io';
 
 import 'package:brocast/utils/start_login.dart';
 import 'package:brocast/utils/utils.dart';
+import 'package:brocast/views/chat_view/messaging_change_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:brocast/constants/route_paths.dart' as routes;
+import 'package:flutter/services.dart';
 
 import '../../objects/me.dart';
+import '../../services/auth/auth_service_social.dart';
 import '../../utils/life_cycle_service.dart';
 import '../../utils/locator.dart';
 import '../../utils/navigation_service.dart';
@@ -34,6 +37,14 @@ class _LifeCycleState extends State<LifeCycle> with WidgetsBindingObserver {
   bool lifeCycleLoggingIn = false;
   final NavigationService _navigationService = locator<NavigationService>();
 
+  exitApp() {
+    if (Platform.isAndroid) {
+      SystemNavigator.pop();
+    } else {
+      exit(0);
+    }
+  }
+
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
@@ -41,14 +52,20 @@ class _LifeCycleState extends State<LifeCycle> with WidgetsBindingObserver {
       switch (state) {
         case AppLifecycleState.paused:
           if (!lifeCycleLoggingIn) {
+            if (MessagingChangeNotifier().broupId != -1) {
+              AuthServiceSocial().chatOpen(MessagingChangeNotifier().broupId, false);
+            }
             LifeCycleService().setAppStatus(0);
             // At this point we just exit the app.
           }
-          exit(0);
+          // We want to close the app, but give it a second to finish some requests.
+          Future.delayed(Duration(milliseconds: 100), () {
+            exitApp();
+          });
+          break;
         case AppLifecycleState.resumed:
           // There are some issues when resuming the app. The socket connection is not sturdy or something.
           // We will check if any new events have been missed by logging in again.
-          print("App resumed");
           if (LifeCycleService().getAppStatus() == 1) {
             // The app was inactive, we don't want to login again.
             return;

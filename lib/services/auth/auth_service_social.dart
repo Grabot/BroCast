@@ -1150,4 +1150,25 @@ class AuthServiceSocial {
       return json["result"];
     }
   }
+
+  Future<bool> chatOpen(int broupId, bool openChat) async {
+    String endPoint = "broup/open";
+    var response = await AuthApi().dio.post(endPoint,
+        options: Options(headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+        }),
+        data: jsonEncode(<String, dynamic>{
+          "broup_id": broupId,
+          "open_chat": openChat
+        }
+      )
+    );
+
+    Map<String, dynamic> json = response.data;
+    if (!json.containsKey("result")) {
+      return false;
+    } else {
+      return json["result"];
+    }
+  }
 }

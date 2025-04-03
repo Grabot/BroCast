@@ -79,6 +79,23 @@ class _ChatDetailsState extends State<ChatDetails> {
     chatDescriptionController.text = widget.chat.broupDescription;
     chatAliasController.text = widget.chat.alias;
 
+    Me? me = settings.getMe();
+    if (me != null) {
+      // Add me to the top of the list
+      widget.chat.broupBros.sort((a, b) {
+        // Sort the broupBros, but put me on top
+        if (a.id == me.id) {
+          return -1;
+        }
+        if (b.id == me.id) {
+          return 1;
+        }
+        return a.id.compareTo(b.id);
+      });
+      for (Bro bro in widget.chat.getBroupBros()) {
+        print("bro in broup: ${bro.getId()}");
+      }
+    }
     checkAdmin();
 
     circleColorPickerController = CircleColorPickerController(
