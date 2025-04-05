@@ -11,16 +11,13 @@ import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../../objects/bro.dart';
 import '../../objects/broup.dart';
 import '../../objects/me.dart';
-import '../../objects/message.dart';
 import '../../utils/life_cycle_service.dart';
 import '../../utils/notification_controller.dart';
 import '../../utils/storage.dart';
 import 'bro_home_change_notifier.dart';
 import 'models/bro_tile.dart';
-import 'package:brocast/constants/route_paths.dart' as routes;
 
 class BrocastHome extends StatefulWidget {
   BrocastHome({required Key key}) : super(key: key);

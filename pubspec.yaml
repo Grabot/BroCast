@@ -30,9 +30,9 @@ dependencies:
   intl: ^0.20.1
   tuple: ^2.0.2
   emoji_keyboard_flutter: ^1.6.2
-#  awesome_notifications_core: ^0.10.1
-#  awesome_notifications: ^0.10.1
-#  awesome_notifications_fcm: ^0.10.1
+  awesome_notifications_core: ^0.10.1
+  awesome_notifications: ^0.10.1
+  awesome_notifications_fcm: ^0.10.1
   firebase_core: ^3.12.0
   firebase_analytics: ^11.4.4
   firebase_crashlytics: ^4.3.4
