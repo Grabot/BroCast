@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		10D8863593B81B3C85EFC402 /* Pods_Runner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B30DC99348B6AB865A122F5F /* Pods_Runner.framework */; };
 		1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */ = {isa = PBXBuildFile; fileRef = 1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */; };
-		3198BFBA60D6948E0FECB8CD /* Pods_BrocastExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 259359ED77A224E164C49D3B /* Pods_BrocastExtension.framework */; };
 		331C808B294A63AB00263BE5 /* RunnerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331C807B294A618700263BE5 /* RunnerTests.swift */; };
 		3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */; };
 		59782B4D92F1A27B32DFA12B /* Pods_RunnerTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D7FD989C60A22FEEA6966699 /* Pods_RunnerTests.framework */; };
@@ -17,7 +16,6 @@
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
-		CAAC20E72DA0090400EE04D2 /* BrocastExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = CAAC20E02DA0090400EE04D2 /* BrocastExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -27,13 +25,6 @@
 			proxyType = 1;
 			remoteGlobalIDString = 97C146ED1CF9000F007C117D;
 			remoteInfo = Runner;
-		};
-		CAAC20E52DA0090400EE04D2 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 97C146E61CF9000F007C117D /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = CAAC20DF2DA0090400EE04D2;
-			remoteInfo = BrocastExtension;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -48,28 +39,15 @@
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		CAAC20ED2DA0090400EE04D2 /* Embed Foundation Extensions */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 13;
-			files = (
-				CAAC20E72DA0090400EE04D2 /* BrocastExtension.appex in Embed Foundation Extensions */,
-			);
-			name = "Embed Foundation Extensions";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		1498D2321E8E86230040F4C2 /* GeneratedPluginRegistrant.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GeneratedPluginRegistrant.h; sourceTree = "<group>"; };
 		1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GeneratedPluginRegistrant.m; sourceTree = "<group>"; };
 		188E9A0227C9F44C22DF1F1F /* Pods-RunnerTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RunnerTests.debug.xcconfig"; path = "Target Support Files/Pods-RunnerTests/Pods-RunnerTests.debug.xcconfig"; sourceTree = "<group>"; };
-		259359ED77A224E164C49D3B /* Pods_BrocastExtension.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BrocastExtension.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		331C807B294A618700263BE5 /* RunnerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RunnerTests.swift; sourceTree = "<group>"; };
 		331C8081294A63A400263BE5 /* RunnerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RunnerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = AppFrameworkInfo.plist; path = Flutter/AppFrameworkInfo.plist; sourceTree = "<group>"; };
-		497F710139E66C1B4908223D /* Pods-BrocastExtension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BrocastExtension.debug.xcconfig"; path = "Target Support Files/Pods-BrocastExtension/Pods-BrocastExtension.debug.xcconfig"; sourceTree = "<group>"; };
 		4B730E7480B4620F25C5ACFC /* Pods-RunnerTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RunnerTests.release.xcconfig"; path = "Target Support Files/Pods-RunnerTests/Pods-RunnerTests.release.xcconfig"; sourceTree = "<group>"; };
 		59C035C8A8AB45F50371FD2A /* Pods-Runner.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.profile.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.profile.xcconfig"; sourceTree = "<group>"; };
 		65AA00285F80DD286280D56B /* Pods-RunnerTests.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RunnerTests.profile.xcconfig"; path = "Target Support Files/Pods-RunnerTests/Pods-RunnerTests.profile.xcconfig"; sourceTree = "<group>"; };
@@ -86,36 +64,8 @@
 		97C147001CF9000F007C117D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		97C147021CF9000F007C117D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B30DC99348B6AB865A122F5F /* Pods_Runner.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Runner.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		C22EC02CF6DD9BF662EA3308 /* Pods-BrocastExtension.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BrocastExtension.profile.xcconfig"; path = "Target Support Files/Pods-BrocastExtension/Pods-BrocastExtension.profile.xcconfig"; sourceTree = "<group>"; };
-		CAAC20E02DA0090400EE04D2 /* BrocastExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = BrocastExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		D7FD989C60A22FEEA6966699 /* Pods_RunnerTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RunnerTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		EB4650F2C41C8621C13376D8 /* Pods-BrocastExtension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BrocastExtension.release.xcconfig"; path = "Target Support Files/Pods-BrocastExtension/Pods-BrocastExtension.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
-
-/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		CAAC20E82DA0090400EE04D2 /* Exceptions for "BrocastExtension" folder in "BrocastExtension" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Info.plist,
-			);
-			target = CAAC20DF2DA0090400EE04D2 /* BrocastExtension */;
-		};
-/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
-
-/* Begin PBXFileSystemSynchronizedRootGroup section */
-		CAAC20E12DA0090400EE04D2 /* BrocastExtension */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				CAAC20E82DA0090400EE04D2 /* Exceptions for "BrocastExtension" folder in "BrocastExtension" target */,
-			);
-			explicitFileTypes = {
-			};
-			explicitFolders = (
-			);
-			path = BrocastExtension;
-			sourceTree = "<group>";
-		};
-/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		13AB0F8760FE6C6C32C6A268 /* Frameworks */ = {
@@ -131,14 +81,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				10D8863593B81B3C85EFC402 /* Pods_Runner.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		CAAC20DD2DA0090400EE04D2 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				3198BFBA60D6948E0FECB8CD /* Pods_BrocastExtension.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -169,7 +111,6 @@
 			children = (
 				9740EEB11CF90186004384FC /* Flutter */,
 				97C146F01CF9000F007C117D /* Runner */,
-				CAAC20E12DA0090400EE04D2 /* BrocastExtension */,
 				97C146EF1CF9000F007C117D /* Products */,
 				331C8082294A63A400263BE5 /* RunnerTests */,
 				DCBDF0C051F3E14660F4468A /* Pods */,
@@ -182,7 +123,6 @@
 			children = (
 				97C146EE1CF9000F007C117D /* Runner.app */,
 				331C8081294A63A400263BE5 /* RunnerTests.xctest */,
-				CAAC20E02DA0090400EE04D2 /* BrocastExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -211,10 +151,8 @@
 				188E9A0227C9F44C22DF1F1F /* Pods-RunnerTests.debug.xcconfig */,
 				4B730E7480B4620F25C5ACFC /* Pods-RunnerTests.release.xcconfig */,
 				65AA00285F80DD286280D56B /* Pods-RunnerTests.profile.xcconfig */,
-				497F710139E66C1B4908223D /* Pods-BrocastExtension.debug.xcconfig */,
-				EB4650F2C41C8621C13376D8 /* Pods-BrocastExtension.release.xcconfig */,
-				C22EC02CF6DD9BF662EA3308 /* Pods-BrocastExtension.profile.xcconfig */,
 			);
+			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -223,7 +161,6 @@
 			children = (
 				B30DC99348B6AB865A122F5F /* Pods_Runner.framework */,
 				D7FD989C60A22FEEA6966699 /* Pods_RunnerTests.framework */,
-				259359ED77A224E164C49D3B /* Pods_BrocastExtension.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -257,44 +194,21 @@
 				B1C242A3911C14012D0CC642 /* [CP] Check Pods Manifest.lock */,
 				9740EEB61CF901F6004384FC /* Run Script */,
 				97C146EA1CF9000F007C117D /* Sources */,
+				97C146EB1CF9000F007C117D /* Frameworks */,
 				97C146EC1CF9000F007C117D /* Resources */,
 				9705A1C41CF9048500538489 /* Embed Frameworks */,
-				CAAC20ED2DA0090400EE04D2 /* Embed Foundation Extensions */,
 				3B06AD1E1E4923F5004D2608 /* Thin Binary */,
-				AEB5BF9347F01909F9205E89 /* [CP] Copy Pods Resources */,
 				B80AFAE81255112B52D31DD5 /* [CP] Embed Pods Frameworks */,
-				97C146EB1CF9000F007C117D /* Frameworks */,
+				AEB5BF9347F01909F9205E89 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				CAAC20E62DA0090400EE04D2 /* PBXTargetDependency */,
 			);
 			name = Runner;
 			productName = Runner;
 			productReference = 97C146EE1CF9000F007C117D /* Runner.app */;
 			productType = "com.apple.product-type.application";
-		};
-		CAAC20DF2DA0090400EE04D2 /* BrocastExtension */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = CAAC20E92DA0090400EE04D2 /* Build configuration list for PBXNativeTarget "BrocastExtension" */;
-			buildPhases = (
-				6A9DF2214B798AAEAB456893 /* [CP] Check Pods Manifest.lock */,
-				CAAC20DD2DA0090400EE04D2 /* Frameworks */,
-				CAAC20DC2DA0090400EE04D2 /* Sources */,
-				CAAC20DE2DA0090400EE04D2 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			fileSystemSynchronizedGroups = (
-				CAAC20E12DA0090400EE04D2 /* BrocastExtension */,
-			);
-			name = BrocastExtension;
-			productName = BrocastExtension;
-			productReference = CAAC20E02DA0090400EE04D2 /* BrocastExtension.appex */;
-			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -303,7 +217,6 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
-				LastSwiftUpdateCheck = 1600;
 				LastUpgradeCheck = 1510;
 				ORGANIZATIONNAME = "";
 				TargetAttributes = {
@@ -314,9 +227,6 @@
 					97C146ED1CF9000F007C117D = {
 						CreatedOnToolsVersion = 7.3.1;
 						LastSwiftMigration = 1100;
-					};
-					CAAC20DF2DA0090400EE04D2 = {
-						CreatedOnToolsVersion = 16.0;
 					};
 				};
 			};
@@ -333,9 +243,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				331C8080294A63A400263BE5 /* RunnerTests */,
-				CAAC20DF2DA0090400EE04D2 /* BrocastExtension */,
 				97C146ED1CF9000F007C117D /* Runner */,
+				331C8080294A63A400263BE5 /* RunnerTests */,
 			);
 		};
 /* End PBXProject section */
@@ -359,13 +268,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		CAAC20DE2DA0090400EE04D2 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
@@ -384,28 +286,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "/bin/sh \"$FLUTTER_ROOT/packages/flutter_tools/bin/xcode_backend.sh\" embed_and_thin";
-		};
-		6A9DF2214B798AAEAB456893 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-BrocastExtension-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
 		};
 		7D7453B69A49E637A2DF5A63 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -520,13 +400,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		CAAC20DC2DA0090400EE04D2 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -534,11 +407,6 @@
 			isa = PBXTargetDependency;
 			target = 97C146ED1CF9000F007C117D /* Runner */;
 			targetProxy = 331C8085294A63A400263BE5 /* PBXContainerItemProxy */;
-		};
-		CAAC20E62DA0090400EE04D2 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = CAAC20DF2DA0090400EE04D2 /* BrocastExtension */;
-			targetProxy = CAAC20E52DA0090400EE04D2 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -586,7 +454,6 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -619,16 +486,11 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 7AFA3C8E1D35360C0083082E /* Release.xcconfig */;
 			buildSettings = {
-				APPLICATION_EXTENSION_API_ONLY = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				BUILD_LIBRARY_FOR_DISTRIBUTION = NO;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
-				DEVELOPMENT_TEAM = L54H44A3Q8;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Runner/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = Brocast;
-				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.social-networking";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -645,7 +507,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 188E9A0227C9F44C22DF1F1F /* Pods-RunnerTests.debug.xcconfig */;
 			buildSettings = {
-				BUILD_LIBRARY_FOR_DISTRIBUTION = NO;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -664,7 +525,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 4B730E7480B4620F25C5ACFC /* Pods-RunnerTests.release.xcconfig */;
 			buildSettings = {
-				BUILD_LIBRARY_FOR_DISTRIBUTION = NO;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -681,7 +541,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 65AA00285F80DD286280D56B /* Pods-RunnerTests.profile.xcconfig */;
 			buildSettings = {
-				BUILD_LIBRARY_FOR_DISTRIBUTION = NO;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -718,7 +577,6 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -776,7 +634,6 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -811,16 +668,11 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 9740EEB21CF90195004384FC /* Debug.xcconfig */;
 			buildSettings = {
-				APPLICATION_EXTENSION_API_ONLY = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				BUILD_LIBRARY_FOR_DISTRIBUTION = NO;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
-				DEVELOPMENT_TEAM = L54H44A3Q8;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Runner/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = Brocast;
-				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.social-networking";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -838,16 +690,11 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 7AFA3C8E1D35360C0083082E /* Release.xcconfig */;
 			buildSettings = {
-				APPLICATION_EXTENSION_API_ONLY = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				BUILD_LIBRARY_FOR_DISTRIBUTION = NO;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
-				DEVELOPMENT_TEAM = L54H44A3Q8;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Runner/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = Brocast;
-				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.social-networking";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -859,135 +706,6 @@
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
-		};
-		CAAC20EA2DA0090400EE04D2 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 497F710139E66C1B4908223D /* Pods-BrocastExtension.debug.xcconfig */;
-			buildSettings = {
-				APPLICATION_EXTENSION_API_ONLY = YES;
-				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
-				BUILD_LIBRARY_FOR_DISTRIBUTION = NO;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = L54H44A3Q8;
-				ENABLE_BITCODE = NO;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu17;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = BrocastExtension/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = BrocastExtension;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@executable_path/../../Frameworks",
-				);
-				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 1.0;
-				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
-				MTL_FAST_MATH = YES;
-				OTHER_SWIFT_FLAGS = "-D TARGET_EXTENSION";
-				PRODUCT_BUNDLE_IDENTIFIER = nl.brocast.BrocastExtension;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
-		};
-		CAAC20EB2DA0090400EE04D2 /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = EB4650F2C41C8621C13376D8 /* Pods-BrocastExtension.release.xcconfig */;
-			buildSettings = {
-				APPLICATION_EXTENSION_API_ONLY = YES;
-				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
-				BUILD_LIBRARY_FOR_DISTRIBUTION = NO;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = L54H44A3Q8;
-				ENABLE_BITCODE = NO;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu17;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = BrocastExtension/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = BrocastExtension;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@executable_path/../../Frameworks",
-				);
-				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 1.0;
-				MTL_FAST_MATH = YES;
-				OTHER_SWIFT_FLAGS = "-D TARGET_EXTENSION";
-				PRODUCT_BUNDLE_IDENTIFIER = nl.brocast.BrocastExtension;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Release;
-		};
-		CAAC20EC2DA0090400EE04D2 /* Profile */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = C22EC02CF6DD9BF662EA3308 /* Pods-BrocastExtension.profile.xcconfig */;
-			buildSettings = {
-				APPLICATION_EXTENSION_API_ONLY = YES;
-				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
-				BUILD_LIBRARY_FOR_DISTRIBUTION = NO;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = L54H44A3Q8;
-				ENABLE_BITCODE = NO;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu17;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = BrocastExtension/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = BrocastExtension;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@executable_path/../../Frameworks",
-				);
-				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 1.0;
-				MTL_FAST_MATH = YES;
-				OTHER_SWIFT_FLAGS = "-D TARGET_EXTENSION";
-				PRODUCT_BUNDLE_IDENTIFIER = nl.brocast.BrocastExtension;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Profile;
 		};
 /* End XCBuildConfiguration section */
 
@@ -1018,16 +736,6 @@
 				97C147061CF9000F007C117D /* Debug */,
 				97C147071CF9000F007C117D /* Release */,
 				249021D4217E4FDB00AE95B9 /* Profile */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		CAAC20E92DA0090400EE04D2 /* Build configuration list for PBXNativeTarget "BrocastExtension" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				CAAC20EA2DA0090400EE04D2 /* Debug */,
-				CAAC20EB2DA0090400EE04D2 /* Release */,
-				CAAC20EC2DA0090400EE04D2 /* Profile */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
