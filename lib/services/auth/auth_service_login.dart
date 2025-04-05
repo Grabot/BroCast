@@ -225,7 +225,8 @@ class AuthServiceLogin {
   Future<LoginResponse> getLoginGoogle(String accessToken) async {
     Settings().setLoggingIn(true);
     String endPoint = "login/google/token";
-    var response = await AuthApi().dio.post(endPoint,
+    print("doing google login");
+    var response = await AuthApiLogin().dio.post(endPoint,
         options: Options(headers: {
           HttpHeaders.contentTypeHeader: "application/json",
         }),
@@ -233,6 +234,7 @@ class AuthServiceLogin {
           "access_token": accessToken
         }));
 
+    print("google login response: ${response.data}");
     LoginResponse loginResponse = LoginResponse.fromJson(response.data);
     if (loginResponse.getResult()) {
       successfulLoginLogin(loginResponse);

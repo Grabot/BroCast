@@ -16,16 +16,16 @@ void main() async {
 
   setupLocator();
 
-  await NotificationController.initializeLocalNotifications(debug: false);
+  // await NotificationController.initializeLocalNotifications(debug: false);
 
   await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform
   );
 
-  await NotificationController.initializeRemoteNotifications(debug: false);
-  await NotificationController.startListeningNotificationEvents();
-  await NotificationController.initializeIsolateReceivePort();
-  await NotificationController.getInitialNotificationAction();
+  // await NotificationController.initializeRemoteNotifications(debug: false);
+  // await NotificationController.startListeningNotificationEvents();
+  // await NotificationController.initializeIsolateReceivePort();
+  // await NotificationController.getInitialNotificationAction();
   // Initialize some singleton classes so we don't have to wait later.
   Settings();
   SecureStorage();

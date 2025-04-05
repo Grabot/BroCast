@@ -913,7 +913,13 @@ class _SignInState extends State<SignIn> {
     ];
 
     GoogleSignIn googleSignIn;
-    if (Platform.isIOS) {
+    if (kIsWeb) {
+      // Web
+      googleSignIn = GoogleSignIn(
+        clientId: clientIdLoginWeb,
+        scopes: scopes,
+      );
+    } else if (Platform.isIOS || Platform.isMacOS) {
       // IOS
       googleSignIn = GoogleSignIn(
         clientId: clientIdLoginIOS,
@@ -933,19 +939,22 @@ class _SignInState extends State<SignIn> {
       final GoogleSignInAuthentication googleSignInAuthentication = await googleSignInAccount!.authentication;
       googleAccessToken = googleSignInAuthentication.accessToken;
       print("Google access token: $googleAccessToken");
-      if (googleAccessToken == null) {
-        isLoading = false;
-        showToastMessage("Google login failed");
-        return;
-      }
+
     } catch (error) {
       print("google error: $error");
       isLoading = false;
       return;
     }
 
+    if (googleAccessToken == null) {
+      isLoading = false;
+      showToastMessage("Google login failed");
+      return;
+    }
+
     AuthServiceLogin().getLoginGoogle(googleAccessToken).then((
         loginResponse) {
+      print("login response: ${loginResponse.toString()}");
       if (loginResponse.getResult()) {
         goToBrocastHome();
         setState(() {
