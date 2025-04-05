@@ -40,8 +40,9 @@ end
 post_install do |installer|
   installer.pods_project.targets.each do |target|
     target.build_configurations.each do |config|
-      unless target.name == 'Runner'
-      config.build_settings['SKIP_INSTALL'] = "YES"
+        unless target.name == 'Runner'
+            config.build_settings['SKIP_INSTALL'] = "YES"
+        end
     end
     flutter_additional_ios_build_settings(target)
   end
