@@ -56,12 +56,7 @@ class _LifeCycleState extends State<LifeCycle> with WidgetsBindingObserver {
               AuthServiceSocial().chatOpen(MessagingChangeNotifier().broupId, false);
             }
             LifeCycleService().setAppStatus(0);
-            // At this point we just exit the app.
           }
-          // We want to close the app, but give it a second to finish some requests.
-          Future.delayed(Duration(milliseconds: 100), () {
-            exitApp();
-          });
           break;
         case AppLifecycleState.resumed:
           // There are some issues when resuming the app. The socket connection is not sturdy or something.

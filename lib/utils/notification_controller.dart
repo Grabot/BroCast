@@ -363,12 +363,12 @@ class NotificationController extends ChangeNotifier {
   ///  *********************************************
 
   static Future<void> executeLongTaskInBackground() async {
-    print("starting long task");
-    await Future.delayed(const Duration(seconds: 4));
-    final url = Uri.parse("http://google.com");
-    final re = await http.get(url);
-    print(re.body);
-    print("long task done");
+    // print("starting long task");
+    // await Future.delayed(const Duration(seconds: 4));
+    // final url = Uri.parse("http://google.com");
+    // final re = await http.get(url);
+    // print(re.body);
+    // print("long task done");
   }
 
   static Future<void> requestPermission() async {
