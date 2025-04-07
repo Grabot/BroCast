@@ -713,8 +713,8 @@ class Broup {
 
               if (LifeCycleService().getAppStatus() == 1) {
                 readMessages();
+                MessagingChangeNotifier().notify();
               }
-              MessagingChangeNotifier().notify();
             }
           } else {
             if (!newMessages) {

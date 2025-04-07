@@ -80,9 +80,10 @@ class NotificationController extends ChangeNotifier {
           importance: NotificationImportance.High,
           defaultPrivacy: NotificationPrivacy.Private,
           enableVibration: true,
-          vibrationPattern: Int64List.fromList([100, 100, 100, 100, 100, 100, 100, 100]),
-          defaultColor: Colors.deepPurple,
-          ledColor: Colors.deepPurple,
+          vibrationPattern: mediumVibrationPattern,
+          defaultColor: Colors.teal,
+          enableLights: true,
+          ledColor: Colors.teal,
           playSound: true,
           soundSource: "resource://raw/res_brodio",
         )
