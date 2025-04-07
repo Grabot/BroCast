@@ -1,4 +1,5 @@
 import 'dart:isolate';
+import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:awesome_notifications/awesome_notifications.dart';
@@ -78,6 +79,8 @@ class NotificationController extends ChangeNotifier {
           channelDescription: 'Notification channel for Brocast',
           importance: NotificationImportance.High,
           defaultPrivacy: NotificationPrivacy.Private,
+          enableVibration: true,
+          vibrationPattern: Int64List.fromList([100, 100, 100, 100, 100, 100, 100, 100]),
           defaultColor: Colors.deepPurple,
           ledColor: Colors.deepPurple,
           playSound: true,
