@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>AwnAppGroupName</key>
+	<string>group.awnfcm.brocast.nl</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
@@ -63,24 +65,24 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-    <key>LSApplicationQueriesSchemes</key>
-    <array>
-      <string>https</string>
-      <string>http</string>
-    </array>
-    <key>NSPhotoLibraryUsageDescription</key>
-    <string>This app needs access to the photo library</string>
-    <key>NSPhotoLibraryAddUsageDescription</key>
-    <string>This app needs access to the photo library</string>
-    <key>NSCameraUsageDescription</key>
-    <string>This app needs access to camera</string>
-    <key>NSMicrophoneUsageDescription</key>
-    <string>This app needs access to microphone</string>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>https</string>
+		<string>http</string>
+	</array>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>This app needs access to the photo library</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>This app needs access to the photo library</string>
+	<key>NSCameraUsageDescription</key>
+	<string>This app needs access to camera</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>This app needs access to microphone</string>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>FLTEnableImpeller</key>
-    <false/>
+	<false/>
 </dict>
 </plist>
