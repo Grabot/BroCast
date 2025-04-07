@@ -84,5 +84,7 @@
 	<true/>
 	<key>FLTEnableImpeller</key>
 	<false/>
+	<key>UILocalNotificationDefaultSoundName</key>
+    <string>res_brodio.caf</string>
 </dict>
 </plist>
