@@ -5,6 +5,7 @@ import 'dart:ui';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:awesome_notifications_fcm/awesome_notifications_fcm.dart';
 import 'package:brocast/constants/route_paths.dart' as routes;
+import 'package:brocast/utils/life_cycle_service.dart';
 import 'package:brocast/utils/secure_storage.dart';
 import 'package:brocast/utils/settings.dart';
 import 'package:brocast/utils/storage.dart';
@@ -170,7 +171,7 @@ class NotificationController extends ChangeNotifier {
         } else {
           if (value != _firebaseTokenDevice) {
             print("update token. Different token");
-            SecureStorage().setFCMToken(_firebaseTokenDevice!);
+            SecureStorage().setFCMToken(_firebaseTokenDevice);
             updateTokenServer = true;
           }
         }
@@ -254,6 +255,11 @@ class NotificationController extends ChangeNotifier {
       ReceivedAction receivedAction) async {
     print('Notification action received: $receivedAction');
     // App is open, handle the notification
+    if (LifeCycleService().appStatus != 1) {
+      // Unless the app was not active, than we do the `
+      _instance.checkNotification(receivedAction);
+      return;
+    }
     if (receivedAction.payload != null) {
       if (receivedAction.payload!.containsKey('broup_id')) {
         String? broup_id = receivedAction.payload!['broup_id'];
@@ -288,6 +294,7 @@ class NotificationController extends ChangeNotifier {
     // The app is not open yet, so quickly log in first.
     Settings settings = Settings();
     if (settings.loggingIn) {
+      print("already logging in notification");
       // Already logging in, we assume that after that other login
       // process is done it will navigate somewhere
       return;

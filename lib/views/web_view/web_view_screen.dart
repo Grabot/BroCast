@@ -8,6 +8,8 @@ import 'package:flutter/services.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 import '../../services/auth/auth_service_login.dart';
+import '../../utils/notification_controller.dart';
+import '../../utils/secure_storage.dart';
 import '../bro_home/bro_home.dart';
 
 class WebViewScreen extends StatefulWidget {
@@ -46,11 +48,13 @@ class _WebViewScreenState extends State<WebViewScreen> {
           onWebResourceError: (WebResourceError error) {
           },
           onNavigationRequest: (NavigationRequest request) {
-            // TODO: Test if this works
-            if (request.url.startsWith('https://brocast.nl/broaccess?') || request.url.startsWith('https://www.brocast.nl/broaccess?')) {
+            // TODO: Test if this works, Put back to brocast before release
+            // if (request.url.startsWith('https://brocast.nl/broaccess?') || request.url.startsWith('https://www.brocast.nl/broaccess?')) {
+            if (request.url.startsWith('http://142.132.201.190/broaccess?') || request.url.startsWith('https://142.132.201.190/broaccess?')) {
               // When we detect the redirect to the broaccess page
               // We use the broaccess paramters to log in.
               // and then close the webview.
+              print("Broaccess redirect detected");
               webViewController.loadRequest(Uri.parse('about:blank'));
               Uri broAccessUri = Uri.parse(request.url);
               String? accessToken = broAccessUri.queryParameters["access_token"];
@@ -58,20 +62,21 @@ class _WebViewScreenState extends State<WebViewScreen> {
               // Use the tokens to immediately refresh the access token
               if (accessToken != null && refreshToken != null) {
                 AuthServiceLogin authService = AuthServiceLogin();
-                authService.getRefresh(accessToken, refreshToken).then((loginResponse) {
+                authService.getRefreshOAuth(accessToken, refreshToken).then((loginResponse) {
                   if (loginResponse.getResult()) {
-                    loginCheck().then((loggedIn) {
-                      if (loggedIn) {
-                        // user logged in, so go to the home screen
-                        Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    BrocastHome(key: UniqueKey())));
-                      } else {
-                        showToastMessage("Failed to log in.");
-                      }
-                    });
+                    // loginCheck().then((loggedIn) {
+                    //   if (loggedIn) {
+                    NotificationController().getFCMTokenNotificationUtil(loginResponse.getFCMToken());
+                    // user logged in, so go to the home screen
+                    Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                BrocastHome(key: UniqueKey())));
+                      // } else {
+                      //   showToastMessage("Failed to log in.");
+                      // }
+                    // });
                   } else {
                     showToastMessage("Failed to log in.");
                   }
@@ -93,12 +98,23 @@ class _WebViewScreenState extends State<WebViewScreen> {
   }
 
   void backButtonFunctionality() {
-    Navigator.pop(context);
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+          builder: (context) => SignIn(
+              key: UniqueKey(),
+              showRegister: widget.fromRegister
+          )
+      ),
+    );
   }
 
   void onSelect(BuildContext context, int item) {
     switch (item) {
       case 0:
+        backButtonFunctionality();
+        break;
+      case 1:
         if (Platform.isAndroid) {
           SystemNavigator.pop();
         } else {
@@ -136,7 +152,8 @@ class _WebViewScreenState extends State<WebViewScreen> {
                   icon: Icon(Icons.more_vert, color: Colors.white),
                   onSelected: (item) => onSelect(context, item),
                   itemBuilder: (context) => [
-                    PopupMenuItem<int>(value: 0, child: Text("Exit Brocast")),
+                    PopupMenuItem<int>(value: 0, child: Text("Back to SignIn")),
+                    PopupMenuItem<int>(value: 1, child: Text("Exit Brocast")),
                   ]),
             ],
           ),

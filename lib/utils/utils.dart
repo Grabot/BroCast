@@ -19,6 +19,7 @@ import '../views/bro_home/bro_home.dart';
 import '../views/bro_profile/bro_profile.dart';
 import '../views/bro_settings/bro_settings.dart';
 import '../views/chat_view/chat_messaging.dart';
+import '../views/chat_view/message_util.dart';
 import '../views/chat_view/messaging_change_notifier.dart';
 import 'secure_storage.dart';
 import 'settings.dart';
@@ -135,6 +136,7 @@ setBroupsAfterLogin(Me settingsMe, List<int>? broupIds) {
       if (settingsMe.broups.isNotEmpty) {
         for (Broup broupMe in settingsMe.broups) {
           Broup? dbBroup = broupDbMap[broupMe.getBroupId().toString()];
+
           if (dbBroup == null) {
             // This is a new broup
             print("This is a new broup");

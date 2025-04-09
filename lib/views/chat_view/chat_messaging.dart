@@ -124,6 +124,7 @@ class _ChatMessagingState extends State<ChatMessaging> {
     print("life cycle change listener chat");
     // Is called when the app is resumed
     retrieveData();
+    AuthServiceSocial().chatOpen(widget.chat.broupId, true);
   }
 
   checkIsAdmin() {

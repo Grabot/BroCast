@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:brocast/utils/socket_services.dart';
 import 'package:brocast/utils/start_login.dart';
 import 'package:brocast/utils/utils.dart';
 import 'package:brocast/views/chat_view/messaging_change_notifier.dart';
@@ -37,14 +38,6 @@ class _LifeCycleState extends State<LifeCycle> with WidgetsBindingObserver {
   bool lifeCycleLoggingIn = false;
   final NavigationService _navigationService = locator<NavigationService>();
 
-  exitApp() {
-    if (Platform.isAndroid) {
-      SystemNavigator.pop();
-    } else {
-      exit(0);
-    }
-  }
-
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
@@ -57,6 +50,7 @@ class _LifeCycleState extends State<LifeCycle> with WidgetsBindingObserver {
             }
             LifeCycleService().setAppStatus(0);
           }
+          SocketServices().stopSocketConnection();
           break;
         case AppLifecycleState.resumed:
           // There are some issues when resuming the app. The socket connection is not sturdy or something.
@@ -72,12 +66,15 @@ class _LifeCycleState extends State<LifeCycle> with WidgetsBindingObserver {
             // inactive, since it's just a short periodic look away state
             Settings settings = Settings();
             if (settings.loggingIn) {
+              print("already logging in lifecycle");
               // Already logging in, we assume that after that other login
               // process is done it will navigate somewhere
+              lifeCycleLoggingIn = false;
               LifeCycleService().setAppStatus(1);
               return;
             }
             settings.setLoggingIn(true);
+            SocketServices().startSocketConnection();
             loginCheck().then((loggedIn) {
               settings.setLoggingIn(false);
               lifeCycleLoggingIn = false;
@@ -102,7 +99,6 @@ class _LifeCycleState extends State<LifeCycle> with WidgetsBindingObserver {
             // We don't actually care about the inactive state.
             // It means the app is running, but not in the foreground right now.
             // We will take this as active.
-            // LifeCycleService().setAppStatus(3);
             print("App inactive");
           }
           break;

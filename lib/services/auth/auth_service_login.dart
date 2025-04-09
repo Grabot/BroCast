@@ -93,6 +93,29 @@ class AuthServiceLogin {
     return baseResponse;
   }
 
+  Future<LoginResponse> getRefreshOAuth(String accessToken, String refreshToken) async {
+    Settings settings = Settings();
+    settings.setLoggingIn(true);
+    print("refresh action 2");
+    String endPoint = "refresh/oauth";
+    var response = await AuthApiLogin().dio.post(endPoint,
+        options: Options(headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+        }),
+        data: jsonEncode(<String, dynamic> {
+          "access_token": accessToken,
+          "refresh_token": refreshToken
+        }
+      )
+    );
+
+    LoginResponse loginResponse = LoginResponse.fromJson(response.data);
+    if (loginResponse.getResult()) {
+      successfulLoginLogin(loginResponse);
+    }
+    return loginResponse;
+  }
+
   Future<LoginResponse> getRefresh(String accessToken, String refreshToken) async {
     Settings settings = Settings();
     settings.setLoggingIn(true);

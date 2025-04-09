@@ -32,6 +32,24 @@ class SocketServices extends ChangeNotifier {
     return _instance;
   }
 
+  void stopSocketConnection() {
+    if (socket.connected) {
+      socket.disconnect();
+      Me? me = Settings().getMe();
+      if (me != null) {
+        leaveRoomSolo(me.getId());
+      }
+      print("Socket disconnected");
+    }
+  }
+
+  void startSocketConnection() {
+    if (!socket.connected) {
+      socket.connect();
+      print("Socket connected");
+    }
+  }
+
   startSockConnection() {
     String socketUrl = baseUrl_v1_0;
     socket = io.io(socketUrl, <String, dynamic>{
@@ -45,6 +63,7 @@ class SocketServices extends ChangeNotifier {
       // We are connected, this is good :)
       // But it's also possible something went wrong in the backend?
       // So rejoin the channels and rooms
+      print("socket connected!");
       Me? me = Settings().getMe();
       if (me != null) {
         joinRooms(me);
