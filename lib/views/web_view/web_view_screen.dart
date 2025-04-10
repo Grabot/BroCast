@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 import '../../services/auth/auth_service_login.dart';
+import '../../services/auth/auth_service_social.dart';
 import '../../utils/notification_controller.dart';
 import '../../utils/secure_storage.dart';
 import '../bro_home/bro_home.dart';
@@ -63,6 +64,10 @@ class _WebViewScreenState extends State<WebViewScreen> {
                 authService.getRefreshOAuth(accessToken, refreshToken).then((loginResponse) {
                   if (loginResponse.getResult()) {
                     NotificationController().getFCMTokenNotificationUtil(loginResponse.getFCMToken());
+                    int platform = Platform.isAndroid ? 0 : 1;
+                    if (loginResponse.getPlatform() != null && platform != loginResponse.getPlatform()) {
+                      AuthServiceSocial().updatePlatform(platform);
+                    }
                     // user logged in, so go to the home screen
                     Navigator.pushReplacement(
                         context,

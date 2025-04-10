@@ -12,6 +12,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../constants/base_url.dart';
 import '../../services/auth/auth_service_login.dart';
+import '../../services/auth/auth_service_social.dart';
 import '../../services/auth/models/login_bro_name_request.dart';
 import '../../services/auth/models/login_email_request.dart';
 import '../../services/auth/models/register_request.dart';
@@ -290,7 +291,16 @@ class _SignInState extends State<SignIn> {
           broNameLogin, bromotionLogin, passwordLogin, platform);
       authService.getLoginBroName(loginBroNameRequest).then((loginResponse) {
         if (loginResponse.getResult()) {
-          isLoading = false;
+          setState(() {
+            isLoading = false;
+          });
+
+          NotificationController().getFCMTokenNotificationUtil(loginResponse.getFCMToken());
+          int platform = Platform.isAndroid ? 0 : 1;
+          if (loginResponse.getPlatform() != null && platform != loginResponse.getPlatform()) {
+            AuthServiceSocial().updatePlatform(platform);
+          }
+
           // We securely store information locally on the phone
           secureStorage.setBroName(broNameLogin);
           secureStorage.setBromotion(bromotionLogin);
@@ -300,8 +310,6 @@ class _SignInState extends State<SignIn> {
           // We only do that here, if the user logs in via tokens we don't
           // check the FCM token since it will probably be the same.
           // We assume that getting the local fcm token was set
-
-          NotificationController().getFCMTokenNotificationUtil(loginResponse.getFCMToken());
 
         } else if (!loginResponse.getResult()) {
           showToastMessage(loginResponse.getMessage());
@@ -324,6 +332,13 @@ class _SignInState extends State<SignIn> {
           setState(() {
             isLoading = false;
           });
+
+          NotificationController().getFCMTokenNotificationUtil(loginResponse.getFCMToken());
+          int platform = Platform.isAndroid ? 0 : 1;
+          if (loginResponse.getPlatform() != null && platform != loginResponse.getPlatform()) {
+            AuthServiceSocial().updatePlatform(platform);
+          }
+
           // We securely store information locally on the phone
           secureStorage.setEmail(emailLogin);
           secureStorage.setPassword(passwordLogin);
@@ -953,6 +968,10 @@ class _SignInState extends State<SignIn> {
         loginResponse) {
       if (loginResponse.getResult()) {
         NotificationController().getFCMTokenNotificationUtil(loginResponse.getFCMToken());
+        int platform = Platform.isAndroid ? 0 : 1;
+        if (loginResponse.getPlatform() != null && platform != loginResponse.getPlatform()) {
+          AuthServiceSocial().updatePlatform(platform);
+        }
         goToBrocastHome();
         setState(() {
           isLoading = false;

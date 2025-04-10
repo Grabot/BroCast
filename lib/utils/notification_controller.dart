@@ -137,9 +137,12 @@ class NotificationController extends ChangeNotifier {
   // - The app becomes active again after FCM has expired its existing token
   //    - Perhaps keep track of a timestamp with the last check time?
   //      The stale time is 270 days, but setting it a bit lower seems fine.
+  bool updatingFCMToken = false;
   getFCMTokenNotificationUtil(String? token) async {
     if (token != null) {
       _firebaseTokenServer = token;
+    } else {
+      _firebaseTokenServer = '';
     }
 
     if (_firebaseTokenDevice.isNotEmpty) {
@@ -160,26 +163,42 @@ class NotificationController extends ChangeNotifier {
       SecureStorage().getFCMToken().then((value) {
         if (value == null) {
           SecureStorage().setFCMToken(_firebaseTokenDevice);
-          updateTokenServer = true;
+          if (_firebaseTokenDevice.isNotEmpty) {
+            if (!updatingFCMToken) {
+              updatingFCMToken = true;
+              updateServer(_firebaseTokenDevice);
+            }
+          }
         } else {
           if (value != _firebaseTokenDevice) {
             SecureStorage().setFCMToken(_firebaseTokenDevice);
-            updateTokenServer = true;
+            if (_firebaseTokenDevice.isNotEmpty) {
+              if (!updatingFCMToken) {
+                updatingFCMToken = true;
+                updateServer(_firebaseTokenDevice);
+              }
+            }
           }
         }
 
-        if (updateTokenServer) {
+        if (_firebaseTokenServer.isEmpty) {
           // If this variable is set we update the token on the server no matter what.
           // If the token is null there is nothing we can do.
           if (_firebaseTokenDevice.isNotEmpty) {
-            updateServer(_firebaseTokenDevice);
+            if (!updatingFCMToken) {
+              updatingFCMToken = true;
+              updateServer(_firebaseTokenDevice);
+            }
           }
         } else {
           if (_firebaseTokenDevice.isNotEmpty && _firebaseTokenServer.isNotEmpty) {
             // Do the check.
             if (_firebaseTokenDevice != _firebaseTokenServer) {
               // Update the token on the server
-              updateServer(_firebaseTokenDevice);
+              if (!updatingFCMToken) {
+                updatingFCMToken = true;
+                updateServer(_firebaseTokenDevice);
+              }
             }
           }
         }
@@ -190,6 +209,7 @@ class NotificationController extends ChangeNotifier {
   updateServer(String newFCMToken) {
     // We will update the FCM token, but with a delay to allow the login process to finish.
     Future.delayed(Duration(seconds: 2), () {
+      updatingFCMToken = false;
       AuthServiceSocial().updateFCMToken(newFCMToken);
     });
   }

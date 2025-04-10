@@ -8,10 +8,11 @@ class LoginResponse {
   String? accessToken;
   String? refreshToken;
   String? FCMToken;
+  int? platform;
   List<int> broupIds = [];
   Me? me;
 
-  LoginResponse(this.result, this.message, this.accessToken, this.refreshToken, this.FCMToken, this.me);
+  LoginResponse(this.result, this.message, this.accessToken, this.refreshToken, this.FCMToken, this.platform, this.me);
 
   bool getResult() {
     return result;
@@ -33,6 +34,10 @@ class LoginResponse {
     return FCMToken;
   }
 
+  int? getPlatform() {
+    return platform;
+  }
+
   Me? getMe() {
     return me;
   }
@@ -45,6 +50,9 @@ class LoginResponse {
         refreshToken = json["refresh_token"];
         if (json.containsKey("fcm_token")) {
           FCMToken = json["fcm_token"];
+        }
+        if (json.containsKey("platform")) {
+          platform = json["platform"];
         }
         if (json.containsKey("bro")) {
           Map<String, dynamic> userJson = json["bro"];

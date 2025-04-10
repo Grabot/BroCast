@@ -892,6 +892,26 @@ class AuthServiceSocial {
     }
   }
 
+  Future<bool> updatePlatform(int newPlatform) async {
+    String endPoint = "change/platform";
+    var response = await AuthApi().dio.post(endPoint,
+        options: Options(headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+        }),
+        data: jsonEncode(<String, dynamic>{
+          "platform": newPlatform,
+        }
+      )
+    );
+
+    Map<String, dynamic> json = response.data;
+    if (!json.containsKey("result")) {
+      return false;
+    } else {
+      return json["result"];
+    }
+  }
+
   Future<bool> getAvatarBro(int broId) async {
     String endPoint = "get/avatar/bro";
     var response = await AuthApi().dio.post(endPoint,
