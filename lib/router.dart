@@ -1,4 +1,3 @@
-import 'package:brocast/views/bro_access_page.dart';
 import 'package:brocast/views/bro_home/bro_home.dart';
 import 'package:brocast/views/chat_view/chat_messaging.dart';
 import 'package:brocast/views/opening_screen/opening_screen.dart';
@@ -24,12 +23,6 @@ Route<dynamic> generateRoute(RouteSettings settings) {
             key: UniqueKey(),
             chat: chat,
           )
-      );
-    case routes.BroAccessRoute:
-      return MaterialPageRoute(
-          builder: (context) {
-            return BroAccess(key: UniqueKey());
-          }
       );
     default:
       return MaterialPageRoute(

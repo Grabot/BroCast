@@ -65,7 +65,6 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> {
               }
             }
           }
-          print("bro ${myBro.getBroupName()} In broup: $inBroup");
           BroupAddBro broupAddBro =
           new BroupAddBro(false, inBroup, myBro);
           broupAddBros.add(broupAddBro);
@@ -450,7 +449,6 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> {
     }
     if (newBroId != -1) {
       AuthServiceSocial().addBroToBroup(widget.chat.broupId, newBroId).then((value) {
-        print("adding to broup: $value");
         if (value) {
           List<int> broIdsToRetrieve = [...widget.chat.getBroIds()];
           for (Bro bro in widget.chat.getBroupBros()) {

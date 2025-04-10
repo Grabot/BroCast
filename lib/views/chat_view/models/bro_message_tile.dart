@@ -246,7 +246,6 @@ class _BroMessageTileState extends State<BroMessageTile> {
         position: RelativeRect.fromRect(_tapPosition & const Size(40, 40),
             Offset.zero & overlay.size))
         .then((int? delta) {
-      print("pressed? delta: $delta");
       if (delta == 1) {
         // Save the image!
         saveImageToGallery();

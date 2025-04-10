@@ -91,8 +91,6 @@ class _BrocastHomeState extends State<BrocastHome> {
               }
             }
           }
-          print("broAvatarIds: $broAvatarIds");
-          print("broupAvatarIds: $broupAvatarIds");
           if (broAvatarIds.isNotEmpty) {
             AuthServiceSocial().broDetails([], broAvatarIds, null);
           }
@@ -105,18 +103,13 @@ class _BrocastHomeState extends State<BrocastHome> {
   }
 
   checkNotificationListener() {
-    print("checking a notification listen event");
     if (notificationController.navigateChat) {
-      print("notification listener ${notificationController.navigateChatId}");
       notificationController.navigateChat = false;
       int chatId = notificationController.navigateChatId;
       Me? me = settings.getMe();
-      print("me: $me");
       if (me != null) {
         Broup broup = me.broups.firstWhere((element) => element.getBroupId() == chatId);
-        print("broup: $broup");
         if (broup.getBroupId() == chatId) {
-          print("navigating to chatcc!!!");
           navigateToChat(context, settings, broup);
         }
       }
@@ -124,13 +117,11 @@ class _BrocastHomeState extends State<BrocastHome> {
   }
 
   lifeCycleChangeListener() {
-    print("life cycle change listener");
     // To be sure we check the broups again when the app is resumed.
     broHomeChangeListener();
   }
 
   broHomeChangeListener() {
-    print("listen to home");
     me = settings.getMe();
     if (me != null) {
       // Set all bros to be shown, except when the bro is searching.
@@ -218,7 +209,6 @@ class _BrocastHomeState extends State<BrocastHome> {
   }
 
   backButtonFunctionality() {
-    print("back home");
     if (searchMode) {
       setState(() {
         searchMode = false;
@@ -509,7 +499,6 @@ class _BrocastHomeState extends State<BrocastHome> {
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (bool didPop, result) {
-        print("didPop home: $didPop");
         if (!didPop) {
           backButtonFunctionality();
         }

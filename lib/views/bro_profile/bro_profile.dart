@@ -121,7 +121,6 @@ class _BroProfileState extends State<BroProfile> {
 
   changeBroname() {
     String newBroname = broNameController.text;
-    print("changing bro name to $newBroname");
     AuthServiceSettings().changeBroname(newBroname).then((value) {
       if (value) {
         showToastMessage("bro name changed successfully");

@@ -84,9 +84,6 @@ class _ChatDetailsState extends State<ChatDetails> {
         }
         return a.id.compareTo(b.id);
       });
-      for (Bro bro in widget.chat.getBroupBros()) {
-        print("bro in broup: ${bro.getId()}");
-      }
     }
     checkAdmin();
 
@@ -146,7 +143,6 @@ class _ChatDetailsState extends State<ChatDetails> {
       for (Bro bro in widget.chat.getBroupBros()) {
         broIdsToRetrieve.remove(bro.id);
       }
-      print("ids missing from broup: $broIdsToRetrieve");
       storage.fetchBros(broIdsToRetrieve).then((value) {
         if (value.isNotEmpty) {
           for (Bro bro in value) {
@@ -154,7 +150,6 @@ class _ChatDetailsState extends State<ChatDetails> {
             broIdsToRetrieve.remove(bro.id);
           }
         }
-        print("ids missing from broup after db check: $broIdsToRetrieve");
         if (broIdsToRetrieve.isEmpty) {
           participantChange();
         }
@@ -184,7 +179,6 @@ class _ChatDetailsState extends State<ChatDetails> {
         }
       });
     } else if (delta == 2) {
-      print("making bro admin");
       AuthServiceSocial().makeBroAdmin(widget.chat.broupId, broId).then((value) {
         if (value) {
           setState(() {
@@ -194,7 +188,6 @@ class _ChatDetailsState extends State<ChatDetails> {
         }
       });
     } else if (delta == 3) {
-      print('dismissing bro from admin');
       AuthServiceSocial().dismissBroAdmin(widget.chat.broupId, broId).then((value) {
         if (value) {
           setState(() {
@@ -204,16 +197,12 @@ class _ChatDetailsState extends State<ChatDetails> {
         }
       });
     } else if (delta == 4) {
-      print('Remove bro from chat.');
       AuthServiceSocial().removeBroToBroup(widget.chat.broupId, broId).then((value) {
         if (value) {
           setState(() {
             widget.chat.removeBro(broId);
-            // TODO: reset the bros on the broup?
-            // widget.chat.retrievedBros = false;
             widget.chat.checkedRemainingBros = false;
             amountInGroup = widget.chat.getBroupBros().length;
-            print("bro has been removed :'(");
           });
         }
       });
@@ -1372,7 +1361,6 @@ class _ChatDetailsState extends State<ChatDetails> {
             dbBroup.mute = widget.chat.mute;
             dbBroup.muteValue = widget.chat.muteValue;
             storage.updateBroup(dbBroup).then((value) {
-              print("Broup muting updated in local DB");
               BroHomeChangeNotifier().notify();
             });
           }

@@ -91,8 +91,6 @@ class AuthServiceLogin {
   }
 
   Future<LoginResponse> getRefreshOAuth(String accessToken, String refreshToken) async {
-    Settings settings = Settings();
-    print("refresh action 2");
     String endPoint = "refresh/oauth";
     var response = await AuthApiLogin().dio.post(endPoint,
         options: Options(headers: {
@@ -115,7 +113,6 @@ class AuthServiceLogin {
   Future<LoginResponse> getRefresh(String accessToken, String refreshToken) async {
     Settings settings = Settings();
     settings.setLoggingIn(true);
-    print("refresh action 2");
     String endPoint = "refresh";
     var response = await AuthApiLogin().dio.post(endPoint,
         options: Options(headers: {
@@ -243,7 +240,6 @@ class AuthServiceLogin {
 
   Future<LoginResponse> getLoginGoogle(String accessToken) async {
     String endPoint = "login/google/token";
-    print("doing google login");
     var response = await AuthApiLogin().dio.post(endPoint,
         options: Options(headers: {
           HttpHeaders.contentTypeHeader: "application/json",
@@ -252,7 +248,6 @@ class AuthServiceLogin {
           "access_token": accessToken
         }));
 
-    print("google login response: ${response.data}");
     LoginResponse loginResponse = LoginResponse.fromJson(response.data);
     if (loginResponse.getResult()) {
       successfulLoginLogin(loginResponse);

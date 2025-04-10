@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:brocast/utils/utils.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -48,7 +49,7 @@ class _CameraPageState extends State<CameraPage> {
       await _cameraController.initialize();
       setState(() {});
     } on CameraException catch (e) {
-      debugPrint("Camera error: $e");
+      showToastMessage("Camera error");
     }
   }
 
@@ -58,11 +59,9 @@ class _CameraPageState extends State<CameraPage> {
       if (picture != null) {
         Uint8List imageBytes = await picture.readAsBytes();
         Navigator.of(context).pop(imageBytes);
-      } else {
-        print("Image gallery error!");
       }
     } on PlatformException catch (e) {
-      print("Failed to pick image: $e");
+      showToastMessage("Failed to pick image");
     }
   }
 
@@ -90,7 +89,7 @@ class _CameraPageState extends State<CameraPage> {
       Uint8List imageBytes = await picture.readAsBytes();
       Navigator.of(context).pop(imageBytes);
     } on CameraException catch (e) {
-      debugPrint('Error occurred while taking picture: $e');
+      showToastMessage('Error occurred while taking picture');
     }
   }
 

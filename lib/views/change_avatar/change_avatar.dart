@@ -183,7 +183,6 @@ class _ChangeAvatarState extends State<ChangeAvatar> {
               for (Broup broup in me.broups) {
                 if (broup.getBroupId() == widget.chat!.broupId) {
                   broup.setAvatar(changedAvatar);
-                  print("updated avatar not default");
                   broup.setAvatarDefault(false);
                   Storage().updateBroup(broup);
                   navigateBackToChatDetails();
@@ -240,14 +239,12 @@ class _ChangeAvatarState extends State<ChangeAvatar> {
               Uint8List newAvatar = base64Decode(newAvatarString);
               widget.chat!.setAvatarDefault(true);
               widget.chat!.setAvatar(newAvatar);
-              print("updated avatar default");
               Settings settings = Settings();
               if (settings.getMe() != null) {
                 Me me = settings.getMe()!;
                 for (Broup broup in me.broups) {
                   if (broup.getBroupId() == widget.chat!.broupId) {
                     broup.setAvatar(newAvatar);
-                    print("updated avatar not default");
                     broup.setAvatarDefault(false);
                     Storage().updateBroup(broup);
                     navigateBackToChatDetails();
@@ -318,7 +315,6 @@ class _ChangeAvatarState extends State<ChangeAvatar> {
         controller: cropController,
         hexCrop: true,
         onStatusChanged: (status) {
-          print("status: $status");
           changesMade = true;
           if (status == CropStatus.cropping || status == CropStatus.loading) {
             isLoading = true;
@@ -335,7 +331,6 @@ class _ChangeAvatarState extends State<ChangeAvatar> {
           });
         },
         onCropped: (image) {
-          print("cropped");
           setState(() {
             imageCrop = image;
           });

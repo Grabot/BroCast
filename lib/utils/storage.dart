@@ -113,7 +113,6 @@ class Storage {
   }
 
   Future<int> addBro(Bro bro) async {
-    print("adding bro ${bro.broName} ${bro.bromotion}");
     Database database = await this.database;
     return database.insert(
       'Bro',
@@ -145,8 +144,6 @@ class Storage {
   }
 
   Future<int> addBroup(Broup broup) async {
-    var debugString = broup.toDbMap();
-    print("add broup ${debugString}");
     Database database = await this.database;
     return database.insert(
       'Broup',
@@ -156,8 +153,6 @@ class Storage {
   }
 
   Future<int> updateBroup(Broup broup) async {
-    var debugString = broup.toDbMap();
-    print("updating broup ${debugString}");
     Database database = await this.database;
     return database.update(
       'Broup',

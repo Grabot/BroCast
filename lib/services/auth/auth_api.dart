@@ -60,7 +60,6 @@ class AppInterceptors extends Interceptor {
       DioException dioError = DioException(requestOptions: options,
           type: DioExceptionType.cancel,
           error: "User not authorized");
-      print("reject 1");
       showToastMessage("There was an issue with authorization, please log in again");
       _navigationService.navigateTo(routes.SignInRoute);
       return handler.reject(dioError, true);
@@ -72,7 +71,6 @@ class AppInterceptors extends Interceptor {
       if ((expiration - current) < 60) {
         // We see that the access token is almost expired. We should refresh it.
         String? refreshToken = await secureStorage.getRefreshToken();
-        print("refresh token: $refreshToken");
 
         if (refreshToken == null || refreshToken == "") {
           // We don't have a refresh token. We should log the user out.
@@ -83,7 +81,6 @@ class AppInterceptors extends Interceptor {
           _navigationService.navigateTo(routes.SignInRoute);
           return handler.reject(dioError, true);
         } else {
-          print("refresh action 1");
           String endPoint = "refresh";
           var responseRefresh = await Dio(
               BaseOptions(
@@ -101,7 +98,6 @@ class AppInterceptors extends Interceptor {
                 "refresh_token": refreshToken
               }
           ).catchError((error, stackTrace) {
-            print("reject 3");
             showToastMessage("There was an issue with authorization, please log in again");
             _navigationService.navigateTo(routes.SignInRoute);
             return handler.reject(error, true);
@@ -129,7 +125,6 @@ class AppInterceptors extends Interceptor {
               await secureStorage.setRefreshTokenExpiration(Jwt.parseJwt(newRefreshToken)['exp']);
             }
           } else {
-            print("reject 4");
             showToastMessage("There was an issue with authorization, please log in again");
             _navigationService.navigateTo(routes.SignInRoute);
             return;

@@ -83,7 +83,6 @@ class Me extends Bro {
     broName = json["bro_name"];
     bromotion = json["bromotion"];
     origin = json["origin"];
-    print("set 4 basic values");
     if (json.containsKey("avatar") && json["avatar"] != null) {
       avatar = base64Decode(json["avatar"].replaceAll("\n", ""));
     }

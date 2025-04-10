@@ -9,17 +9,12 @@ import '../../utils/storage.dart';
 
 Future<bool> getBroupDataBroup(Broup chat, Storage storage, Me? me) async {
   storage.fetchBroup(chat.broupId).then((broupDb) {
-    print("bro ids ${chat.broIds}");
     storage.fetchBros(chat.broIds).then((brosDb) {
       Map<String, Bro> broMap = {for (var bro in brosDb) bro.getId().toString(): bro};
       if (me != null) {
         for (Broup meBroup in me.broups) {
           if (meBroup.broupId == chat.broupId) {
-            print("found broup in me going to update");
-            print("broMap $broMap");
-            if (broupDb == null) {
-              // TODO: New broup found here? Is this possible?
-            } else {
+            if (broupDb != null) {
               if (chat.avatar != broupDb.avatar) {
                 chat.avatar = broupDb.avatar;
                 chat.avatarDefault = broupDb.avatarDefault;
@@ -27,9 +22,7 @@ Future<bool> getBroupDataBroup(Broup chat, Storage storage, Me? me) async {
               for (int broId in chat.broIds) {
                 Bro? dbBro = broMap[broId.toString()];
                 if (dbBro != null) {
-                  print("found a dbBro ${dbBro.getBroName()}");
                   if (!chat.broupBros.any((element) => element.getId() == dbBro.getId())) {
-                    print("adding a dbBro ${dbBro.getBroName()} ${dbBro.getBromotion()}");
                     chat.addBro(dbBro);
                   }
                 }
@@ -46,8 +39,6 @@ Future<bool> getBroupDataBroup(Broup chat, Storage storage, Me? me) async {
 
 Future<bool> getBros(Broup chat, Storage storage, Me me) async {
   // first check if one of the updateBros might not be needed to retrieve anymore, if he left for instance.
-  print("current bro ids to update ${chat.updateBroIds}");
-  print("current bro avatar ids to update ${chat.updateBroAvatarIds}");
   for (int broToUpdateId in [...chat.updateBroIds]) {
     if (!chat.getBroIds().contains(broToUpdateId)) {
       // The broToUpdateId is no longer in the broIds, so we remove it.
@@ -66,11 +57,8 @@ Future<bool> getBros(Broup chat, Storage storage, Me me) async {
     chat.updateBroAvatarIds.remove(me.getId());
   }
 
-  print("getting bros!!!!");
   List<int> broIdsToRetrieveServer = [...chat.updateBroIds];
   List<int> broAvatarIdsToRetrieveServer = [...chat.updateBroAvatarIds];
-  print("broIdsToRetrieveServer: $broIdsToRetrieveServer");
-  print("broAvatarIdsToRetrieveServer: $broAvatarIdsToRetrieveServer");
 
   // Then retrieve from the server the bros that have to be updated.
   if (!chat.removed) {
@@ -116,7 +104,6 @@ List<Bro> removeBroDuplicates(List<Bro> newBrosServer, List<Bro> newBrosDB, Stor
 
 Future<bool> getMessages(int page, Broup chat, Storage storage) async {
   bool allMessagesDBRetrieved = false;
-  print("getting messages");
   List<Message> messagesServer = [];
   List<Message> messagesDB = [];
 

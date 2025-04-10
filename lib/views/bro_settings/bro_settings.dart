@@ -1,3 +1,4 @@
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:brocast/utils/settings.dart';
 import 'package:brocast/utils/shared.dart';
 import 'package:brocast/utils/socket_services.dart';
@@ -5,8 +6,6 @@ import 'package:brocast/utils/storage.dart';
 import 'package:brocast/utils/utils.dart';
 import "package:flutter/material.dart";
 
-import '../../objects/me.dart';
-import '../../utils/notification_controller.dart';
 
 class BroSettings extends StatefulWidget {
   BroSettings({required Key key}) : super(key: key);
@@ -100,7 +99,6 @@ class _BroSettingsState extends State<BroSettings> {
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (bool didPop, result) {
-        print("didPop settings: $didPop");
         if (!didPop) {
           backButtonFunctionality();
         }
@@ -141,9 +139,8 @@ class _BroSettingsState extends State<BroSettings> {
                       foregroundColor:
                           WidgetStateProperty.all<Color>(Colors.blue),
                     ),
-                    // onPressed: AppSettings.openNotificationSettings,
-                    onPressed: () {
-                      print("TODO: implement!");
+                    onPressed: () async {
+                      await AwesomeNotifications().showNotificationConfigPage();
                     },
                     child: Text('Open notification Settings'),
                   ),

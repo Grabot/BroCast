@@ -118,7 +118,6 @@ class AuthServiceSocial {
   }
 
   Future<bool> receivedMessage(int broupId, int messageId) async {
-    print("sending received message");
     String endPoint = "message/received";
     var response = await AuthApi().dio.post(endPoint,
         options: Options(headers: {
@@ -140,7 +139,6 @@ class AuthServiceSocial {
   }
 
   Future<bool> readMessages(int broupId) async {
-    print("sending read messages");
     String endPoint = "message/read";
     var response = await AuthApi().dio.post(endPoint,
         options: Options(headers: {
@@ -257,7 +255,6 @@ class AuthServiceSocial {
   }
 
   Future<Bro?> retrieveBroAvatar(int broId) async {
-    print("retrieving bro avatar");
     String endPoint = "bro/get/single";
     var response = await AuthApi().dio.post(endPoint,
         options: Options(headers: {
@@ -287,7 +284,6 @@ class AuthServiceSocial {
   }
 
   Future<Bro?> retrieveBro(int broId) async {
-    print("retrieving bro");
     String endPoint = "bro/get/single";
     var response = await AuthApi().dio.post(endPoint,
         options: Options(headers: {
@@ -408,7 +404,6 @@ class AuthServiceSocial {
 
   Future<bool> makeBroAdmin(int broupId, int broId) async {
     String endPoint = "broup/make_admin";
-    print("making bro admin $broId");
     var response = await AuthApi().dio.post(endPoint,
         options: Options(headers: {
           HttpHeaders.contentTypeHeader: "application/json",
@@ -430,7 +425,6 @@ class AuthServiceSocial {
 
   Future<bool> dismissBroAdmin(int broupId, int broId) async {
     String endPoint = "broup/dismiss_admin";
-    print("Dismissing bro admin $broId");
     var response = await AuthApi().dio.post(endPoint,
         options: Options(headers: {
           HttpHeaders.contentTypeHeader: "application/json",
@@ -528,15 +522,11 @@ class AuthServiceSocial {
             Storage().fetchBros(combinedList).then((brosDb) {
               for (Bro broDb in brosDb) {
                 if (broupMe.getBroIds().contains(broDb.getId())) {
-                  print("adding a bro in the broupbros");
                   broupMe.addBro(broDb);
                 } else {
-                  print("a bro was no longer found in the broId list");
                   // check if broDb is in the bro remaining list
                   if (!broupMe.messageBroRemaining.any((element) =>
                   element.getId() == broDb.getId())) {
-                    print("bro ${broDb.getBroName()} ${broDb.getBromotion()}");
-                    print("adding it to remaining bros!");
                     broupMe.messageBroRemaining.add(broDb);
                   }
                 }
@@ -576,9 +566,6 @@ class AuthServiceSocial {
       )
     );
 
-    print("broToUpdate $brosToUpdate");
-    print("broAvatarsToUpdate $broAvatarsToUpdate");
-
     // We take the list and remove entries until everything is gone. That's how we know we're done.
     // We still want the original lists for later checks, so we copy them here.
     List<int> brosToUpdateCheck = [...brosToUpdate];
@@ -592,17 +579,13 @@ class AuthServiceSocial {
     storage.fetchBros(combinedList).then((dbBros) {
       Map<String, Bro> brosDbMap = {for (var bro in dbBros) bro.getId().toString(): bro};
       if (!json.containsKey("result")) {
-        // TODO: What to do if it goes wrong?
-        // return false;
+        // something went wrong.
+        return;
       } else {
         // We'll gather the bro data and store it in the db here.
-        if (!json.containsKey("bros")) {
-          // TODO: What to do if it goes wrong?
-          // return false;
-        } else {
+        if (json.containsKey("bros")) {
           for (var bro in json["bros"]) {
             Bro newBro = Bro.fromJson(bro);
-            print("new bro ${newBro.broName}  ${newBro.bromotion}");
             if (broAvatarsToUpdateCheck.contains(newBro.id)) {
               // Bro with avatar. Here we'll have all the bro data so just override in the db.
               storage.addBro(newBro);
@@ -645,7 +628,6 @@ class AuthServiceSocial {
 
       // Find the IDs from combinedList that are not in me.broups
       List<int> missingIds = combinedList.where((id) => !meBroupIds.contains(id)).toList();
-      print("missingIds $missingIds");
       if (missingIds.isNotEmpty) {
         // There were broups missing! They should be in the db now
         Storage().fetchBroups(missingIds).then((broupDbs) {
@@ -667,13 +649,11 @@ class AuthServiceSocial {
               // After this we will subtract the available private chats and me since they are retrieved now.
               broupDb.updateBroIds = [...broupDb.broIds];
               broupDb.updateBroAvatarIds = [...broupDb.broIds];
-              print("setting broIds to be updated ${broupDb.updateBroIds}");
               for (Broup broupDb2 in broupDbs) {
                 if (broupDb2.private) {
                   for (int broId in broupDb2.getBroIds()) {
                     if (broId != me.id) {
                       if (broupDb.updateBroIds.contains(broId)) {
-                        print("removing broId $broId from updateBroIds ${broupDb.updateBroIds}");
                         broupDb.updateBroIds.remove(broId);
                         broupDb.updateBroAvatarIds.remove(broId);
                       }
@@ -682,7 +662,6 @@ class AuthServiceSocial {
                 }
               }
               if (broupDb.updateBroIds.contains(me.getId())) {
-                print("removing me ${me.getId()} from updateBroIds ${broupDb.updateBroIds}");
                 broupDb.updateBroIds.remove(me.getId());
                 broupDb.updateBroAvatarIds.remove(me.getId());
               }
@@ -720,21 +699,15 @@ class AuthServiceSocial {
       ..addAll(broupAvatarsToUpdateCheck);
     List<int> combinedList = combinedSet.toList();
     Storage storage = Storage();
-    print("combinedList $combinedList");
     storage.fetchBroups(combinedList).then((dbBroups) async {
       Map<String, Broup> broupDbMap = {for (var broup in dbBroups) broup.getBroupId().toString(): broup};
       Map<String, dynamic> json = response.data;
       if (!json.containsKey("result")) {
-        // TODO: What if it goes wrong?
+        return;
         // return false;
       } else {
         // We'll gather the bro data and store it in the db here.
-        if (!json.containsKey("broups")) {
-          // TODO: What if it goes wrong?
-          // return false;
-        } else {
-          print("just printing everything");
-          print(json["broups"]);
+        if (json.containsKey("broups")) {
           for (var broup in json["broups"]) {
             int broupId = broup["broup_id"];
             if (broupAvatarsToUpdateCheck.contains(broupId) && broupsToUpdateCheck.contains(broupId)) {
@@ -757,7 +730,6 @@ class AuthServiceSocial {
                 return;
               }
             } else if (broupAvatarsToUpdateCheck.contains(broupId)) {
-              print("broupAvatarsToUpdateCheck");
               Map<String, dynamic> chat_details = broup["chat"];
               if (chat_details.containsKey("avatar") && chat_details["avatar"] != null) {
                 Uint8List avatar = base64Decode(chat_details["avatar"].replaceAll("\n", ""));
@@ -768,7 +740,6 @@ class AuthServiceSocial {
                   existingBroup
                     ..avatar = avatar
                     ..avatarDefault = avatarDefault;
-                  print("updating existing broup  ${existingBroup.broupId} ${existingBroup.avatar}");
                   await storage.updateBroup(existingBroup);
                 }
                 broupDbMap.remove(broupId.toString());
@@ -778,7 +749,12 @@ class AuthServiceSocial {
                   return;
                 }
               } else {
-                print("Huge problem?!");
+                // Should not happen, but just in case we will continue the process.
+                broupAvatarsToUpdateCheck.remove(broupId);
+                if (broupsToUpdateCheck.isEmpty && broupAvatarsToUpdateCheck.isEmpty) {
+                  broupDetailsDone(combinedList);
+                  return;
+                }
               }
             } else if (broupsToUpdateCheck.contains(broupId)) {
               broupsToUpdateCheck.remove(broupId);
@@ -826,17 +802,9 @@ class AuthServiceSocial {
 
   setBroupsReceived(List<int> broupsReceived) {
     if (broupsReceived.length == 1) {
-      broupBroIdsReceived(broupsReceived[0]).then((value) {
-        if (value) {
-          print("broupBroIdsReceived success");
-        }
-      });
+      broupBroIdsReceived(broupsReceived[0]);
     } else {
-      broupsBroIdsReceived(broupsReceived).then((value) {
-        if (value) {
-          print("broupsBroIdsReceived success");
-        }
-      });
+      broupsBroIdsReceived(broupsReceived);
     }
   }
 
@@ -1012,8 +980,6 @@ class AuthServiceSocial {
           Uint8List avatar = base64Decode(json["avatar"].replaceAll("\n", ""));
           Broup? broup = await Storage().fetchBroup(broupId);
           if (broup != null) {
-            print("get avatar broup found");
-            print("avatar default $isDefault");
             broup.setAvatar(avatar);
             broup.setAvatarDefault(isDefault);
             broup.newAvatar = false;

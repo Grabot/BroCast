@@ -32,17 +32,6 @@ class SocketServices extends ChangeNotifier {
     return _instance;
   }
 
-  void stopSocketConnection() {
-    if (socket.connected) {
-      socket.disconnect();
-      Me? me = Settings().getMe();
-      if (me != null) {
-        leaveRoomSolo(me.getId());
-      }
-      print("Socket disconnected");
-    }
-  }
-
   void startSocketConnection() {
     if (!socket.connected) {
       socket.connect();
@@ -50,7 +39,6 @@ class SocketServices extends ChangeNotifier {
       if (me != null) {
         joinRooms(me);
       }
-      print("Socket connected");
     }
   }
 
@@ -63,11 +51,10 @@ class SocketServices extends ChangeNotifier {
     });
 
     socket.onConnect((_) {
-      socket.emit('message_event', 'Connected!');
+      // socket.emit('message_event', 'Connected!');
       // We are connected, this is good :)
       // But it's also possible something went wrong in the backend?
       // So rejoin the channels and rooms
-      print("socket connected!");
       Me? me = Settings().getMe();
       if (me != null) {
         joinRooms(me);
@@ -75,12 +62,7 @@ class SocketServices extends ChangeNotifier {
     });
 
     socket.onDisconnect((_) {
-      socket.emit('message_event', 'Disconnected!');
-    });
-
-    socket.on('message_event', (data) {
-      print("message event $data");
-      checkMessageEvent(data);
+      // socket.emit('message_event', 'Disconnected!');
     });
 
     socket.open();
@@ -100,22 +82,6 @@ class SocketServices extends ChangeNotifier {
         joinRoomBroup(meBroup.getBroupId());
         meBroup.joinedBroupRoom = true;
       }
-    }
-  }
-
-  retrieveAvatar() {
-    AuthServiceLogin().getAvatarMe().then((value) {
-      if (value) {
-        notifyListeners();
-      }
-    }).onError((error, stackTrace) {
-      // TODO: What to do on an error? Reset?
-    });
-  }
-
-  void checkMessageEvent(data) {
-    if (data == "Avatar creation done!") {
-      retrieveAvatar();
     }
   }
 
@@ -139,14 +105,10 @@ class SocketServices extends ChangeNotifier {
   }
 
   checkAvatarChange(data) {
-    // TODO: Check when using server?
     // Here we indicate that an avatar is changed such that we can retrieve it.
-    print("Avatar changed $data");
     Me? me = Settings().getMe();
     if (me != null) {
-      print("me is not null");
       if (data.containsKey("broup_id")) {
-        print("it was a broup");
         int broupId = data["broup_id"];
         AuthServiceSocial().getAvatarBroup(broupId).then((value) {
           if (value) {
@@ -155,7 +117,6 @@ class SocketServices extends ChangeNotifier {
         });
       }
       if (data.containsKey("bro_id")) {
-        print("it was a bro");
         int broId = data["bro_id"];
         if (Settings().getMe()!.id == broId) {
           AuthServiceLogin().getAvatarMe().then((value) {
@@ -175,7 +136,6 @@ class SocketServices extends ChangeNotifier {
   }
 
   chatChanged(data) async {
-    print("chat changed $data");
     int broupId = data["broup_id"];
     Me? me = Settings().getMe();
     if (me != null) {
@@ -216,17 +176,13 @@ class SocketServices extends ChangeNotifier {
         if (data.containsKey("new_member_id")) {
           int newMemberId = data["new_member_id"];
           // We check if we have the bro in the database, otherwise we add it to the updateBros on the broup
-          print("new member in the broup");
           if (!broup.broIds.contains(newMemberId)) {
             broup.broIds.add(newMemberId);
           }
-          print("bro not found in db");
           if (!broup.updateBroIds.contains(newMemberId)) {
-            print("Id not already in updateBroIds");
             broup.updateBroIds.add(newMemberId);
           }
           if (!broup.updateBroAvatarIds.contains(newMemberId)) {
-            print("Id not already in updateBroAvatarIds");
             broup.updateBroAvatarIds.add(newMemberId);
           }
           Storage().updateBroup(broup);
@@ -237,7 +193,6 @@ class SocketServices extends ChangeNotifier {
           }
         }
         if (data.containsKey("new_admin_id")) {
-          print("new admin! ${data["new_admin_id"]}");
           int newAdminId = data["new_admin_id"];
           broup.addAdminId(newAdminId);
         }
@@ -254,8 +209,6 @@ class SocketServices extends ChangeNotifier {
           if (broup.updateBroAvatarIds.contains(removedBroId)) {
             broup.updateBroAvatarIds.remove(removedBroId);
           }
-          // TODO: reset the bros on the broup?
-          // broup.retrievedBros = false;
           broup.checkedRemainingBros = false;
           // It's possible that you have been removed from the broup
           if (Settings().getMe()!.getId() == removedBroId) {
@@ -309,12 +262,9 @@ class SocketServices extends ChangeNotifier {
         }
 
         if (data.containsKey("new_avatar")) {
-          print("gotten a new avatar for a broup!");
           bool newAvatar = data["new_avatar"];
           broup.newAvatar = newAvatar;
           // We assume the newAvatar is True
-          print(
-              "gotten a new avatar! $newAvatar  $changedBroupAvatar  $broupId");
           // If changedBroupAvatar is equal to the broupId
           // it means we just changed it ourselves.
           if (newAvatar && !(changedBroupAvatar == broupId)) {
@@ -333,7 +283,6 @@ class SocketServices extends ChangeNotifier {
             });
           } else if (changedBroupAvatar == broupId) {
             // We just changed the avatar, so we set it back to -1.
-            print("setting it back to -1");
             changedBroupAvatar = -1;
           }
         }
@@ -350,7 +299,6 @@ class SocketServices extends ChangeNotifier {
   }
 
   setWeChangedAvatar(int avatarBroupId) {
-    print("changing we avatar $avatarBroupId");
     changedBroupAvatar = avatarBroupId;
     // Put it back after 5 seconds, this should be enough time to
     // ignore incoming socket updates and not interfere with
@@ -363,8 +311,6 @@ class SocketServices extends ChangeNotifier {
   }
 
   chatAdded(data) async {
-    print("chat added $data");
-    // TODO: If you received the broup via sockets we should set `broup_updated` to false?
     Me? me = Settings().getMe();
     if (me != null) {
       // Add the broup. If it already exists, for instance because we left or were removed
@@ -405,7 +351,6 @@ class SocketServices extends ChangeNotifier {
           if (brosToUpdate.isNotEmpty) {
             newBroup.updateBroIds = brosToUpdate;
             newBroup.updateBroAvatarIds = brosToUpdate;
-            print("added broup updating bros $brosToUpdate");
           }
         }
         if (!found) {
@@ -470,12 +415,10 @@ class SocketServices extends ChangeNotifier {
   }
 
   messageReceived(data) async {
-    print("message received $data");
     Message message = Message.fromJson(data);
     Storage storage = Storage();
     storage.addMessage(message);
     // We only want to do the receive update when the app is opened.
-    print("life cycle status ${LifeCycleService().getAppStatus()}");
     int broupId = message.broupId;
     Me? me = Settings().getMe();
     if (me != null) {
@@ -488,7 +431,6 @@ class SocketServices extends ChangeNotifier {
   }
 
   messageRead(data) async {
-    print("message read $data");
     int broupId = data["broup_id"];
     String timestamp = data["timestamp"];
     Me? me = Settings().getMe();
@@ -501,7 +443,6 @@ class SocketServices extends ChangeNotifier {
   }
 
   broUpdated(data) async {
-    print("bro updated $data");
     Me? me = Settings().getMe();
     if (me != null) {
       if (data.containsKey("bromotion")) {
@@ -526,7 +467,6 @@ class SocketServices extends ChangeNotifier {
 
           bool newAvatar = data["new_avatar"];
           // We assume the newAvatar is True, but check anyway
-          print("gotten a new avatar! $newAvatar");
           if (newAvatar) {
             // In a private broup we update immediately, because the bro avatar is also the broup avatar
             if (broup.private) {
@@ -547,7 +487,10 @@ class SocketServices extends ChangeNotifier {
               });
             } else {
               // If it's a regular broup we will set the bro to be updated for when the broup is opened.
-              // TODO: Functionality described above!
+              if (!broup.updateBroAvatarIds.contains(broId)) {
+                broup.updateBroAvatarIds.add(broId);
+                Storage().updateBroup(broup);
+              }
             }
           }
         }

@@ -57,12 +57,10 @@ class AppInterceptors extends Interceptor {
     int? expiration = await secureStorage.getAccessTokenExpiration();
     String? accessToken = await secureStorage.getAccessToken();
 
-    print("Access token: $accessToken");
     if (accessToken == null || accessToken == "" || expiration == null) {
       DioException dioError = DioException(requestOptions: options,
           type: DioExceptionType.cancel,
           error: "User not authorized");
-      print("reject 1 clean");
       showToastMessage("There was an issue with authorization, please log in again");
       _navigationService.navigateTo(routes.SignInRoute);
       return handler.reject(dioError, true);
@@ -74,19 +72,16 @@ class AppInterceptors extends Interceptor {
       if ((expiration - current) < 60) {
         // We see that the access token is almost expired. We should refresh it.
         String? refreshToken = await secureStorage.getRefreshToken();
-        print("refresh token: $refreshToken");
 
         if (refreshToken == null || refreshToken == "") {
           // We don't have a refresh token. We should log the user out.
           DioException dioError = DioException(requestOptions: options,
               type: DioExceptionType.cancel,
               error: "User not authorized");
-          print("reject 2 clean");
           showToastMessage("There was an issue with authorization, please log in again");
           _navigationService.navigateTo(routes.SignInRoute);
           return handler.reject(dioError, true);
         } else {
-          print("refresh action 3");
           String endPoint = "refresh";
           var response = await Dio(
               BaseOptions(
@@ -104,11 +99,9 @@ class AppInterceptors extends Interceptor {
                 "refresh_token": refreshToken
               }
           ).catchError((error, stackTrace) {
-            print("reject 3 clean");
             DioException dioError = DioException(requestOptions: options,
                 type: DioExceptionType.cancel,
                 error: "User not authorized");
-            print("reject 4 clean");
             showToastMessage("There was an issue with authorization, please log in again");
             _navigationService.navigateTo(routes.SignInRoute);
             return handler.reject(dioError, true);
@@ -139,7 +132,6 @@ class AppInterceptors extends Interceptor {
             DioException dioError = DioException(requestOptions: options,
                 type: DioExceptionType.cancel,
                 error: "User not authorized");
-            print("reject 4 clean");
             showToastMessage("There was an issue with authorization, please log in again");
             _navigationService.navigateTo(routes.SignInRoute);
             return handler.reject(dioError, true);

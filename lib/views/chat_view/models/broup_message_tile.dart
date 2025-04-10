@@ -267,43 +267,38 @@ class _BroupMessageTileState extends State<BroupMessageTile> {
                   widget.myMessage
                       ? Container()
                       : senderIndicator(messageWidth),
-                  GestureDetector(
-                    onTap: () {
-                      print("Message clicked");
-                    },
-                    child: Container(
-                      width: messageWidth,
-                      alignment: widget.myMessage
-                          ? Alignment.bottomRight
-                          : Alignment.bottomLeft,
-                      child: GestureDetector(
-                        onLongPress: _showMessageDetailPopupMenu,
-                        onTapDown: _storePosition,
-                        onTap: () {
-                          selectMessage(context);
-                        },
+                  Container(
+                    width: messageWidth,
+                    alignment: widget.myMessage
+                        ? Alignment.bottomRight
+                        : Alignment.bottomLeft,
+                    child: GestureDetector(
+                      onLongPress: _showMessageDetailPopupMenu,
+                      onTapDown: _storePosition,
+                      onTap: () {
+                        selectMessage(context);
+                      },
+                      child: Container(
+                        padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                        decoration: BoxDecoration(
+                            border: Border.all(
+                              color: getBorderColour(),
+                              width: 2,
+                            ),
+                            color: widget.myMessage
+                                ? Color(0xFF009E00)
+                                : Color(0xFF0060BB),
+                            borderRadius: widget.myMessage
+                                ? BorderRadius.only(
+                                topLeft: Radius.circular(42),
+                                bottomRight: Radius.circular(42),
+                                bottomLeft: Radius.circular(42))
+                                : BorderRadius.only(
+                                bottomLeft: Radius.circular(42),
+                                topRight: Radius.circular(42),
+                                bottomRight: Radius.circular(42))),
                         child: Container(
-                          padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                          decoration: BoxDecoration(
-                              border: Border.all(
-                                color: getBorderColour(),
-                                width: 2,
-                              ),
-                              color: widget.myMessage
-                                  ? Color(0xFF009E00)
-                                  : Color(0xFF0060BB),
-                              borderRadius: widget.myMessage
-                                  ? BorderRadius.only(
-                                  topLeft: Radius.circular(42),
-                                  bottomRight: Radius.circular(42),
-                                  bottomLeft: Radius.circular(42))
-                                  : BorderRadius.only(
-                                  bottomLeft: Radius.circular(42),
-                                  topRight: Radius.circular(42),
-                                  bottomRight: Radius.circular(42))),
-                          child: Container(
-                              child: getMessageContent()
-                          ),
+                            child: getMessageContent()
                         ),
                       ),
                     ),

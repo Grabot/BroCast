@@ -221,7 +221,6 @@ void buttonMessage(BuildContext context, Bro bro, bool alertDialog) {
 
 void buttonAddBro(
     BuildContext context, Bro bro, bool alertDialog, broHandling) {
-  print("button add bro ");
   broHandling(1, bro.id);
   if (alertDialog) {
     Navigator.of(context).pop();

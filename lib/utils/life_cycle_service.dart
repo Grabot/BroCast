@@ -19,7 +19,6 @@ class LifeCycleService extends ChangeNotifier {
   }
 
   setAppStatus(int newAppStatus) {
-    print("Setting app status to $newAppStatus");
     this.appStatus = newAppStatus;
     if (this.appStatus == 1) {
       notifyListeners();

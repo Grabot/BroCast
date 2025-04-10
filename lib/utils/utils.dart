@@ -129,21 +129,18 @@ setBroupsAfterLogin(Me settingsMe, List<int>? broupIds) {
       if (broupIds != null) {
         List<int> dbBroupIdsList = dbBroups.map((broup) => broup.getBroupId()).toList();
         remainingBroupIds = broupIds.where((id) => !dbBroupIdsList.contains(id)).toList();
-        print("remainingBroupIds: $remainingBroupIds");
       }
 
       List<int> broupsToUpdate = [];
       List<int> broupAvatarsToUpdate = [];
       List<int> brosToUpdate = [];
       List<int> broAvatarsToUpdate = [];
-      print("db Broups: ${broupDbMap}");
       if (settingsMe.broups.isNotEmpty) {
         for (Broup broupMe in settingsMe.broups) {
           Broup? dbBroup = broupDbMap[broupMe.getBroupId().toString()];
 
           if (dbBroup == null) {
             // This is a new broup
-            print("This is a new broup");
             addWelcomeMessage(broupMe);
 
             // For new broups we will check what data we might need to get from the server
@@ -151,7 +148,6 @@ setBroupsAfterLogin(Me settingsMe, List<int>? broupIds) {
               int otherBroId = broupMe.getBroIds().firstWhere(
                     (broId) => broId != settingsMe.getId(),
               );
-              print("new broup updating bros $otherBroId");
               if (!broupMe.removed) {
                 broAvatarsToUpdate.add(otherBroId);
               }
@@ -175,11 +171,9 @@ setBroupsAfterLogin(Me settingsMe, List<int>? broupIds) {
                   }
                 }
               }
-              print("new broup updating bros $brosToUpdateBroup");
               if (brosToUpdateBroup.isNotEmpty) {
                 broupMe.updateBroIds = brosToUpdateBroup;
                 broupMe.updateBroAvatarIds = brosAvatarToUpdateBroup;
-                print("added broup updating bros $brosToUpdateBroup");
               }
               if (!broupMe.removed) {
                 broupAvatarsToUpdate.add(broupMe.broupId);
@@ -189,14 +183,12 @@ setBroupsAfterLogin(Me settingsMe, List<int>? broupIds) {
             // // In this situation we still want to retrieve the broup information, otherwise you will see a bugged out tile.
             // // We will check this by checking the broupColour, which can only not be available if this happens.
             if (broupMe.broupColour == "" && broupMe.removed) {
-              print("new broup but removed");
               // New broup, but immediately removed.
               // In this specific case we will just do an immediate call for the broup details.
               AuthServiceSocial().retrieveBroup(broupMe.broupId).then((newBroupMe) {
                 if (newBroupMe != null) {
                   broupMe.addBlockMessage(newBroupMe);
                   broupMe.updateBroupDataServer(newBroupMe);
-                  print("retrieved broup");
                   storage.updateBroup(broupMe);
                   if (broupMe.private) {
                     // If it's a private broup we need to retrieve the bro.
@@ -206,7 +198,6 @@ setBroupsAfterLogin(Me settingsMe, List<int>? broupIds) {
                           if (bro != null) {
                             broupMe.addBro(bro);
                             Storage().addBro(bro);
-                            print("added bro to broup");
                             BroHomeChangeNotifier().notify();
                           }
                         });
@@ -215,7 +206,6 @@ setBroupsAfterLogin(Me settingsMe, List<int>? broupIds) {
                   } else {
                     // If it's not a private broup we need to retrieve the avatar
                     AuthServiceSocial().getAvatarBroup(broupMe.broupId);
-                    print("getting avatar broup");
                   }
                 }
               });
@@ -228,21 +218,17 @@ setBroupsAfterLogin(Me settingsMe, List<int>? broupIds) {
             // because it will be added in the BroHome notifier.
             broupMe.updateBroupLocalDB(dbBroup);
             if (broupMe.private) {
-              print("private chat new bro? ${broupMe.newUpdateBroIds}");
               // In a private broup we want to update it immediately.
               if (broupMe.newUpdateBroIds.isNotEmpty) {
                 for (int broId in broupMe.newUpdateBroIds) {
                   if (settingsMe.getId() != broId) {
-                    print("adding bro to update! $broId");
                     if (!broupMe.removed) {
                       brosToUpdate.add(broId);
                     }
                   }
                 }
               }
-              print("private chat new avatar?");
               if (broupMe.newAvatar) {
-                print("yes!");
                 for (int broId in broupMe.broIds) {
                   if (settingsMe.getId() != broId) {
                     broAvatarsToUpdate.add(broId);
@@ -274,12 +260,9 @@ setBroupsAfterLogin(Me settingsMe, List<int>? broupIds) {
           settingsMe.broups.add(broupDb);
         }
       }
-      print("broIdsToUpdate: $brosToUpdate");
       if (brosToUpdate.isNotEmpty || broAvatarsToUpdate.isNotEmpty) {
         AuthServiceSocial().broDetails(brosToUpdate, broAvatarsToUpdate, null);
       }
-      print("broupsToUpdate: $broupsToUpdate");
-      print("broupAvatarsToUpdate: $broupAvatarsToUpdate");
       if (broupsToUpdate.isNotEmpty || broupAvatarsToUpdate.isNotEmpty) {
         AuthServiceSocial().broupDetails(broupsToUpdate, broupAvatarsToUpdate);
       }
@@ -352,25 +335,22 @@ Future<bool> checkSameBroLogin(SecureStorage secureStorage, Me? newMe) async {
     broIdInt = int.parse(broIdString);
   }
   if (broIdInt != -1) {
-    print("broIdInt: $broIdInt");
     // check the broIdInt with the broId from the login response
     if (newMe != null) {
       int newMeId = newMe.getId();
       if (broIdInt != newMeId) {
-        print("broIdInt != newMeId $newMeId");
         await secureStorage.logout();
         Settings().logout();
         await Storage().clearDatabase();
         secureStorage.setBroId(newMe.getId().toString());
+        return true;
       } else {
-        print("same client login!");
         return true;
       }
     }
   } else {
     // This has to be a new client with a new login.
     if (newMe != null) {
-      print("new client login");
       secureStorage.setBroId(newMe.getId().toString());
       return true;
     }
@@ -388,7 +368,8 @@ successfulLoginLogin(LoginResponse loginResponse) async {
 
   bool broLogin = await checkSameBroLogin(secureStorage, newMe);
   if (!broLogin) {
-    print("something huge went wrong?");
+    // something huge went wrong
+    return;
   }
 
   // Via this login there is probably no active session, but we will check it.
@@ -526,10 +507,8 @@ retrieveAvatar(Me me) {
   // If the user has just registered it will receive a notice when the
   // avatar is created and it will retrieve it via that path.
   // So we will give it a little time to be created before we retrieve it.
-  print("going to retrieve avatar");
   Future.delayed(Duration(seconds: 2), () {
     if (me.getAvatar() == null) {
-      print("going to retrieve avatar for real");
       AuthServiceLogin().getAvatarMe().then((avatarValue) {
         if (avatarValue) {
           BroHomeChangeNotifier().notify();
@@ -624,7 +603,6 @@ class HexagonClipper extends CustomClipper<Path> {
 }
 
 navigateToHome(BuildContext context, Settings settings) {
-  print("we are now going to home");
   MessagingChangeNotifier().setBroupId(-1);
   Navigator.pushReplacement(context,
       MaterialPageRoute(builder: (context) => BrocastHome(key: UniqueKey())));
@@ -708,8 +686,6 @@ getBroupData(Storage storage, Me me) {
     storage.fetchAllBros().then((bros) {
       Map<String, Broup> broupMap = {for (var broup in broups) broup.getBroupId().toString(): broup};
       Map<String, Bro> broMap = {for (var bro in bros) bro.getId().toString(): bro};
-      print("broups: ${broupMap}");
-      print("bros: ${broMap}");
       for (Broup broup in me.broups) {
         Broup? dbBroup = broupMap[broup.getBroupId().toString()];
         if (dbBroup == null) {

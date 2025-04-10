@@ -78,7 +78,6 @@ class _ChatMessagingState extends State<ChatMessaging> {
   @override
   void initState() {
     super.initState();
-    print("init chat");
     storage = Storage();
     socketServices.addListener(socketListener);
     messagingChangeNotifier.addListener(messagingListener);
@@ -94,11 +93,9 @@ class _ChatMessagingState extends State<ChatMessaging> {
         double distanceToTop =
             messageScrollController.position.maxScrollExtent -
                 messageScrollController.position.pixels;
-        print("distance to top: $distanceToTop");
         if (distanceToTop < 1000) {
           busyRetrieving = true;
           amountViewed += 1;
-          print("fetching extra messages!");
           fetchExtraMessages(amountViewed, widget.chat, storage).then((value) {
             setDateTiles(widget.chat, (50 * amountViewed));
             allMessagesDBRetrieved = value;
@@ -121,7 +118,6 @@ class _ChatMessagingState extends State<ChatMessaging> {
   }
 
   lifeCycleChangeListener() {
-    print("life cycle change listener chat");
     // Is called when the app is resumed
     retrieveData();
     AuthServiceSocial().chatOpen(widget.chat.broupId, true);
@@ -129,13 +125,11 @@ class _ChatMessagingState extends State<ChatMessaging> {
 
   checkIsAdmin() {
     for (Bro bro in widget.chat.getBroupBros()) {
-      print("broup bros: ${bro.getId()}  ${bro.getBroName()} ${bro.getBromotion()}");
       broAdminStatus[bro.id.toString()] = false;
       broAddedStatus[bro.id.toString()] = false;
       broMapping[bro.id.toString()] = bro;
     }
     for (Bro broRemaining in widget.chat.messageBroRemaining) {
-      print("remaining bros: ${broRemaining.getId()}  ${broRemaining.getBroName()} ${broRemaining.getBromotion()}  ${broRemaining.getAvatar()}");
       // These bros are not in the broupBros list, but they have messages send in the broup
       // So we need to display them correctly.
       broAddedStatus[broRemaining.id.toString()] = false;
@@ -210,11 +204,9 @@ class _ChatMessagingState extends State<ChatMessaging> {
   }
 
   socketListener() {
-    print("socket listener is called");
     checkIsAdmin();
     // We have received a new message, which might not have been picked up with the sockets
     if (widget.chat.newMessages ) {
-      print("retrieve data");
       retrieveData();
     }
     setState(() {});
@@ -230,10 +222,6 @@ class _ChatMessagingState extends State<ChatMessaging> {
         .map((message) => message.senderId)
         .toSet()
         .toList();
-    for (Message message in widget.chat.messages) {
-      print("message bro id: ${message.senderId} ${message.body}");
-    }
-    print("message bro ids: $messageBroIds");
     // These are information messages, so we don't need to check them
     if (messageBroIds.contains(0)) {
       messageBroIds.remove(0);
@@ -246,7 +234,6 @@ class _ChatMessagingState extends State<ChatMessaging> {
         messageBroIds.remove(chatBro.getId());
       }
     }
-    print("message bro ids remaining db: $messageBroIds");
     if (messageBroIds.isNotEmpty) {
       for (Bro bro in widget.chat.broupBros) {
         if (messageBroIds.contains(bro.getId())) {
@@ -254,17 +241,14 @@ class _ChatMessagingState extends State<ChatMessaging> {
         }
       }
       if (messageBroIds.isNotEmpty) {
-        print("retrieving message bros from db");
         storage.fetchBros(messageBroIds).then((brosDb) {
           for (Bro broDb in brosDb) {
-            print("add bro from db ${broDb.getId()}");
             if (!widget.chat.messageBroRemaining.any((element) =>
             element.getId() == broDb.getId())) {
               widget.chat.messageBroRemaining.add(broDb);
             }
             messageBroIds.remove(broDb.getId());
           }
-          print("message bro ids remaining server: $messageBroIds");
           if (messageBroIds.isNotEmpty) {
             // If there are still id's remaining we have never retrieved them.
             // So retrieve them now because we want to show the correct message data.
@@ -302,7 +286,6 @@ class _ChatMessagingState extends State<ChatMessaging> {
       // Add the bro
       AuthServiceSocial().addNewBro(addBroId).then((response) {
         if (response.getResult()) {
-          print("we have added a new bro :)");
           // The broup added, move to the home screen where it will be shown
           navigateToHome(context, settings);
         } else {
@@ -467,7 +450,6 @@ class _ChatMessagingState extends State<ChatMessaging> {
   ];
 
   sendMessageData(Uint8List imageData) {
-    print("sending message with data");
     // clear the text field because it is taken from the preview page.
     broMessageController.text = "";
     appendTextMessageController.text = "";

@@ -65,7 +65,6 @@ class _LifeCycleState extends State<LifeCycle> with WidgetsBindingObserver {
             // inactive, since it's just a short periodic look away state
             Settings settings = Settings();
             if (settings.loggingIn) {
-              print("already logging in lifecycle");
               // Already logging in, we assume that after that other login
               // process is done it will navigate somewhere
               lifeCycleLoggingIn = false;
@@ -76,7 +75,6 @@ class _LifeCycleState extends State<LifeCycle> with WidgetsBindingObserver {
             loginCheck().then((loggedIn) {
               lifeCycleLoggingIn = false;
               LifeCycleService().setAppStatus(1);
-              print("App resumed logged in $loggedIn");
               if (!loggedIn) {
                 _navigationService.navigateTo(routes.SignInRoute);
               }
@@ -88,7 +86,6 @@ class _LifeCycleState extends State<LifeCycle> with WidgetsBindingObserver {
         case AppLifecycleState.detached:
           if (!lifeCycleLoggingIn) {
             LifeCycleService().setAppStatus(2);
-            print("App detached");
           }
           break;
         case AppLifecycleState.inactive:
@@ -96,7 +93,6 @@ class _LifeCycleState extends State<LifeCycle> with WidgetsBindingObserver {
             // We don't actually care about the inactive state.
             // It means the app is running, but not in the foreground right now.
             // We will take this as active.
-            print("App inactive");
           }
           break;
         default:

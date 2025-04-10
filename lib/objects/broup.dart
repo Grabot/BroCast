@@ -75,7 +75,6 @@ class Broup {
       this.avatar,
       this.avatarDefault
       ) {
-    print("cleared broupbros 2");
     broupBros = [];
     messages = [];
     messageIds = [];
@@ -186,7 +185,6 @@ class Broup {
 
   insertBro(Bro bro) {
     if (bro is Me) {
-      print("inserting me");
       broupBros.insert(0, bro);
     } else {
       broupBros.add(bro);
@@ -273,7 +271,6 @@ class Broup {
     deleted = json.containsKey("deleted") ? json["deleted"] : false;
     removed = json.containsKey("removed") ? json["removed"] : false;
     newAvatar = json.containsKey("new_avatar") ? json["new_avatar"] : false;
-    print("broup id $broupId  upodate bruoup $updateBroup   new messages $newMessages   unread messages $unreadMessages   new avatar $newAvatar  removed $removed");
 
     // These are the core chat values. Stored in a coupling table on the server
     broupName = "";
@@ -304,7 +301,6 @@ class Broup {
     messages = [];
     messageIds = [];
 
-    print("json $json");
     if (json.containsKey("update_bros") && json["update_bros"] != null) {
       List<int> brosUpdate = json["update_bros"].cast<int>();
       newUpdateBroIds = brosUpdate;
@@ -338,7 +334,6 @@ class Broup {
     map['avatarDefault'] = avatarDefault ? 1 : 0;
     // Get the ids of all the messages in a list
     List<int> messageIds = messages.map((e) => e.messageId).toList();
-    print("message ids $messageIds");
     map['messages'] = jsonEncode(messageIds);
     return map;
   }
@@ -420,7 +415,6 @@ class Broup {
 
   addBlockMessage(Broup localBroup) {
     // Add block message
-    print("adding block message 2");
     String blockMessageText = "Chat is blocked! 😭";
     if (!localBroup.private) {
       blockMessageText = "You are removed from the broup! 😭";
@@ -443,7 +437,6 @@ class Broup {
 
   updateBroupLocalDB(Broup localBroup) {
     // Check if the data from the server indicates that the bro is now blocked from the chat.
-    print("login broup: ${localBroup.broupId} removed ${localBroup.removed}   local removed ${this.removed} local update ${this.updateBroup}");
     if (this.removed && !localBroup.removed) {
       // It's possible that a blocked message is already added, we will not add it again
       if (this.messages.isEmpty) {
@@ -454,7 +447,6 @@ class Broup {
         }
       }
     }
-    print("update broup ${this.updateBroup}");
 
     // If there are messages on this chat we want to ensure that the date tiles are set correctly.
     // It might be cleared but we will remove all the date tiles and set the chat to reapply them.
@@ -605,7 +597,6 @@ class Broup {
     }
     // If the broup is removed we want to set the flag, but also add a block message
     // If it's no longer removed we want to updated it again.
-    print("broup: ${serverBroup.broupId} removed ${serverBroup.removed}   local removed ${this.removed}");
     if (checkRemoved(serverBroup)) {
       return;
     }
@@ -649,7 +640,6 @@ class Broup {
     // In this specific case we will add indication that the chat is blocked
     if (!this.removed && serverBroup.removed) {
       // Add block message
-      print("adding block message");
       String blockMessageText = "Chat is blocked! 😭";
       if (!serverBroup.private) {
         blockMessageText = "You are removed from the broup! 😭";
@@ -712,7 +702,6 @@ class Broup {
       // We added it immediately as a placeholder.
       // When we get it from the server we add it for real and remove the placeholder
       // Do a few simple extra checks, like body comparison
-      print("length messages ${this.messages.length}");
       if (messages[0] == message) {
         this.messages.removeAt(0);
       }
@@ -725,38 +714,29 @@ class Broup {
   }
 
   checkReceivedMessages(Message message) {
-    print("checking unread messages");
     // We will check if the message we have just received is the
     // latest message that the bro had to retrieve.
     // We will compare the lastMessageId with the messageId of the message
     // If the message is 1 higher, the bro is up to date with all the messages
     // The bro still has not read anything so the unreadMessages will stay
-    print("last message id $lastMessageId and message id ${message.messageId}");
     if (message.messageId == lastMessageId + 1 && LifeCycleService().appStatus == 1) {
       // The bro is up to date with all the messages
       // We will increase the lastMessageId
       lastMessageId += 1;
       // If we have send the message, we have obviously received it
       // So no need to send the received update if the message was from us.
-      print("Check if we did not send the message ${message.senderId} != ${Settings().getMe()!.getId()}");
       if (message.senderId != Settings().getMe()!.getId()) {
-        print("indicate that the message was received");
         AuthServiceSocial().receivedMessage(broupId, lastMessageId).then((value) {
-          print("received message $value");
           if (value) {
             // The message that was received really was the last one so no update required
             newMessages = false;
             if (MessagingChangeNotifier().getBroupId() != broupId) {
-              print("page was NOT open add unread messages");
               if (!message.isInformation()) {
                 unreadMessages++;
               }
             } else {
-              print("page was open when receiving");
               // If it was send by someone else wa want to indicate that we read it.
               // Because we had the correct page open
-              print("message received, so indicate that we read it");
-
               if (LifeCycleService().getAppStatus() == 1) {
                 readMessages();
                 MessagingChangeNotifier().notify();
@@ -788,7 +768,6 @@ class Broup {
 
     Storage storage = Storage();
     DateTime lastReadDateTime = DateTime.parse(lastReadTime).toLocal();
-    print("updating last read messages $lastReadDateTime");
     // Go through the messages and set the isRead to 1 if the message is older than the lastReadDateTime
     for (Message message in messages) {
       if (!message.isInformation()) {

@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../services/auth/auth_service_social.dart';
-
 
 class MessagingChangeNotifier extends ChangeNotifier {
 
@@ -17,7 +15,6 @@ class MessagingChangeNotifier extends ChangeNotifier {
   }
 
   setBroupId(int broupId) {
-    print("setting broup id on the listener $broupId");
     this.broupId = broupId;
   }
 

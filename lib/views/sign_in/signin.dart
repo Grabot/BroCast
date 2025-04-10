@@ -519,7 +519,7 @@ class _SignInState extends State<SignIn> {
           onTap: () {
             if (!isLoading) {
               setState(() {
-                print("TODO: forgot password");
+                // TODO: forgot password
               });
             }
           },
@@ -934,14 +934,10 @@ class _SignInState extends State<SignIn> {
 
     String? googleAccessToken;
     try {
-      print("going to sign in");
       final GoogleSignInAccount? googleSignInAccount = await googleSignIn.signIn();
       final GoogleSignInAuthentication googleSignInAuthentication = await googleSignInAccount!.authentication;
       googleAccessToken = googleSignInAuthentication.accessToken;
-      print("Google access token: $googleAccessToken");
-
     } catch (error) {
-      print("google error: $error");
       isLoading = false;
       return;
     }

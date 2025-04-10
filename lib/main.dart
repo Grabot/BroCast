@@ -4,14 +4,12 @@ import 'package:brocast/utils/notification_controller.dart';
 import 'package:brocast/utils/secure_storage.dart';
 import 'package:brocast/utils/settings.dart';
 import 'package:brocast/utils/locator.dart';
-import 'package:brocast/views/bro_access_page.dart';
 import 'package:brocast/views/life_cycle/life_cycle.dart';
 import 'package:brocast/views/opening_screen/opening_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:oktoast/oktoast.dart';
 import 'firebase_options.dart';
-import 'package:brocast/constants/route_paths.dart' as routes;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -37,7 +35,6 @@ void main() async {
 
 class MyApp extends StatelessWidget {
 
-  final Widget broAccess = BroAccess(key: UniqueKey());
   final Widget opening = OpeningScreen();
 
   @override

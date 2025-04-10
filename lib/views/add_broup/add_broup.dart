@@ -75,10 +75,8 @@ class _AddBroupState extends State<AddBroup> {
       broIdsToRetrieve.remove(bro.id);
     }
 
-    // TODO: Check if bro is retrieved from storage to then not retrieve from server?
     storage.fetchAllBros().then((brosDB) {
       AuthServiceSocial().retrieveBros(broIdsToRetrieve).then((value) {
-        print("got bros from the server ${value}");
         if (value.isNotEmpty) {
           bool foundInDB = false;
           for (Bro bro in value) {

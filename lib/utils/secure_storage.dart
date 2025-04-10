@@ -27,13 +27,11 @@ class SecureStorage {
   }
 
   Future setAccessTokenExpiration(int expiration) async {
-    print("setting expiration: $expiration");
     await storage.write(key: _keyAccessTokenExpiration, value: expiration.toString());
   }
 
   Future<int?> getAccessTokenExpiration() async {
     String? expiration = await storage.read(key: _keyAccessTokenExpiration);
-    print("getting expiration: $expiration");
     return expiration != null ? int.parse(expiration) : null;
   }
 
@@ -46,7 +44,6 @@ class SecureStorage {
   }
 
   Future setRefreshTokenExpiration(int expiration) async {
-    print("setting expiration refresh: $expiration");
     await storage.write(key: _keyRefreshTokenExpiration, value: expiration.toString());
   }
 
