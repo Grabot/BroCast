@@ -795,7 +795,7 @@ class _SignInState extends State<SignIn> {
             title: Container(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                    "BroCast",
+                    "Brocast Sign In",
                     style: TextStyle(color: Colors.white)
                 )),
             actions: [
@@ -893,6 +893,7 @@ class _SignInState extends State<SignIn> {
   Future<void> _handleSignInApple() async {
     String appleLogin = "$appleLoginUrl?response_type=code&client_id=$appleClientId&redirect_uri=$appleRedirectUri&scope=email%20name&state=random_generated_state&response_mode=form_post";
     Uri url = Uri.parse(appleLogin);
+    print("webview with url: $url");
     Navigator.pushReplacement(
         context,
         MaterialPageRoute(

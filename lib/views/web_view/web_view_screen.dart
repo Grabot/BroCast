@@ -38,15 +38,17 @@ class _WebViewScreenState extends State<WebViewScreen> {
           onProgress: (int progress) {
           },
           onPageStarted: (String url) {
+            print("on page started: ${url}");
           },
           onPageFinished: (String url) {
+            print("on page finished: ${url}");
           },
           onHttpError: (HttpResponseError error) {
           },
           onWebResourceError: (WebResourceError error) {
           },
           onNavigationRequest: (NavigationRequest request) {
-            // TODO: Test if this works, Put back to brocast before release
+            print("WebView navigation request: ${request.url}");
             if (request.url.startsWith('https://brocast.nl/broaccess?') || request.url.startsWith('https://www.brocast.nl/broaccess?')) {
               // When we detect the redirect to the broaccess page
               // We use the broaccess paramters to log in.
@@ -60,8 +62,6 @@ class _WebViewScreenState extends State<WebViewScreen> {
                 AuthServiceLogin authService = AuthServiceLogin();
                 authService.getRefreshOAuth(accessToken, refreshToken).then((loginResponse) {
                   if (loginResponse.getResult()) {
-                    // loginCheck().then((loggedIn) {
-                    //   if (loggedIn) {
                     NotificationController().getFCMTokenNotificationUtil(loginResponse.getFCMToken());
                     // user logged in, so go to the home screen
                     Navigator.pushReplacement(
@@ -69,10 +69,6 @@ class _WebViewScreenState extends State<WebViewScreen> {
                         MaterialPageRoute(
                             builder: (context) =>
                                 BrocastHome(key: UniqueKey())));
-                      // } else {
-                      //   showToastMessage("Failed to log in.");
-                      // }
-                    // });
                   } else {
                     showToastMessage("Failed to log in.");
                   }
@@ -140,7 +136,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
             title: Container(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                    "BroCast Login",
+                    "Brocast Login",
                     style: TextStyle(color: Colors.white)
                 )),
             actions: [
@@ -148,7 +144,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
                   icon: Icon(Icons.more_vert, color: Colors.white),
                   onSelected: (item) => onSelect(context, item),
                   itemBuilder: (context) => [
-                    PopupMenuItem<int>(value: 0, child: Text("Back to SignIn")),
+                    PopupMenuItem<int>(value: 0, child: Text("Back to Sign In")),
                     PopupMenuItem<int>(value: 1, child: Text("Exit Brocast")),
                   ]),
             ],
