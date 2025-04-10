@@ -30,6 +30,7 @@ class _BroSettingsState extends State<BroSettings> {
     storage = Storage();
 
     toggleSwitchKeyboard = settings.getEmojiKeyboardDarkMode();
+    socketServices.startSocketConnection();
   }
 
   @override

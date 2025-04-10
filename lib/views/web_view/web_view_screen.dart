@@ -40,8 +40,6 @@ class _WebViewScreenState extends State<WebViewScreen> {
           onPageStarted: (String url) {
           },
           onPageFinished: (String url) {
-            // TODO: Do something?
-            print("page finished, do something?");
           },
           onHttpError: (HttpResponseError error) {
           },
@@ -49,12 +47,10 @@ class _WebViewScreenState extends State<WebViewScreen> {
           },
           onNavigationRequest: (NavigationRequest request) {
             // TODO: Test if this works, Put back to brocast before release
-            // if (request.url.startsWith('https://brocast.nl/broaccess?') || request.url.startsWith('https://www.brocast.nl/broaccess?')) {
-            if (request.url.startsWith('http://142.132.201.190/broaccess?') || request.url.startsWith('https://142.132.201.190/broaccess?')) {
+            if (request.url.startsWith('https://brocast.nl/broaccess?') || request.url.startsWith('https://www.brocast.nl/broaccess?')) {
               // When we detect the redirect to the broaccess page
               // We use the broaccess paramters to log in.
               // and then close the webview.
-              print("Broaccess redirect detected");
               webViewController.loadRequest(Uri.parse('about:blank'));
               Uri broAccessUri = Uri.parse(request.url);
               String? accessToken = broAccessUri.queryParameters["access_token"];

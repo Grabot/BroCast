@@ -83,9 +83,7 @@ class _OpeningScreenState extends State<OpeningScreen> {
             // process is done it will navigate somewhere
             return;
           }
-          settings.setLoggingIn(true);
           loginCheck().then((loggedIn) {
-            settings.setLoggingIn(false);
             if (loggedIn) {
               Navigator.pushReplacement(
                 context,

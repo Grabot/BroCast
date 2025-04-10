@@ -1,14 +1,12 @@
-import 'dart:io';
-
 import 'package:brocast/objects/broup.dart';
 import 'package:brocast/objects/message.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
-
 import '../objects/bro.dart';
 
+
 class Storage {
-  static const _dbName = "brocast.db";
+  static const _dbName = "brocast_v16.db";
 
   static final Storage _instance = Storage._internal();
 
@@ -35,20 +33,23 @@ class Storage {
       path,
       version: 1,
       onCreate: _onCreate,
+      onUpgrade: _onUpgrade,
     );
   }
 
   Future _onCreate(Database db, int version,) async {
-    print("Creating database");
     await createTableBroup(db);
     await createTableMessage(db);
     await createTableBro(db);
   }
 
+  Future _onUpgrade(Database db, int oldVersion, int newVersion,) async {
+    // This is where you can handle database upgrades
+  }
+
   createTableBroup(Database db) async {
     // Save all the broup information in the database
     // The messages will be a list with message ids
-    // TODO: do we need to store `newMessages`? Just false by default and retrieve when it's true from server. Similar for `updateBroup`.
     await db.execute('''
           CREATE TABLE Broup (
             id INTEGER PRIMARY KEY,
@@ -92,6 +93,7 @@ class Storage {
             isRead INTEGER,
             data TEXT,
             dataType INTEGER,
+            repliedTo INTEGER,
             UNIQUE(messageId, broupId, info) ON CONFLICT REPLACE
           );
           ''');
@@ -143,6 +145,8 @@ class Storage {
   }
 
   Future<int> addBroup(Broup broup) async {
+    var debugString = broup.toDbMap();
+    print("add broup ${debugString}");
     Database database = await this.database;
     return database.insert(
       'Broup',
@@ -152,7 +156,8 @@ class Storage {
   }
 
   Future<int> updateBroup(Broup broup) async {
-    print("updating broup  ${broup.broupId} ${broup.avatar}");
+    var debugString = broup.toDbMap();
+    print("updating broup ${debugString}");
     Database database = await this.database;
     return database.update(
       'Broup',

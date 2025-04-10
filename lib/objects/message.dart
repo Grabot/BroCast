@@ -12,11 +12,10 @@ class Message {
   late bool info;
 
   late int broupId;
-  // TODO: Check if this is needed
-  // bool isPrivate = true;
 
   String? data;
   int? dataType;
+  int? repliedTo;
 
   Message(this.messageId, this.senderId, this.body, this.textMessage, this.timestamp,
       this.data, this.info, this.broupId) {
@@ -65,6 +64,8 @@ class Message {
     map['timestamp'] = timestamp;
     map['isRead'] = isRead;
     map['data'] = data;
+    map['dataType'] = dataType;
+    map['repliedTo'] = repliedTo;
     return map;
   }
 
@@ -77,6 +78,8 @@ class Message {
     info = map['info'] == 1;
     timestamp = map['timestamp'];
     data = map['data'];
+    dataType = map['dataType'];
+    repliedTo = map['repliedTo'];
     isRead = map['isRead'];
     clicked = false;
   }

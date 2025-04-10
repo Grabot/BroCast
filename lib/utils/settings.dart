@@ -17,8 +17,6 @@ class Settings {
   Me? me;
   bool emojiKeyboardDarkMode = false;
 
-  // TODO: not needed anymore?
-  bool retrievedBroData = false;
   bool retrievedBroupData = false;
 
   Settings._internal() {

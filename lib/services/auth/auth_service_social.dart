@@ -514,48 +514,49 @@ class AuthServiceSocial {
 
   broDetailsDone(List<int> brosToUpdate, List<int> broAvatarsToUpdate, int? broupId) {
     Settings settings = Settings();
-    settings.retrievedBroData = false;
-    settings.retrievedBroupData = false;
-    BroHomeChangeNotifier().notify();
-    // All the bro id's in the lists are updated, if they are in some broup updateBroId lists we can remove them there.
+    Me? me = settings.getMe();
+    if (me != null) {
+      getBroupData(Storage(), me);
+      // All the bro id's in the lists are updated, if they are in some broup updateBroId lists we can remove them there.
 
-    if (broupId != null) {
-      for (Broup broupMe in settings.getMe()!.broups) {
-        if (broupMe.getBroupId() == broupId) {
-          Set<int> combinedSet = Set<int>.from(brosToUpdate)
-            ..addAll(broAvatarsToUpdate);
-          List<int> combinedList = combinedSet.toList();
-          Storage().fetchBros(combinedList).then((brosDb) {
-            for (Bro broDb in brosDb) {
-              if (broupMe.getBroIds().contains(broDb.getId())) {
-                print("adding a bro in the broupbros");
-                broupMe.addBro(broDb);
-              } else {
-                print("a bro was no longer found in the broId list");
-                // check if broDb is in the bro remaining list
-                if (!broupMe.messageBroRemaining.any((element) =>
-                element.getId() == broDb.getId())) {
-                  print("bro ${broDb.getBroName()} ${broDb.getBromotion()}");
-                  print("adding it to remaining bros!");
-                  broupMe.messageBroRemaining.add(broDb);
+      if (broupId != null) {
+        for (Broup broupMe in me.broups) {
+          if (broupMe.getBroupId() == broupId) {
+            Set<int> combinedSet = Set<int>.from(brosToUpdate)
+              ..addAll(broAvatarsToUpdate);
+            List<int> combinedList = combinedSet.toList();
+            Storage().fetchBros(combinedList).then((brosDb) {
+              for (Bro broDb in brosDb) {
+                if (broupMe.getBroIds().contains(broDb.getId())) {
+                  print("adding a bro in the broupbros");
+                  broupMe.addBro(broDb);
+                } else {
+                  print("a bro was no longer found in the broId list");
+                  // check if broDb is in the bro remaining list
+                  if (!broupMe.messageBroRemaining.any((element) =>
+                  element.getId() == broDb.getId())) {
+                    print("bro ${broDb.getBroName()} ${broDb.getBromotion()}");
+                    print("adding it to remaining bros!");
+                    broupMe.messageBroRemaining.add(broDb);
+                  }
                 }
               }
-            }
-            MessagingChangeNotifier().notify();
-          });
+              MessagingChangeNotifier().notify();
+            });
+          }
         }
       }
-    }
 
-    for (Broup broupMe in settings.getMe()!.broups) {
-      for (int broUpdateId in brosToUpdate) {
-        if (broupMe.updateBroIds.contains(broUpdateId)) {
-          broupMe.updateBroIds.remove(broUpdateId);
+      for (Broup broupMe in me.broups) {
+        for (int broUpdateId in brosToUpdate) {
+          if (broupMe.updateBroIds.contains(broUpdateId)) {
+            broupMe.updateBroIds.remove(broUpdateId);
+          }
         }
-      }
-      for (int broAvatarUpdateId in broAvatarsToUpdate) {
-        if (broupMe.updateBroAvatarIds.contains(broAvatarUpdateId)) {
-          broupMe.updateBroAvatarIds.remove(broAvatarUpdateId);
+        for (int broAvatarUpdateId in broAvatarsToUpdate) {
+          if (broupMe.updateBroAvatarIds.contains(broAvatarUpdateId)) {
+            broupMe.updateBroAvatarIds.remove(broAvatarUpdateId);
+          }
         }
       }
     }
@@ -688,14 +689,12 @@ class AuthServiceSocial {
             }
             Storage().updateBroup(broupDb);
           }
-          Settings().retrievedBroupData = false;
-          BroHomeChangeNotifier().notify();
+          getBroupData(Storage(), me);
           broDetails(broAvatarsToUpdate, broAvatarsToUpdate, null);
         });
       }
+      getBroupData(Storage(), me);
     }
-    Settings().retrievedBroupData = false;
-    BroHomeChangeNotifier().notify();
   }
 
   Future<void> broupDetails(List<int> broupsToUpdate, List<int> broupAvatarsToUpdate) async {

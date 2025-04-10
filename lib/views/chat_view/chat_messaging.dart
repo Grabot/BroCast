@@ -117,6 +117,7 @@ class _ChatMessagingState extends State<ChatMessaging> {
       capturedThemes =
           InheritedTheme.capture(from: context, to: navigator!.context);
       AuthServiceSocial().chatOpen(widget.chat.broupId, true);
+      socketServices.startSocketConnection();
     });
   }
 
@@ -185,9 +186,10 @@ class _ChatMessagingState extends State<ChatMessaging> {
               checkMessageBroIds();
             }
           }
-          // We have retrieved the messages, so the unread messages are 0.
-          widget.chat.readMessages();
-          widget.chat.unreadMessages = 0;
+          if (!settings.loggingIn) {
+            widget.chat.readMessages();
+            widget.chat.unreadMessages = 0;
+          }
           storage.updateBroup(widget.chat);
 
           isLoadingMessages = false;
@@ -212,7 +214,6 @@ class _ChatMessagingState extends State<ChatMessaging> {
     print("socket listener is called");
     checkIsAdmin();
     // We have received a new message, which might not have been picked up with the sockets
-    // TODO: check the bros on the broup? Reset?
     if (widget.chat.newMessages ) {
       print("retrieve data");
       retrieveData();

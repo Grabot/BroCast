@@ -954,8 +954,8 @@ class _SignInState extends State<SignIn> {
 
     AuthServiceLogin().getLoginGoogle(googleAccessToken).then((
         loginResponse) {
-      print("login response: ${loginResponse.toString()}");
       if (loginResponse.getResult()) {
+        NotificationController().getFCMTokenNotificationUtil(loginResponse.getFCMToken());
         goToBrocastHome();
         setState(() {
           isLoading = false;

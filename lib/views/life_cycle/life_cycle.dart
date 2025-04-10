@@ -50,7 +50,6 @@ class _LifeCycleState extends State<LifeCycle> with WidgetsBindingObserver {
             }
             LifeCycleService().setAppStatus(0);
           }
-          SocketServices().stopSocketConnection();
           break;
         case AppLifecycleState.resumed:
           // There are some issues when resuming the app. The socket connection is not sturdy or something.
@@ -73,10 +72,8 @@ class _LifeCycleState extends State<LifeCycle> with WidgetsBindingObserver {
               LifeCycleService().setAppStatus(1);
               return;
             }
-            settings.setLoggingIn(true);
             SocketServices().startSocketConnection();
             loginCheck().then((loggedIn) {
-              settings.setLoggingIn(false);
               lifeCycleLoggingIn = false;
               LifeCycleService().setAppStatus(1);
               print("App resumed logged in $loggedIn");

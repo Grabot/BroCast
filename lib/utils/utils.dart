@@ -94,6 +94,10 @@ loginWithActiveSession(Me newMe, Me settingsMe) {
             found = true;
             if (newMeBroup.updateBroup) {
               settingsMeBroup.updateBroupDataServer(newMeBroup);
+            } else if (newMeBroup.newAvatar) {
+              settingsMeBroup.newAvatar = true;
+              settingsMeBroup.newMessages = newMeBroup.newMessages;
+              settingsMeBroup.unreadMessages = newMeBroup.unreadMessages;
             } else if (newMeBroup.newMessages) {
               settingsMeBroup.newMessages = true;
               settingsMeBroup.unreadMessages = newMeBroup.unreadMessages;
@@ -148,7 +152,9 @@ setBroupsAfterLogin(Me settingsMe, List<int>? broupIds) {
                     (broId) => broId != settingsMe.getId(),
               );
               print("new broup updating bros $otherBroId");
-              broAvatarsToUpdate.add(otherBroId);
+              if (!broupMe.removed) {
+                broAvatarsToUpdate.add(otherBroId);
+              }
             } else {
               // A large broup, update with the bros that are not in the local db.
               // But no need to retrieve them yet, not until the bro opens the broup
@@ -175,55 +181,89 @@ setBroupsAfterLogin(Me settingsMe, List<int>? broupIds) {
                 broupMe.updateBroAvatarIds = brosAvatarToUpdateBroup;
                 print("added broup updating bros $brosToUpdateBroup");
               }
-              broupAvatarsToUpdate.add(broupMe.broupId);
+              if (!broupMe.removed) {
+                broupAvatarsToUpdate.add(broupMe.broupId);
+              }
+            }
+            // // It's possible that a broup is new but you are also blocked or removed.
+            // // In this situation we still want to retrieve the broup information, otherwise you will see a bugged out tile.
+            // // We will check this by checking the broupColour, which can only not be available if this happens.
+            if (broupMe.broupColour == "" && broupMe.removed) {
+              print("new broup but removed");
+              // New broup, but immediately removed.
+              // In this specific case we will just do an immediate call for the broup details.
+              AuthServiceSocial().retrieveBroup(broupMe.broupId).then((newBroupMe) {
+                if (newBroupMe != null) {
+                  broupMe.addBlockMessage(newBroupMe);
+                  broupMe.updateBroupDataServer(newBroupMe);
+                  print("retrieved broup");
+                  storage.updateBroup(broupMe);
+                  if (broupMe.private) {
+                    // If it's a private broup we need to retrieve the bro.
+                    for (int broId in broupMe.broIds) {
+                      if (broId != settingsMe.getId()) {
+                        AuthServiceSocial().retrieveBroAvatar(broId).then((bro) {
+                          if (bro != null) {
+                            broupMe.addBro(bro);
+                            Storage().addBro(bro);
+                            print("added bro to broup");
+                            BroHomeChangeNotifier().notify();
+                          }
+                        });
+                      }
+                    }
+                  } else {
+                    // If it's not a private broup we need to retrieve the avatar
+                    AuthServiceSocial().getAvatarBroup(broupMe.broupId);
+                    print("getting avatar broup");
+                  }
+                }
+              });
             }
             // No need to `checkBroupReceived` here, because we are adding a new broup
             storage.addBroup(broupMe);
           } else {
-            if (broupMe.broupId == dbBroup.broupId) {
-              // If the broup was send with the login we want to update it.
-              // In this case we don't add the db broup data yet
-              // because it will be added in the BroHome notifier.
-              broupMe.updateBroupLocalDB(dbBroup);
-              if (broupMe.private) {
-                // In a private broup we want to update it immediately.
-                if (broupMe.newUpdateBroIds.isNotEmpty) {
-                  for (int broId in broupMe.newUpdateBroIds) {
-                    if (settingsMe.getId() != broId) {
-                      print("adding bro to update! $broId");
+            // If the broup was send with the login we want to update it.
+            // In this case we don't add the db broup data yet
+            // because it will be added in the BroHome notifier.
+            broupMe.updateBroupLocalDB(dbBroup);
+            if (broupMe.private) {
+              print("private chat new bro? ${broupMe.newUpdateBroIds}");
+              // In a private broup we want to update it immediately.
+              if (broupMe.newUpdateBroIds.isNotEmpty) {
+                for (int broId in broupMe.newUpdateBroIds) {
+                  if (settingsMe.getId() != broId) {
+                    print("adding bro to update! $broId");
+                    if (!broupMe.removed) {
                       brosToUpdate.add(broId);
                     }
                   }
                 }
-                print("private chat new avatar?");
-                if (broupMe.newAvatar) {
-                  print("yes!");
-                  for (int broId in broupMe.broIds) {
-                    if (settingsMe.getId() != broId) {
-                      broAvatarsToUpdate.add(broId);
-                    }
+              }
+              print("private chat new avatar?");
+              if (broupMe.newAvatar) {
+                print("yes!");
+                for (int broId in broupMe.broIds) {
+                  if (settingsMe.getId() != broId) {
+                    broAvatarsToUpdate.add(broId);
                   }
                 }
-                if (broupMe.updateBroup) {
-                   // TODO: In private broups this is only the broup colour? Isn't this already send if available?
-                  // broupsToUpdate.add(broupMe.broupId);
-                }
-              } else {
-                if (broupMe.newUpdateBroIds.isNotEmpty ||
-                    broupMe.newUpdateBroAvatarIds.isNotEmpty) {
-                  broupMe.newUpdateBroIds = [];
-                  broupMe.newUpdateBroAvatarIds = [];
-                }
-                if (broupMe.updateBroup) {
-                  broupsToUpdate.add(broupMe.broupId);
-                }
-                if (broupMe.newAvatar) {
-                  broupAvatarsToUpdate.add(broupMe.broupId);
-                }
               }
-              // We remove the broup from the db map so we can check which broups are not in the settingsMe.
-              broupDbMap.remove(broupMe.broupId.toString());
+            } else {
+              if (broupMe.newUpdateBroIds.isNotEmpty ||
+                  broupMe.newUpdateBroAvatarIds.isNotEmpty) {
+                broupMe.newUpdateBroIds = [];
+                broupMe.newUpdateBroAvatarIds = [];
+              }
+              if (broupMe.updateBroup && !broupMe.removed) {
+                broupsToUpdate.add(broupMe.broupId);
+              }
+              if (broupMe.newAvatar && !broupMe.removed) {
+                broupAvatarsToUpdate.add(broupMe.broupId);
+              }
             }
+            // We remove the broup from the db map so we can check which broups are not in the settingsMe.
+            broupDbMap.remove(broupMe.broupId.toString());
             storage.updateBroup(broupMe);
           }
         }
@@ -238,6 +278,8 @@ setBroupsAfterLogin(Me settingsMe, List<int>? broupIds) {
       if (brosToUpdate.isNotEmpty || broAvatarsToUpdate.isNotEmpty) {
         AuthServiceSocial().broDetails(brosToUpdate, broAvatarsToUpdate, null);
       }
+      print("broupsToUpdate: $broupsToUpdate");
+      print("broupAvatarsToUpdate: $broupAvatarsToUpdate");
       if (broupsToUpdate.isNotEmpty || broupAvatarsToUpdate.isNotEmpty) {
         AuthServiceSocial().broupDetails(broupsToUpdate, broupAvatarsToUpdate);
       }
@@ -246,6 +288,11 @@ setBroupsAfterLogin(Me settingsMe, List<int>? broupIds) {
       if (remainingBroupIds.isNotEmpty) {
         AuthServiceSocial().broupDetails(remainingBroupIds, remainingBroupIds);
       }
+
+      // After this point we have updated the broups on the db and settingsMe.
+      // So we can now claim the logging is done.
+      // There might still be additional data that is going to be retrieved, but the important data is available
+      Settings().setLoggingIn(false);
     });
   });
 }
@@ -335,6 +382,7 @@ Future<bool> checkSameBroLogin(SecureStorage secureStorage, Me? newMe) async {
 successfulLoginLogin(LoginResponse loginResponse) async {
   SecureStorage secureStorage = SecureStorage();
   Settings settings = Settings();
+  settings.setLoggingIn(true);
 
   Me? newMe = loginResponse.getMe();
 
@@ -389,13 +437,13 @@ successfulLoginLogin(LoginResponse loginResponse) async {
     await secureStorage.setRefreshTokenExpiration(refreshExpiration);
   }
 
-  settings.setLoggingIn(false);
   BroHomeChangeNotifier().notify();
 }
 
 successfulLoginToken(LoginResponse loginResponse) async {
   SecureStorage secureStorage = SecureStorage();
   Settings settings = Settings();
+  settings.setLoggingIn(true);
 
   // It's possible that there is already a 'me' on the settings. Like when the app was just minimized or something
   // In this case we want to keep most of the settingsMe broup objects and update them with the newMe broup objects.
@@ -444,7 +492,6 @@ successfulLoginToken(LoginResponse loginResponse) async {
     await secureStorage.setRefreshTokenExpiration(refreshExpiration);
   }
 
-  settings.setLoggingIn(false);
   BroHomeChangeNotifier().notify();
 }
 
@@ -657,7 +704,6 @@ addWelcomeMessage(Broup broup) {
 }
 
 getBroupData(Storage storage, Me me) {
-  int startTime = DateTime.now().millisecondsSinceEpoch;
   storage.fetchAllBroups().then((broups) {
     storage.fetchAllBros().then((bros) {
       Map<String, Broup> broupMap = {for (var broup in broups) broup.getBroupId().toString(): broup};
@@ -673,6 +719,9 @@ getBroupData(Storage storage, Me me) {
             broup.avatar = dbBroup.avatar;
             broup.avatarDefault = dbBroup.avatarDefault;
           }
+          // clear before adding them again.
+          // In case someone left, then the bro will be removed from the broup.
+          broup.broupBros.clear();
           for (int broId in broup.broIds) {
             Bro? dbBro = broMap[broId.toString()];
             if (dbBro != null) {
@@ -681,10 +730,7 @@ getBroupData(Storage storage, Me me) {
           }
         }
       }
-      int endTime = DateTime.now().millisecondsSinceEpoch;
-      int totalTime = endTime - startTime;
-      print("total time for getting data: $totalTime");
-      BroHomeChangeNotifier().notify();
+      SocketServices().notify();
     });
   });
 }

@@ -61,30 +61,33 @@ class _BrocastHomeState extends State<BrocastHome> {
 
     // Wait until page is loaded
     WidgetsBinding.instance.addPostFrameCallback((_) async {
+      socketServices.startSocketConnection();
       broHomeChangeListener();
       checkNotificationListener();
 
       // A hacky way to check if all the avatars are available.
       // If one of the private or broup chats do not have a avatar after a few seconds we can assume something went wrong.
-      Future.delayed(Duration(seconds: 4)).then((value) {
+      Future.delayed(Duration(seconds: 2)).then((value) {
         if (me != null) {
           List<int> broAvatarIds = [];
           List<int> broupAvatarIds = [];
           for (Broup meBroup in me!.broups) {
-            if (meBroup.private) {
-              if (meBroup.getAvatar() == null) {
-                for (int broId in meBroup.broIds) {
-                  if (broId != me!.getId()) {
-                    if (!broAvatarIds.contains(broId)) {
-                      broAvatarIds.add(broId);
+            if (!meBroup.removed) {
+              if (meBroup.private) {
+                if (meBroup.getAvatar() == null) {
+                  for (int broId in meBroup.broIds) {
+                    if (broId != me!.getId()) {
+                      if (!broAvatarIds.contains(broId)) {
+                        broAvatarIds.add(broId);
+                      }
                     }
                   }
                 }
-              }
-            } else {
-              if (meBroup.getAvatar() == null) {
-                if (!broupAvatarIds.contains(meBroup.getBroupId())) {
-                  broupAvatarIds.add(meBroup.getBroupId());
+              } else {
+                if (meBroup.getAvatar() == null) {
+                  if (!broupAvatarIds.contains(meBroup.getBroupId())) {
+                    broupAvatarIds.add(meBroup.getBroupId());
+                  }
                 }
               }
             }
@@ -230,7 +233,7 @@ class _BrocastHomeState extends State<BrocastHome> {
     Me? me = settings.getMe();
     if (me != null) {
       socketServices.leaveRoomSolo(me.getId());
-      settings.setLoggingIn(true);
+      settings.setLoggingIn(false);
       settings.retrievedBroupData = false;
       for (Broup broup in me.broups) {
         if (broup.joinedBroupRoom) {
@@ -321,12 +324,10 @@ class _BrocastHomeState extends State<BrocastHome> {
     }
     AuthServiceSocial().updateFCMToken("").then((value) {
       if (value) {
-        print("FCM token updated on server");
       }
     });
     settings.setLoggingIn(false);
     settings.retrievedBroupData = false;
-    settings.retrievedBroData = false;
     Navigator.pushReplacement(context,
         MaterialPageRoute(builder: (context) => SignIn(
             key: UniqueKey(),

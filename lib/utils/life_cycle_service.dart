@@ -28,7 +28,6 @@ class LifeCycleService extends ChangeNotifier {
       // If the app is opened again there will be another login in which details can change.
       Settings settings = Settings();
       settings.retrievedBroupData = false;
-      settings.retrievedBroData = false;
     }
   }
 

@@ -46,6 +46,10 @@ class SocketServices extends ChangeNotifier {
   void startSocketConnection() {
     if (!socket.connected) {
       socket.connect();
+      Me? me = Settings().getMe();
+      if (me != null) {
+        joinRooms(me);
+      }
       print("Socket connected");
     }
   }
@@ -613,5 +617,9 @@ class SocketServices extends ChangeNotifier {
       "leave_broup",
       {"broup_id": broupId},
     );
+  }
+
+  notify() {
+    notifyListeners();
   }
 }

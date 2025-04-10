@@ -1,5 +1,4 @@
 import 'dart:isolate';
-import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:awesome_notifications/awesome_notifications.dart';
@@ -11,7 +10,6 @@ import 'package:brocast/utils/settings.dart';
 import 'package:brocast/utils/storage.dart';
 import 'package:brocast/views/chat_view/messaging_change_notifier.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 
 import '../constants/base_url.dart';
 import '../objects/broup.dart';
@@ -299,9 +297,7 @@ class NotificationController extends ChangeNotifier {
       // process is done it will navigate somewhere
       return;
     }
-    settings.setLoggingIn(true);
     loginCheck().then((loggedIn) {
-      settings.setLoggingIn(false);
       if (receivedAction.payload != null) {
         String? broup_id = receivedAction.payload!['broup_id'];
         if (broup_id != null) {

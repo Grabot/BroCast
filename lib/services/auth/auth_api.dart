@@ -83,7 +83,6 @@ class AppInterceptors extends Interceptor {
           _navigationService.navigateTo(routes.SignInRoute);
           return handler.reject(dioError, true);
         } else {
-          settings.setLoggingIn(true);
           print("refresh action 1");
           String endPoint = "refresh";
           var responseRefresh = await Dio(

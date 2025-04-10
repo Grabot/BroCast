@@ -59,6 +59,7 @@ class _ChangeAvatarState extends State<ChangeAvatar> {
     imageCrop = widget.avatar;
     isDefault = widget.isDefault;
     cropController = CropController();
+    SocketServices().startSocketConnection();
     super.initState();
   }
 

@@ -6,23 +6,15 @@ import 'package:brocast/utils/socket_services.dart';
 import 'package:brocast/utils/utils.dart';
 import 'package:brocast/views/bro_home/bro_home_change_notifier.dart';
 import "package:flutter/material.dart";
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_circle_color_picker/flutter_circle_color_picker.dart';
-import 'package:brocast/constants/route_paths.dart' as routes;
+
 import '../../../objects/bro.dart';
 import '../../../objects/me.dart';
 import '../../../objects/message.dart';
 import '../../../services/auth/auth_service_settings.dart';
 import '../../../services/auth/auth_service_social.dart';
-import '../../../utils/notification_controller.dart';
 import '../../../utils/storage.dart';
-import '../../bro_home/bro_home.dart';
-import '../../bro_profile/bro_profile.dart';
-import '../../bro_settings/bro_settings.dart';
 import '../../change_avatar/change_avatar.dart';
-import '../chat_messaging.dart';
-import '../message_util.dart';
-import '../messaging_change_notifier.dart';
 import 'add_participant/broup_add_participant.dart';
 import 'models/bro_tile_details.dart';
 
@@ -103,6 +95,7 @@ class _ChatDetailsState extends State<ChatDetails> {
     );
     currentColor = widget.chat.getColor();
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      socketServices.startSocketConnection();
       setState(() {});
     });
 

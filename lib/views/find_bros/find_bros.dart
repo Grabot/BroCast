@@ -42,6 +42,7 @@ class _FindBrosState extends State<FindBros> {
     super.initState();
 
     bromotionController.addListener(bromotionListener);
+    SocketServices().startSocketConnection();
   }
 
   bromotionListener() {

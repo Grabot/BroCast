@@ -5,6 +5,7 @@ import 'package:brocast/objects/me.dart';
 import 'package:brocast/objects/message.dart';
 import 'package:brocast/services/auth/auth_service_social.dart';
 import 'package:brocast/utils/life_cycle_service.dart';
+import 'package:brocast/utils/socket_services.dart';
 import 'package:brocast/views/bro_home/bro_home_change_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -272,7 +273,7 @@ class Broup {
     deleted = json.containsKey("deleted") ? json["deleted"] : false;
     removed = json.containsKey("removed") ? json["removed"] : false;
     newAvatar = json.containsKey("new_avatar") ? json["new_avatar"] : false;
-    print("broup id $broupId  upodate bruoup $updateBroup   new messages $newMessages   unread messages $unreadMessages   new avatar $newAvatar");
+    print("broup id $broupId  upodate bruoup $updateBroup   new messages $newMessages   unread messages $unreadMessages   new avatar $newAvatar  removed $removed");
 
     // These are the core chat values. Stored in a coupling table on the server
     broupName = "";
@@ -303,6 +304,7 @@ class Broup {
     messages = [];
     messageIds = [];
 
+    print("json $json");
     if (json.containsKey("update_bros") && json["update_bros"] != null) {
       List<int> brosUpdate = json["update_bros"].cast<int>();
       newUpdateBroIds = brosUpdate;
@@ -416,30 +418,72 @@ class Broup {
     messages = [];
   }
 
+  addBlockMessage(Broup localBroup) {
+    // Add block message
+    print("adding block message 2");
+    String blockMessageText = "Chat is blocked! 😭";
+    if (!localBroup.private) {
+      blockMessageText = "You are removed from the broup! 😭";
+    }
+    Message blockMessage = Message(
+      lastMessageId + 1,
+      0,
+      blockMessageText,
+      "",
+      DateTime.now().toUtc().toString(),
+      null,
+      true,
+      localBroup.getBroupId(),
+    );
+    Storage().addMessage(blockMessage);
+    this.messages.insert(
+        0,
+        blockMessage);
+  }
+
   updateBroupLocalDB(Broup localBroup) {
     // Check if the data from the server indicates that the bro is now blocked from the chat.
-    if (this.removed && localBroup.removed) {
-      // Add block message
-      String blockMessageText = "Chat is blocked! 😭";
-      if (!localBroup.private) {
-        blockMessageText = "You are removed from the broup! 😭";
+    print("login broup: ${localBroup.broupId} removed ${localBroup.removed}   local removed ${this.removed} local update ${this.updateBroup}");
+    if (this.removed && !localBroup.removed) {
+      // It's possible that a blocked message is already added, we will not add it again
+      if (this.messages.isEmpty) {
+        addBlockMessage(localBroup);
+      } else {
+        if (this.messages.first.body != "Chat is blocked! 😭" && this.messages.first.body != "You are removed from the broup! 😭") {
+          addBlockMessage(localBroup);
+        }
       }
-      Message blockMessage = Message(
-        lastMessageId + 1,
-        0,
-        blockMessageText,
-        "",
-        DateTime.now().toUtc().toString(),
-        null,
-        true,
-        localBroup.getBroupId(),
-      );
-      Storage().addMessage(blockMessage);
-      this.messages.insert(
-          0,
-          blockMessage);
+    }
+    print("update broup ${this.updateBroup}");
+
+    // If there are messages on this chat we want to ensure that the date tiles are set correctly.
+    // It might be cleared but we will remove all the date tiles and set the chat to reapply them.
+    dateTilesAdded = false;
+    if (messages.isNotEmpty) {
+      messages.removeWhere((element) => element.messageId == 0);
     }
 
+    if (this.updateBroup && this.removed) {
+      // We have been removed and that's the only information we will receive.
+      this
+        ..alias = localBroup.alias
+        ..unreadMessages = localBroup.unreadMessages
+        ..mute = localBroup.mute
+        ..updateBroup = localBroup.updateBroup
+        ..newMessages = localBroup.newMessages
+        ..newAvatar = localBroup.newAvatar
+        ..broIds = localBroup.broIds
+        ..adminIds = localBroup.adminIds
+        ..broupName = localBroup.broupName
+        ..private = localBroup.private
+        ..broupDescription = localBroup.broupDescription
+        ..broupColour = localBroup.broupColour
+        ..updateBroIds = localBroup.updateBroIds
+        ..updateBroAvatarIds = localBroup.updateBroAvatarIds
+        ..avatarDefault = localBroup.avatarDefault
+        ..avatar = localBroup.avatar;
+      return;
+    }
     // If updateBroup was true, these values should be taken from the server, which are now on `this` broup object.
     if (this.updateBroup) {
       this
@@ -510,12 +554,6 @@ class Broup {
         ..broupColour = localBroup.broupColour;
     }
 
-    // If there are messages on this chat we want to ensure that the date tiles are set correctly.
-    // It might be cleared but we will remove all the date tiles and set the chat to reapply them.
-    dateTilesAdded = false;
-    if (messages.isNotEmpty) {
-      messages.removeWhere((element) => element.messageId == 0);
-    }
     // We might have some new bros to update, add them to the `updateBroIds`
     if (newUpdateBroIds.isNotEmpty) {
       // The updateBroIds is only additive. Once the broup is opened, these are retrieved.
@@ -549,6 +587,9 @@ class Broup {
           this.blocked = true;
         }
       }
+      // When it's removed, we still want to know the updateBroup status.
+      this
+        ..updateBroup = serverBroup.updateBroup;
       // In the edge case when a broup is added and blocked before the user opens the app
       // we want to retrieve some details anyway. We identify this by an empty broupColour
       // This can only happen in this edge case and we will update some details
@@ -558,11 +599,13 @@ class Broup {
           ..adminIds = serverBroup.adminIds
           ..broupName = serverBroup.broupName
           ..broupColour = serverBroup.broupColour
-          ..private = serverBroup.private;
+          ..private = serverBroup.private
+          ..updateBroup = serverBroup.updateBroup;
       }
     }
     // If the broup is removed we want to set the flag, but also add a block message
     // If it's no longer removed we want to updated it again.
+    print("broup: ${serverBroup.broupId} removed ${serverBroup.removed}   local removed ${this.removed}");
     if (checkRemoved(serverBroup)) {
       return;
     }
@@ -581,7 +624,9 @@ class Broup {
       ..private = serverBroup.private
       ..updateBroup = serverBroup.updateBroup
       ..newAvatar = serverBroup.newAvatar
-      ..newMessages = serverBroup.newMessages;
+      ..newMessages = serverBroup.newMessages
+      ..newUpdateBroIds = serverBroup.newUpdateBroIds
+      ..newUpdateBroAvatarIds = serverBroup.newUpdateBroAvatarIds;
 
     // If there are messages on this chat we want to ensure that the date tiles are set correctly.
     // It might be cleared but we will remove all the date tiles and set the chat to reapply them.
@@ -604,6 +649,7 @@ class Broup {
     // In this specific case we will add indication that the chat is blocked
     if (!this.removed && serverBroup.removed) {
       // Add block message
+      print("adding block message");
       String blockMessageText = "Chat is blocked! 😭";
       if (!serverBroup.private) {
         blockMessageText = "You are removed from the broup! 😭";
@@ -686,7 +732,7 @@ class Broup {
     // If the message is 1 higher, the bro is up to date with all the messages
     // The bro still has not read anything so the unreadMessages will stay
     print("last message id $lastMessageId and message id ${message.messageId}");
-    if (message.messageId == lastMessageId + 1) {
+    if (message.messageId == lastMessageId + 1 && LifeCycleService().appStatus == 1) {
       // The bro is up to date with all the messages
       // We will increase the lastMessageId
       lastMessageId += 1;
@@ -759,14 +805,18 @@ class Broup {
   }
 
   readMessages() {
-    AuthServiceSocial().readMessages(getBroupId()).then((value) {
-      if (value) {
-        unreadMessages = 0;
-        if (MessagingChangeNotifier().getBroupId() == broupId) {
-          MessagingChangeNotifier().notify();
+    // The 'read message' will remove messages from the server. We don't want any issues so
+    // only do this if we know the app is open and active, with active socket connection
+    if (LifeCycleService().appStatus == 1 && SocketServices().isConnected() && !newMessages) {
+      AuthServiceSocial().readMessages(getBroupId()).then((value) {
+        if (value) {
+          unreadMessages = 0;
+          if (MessagingChangeNotifier().getBroupId() == broupId) {
+            MessagingChangeNotifier().notify();
+          }
         }
-      }
-    });
+      });
+    }
   }
 
   retrieveBros(List<int> brosIds) async {

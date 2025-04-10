@@ -26,7 +26,6 @@ class AuthServiceLogin {
   AuthServiceLogin._internal();
 
   Future<LoginResponse> getLoginEmail(LoginEmailRequest loginEmailRequest) async {
-    Settings().setLoggingIn(true);
     String endPoint = "login";
     var response = await AuthApiLogin().dio.post(endPoint,
         options: Options(headers: {
@@ -43,7 +42,6 @@ class AuthServiceLogin {
   }
 
   Future<LoginResponse> getLoginBroName(LoginBroNameRequest loginBroNameRequest) async {
-    Settings().setLoggingIn(true);
     String endPoint = "login";
     var response = await AuthApiLogin().dio.post(endPoint,
         options: Options(headers: {
@@ -60,7 +58,6 @@ class AuthServiceLogin {
   }
 
   Future<LoginResponse> getRegister(RegisterRequest registerRequest) async {
-    Settings().setLoggingIn(true);
     String endPoint = "register";
     var response = await AuthApiLogin().dio.post(endPoint,
         options: Options(headers: {
@@ -95,7 +92,6 @@ class AuthServiceLogin {
 
   Future<LoginResponse> getRefreshOAuth(String accessToken, String refreshToken) async {
     Settings settings = Settings();
-    settings.setLoggingIn(true);
     print("refresh action 2");
     String endPoint = "refresh/oauth";
     var response = await AuthApiLogin().dio.post(endPoint,
@@ -153,11 +149,11 @@ class AuthServiceLogin {
       await secureStorage.setRefreshToken(newRefreshToken);
       await secureStorage.setRefreshTokenExpiration(refreshExpiration);
     }
+    settings.setLoggingIn(false);
     return loginResponse;
   }
 
   Future<LoginResponse> getTokenLogin() async {
-    print("doing token login");
     String endPoint = "login/token";
     var response = await AuthApi().dio.post(endPoint,
         options: Options(headers: {
@@ -246,7 +242,6 @@ class AuthServiceLogin {
   }
 
   Future<LoginResponse> getLoginGoogle(String accessToken) async {
-    Settings().setLoggingIn(true);
     String endPoint = "login/google/token";
     print("doing google login");
     var response = await AuthApiLogin().dio.post(endPoint,
