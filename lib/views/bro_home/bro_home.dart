@@ -306,24 +306,6 @@ class _BrocastHomeState extends State<BrocastHome> {
     );
   }
 
-  actuallyLogout() {
-    Me? me = settings.getMe();
-    if (me != null) {
-      socketServices.leaveRoomSolo(me.getId());
-    }
-    AuthServiceSocial().updateFCMToken("").then((value) {
-      if (value) {
-      }
-    });
-    settings.setLoggingIn(false);
-    settings.retrievedBroupData = false;
-    Navigator.pushReplacement(context,
-        MaterialPageRoute(builder: (context) => SignIn(
-            key: UniqueKey(),
-            showRegister: false
-        )));
-  }
-
   showDialogLogout(BuildContext context) {
     showDialog(
         context: context,
@@ -357,7 +339,11 @@ class _BrocastHomeState extends State<BrocastHome> {
                 child: new Text("Logout"),
                 onPressed: () {
                   Navigator.of(context).pop();
-                  actuallyLogout();
+                  AuthServiceSocial().updateFCMToken("").then((value) {
+                    if (value) {
+                    }
+                  });
+                  actuallyLogout(settings, socketServices, context);
                 },
               ),
             ],

@@ -21,6 +21,7 @@ import '../views/bro_settings/bro_settings.dart';
 import '../views/chat_view/chat_messaging.dart';
 import '../views/chat_view/message_util.dart';
 import '../views/chat_view/messaging_change_notifier.dart';
+import '../views/sign_in/signin.dart';
 import 'secure_storage.dart';
 import 'settings.dart';
 import 'socket_services.dart';
@@ -715,4 +716,19 @@ getBroupData(Storage storage, Me me) {
       SocketServices().notify();
     });
   });
+}
+
+actuallyLogout(Settings settings, SocketServices socketServices, BuildContext context) {
+  Me? me = settings.getMe();
+  if (me != null) {
+    socketServices.leaveRoomSolo(me.getId());
+  }
+  settings.setLoggingIn(false);
+  settings.retrievedBroupData = false;
+  SecureStorage().logout();
+  Navigator.pushReplacement(context,
+      MaterialPageRoute(builder: (context) => SignIn(
+          key: UniqueKey(),
+          showRegister: false
+      )));
 }

@@ -1,9 +1,11 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:brocast/services/auth/auth_service_login.dart';
 import 'package:brocast/utils/settings.dart';
 import 'package:brocast/utils/shared.dart';
 import 'package:brocast/utils/socket_services.dart';
 import 'package:brocast/utils/storage.dart';
 import 'package:brocast/utils/utils.dart';
+import 'package:brocast/views/sign_in/signin.dart';
 import "package:flutter/material.dart";
 
 
@@ -88,6 +90,17 @@ class _BroSettingsState extends State<BroSettings> {
     }
   }
 
+  deleteAccount() {
+    AuthServiceLogin().deleteAccount().then((baseResponse) {
+      if (baseResponse.getResult()) {
+        Storage().clearDatabase();
+        Navigator.of(context).pop();
+        actuallyLogout(settings, socketServices, context);
+        showToastMessage("Account deleted");
+      }
+    });;
+  }
+
   clearMessages() async {
     await storage.clearMessages();
     showToastMessage("Messages cleared");
@@ -142,7 +155,15 @@ class _BroSettingsState extends State<BroSettings> {
                     onPressed: () async {
                       await AwesomeNotifications().showNotificationConfigPage();
                     },
-                    child: Text('Open notification Settings'),
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Open notification Settings',
+                            style: TextStyle(color: Colors.blue, fontSize: 18)
+                          ),
+                      ]
+                    ),
                   ),
                   TextButton(
                     style: ButtonStyle(
@@ -152,8 +173,35 @@ class _BroSettingsState extends State<BroSettings> {
                     onPressed: () {
                       showDialogClearMessages(context);
                     },
-                    child: Text('clear all messages'),
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'clear all messages',
+                            style: TextStyle(color: Colors.blue, fontSize: 18)
+                          ),
+                      ]
+                    ),
                   ),
+                      TextButton(
+                        style: ButtonStyle(
+                          foregroundColor:
+                          WidgetStateProperty.all<Color>(Colors.blue),
+                        ),
+                        onPressed: () {
+                          showDialogDeleteAccount(context);
+                        },
+                        child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.delete, color: Colors.red),
+                              SizedBox(width: 20),
+                              Text(
+                                "Delete account",
+                                  style: TextStyle(color: Colors.blue, fontSize: 18)
+                              ),
+                            ]),
+                      ),
                   SizedBox(height: 150),
                 ]),
               ),
@@ -169,7 +217,18 @@ class _BroSettingsState extends State<BroSettings> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: new Text("Are you sure?\nThis will clear ALL your messages!"),
+            title: new Text("Clear messages?"),
+            content: RichText(
+              textAlign: TextAlign.center,
+              text: TextSpan(
+                children: [
+                  TextSpan(
+                    text: "Are you sure?\nThis will clear ALL your messages!",
+                    style: TextStyle(color: Colors.black, fontSize: 16),
+                  ),
+                ],
+              ),
+            ),
             actions: <Widget>[
               new TextButton(
                 child: new Text("Cancel"),
@@ -181,6 +240,41 @@ class _BroSettingsState extends State<BroSettings> {
                 child: new Text("Clear"),
                 onPressed: () {
                   clearMessages();
+                },
+              ),
+            ],
+          );
+        });
+  }
+
+  showDialogDeleteAccount(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: new Text("Delete account?"),
+            content: RichText(
+              textAlign: TextAlign.center,
+              text: TextSpan(
+                children: [
+                  TextSpan(
+                    text: "Are you sure?\nThis will delete your account and all the data associated with it!",
+                    style: TextStyle(color: Colors.black, fontSize: 16),
+                  ),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              new TextButton(
+                child: new Text("Cancel"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              new TextButton(
+                child: new Text("Delete"),
+                onPressed: () {
+                  deleteAccount();
                 },
               ),
             ],

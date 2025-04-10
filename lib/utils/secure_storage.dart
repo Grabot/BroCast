@@ -135,5 +135,10 @@ class SecureStorage {
     await storage.write(key: _email, value: null);
     await storage.write(key: _avatar, value: null);
     await storage.write(key: _avatarDefault, value: null);
+    await storage.write(key: _keyAccessTokenExpiration, value: null);
+    await storage.write(key: _keyRefreshTokenExpiration, value: null);
+    await storage.write(key: _keyFCMToken, value: null);
+    await storage.write(key: _origin, value: null);
+    await storage.write(key: _broId, value: null);
   }
 }

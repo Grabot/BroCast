@@ -130,7 +130,7 @@ class _BroProfileState extends State<BroProfile> {
   }
 
   changeBroname() {
-    String newBroname = broNameController.text;
+    String newBroname = broNameController.text.trimRight();
     AuthServiceSettings().changeBroname(newBroname).then((value) {
       if (value) {
         showToastMessage("bro name changed successfully");
@@ -628,7 +628,7 @@ class _BroProfileState extends State<BroProfile> {
               TextFormField(
                 key: bronameValidator,
                 validator: (value) {
-                  if (value == null || value.isEmpty) {
+                  if (value == null || value.isEmpty || value.trimRight() == "") {
                     return 'Please enter some text';
                   }
                   return null;

@@ -39,17 +39,14 @@ class _WebViewScreenState extends State<WebViewScreen> {
           onProgress: (int progress) {
           },
           onPageStarted: (String url) {
-            print("on page started: ${url}");
           },
           onPageFinished: (String url) {
-            print("on page finished: ${url}");
           },
           onHttpError: (HttpResponseError error) {
           },
           onWebResourceError: (WebResourceError error) {
           },
           onNavigationRequest: (NavigationRequest request) {
-            print("WebView navigation request: ${request.url}");
             if (request.url.startsWith('https://brocast.nl/broaccess?') || request.url.startsWith('https://www.brocast.nl/broaccess?')) {
               // When we detect the redirect to the broaccess page
               // We use the broaccess paramters to log in.

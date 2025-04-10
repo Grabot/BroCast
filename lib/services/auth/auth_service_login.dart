@@ -238,6 +238,20 @@ class AuthServiceLogin {
     return baseResponse;
   }
 
+  Future<BaseResponse> deleteAccount() async {
+    String endPoint = "delete/account";
+    var response = await AuthApi().dio.post(endPoint,
+        options: Options(headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+        }),
+        data: jsonEncode(<String, dynamic> {
+        })
+    );
+
+    BaseResponse baseResponse = BaseResponse.fromJson(response.data);
+    return baseResponse;
+  }
+
   Future<LoginResponse> getLoginGoogle(String accessToken) async {
     String endPoint = "login/google/token";
     var response = await AuthApiLogin().dio.post(endPoint,
