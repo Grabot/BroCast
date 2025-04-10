@@ -61,7 +61,6 @@ class _BrocastHomeState extends State<BrocastHome> {
 
     // Wait until page is loaded
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      socketServices.startSocketConnection();
       broHomeChangeListener();
       checkNotificationListener();
 

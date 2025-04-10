@@ -117,7 +117,6 @@ class _ChatMessagingState extends State<ChatMessaging> {
       capturedThemes =
           InheritedTheme.capture(from: context, to: navigator!.context);
       AuthServiceSocial().chatOpen(widget.chat.broupId, true);
-      socketServices.startSocketConnection();
     });
   }
 

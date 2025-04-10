@@ -95,7 +95,6 @@ class _ChatDetailsState extends State<ChatDetails> {
     );
     currentColor = widget.chat.getColor();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      socketServices.startSocketConnection();
       setState(() {});
     });
 

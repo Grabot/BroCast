@@ -55,7 +55,6 @@ class _BroProfileState extends State<BroProfile> {
     if (me != null) {
       bromotionChangeController.text = me.getBromotion();
     }
-    SocketServices().startSocketConnection();
   }
 
   bromotionListener() {

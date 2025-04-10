@@ -75,7 +75,6 @@ class _BroupAddParticipantState extends State<BroupAddParticipant> {
     broupAddBrosShownBros = broupAddBros;
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      socketServices.startSocketConnection();
       setState(() {
       });
     });
