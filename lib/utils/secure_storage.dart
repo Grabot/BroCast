@@ -10,6 +10,7 @@ class SecureStorage {
   final String _keyAccessTokenExpiration = 'accessTokenExpiration';
   final String _keyRefreshTokenExpiration = 'refreshTokenExpiration';
   final String _keyFCMToken = 'FCMToken';
+  final String _origin = 'origin';
   final String _broId = 'broId';
   final String _broName = 'broName';
   final String _bromotion = 'bromotion';
@@ -66,6 +67,15 @@ class SecureStorage {
 
   Future<String?> getBroId() async {
     return await storage.read(key: _broId);
+  }
+
+  Future setOrigin(bool broOrigin) async {
+    await storage.write(key: _origin, value: broOrigin.toString());
+  }
+
+  Future<bool?> getOrigin() async {
+    String? origin = await storage.read(key: _origin);
+    return origin != null ? origin == 'true' : null;
   }
 
   Future setBroName(String broName) async {

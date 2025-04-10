@@ -12,7 +12,7 @@ class Me extends Bro {
   late int id;
   late String broName;
   late String bromotion;
-  late bool origin;
+  late bool? origin;
   Uint8List? avatar;
   late List<Broup> broups;
   bool avatarDefault = true;
@@ -82,7 +82,9 @@ class Me extends Bro {
     id = json["id"];
     broName = json["bro_name"];
     bromotion = json["bromotion"];
-    origin = json["origin"];
+    if (json.containsKey("origin") && json["origin"] != null) {
+      origin = json["origin"];
+    }
     if (json.containsKey("avatar") && json["avatar"] != null) {
       avatar = base64Decode(json["avatar"].replaceAll("\n", ""));
     }

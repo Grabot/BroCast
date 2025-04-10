@@ -329,6 +329,12 @@ updateMeAfterLogin(Me settingsMe, SecureStorage secureStorage) {
 }
 
 Future<bool> checkSameBroLogin(SecureStorage secureStorage, Me? newMe) async {
+  bool? originLocal = await secureStorage.getOrigin();
+  if (newMe != null && newMe.origin != null) {
+    if (originLocal == null || originLocal != newMe.origin) {
+      await secureStorage.setOrigin(newMe.origin!);
+    }
+  }
   String? broIdString = await secureStorage.getBroId();
   int broIdInt = -1;
   if (broIdString != null) {

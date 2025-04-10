@@ -45,6 +45,7 @@ class _BroProfileState extends State<BroProfile> {
 
   ScrollController scrollController = ScrollController();
 
+  bool passwordToChange = false;
   @override
   void initState() {
     super.initState();
@@ -55,6 +56,15 @@ class _BroProfileState extends State<BroProfile> {
     if (me != null) {
       bromotionChangeController.text = me.getBromotion();
     }
+    SecureStorage().getOrigin().then((value) {
+      if (value != null) {
+        // If origin is true it was a regular login which means it can change the password
+        // If it's false it means that the login was via Google, Apple, Github or Reddit and there is no password
+        setState(() {
+          passwordToChange = value;
+        });
+      }
+    });
   }
 
   bromotionListener() {
@@ -454,100 +464,104 @@ class _BroProfileState extends State<BroProfile> {
   }
 
   Widget passwordWidget() {
-    if (changePassword) {
-      return Column(
-        children: [
-          Container(
-              child: Form(
-                key: passwordFormValidator,
-                child: Column(
-                  children: [
-                    TextFormField(
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter some text';
-                        }
-                        return null;
-                      },
-                      obscureText: true,
-                      controller: oldPasswordController,
-                      style: simpleTextStyle(),
-                      textAlign: TextAlign.center,
-                      decoration:
-                      textFieldInputDecoration("Old password"),
-                    ),
-                    TextFormField(
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter some text';
-                        }
-                        if (newPasswordController2.text != value) {
-                          return "Password confirmation doesn't match the password";
-                        }
-                        return null;
-                      },
-                      obscureText: true,
-                      controller: newPasswordController1,
-                      focusNode: focusNodePassword,
-                      style: simpleTextStyle(),
-                      textAlign: TextAlign.center,
-                      decoration:
-                      textFieldInputDecoration("New password"),
-                    ),
-                    TextFormField(
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter some text';
-                        }
-                        if (newPasswordController1.text != value) {
-                          return "Password confirmation doesn't match the password";
-                        }
-                        return null;
-                      },
-                      obscureText: true,
-                      controller: newPasswordController2,
-                      style: simpleTextStyle(),
-                      textAlign: TextAlign.center,
-                      decoration: textFieldInputDecoration(
-                          "Confirm new password"),
-                    )
-                  ],
-                ),
-              )
-          ),
-          TextButton(
-            style: ButtonStyle(
-              foregroundColor:
-              WidgetStateProperty.all<Color>(Colors.red),
-            ),
-            onPressed: () {
-              onSavePassword();
-            },
-            child: Text('Update password!'),
-          ),
-          TextButton(
-            style: ButtonStyle(
-              foregroundColor:
-              WidgetStateProperty.all<Color>(Colors.red),
-            ),
-            onPressed: () {
-              onCancelPassword();
-            },
-            child: Text('Cancel password update'),
-          )
-        ],
-      );
+    if (!passwordToChange) {
+      return Container();
     } else {
-      return TextButton(
-        style: ButtonStyle(
-          foregroundColor:
-          WidgetStateProperty.all<Color>(Colors.blue),
-        ),
-        onPressed: () {
-          onChangePassword();
-        },
-        child: Text('Change password'),
-      );
+      if (changePassword) {
+        return Column(
+          children: [
+            Container(
+                child: Form(
+                  key: passwordFormValidator,
+                  child: Column(
+                    children: [
+                      TextFormField(
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter some text';
+                          }
+                          return null;
+                        },
+                        obscureText: true,
+                        controller: oldPasswordController,
+                        style: simpleTextStyle(),
+                        textAlign: TextAlign.center,
+                        decoration:
+                        textFieldInputDecoration("Old password"),
+                      ),
+                      TextFormField(
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter some text';
+                          }
+                          if (newPasswordController2.text != value) {
+                            return "Password confirmation doesn't match the password";
+                          }
+                          return null;
+                        },
+                        obscureText: true,
+                        controller: newPasswordController1,
+                        focusNode: focusNodePassword,
+                        style: simpleTextStyle(),
+                        textAlign: TextAlign.center,
+                        decoration:
+                        textFieldInputDecoration("New password"),
+                      ),
+                      TextFormField(
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter some text';
+                          }
+                          if (newPasswordController1.text != value) {
+                            return "Password confirmation doesn't match the password";
+                          }
+                          return null;
+                        },
+                        obscureText: true,
+                        controller: newPasswordController2,
+                        style: simpleTextStyle(),
+                        textAlign: TextAlign.center,
+                        decoration: textFieldInputDecoration(
+                            "Confirm new password"),
+                      )
+                    ],
+                  ),
+                )
+            ),
+            TextButton(
+              style: ButtonStyle(
+                foregroundColor:
+                WidgetStateProperty.all<Color>(Colors.red),
+              ),
+              onPressed: () {
+                onSavePassword();
+              },
+              child: Text('Update password!'),
+            ),
+            TextButton(
+              style: ButtonStyle(
+                foregroundColor:
+                WidgetStateProperty.all<Color>(Colors.red),
+              ),
+              onPressed: () {
+                onCancelPassword();
+              },
+              child: Text('Cancel password update'),
+            )
+          ],
+        );
+      } else {
+        return TextButton(
+          style: ButtonStyle(
+            foregroundColor:
+            WidgetStateProperty.all<Color>(Colors.blue),
+          ),
+          onPressed: () {
+            onChangePassword();
+          },
+          child: Text('Change password'),
+        );
+      }
     }
   }
 
