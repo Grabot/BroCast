@@ -63,11 +63,15 @@ class _WebViewScreenState extends State<WebViewScreen> {
                 AuthServiceLogin authService = AuthServiceLogin();
                 authService.getRefreshOAuth(accessToken, refreshToken).then((loginResponse) {
                   if (loginResponse.getResult()) {
-                    NotificationController().getFCMTokenNotificationUtil(loginResponse.getFCMToken());
-                    int platform = Platform.isAndroid ? 0 : 1;
-                    if (loginResponse.getPlatform() != null && platform != loginResponse.getPlatform()) {
-                      AuthServiceSocial().updatePlatform(platform);
-                    }
+                    // We will do a fcm token and platform check. But after a slight delay to give
+                    // the app time to save the tokens which will be needed.
+                    Future.delayed(Duration(seconds: 2)).then((value) {
+                      NotificationController().getFCMTokenNotificationUtil(loginResponse.getFCMToken());
+                      int platform = Platform.isAndroid ? 0 : 1;
+                      if (loginResponse.getPlatform() != null && platform != loginResponse.getPlatform()) {
+                        AuthServiceSocial().updatePlatform(platform);
+                      }
+                    });
                     // user logged in, so go to the home screen
                     Navigator.pushReplacement(
                         context,

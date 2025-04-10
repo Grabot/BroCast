@@ -295,11 +295,13 @@ class _SignInState extends State<SignIn> {
             isLoading = false;
           });
 
-          NotificationController().getFCMTokenNotificationUtil(loginResponse.getFCMToken());
-          int platform = Platform.isAndroid ? 0 : 1;
-          if (loginResponse.getPlatform() != null && platform != loginResponse.getPlatform()) {
-            AuthServiceSocial().updatePlatform(platform);
-          }
+          Future.delayed(Duration(seconds: 2)).then((value) {
+            NotificationController().getFCMTokenNotificationUtil(loginResponse.getFCMToken());
+            int platform = Platform.isAndroid ? 0 : 1;
+            if (loginResponse.getPlatform() != null && platform != loginResponse.getPlatform()) {
+              AuthServiceSocial().updatePlatform(platform);
+            }
+          });
 
           // We securely store information locally on the phone
           secureStorage.setBroName(broNameLogin);
@@ -333,11 +335,13 @@ class _SignInState extends State<SignIn> {
             isLoading = false;
           });
 
-          NotificationController().getFCMTokenNotificationUtil(loginResponse.getFCMToken());
-          int platform = Platform.isAndroid ? 0 : 1;
-          if (loginResponse.getPlatform() != null && platform != loginResponse.getPlatform()) {
-            AuthServiceSocial().updatePlatform(platform);
-          }
+          Future.delayed(Duration(seconds: 2)).then((value) {
+            NotificationController().getFCMTokenNotificationUtil(loginResponse.getFCMToken());
+            int platform = Platform.isAndroid ? 0 : 1;
+            if (loginResponse.getPlatform() != null && platform != loginResponse.getPlatform()) {
+              AuthServiceSocial().updatePlatform(platform);
+            }
+          });
 
           // We securely store information locally on the phone
           secureStorage.setEmail(emailLogin);
@@ -967,11 +971,13 @@ class _SignInState extends State<SignIn> {
     AuthServiceLogin().getLoginGoogle(googleAccessToken).then((
         loginResponse) {
       if (loginResponse.getResult()) {
-        NotificationController().getFCMTokenNotificationUtil(loginResponse.getFCMToken());
-        int platform = Platform.isAndroid ? 0 : 1;
-        if (loginResponse.getPlatform() != null && platform != loginResponse.getPlatform()) {
-          AuthServiceSocial().updatePlatform(platform);
-        }
+        Future.delayed(Duration(seconds: 2)).then((value) {
+          NotificationController().getFCMTokenNotificationUtil(loginResponse.getFCMToken());
+          int platform = Platform.isAndroid ? 0 : 1;
+          if (loginResponse.getPlatform() != null && platform != loginResponse.getPlatform()) {
+            AuthServiceSocial().updatePlatform(platform);
+          }
+        });
         goToBrocastHome();
         setState(() {
           isLoading = false;
