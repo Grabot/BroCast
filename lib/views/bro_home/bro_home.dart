@@ -343,7 +343,15 @@ class _BrocastHomeState extends State<BrocastHome> {
                     if (value) {
                     }
                   });
-                  actuallyLogout(settings, socketServices, context);
+                  Future.delayed(Duration(milliseconds: 100), () {
+                    actuallyLogout(settings, socketServices, context);
+
+                    Navigator.pushReplacement(context,
+                        MaterialPageRoute(builder: (context) => SignIn(
+                            key: UniqueKey(),
+                            showRegister: false
+                        )));
+                  });
                 },
               ),
             ],
@@ -383,7 +391,6 @@ class _BrocastHomeState extends State<BrocastHome> {
         exitApp();
         break;
       case 5:
-      // TODO: remove all messages? Add warning about removing all messages?
       showDialogLogout(context);
 
         break;

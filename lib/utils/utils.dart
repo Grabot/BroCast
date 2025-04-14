@@ -46,7 +46,6 @@ TextStyle simpleTextStyle() {
 }
 
 showToastMessage(String message) {
-  // TODO: add duration paramater?
   showToast(
     message,
     duration: const Duration(milliseconds: 2000),
@@ -261,16 +260,23 @@ setBroupsAfterLogin(Me settingsMe, List<int>? broupIds) {
           settingsMe.broups.add(broupDb);
         }
       }
+      // Gather the remaining data. With a slight delay to allow the tokens to be stored in securestorage.
       if (brosToUpdate.isNotEmpty || broAvatarsToUpdate.isNotEmpty) {
-        AuthServiceSocial().broDetails(brosToUpdate, broAvatarsToUpdate, null);
+        Future.delayed(Duration(milliseconds: 100)).then((val) async {
+          AuthServiceSocial().broDetails(brosToUpdate, broAvatarsToUpdate, null);
+        });
       }
       if (broupsToUpdate.isNotEmpty || broupAvatarsToUpdate.isNotEmpty) {
-        AuthServiceSocial().broupDetails(broupsToUpdate, broupAvatarsToUpdate);
+        Future.delayed(Duration(milliseconds: 100)).then((val) async {
+          AuthServiceSocial().broupDetails(broupsToUpdate, broupAvatarsToUpdate);
+        });
       }
 
       // This will be the case when someone logs in on a new phone for instance.
       if (remainingBroupIds.isNotEmpty) {
-        AuthServiceSocial().broupDetails(remainingBroupIds, remainingBroupIds);
+        Future.delayed(Duration(milliseconds: 100)).then((val) async {
+          AuthServiceSocial().broupDetails(remainingBroupIds, remainingBroupIds);
+        });
       }
 
       // After this point we have updated the broups on the db and settingsMe.
@@ -726,9 +732,4 @@ actuallyLogout(Settings settings, SocketServices socketServices, BuildContext co
   settings.setLoggingIn(false);
   settings.retrievedBroupData = false;
   SecureStorage().logout();
-  Navigator.pushReplacement(context,
-      MaterialPageRoute(builder: (context) => SignIn(
-          key: UniqueKey(),
-          showRegister: false
-      )));
 }

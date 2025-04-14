@@ -55,7 +55,6 @@ class AppInterceptors extends Interceptor {
 
     int? expiration = await secureStorage.getAccessTokenExpiration();
     String? accessToken = await secureStorage.getAccessToken();
-
     if (accessToken == null || accessToken == "" || expiration == null) {
       DioException dioError = DioException(requestOptions: options,
           type: DioExceptionType.cancel,

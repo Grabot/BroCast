@@ -97,7 +97,12 @@ class _ChangeAvatarState extends State<ChangeAvatar> {
 
   imageLoaded() async {
     isLoading = true;
-    FilePickerResult? picked = await FilePicker.platform.pickFiles(withData: true);
+    FilePickerResult? picked = await FilePicker.platform.pickFiles(
+      withData: true,
+      type: FileType.custom,
+      allowedExtensions: ['png', 'jpg', 'jpeg'],
+    );
+    // FilePickerResult? picked = await FilePicker.platform.pickFiles(withData: true);
 
     if (picked != null) {
       String? extension = picked.files.first.extension;
@@ -126,7 +131,7 @@ class _ChangeAvatarState extends State<ChangeAvatar> {
         showToastMessage("the avatar remains the same");
         navigateToProfile(context, settings);
       } else {
-        showToastMessage("the avatar remains the same");
+        showToastMessage("the broup photo remains the same");
         navigateBackToChatDetails();
       }
       return;
@@ -135,7 +140,15 @@ class _ChangeAvatarState extends State<ChangeAvatar> {
       isLoading = true;
     });
     // first downsize to 512 x 512
-    image.Image regular = image.decodePng(imageCrop)!;
+
+    image.Image? regularPre = image.decodePng(imageCrop);
+    if (regularPre == null) {
+      regularPre = image.decodeJpg(imageCrop);
+    }
+    if (regularPre == null) {
+      return;
+    }
+    image.Image regular = regularPre;
     int width = regular.width;
     if (width > 512) {
       regular = image.copyResize(regular, width: 512);

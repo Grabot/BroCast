@@ -101,9 +101,14 @@ class Broup {
   Uint8List? getAvatar() {
     if (private) {
       for (Bro bro in broupBros) {
-        if (bro.getId() != Settings().getMe()!.getId()) {
-          if (bro.getAvatar() != null) {
-            return bro.getAvatar();
+        Me? me = Settings().getMe();
+        if (me == null) {
+          return null;
+        } else {
+          if (bro.getId() != Settings().getMe()!.getId()) {
+            if (bro.getAvatar() != null) {
+              return bro.getAvatar();
+            }
           }
         }
       }

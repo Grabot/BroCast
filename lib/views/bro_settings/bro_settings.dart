@@ -97,6 +97,12 @@ class _BroSettingsState extends State<BroSettings> {
         Navigator.of(context).pop();
         actuallyLogout(settings, socketServices, context);
         showToastMessage("Account deleted");
+
+        Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (context) => SignIn(
+                key: UniqueKey(),
+                showRegister: false
+            )));
       }
     });;
   }
