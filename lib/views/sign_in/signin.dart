@@ -3,6 +3,7 @@ import 'package:brocast/utils/notification_controller.dart';
 import 'package:brocast/utils/settings.dart';
 import 'package:brocast/utils/storage.dart';
 import 'package:brocast/views/bro_home/bro_home.dart';
+import 'package:brocast/views/sign_in/forgot_password/forgot_password.dart';
 import 'package:brocast/views/web_view/web_view_screen.dart';
 import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
 import 'package:flutter/foundation.dart';
@@ -538,7 +539,15 @@ class _SignInState extends State<SignIn> {
           onTap: () {
             if (!isLoading) {
               setState(() {
-                // TODO: forgot password
+                Navigator.push(context, MaterialPageRoute(
+                    builder: (context) => ForgotPassword(
+                      key: UniqueKey(),
+                      showRegister: widget.showRegister,
+                    )
+                ),
+                ).then((value) async {
+                  print("returned from password");
+                });
               });
             }
           },

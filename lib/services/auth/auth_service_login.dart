@@ -269,6 +269,23 @@ class AuthServiceLogin {
     return loginResponse;
   }
 
+  Future<bool> getForgotPassword(String email) async {
+    String endPoint = "password/reset";
+    var response = await AuthApiLogin().dio.post(endPoint,
+        options: Options(headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+        }),
+        data: jsonEncode(<String, dynamic> {
+          "email": email
+        }));
+
+    Map<String, dynamic> json = response.data;
+    if (json.containsKey("result")) {
+      return json["result"];
+    }
+    return false;
+  }
+
   Future<bool> getAvatarMe() async {
     String endPoint = "get/avatar/me";
     var response = await AuthApi().dio.post(endPoint,
