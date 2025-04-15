@@ -125,11 +125,12 @@ Future<bool> getMessages(int page, Broup chat, Storage storage) async {
 
       if (retrievedMessages.isNotEmpty) {
         messagesServer = retrievedMessages;
-        // The max id of the retrieved messages HAS to be the last message id from the server
-        chat.lastMessageId = messagesServer.fold(0, (max, message) =>
-        message.messageId > max
-            ? message.messageId
-            : max);
+        Message maxMessage = messagesServer.reduce((maxMessage, currentMessage) =>
+        currentMessage.messageId > maxMessage.messageId ? currentMessage : maxMessage);
+
+        chat.lastMessageId = maxMessage.messageId;
+        // broup will be updated in the db later.
+        chat.lastActivity = maxMessage.timestamp;
       }
     }
   }

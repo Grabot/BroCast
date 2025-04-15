@@ -101,87 +101,122 @@ class _CameraPageState extends State<CameraPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Stack(
-          children: [
-            if (_cameraController.value.isInitialized)
-              CameraPreview(_cameraController)
-            else
-              Center(child: CircularProgressIndicator()),
-            Align(
-              alignment: Alignment.topCenter,
-              child: Container(
-                height: MediaQuery.of(context).size.height * 0.15,
-                decoration: BoxDecoration(color: Colors.transparent),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Expanded(
-                      child: IconButton(
-                        padding: EdgeInsets.zero,
-                        iconSize: 20,
-                        icon: Icon(Icons.dangerous_outlined, color: Colors.white),
-                        onPressed: exitCameraMode,
+        child: OrientationBuilder(
+          builder: (context, orientation) {
+            return Stack(
+              children: [
+                if (_cameraController.value.isInitialized)
+                  CameraPreview(_cameraController)
+                else
+                  Center(child: CircularProgressIndicator()),
+                if (orientation == Orientation.portrait)
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          IconButton(
+                            padding: EdgeInsets.zero,
+                            iconSize: 20,
+                            icon: Icon(Icons.dangerous_outlined, color: Colors.white),
+                            onPressed: exitCameraMode,
+                          ),
+                          IconButton(
+                            iconSize: 20,
+                            icon: Icon(
+                              _flash == 0 ? Icons.flash_off : _flash == 1 ? Icons.flash_on : Icons.flash_auto,
+                              color: Colors.white,
+                            ),
+                            onPressed: setFlash,
+                          ),
+                        ],
                       ),
-                    ),
-                    Spacer(),
-                    Expanded(
-                      child: IconButton(
-                        iconSize: 20,
-                        icon: Icon(
-                          _flash == 0 ? Icons.flash_off : _flash == 1 ? Icons.flash_on : Icons.flash_auto,
-                          color: Colors.white,
-                        ),
-                        onPressed: setFlash,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          IconButton(
+                            padding: EdgeInsets.zero,
+                            iconSize: 20,
+                            icon: Icon(
+                              _isRearCameraSelected ? Icons.cameraswitch_rounded : Icons.cameraswitch_outlined,
+                              color: Colors.white,
+                            ),
+                            onPressed: () {
+                              setState(() => _isRearCameraSelected = !_isRearCameraSelected);
+                              initCamera(widget.cameras![_isRearCameraSelected ? 0 : 1]);
+                            },
+                          ),
+                          IconButton(
+                            onPressed: takePicture,
+                            iconSize: 40,
+                            padding: EdgeInsets.zero,
+                            constraints: BoxConstraints(),
+                            icon: Icon(Icons.circle_outlined, color: Colors.white),
+                          ),
+                          IconButton(
+                            padding: EdgeInsets.zero,
+                            iconSize: 20,
+                            icon: Icon(Icons.image, color: Colors.white),
+                            onPressed: pickImage,
+                          ),
+                        ],
                       ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Container(
-                height: MediaQuery.of(context).size.height * 0.15,
-                decoration: BoxDecoration(color: Colors.transparent),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Expanded(
-                      child: IconButton(
-                        padding: EdgeInsets.zero,
-                        iconSize: 20,
-                        icon: Icon(
-                          _isRearCameraSelected ? Icons.cameraswitch_rounded : Icons.cameraswitch_outlined,
-                          color: Colors.white,
-                        ),
-                        onPressed: () {
-                          setState(() => _isRearCameraSelected = !_isRearCameraSelected);
-                          initCamera(widget.cameras![_isRearCameraSelected ? 0 : 1]);
-                        },
+                    ],
+                  )
+                else
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          IconButton(
+                            padding: EdgeInsets.zero,
+                            iconSize: 20,
+                            icon: Icon(Icons.dangerous_outlined, color: Colors.white),
+                            onPressed: exitCameraMode,
+                          ),
+                          IconButton(
+                            iconSize: 20,
+                            icon: Icon(
+                              _flash == 0 ? Icons.flash_off : _flash == 1 ? Icons.flash_on : Icons.flash_auto,
+                              color: Colors.white,
+                            ),
+                            onPressed: setFlash,
+                          ),
+                          IconButton(
+                            padding: EdgeInsets.zero,
+                            iconSize: 20,
+                            icon: Icon(
+                              _isRearCameraSelected ? Icons.cameraswitch_rounded : Icons.cameraswitch_outlined,
+                              color: Colors.white,
+                            ),
+                            onPressed: () {
+                              setState(() => _isRearCameraSelected = !_isRearCameraSelected);
+                              initCamera(widget.cameras![_isRearCameraSelected ? 0 : 1]);
+                            },
+                          ),
+                          IconButton(
+                            onPressed: takePicture,
+                            iconSize: 40,
+                            padding: EdgeInsets.zero,
+                            constraints: BoxConstraints(),
+                            icon: Icon(Icons.circle_outlined, color: Colors.white),
+                          ),
+                          IconButton(
+                            padding: EdgeInsets.zero,
+                            iconSize: 20,
+                            icon: Icon(Icons.image, color: Colors.white),
+                            onPressed: pickImage,
+                          ),
+                        ],
                       ),
-                    ),
-                    Expanded(
-                      child: IconButton(
-                        onPressed: takePicture,
-                        iconSize: 40,
-                        padding: EdgeInsets.zero,
-                        constraints: BoxConstraints(),
-                        icon: Icon(Icons.circle_outlined, color: Colors.white),
-                      ),
-                    ),
-                    Expanded(
-                      child: IconButton(
-                        padding: EdgeInsets.zero,
-                        iconSize: 20,
-                        icon: Icon(Icons.image, color: Colors.white),
-                        onPressed: pickImage,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
+                    ],
+                  ),
+              ],
+            );
+          },
         ),
       ),
     );

@@ -58,15 +58,11 @@ class _BroMessageTileState extends State<BroMessageTile> {
     // We check if there is a message content
     if (widget.message.textMessage != null && widget.message.textMessage!.isNotEmpty) {
       // If this is the case the border should be yellow, but only if it's not clicked
-      if (!widget.message.clicked) {
-        borderColour = Colors.yellow;
-      }
+      borderColour = Colors.yellow;
     }
     // Now we check if it's maybe a data message with an image!
     if (isImage) {
-      if (!widget.message.clicked) {
-        borderColour = Colors.red;
-      }
+      borderColour = Colors.red;
     }
     return borderColour;
   }

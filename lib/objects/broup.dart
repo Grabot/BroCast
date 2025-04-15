@@ -58,7 +58,9 @@ class Broup {
   bool joinedBroupRoom = false;
   late List<int> messageIds;
   late List<Message> messages;
-  int lastMessageId = 0;
+  int lastMessageId = 1;
+
+  String? lastActivity;
 
   Broup(
       this.broupId,
@@ -78,11 +80,23 @@ class Broup {
     broupBros = [];
     messages = [];
     messageIds = [];
-    lastMessageId = 0;
+    lastMessageId = 1;
   }
 
   int getBroupId() {
     return broupId;
+  }
+
+  DateTime getLastActivity() {
+    if (lastActivity == null) {
+      return DateTime(2025, 1, 1);
+    } else {
+      return DateTime.parse(lastActivity!).toLocal();
+    }
+  }
+
+  updateLastActivity(String newLastActivity) {
+    lastActivity = newLastActivity;
   }
 
   setBroupColor(String newBroupColour) {

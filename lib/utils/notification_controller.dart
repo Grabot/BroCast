@@ -19,8 +19,6 @@ import 'start_login.dart';
 import 'locator.dart';
 import 'navigation_service.dart';
 
-
-
 ///  *********************************************
 ///     NOTIFICATION CONTROLLER
 ///  *********************************************
@@ -69,10 +67,13 @@ class NotificationController extends ChangeNotifier {
   /// *********************************************
 
   static Future<void> initializeLocalNotifications({required bool debug}) async {
+    // TODO: create a new notification channel for every broup that is created. To group the notfications together.
+    // TODO: Maybe play around with notification layout types (messaging)
     await AwesomeNotifications().initialize(
       'resource://drawable/res_bro_icon',
       [
         NotificationChannel(
+          channelGroupKey: 'basic_channel_group',
           channelKey: 'channel_bro',
           channelName: 'Bro Channel',
           channelDescription: 'Notification channel for Brocast',
@@ -86,6 +87,11 @@ class NotificationController extends ChangeNotifier {
           playSound: true,
           soundSource: "resource://raw/res_brodio",
         )
+      ],
+      channelGroups: [
+        NotificationChannelGroup(
+            channelGroupKey: 'basic_channel_group',
+            channelGroupName: 'Basic group')
       ],
       debug: debug,
     );

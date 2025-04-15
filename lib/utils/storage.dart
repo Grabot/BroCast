@@ -74,6 +74,7 @@ class Storage {
             avatar BLOB,
             avatarDefault INTEGER,
             messages TEXT,
+            lastActivity TEXT,
             UNIQUE(broupId) ON CONFLICT REPLACE
           );
           ''');

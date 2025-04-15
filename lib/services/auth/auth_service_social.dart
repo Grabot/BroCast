@@ -15,6 +15,7 @@ import '../../objects/broup.dart';
 import '../../objects/me.dart';
 import '../../objects/message.dart';
 import '../../utils/settings.dart';
+import '../../utils/socket_services.dart';
 import '../../utils/storage.dart';
 import 'auth_api.dart';
 
@@ -85,9 +86,9 @@ class AuthServiceSocial {
             getAvatarBro(newBro.id);
           }
           Broup newBroup = Broup.fromJson(json["broup"]);
-          storage.addBroup(newBroup);
           newBroup.addBro(newBro);
           me.addBroup(newBroup);
+          storage.addBroup(newBroup);
         }
       }
     }
@@ -366,8 +367,8 @@ class AuthServiceSocial {
         Me? me = Settings().getMe();
         if (me != null) {
           Broup newBroup = Broup.fromJson(json["broup"]);
-          Storage().addBroup(newBroup);
           me.addBroup(newBroup);
+          Storage().addBroup(newBroup);
           // New broup. Give the server some time to generate the avatar.
           Future.delayed(Duration(seconds: 2)).then((value) {
             getAvatarBroup(newBroup.broupId).then((value) {

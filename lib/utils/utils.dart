@@ -118,6 +118,35 @@ loginWithActiveSession(Me newMe, Me settingsMe) {
   }
 }
 
+immediateBroupRetrieval(Broup broupToBeRetrieved, Me settingsMe) {
+  Future.delayed(Duration(milliseconds: 100)).then((value) {
+    AuthServiceSocial().retrieveBroup(broupToBeRetrieved.broupId).then((newBroupMe) {
+      if (newBroupMe != null) {
+        broupToBeRetrieved.addBlockMessage(newBroupMe);
+        broupToBeRetrieved.updateBroupDataServer(newBroupMe);
+        Storage().updateBroup(broupToBeRetrieved);
+        if (broupToBeRetrieved.private) {
+          // If it's a private broup we need to retrieve the bro.
+          for (int broId in broupToBeRetrieved.broIds) {
+            if (broId != settingsMe.getId()) {
+              AuthServiceSocial().retrieveBroAvatar(broId).then((bro) {
+                if (bro != null) {
+                  broupToBeRetrieved.addBro(bro);
+                  Storage().addBro(bro);
+                  BroHomeChangeNotifier().notify();
+                }
+              });
+            }
+          }
+        } else {
+          // If it's not a private broup we need to retrieve the avatar
+          AuthServiceSocial().getAvatarBroup(broupToBeRetrieved.broupId);
+        }
+      }
+    });
+  });
+}
+
 setBroupsAfterLogin(Me settingsMe, List<int>? broupIds) {
   Storage storage = Storage();
   storage.fetchAllBroups().then((dbBroups) {
@@ -179,36 +208,14 @@ setBroupsAfterLogin(Me settingsMe, List<int>? broupIds) {
                 broupAvatarsToUpdate.add(broupMe.broupId);
               }
             }
-            // // It's possible that a broup is new but you are also blocked or removed.
-            // // In this situation we still want to retrieve the broup information, otherwise you will see a bugged out tile.
-            // // We will check this by checking the broupColour, which can only not be available if this happens.
+            // It's possible that a broup is new but you are also blocked or removed.
+            // In this situation we still want to retrieve the broup information, otherwise you will see a bugged out tile.
+            // We will check this by checking the broupColour, which can only not be available if this happens.
             if (broupMe.broupColour == "" && broupMe.removed) {
               // New broup, but immediately removed.
               // In this specific case we will just do an immediate call for the broup details.
-              AuthServiceSocial().retrieveBroup(broupMe.broupId).then((newBroupMe) {
-                if (newBroupMe != null) {
-                  broupMe.addBlockMessage(newBroupMe);
-                  broupMe.updateBroupDataServer(newBroupMe);
-                  storage.updateBroup(broupMe);
-                  if (broupMe.private) {
-                    // If it's a private broup we need to retrieve the bro.
-                    for (int broId in broupMe.broIds) {
-                      if (broId != settingsMe.getId()) {
-                        AuthServiceSocial().retrieveBroAvatar(broId).then((bro) {
-                          if (bro != null) {
-                            broupMe.addBro(bro);
-                            Storage().addBro(bro);
-                            BroHomeChangeNotifier().notify();
-                          }
-                        });
-                      }
-                    }
-                  } else {
-                    // If it's not a private broup we need to retrieve the avatar
-                    AuthServiceSocial().getAvatarBroup(broupMe.broupId);
-                  }
-                }
-              });
+              // With a slight delay to allow the tokens to be set.
+              immediateBroupRetrieval(broupMe, settingsMe);
             }
             // No need to `checkBroupReceived` here, because we are adding a new broup
             storage.addBroup(broupMe);
@@ -257,6 +264,11 @@ setBroupsAfterLogin(Me settingsMe, List<int>? broupIds) {
       // Add all the unchanged broups from the db.
       if (broupDbMap.isNotEmpty) {
         for (Broup broupDb in broupDbMap.values) {
+          // Quick and dirty check to see if anything went wrong before.
+          // If a broup has no colour it needs to gather more data.
+          if (broupDb.broupColour == "") {
+            immediateBroupRetrieval(broupDb, settingsMe);
+          }
           settingsMe.broups.add(broupDb);
         }
       }
@@ -678,7 +690,7 @@ addWelcomeMessage(Broup broup) {
   DateTime now = DateTime.now();
   DateTime currentDayMessage = DateTime(now.year, now.month, now.day);
   Message unBlockMessage = Message(
-    broup.lastMessageId + 1,
+    1,
     0,
     "Welcome to the Chat! 🥰",
     "",
@@ -687,7 +699,7 @@ addWelcomeMessage(Broup broup) {
     true,
     broup.getBroupId(),
   );
-  broup.lastMessageId += 1;
+  broup.updateLastActivity(currentDayMessage.toUtc().toString());
   Storage().addMessage(unBlockMessage);
   broup.messages.insert(
       0,

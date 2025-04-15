@@ -425,6 +425,7 @@ class SocketServices extends ChangeNotifier {
       Broup broup = me.broups.firstWhere((element) => element.broupId == broupId);
       // Always add the message, if the broup is removed it should not be listening to the sockets anymore.
       broup.updateMessages(message);
+      broup.updateLastActivity(message.timestamp);
       storage.updateBroup(broup);
       notifyListeners();
     }
