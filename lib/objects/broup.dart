@@ -158,8 +158,13 @@ class Broup {
     if (alias.isEmpty) {
       if (private) {
         for (Bro bro in broupBros) {
-          if (bro.getId() != Settings().getMe()!.getId()) {
-            return bro.getFullName();
+          Me? me = Settings().getMe();
+          if (me == null) {
+            return "";
+          } else {
+            if (bro.getId() != Settings().getMe()!.getId()) {
+              return bro.getFullName();
+            }
           }
         }
         return "";
