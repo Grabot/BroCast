@@ -72,11 +72,11 @@
 		<string>http</string>
 	</array>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>This app needs access to the photo library</string>
+	<string>This app needs access to the photo library to find the best photo to send to your bros or to send as your avatar or broup photo</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>This app needs access to the photo library</string>
+	<string>This app needs access to the photo library to find the best photo to send to your bros or to send as your avatar or broup photo</string>
 	<key>NSCameraUsageDescription</key>
-	<string>This app uses the camera to create photos that you can send to your bros or set as your avatar.</string>
+	<string>This app uses the camera to create photos that you can send to your bros or set as your avatar or broup photo.</string>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
