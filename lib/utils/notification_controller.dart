@@ -262,6 +262,8 @@ class NotificationController extends ChangeNotifier {
   static Future<void> onActionReceivedImplementationMethod(
       ReceivedAction receivedAction) async {
     // App is open, handle the notification
+    // Here we don't use the `appOpen` variable.
+    // If the user presses the notification the app goes on inactive for a little bit.
     if (LifeCycleService().appStatus != 1) {
       // Unless the app was not active, than we do the `
       _instance.checkNotification(receivedAction);

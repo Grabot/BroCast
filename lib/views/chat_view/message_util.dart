@@ -131,6 +131,7 @@ Future<bool> getMessages(int page, Broup chat, Storage storage) async {
         chat.lastMessageId = maxMessage.messageId;
         // broup will be updated in the db later.
         chat.lastActivity = maxMessage.timestamp;
+        await storage.updateBroup(chat);
       }
     }
   }

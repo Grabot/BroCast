@@ -830,7 +830,7 @@ class AuthServiceSocial {
   }
 
   Future<bool> broupRetrieved(int broupId) async {
-    if (LifeCycleService().getAppStatus() != 1) {
+    if (!LifeCycleService().appOpen) {
       // App is not in foreground, we don't want to indicate broup retrieval
       return false;
     }

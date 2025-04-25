@@ -103,12 +103,13 @@ class _BrocastHomeState extends State<BrocastHome> {
   }
 
   checkNotificationListener() {
-    if (notificationController.navigateChat) {
-      notificationController.navigateChat = false;
-      int chatId = notificationController.navigateChatId;
-      Me? me = settings.getMe();
-      if (me != null) {
+    Me? me = settings.getMe();
+    if (me != null) {
+      if (notificationController.navigateChat) {
+        notificationController.navigateChat = false;
+        int chatId = notificationController.navigateChatId;
         Broup broup = me.broups.firstWhere((element) => element.getBroupId() == chatId);
+        notificationController.navigateChatId = -1;
         if (broup.getBroupId() == chatId) {
           navigateToChat(context, settings, broup);
         }

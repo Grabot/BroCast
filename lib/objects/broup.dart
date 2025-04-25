@@ -356,6 +356,7 @@ class Broup {
     map['lastMessageId'] = lastMessageId;
     map['avatar'] = avatar;
     map['avatarDefault'] = avatarDefault ? 1 : 0;
+    map['lastActivity'] = lastActivity;
     // Get the ids of all the messages in a list
     List<int> messageIds = messages.map((e) => e.messageId).toList();
     map['messages'] = jsonEncode(messageIds);
@@ -430,6 +431,7 @@ class Broup {
     lastMessageId = map['lastMessageId'];
     avatar = map['avatar'];
     avatarDefault = map['avatarDefault'] == 1;
+    lastActivity = map['lastActivity'];
     List<dynamic> messageIds = jsonDecode(map['messages']);
     List<int> messageIdsList = messageIds.map((s) => s as int).toList();
     this.messageIds = messageIdsList;
@@ -743,7 +745,7 @@ class Broup {
     // We will compare the lastMessageId with the messageId of the message
     // If the message is 1 higher, the bro is up to date with all the messages
     // The bro still has not read anything so the unreadMessages will stay
-    if (message.messageId == lastMessageId + 1 && LifeCycleService().appStatus == 1) {
+    if (message.messageId == lastMessageId + 1 && LifeCycleService().appOpen) {
       // The bro is up to date with all the messages
       // We will increase the lastMessageId
       lastMessageId += 1;
@@ -761,7 +763,7 @@ class Broup {
             } else {
               // If it was send by someone else wa want to indicate that we read it.
               // Because we had the correct page open
-              if (LifeCycleService().getAppStatus() == 1) {
+              if (LifeCycleService().appOpen) {
                 readMessages();
                 MessagingChangeNotifier().notify();
               }
@@ -810,7 +812,7 @@ class Broup {
   readMessages() {
     // The 'read message' will remove messages from the server. We don't want any issues so
     // only do this if we know the app is open and active, with active socket connection
-    if (LifeCycleService().appStatus == 1 && SocketServices().isConnected() && !newMessages) {
+    if (LifeCycleService().appOpen && SocketServices().isConnected() && !newMessages) {
       AuthServiceSocial().readMessages(getBroupId()).then((value) {
         if (value) {
           unreadMessages = 0;

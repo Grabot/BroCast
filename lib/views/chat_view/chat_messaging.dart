@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:brocast/objects/broup.dart';
 import 'package:brocast/objects/message.dart';
+import 'package:brocast/utils/notification_controller.dart';
 import 'package:brocast/utils/settings.dart';
 import 'package:brocast/utils/socket_services.dart';
 import 'package:brocast/utils/utils.dart';
@@ -114,6 +115,9 @@ class _ChatMessagingState extends State<ChatMessaging> {
       capturedThemes =
           InheritedTheme.capture(from: context, to: navigator!.context);
       AuthServiceSocial().chatOpen(widget.chat.broupId, true);
+      // We moved to a chat so we need to reset the notification controller
+      NotificationController().navigateChat = false;
+      NotificationController().navigateChatId = -1;
     });
   }
 
@@ -179,11 +183,12 @@ class _ChatMessagingState extends State<ChatMessaging> {
               checkMessageBroIds();
             }
           }
+
           if (!settings.loggingIn) {
             widget.chat.readMessages();
             widget.chat.unreadMessages = 0;
+            storage.updateBroup(widget.chat);
           }
-          storage.updateBroup(widget.chat);
 
           isLoadingMessages = false;
         });
@@ -206,9 +211,7 @@ class _ChatMessagingState extends State<ChatMessaging> {
   socketListener() {
     checkIsAdmin();
     // We have received a new message, which might not have been picked up with the sockets
-    if (widget.chat.newMessages ) {
-      retrieveData();
-    }
+    retrieveData();
     setState(() {});
   }
 
