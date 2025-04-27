@@ -627,15 +627,39 @@ class HexagonClipper extends CustomClipper<Path> {
   bool shouldReclip(HexagonClipper oldClipper) => false;
 }
 
+closeChat() {
+  // We check if the chat is open, if so we close it. Also on the server
+  MessagingChangeNotifier messagingChangeNotifier = MessagingChangeNotifier();
+  if (messagingChangeNotifier.isOpen) {
+    messagingChangeNotifier.isOpen = false;
+    if (messagingChangeNotifier.broupId != -1) {
+      // If the bro is in a chat we need to close it.
+      AuthServiceSocial().chatOpen(messagingChangeNotifier.broupId, false);
+    }
+    messagingChangeNotifier.setBroupId(-1);
+  }
+}
+
+openChat(Broup chat) {
+  // open chat.
+  MessagingChangeNotifier messagingChangeNotifier = MessagingChangeNotifier();
+  if (!messagingChangeNotifier.isOpen) {
+    messagingChangeNotifier.isOpen = true;
+    // If the bro is in a chat we need to close it.
+    AuthServiceSocial().chatOpen(chat.broupId, true);
+    messagingChangeNotifier.setBroupId(chat.broupId);
+  }
+  MessagingChangeNotifier().setBroupId(chat.broupId);
+}
+
 navigateToHome(BuildContext context, Settings settings) {
-  MessagingChangeNotifier().setBroupId(-1);
+  closeChat();
   Navigator.pushReplacement(context,
       MaterialPageRoute(builder: (context) => BrocastHome(key: UniqueKey())));
 }
 
 navigateToChat(BuildContext context, Settings settings, Broup chat) {
-  MessagingChangeNotifier().setBroupId(chat.broupId);
-
+  openChat(chat);
   Navigator.pushReplacement(context, MaterialPageRoute(
         builder: (context) => ChatMessaging(
         key: UniqueKey(),
@@ -646,6 +670,7 @@ navigateToChat(BuildContext context, Settings settings, Broup chat) {
 }
 
 navigateToProfile(BuildContext context, Settings settings) {
+  closeChat();
   MessagingChangeNotifier().setBroupId(-1);
   Navigator.pushReplacement(
       context,
@@ -654,6 +679,7 @@ navigateToProfile(BuildContext context, Settings settings) {
 }
 
 navigateToSettings(BuildContext context, Settings settings) {
+  closeChat();
   MessagingChangeNotifier().setBroupId(-1);
   Navigator.pushReplacement(
       context,

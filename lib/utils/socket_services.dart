@@ -51,19 +51,14 @@ class SocketServices extends ChangeNotifier {
     });
 
     socket.onConnect((_) {
-      // socket.emit('message_event', 'Connected!');
-      // We are connected, this is good :)
-      // But it's also possible something went wrong in the backend?
-      // So rejoin the channels and rooms
+      // Rejoin the channels and rooms
       Me? me = Settings().getMe();
       if (me != null) {
         joinRooms(me);
       }
     });
 
-    socket.onDisconnect((_) {
-      // socket.emit('message_event', 'Disconnected!');
-    });
+    socket.onDisconnect((_) {});
 
     socket.open();
   }
@@ -433,12 +428,16 @@ class SocketServices extends ChangeNotifier {
 
   messageRead(data) async {
     int broupId = data["broup_id"];
-    String timestamp = data["timestamp"];
+    int lastMessageReadIdChat = data["last_message_read_id"];
     Me? me = Settings().getMe();
     if (me != null) {
+      Storage storage = Storage();
       Broup broup = me.broups.firstWhere((element) => element.broupId == broupId);
-      broup.updateLastReadMessages(timestamp);
-      Storage().updateBroup(broup);
+      // We update the last message read id.
+      broup.lastMessageReadId = lastMessageReadIdChat;
+      // But maybe messages are already retrieved and we will update them.
+      broup.updateLastReadMessages(lastMessageReadIdChat, storage);
+      storage.updateBroup(broup);
       notifyListeners();
     }
   }

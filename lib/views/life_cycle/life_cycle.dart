@@ -49,6 +49,12 @@ class _LifeCycleState extends State<LifeCycle> with WidgetsBindingObserver {
         case AppLifecycleState.resumed:
           // There are some issues when resuming the app. The socket connection is not sturdy or something.
           // We will check if any new events have been missed by logging in again.
+          if (MessagingChangeNotifier().broupId != -1) {
+            if (!MessagingChangeNotifier().isOpen) {
+              MessagingChangeNotifier().isOpen = true;
+              AuthServiceSocial().chatOpen(MessagingChangeNotifier().broupId, true);
+            }
+          }
           if (LifeCycleService().getAppStatus() == 1) {
             if (LifeCycleService().appOpen == false) {
               // In this case we 're-set' the app status so that the lifecycle notifier is called

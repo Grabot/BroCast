@@ -9,6 +9,8 @@ import '../../../objects/broup.dart';
 import '../../../utils/settings.dart';
 import '../../../utils/socket_services.dart';
 import '../../objects/me.dart';
+import '../../objects/message.dart';
+import '../../services/auth/auth_service_social.dart';
 import '../../utils/utils.dart';
 
 
@@ -93,15 +95,50 @@ class _PreviewPageChatState extends State<PreviewPageChat> {
     Navigator.of(context).pop(null);
   }
 
+  sendImageMessage(String messageData, String message, String textMessage) {
+    String? messageTextMessage;
+    if (textMessage != "") {
+      messageTextMessage = textMessage;
+    }
+    if (formKey.currentState!.validate()) {
+      Message mes = new Message(
+        widget.chat.lastMessageId + 1,
+        settings.getMe()!.getId(),
+        message,
+        messageTextMessage,
+        DateTime.now().toUtc().toString(),
+        null,
+        false,
+        widget.chat.getBroupId(),
+      );
+      mes.isRead = 2;
+      setState(() {
+        widget.chat.messages.insert(0, mes);
+      });
+      AuthServiceSocial().sendMessage(widget.chat.getBroupId(), message, messageTextMessage, messageData).then((value) {
+        if (value) {
+          setState(() {
+            mes.isRead = 0;
+            // Go back to the chat.
+            Navigator.of(context).pop(null);
+          });
+          // message send
+        } else {
+          // The message was not sent, we remove it from the list
+          showToastMessage("there was an issue sending the message");
+        }
+      });
+      broMessageController.clear();
+      captionMessageController.clear();
+    }
+  }
+
   sendImage() async {
     if (formKey.currentState!.validate()) {
+      String emojiMessage = broMessageController.text;
+      String textMessage = captionMessageController.text;
       String encoded = base64.encode(widget.image);
-      List<String?> messageSending = [
-        encoded,
-        broMessageController.text,
-        captionMessageController.text
-      ];
-      Navigator.of(context).pop(messageSending);
+      sendImageMessage(encoded, emojiMessage, textMessage);
     }
   }
 

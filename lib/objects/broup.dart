@@ -59,6 +59,7 @@ class Broup {
   late List<int> messageIds;
   late List<Message> messages;
   int lastMessageId = 1;
+  int lastMessageReadId = 0;
 
   String? lastActivity;
 
@@ -333,6 +334,7 @@ class Broup {
       List<int> brosAvatarUpdate = json["update_bros_avatar"].cast<int>();
       newUpdateBroAvatarIds = brosAvatarUpdate;
     }
+    lastMessageReadId = json.containsKey("last_message_read_id_chat") ? json["last_message_read_id_chat"] : 0;
   }
 
   Map<String, dynamic> toDbMap() {
@@ -360,6 +362,7 @@ class Broup {
     // Get the ids of all the messages in a list
     List<int> messageIds = messages.map((e) => e.messageId).toList();
     map['messages'] = jsonEncode(messageIds);
+    map['lastMessageReadId'] = lastMessageReadId;
     return map;
   }
 
@@ -435,6 +438,7 @@ class Broup {
     List<dynamic> messageIds = jsonDecode(map['messages']);
     List<int> messageIdsList = messageIds.map((s) => s as int).toList();
     this.messageIds = messageIdsList;
+    lastMessageReadId = map['lastMessageReadId'];
     broupBros = [];
     messages = [];
   }
@@ -462,6 +466,12 @@ class Broup {
   }
 
   updateBroupLocalDB(Broup localBroup) {
+    // This is only called if the broup is updated, so we will update the update time.
+    // It's not perfect, since it will not update the broup that was updated the most recently
+    // but it updates all the broups that were updated since the last time the app was opened.
+    // This is good enough and is just as user friendly as the perfect last update time.
+    // But this way we don't need to keep track of this time on the server and only on the client.
+    updateLastActivity(DateTime.now().toUtc().toString());
     // Check if the data from the server indicates that the bro is now blocked from the chat.
     if (this.removed && !localBroup.removed) {
       // It's possible that a blocked message is already added, we will not add it again
@@ -517,11 +527,13 @@ class Broup {
         ..broupName = this.broupName
         ..private = this.private
         ..broupDescription = this.broupDescription
-        ..broupColour = this.broupColour;
+        ..broupColour = this.broupColour
+        ..lastMessageReadId = this.lastMessageReadId;
     } else if (this.newAvatar) {
       this
         ..unreadMessages = this.unreadMessages
         ..newMessages = this.newMessages
+        ..lastMessageReadId = this.lastMessageReadId
         ..newAvatar = this.newAvatar;
 
       this
@@ -540,7 +552,8 @@ class Broup {
       // Which means we take everything from the db except these values.
       this
         ..newMessages = this.newMessages
-        ..unreadMessages = this.unreadMessages;
+        ..unreadMessages = this.unreadMessages
+        ..lastMessageReadId = this.lastMessageReadId;
 
       this
         ..removed = localBroup.removed
@@ -593,6 +606,8 @@ class Broup {
       ..updateBroIds = localBroup.updateBroIds
       ..updateBroAvatarIds = localBroup.updateBroAvatarIds
       ..avatarDefault = localBroup.avatarDefault
+      ..lastMessageId = localBroup.lastMessageId
+      ..lastActivity = localBroup.lastActivity
       ..avatar = localBroup.avatar;
   }
 
@@ -643,6 +658,7 @@ class Broup {
       ..newAvatar = serverBroup.newAvatar
       ..newMessages = serverBroup.newMessages
       ..newUpdateBroIds = serverBroup.newUpdateBroIds
+      ..lastMessageReadId = serverBroup.lastMessageReadId
       ..newUpdateBroAvatarIds = serverBroup.newUpdateBroAvatarIds;
 
     // If there are messages on this chat we want to ensure that the date tiles are set correctly.
@@ -657,6 +673,7 @@ class Broup {
       ..lastMessageId = this.lastMessageId
       ..messages = this.messages
       ..avatarDefault = this.avatarDefault
+      ..lastActivity = this.lastActivity
       ..avatar = this.avatar;
   }
 
@@ -724,12 +741,15 @@ class Broup {
   }
 
   updateMessages(Message message) {
-    if (!message.isInformation() && message.senderId == Settings().getMe()!.getId() && message.data == null) {
-      // We added it immediately as a placeholder.
-      // When we get it from the server we add it for real and remove the placeholder
-      // Do a few simple extra checks, like body comparison
-      if (messages[0] == message) {
-        this.messages.removeAt(0);
+    Me? me = Settings().getMe();
+    if (me != null) {
+      if (!message.isInformation() && message.senderId == Settings().getMe()!.getId()) {
+        // We added it immediately as a placeholder.
+        // When we get it from the server we add it for real and remove the placeholder
+        // Do a few simple extra checks, like body comparison
+        if (messages[0] == message) {
+          this.messages.removeAt(0);
+        }
       }
     }
     updateDateTiles(message);
@@ -749,35 +769,38 @@ class Broup {
       // The bro is up to date with all the messages
       // We will increase the lastMessageId
       lastMessageId += 1;
-      // If we have send the message, we have obviously received it
-      // So no need to send the received update if the message was from us.
-      if (message.senderId != Settings().getMe()!.getId()) {
-        AuthServiceSocial().receivedMessage(broupId, lastMessageId).then((value) {
-          if (value) {
-            // The message that was received really was the last one so no update required
-            newMessages = false;
-            if (MessagingChangeNotifier().getBroupId() != broupId) {
-              if (!message.isInformation()) {
-                unreadMessages++;
-              }
-            } else {
-              // If it was send by someone else wa want to indicate that we read it.
-              // Because we had the correct page open
-              if (LifeCycleService().appOpen) {
-                readMessages();
-                MessagingChangeNotifier().notify();
-              }
+      AuthServiceSocial().receivedMessageSingle(broupId, message.messageId).then((value) {
+        if (value) {
+          // The message that was received really was the last one so no update required
+          newMessages = false;
+          if (MessagingChangeNotifier().getBroupId() != broupId) {
+            if (!message.isInformation()) {
+              unreadMessages++;
             }
           } else {
-            if (!newMessages) {
-              newMessages = true;
+            if (LifeCycleService().appOpen) {
+              unreadMessages = 0;
+              // We had the correct page open, so we have read the message.
+              if (lastMessageReadId < lastMessageId) {
+                AuthServiceSocial().readMessages(broupId, lastMessageId).then((value) {
+                  if (value) {
+                    lastMessageReadId = lastMessageId;
+                    Storage().updateBroup(this);
+                  }
+                });
+              }
             }
           }
-          // notify the home screen because the call
-          // might not have finished when a notify was send out
-          BroHomeChangeNotifier().notify();
-        });
-      }
+        } else {
+          if (!newMessages) {
+            newMessages = true;
+          }
+        }
+        // notify the home screen because the call
+        // might not have finished when a notify was send out
+        Storage().updateBroup(this);
+        BroHomeChangeNotifier().notify();
+      });
     } else {
       if (!message.isInformation()) {
         unreadMessages++;
@@ -786,41 +809,18 @@ class Broup {
     }
   }
 
-  updateLastReadMessages(String lastRead) {
-    String lastReadTime = lastRead;
-    if (!lastReadTime.endsWith("Z")) {
-      lastReadTime = lastReadTime + "Z";
-    }
-
-    Storage storage = Storage();
-    DateTime lastReadDateTime = DateTime.parse(lastReadTime).toLocal();
+  updateLastReadMessages(int lastMessageReadIdChat, Storage storage) {
     // Go through the messages and set the isRead to 1 if the message is older than the lastReadDateTime
     for (Message message in messages) {
       if (!message.isInformation()) {
         if (message.isRead == 1) {
           break;
         }
-        DateTime messageDateTime = message.getTimeStamp();
-        if (messageDateTime.compareTo(lastReadDateTime) <= 0) {
+        if (message.messageId <= lastMessageReadIdChat) {
           message.isRead = 1;
           storage.updateMessage(message);
         }
       }
-    }
-  }
-
-  readMessages() {
-    // The 'read message' will remove messages from the server. We don't want any issues so
-    // only do this if we know the app is open and active, with active socket connection
-    if (LifeCycleService().appOpen && SocketServices().isConnected() && !newMessages) {
-      AuthServiceSocial().readMessages(getBroupId()).then((value) {
-        if (value) {
-          unreadMessages = 0;
-          if (MessagingChangeNotifier().getBroupId() == broupId) {
-            MessagingChangeNotifier().notify();
-          }
-        }
-      });
     }
   }
 

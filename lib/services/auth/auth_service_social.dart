@@ -95,6 +95,27 @@ class AuthServiceSocial {
     return baseResponse;
   }
 
+  Future<bool> receivedMessages(int broupId, List<int> messageIds) async {
+    String endPoint = "message/received";
+    var response = await AuthApi().dio.post(endPoint,
+        options: Options(headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+        }),
+        data: jsonEncode(<String, dynamic> {
+          "broup_id": broupId,
+          "message_ids": messageIds
+        }
+      )
+    );
+
+    Map<String, dynamic> json = response.data;
+    if (!json.containsKey("result")) {
+      return false;
+    } else {
+      return json.containsKey("result");
+    }
+  }
+
   Future<bool> sendMessage(int broupId, String message, String? textMessage, String? messageData) async {
     String endPoint = "message/send";
     var response = await AuthApi().dio.post(endPoint,
@@ -118,8 +139,8 @@ class AuthServiceSocial {
     }
   }
 
-  Future<bool> receivedMessage(int broupId, int messageId) async {
-    String endPoint = "message/received";
+  Future<bool> receivedMessageSingle(int broupId, int messageId) async {
+    String endPoint = "message/received/single";
     var response = await AuthApi().dio.post(endPoint,
         options: Options(headers: {
           HttpHeaders.contentTypeHeader: "application/json",
@@ -139,14 +160,15 @@ class AuthServiceSocial {
     }
   }
 
-  Future<bool> readMessages(int broupId) async {
+  Future<bool> readMessages(int broupId, int lastMessageReadId) async {
     String endPoint = "message/read";
     var response = await AuthApi().dio.post(endPoint,
         options: Options(headers: {
           HttpHeaders.contentTypeHeader: "application/json",
         }),
         data: jsonEncode(<String, dynamic> {
-          "broup_id": broupId
+          "broup_id": broupId,
+          "last_message_read_id": lastMessageReadId,
         }
       )
     );

@@ -117,12 +117,12 @@ class Message {
     }
     // We don't check the messageId because it's not available when sending.
     // similarly we don't check the timestamp
+    // We also don't check the body, text_message and the data because the rest is sufficient.
+    // Basically just the messageId is sufficient since it's unique.
     return other is Message
+        && other.messageId == messageId
         && other.senderId == senderId
-        && other.broupId == broupId
-        && other.body == body
-        && other.textMessage == textMessage
-        && other.data == data;
+        && other.broupId == broupId;
   }
 
   @override

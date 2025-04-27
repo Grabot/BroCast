@@ -82,7 +82,6 @@ class _ChatMessagingState extends State<ChatMessaging> {
     storage = Storage();
     socketServices.addListener(socketListener);
     messagingChangeNotifier.addListener(messagingListener);
-    messagingChangeNotifier.setBroupId(widget.chat.broupId);
 
     me = Settings().getMe();
 
@@ -110,11 +109,22 @@ class _ChatMessagingState extends State<ChatMessaging> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       retrieveData();
+      // used for the popup.
       navigator = Navigator.of(context, rootNavigator: false);
       barrierLabel = MaterialLocalizations.of(context).modalBarrierDismissLabel;
-      capturedThemes =
-          InheritedTheme.capture(from: context, to: navigator!.context);
-      AuthServiceSocial().chatOpen(widget.chat.broupId, true);
+      capturedThemes = InheritedTheme.capture(from: context, to: navigator!.context);
+
+      if (messagingChangeNotifier.broupId != widget.chat.broupId) {
+        // If the chat seems to be different we close the previous chat and set the new one to open.
+        messagingChangeNotifier.isOpen = true;
+        AuthServiceSocial().chatOpen(messagingChangeNotifier.getBroupId(), false);
+        AuthServiceSocial().chatOpen(widget.chat.broupId, true);
+        messagingChangeNotifier.setBroupId(widget.chat.broupId);
+      } else if (!messagingChangeNotifier.isOpen) {
+        messagingChangeNotifier.isOpen = true;
+        AuthServiceSocial().chatOpen(widget.chat.broupId, true);
+        messagingChangeNotifier.setBroupId(widget.chat.broupId);
+      }
       // We moved to a chat so we need to reset the notification controller
       NotificationController().navigateChat = false;
       NotificationController().navigateChatId = -1;
@@ -124,7 +134,10 @@ class _ChatMessagingState extends State<ChatMessaging> {
   lifeCycleChangeListener() {
     // Is called when the app is resumed
     retrieveData();
-    AuthServiceSocial().chatOpen(widget.chat.broupId, true);
+    if (!messagingChangeNotifier.isOpen) {
+      messagingChangeNotifier.broupId = widget.chat.broupId;
+      AuthServiceSocial().chatOpen(widget.chat.broupId, true);
+    }
   }
 
   checkIsAdmin() {
@@ -185,16 +198,27 @@ class _ChatMessagingState extends State<ChatMessaging> {
           }
 
           if (!settings.loggingIn) {
-            widget.chat.readMessages();
-            widget.chat.unreadMessages = 0;
-            storage.updateBroup(widget.chat);
+            // We set the last message we read to the lastMessageId. We check if it's more than what's stored.
+            if (widget.chat.lastMessageReadId < widget.chat.lastMessageId) {
+              AuthServiceSocial().readMessages(widget.chat.broupId, widget.chat.lastMessageId).then((value) {
+                if (value) {
+                  widget.chat.lastMessageReadId = widget.chat.lastMessageId;
+                  widget.chat.updateLastReadMessages(widget.chat.lastMessageReadId, storage);
+                  widget.chat.unreadMessages = 0;
+                  storage.updateBroup(widget.chat);
+                }
+              });
+            }
           }
 
+          widget.chat.unreadMessages = 0;
+          storage.updateBroup(widget.chat);
           isLoadingMessages = false;
         });
       });
       getBros(widget.chat, storage, settings.getMe()!).then((value) {
         checkIsAdmin();
+        widget.chat.unreadMessages = 0;
         storage.updateBroup(widget.chat);
         setState(() {
           isLoadingBros = false;
@@ -211,7 +235,9 @@ class _ChatMessagingState extends State<ChatMessaging> {
   socketListener() {
     checkIsAdmin();
     // We have received a new message, which might not have been picked up with the sockets
-    retrieveData();
+    if (widget.chat.newMessages) {
+      retrieveData();
+    }
     setState(() {});
   }
 
@@ -318,8 +344,6 @@ class _ChatMessagingState extends State<ChatMessaging> {
 
   @override
   void dispose() {
-    messagingChangeNotifier.setBroupId(-1);
-    AuthServiceSocial().chatOpen(widget.chat.broupId, false);
     focusAppendText.dispose();
     focusEmojiTextField.dispose();
     socketServices.removeListener(socketListener);
@@ -369,10 +393,7 @@ class _ChatMessagingState extends State<ChatMessaging> {
       );
       mes.isRead = 2;
       setState(() {
-        if (messageData == null) {
-          // only do this for regular messages, because they will be deleted again if we receive the message. Which is not done for messages with data.
-          widget.chat.messages.insert(0, mes);
-        }
+        widget.chat.messages.insert(0, mes);
       });
       AuthServiceSocial().sendMessage(widget.chat.getBroupId(), message, textMessage, messageData).then((value) {
         isLoadingMessages = false;
@@ -423,20 +444,7 @@ class _ChatMessagingState extends State<ChatMessaging> {
                 image: photoData,
               ),
             ),
-        ).then((imageData) {
-          if (imageData != null) {
-            // imageData should be a list of 3 strings, the image, bro message and possible text message
-            String imageString = imageData[0];
-            String broMessage = imageData[1];
-            String appendTextMessage = imageData[2];
-
-            broMessageController.text = broMessage;
-            appendTextMessageController.text = appendTextMessage;
-            sendMessage(imageString);
-          } else {
-            showToastMessage("image not send");
-          }
-        });
+        ).then((_) { });
       }
     }
   }
@@ -466,24 +474,7 @@ class _ChatMessagingState extends State<ChatMessaging> {
               image: imageData,
             ),
       ),
-    ).then((imageData) {
-      if (imageData != null) {
-        // imageData should be a list of 3 strings, the image, bro message and possible text message
-        String imageString = imageData[0];
-        String broMessage = imageData[1];
-        String appendTextMessage = imageData[2];
-
-        setState(() {
-          isLoadingMessages = true;
-        });
-
-        broMessageController.text = broMessage;
-        appendTextMessageController.text = appendTextMessage;
-        sendMessage(imageString);
-      } else {
-        showToastMessage("image not send");
-      }
-    });
+    ).then((_) { });
   }
 
   addNewComponent(int popupIndex) {
@@ -626,7 +617,7 @@ class _ChatMessagingState extends State<ChatMessaging> {
   }
 
   goToChatDetails() {
-    messagingChangeNotifier.setBroupId(-1);
+    closeChat();
     Navigator.pushReplacement(
         context,
         MaterialPageRoute(
@@ -877,7 +868,7 @@ class _ChatMessagingState extends State<ChatMessaging> {
                         )
                       : Container()),
               !showEmojiKeyboard ? SizedBox(
-                height: MediaQuery.of(context).padding.bottom,
+                height: MediaQuery.of(context).padding.bottom + 5,
               ) : Container(),
               Align(
                 alignment: Alignment.bottomCenter,

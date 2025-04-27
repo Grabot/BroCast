@@ -31,7 +31,7 @@ class Storage {
 
     return await openDatabase(
       path,
-      version: 1,
+      version: 2,
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
     );
@@ -44,7 +44,9 @@ class Storage {
   }
 
   Future _onUpgrade(Database db, int oldVersion, int newVersion,) async {
-    // This is where you can handle database upgrades
+    if (oldVersion == 1 && newVersion == 2) {
+      db.execute('ALTER TABLE Broup ADD lastMessageReadId INTEGER DEFAULT 0');
+    }
   }
 
   createTableBroup(Database db) async {
@@ -75,6 +77,7 @@ class Storage {
             avatarDefault INTEGER,
             messages TEXT,
             lastActivity TEXT,
+            lastMessageReadId INTEGER,
             UNIQUE(broupId) ON CONFLICT REPLACE
           );
           ''');

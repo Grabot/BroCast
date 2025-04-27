@@ -1,13 +1,10 @@
-import 'dart:io';
-import 'dart:typed_data';
 import 'package:brocast/views/bro_home/bro_home_change_notifier.dart';
 import 'package:flutter/material.dart';
 import '../../../objects/broup.dart';
 import '../../../services/auth/auth_service_social.dart';
+import '../../../utils/settings.dart';
 import '../../../utils/storage.dart';
 import '../../../utils/utils.dart';
-import '../../chat_view/chat_messaging.dart';
-import '../../chat_view/messaging_change_notifier.dart';
 
 
 class BroTile extends StatefulWidget {
@@ -24,17 +21,7 @@ class _BroTileState extends State<BroTile> {
   var _tapPosition;
 
   selectBro(BuildContext context) {
-    MessagingChangeNotifier().setBroupId(widget.chat.broupId);
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-          builder: (context) => ChatMessaging(
-              key: UniqueKey(),
-              chat: widget.chat
-          )
-      ),
-      // ModalRoute.withName(routes.ChatRoute)
-    );
+    navigateToChat(context, Settings(), widget.chat);
   }
 
   Color getColorStrength() {
