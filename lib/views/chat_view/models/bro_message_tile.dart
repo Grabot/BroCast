@@ -42,9 +42,8 @@ class _BroMessageTileState extends State<BroMessageTile> {
   @override
   void initState() {
     super.initState();
-    if (widget.message.data != null && widget.message.data != "") {
-      Uint8List decoded = base64.decode(widget.message.data!);
-      broImage = Image.memory(decoded);
+    if (widget.message.data != null) {
+      broImage = Image.memory(widget.message.data!);
       isImage = true;
     }
   }
@@ -266,11 +265,13 @@ class _BroMessageTileState extends State<BroMessageTile> {
         showToastMessage("No access to gallery");
         return;
       }
-      Uint8List decoded = base64.decode(widget.message.data!);
-      final albumName = "Brocast";
-      await Gal.putImageBytes(decoded, album: albumName);
+      if (widget.message.data != null) {
+        Uint8List decoded = widget.message.data!;
+        final albumName = "Brocast";
+        await Gal.putImageBytes(decoded, album: albumName);
 
-      showToastMessage("Image saved");
+        showToastMessage("Image saved");
+      }
     } catch (e) {
       showToastMessage("Failed to save image: $e");
     }

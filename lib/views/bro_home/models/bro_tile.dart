@@ -1,7 +1,7 @@
 import 'package:brocast/views/bro_home/bro_home_change_notifier.dart';
 import 'package:flutter/material.dart';
 import '../../../objects/broup.dart';
-import '../../../services/auth/auth_service_social.dart';
+import '../../../services/auth/v1_4/auth_service_social.dart';
 import '../../../utils/settings.dart';
 import '../../../utils/storage.dart';
 import '../../../utils/utils.dart';

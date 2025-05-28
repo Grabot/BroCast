@@ -1,4 +1,4 @@
-import 'package:brocast/services/auth/auth_service_settings.dart';
+import 'package:brocast/services/auth/v1_4/auth_service_settings.dart';
 import 'package:brocast/utils/secure_storage.dart';
 import 'package:brocast/utils/settings.dart';
 import 'package:brocast/utils/socket_services.dart';

@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:brocast/objects/broup.dart';
 import 'package:brocast/objects/message.dart';
+import 'package:brocast/services/auth/v1_5/auth_service_social_v1_5.dart';
 import 'package:brocast/utils/notification_controller.dart';
 import 'package:brocast/utils/settings.dart';
 import 'package:brocast/utils/socket_services.dart';
@@ -14,7 +15,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 
 import '../../../objects/bro.dart';
-import '../../../services/auth/auth_service_social.dart';
+import '../../services/auth/v1_4/auth_service_social.dart';
 import '../../objects/me.dart';
 import '../../utils/life_cycle_service.dart';
 import '../../utils/popup_menu_override.dart';
@@ -377,7 +378,7 @@ class _ChatMessagingState extends State<ChatMessaging> {
     }
   }
 
-  sendMessage(String? messageData) {
+  sendMessage() {
     if (formKey.currentState!.validate()) {
       String message = broMessageController.text;
       String textMessage = appendTextMessageController.text;
@@ -395,7 +396,8 @@ class _ChatMessagingState extends State<ChatMessaging> {
       setState(() {
         widget.chat.messages.insert(0, mes);
       });
-      AuthServiceSocial().sendMessage(widget.chat.getBroupId(), message, textMessage, messageData).then((value) {
+      // Send the message. The data is always null here because it's only send via the preview page.
+      AuthServiceSocialV15().sendMessage(widget.chat.getBroupId(), message, textMessage, null).then((value) {
         isLoadingMessages = false;
         if (value) {
           setState(() {
@@ -406,9 +408,8 @@ class _ChatMessagingState extends State<ChatMessaging> {
           // The message was not sent, we remove it from the list
           showToastMessage("there was an issue sending the message");
           setState(() {
-            if (messageData == null) {
-              widget.chat.messages.removeAt(0);
-            }
+            // TODO: There might be some messages retrieved in between this period. Check for the correct message to remove.
+            widget.chat.messages.removeAt(0);
           });
         }
       });
@@ -809,7 +810,7 @@ class _ChatMessagingState extends State<ChatMessaging> {
                           SizedBox(width: 5),
                           GestureDetector(
                             onTap: () {
-                              sendMessage(null);
+                              sendMessage();
                             },
                             child: Container(
                                 height: 35,

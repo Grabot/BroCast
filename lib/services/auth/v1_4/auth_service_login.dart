@@ -1,21 +1,21 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
-import 'package:brocast/services/auth/auth_api_login.dart';
+import 'package:brocast/services/auth/v1_4/auth_api_login.dart';
 import 'package:dio/dio.dart';
 import 'package:jwt_decode/jwt_decode.dart';
-import '../../objects/me.dart';
-import '../../utils/secure_storage.dart';
-import '../../utils/storage.dart';
-import '../../utils/utils.dart';
-import '../../utils/settings.dart';
-import '../../views/bro_home/bro_home_change_notifier.dart';
+import '../../../objects/me.dart';
+import '../../../utils/secure_storage.dart';
+import '../../../utils/storage.dart';
+import '../../../utils/utils.dart';
+import '../../../utils/settings.dart';
+import '../../../views/bro_home/bro_home_change_notifier.dart';
 import 'auth_api.dart';
-import 'models/base_response.dart';
-import 'models/login_bro_name_request.dart';
-import 'models/login_email_request.dart';
-import 'models/login_response.dart';
-import 'models/register_request.dart';
+import '../models/base_response.dart';
+import '../models/login_bro_name_request.dart';
+import '../models/login_email_request.dart';
+import '../models/login_response.dart';
+import '../models/register_request.dart';
 
 
 class AuthServiceLogin {

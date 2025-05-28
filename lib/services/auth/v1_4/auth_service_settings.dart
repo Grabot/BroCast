@@ -4,14 +4,14 @@ import 'dart:io';
 import 'package:brocast/utils/utils.dart';
 import 'package:dio/dio.dart';
 
-import '../../objects/bro.dart';
-import '../../objects/broup.dart';
-import '../../objects/me.dart';
-import '../../utils/secure_storage.dart';
-import '../../utils/settings.dart';
-import '../../utils/storage.dart';
+import '../../../objects/bro.dart';
+import '../../../objects/broup.dart';
+import '../../../objects/me.dart';
+import '../../../utils/secure_storage.dart';
+import '../../../utils/settings.dart';
+import '../../../utils/storage.dart';
 import 'auth_api.dart';
-import 'models/base_response.dart';
+import '../models/base_response.dart';
 
 class AuthServiceSettings {
 

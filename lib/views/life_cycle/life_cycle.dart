@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:brocast/constants/route_paths.dart' as routes;
 
 import '../../objects/me.dart';
-import '../../services/auth/auth_service_social.dart';
+import '../../services/auth/v1_4/auth_service_social.dart';
 import '../../utils/life_cycle_service.dart';
 import '../../utils/locator.dart';
 import '../../utils/navigation_service.dart';

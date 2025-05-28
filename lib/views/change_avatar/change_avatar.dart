@@ -12,7 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image/image.dart' as image;
 import '../../../objects/me.dart';
-import '../../../services/auth/auth_service_settings.dart';
+import '../../services/auth/v1_4/auth_service_settings.dart';
 import '../../objects/broup.dart';
 import '../../objects/message.dart';
 import '../camera_page/camera_page.dart';

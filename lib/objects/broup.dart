@@ -3,7 +3,7 @@ import 'dart:typed_data';
 
 import 'package:brocast/objects/me.dart';
 import 'package:brocast/objects/message.dart';
-import 'package:brocast/services/auth/auth_service_social.dart';
+import 'package:brocast/services/auth/v1_4/auth_service_social.dart';
 import 'package:brocast/utils/life_cycle_service.dart';
 import 'package:brocast/utils/socket_services.dart';
 import 'package:brocast/views/bro_home/bro_home_change_notifier.dart';
@@ -748,6 +748,7 @@ class Broup {
         // When we get it from the server we add it for real and remove the placeholder
         // Do a few simple extra checks, like body comparison
         if (messages[0] == message) {
+          // TODO: There might be some messages retrieved in between this period. Check for the correct message to remove.
           this.messages.removeAt(0);
         }
       }

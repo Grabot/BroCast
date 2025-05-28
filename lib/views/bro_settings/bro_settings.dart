@@ -1,5 +1,5 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
-import 'package:brocast/services/auth/auth_service_login.dart';
+import 'package:brocast/services/auth/v1_4/auth_service_login.dart';
 import 'package:brocast/utils/settings.dart';
 import 'package:brocast/utils/shared.dart';
 import 'package:brocast/utils/socket_services.dart';

@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:brocast/services/auth/auth_service_social.dart';
+import 'package:brocast/services/auth/v1_4/auth_service_social.dart';
 import 'package:brocast/utils/settings.dart';
 import 'package:brocast/utils/socket_services.dart';
 import 'package:brocast/utils/utils.dart';

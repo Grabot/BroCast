@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 
 import '../../objects/bro.dart';
 import '../../objects/me.dart';
-import '../../services/auth/auth_service_social.dart';
+import '../../services/auth/v1_4/auth_service_social.dart';
 import '../../utils/notification_controller.dart';
 import '../../utils/socket_services.dart';
 import '../../utils/storage.dart';

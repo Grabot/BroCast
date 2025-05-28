@@ -31,7 +31,7 @@ class Storage {
 
     return await openDatabase(
       path,
-      version: 2,
+      version: 3,
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
     );
@@ -44,8 +44,31 @@ class Storage {
   }
 
   Future _onUpgrade(Database db, int oldVersion, int newVersion,) async {
-    if (oldVersion == 1 && newVersion == 2) {
+    if (oldVersion == 1 && newVersion >= 2) {
       db.execute('ALTER TABLE Broup ADD lastMessageReadId INTEGER DEFAULT 0');
+    }
+    if ((oldVersion == 1 || oldVersion == 2) && newVersion >= 3) {
+      List<Map<String, dynamic>> maps = await db.query(
+        'Message',
+      );
+      List<Message> messages = [];
+      if (maps.isNotEmpty) {
+        messages = maps
+            .map((map) => Message.fromDbMapV14(map))
+            .toList();
+      }
+      if (messages.isNotEmpty) {
+        messages.sort((a, b) => a.messageId.compareTo(b.messageId));
+      }
+      // To change the type of the data on the message table
+      // we have to drop the old one and recreate it.
+      await db.execute('DROP TABLE Message');
+      await createTableMessage(db);
+
+      //  Insert the data from the old table into the new table
+      for (Message message in messages) {
+        await db.insert('Message', message.toDbMap());
+      }
     }
   }
 
@@ -95,7 +118,7 @@ class Storage {
             info INTEGER,
             timestamp TEXT,
             isRead INTEGER,
-            data TEXT,
+            data BLOB,
             dataType INTEGER,
             repliedTo INTEGER,
             UNIQUE(messageId, broupId, info) ON CONFLICT REPLACE

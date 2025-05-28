@@ -10,13 +10,13 @@ import 'package:brocast/views/bro_home/bro_home_change_notifier.dart';
 import 'package:brocast/views/chat_view/messaging_change_notifier.dart';
 import 'package:dio/dio.dart';
 
-import '../../objects/bro.dart';
-import '../../objects/broup.dart';
-import '../../objects/me.dart';
-import '../../objects/message.dart';
-import '../../utils/settings.dart';
-import '../../utils/socket_services.dart';
-import '../../utils/storage.dart';
+import '../../../objects/bro.dart';
+import '../../../objects/broup.dart';
+import '../../../objects/me.dart';
+import '../../../objects/message.dart';
+import '../../../utils/settings.dart';
+import '../../../utils/socket_services.dart';
+import '../../../utils/storage.dart';
 import 'auth_api.dart';
 
 class AuthServiceSocial {

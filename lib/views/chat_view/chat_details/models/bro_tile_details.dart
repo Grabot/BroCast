@@ -1,4 +1,4 @@
-import 'package:brocast/services/auth/auth_service_social.dart';
+import 'package:brocast/services/auth/v1_4/auth_service_social.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../objects/bro.dart';

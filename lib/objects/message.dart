@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 class Message {
   late int messageId;
   late int senderId;
@@ -13,7 +16,7 @@ class Message {
 
   late int broupId;
 
-  String? data;
+  Uint8List? data;
   int? dataType;
   int? repliedTo;
 
@@ -69,6 +72,27 @@ class Message {
     return map;
   }
 
+  Message.fromDbMapV14(Map<String, dynamic> map) {
+    // For the update of the database we have this function which can retrieve messages the old way
+    // It will retrieve all the messages and turn the string data to blob data
+    // and stores it in the new updated database.
+    messageId = map['messageId'];
+    senderId = map['senderId'];
+    broupId = map['broupId'];
+    body = map['body'];
+    textMessage = map['textMessage'];
+    info = map['info'] == 1;
+    timestamp = map['timestamp'];
+    String? oldData = map['data'];
+    if (oldData != null) {
+      data = base64.decode(oldData);
+    }
+    dataType = map['dataType'];
+    repliedTo = map['repliedTo'];
+    isRead = map['isRead'];
+    clicked = false;
+  }
+
   Message.fromDbMap(Map<String, dynamic> map) {
     messageId = map['messageId'];
     senderId = map['senderId'];
@@ -97,10 +121,16 @@ class Message {
     if (!timestamp.endsWith("Z")) {
       this.timestamp = timestamp + "Z";
     }
-    if (json.containsKey('data') && json["data"] != null) {
+
+    if (json.containsKey('data') && json['data'] != null) {
       Map<String, dynamic> messageData = json['data'];
-      if (messageData.containsKey('data') && messageData['data'] != null) {
-        data = messageData['data'].replaceAll("\n", "");
+
+      if (messageData.containsKey('data')) {
+        if (messageData['data'] is List<int>) {
+          data = Uint8List.fromList(messageData['data']);
+        } else if (messageData['data'] is String) {
+          data = base64Decode(messageData['data'].replaceAll("\n", ""));
+        }
       }
       if (messageData.containsKey('type')) {
         dataType = messageData['type'];

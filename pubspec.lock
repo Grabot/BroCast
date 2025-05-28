@@ -189,10 +189,10 @@ packages:
     dependency: "direct main"
     description:
       name: emoji_keyboard_flutter
-      sha256: "63c53a40aa7ab10924441c05253686476e8311594de315be249abad96d4ac6d7"
+      sha256: "64348281314e84b1bcaa3dbcf0cc2f3329f96c6b370df5a4ea248468915a89cf"
       url: "https://pub.dev"
     source: hosted
-    version: "1.6.4"
+    version: "1.6.5"
   fake_async:
     dependency: transitive
     description:

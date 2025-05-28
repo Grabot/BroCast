@@ -1,16 +1,14 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:brocast/services/auth/v1_5/auth_service_social_v1_5.dart';
 import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
 import 'package:flutter/material.dart';
 
 import '../../../objects/broup.dart';
 import '../../../utils/settings.dart';
 import '../../../utils/socket_services.dart';
-import '../../objects/me.dart';
 import '../../objects/message.dart';
-import '../../services/auth/auth_service_social.dart';
 import '../../utils/utils.dart';
 
 
@@ -95,7 +93,7 @@ class _PreviewPageChatState extends State<PreviewPageChat> {
     Navigator.of(context).pop(null);
   }
 
-  sendImageMessage(String messageData, String message, String textMessage) {
+  sendImageMessage(Uint8List messageData, String message, String textMessage) {
     String? messageTextMessage;
     if (textMessage != "") {
       messageTextMessage = textMessage;
@@ -115,7 +113,7 @@ class _PreviewPageChatState extends State<PreviewPageChat> {
       setState(() {
         widget.chat.messages.insert(0, mes);
       });
-      AuthServiceSocial().sendMessage(widget.chat.getBroupId(), message, messageTextMessage, messageData).then((value) {
+      AuthServiceSocialV15().sendMessage(widget.chat.getBroupId(), message, messageTextMessage, messageData).then((value) {
         if (value) {
           setState(() {
             mes.isRead = 0;
@@ -137,8 +135,7 @@ class _PreviewPageChatState extends State<PreviewPageChat> {
     if (formKey.currentState!.validate()) {
       String emojiMessage = broMessageController.text;
       String textMessage = captionMessageController.text;
-      String encoded = base64.encode(widget.image);
-      sendImageMessage(encoded, emojiMessage, textMessage);
+      sendImageMessage(widget.image, emojiMessage, textMessage);
     }
   }
 

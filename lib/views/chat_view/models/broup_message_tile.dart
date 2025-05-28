@@ -53,9 +53,8 @@ class _BroupMessageTileState extends State<BroupMessageTile> {
   @override
   void initState() {
     super.initState();
-    if (widget.message.data != null && widget.message.data != "") {
-      Uint8List decoded = base64.decode(widget.message.data!);
-      broImage = Image.memory(decoded);
+    if (widget.message.data != null) {
+      broImage = Image.memory(widget.message.data!);
       isImage = true;
     }
   }
@@ -94,7 +93,7 @@ class _BroupMessageTileState extends State<BroupMessageTile> {
               children: [
                 broImage!,
                 Linkify(
-                  onOpen: _onOpen,
+                    onOpen: _onOpen,
                     text: widget.message.textMessage!,
                     linkStyle: TextStyle(color: Color(0xffFFC0CB), fontSize: 18),
                     style: simpleTextStyle()
@@ -250,60 +249,60 @@ class _BroupMessageTileState extends State<BroupMessageTile> {
         margin: EdgeInsets.only(top: 6),
         child: Container(
           child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                padding: EdgeInsets.symmetric(vertical: 20),
-                width: avatarSize,
-                child: widget.myMessage ? Container() : avatarBox(avatarSize, avatarSize, broAvatar)
-              ),
-              Material(
-                child: Column(
-                    children: [
-                  widget.myMessage
-                      ? Container()
-                      : senderIndicator(messageWidth),
-                  Container(
-                    width: messageWidth,
-                    alignment: widget.myMessage
-                        ? Alignment.bottomRight
-                        : Alignment.bottomLeft,
-                    child: GestureDetector(
-                      onLongPress: _showMessageDetailPopupMenu,
-                      onTapDown: _storePosition,
-                      onTap: () {
-                        selectMessage(context);
-                      },
-                      child: Container(
-                        padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                        decoration: BoxDecoration(
-                            border: Border.all(
-                              color: getBorderColour(),
-                              width: 2,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                    padding: EdgeInsets.symmetric(vertical: 20),
+                    width: avatarSize,
+                    child: widget.myMessage ? Container() : avatarBox(avatarSize, avatarSize, broAvatar)
+                ),
+                Material(
+                  child: Column(
+                      children: [
+                        widget.myMessage
+                            ? Container()
+                            : senderIndicator(messageWidth),
+                        Container(
+                          width: messageWidth,
+                          alignment: widget.myMessage
+                              ? Alignment.bottomRight
+                              : Alignment.bottomLeft,
+                          child: GestureDetector(
+                            onLongPress: _showMessageDetailPopupMenu,
+                            onTapDown: _storePosition,
+                            onTap: () {
+                              selectMessage(context);
+                            },
+                            child: Container(
+                              padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                              decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color: getBorderColour(),
+                                    width: 2,
+                                  ),
+                                  color: widget.myMessage
+                                      ? Color(0xFF009E00)
+                                      : Color(0xFF0060BB),
+                                  borderRadius: widget.myMessage
+                                      ? BorderRadius.only(
+                                      topLeft: Radius.circular(42),
+                                      bottomRight: Radius.circular(42),
+                                      bottomLeft: Radius.circular(42))
+                                      : BorderRadius.only(
+                                      bottomLeft: Radius.circular(42),
+                                      topRight: Radius.circular(42),
+                                      bottomRight: Radius.circular(42))),
+                              child: Container(
+                                  child: getMessageContent()
+                              ),
                             ),
-                            color: widget.myMessage
-                                ? Color(0xFF009E00)
-                                : Color(0xFF0060BB),
-                            borderRadius: widget.myMessage
-                                ? BorderRadius.only(
-                                topLeft: Radius.circular(42),
-                                bottomRight: Radius.circular(42),
-                                bottomLeft: Radius.circular(42))
-                                : BorderRadius.only(
-                                bottomLeft: Radius.circular(42),
-                                topRight: Radius.circular(42),
-                                bottomRight: Radius.circular(42))),
-                        child: Container(
-                            child: getMessageContent()
+                          ),
                         ),
-                      ),
-                    ),
-                  ),
-                  timeIndicator(messageWidth),
-                ]),
-                color: Colors.transparent,
-            ),
-            ]
+                        timeIndicator(messageWidth),
+                      ]),
+                  color: Colors.transparent,
+                ),
+              ]
           ),
         )
     );
@@ -381,12 +380,14 @@ class _BroupMessageTileState extends State<BroupMessageTile> {
         return;
       }
       // Code for image storing
-      Uint8List decoded = base64.decode(widget.message.data!);
-      // We now save to image gallery in a custom album
-      final albumName = "Brocast";
-      await Gal.putImageBytes(decoded, album: albumName);
+      if (widget.message.data != null) {
+        Uint8List decoded = widget.message.data!;
+        // We now save to image gallery in a custom album
+        final albumName = "Brocast";
+        await Gal.putImageBytes(decoded, album: albumName);
 
-      showToastMessage("Image saved");
+        showToastMessage("Image saved");
+      }
     } catch (e) {
       showToastMessage("Failed to save image: $e");
     }

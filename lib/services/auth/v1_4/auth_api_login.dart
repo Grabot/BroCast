@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
 
-import '../../constants/base_url.dart';
-import '../../utils/secure_storage.dart';
-import '../../utils/settings.dart';
+import '../../../constants/base_url.dart';
+import '../../../utils/secure_storage.dart';
+import '../../../utils/settings.dart';
 
 // When registering or logging in there are not tokens available yet.
 // But they are also not needed, so send a clean request.

@@ -1,8 +1,8 @@
 import 'dart:math';
 import 'dart:typed_data';
 
-import 'package:brocast/services/auth/auth_service_login.dart';
-import 'package:brocast/services/auth/auth_service_social.dart';
+import 'package:brocast/services/auth/v1_4/auth_service_login.dart';
+import 'package:brocast/services/auth/v1_4/auth_service_social.dart';
 import 'package:brocast/utils/storage.dart';
 import 'package:brocast/views/bro_home/bro_home_change_notifier.dart';
 import 'package:flutter/material.dart';

@@ -7,8 +7,8 @@ import "package:flutter/material.dart";
 import 'package:flutter/services.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-import '../../services/auth/auth_service_login.dart';
-import '../../services/auth/auth_service_social.dart';
+import '../../services/auth/v1_4/auth_service_login.dart';
+import '../../services/auth/v1_4/auth_service_social.dart';
 import '../../utils/notification_controller.dart';
 import '../../utils/secure_storage.dart';
 import '../bro_home/bro_home.dart';

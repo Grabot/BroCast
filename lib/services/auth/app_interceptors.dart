@@ -3,41 +3,15 @@ import 'package:brocast/utils/utils.dart';
 import 'package:dio/dio.dart';
 import 'package:jwt_decode/jwt_decode.dart';
 
-import '../../constants/base_url.dart';
-import '../../utils/locator.dart';
-import '../../utils/navigation_service.dart';
-import '../../utils/secure_storage.dart';
-import '../../utils/settings.dart';
-import 'models/login_response.dart';
+import '../../../constants/base_url.dart';
+import '../../../utils/locator.dart';
+import '../../../utils/navigation_service.dart';
+import '../../../utils/secure_storage.dart';
+import '../../../utils/settings.dart';
 import 'package:brocast/constants/route_paths.dart' as routes;
 
+import 'models/login_response.dart';
 
-class AuthApi {
-  final dio = createDio();
-
-  AuthApi._internal();
-
-  static final _singleton = AuthApi._internal();
-
-  factory AuthApi() => _singleton;
-
-  static Dio createDio() {
-    var dio = Dio(
-        BaseOptions(
-          baseUrl: apiUrl_v1_4,
-          receiveTimeout: const Duration(milliseconds: 15000),
-          connectTimeout: const Duration(milliseconds: 15000),
-          sendTimeout: const Duration(milliseconds: 15000),
-        )
-    );
-
-    dio.interceptors.addAll({
-      AppInterceptors(dio)
-    });
-
-    return dio;
-  }
-}
 
 class AppInterceptors extends Interceptor {
   final Dio dio;

@@ -1,7 +1,7 @@
 import 'package:brocast/utils/settings.dart';
 import 'package:brocast/utils/utils.dart';
 
-import '../services/auth/auth_service_login.dart';
+import '../services/auth/v1_4/auth_service_login.dart';
 import '../services/auth/models/login_response.dart';
 
 Future<bool> loginCheck() async {

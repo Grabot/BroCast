@@ -1,5 +1,5 @@
 import 'package:brocast/constants/base_url.dart';
-import 'package:brocast/services/auth/auth_service_social.dart';
+import 'package:brocast/services/auth/v1_4/auth_service_social.dart';
 import 'package:brocast/utils/life_cycle_service.dart';
 import 'package:brocast/utils/socket_services_util.dart';
 import 'package:brocast/utils/utils.dart';
@@ -11,7 +11,7 @@ import '../objects/bro.dart';
 import '../objects/message.dart';
 import '../objects/broup.dart';
 import '../objects/me.dart';
-import '../services/auth/auth_service_login.dart';
+import '../services/auth/v1_4/auth_service_login.dart';
 import 'storage.dart';
 import 'settings.dart';
 
