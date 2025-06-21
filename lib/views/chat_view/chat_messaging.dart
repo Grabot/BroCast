@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:typed_data';
+import 'package:collection/collection.dart';
 
 import 'package:brocast/objects/broup.dart';
 import 'package:brocast/objects/message.dart';
@@ -49,6 +50,8 @@ class _ChatMessagingState extends State<ChatMessaging> {
   FocusNode focusAppendText = FocusNode();
   FocusNode focusEmojiTextField = FocusNode();
   bool appendingMessage = false;
+  bool repliedToInterface = false;
+  Message? repliedToMessage;
 
   TextEditingController broMessageController = new TextEditingController();
   TextEditingController appendTextMessageController =
@@ -319,6 +322,12 @@ class _ChatMessagingState extends State<ChatMessaging> {
       });
     } else if (delta == 3) {
       // replied to message
+      repliedToMessage = widget.chat.messages.firstWhereOrNull((message) => message.messageId == passedId);
+      if (repliedToMessage != null) {
+        setState(() {
+          repliedToInterface = true;
+        });
+      }
     } else if (delta == 4) {
       AuthServiceSocial().makeBroAdmin(widget.chat.broupId, passedId).then((value) {
         if (value) {
@@ -694,6 +703,115 @@ class _ChatMessagingState extends State<ChatMessaging> {
     }
   }
 
+  Widget repliedToMessageInterface() {
+    if (repliedToMessage == null) {
+      return Container();
+    }
+
+    // Fetch the sender's name from the broMapping map
+    Bro? sender = getBro(repliedToMessage!.senderId);
+    String senderName = sender != null ? sender.getFullName() : "Unknown";
+
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      margin: EdgeInsets.only(left: 10, right: 10),
+      padding: EdgeInsets.only(left: 10, right: 10, bottom: 10, top: 5),
+      color: Colors.black.withAlpha(64),
+      child: Stack(
+        children: [
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Icon(
+                    Icons.reply,
+                    color: Colors.white,
+                    size: 16,
+                  ),
+                  SizedBox(width: 4),
+                  Text(
+                    senderName,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 4),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '•',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(width: 4),
+                  Expanded(
+                    child: Text(
+                      repliedToMessage!.body,
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
+              ),
+              if (repliedToMessage!.textMessage != null && repliedToMessage!.textMessage != "")
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '-',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(width: 4),
+                    Expanded(
+                      child: Text(
+                        repliedToMessage!.textMessage!,
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
+            ],
+          ),
+          Positioned(
+            top: 4,
+            right: 0,
+            child: GestureDetector(
+              onTap: () {
+                setState(() {
+                  repliedToMessage = null;
+                  repliedToInterface = false;
+                });
+              },
+              child: Icon(
+                Icons.close,
+                color: Colors.white,
+                size: 24,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return PopScope(
@@ -721,6 +839,9 @@ class _ChatMessagingState extends State<ChatMessaging> {
                       ]
                   )
               ),
+              repliedToInterface
+                  ? repliedToMessageInterface()
+                  : Container(),
               Container(
                 child: Container(
                   alignment: Alignment.bottomCenter,

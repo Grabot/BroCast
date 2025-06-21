@@ -49,6 +49,7 @@ class _BroupMessageTileState extends State<BroupMessageTile> with SingleTickerPr
   Image? broImage;
 
   late final controller = SlidableController(this);
+  bool replying = false;
 
   @override
   void initState() {
@@ -62,15 +63,24 @@ class _BroupMessageTileState extends State<BroupMessageTile> with SingleTickerPr
       // We close the controller, which will put the message back in its original position
       // The replied to functionality is handled in the parent widget
       if (controller.animation.value > 0.1) {
-        replyToMessage();
+        replying = true;
       }
       controller.close();
+    });
+
+    controller.direction.addListener(() {
+      // 0 means stopped moving. If the replied to was triggered
+      // and it is no longer moving, we want to trigger the replied to functionalit
+      if (replying && controller.direction.value == 0) {
+        replyToMessage();
+      }
     });
   }
 
   @override
   void dispose() {
     controller.endGesture.removeListener(() {});
+    replying = false;
     super.dispose();
   }
 

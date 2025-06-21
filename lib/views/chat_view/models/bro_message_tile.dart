@@ -37,6 +37,7 @@ class _BroMessageTileState extends State<BroMessageTile> with SingleTickerProvid
   bool isImage = false;
 
   late final controller = SlidableController(this);
+  bool replying = false;
 
   selectMessage(BuildContext context) {
     if ((widget.message.textMessage != null && widget.message.textMessage!.isNotEmpty) || isImage) {
@@ -61,9 +62,17 @@ class _BroMessageTileState extends State<BroMessageTile> with SingleTickerProvid
       // We close the controller, which will put the message back in its original position
       // The replied to functionality is handled in the parent widget
       if (controller.animation.value > 0.1) {
-        replyToMessage();
+        replying = true;
       }
       controller.close();
+    });
+
+    controller.direction.addListener(() {
+      // 0 means stopped moving. If the replied to was triggered
+      // and it is no longer moving, we want to trigger the replied to functionalit
+      if (replying && controller.direction.value == 0) {
+        replyToMessage();
+      }
     });
   }
 
@@ -264,7 +273,6 @@ class _BroMessageTileState extends State<BroMessageTile> with SingleTickerProvid
       controller: controller,
       key: const ValueKey(0),
       closeOnScroll: true,
-      // The start action pane is the one at the left or the top side.
       startActionPane: ActionPane(
         extentRatio: 0.2,
         motion: const ScrollMotion(),
