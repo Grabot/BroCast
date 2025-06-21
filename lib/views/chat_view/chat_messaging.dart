@@ -779,7 +779,7 @@ class _ChatMessagingState extends State<ChatMessaging> {
                                   decoration: InputDecoration(
                                       hintText: "Emoji message...",
                                       hintStyle:
-                                          TextStyle(color: Colors.white54),
+                                      TextStyle(color: Colors.white54),
                                       border: InputBorder.none),
                                   readOnly: true,
                                   showCursor: true,
@@ -831,40 +831,40 @@ class _ChatMessagingState extends State<ChatMessaging> {
               Container(
                   child: appendingMessage
                       ? Container(
-                          padding: EdgeInsets.symmetric(horizontal: 6),
-                          child: Container(
-                            padding: EdgeInsets.symmetric(horizontal: 6),
-                            decoration: BoxDecoration(
-                                color: Color(0x36FFFFFF),
-                                borderRadius: BorderRadius.circular(35)),
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: Container(
-                                    padding: EdgeInsets.only(left: 15),
-                                    child: Form(
-                                      child: TextFormField(
-                                        onTap: () {
-                                          onTapAppendTextField();
-                                        },
-                                        focusNode: focusAppendText,
-                                        keyboardType: TextInputType.multiline,
-                                        maxLines: null,
-                                        controller: appendTextMessageController,
-                                        style: TextStyle(color: Colors.white),
-                                        decoration: InputDecoration(
-                                            hintText: "Append text message...",
-                                            hintStyle: TextStyle(
-                                                color: Colors.white54),
-                                            border: InputBorder.none),
-                                      ),
-                                    ),
-                                  ),
+                    padding: EdgeInsets.symmetric(horizontal: 6),
+                    child: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 6),
+                      decoration: BoxDecoration(
+                          color: Color(0x36FFFFFF),
+                          borderRadius: BorderRadius.circular(35)),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Container(
+                              padding: EdgeInsets.only(left: 15),
+                              child: Form(
+                                child: TextFormField(
+                                  onTap: () {
+                                    onTapAppendTextField();
+                                  },
+                                  focusNode: focusAppendText,
+                                  keyboardType: TextInputType.multiline,
+                                  maxLines: null,
+                                  controller: appendTextMessageController,
+                                  style: TextStyle(color: Colors.white),
+                                  decoration: InputDecoration(
+                                      hintText: "Append text message...",
+                                      hintStyle: TextStyle(
+                                          color: Colors.white54),
+                                      border: InputBorder.none),
                                 ),
-                              ],
+                              ),
                             ),
                           ),
-                        )
+                        ],
+                      ),
+                    ),
+                  )
                       : Container()),
               !showEmojiKeyboard ? SizedBox(
                 height: MediaQuery.of(context).padding.bottom + 5,
@@ -885,4 +885,3 @@ class _ChatMessagingState extends State<ChatMessaging> {
     );
   }
 }
-
