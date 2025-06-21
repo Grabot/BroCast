@@ -82,6 +82,7 @@ class AppInterceptors extends Interceptor {
           _navigationService.navigateTo(routes.SignInRoute);
           return handler.reject(dioError, true);
         } else {
+          print("endpoint auth api  clean");
           String endPoint = "refresh";
           var response = await Dio(
               BaseOptions(

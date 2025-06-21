@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:gal/gal.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -15,19 +16,27 @@ import '../../../utils/utils.dart';
 class BroMessageTile extends StatefulWidget {
   final Message message;
   final bool myMessage;
+  final void Function(int, int) broHandling;
 
   BroMessageTile(
-      {required Key key, required this.message, required this.myMessage})
+      {
+        required Key key,
+        required this.message,
+        required this.myMessage,
+        required this.broHandling
+      })
       : super(key: key);
 
   @override
   _BroMessageTileState createState() => _BroMessageTileState();
 }
 
-class _BroMessageTileState extends State<BroMessageTile> {
+class _BroMessageTileState extends State<BroMessageTile> with SingleTickerProviderStateMixin {
 
   var _tapPosition;
   bool isImage = false;
+
+  late final controller = SlidableController(this);
 
   selectMessage(BuildContext context) {
     if ((widget.message.textMessage != null && widget.message.textMessage!.isNotEmpty) || isImage) {
@@ -46,6 +55,22 @@ class _BroMessageTileState extends State<BroMessageTile> {
       broImage = Image.memory(widget.message.data!);
       isImage = true;
     }
+
+    // If the slide is made we want to trigger the replied to functionality.
+    controller.endGesture.addListener(() {
+      // We close the controller, which will put the message back in its original position
+      // The replied to functionality is handled in the parent widget
+      if (controller.animation.value > 0.1) {
+        replyToMessage();
+      }
+      controller.close();
+    });
+  }
+
+  @override
+  void dispose() {
+    controller.endGesture.removeListener(() {});
+    super.dispose();
   }
 
   Color getBorderColour() {
@@ -70,6 +95,10 @@ class _BroMessageTileState extends State<BroMessageTile> {
     if (!await launchUrl(Uri.parse(link.url))) {
       throw Exception('Could not launch ${link.url}');
     }
+  }
+
+  replyToMessage() {
+    widget.broHandling(3, widget.message.messageId);
   }
 
   Widget getMessageContent() {
@@ -108,39 +137,39 @@ class _BroMessageTileState extends State<BroMessageTile> {
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return widget.message.isInformation()
-        ? Row(
+  Widget informationMessage() {
+    return Row(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Container(
             constraints: BoxConstraints(minWidth: 10, maxWidth: MediaQuery.of(context).size.width),
             child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                decoration: BoxDecoration(
-                    gradient: LinearGradient(colors: [
-                      const Color(0x55D3D3D3),
-                      const Color(0x55C0C0C0)
-                    ]),
-                    borderRadius: BorderRadius.all(Radius.circular(12))),
-                child: RichText(
-                  textAlign: TextAlign.center,
-                  text: TextSpan(
-                    children: [
-                      TextSpan(
-                        text: widget.message.body,
-                        style: TextStyle(
-                            color: Colors.white70, fontSize: 16),
-                      ),
-                    ],
-                  ),
+              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              decoration: BoxDecoration(
+                  gradient: LinearGradient(colors: [
+                    const Color(0x55D3D3D3),
+                    const Color(0x55C0C0C0)
+                  ]),
+                  borderRadius: BorderRadius.all(Radius.circular(12))),
+              child: RichText(
+                textAlign: TextAlign.center,
+                text: TextSpan(
+                  children: [
+                    TextSpan(
+                      text: widget.message.body,
+                      style: TextStyle(
+                          color: Colors.white70, fontSize: 16),
+                    ),
+                  ],
                 ),
+              ),
             ),
           )
-        ])
-        : Container(
+        ]);
+  }
+  Widget regularMessage() {
+    return Container(
         child: new Material(
           child: Column(children: [
             Container(
@@ -225,6 +254,33 @@ class _BroMessageTileState extends State<BroMessageTile> {
           ]),
           color: Colors.transparent,
         ));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return widget.message.isInformation()
+        ? informationMessage()
+        : Slidable(
+      controller: controller,
+      key: const ValueKey(0),
+      closeOnScroll: true,
+      // The start action pane is the one at the left or the top side.
+      startActionPane: ActionPane(
+        extentRatio: 0.2,
+        motion: const ScrollMotion(),
+        children: [
+          SlidableAction(
+            onPressed: (context) {
+              replyToMessage();
+            },
+            backgroundColor: Colors.transparent,
+            foregroundColor: Colors.white,
+            icon: Icons.reply,
+          ),
+        ],
+      ),
+      child: regularMessage(),
+    );
   }
 
   void _showMessageDetailPopupMenu() {

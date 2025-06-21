@@ -291,7 +291,8 @@ class _ChatMessagingState extends State<ChatMessaging> {
     }
   }
 
-  broHandling(int delta, int addBroId) {
+  broHandling(int delta, int passedId) {
+    // The passedId is usually the Bro Id, but for delta 3 it is the message Id.
     if (delta == 1) {
       // Message the bro
       Me? me = settings.getMe();
@@ -299,14 +300,8 @@ class _ChatMessagingState extends State<ChatMessaging> {
         for (Broup broup in me.broups) {
           if (broup.private) {
             for (int broId in broup.getBroIds()) {
-              if (broId == addBroId) {
-                // TODO: Fix via regular navigation?
-                // // We are already in the chat window.
-                // // We attempt to transfer the correct data here.
-                // widget.chat = broup;
-                // retrieveData();
-                // messagingChangeNotifier.setBroupId(widget.chat.getBroupId());
-                // setState(() {});
+              if (broId == passedId) {
+                navigateToChat(context, settings, broup);
               }
             }
           }
@@ -314,7 +309,7 @@ class _ChatMessagingState extends State<ChatMessaging> {
       }
     } else if (delta == 2) {
       // Add the bro
-      AuthServiceSocial().addNewBro(addBroId).then((response) {
+      AuthServiceSocial().addNewBro(passedId).then((response) {
         if (response.getResult()) {
           // The broup added, move to the home screen where it will be shown
           navigateToHome(context, settings);
@@ -322,20 +317,22 @@ class _ChatMessagingState extends State<ChatMessaging> {
           showToastMessage(response.getMessage());
         }
       });
+    } else if (delta == 3) {
+      // replied to message
     } else if (delta == 4) {
-      AuthServiceSocial().makeBroAdmin(widget.chat.broupId, addBroId).then((value) {
+      AuthServiceSocial().makeBroAdmin(widget.chat.broupId, passedId).then((value) {
         if (value) {
           setState(() {
-            widget.chat.addAdminId(addBroId);
+            widget.chat.addAdminId(passedId);
             checkIsAdmin();
           });
         }
       });
     } else if (delta == 5) {
-      AuthServiceSocial().dismissBroAdmin(widget.chat.broupId, addBroId).then((value) {
+      AuthServiceSocial().dismissBroAdmin(widget.chat.broupId, passedId).then((value) {
         if (value) {
           setState(() {
-            widget.chat.removeAdminId(addBroId);
+            widget.chat.removeAdminId(passedId);
             checkIsAdmin();
           });
         }
@@ -554,7 +551,8 @@ class _ChatMessagingState extends State<ChatMessaging> {
                 return BroMessageTile(
                     key: UniqueKey(),
                     message: widget.chat.messages[index],
-                    myMessage: widget.chat.messages[index].senderId == settings.getMe()!.getId());
+                    myMessage: widget.chat.messages[index].senderId == settings.getMe()!.getId(),
+                    broHandling: broHandling);
               } else {
                 return BroupMessageTile(
                     key: UniqueKey(),

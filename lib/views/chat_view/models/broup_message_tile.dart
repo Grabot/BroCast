@@ -1,17 +1,14 @@
-import 'dart:convert';
 import 'dart:typed_data';
-
 import 'package:brocast/views/chat_view/image_viewer/image_viewer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:gal/gal.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
-
 import '../../../../objects/message.dart';
 import '../../../objects/bro.dart';
 import '../../../utils/utils.dart';
-
 
 class BroupMessageTile extends StatefulWidget {
   final Message message;
@@ -22,22 +19,22 @@ class BroupMessageTile extends StatefulWidget {
   final bool userAdmin;
   final void Function(int, int) broHandling;
 
-  BroupMessageTile(
-      {required Key key,
-        required this.message,
-        required this.bro,
-        required this.broAdded,
-        required this.broAdmin,
-        required this.myMessage,
-        required this.userAdmin,
-        required this.broHandling})
-      : super(key: key);
+  BroupMessageTile({
+    required Key key,
+    required this.message,
+    required this.bro,
+    required this.broAdded,
+    required this.broAdmin,
+    required this.myMessage,
+    required this.userAdmin,
+    required this.broHandling
+  }) : super(key: key);
 
   @override
   _BroupMessageTileState createState() => _BroupMessageTileState();
 }
 
-class _BroupMessageTileState extends State<BroupMessageTile> {
+class _BroupMessageTileState extends State<BroupMessageTile> with SingleTickerProviderStateMixin {
   var _tapPosition;
   bool isImage = false;
 
@@ -51,31 +48,50 @@ class _BroupMessageTileState extends State<BroupMessageTile> {
 
   Image? broImage;
 
+  late final controller = SlidableController(this);
+
   @override
   void initState() {
     super.initState();
     if (widget.message.data != null) {
-      broImage = Image.memory(widget.message.data!);
       isImage = true;
     }
+
+    // If the slide is made we want to trigger the replied to functionality.
+    controller.endGesture.addListener(() {
+      // We close the controller, which will put the message back in its original position
+      // The replied to functionality is handled in the parent widget
+      if (controller.animation.value > 0.1) {
+        replyToMessage();
+      }
+      controller.close();
+    });
+  }
+
+  @override
+  void dispose() {
+    controller.endGesture.removeListener(() {});
+    super.dispose();
   }
 
   Color getBorderColour() {
-    // First we set the border to be the colour of the message
-    // Which is the colour for a normal plain message without content
     Color borderColour = widget.myMessage
         ? Color(0xFF009E00)
         : Color(0xFF0060BB);
-    // We check if there is a message content
+
     if (widget.message.textMessage != null && widget.message.textMessage!.isNotEmpty) {
-      // If this is the case the border should be yellow, but only if it's not clicked
       borderColour = Colors.yellow;
     }
-    // Now we check if it's maybe a data message with an image!
+
     if (isImage) {
       borderColour = Colors.red;
     }
+
     return borderColour;
+  }
+
+  replyToMessage() {
+    widget.broHandling(3, widget.message.messageId);
   }
 
   Future<void> _onOpen(LinkableElement link) async {
@@ -86,45 +102,42 @@ class _BroupMessageTileState extends State<BroupMessageTile> {
 
   Widget viewImageButton() {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        Container(
-          child: InkWell(
-            onTap: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) =>
-                      ImageViewer(
-                        key: UniqueKey(),
-                        image: widget.message.data!,
-                      ),
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          Container(
+            child: InkWell(
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => ImageViewer(
+                      key: UniqueKey(),
+                      image: widget.message.data!,
+                    ),
+                  ),
+                ).then((_) { });
+              },
+              child: Padding(
+                padding: EdgeInsets.all(10.0),
+                child: Icon(
+                  Icons.remove_red_eye,
+                  color: Colors.white,
+                  size: 20.0,
                 ),
-              ).then((_) { });
-            },
-            child: Padding(
-              padding: EdgeInsets.all(10.0),
-              child: Icon(
-                Icons.remove_red_eye,
-                color: Colors.white, // Icon color
-                size: 20.0, // Icon size
               ),
             ),
           ),
-        ),
-      ]
+        ]
     );
   }
 
   Widget getMessageContent() {
-    // We show the normal body, unless it's clicked. Than we show the extra info
     if (widget.message.clicked) {
-      // If it's clicked we show the extra text message or the image!
       if (isImage) {
         if (widget.message.textMessage != null && widget.message.textMessage!.isNotEmpty) {
           return Column(
               children: [
                 viewImageButton(),
-                broImage!,
+                Image.memory(widget.message.data!),
                 Linkify(
                     onOpen: _onOpen,
                     text: widget.message.textMessage!,
@@ -137,7 +150,7 @@ class _BroupMessageTileState extends State<BroupMessageTile> {
           return Column(
               children: [
                 viewImageButton(),
-                broImage!,
+                Image.memory(widget.message.data!),
               ]
           );
         }
@@ -337,7 +350,8 @@ class _BroupMessageTileState extends State<BroupMessageTile> {
                           ),
                         ),
                         timeIndicator(messageWidth),
-                      ]),
+                      ]
+                  ),
                   color: Colors.transparent,
                 ),
               ]
@@ -349,17 +363,34 @@ class _BroupMessageTileState extends State<BroupMessageTile> {
   @override
   Widget build(BuildContext context) {
     return widget.message.isInformation()
-        ? informationMessage()
-        : regularMessage();
+      ? informationMessage()
+      : Slidable(
+      controller: controller,
+      key: const ValueKey(0),
+      closeOnScroll: true,
+      // The start action pane is the one at the left or the top side.
+      startActionPane: ActionPane(
+        extentRatio: 0.2,
+        motion: const ScrollMotion(),
+        children: [
+          SlidableAction(
+            onPressed: (context) {
+              replyToMessage();
+            },
+            backgroundColor: Colors.transparent,
+            foregroundColor: Colors.white,
+            icon: Icons.reply,
+          ),
+        ],
+      ),
+      child: regularMessage(),
+    );
   }
 
   void _showMessageDetailPopupMenu() {
-    // Only show the option to save the image if the message is clicked.
     bool imageShowing = isImage && widget.message.clicked;
     if (!widget.myMessage || imageShowing) {
-      final RenderBox overlay =
-      Overlay.of(context).context.findRenderObject() as RenderBox;
-
+      final RenderBox overlay = Overlay.of(context).context.findRenderObject() as RenderBox;
       showMenu(
           context: context,
           items: [
@@ -375,7 +406,7 @@ class _BroupMessageTileState extends State<BroupMessageTile> {
           ],
           position: RelativeRect.fromRect(_tapPosition & const Size(40, 40),
               Offset.zero & overlay.size))
-          .then((int? delta) {
+      .then((int? delta) {
         if (delta == 1) {
           if (widget.bro != null) {
             widget.broHandling(delta!, widget.bro!.getId());
@@ -385,7 +416,6 @@ class _BroupMessageTileState extends State<BroupMessageTile> {
             widget.broHandling(delta!, widget.bro!.getId());
           }
         } else if (delta == 3) {
-          // Save the image!
           saveImageToGallery();
         } else if (delta == 4) {
           if (widget.bro != null) {
@@ -417,13 +447,10 @@ class _BroupMessageTileState extends State<BroupMessageTile> {
         showToastMessage("No access to gallery");
         return;
       }
-      // Code for image storing
       if (widget.message.data != null) {
         Uint8List decoded = widget.message.data!;
-        // We now save to image gallery in a custom album
         final albumName = "Brocast";
         await Gal.putImageBytes(decoded, album: albumName);
-
         showToastMessage("Image saved");
       }
     } catch (e) {
@@ -504,7 +531,7 @@ Widget getPopupItems(BuildContext context, String sender, bool broAdded, bool br
           },
           style: TextButton.styleFrom(
             alignment: Alignment.centerLeft,
-            minimumSize: Size(double.infinity, 0), // Make the button take full width
+            minimumSize: Size(double.infinity, 0),
           ),
           child: Text(
             'Message $sender',
@@ -522,7 +549,7 @@ Widget getPopupItems(BuildContext context, String sender, bool broAdded, bool br
           },
           style: TextButton.styleFrom(
             alignment: Alignment.centerLeft,
-            minimumSize: Size(double.infinity, 0), // Make the button take full width
+            minimumSize: Size(double.infinity, 0),
           ),
           child: Text(
             'Add $sender',
@@ -538,7 +565,7 @@ Widget getPopupItems(BuildContext context, String sender, bool broAdded, bool br
           },
           style: TextButton.styleFrom(
             alignment: Alignment.centerLeft,
-            minimumSize: Size(double.infinity, 0), // Make the button take full width
+            minimumSize: Size(double.infinity, 0),
           ),
           child: Text(
             'Make $sender admin',
@@ -554,7 +581,7 @@ Widget getPopupItems(BuildContext context, String sender, bool broAdded, bool br
           },
           style: TextButton.styleFrom(
             alignment: Alignment.centerLeft,
-            minimumSize: Size(double.infinity, 0), // Make the button take full width
+            minimumSize: Size(double.infinity, 0),
           ),
           child: Text(
             'Dismiss $sender from admins',
@@ -570,7 +597,7 @@ Widget getPopupItems(BuildContext context, String sender, bool broAdded, bool br
           },
           style: TextButton.styleFrom(
             alignment: Alignment.centerLeft,
-            minimumSize: Size(double.infinity, 0), // Make the button take full width
+            minimumSize: Size(double.infinity, 0),
           ),
           child: Text(
             'Save image to gallery',

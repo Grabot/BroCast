@@ -32,6 +32,7 @@ class AuthServiceSocialV15 {
       );
     }
 
+    print("endpoint auth api 1.5");
     return await AuthApiV1_5().dio.post(
       endPoint,
       options: Options(

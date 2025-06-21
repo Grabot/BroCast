@@ -55,6 +55,7 @@ class AppInterceptors extends Interceptor {
           return handler.reject(dioError, true);
         } else {
           String endPoint = "refresh";
+          print("endpoint auth api interceptor");
           var responseRefresh = await Dio(
               BaseOptions(
                 baseUrl: apiUrl_v1_4,
@@ -71,9 +72,10 @@ class AppInterceptors extends Interceptor {
                 "refresh_token": refreshToken
               }
           ).catchError((error, stackTrace) {
-            showToastMessage("There was an issue with authorization, please log in again");
-            _navigationService.navigateTo(routes.SignInRoute);
-            return handler.reject(error, true);
+            return Response(requestOptions: RequestOptions(path: ''), data: {
+              "result": false,
+              "message": "There was an issue with authorization, please log in again"
+            });
           });
 
           LoginResponse loginRefresh = LoginResponse.fromJson(responseRefresh.data);
@@ -100,8 +102,10 @@ class AppInterceptors extends Interceptor {
           } else {
             showToastMessage("There was an issue with authorization, please log in again");
             _navigationService.navigateTo(routes.SignInRoute);
-            return;
-            // return handler.reject(dioError, true);
+            DioException dioError = DioException(requestOptions: options,
+                type: DioExceptionType.cancel,
+                error: "User not authorized");
+            return handler.reject(dioError, true);
           }
         }
       }
