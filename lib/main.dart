@@ -16,13 +16,13 @@ void main() async {
 
   setupLocator();
 
-  await NotificationController.initializeLocalNotifications(debug: true);
+  await NotificationController.initializeLocalNotifications(debug: false);
 
   await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform
   );
 
-  await NotificationController.initializeRemoteNotifications(debug: true);
+  await NotificationController.initializeRemoteNotifications(debug: false);
   await NotificationController.startListeningNotificationEvents();
   await NotificationController.initializeIsolateReceivePort();
   await NotificationController.getInitialNotificationAction();

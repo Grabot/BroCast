@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:brocast/views/chat_view/image_viewer/image_viewer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:gal/gal.dart';
@@ -83,6 +84,37 @@ class _BroupMessageTileState extends State<BroupMessageTile> {
     }
   }
 
+  Widget viewImageButton() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        Container(
+          child: InkWell(
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) =>
+                      ImageViewer(
+                        key: UniqueKey(),
+                        image: widget.message.data!,
+                      ),
+                ),
+              ).then((_) { });
+            },
+            child: Padding(
+              padding: EdgeInsets.all(10.0),
+              child: Icon(
+                Icons.remove_red_eye,
+                color: Colors.white, // Icon color
+                size: 20.0, // Icon size
+              ),
+            ),
+          ),
+        ),
+      ]
+    );
+  }
+
   Widget getMessageContent() {
     // We show the normal body, unless it's clicked. Than we show the extra info
     if (widget.message.clicked) {
@@ -91,6 +123,7 @@ class _BroupMessageTileState extends State<BroupMessageTile> {
         if (widget.message.textMessage != null && widget.message.textMessage!.isNotEmpty) {
           return Column(
               children: [
+                viewImageButton(),
                 broImage!,
                 Linkify(
                     onOpen: _onOpen,
@@ -101,7 +134,12 @@ class _BroupMessageTileState extends State<BroupMessageTile> {
               ]
           );
         } else {
-          return broImage!;
+          return Column(
+              children: [
+                viewImageButton(),
+                broImage!,
+              ]
+          );
         }
       } else {
         return Linkify(
