@@ -13,7 +13,7 @@ class AuthServiceSocialV15 {
 
   AuthServiceSocialV15._internal();
 
-  Future<bool> sendMessage(int broupId, String message, String? textMessage, Uint8List? messageData) async {
+  Future<bool> sendMessage(int broupId, String message, String? textMessage, Uint8List? messageData, int? repliedToMessageId) async {
     String endPoint = "message/send";
 
     final formMap = <String, dynamic>{
@@ -30,6 +30,10 @@ class AuthServiceSocialV15 {
           messageData,
           filename: "image.jpg"
       );
+    }
+
+    if (repliedToMessageId != null) {
+      formMap["replied_to_message_id"] = repliedToMessageId;
     }
 
     return await AuthApiV1_5().dio.post(

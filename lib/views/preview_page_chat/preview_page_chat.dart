@@ -113,7 +113,7 @@ class _PreviewPageChatState extends State<PreviewPageChat> {
       setState(() {
         widget.chat.messages.insert(0, mes);
       });
-      AuthServiceSocialV15().sendMessage(widget.chat.getBroupId(), message, messageTextMessage, messageData).then((value) {
+      AuthServiceSocialV15().sendMessage(widget.chat.getBroupId(), message, messageTextMessage, messageData, null).then((value) {
         if (value) {
           setState(() {
             mes.isRead = 0;

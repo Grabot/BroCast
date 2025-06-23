@@ -136,6 +136,10 @@ class Message {
         dataType = messageData['type'];
       }
     }
+
+    if (json.containsKey('replied_to') && json['replied_to'] != null) {
+      repliedTo = json['replied_to'];
+    }
     isRead = 0;
     clicked = false;
   }

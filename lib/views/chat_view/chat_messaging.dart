@@ -27,6 +27,7 @@ import 'chat_details/chat_details.dart';
 import 'message_util.dart';
 import 'models/bro_message_tile.dart';
 import 'models/broup_message_tile.dart';
+import 'models/replied_to_message.dart';
 
 class ChatMessaging extends StatefulWidget {
   final Broup chat;
@@ -403,7 +404,15 @@ class _ChatMessagingState extends State<ChatMessaging> {
         widget.chat.messages.insert(0, mes);
       });
       // Send the message. The data is always null here because it's only send via the preview page.
-      AuthServiceSocialV15().sendMessage(widget.chat.getBroupId(), message, textMessage, null).then((value) {
+      int? repliedToMessageId;
+      if (repliedToMessage != null) {
+        repliedToMessageId = repliedToMessage!.messageId;
+        setState(() {
+          repliedToMessage = null;
+          repliedToInterface = false;
+        });
+      }
+      AuthServiceSocialV15().sendMessage(widget.chat.getBroupId(), message, textMessage, null, repliedToMessageId).then((value) {
         isLoadingMessages = false;
         if (value) {
           setState(() {
@@ -561,6 +570,7 @@ class _ChatMessagingState extends State<ChatMessaging> {
                     key: UniqueKey(),
                     message: widget.chat.messages[index],
                     myMessage: widget.chat.messages[index].senderId == settings.getMe()!.getId(),
+                    repliedMessage: getReplied(widget.chat.messages[index].repliedTo),
                     broHandling: broHandling);
               } else {
                 return BroupMessageTile(
@@ -572,10 +582,29 @@ class _ChatMessagingState extends State<ChatMessaging> {
                     myMessage: widget.chat.messages[index].senderId ==
                         settings.getMe()!.getId(),
                     userAdmin: meAdmin,
+                    repliedMessage: getReplied(widget.chat.messages[index].repliedTo),
                     broHandling: broHandling);
               }
             })
         : Container();
+  }
+
+  RepliedToMessage? getReplied(int? repliedTo) {
+    if (repliedTo != null) {
+      Message? repliedMessage = widget.chat.messages.firstWhereOrNull((message) => message.messageId == repliedTo);
+      if (repliedMessage != null) {
+        int senderId = repliedMessage.senderId;
+        Bro? bro = getBro(senderId);
+        if (bro != null) {
+          return RepliedToMessage(repliedMessage, bro.getFullName());
+        } else {
+          // We don't expect this to happen, but just in case we pass nothing such that the message will be shown as replied
+          return RepliedToMessage(repliedMessage, "");
+        }
+      }
+      return null;
+    }
+    return null;
   }
 
   Bro? getBro(int senderId) {

@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 import 'package:brocast/views/chat_view/image_viewer/image_viewer.dart';
+import 'package:brocast/views/chat_view/models/replied_to_message.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -17,6 +18,7 @@ class BroupMessageTile extends StatefulWidget {
   final bool broAdmin;
   final bool myMessage;
   final bool userAdmin;
+  final RepliedToMessage? repliedMessage;
   final void Function(int, int) broHandling;
 
   BroupMessageTile({
@@ -27,6 +29,7 @@ class BroupMessageTile extends StatefulWidget {
     required this.broAdmin,
     required this.myMessage,
     required this.userAdmin,
+    required this.repliedMessage,
     required this.broHandling
   }) : super(key: key);
 
@@ -140,42 +143,126 @@ class _BroupMessageTileState extends State<BroupMessageTile> with SingleTickerPr
     );
   }
 
+  Widget repliedToView() {
+    RepliedToMessage? repliedToMessage = widget.repliedMessage;
+    if (repliedToMessage == null) {
+      return Container();
+    } else {
+      return Container(
+        width: MediaQuery.of(context).size.width,
+        color: Colors.black.withAlpha(64),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(
+                  Icons.reply,
+                  color: Colors.white,
+                  size: 16,
+                ),
+                SizedBox(width: 4),
+                Text(
+                  repliedToMessage.senderName,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 4),
+            Text(
+              repliedToMessage.repliedMessage.body,
+              style: TextStyle(
+                color: Colors.white,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ],
+        ),
+      );
+    }
+  }
+
   Widget getMessageContent() {
     if (widget.message.clicked) {
       if (isImage) {
         if (widget.message.textMessage != null && widget.message.textMessage!.isNotEmpty) {
-          return Column(
+          return IntrinsicWidth(
+            child: Column(
+                mainAxisAlignment: widget.myMessage ? MainAxisAlignment.end : MainAxisAlignment.start,
+                crossAxisAlignment: widget.myMessage ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+                children: [
+                  viewImageButton(),
+                  repliedToView(),
+                  Text(
+                      widget.message.body,
+                      style: simpleTextStyle()
+                  ),
+                  Image.memory(widget.message.data!),
+                  Linkify(
+                      onOpen: _onOpen,
+                      text: widget.message.textMessage!,
+                      linkStyle: TextStyle(color: Color(0xffFFC0CB), fontSize: 18),
+                      style: simpleTextStyle()
+                  )
+                ]
+            ),
+          );
+        } else {
+          return IntrinsicWidth(
+            child: Column(
+                mainAxisAlignment: widget.myMessage ? MainAxisAlignment.end : MainAxisAlignment.start,
+                crossAxisAlignment: widget.myMessage ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+                children: [
+                  viewImageButton(),
+                  repliedToView(),
+                  Text(
+                      widget.message.body,
+                      style: simpleTextStyle()
+                  ),
+                  Image.memory(widget.message.data!),
+                ]
+            ),
+          );
+        }
+      } else {
+        return IntrinsicWidth(
+          child: Column(
+              mainAxisAlignment: widget.myMessage ? MainAxisAlignment.end : MainAxisAlignment.start,
+              crossAxisAlignment: widget.myMessage ? CrossAxisAlignment.end : CrossAxisAlignment.start,
               children: [
-                viewImageButton(),
-                Image.memory(widget.message.data!),
+                repliedToView(),
+                Text(
+                    widget.message.body,
+                    style: simpleTextStyle()
+                ),
                 Linkify(
                     onOpen: _onOpen,
                     text: widget.message.textMessage!,
                     linkStyle: TextStyle(color: Color(0xffFFC0CB), fontSize: 18),
                     style: simpleTextStyle()
-                )
+                ),
               ]
-          );
-        } else {
-          return Column(
-              children: [
-                viewImageButton(),
-                Image.memory(widget.message.data!),
-              ]
-          );
-        }
-      } else {
-        return Linkify(
-            onOpen: _onOpen,
-            text: widget.message.textMessage!,
-            linkStyle: TextStyle(color: Color(0xffFFC0CB), fontSize: 18),
-            style: simpleTextStyle()
+          ),
         );
       }
     } else {
-      return Text(
-          widget.message.body,
-          style: simpleTextStyle()
+      return IntrinsicWidth(
+        child: Column(
+            mainAxisAlignment: widget.myMessage ? MainAxisAlignment.end : MainAxisAlignment.start,
+            crossAxisAlignment: widget.myMessage ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+            children: [
+              repliedToView(),
+              Text(
+                  widget.message.body,
+                  style: simpleTextStyle()
+              ),
+            ]
+        ),
       );
     }
   }
