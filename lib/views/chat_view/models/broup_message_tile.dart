@@ -1,6 +1,5 @@
 import 'dart:typed_data';
 import 'package:brocast/views/chat_view/image_viewer/image_viewer.dart';
-import 'package:brocast/views/chat_view/models/replied_to_message.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -18,7 +17,8 @@ class BroupMessageTile extends StatefulWidget {
   final bool broAdmin;
   final bool myMessage;
   final bool userAdmin;
-  final RepliedToMessage? repliedMessage;
+  final Message? repliedMessage;
+  final Bro? repliedBro;
   final void Function(int, int) broHandling;
 
   BroupMessageTile({
@@ -30,6 +30,7 @@ class BroupMessageTile extends StatefulWidget {
     required this.myMessage,
     required this.userAdmin,
     required this.repliedMessage,
+    required this.repliedBro,
     required this.broHandling
   }) : super(key: key);
 
@@ -107,6 +108,17 @@ class _BroupMessageTileState extends State<BroupMessageTile> with SingleTickerPr
     widget.broHandling(3, widget.message.messageId);
   }
 
+  clickedReplyMessage() {
+    if (widget.message.repliedTo != null) {
+      // It's possible that the message is not on your phone anymore
+      // In this case we have an empty message with messageId 0 and info set to true
+      // We want to ignore this
+      if (widget.message.repliedMessage != null && widget.message.repliedMessage!.messageId != 0 && !widget.message.repliedMessage!.info) {
+        widget.broHandling(6, widget.message.repliedTo!);
+      }
+    }
+  }
+
   Future<void> _onOpen(LinkableElement link) async {
     if (!await launchUrl(Uri.parse(link.url))) {
       throw Exception('Could not launch ${link.url}');
@@ -144,115 +156,103 @@ class _BroupMessageTileState extends State<BroupMessageTile> with SingleTickerPr
   }
 
   Widget repliedToView() {
-    RepliedToMessage? repliedToMessage = widget.repliedMessage;
+    Message? repliedToMessage = widget.repliedMessage;
     if (repliedToMessage == null) {
       return Container();
     } else {
-      return Container(
-        width: MediaQuery.of(context).size.width,
-        color: Colors.black.withAlpha(64),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
+      String replySenderName = "Message not available";
+      if (widget.repliedBro != null) {
+        replySenderName = widget.repliedBro!.getFullName();
+      }
+      return Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () {
+            clickedReplyMessage();
+          },
+          splashColor: const Color(0x56e4e4e4),
+          child: Container(
+            color: Colors.black.withAlpha(64),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(
-                  Icons.reply,
-                  color: Colors.white,
-                  size: 16,
+                Row(
+                  children: [
+                    Icon(
+                      Icons.reply,
+                      color: Colors.white,
+                      size: 16,
+                    ),
+                    SizedBox(width: 4),
+                    Text(
+                      replySenderName,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
                 ),
-                SizedBox(width: 4),
-                Text(
-                  repliedToMessage.senderName,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
+                SizedBox(height: 4),
+                if (repliedToMessage.body != "")
+                  Text(
+                    repliedToMessage.body,
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                ),
               ],
             ),
-            SizedBox(height: 4),
-            Text(
-              repliedToMessage.repliedMessage.body,
-              style: TextStyle(
-                color: Colors.white,
-              ),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ],
+          ),
         ),
       );
     }
   }
 
   Widget getMessageContent() {
+    Widget content;
     if (widget.message.clicked) {
       if (isImage) {
         if (widget.message.textMessage != null && widget.message.textMessage!.isNotEmpty) {
-          return IntrinsicWidth(
-            child: Column(
-                mainAxisAlignment: widget.myMessage ? MainAxisAlignment.end : MainAxisAlignment.start,
-                crossAxisAlignment: widget.myMessage ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-                children: [
-                  viewImageButton(),
-                  repliedToView(),
-                  Text(
-                      widget.message.body,
-                      style: simpleTextStyle()
-                  ),
-                  Image.memory(widget.message.data!),
-                  Linkify(
-                      onOpen: _onOpen,
-                      text: widget.message.textMessage!,
-                      linkStyle: TextStyle(color: Color(0xffFFC0CB), fontSize: 18),
-                      style: simpleTextStyle()
-                  )
-                ]
-            ),
-          );
-        } else {
-          return IntrinsicWidth(
-            child: Column(
-                mainAxisAlignment: widget.myMessage ? MainAxisAlignment.end : MainAxisAlignment.start,
-                crossAxisAlignment: widget.myMessage ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-                children: [
-                  viewImageButton(),
-                  repliedToView(),
-                  Text(
-                      widget.message.body,
-                      style: simpleTextStyle()
-                  ),
-                  Image.memory(widget.message.data!),
-                ]
-            ),
-          );
-        }
-      } else {
-        return IntrinsicWidth(
-          child: Column(
+          content = Column(
               mainAxisAlignment: widget.myMessage ? MainAxisAlignment.end : MainAxisAlignment.start,
               crossAxisAlignment: widget.myMessage ? CrossAxisAlignment.end : CrossAxisAlignment.start,
               children: [
+                viewImageButton(),
                 repliedToView(),
                 Text(
                     widget.message.body,
                     style: simpleTextStyle()
                 ),
+                Image.memory(widget.message.data!),
                 Linkify(
                     onOpen: _onOpen,
                     text: widget.message.textMessage!,
                     linkStyle: TextStyle(color: Color(0xffFFC0CB), fontSize: 18),
                     style: simpleTextStyle()
-                ),
+                )
               ]
-          ),
-        );
-      }
-    } else {
-      return IntrinsicWidth(
-        child: Column(
+          );
+        } else {
+          content = Column(
+              mainAxisAlignment: widget.myMessage ? MainAxisAlignment.end : MainAxisAlignment.start,
+              crossAxisAlignment: widget.myMessage ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+              children: [
+                viewImageButton(),
+                repliedToView(),
+                Text(
+                    widget.message.body,
+                    style: simpleTextStyle()
+                ),
+                Image.memory(widget.message.data!),
+              ]
+          );
+        }
+      } else {
+        content = Column(
             mainAxisAlignment: widget.myMessage ? MainAxisAlignment.end : MainAxisAlignment.start,
             crossAxisAlignment: widget.myMessage ? CrossAxisAlignment.end : CrossAxisAlignment.start,
             children: [
@@ -261,10 +261,36 @@ class _BroupMessageTileState extends State<BroupMessageTile> with SingleTickerPr
                   widget.message.body,
                   style: simpleTextStyle()
               ),
+              Linkify(
+                  onOpen: _onOpen,
+                  text: widget.message.textMessage!,
+                  linkStyle: TextStyle(color: Color(0xffFFC0CB), fontSize: 18),
+                  style: simpleTextStyle()
+              ),
             ]
-        ),
+        );
+      }
+    } else {
+      content = Column(
+          mainAxisAlignment: widget.myMessage ? MainAxisAlignment.end : MainAxisAlignment.start,
+          crossAxisAlignment: widget.myMessage ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+          children: [
+            repliedToView(),
+            Text(
+                widget.message.body,
+                style: simpleTextStyle()
+            ),
+          ]
       );
     }
+
+    return AnimatedSize(
+      duration: Duration(milliseconds: 200),
+      curve: Curves.easeInOut,
+      child: IntrinsicWidth(
+        child: content,
+      ),
+    );
   }
 
   Widget informationMessage() {

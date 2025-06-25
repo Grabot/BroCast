@@ -262,6 +262,16 @@ class Storage {
     return List.empty();
   }
 
+  Future<List<Message>> retrieveMessages(List<int> retrieveMessagesIds) async {
+    Database database = await this.database;
+    String query = "SELECT * FROM Message WHERE messageId IN (${retrieveMessagesIds.join(',')})";
+    List<Map<String, dynamic>> maps = await database.rawQuery(query);
+    if (maps.isNotEmpty) {
+      return maps.map((map) => Message.fromDbMap(map)).toList();
+    }
+    return List.empty();
+  }
+
   Future<List<Bro>> fetchBros(List<int> broIds) async {
     Database database = await this.database;
     String query = "SELECT * FROM Bro WHERE broId IN (${broIds.join(',')})";

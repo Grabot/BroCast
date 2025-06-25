@@ -18,7 +18,16 @@ class Message {
 
   Uint8List? data;
   int? dataType;
+  // Used to determine if the message is a reply to another message.
+  // repliedTo is stored on the local db and is a reference to a message Id
   int? repliedTo;
+  // The Message object is not stored in the local db.
+  // But it is retrieved when needed and stored on this object.
+  Message? repliedMessage;
+  // We keep track of the collapsed height of the message.
+  // This is also for replied messages.
+  // If you click it we can find where it is based on the height of all the messages
+  int? height;
 
   Message(this.messageId, this.senderId, this.body, this.textMessage, this.timestamp,
       this.data, this.info, this.broupId) {

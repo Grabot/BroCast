@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 import 'dart:typed_data';
 import 'package:collection/collection.dart';
 
@@ -27,7 +28,7 @@ import 'chat_details/chat_details.dart';
 import 'message_util.dart';
 import 'models/bro_message_tile.dart';
 import 'models/broup_message_tile.dart';
-import 'models/replied_to_message.dart';
+import 'models/message_tile.dart';
 
 class ChatMessaging extends StatefulWidget {
   final Broup chat;
@@ -99,15 +100,7 @@ class _ChatMessagingState extends State<ChatMessaging> {
             messageScrollController.position.maxScrollExtent -
                 messageScrollController.position.pixels;
         if (distanceToTop < 1000) {
-          busyRetrieving = true;
-          amountViewed += 1;
-          fetchExtraMessages(amountViewed, widget.chat, storage).then((value) {
-            setDateTiles(widget.chat, (50 * amountViewed));
-            allMessagesDBRetrieved = value;
-            setState(() {
-              busyRetrieving = false;
-            });
-          });
+          fetchExtraMessagesLocal(null);
         }
       }
     });
@@ -133,6 +126,27 @@ class _ChatMessagingState extends State<ChatMessaging> {
       // We moved to a chat so we need to reset the notification controller
       NotificationController().navigateChat = false;
       NotificationController().navigateChatId = -1;
+    });
+  }
+
+  fetchExtraMessagesLocal(int? untilMessageId) {
+    busyRetrieving = true;
+    amountViewed += 1;
+    fetchExtraMessages(amountViewed, widget.chat, storage).then((value) {
+      setDateTiles(widget.chat, (50 * amountViewed));
+      allMessagesDBRetrieved = value;
+      setState(() {
+        busyRetrieving = false;
+      });
+      if (untilMessageId != null) {
+        int lowestMessageId = widget.chat.messages.where((element) => element.messageId != 0).map((e) => e.messageId).reduce(min);
+        if (untilMessageId < lowestMessageId) {
+          fetchExtraMessagesLocal(untilMessageId);
+        } else {
+          // TODO: Move towards the message, it should be in the list now.
+
+        }
+      }
     });
   }
 
@@ -200,6 +214,7 @@ class _ChatMessagingState extends State<ChatMessaging> {
               widget.chat.checkedRemainingBros = true;
               checkMessageBroIds();
             }
+            checkRepliedMessages();
           }
 
           if (!settings.loggingIn) {
@@ -233,17 +248,128 @@ class _ChatMessagingState extends State<ChatMessaging> {
   }
 
   messagingListener() {
+    print("messagingListener");
+    checkRepliedMessages();
     checkIsAdmin();
     setState(() {});
   }
 
   socketListener() {
+    print("socketListener");
+    // Do we set a flag on this?
+    checkRepliedMessages();
     checkIsAdmin();
     // We have received a new message, which might not have been picked up with the sockets
     if (widget.chat.newMessages) {
       retrieveData();
     }
     setState(() {});
+  }
+
+  retrieveRepliedBros(List<int> repliedMessageBrosNotYetLoaded) {
+    // TODO: test this. Create a broup add a message and leave the broup.
+    //  Other bros will add many many messages and finally reply to the first message
+    //  If you are a bro that has not read the chat yet the bro will not be loaded
+    //  In this case it should trigger a server call.
+    storage.fetchBros(repliedMessageBrosNotYetLoaded).then((brosDb) {
+      for (Bro broDb in brosDb) {
+        repliedMessageBrosNotYetLoaded.remove(broDb.getId());
+        widget.chat.messageBroRemaining.add(broDb);
+      }
+      if (repliedMessageBrosNotYetLoaded.isNotEmpty) {
+        AuthServiceSocial().broDetails([], repliedMessageBrosNotYetLoaded, widget.chat.broupId).then((value) {
+          // If we have retrieved the bros we call the reply function again
+          checkRepliedMessages();
+        });
+      }
+    });
+  }
+
+  retrieveRepliedMessages(List<int> retrieveMessagesIds) async {
+    List<Message> newMessages = await storage.retrieveMessages(retrieveMessagesIds);
+    List<int> repliedMessageBrosNotYetLoaded = [];
+    for (Message message in widget.chat.messages) {
+      if (message.repliedTo != null) {
+        if (message.repliedMessage == null) {
+          Message? retrievedRepliedMessage = newMessages.firstWhereOrNull((element) => element.messageId == message.repliedTo);
+          if (retrievedRepliedMessage != null) {
+            retrieveMessagesIds.remove(retrievedRepliedMessage.messageId);
+            message.repliedMessage = retrievedRepliedMessage;
+            Bro? replyMessageBro = getBro(retrievedRepliedMessage.senderId);
+            if (replyMessageBro == null) {
+              repliedMessageBrosNotYetLoaded.add(retrievedRepliedMessage.senderId);
+            } else {
+              widget.chat.messageBroRemaining.add(replyMessageBro);
+            }
+          }
+        }
+      }
+    }
+    if (repliedMessageBrosNotYetLoaded.isNotEmpty) {
+      retrieveRepliedBros(repliedMessageBrosNotYetLoaded);
+    }
+    if (retrieveMessagesIds.isNotEmpty) {
+      // If you join a broup later on? You won't have the message and you can't get the message.
+      // We will add a empty message to indicate that the message is not available.
+      Message emptyMessage = Message(
+          0,
+          0,
+          "",
+          "",
+          DateTime.now().toIso8601String(),
+          null,
+          true,
+          widget.chat.broupId
+      );
+      emptyMessage.repliedTo = -1;
+      for (Message message in widget.chat.messages) {
+        if (message.repliedTo != null) {
+          if (message.repliedMessage == null) {
+            message.repliedMessage = emptyMessage;
+          }
+        }
+      }
+    }
+    setState(() {
+      checkIsAdmin();
+    });
+  }
+
+  checkRepliedMessages() {
+    // Here we want to see if messages are replies to other messages.
+    // In this case we want the message to be loaded
+    // and have a reference stored on the message object
+    List<int> repliedMessageIdNotYetLoaded = [];
+    List<int> repliedMessageBrosNotYetLoaded = [];
+    for (Message message in widget.chat.messages) {
+      if (message.repliedTo != null) {
+        if (message.repliedMessage == null) {
+          // The replied message has not been loaded yet.
+          // We need to load it.
+          Message? repliedMessage = widget.chat.messages
+              .firstWhereOrNull((element) => element.messageId == message.repliedTo);
+          if (repliedMessage != null) {
+            message.repliedMessage = repliedMessage;
+            Bro? replyMessageBro = getBro(repliedMessage.senderId);
+            if (replyMessageBro == null) {
+              repliedMessageBrosNotYetLoaded.add(repliedMessage.senderId);
+            } else {
+              widget.chat.messageBroRemaining.add(replyMessageBro);
+            }
+          } else {
+            // keep track of all the replied messages that are not yet loaded,
+            // so we can load them separately
+            repliedMessageIdNotYetLoaded.add(message.repliedTo!);
+          }
+        }
+      }
+    }
+    if (repliedMessageBrosNotYetLoaded.isNotEmpty) {
+      retrieveRepliedBros(repliedMessageBrosNotYetLoaded);
+    }
+    if (repliedMessageIdNotYetLoaded.isNotEmpty) {
+      retrieveRepliedMessages(repliedMessageIdNotYetLoaded);
+    }
   }
 
   // It's possible that a bro send a message and then left.
@@ -286,7 +412,10 @@ class _ChatMessagingState extends State<ChatMessaging> {
           if (messageBroIds.isNotEmpty) {
             // If there are still id's remaining we have never retrieved them.
             // So retrieve them now because we want to show the correct message data.
-            AuthServiceSocial().broDetails([], messageBroIds, widget.chat.broupId);
+            AuthServiceSocial().broDetails([], messageBroIds, widget.chat.broupId).then((value) {
+              // If we have retrieved the bros we call this function again
+              checkMessageBroIds();
+            });
           }
           checkIsAdmin();
           setState(() {});
@@ -296,7 +425,7 @@ class _ChatMessagingState extends State<ChatMessaging> {
   }
 
   broHandling(int delta, int passedId) {
-    // The passedId is usually the Bro Id, but for delta 3 it is the message Id.
+    // The passedId is usually the Bro Id, but for delta 3 and 6 it is the message Id.
     if (delta == 1) {
       // Message the bro
       Me? me = settings.getMe();
@@ -347,6 +476,35 @@ class _ChatMessagingState extends State<ChatMessaging> {
           });
         }
       });
+    } else if (delta == 6) {
+      // go to Reply message
+      // passedId is the messageId
+      // get the lowest messageId from widget.chat.messages excluding the 0 messageId
+      int lowestMessageId = widget.chat.messages.where((element) => element.messageId != 0).map((e) => e.messageId).reduce(min);
+      print("lowestMessageId: $lowestMessageId");
+      if (passedId < lowestMessageId) {
+        // Message not currently loaded, but it should be on the storage
+        fetchExtraMessagesLocal(passedId);
+      } else {
+        // Scroll to the message `messageScrollController.position.maxScrollExtent` is the top and 0 is the bottom.
+        // get the index of the message with messageId == passedId
+        int index = widget.chat.messages.indexWhere((element) => element.messageId == passedId);
+        if (index != -1) {
+          // index 0 will be the newest message
+          // index (widget.chat.messages.length - 1) will be the oldest message
+          // We calculate the height of all the messages above the message with messageId == passedId
+          double height = 0;
+          for (int i = 0; i < index; i++) {
+            // height += widget.chat.messages[i].height;
+          }
+          // Scroll to the message
+          messageScrollController.animateTo(
+            messageScrollController.position.maxScrollExtent,
+            duration: Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+          );
+        }
+      }
     }
   }
 
@@ -565,44 +723,27 @@ class _ChatMessagingState extends State<ChatMessaging> {
             reverse: true,
             controller: messageScrollController,
             itemBuilder: (context, index) {
-              if (widget.chat.private) {
-                return BroMessageTile(
-                    key: UniqueKey(),
-                    message: widget.chat.messages[index],
-                    myMessage: widget.chat.messages[index].senderId == settings.getMe()!.getId(),
-                    repliedMessage: getReplied(widget.chat.messages[index].repliedTo),
-                    broHandling: broHandling);
-              } else {
-                return BroupMessageTile(
-                    key: UniqueKey(),
-                    message: widget.chat.messages[index],
-                    bro: getBro(widget.chat.messages[index].senderId),
-                    broAdded: getIsAdded(widget.chat.messages[index].senderId),
-                    broAdmin: getIsAdmin(widget.chat.messages[index].senderId),
-                    myMessage: widget.chat.messages[index].senderId ==
-                        settings.getMe()!.getId(),
-                    userAdmin: meAdmin,
-                    repliedMessage: getReplied(widget.chat.messages[index].repliedTo),
-                    broHandling: broHandling);
-              }
+              Message message = widget.chat.messages[index];
+              MessageTile messageTile = MessageTile(
+                  key: UniqueKey(),
+                  private: widget.chat.private,
+                  message: message,
+                  bro: getBro(message.senderId),
+                  broAdded: getIsAdded(message.senderId),
+                  broAdmin: getIsAdmin(message.senderId),
+                  myMessage: message.senderId == settings.getMe()!.getId(),
+                  userAdmin: meAdmin,
+                  repliedMessage: message.repliedMessage,
+                  repliedBro: getBroReply(message.repliedMessage),
+                  broHandling: broHandling);
+              return messageTile;
             })
         : Container();
   }
 
-  RepliedToMessage? getReplied(int? repliedTo) {
-    if (repliedTo != null) {
-      Message? repliedMessage = widget.chat.messages.firstWhereOrNull((message) => message.messageId == repliedTo);
-      if (repliedMessage != null) {
-        int senderId = repliedMessage.senderId;
-        Bro? bro = getBro(senderId);
-        if (bro != null) {
-          return RepliedToMessage(repliedMessage, bro.getFullName());
-        } else {
-          // We don't expect this to happen, but just in case we pass nothing such that the message will be shown as replied
-          return RepliedToMessage(repliedMessage, "");
-        }
-      }
-      return null;
+  Bro? getBroReply(Message? repliedMessage) {
+    if (repliedMessage != null) {
+      return getBro(repliedMessage.senderId);
     }
     return null;
   }

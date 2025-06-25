@@ -1,6 +1,5 @@
 import 'dart:typed_data';
 
-import 'package:brocast/views/chat_view/models/replied_to_message.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -8,6 +7,7 @@ import 'package:gal/gal.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../../objects/bro.dart';
 import '../../../objects/message.dart';
 import '../../../utils/utils.dart';
 
@@ -15,7 +15,8 @@ import '../../../utils/utils.dart';
 class BroMessageTile extends StatefulWidget {
   final Message message;
   final bool myMessage;
-  final RepliedToMessage? repliedMessage;
+  final Message? repliedMessage;
+  final Bro? repliedBro;
   final void Function(int, int) broHandling;
 
   BroMessageTile(
@@ -24,6 +25,7 @@ class BroMessageTile extends StatefulWidget {
         required this.message,
         required this.myMessage,
         required this.repliedMessage,
+        required this.repliedBro,
         required this.broHandling
       })
       : super(key: key);
