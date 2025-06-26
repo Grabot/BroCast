@@ -36,6 +36,7 @@ class MessageTile extends StatefulWidget {
 }
 
 class _MessageTileState extends State<MessageTile> with SingleTickerProviderStateMixin {
+
   @override
   void initState() {
     super.initState();
@@ -43,22 +44,24 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
 
   @override
   void dispose() {
+    widget.broHandling(0, widget.message.messageId);
     super.dispose();
   }
 
+
   @override
   Widget build(BuildContext context) {
+    Widget messageTile = Container();
     if (widget.private) {
-      BroMessageTile broMessageTile = BroMessageTile(
+      messageTile = BroMessageTile(
           key: UniqueKey(),
           message: widget.message,
           myMessage: widget.myMessage,
           repliedMessage: widget.repliedMessage,
           repliedBro: widget.repliedBro,
           broHandling: widget.broHandling);
-      return broMessageTile;
     } else {
-      return BroupMessageTile(
+      messageTile = BroupMessageTile(
           key: UniqueKey(),
           message: widget.message,
           bro: widget.bro,
@@ -70,5 +73,6 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
           repliedBro: widget.repliedBro,
           broHandling: widget.broHandling);
     }
+    return messageTile;
   }
 }

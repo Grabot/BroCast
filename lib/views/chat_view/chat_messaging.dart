@@ -15,6 +15,9 @@ import 'package:camera/camera.dart';
 import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 
 import '../../../objects/bro.dart';
 import '../../services/auth/v1_4/auth_service_social.dart';
@@ -39,7 +42,7 @@ class ChatMessaging extends StatefulWidget {
   _ChatMessagingState createState() => _ChatMessagingState();
 }
 
-class _ChatMessagingState extends State<ChatMessaging> {
+class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProviderStateMixin {
   bool isLoadingBros = false;
   bool isLoadingMessages = false;
   Settings settings = Settings();
@@ -82,6 +85,13 @@ class _ChatMessagingState extends State<ChatMessaging> {
 
   Me? me;
 
+  bool goingToReply = false;
+  Map<int, bool> messageVisibility = {};
+  int? goingToReplyMessageId;
+  int? highlightedMessageId;
+  AnimationController? _animationController;
+  Animation<Color?>? _colorAnimation;
+
   @override
   void initState() {
     super.initState();
@@ -94,16 +104,7 @@ class _ChatMessagingState extends State<ChatMessaging> {
     lifeCycleService = LifeCycleService();
     lifeCycleService.addListener(lifeCycleChangeListener);
 
-    messageScrollController.addListener(() {
-      if (!busyRetrieving && !allMessagesDBRetrieved) {
-        double distanceToTop =
-            messageScrollController.position.maxScrollExtent -
-                messageScrollController.position.pixels;
-        if (distanceToTop < 1000) {
-          fetchExtraMessagesLocal(null);
-        }
-      }
-    });
+    messageScrollController.addListener(_onScroll);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       retrieveData();
@@ -127,13 +128,122 @@ class _ChatMessagingState extends State<ChatMessaging> {
       NotificationController().navigateChat = false;
       NotificationController().navigateChatId = -1;
     });
+    _animationController = AnimationController(
+      duration: const Duration(milliseconds: 200),
+      reverseDuration: const Duration(seconds: 2),
+      vsync: this,
+    );
+
+    _colorAnimation = ColorTween(begin: Colors.teal, end: null).animate(
+      CurvedAnimation(
+        parent: _animationController!,
+        curve: Curves.linear,
+        reverseCurve: Curves.linear,
+      ))
+      ..addListener(() {
+        setState(() {});
+      });
+  }
+
+  void _onScroll() {
+    if (!busyRetrieving && !allMessagesDBRetrieved) {
+      double distanceToTop =
+          messageScrollController.position.maxScrollExtent -
+              messageScrollController.position.pixels;
+      print("distanceToTop: $distanceToTop");
+      if (distanceToTop < 1000) {
+        fetchExtraMessagesLocal(null);
+      }
+    }
+
+    // When going to a reply that's not in the listview at the moment
+    // We will just scroll to the top until it will be in the listview
+    // Once we detect it we can ensure it's visible in the screen.
+    if (!goingToReply) {
+      return;
+    }
+    if (goingToReplyMessageId != null) {
+      checkMessageIsVisible(goingToReplyMessageId!);
+    }
+  }
+
+  highlightReplyMessage() {
+    print("highlightReplyMessage $goingToReplyMessageId   $goingToReply");
+    setState(() {
+      highlightedMessageId = goingToReplyMessageId;
+    });
+    _animationController?.forward().then((_) {
+      print("animation forward");
+      _animationController?.reverse().then((_) {
+        print("animation reverse");
+        setState(() {
+          highlightedMessageId = null;
+        });
+      });
+    });
+    goingToReplyMessageId = null;
+    goingToReply = false;
+  }
+
+  checkMessageIsVisible(int passedMessageId) {
+    if (messageVisibility.containsKey(passedMessageId)
+        && messageVisibility[passedMessageId] != null
+        && messageVisibility[passedMessageId]!) {
+      // These might already have these values, but they might not so we set them again.
+      goingToReplyMessageId = passedMessageId;
+      goingToReply = true;
+      print("Message visible!");
+      // Not really visible, but it should have context.
+      GlobalKey? messageKey = messageKeys[passedMessageId];
+      // We assume that if it's in the `messageVisibility` List that it will have currentContext
+      if (messageKey != null) {
+        print("context available? ${messageKey.currentContext != null}");
+        if (messageKey.currentContext != null) {
+          print("ensuring visibility! :)");
+          Scrollable.ensureVisible(
+            messageKey.currentContext!,
+            alignment: 0.8,
+            duration: Duration(milliseconds: 200),
+            curve: Curves.easeInOut,
+          );
+          highlightReplyMessage();
+        } else {
+          print("context nullll!?!?!?");
+          SystemNavigator.pop();
+        }
+      } else {
+        print("Message key not found!?!?!?!");
+        SystemNavigator.pop();
+      }
+    } else {
+      print("not currently visible!");
+      // Scroll to the message `messageScrollController.position.maxScrollExtent` is the top and 0 is the bottom.
+      // get the index of the message with messageId == passedMessageId
+      int index = widget.chat.messages.indexWhere((element) => element.messageId == passedMessageId);
+      if (index != -1) {
+        print("scrolling to the top!!!!");
+        // index 0 will be the newest message
+        // index (widget.chat.messages.length - 1) will be the oldest message
+        // Scroll towards the top until the message is visible and then stop.
+        messageScrollController.animateTo(
+          messageScrollController.position.maxScrollExtent,
+          duration: Duration(milliseconds: 800),
+          curve: Curves.linear,
+        );
+        goingToReplyMessageId = passedMessageId;
+        goingToReply = true;
+      }
+    }
   }
 
   fetchExtraMessagesLocal(int? untilMessageId) {
     busyRetrieving = true;
     amountViewed += 1;
     fetchExtraMessages(amountViewed, widget.chat, storage).then((value) {
+      print("fetched extra messages");
       setDateTiles(widget.chat, (50 * amountViewed));
+      checkRepliedMessages();
+      checkIsAdmin();
       allMessagesDBRetrieved = value;
       setState(() {
         busyRetrieving = false;
@@ -143,8 +253,7 @@ class _ChatMessagingState extends State<ChatMessaging> {
         if (untilMessageId < lowestMessageId) {
           fetchExtraMessagesLocal(untilMessageId);
         } else {
-          // TODO: Move towards the message, it should be in the list now.
-
+          checkMessageIsVisible(untilMessageId);
         }
       }
     });
@@ -425,6 +534,11 @@ class _ChatMessagingState extends State<ChatMessaging> {
   }
 
   broHandling(int delta, int passedId) {
+    // We also use the broHandling to determine if the message is disposed
+    // Which means it's not visible anymore.
+    if (delta == 0) {
+      messageVisibility[passedId] = false;
+    }
     // The passedId is usually the Bro Id, but for delta 3 and 6 it is the message Id.
     if (delta == 1) {
       // Message the bro
@@ -486,24 +600,8 @@ class _ChatMessagingState extends State<ChatMessaging> {
         // Message not currently loaded, but it should be on the storage
         fetchExtraMessagesLocal(passedId);
       } else {
-        // Scroll to the message `messageScrollController.position.maxScrollExtent` is the top and 0 is the bottom.
-        // get the index of the message with messageId == passedId
-        int index = widget.chat.messages.indexWhere((element) => element.messageId == passedId);
-        if (index != -1) {
-          // index 0 will be the newest message
-          // index (widget.chat.messages.length - 1) will be the oldest message
-          // We calculate the height of all the messages above the message with messageId == passedId
-          double height = 0;
-          for (int i = 0; i < index; i++) {
-            // height += widget.chat.messages[i].height;
-          }
-          // Scroll to the message
-          messageScrollController.animateTo(
-            messageScrollController.position.maxScrollExtent,
-            duration: Duration(milliseconds: 300),
-            curve: Curves.easeInOut,
-          );
-        }
+        // Check if "passedId" is a in the `messageVisibility` Map
+        checkMessageIsVisible(passedId);
       }
     }
   }
@@ -517,6 +615,7 @@ class _ChatMessagingState extends State<ChatMessaging> {
     lifeCycleService.removeListener(lifeCycleChangeListener);
     broMessageController.dispose();
     appendTextMessageController.dispose();
+    _animationController?.dispose();
     super.dispose();
   }
 
@@ -715,6 +814,7 @@ class _ChatMessagingState extends State<ChatMessaging> {
     }
   }
 
+  Map<int, GlobalKey> messageKeys = {};
   Widget messageList() {
     return widget.chat.messages.isNotEmpty
         ? ListView.builder(
@@ -724,8 +824,11 @@ class _ChatMessagingState extends State<ChatMessaging> {
             controller: messageScrollController,
             itemBuilder: (context, index) {
               Message message = widget.chat.messages[index];
+              messageVisibility[message.messageId] = true;
+              GlobalKey messageKey = messageKeys.putIfAbsent(message.messageId, () => GlobalKey());
+              bool isHighlighted = message.messageId == highlightedMessageId;
               MessageTile messageTile = MessageTile(
-                  key: UniqueKey(),
+                  key: messageKey,
                   private: widget.chat.private,
                   message: message,
                   bro: getBro(message.senderId),
@@ -736,7 +839,12 @@ class _ChatMessagingState extends State<ChatMessaging> {
                   repliedMessage: message.repliedMessage,
                   repliedBro: getBroReply(message.repliedMessage),
                   broHandling: broHandling);
-              return messageTile;
+              return AnimatedContainer(
+                  duration: Duration(milliseconds: 750),
+                  curve: Curves.linear,
+                  color: isHighlighted ? Colors.teal : Colors.transparent,
+                  child: messageTile
+              );
             })
         : Container();
   }
