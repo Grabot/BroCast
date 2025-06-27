@@ -85,12 +85,12 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
 
   Me? me;
 
+  Map<int, GlobalKey> messageKeys = {};
   bool goingToReply = false;
   Map<int, bool> messageVisibility = {};
   int? goingToReplyMessageId;
-  int? highlightedMessageId;
-  AnimationController? _animationController;
-  Animation<Color?>? _colorAnimation;
+  List<int> highlightedMessageIds = [];
+  bool showBackToBottomButton = false;
 
   @override
   void initState() {
@@ -128,29 +128,28 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
       NotificationController().navigateChat = false;
       NotificationController().navigateChatId = -1;
     });
-    _animationController = AnimationController(
-      duration: const Duration(milliseconds: 200),
-      reverseDuration: const Duration(seconds: 2),
-      vsync: this,
-    );
-
-    _colorAnimation = ColorTween(begin: Colors.teal, end: null).animate(
-      CurvedAnimation(
-        parent: _animationController!,
-        curve: Curves.linear,
-        reverseCurve: Curves.linear,
-      ))
-      ..addListener(() {
-        setState(() {});
-      });
   }
 
   void _onScroll() {
+    // Check if the messageScrollController is 500 pixels from the top
+    // Then set the showBackToBottomButton to true
+    if (messageScrollController.position.pixels > 500) {
+      if (!showBackToBottomButton) {
+        setState(() {
+          showBackToBottomButton = true;
+        });
+      }
+    } else {
+      if (showBackToBottomButton) {
+        setState(() {
+          showBackToBottomButton = false;
+        });
+      }
+    }
     if (!busyRetrieving && !allMessagesDBRetrieved) {
       double distanceToTop =
           messageScrollController.position.maxScrollExtent -
               messageScrollController.position.pixels;
-      print("distanceToTop: $distanceToTop");
       if (distanceToTop < 1000) {
         fetchExtraMessagesLocal(null);
       }
@@ -167,18 +166,25 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
     }
   }
 
-  highlightReplyMessage() {
+  _scrollToBottom() {
+    messageScrollController.animateTo(
+      0.0,
+      curve: Curves.easeOut,
+      duration: const Duration(milliseconds: 800),
+    );
+  }
+
+  highlightReplyMessage(int messageId) {
     print("highlightReplyMessage $goingToReplyMessageId   $goingToReply");
     setState(() {
-      highlightedMessageId = goingToReplyMessageId;
+      highlightedMessageIds.add(messageId);
     });
-    _animationController?.forward().then((_) {
-      print("animation forward");
-      _animationController?.reverse().then((_) {
-        print("animation reverse");
-        setState(() {
-          highlightedMessageId = null;
-        });
+    // The animation takes 750 milliseconds.
+    // After it's done we wait another 1250 milliseconds
+    // Then we take 750 milliseconds to fade out the highlight.
+    Future.delayed(const Duration(seconds: 2), () {
+      setState(() {
+        highlightedMessageIds.remove(messageId);
       });
     });
     goingToReplyMessageId = null;
@@ -206,7 +212,7 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
             duration: Duration(milliseconds: 200),
             curve: Curves.easeInOut,
           );
-          highlightReplyMessage();
+          highlightReplyMessage(passedMessageId);
         } else {
           print("context nullll!?!?!?");
           SystemNavigator.pop();
@@ -615,7 +621,6 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
     lifeCycleService.removeListener(lifeCycleChangeListener);
     broMessageController.dispose();
     appendTextMessageController.dispose();
-    _animationController?.dispose();
     super.dispose();
   }
 
@@ -814,7 +819,6 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
     }
   }
 
-  Map<int, GlobalKey> messageKeys = {};
   Widget messageList() {
     return widget.chat.messages.isNotEmpty
         ? ListView.builder(
@@ -826,7 +830,7 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
               Message message = widget.chat.messages[index];
               messageVisibility[message.messageId] = true;
               GlobalKey messageKey = messageKeys.putIfAbsent(message.messageId, () => GlobalKey());
-              bool isHighlighted = message.messageId == highlightedMessageId;
+              bool isHighlighted = highlightedMessageIds.contains(message.messageId);
               MessageTile messageTile = MessageTile(
                   key: messageKey,
                   private: widget.chat.private,
@@ -1113,6 +1117,24 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
                             child: Container(
                                 child: CircularProgressIndicator()
                             )
+                        ) : Container(),
+                        showBackToBottomButton ? Positioned(
+                          bottom: 16.0,
+                          right: 16.0,
+                          child: IconButton(
+                            icon: CircleAvatar(
+                              backgroundColor: Colors.grey[300],
+                              radius: 16.0,
+                              child: Icon(
+                                Icons.arrow_downward,
+                                size: 16.0,
+                                color: Colors.grey[700],
+                              ),
+                            ),
+                            onPressed: _scrollToBottom,
+                            splashColor: Colors.transparent,
+                            highlightColor: Colors.transparent,
+                          ),
                         ) : Container(),
                       ]
                   )
