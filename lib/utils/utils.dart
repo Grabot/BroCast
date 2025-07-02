@@ -15,6 +15,7 @@ import '../objects/broup.dart';
 import '../objects/me.dart';
 import '../objects/message.dart';
 import '../services/auth/models/login_response.dart';
+import '../services/auth/v1_5/auth_service_social_v1_5.dart';
 import '../views/bro_home/bro_home.dart';
 import '../views/bro_profile/bro_profile.dart';
 import '../views/bro_settings/bro_settings.dart';
@@ -79,7 +80,7 @@ bool emailValid(String possibleEmail) {
       .hasMatch(possibleEmail);
 }
 
-loginWithActiveSession(Me newMe, Me settingsMe) {
+loginWithActiveSession(Me newMe, Me settingsMe) async {
   // We want to update the active session with new data.
   // This can occur if the app is minimized and later reopened.
   if (newMe.broups.isNotEmpty) {
@@ -112,6 +113,12 @@ loginWithActiveSession(Me newMe, Me settingsMe) {
       }
       if (!found) {
         // This is a new broup, add it to existing session.
+        // First update the message Id,
+        // since we only want to retrieve messages after the bro is added
+        int messageReadId = await AuthServiceSocialV15().updateLocalBroupReadId(newMeBroup.broupId);
+        newMeBroup.localLastMessageReadId = messageReadId;
+        newMeBroup.lastMessageReadId = messageReadId;
+        newMeBroup.lastMessageId = messageReadId;
         settingsMe.broups.add(newMeBroup);
       }
     }
@@ -147,10 +154,10 @@ immediateBroupRetrieval(Broup broupToBeRetrieved, Me settingsMe) {
   });
 }
 
-setBroupsAfterLogin(Me settingsMe, List<int>? broupIds) {
+setBroupsAfterLogin(Me settingsMe, List<int>? broupIds) async {
   Storage storage = Storage();
-  storage.fetchAllBroups().then((dbBroups) {
-    storage.fetchAllBros().then((brosDB) {
+  storage.fetchAllBroups().then((dbBroups) async {
+    storage.fetchAllBros().then((brosDB) async {
       List<int> remainingBroupIds = [];
 
       Map<String, Broup> broupDbMap = {for (var broup in dbBroups) broup.getBroupId().toString(): broup};
@@ -217,6 +224,12 @@ setBroupsAfterLogin(Me settingsMe, List<int>? broupIds) {
               // With a slight delay to allow the tokens to be set.
               immediateBroupRetrieval(broupMe, settingsMe);
             }
+            // First update the message Id,
+            // since we only want to retrieve messages after the bro is added
+            int messageReadId = await AuthServiceSocialV15().updateLocalBroupReadId(broupMe.broupId);
+            broupMe.localLastMessageReadId = messageReadId;
+            broupMe.lastMessageReadId = messageReadId;
+            broupMe.lastMessageId = messageReadId;
             // No need to `checkBroupReceived` here, because we are adding a new broup
             storage.addBroup(broupMe);
           } else {

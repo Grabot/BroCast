@@ -59,7 +59,8 @@ class Broup {
   late List<int> messageIds;
   late List<Message> messages;
   int lastMessageId = 1;
-  int lastMessageReadId = 0;
+  int lastMessageReadId = 1;
+  int localLastMessageReadId = 1;
 
   String? lastActivity;
 
@@ -363,6 +364,7 @@ class Broup {
     List<int> messageIds = messages.map((e) => e.messageId).toList();
     map['messages'] = jsonEncode(messageIds);
     map['lastMessageReadId'] = lastMessageReadId;
+    map['localLastMessageReadId'] = localLastMessageReadId;
     return map;
   }
 
@@ -439,6 +441,7 @@ class Broup {
     List<int> messageIdsList = messageIds.map((s) => s as int).toList();
     this.messageIds = messageIdsList;
     lastMessageReadId = map['lastMessageReadId'];
+    localLastMessageReadId = map['localLastMessageReadId'];
     broupBros = [];
     messages = [];
   }
@@ -509,6 +512,7 @@ class Broup {
         ..updateBroIds = localBroup.updateBroIds
         ..updateBroAvatarIds = localBroup.updateBroAvatarIds
         ..avatarDefault = localBroup.avatarDefault
+        ..localLastMessageReadId = localBroup.localLastMessageReadId
         ..avatar = localBroup.avatar;
       return;
     }
@@ -608,6 +612,7 @@ class Broup {
       ..avatarDefault = localBroup.avatarDefault
       ..lastMessageId = localBroup.lastMessageId
       ..lastActivity = localBroup.lastActivity
+      ..localLastMessageReadId = localBroup.localLastMessageReadId
       ..avatar = localBroup.avatar;
   }
 
@@ -674,6 +679,7 @@ class Broup {
       ..messages = this.messages
       ..avatarDefault = this.avatarDefault
       ..lastActivity = this.lastActivity
+      ..localLastMessageReadId = this.localLastMessageReadId
       ..avatar = this.avatar;
   }
 
@@ -782,11 +788,11 @@ class Broup {
             if (LifeCycleService().appOpen) {
               unreadMessages = 0;
               // We had the correct page open, so we have read the message.
-              if (lastMessageReadId < lastMessageId) {
+              if (localLastMessageReadId < lastMessageId) {
                 AuthServiceSocial().readMessages(broupId, lastMessageId).then((value) {
                   if (value) {
-                    lastMessageReadId = lastMessageId;
-                    Storage().updateBroup(this);
+                    localLastMessageReadId = lastMessageId;
+                    unreadMessages = 0;
                   }
                 });
               }

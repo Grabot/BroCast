@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -53,7 +54,6 @@ class AuthServiceSocialV15 {
         return json.containsKey("result");
       }
     }).catchError((e) {
-      print("Error while sending message: $e");
       if (e is DioException) {
         showToastMessage("Dio error while sending sending message: ${e.message}");
       } else {
@@ -61,5 +61,33 @@ class AuthServiceSocialV15 {
       }
       return false;
     });
+  }
+
+  Future<int> updateLocalBroupReadId(int broupId) async {
+    String endPoint = "get/broup/read_time";
+    var response = await AuthApiV1_5().dio.post(endPoint,
+        options: Options(headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+        }),
+        data: jsonEncode(<String, dynamic>{
+          "broup_id": broupId,
+        }
+      )
+    );
+
+    Map<String, dynamic> json = response.data;
+    if (!json.containsKey("result")) {
+      return 1;
+    } else {
+      if (json["result"]) {
+        if (!json.containsKey("last_read_time")) {
+          return 1;
+        } else {
+          return json["last_read_time"];
+        }
+      } else {
+        return 1;
+      }
+    }
   }
 }

@@ -85,13 +85,14 @@ class NotificationController extends ChangeNotifier {
           enableLights: true,
           ledColor: Colors.teal,
           playSound: true,
-          soundSource: "resource://raw/res_brodio",
+          soundSource: 'resource://raw/res_brodio',
         )
       ],
       channelGroups: [
         NotificationChannelGroup(
             channelGroupKey: 'basic_channel_group',
-            channelGroupName: 'Basic group')
+            channelGroupName: 'Basic group'
+        )
       ],
       debug: debug,
     );

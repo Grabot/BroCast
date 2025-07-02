@@ -175,12 +175,11 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
   }
 
   highlightReplyMessage(int messageId) {
-    print("highlightReplyMessage $goingToReplyMessageId   $goingToReply");
     setState(() {
       highlightedMessageIds.add(messageId);
     });
     // The animation takes 750 milliseconds.
-    // After it's done we wait another 1250 milliseconds
+    // After it's done we wait another 1250 milliseconds (the 2 seconds total)
     // Then we take 750 milliseconds to fade out the highlight.
     Future.delayed(const Duration(seconds: 2), () {
       setState(() {
@@ -198,14 +197,11 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
       // These might already have these values, but they might not so we set them again.
       goingToReplyMessageId = passedMessageId;
       goingToReply = true;
-      print("Message visible!");
       // Not really visible, but it should have context.
       GlobalKey? messageKey = messageKeys[passedMessageId];
       // We assume that if it's in the `messageVisibility` List that it will have currentContext
       if (messageKey != null) {
-        print("context available? ${messageKey.currentContext != null}");
         if (messageKey.currentContext != null) {
-          print("ensuring visibility! :)");
           Scrollable.ensureVisible(
             messageKey.currentContext!,
             alignment: 0.8,
@@ -213,21 +209,13 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
             curve: Curves.easeInOut,
           );
           highlightReplyMessage(passedMessageId);
-        } else {
-          print("context nullll!?!?!?");
-          SystemNavigator.pop();
         }
-      } else {
-        print("Message key not found!?!?!?!");
-        SystemNavigator.pop();
       }
     } else {
-      print("not currently visible!");
       // Scroll to the message `messageScrollController.position.maxScrollExtent` is the top and 0 is the bottom.
       // get the index of the message with messageId == passedMessageId
       int index = widget.chat.messages.indexWhere((element) => element.messageId == passedMessageId);
       if (index != -1) {
-        print("scrolling to the top!!!!");
         // index 0 will be the newest message
         // index (widget.chat.messages.length - 1) will be the oldest message
         // Scroll towards the top until the message is visible and then stop.
@@ -246,7 +234,6 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
     busyRetrieving = true;
     amountViewed += 1;
     fetchExtraMessages(amountViewed, widget.chat, storage).then((value) {
-      print("fetched extra messages");
       setDateTiles(widget.chat, (50 * amountViewed));
       checkRepliedMessages();
       checkIsAdmin();
@@ -334,15 +321,18 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
 
           if (!settings.loggingIn) {
             // We set the last message we read to the lastMessageId. We check if it's more than what's stored.
-            if (widget.chat.lastMessageReadId < widget.chat.lastMessageId) {
-              AuthServiceSocial().readMessages(widget.chat.broupId, widget.chat.lastMessageId).then((value) {
-                if (value) {
-                  widget.chat.lastMessageReadId = widget.chat.lastMessageId;
-                  widget.chat.updateLastReadMessages(widget.chat.lastMessageReadId, storage);
-                  widget.chat.unreadMessages = 0;
-                  storage.updateBroup(widget.chat);
-                }
-              });
+            if (lifeCycleService.appOpen) {
+              if (widget.chat.localLastMessageReadId < widget.chat.lastMessageId) {
+                AuthServiceSocial()
+                    .readMessages(widget.chat.broupId, widget.chat.lastMessageId)
+                    .then((value) {
+                  if (value) {
+                    widget.chat.localLastMessageReadId = widget.chat.lastMessageId;
+                    widget.chat.unreadMessages = 0;
+                    storage.updateBroup(widget.chat);
+                  }
+                });
+              }
             }
           }
 
@@ -363,21 +353,22 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
   }
 
   messagingListener() {
-    print("messagingListener");
+    if (!widget.chat.checkedRemainingBros) {
+      retrieveData();
+    }
     checkRepliedMessages();
     checkIsAdmin();
     setState(() {});
   }
 
   socketListener() {
-    print("socketListener");
     // Do we set a flag on this?
-    checkRepliedMessages();
-    checkIsAdmin();
     // We have received a new message, which might not have been picked up with the sockets
     if (widget.chat.newMessages) {
       retrieveData();
     }
+    checkRepliedMessages();
+    checkIsAdmin();
     setState(() {});
   }
 
@@ -601,7 +592,6 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
       // passedId is the messageId
       // get the lowest messageId from widget.chat.messages excluding the 0 messageId
       int lowestMessageId = widget.chat.messages.where((element) => element.messageId != 0).map((e) => e.messageId).reduce(min);
-      print("lowestMessageId: $lowestMessageId");
       if (passedId < lowestMessageId) {
         // Message not currently loaded, but it should be on the storage
         fetchExtraMessagesLocal(passedId);

@@ -152,14 +152,10 @@ class _ChatDetailsState extends State<ChatDetails> {
         }
         if (broIdsToRetrieve.isEmpty) {
           participantChange();
+          return;
         }
-        AuthServiceSocial().retrieveBros(broIdsToRetrieve).then((value) {
-          if (value.isNotEmpty) {
-            for (Bro bro in value) {
-              widget.chat.addBro(bro);
-              storage.addBro(bro);
-            }
-          }
+        AuthServiceSocial().broDetails(broIdsToRetrieve, broIdsToRetrieve, widget.chat.broupId).then((value) {
+          // The new bro should be stored in the db and on the chat object.
           participantChange();
         });
       });

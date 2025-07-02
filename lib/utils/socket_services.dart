@@ -141,7 +141,6 @@ class SocketServices extends ChangeNotifier {
           bool chatBlocked = data["chat_blocked"];
           if (broup.private && !chatBlocked) {
             // I am unblocked!
-            // TODO: test the unblocking? Retrieve broup again?
             broup.blocked = false;
             broup.removed = false;
             broup.newMessages = true;
@@ -182,10 +181,10 @@ class SocketServices extends ChangeNotifier {
           }
           Storage().updateBroup(broup);
           broup.checkedRemainingBros = false;
-          MessagingChangeNotifier().notify();
           if (Settings().getMe()!.getId() == newMemberId) {
             broup.removed = false;
           }
+          MessagingChangeNotifier().notify();
         }
         if (data.containsKey("new_admin_id")) {
           int newAdminId = data["new_admin_id"];
@@ -217,28 +216,19 @@ class SocketServices extends ChangeNotifier {
           }
         }
         if (data.containsKey("bro_to_update")) {
-          // probably True, we should update broup when it's opened
           int broToUpdate = data["bro_to_update"];
+          if (!broup.updateBroIds.contains(broToUpdate)) {
+            broup.updateBroIds.add(broToUpdate);
+          }
           // Check if it's open right now
           if (MessagingChangeNotifier().getBroupId() == broupId) {
-            // It's open, so we should update it.
-            AuthServiceSocial().retrieveBro(broToUpdate).then((broServer) {
-              if (broServer != null) {
-                broup.addBro(broServer);
-                Storage().fetchBro(broToUpdate).then((broDb) {
-                  if (broDb != null) {
-                    Storage().updateBro(broServer);
-                  } else {
-                    Storage().addBro(broServer);
-                  }
-                  notifyListeners();
-                });
-                notifyListeners();
-              }
-            });
+            broup.checkedRemainingBros = false;
+            MessagingChangeNotifier().notify();
           } else {
             broup.updateBroup = true;
           }
+          notifyListeners();
+          // TODO: signal server that the update is already done?
         }
 
         if (data.containsKey("chat_blocked")) {
@@ -330,6 +320,17 @@ class SocketServices extends ChangeNotifier {
             break;
           }
         }
+
+        int localLastMessageReadId = 1;
+        if (data["broup"].containsKey("chat")) {
+          if (data["broup"]["chat"].containsKey("current_message_id")) {
+            localLastMessageReadId = data["broup"]["chat"]["current_message_id"];
+          }
+        }
+        newBroup.localLastMessageReadId = localLastMessageReadId;
+        newBroup.lastMessageReadId = localLastMessageReadId;
+        newBroup.lastMessageId = localLastMessageReadId;
+
         // Check the bros I have to update.
         if (!newBroup.private) {
           List<int> brosToUpdate = [...newBroup.getBroIds()];

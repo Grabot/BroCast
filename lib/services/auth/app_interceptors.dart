@@ -55,7 +55,6 @@ class AppInterceptors extends Interceptor {
           return handler.reject(dioError, true);
         } else {
           String endPoint = "refresh";
-          print("endpoint auth api interceptor");
           var responseRefresh = await Dio(
               BaseOptions(
                 baseUrl: apiUrl_v1_4,

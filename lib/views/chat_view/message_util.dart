@@ -124,7 +124,11 @@ Future<bool> getMessages(int page, Broup chat, Storage storage) async {
           .retrieveMessages(chat.getBroupId(), chat.lastMessageId);
 
       if (retrievedMessages.isNotEmpty) {
+        List<int> messageIds = retrievedMessages.map((e) => e.messageId).toList();
         messagesServer = retrievedMessages;
+        for (Message newMessage in retrievedMessages) {
+          storage.addMessage(newMessage);
+        }
         Message maxMessage = messagesServer.reduce((maxMessage, currentMessage) =>
         currentMessage.messageId > maxMessage.messageId ? currentMessage : maxMessage);
 
@@ -132,14 +136,12 @@ Future<bool> getMessages(int page, Broup chat, Storage storage) async {
         // broup will be updated in the db later.
         chat.lastActivity = maxMessage.timestamp;
 
-        List<int> messageIds = retrievedMessages.map((e) => e.messageId).toList();
         AuthServiceSocial().receivedMessages(chat.broupId, messageIds).then((value) async {
           if (!value) {
             chat.newMessages = true;
-            await storage.updateBroup(chat);
           }
+          await storage.updateBroup(chat);
         });
-        await storage.updateBroup(chat);
       }
     }
   }
@@ -152,9 +154,6 @@ Future<bool> getMessages(int page, Broup chat, Storage storage) async {
     }
   }
   mergeMessages(incomingMessages, chat);
-
-  // The lastMessageReadId might be updated, so we check if messages are read.
-  chat.updateLastReadMessages(chat.lastMessageReadId, storage);
 
   return allMessagesDBRetrieved;
 }

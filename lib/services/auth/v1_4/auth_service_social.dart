@@ -5,7 +5,6 @@ import 'dart:typed_data';
 import 'package:brocast/services/auth/models/base_response.dart';
 import 'package:brocast/utils/life_cycle_service.dart';
 import 'package:brocast/utils/utils.dart';
-import 'package:brocast/views/bro_home/bro_home.dart';
 import 'package:brocast/views/bro_home/bro_home_change_notifier.dart';
 import 'package:brocast/views/chat_view/messaging_change_notifier.dart';
 import 'package:dio/dio.dart';
@@ -15,7 +14,6 @@ import '../../../objects/broup.dart';
 import '../../../objects/me.dart';
 import '../../../objects/message.dart';
 import '../../../utils/settings.dart';
-import '../../../utils/socket_services.dart';
 import '../../../utils/storage.dart';
 import 'auth_api.dart';
 
@@ -226,7 +224,6 @@ class AuthServiceSocial {
       )
     );
 
-    Storage storage = Storage();
     Map<String, dynamic> json = response.data;
     if (!json.containsKey("result")) {
       return [];
@@ -235,9 +232,7 @@ class AuthServiceSocial {
         if (json.containsKey("messages")) {
           List<Message> messages = [];
           for (var message in json["messages"]) {
-            Message newMessage = Message.fromJson(message);
-            storage.addMessage(newMessage);
-            messages.add(newMessage);
+            messages.add(Message.fromJson(message));
           }
           return messages;
         } else {

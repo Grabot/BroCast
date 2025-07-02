@@ -69,6 +69,7 @@ class Storage {
       for (Message message in messages) {
         await db.insert('Message', message.toDbMap());
       }
+      db.execute('ALTER TABLE Broup ADD localLastMessageReadId INTEGER DEFAULT 0');
     }
   }
 
@@ -101,6 +102,7 @@ class Storage {
             messages TEXT,
             lastActivity TEXT,
             lastMessageReadId INTEGER,
+            localLastMessageReadId INTEGER,
             UNIQUE(broupId) ON CONFLICT REPLACE
           );
           ''');
