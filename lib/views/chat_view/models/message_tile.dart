@@ -15,7 +15,8 @@ class MessageTile extends StatefulWidget {
   final bool userAdmin;
   final Message? repliedMessage;
   final Bro? repliedBro;
-  final void Function(int, int) broHandling;
+  final void Function(int, int) messageHandling;
+  final void Function(Message, Offset) messageLongPress;
 
   MessageTile({
     required Key key,
@@ -28,7 +29,8 @@ class MessageTile extends StatefulWidget {
     required this.userAdmin,
     required this.repliedMessage,
     required this.repliedBro,
-    required this.broHandling
+    required this.messageHandling,
+    required this.messageLongPress,
   }) : super(key: key);
 
   @override
@@ -44,7 +46,7 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
 
   @override
   void dispose() {
-    widget.broHandling(0, widget.message.messageId);
+    widget.messageHandling(0, widget.message.messageId);
     super.dispose();
   }
 
@@ -59,7 +61,8 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
           myMessage: widget.myMessage,
           repliedMessage: widget.repliedMessage,
           repliedBro: widget.repliedBro,
-          broHandling: widget.broHandling);
+          messageHandling: widget.messageHandling,
+          messageLongPress: widget.messageLongPress);
     } else {
       messageTile = BroupMessageTile(
           key: UniqueKey(),
@@ -71,7 +74,8 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
           userAdmin: widget.userAdmin,
           repliedMessage: widget.repliedMessage,
           repliedBro: widget.repliedBro,
-          broHandling: widget.broHandling);
+          messageHandling: widget.messageHandling,
+          messageLongPress: widget.messageLongPress);
     }
     return messageTile;
   }

@@ -84,6 +84,7 @@ class AuthServiceSocial {
             getAvatarBro(newBro.id);
           }
           Broup newBroup = Broup.fromJson(json["broup"]);
+          newBroup.updateLastActivity(DateTime.now().toUtc().toString());
           newBroup.addBro(newBro);
           me.addBroup(newBroup);
           storage.addBroup(newBroup);

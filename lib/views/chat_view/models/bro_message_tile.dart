@@ -17,7 +17,8 @@ class BroMessageTile extends StatefulWidget {
   final bool myMessage;
   final Message? repliedMessage;
   final Bro? repliedBro;
-  final void Function(int, int) broHandling;
+  final void Function(int, int) messageHandling;
+  final void Function(Message, Offset) messageLongPress;
 
   BroMessageTile(
       {
@@ -26,7 +27,8 @@ class BroMessageTile extends StatefulWidget {
         required this.myMessage,
         required this.repliedMessage,
         required this.repliedBro,
-        required this.broHandling
+        required this.messageHandling,
+        required this.messageLongPress,
       })
       : super(key: key);
 
@@ -110,7 +112,7 @@ class _BroMessageTileState extends State<BroMessageTile> with SingleTickerProvid
   }
 
   replyToMessage() {
-    widget.broHandling(3, widget.message.messageId);
+    widget.messageHandling(1, widget.message.messageId);
   }
 
   Widget getMessageContent() {
@@ -191,19 +193,12 @@ class _BroMessageTileState extends State<BroMessageTile> with SingleTickerProvid
               alignment: widget.myMessage
                   ? Alignment.bottomRight
                   : Alignment.bottomLeft,
-              child: new InkWell(
-                customBorder: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(42),
-                ),
+              child: new GestureDetector(
                 onTap: () {
                   selectMessage(context);
                 },
-                onLongPress: () {
-                  if (isImage && widget.message.clicked) {
-                    _showMessageDetailPopupMenu();
-                  }
-                },
-                onTapDown: _storePosition,
+                onLongPressStart: (details) =>
+                    onLongPressMessage(context, details),
                 child: Container(
                   padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                   decoration: BoxDecoration(
@@ -294,106 +289,9 @@ class _BroMessageTileState extends State<BroMessageTile> with SingleTickerProvid
     );
   }
 
-  void _showMessageDetailPopupMenu() {
-    final RenderBox overlay =
-    Overlay.of(context).context.findRenderObject() as RenderBox;
-
-    showMenu(
-        context: context,
-        items: [
-          BroMessageDetailPopup(
-              key: UniqueKey()
-          )
-        ],
-        position: RelativeRect.fromRect(_tapPosition & const Size(40, 40),
-            Offset.zero & overlay.size))
-        .then((int? delta) {
-      if (delta == 1) {
-        // Save the image!
-        saveImageToGallery();
-      }
-      return;
-    });
+  void onLongPressMessage(BuildContext context, LongPressStartDetails details) {
+    print("long pressed message");
+    Offset pressPosition = details.globalPosition;
+    widget.messageLongPress(widget.message, pressPosition);
   }
-
-  Future<bool> requestPermissions() async {
-    final hasAccess = await Gal.hasAccess();
-    if (!hasAccess) {
-      return await Gal.requestAccess();
-    } else {
-      return true;
-    }
-  }
-
-  Future<void> saveImageToGallery() async {
-    try {
-      bool access = await requestPermissions();
-      if (!access) {
-        showToastMessage("No access to gallery");
-        return;
-      }
-      if (widget.message.data != null) {
-        Uint8List decoded = widget.message.data!;
-        final albumName = "Brocast";
-        await Gal.putImageBytes(decoded, album: albumName);
-
-        showToastMessage("Image saved");
-      }
-    } catch (e) {
-      showToastMessage("Failed to save image: $e");
-    }
-  }
-
-  void _storePosition(TapDownDetails details) {
-    _tapPosition = details.globalPosition;
-  }
-
-}
-
-class BroMessageDetailPopup extends PopupMenuEntry<int> {
-
-  BroMessageDetailPopup(
-      {required Key key})
-      : super(key: key);
-
-  @override
-  bool represents(int? n) => n == 1 || n == -1;
-
-  @override
-  BroMessageDetailPopupState createState() => BroMessageDetailPopupState();
-
-  @override
-  double get height => 1;
-}
-
-class BroMessageDetailPopupState extends State<BroMessageDetailPopup> {
-  @override
-  Widget build(BuildContext context) {
-    return getPopupItems(context);
-  }
-}
-
-void buttonMessage(BuildContext context) {
-  Navigator.pop<int>(context, 1);
-}
-
-Widget getPopupItems(BuildContext context) {
-  return Column(children: [
-    Container(
-      alignment: Alignment.centerLeft,
-      child: TextButton(
-          onPressed: () {
-            buttonMessage(context);
-          },
-          style: TextButton.styleFrom(
-            alignment: Alignment.centerLeft,
-            minimumSize: Size(double.infinity, 0), // Make the button take full width
-          ),
-          child: Text(
-            'Save image to gallery',
-            textAlign: TextAlign.left,
-            style: TextStyle(color: Colors.black, fontSize: 14),
-          )),
-    )
-  ]);
 }

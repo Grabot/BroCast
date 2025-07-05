@@ -19,7 +19,8 @@ class BroupMessageTile extends StatefulWidget {
   final bool userAdmin;
   final Message? repliedMessage;
   final Bro? repliedBro;
-  final void Function(int, int) broHandling;
+  final void Function(int, int) messageHandling;
+  final void Function(Message, Offset) messageLongPress;
 
   BroupMessageTile({
     required Key key,
@@ -31,7 +32,8 @@ class BroupMessageTile extends StatefulWidget {
     required this.userAdmin,
     required this.repliedMessage,
     required this.repliedBro,
-    required this.broHandling
+    required this.messageHandling,
+    required this.messageLongPress
   }) : super(key: key);
 
   @override
@@ -39,7 +41,7 @@ class BroupMessageTile extends StatefulWidget {
 }
 
 class _BroupMessageTileState extends State<BroupMessageTile> with SingleTickerProviderStateMixin {
-  var _tapPosition;
+
   bool isImage = false;
 
   selectMessage(BuildContext context) {
@@ -105,7 +107,7 @@ class _BroupMessageTileState extends State<BroupMessageTile> with SingleTickerPr
   }
 
   replyToMessage() {
-    widget.broHandling(3, widget.message.messageId);
+    widget.messageHandling(1, widget.message.messageId);
   }
 
   clickedReplyMessage() {
@@ -114,7 +116,7 @@ class _BroupMessageTileState extends State<BroupMessageTile> with SingleTickerPr
       // In this case we have an empty message with messageId 0 and info set to true
       // We want to ignore this
       if (widget.message.repliedMessage != null && widget.message.repliedMessage!.messageId != 0 && !widget.message.repliedMessage!.info) {
-        widget.broHandling(6, widget.message.repliedTo!);
+        widget.messageHandling(2, widget.message.repliedTo!);
       }
     }
   }
@@ -442,8 +444,8 @@ class _BroupMessageTileState extends State<BroupMessageTile> with SingleTickerPr
                               ? Alignment.bottomRight
                               : Alignment.bottomLeft,
                           child: GestureDetector(
-                            onLongPress: _showMessageDetailPopupMenu,
-                            onTapDown: _storePosition,
+                            onLongPressStart: (details) =>
+                                onLongPressMessage(context, details),
                             onTap: () {
                               selectMessage(context);
                             },
@@ -510,223 +512,9 @@ class _BroupMessageTileState extends State<BroupMessageTile> with SingleTickerPr
     );
   }
 
-  void _showMessageDetailPopupMenu() {
-    bool imageShowing = isImage && widget.message.clicked;
-    if (!widget.myMessage || imageShowing) {
-      final RenderBox overlay = Overlay.of(context).context.findRenderObject() as RenderBox;
-      showMenu(
-          context: context,
-          items: [
-            MessageDetailPopup(
-                key: UniqueKey(),
-                myMessage: widget.myMessage,
-                sender: widget.bro != null ? widget.bro!.getFullName() : "",
-                broAdded: widget.broAdded,
-                broAdmin: widget.broAdmin,
-                userAdmin: widget.userAdmin,
-                imageShowing: imageShowing
-            )
-          ],
-          position: RelativeRect.fromRect(_tapPosition & const Size(40, 40),
-              Offset.zero & overlay.size))
-      .then((int? delta) {
-        if (delta == 1) {
-          if (widget.bro != null) {
-            widget.broHandling(delta!, widget.bro!.getId());
-          }
-        } else if (delta == 2) {
-          if (widget.bro != null) {
-            widget.broHandling(delta!, widget.bro!.getId());
-          }
-        } else if (delta == 3) {
-          saveImageToGallery();
-        } else if (delta == 4) {
-          if (widget.bro != null) {
-            widget.broHandling(delta!, widget.bro!.getId());
-          }
-        } else if (delta == 5) {
-          if (widget.bro != null) {
-            widget.broHandling(delta!, widget.bro!.getId());
-          }
-        }
-        return;
-      });
-    }
+  void onLongPressMessage(BuildContext context, LongPressStartDetails details) {
+    print("long pressed message");
+    Offset pressPosition = details.globalPosition;
+    widget.messageLongPress(widget.message, pressPosition);
   }
-
-  Future<bool> requestPermissions() async {
-    final hasAccess = await Gal.hasAccess();
-    if (!hasAccess) {
-      return await Gal.requestAccess();
-    } else {
-      return true;
-    }
-  }
-
-  Future<void> saveImageToGallery() async {
-    try {
-      bool access = await requestPermissions();
-      if (!access) {
-        showToastMessage("No access to gallery");
-        return;
-      }
-      if (widget.message.data != null) {
-        Uint8List decoded = widget.message.data!;
-        final albumName = "Brocast";
-        await Gal.putImageBytes(decoded, album: albumName);
-        showToastMessage("Image saved");
-      }
-    } catch (e) {
-      showToastMessage("Failed to save image: $e");
-    }
-  }
-
-  void _storePosition(TapDownDetails details) {
-    _tapPosition = details.globalPosition;
-  }
-}
-
-class MessageDetailPopup extends PopupMenuEntry<int> {
-  final String sender;
-  final bool myMessage;
-  final bool broAdded;
-  final bool broAdmin;
-  final bool userAdmin;
-  final bool imageShowing;
-
-  MessageDetailPopup(
-      {
-        required Key key,
-        required this.myMessage,
-        required this.sender,
-        required this.broAdded,
-        required this.broAdmin,
-        required this.userAdmin,
-        required this.imageShowing
-      })
-      : super(key: key);
-
-  @override
-  bool represents(int? n) => n == 1 || n == -1;
-
-  @override
-  MessageDetailPopupState createState() => MessageDetailPopupState();
-
-  @override
-  double get height => 1;
-}
-
-class MessageDetailPopupState extends State<MessageDetailPopup> {
-  @override
-  Widget build(BuildContext context) {
-    return getPopupItems(context, widget.sender, widget.broAdded, widget.broAdmin, widget.imageShowing, widget.myMessage, widget.userAdmin);
-  }
-}
-
-void buttonMessage(BuildContext context) {
-  Navigator.pop<int>(context, 1);
-}
-
-void buttonAdd(BuildContext context) {
-  Navigator.pop<int>(context, 2);
-}
-
-void buttonSaveImage(BuildContext context) {
-  Navigator.pop<int>(context, 3);
-}
-
-void buttonAddToAdmin(BuildContext context) {
-  Navigator.pop<int>(context, 4);
-}
-
-void buttonRemoveToAdmin(BuildContext context) {
-  Navigator.pop<int>(context, 5);
-}
-
-Widget getPopupItems(BuildContext context, String sender, bool broAdded, bool broIsAdmin, bool imageShowing, bool myMessage, bool userAdmin) {
-  return Column(children: [
-    broAdded && !myMessage
-        ? Container(
-      alignment: Alignment.centerLeft,
-      child: TextButton(
-          onPressed: () {
-            buttonMessage(context);
-          },
-          style: TextButton.styleFrom(
-            alignment: Alignment.centerLeft,
-            minimumSize: Size(double.infinity, 0),
-          ),
-          child: Text(
-            'Message $sender',
-            textAlign: TextAlign.left,
-            style: TextStyle(color: Colors.black, fontSize: 14),
-          )),
-    )
-        : Container(),
-    !broAdded && !myMessage
-        ? Container(
-      alignment: Alignment.centerLeft,
-      child: TextButton(
-          onPressed: () {
-            buttonAdd(context);
-          },
-          style: TextButton.styleFrom(
-            alignment: Alignment.centerLeft,
-            minimumSize: Size(double.infinity, 0),
-          ),
-          child: Text(
-            'Add $sender',
-            textAlign: TextAlign.left,
-            style: TextStyle(color: Colors.black, fontSize: 14),
-          )),
-    ) : Container(),
-    userAdmin && !broIsAdmin ? Container(
-      alignment: Alignment.centerLeft,
-      child: TextButton(
-          onPressed: () {
-            buttonAddToAdmin(context);
-          },
-          style: TextButton.styleFrom(
-            alignment: Alignment.centerLeft,
-            minimumSize: Size(double.infinity, 0),
-          ),
-          child: Text(
-            'Make $sender admin',
-            textAlign: TextAlign.left,
-            style: TextStyle(color: Colors.black, fontSize: 14),
-          )),
-    ) : Container(),
-    userAdmin && broIsAdmin ? Container(
-      alignment: Alignment.centerLeft,
-      child: TextButton(
-          onPressed: () {
-            buttonRemoveToAdmin(context);
-          },
-          style: TextButton.styleFrom(
-            alignment: Alignment.centerLeft,
-            minimumSize: Size(double.infinity, 0),
-          ),
-          child: Text(
-            'Dismiss $sender from admins',
-            textAlign: TextAlign.left,
-            style: TextStyle(color: Colors.black, fontSize: 14),
-          )),
-    ) : Container(),
-    imageShowing ? Container(
-      alignment: Alignment.centerLeft,
-      child: TextButton(
-          onPressed: () {
-            buttonSaveImage(context);
-          },
-          style: TextButton.styleFrom(
-            alignment: Alignment.centerLeft,
-            minimumSize: Size(double.infinity, 0),
-          ),
-          child: Text(
-            'Save image to gallery',
-            textAlign: TextAlign.left,
-            style: TextStyle(color: Colors.black, fontSize: 14),
-          )),
-    ) : Container(),
-  ]);
 }

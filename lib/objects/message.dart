@@ -124,6 +124,8 @@ class Message {
     body = json['body'];
     if (json.containsKey('text_message')) {
       textMessage = json['text_message'];
+    } else {
+      textMessage = "";
     }
     info = json['info'];
     this.timestamp = json['timestamp'];
