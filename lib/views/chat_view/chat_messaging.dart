@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 import 'dart:typed_data';
+import 'package:brocast/views/chat_view/emoji_reactions_overview.dart';
 import 'package:collection/collection.dart';
 
 import 'package:brocast/objects/broup.dart';
@@ -94,6 +95,8 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
 
   int emojiReactionMessageId = -1;
   bool showEmojiPopup = false;
+  bool showEmojiReactionOverview = false;
+  List<EmojiOverviewData> emojiOverviewDataList = [];
   Offset emojiPopupPosition = Offset.zero;
 
   List<Map<String, dynamic>> messagePopupOptions = [];
@@ -433,6 +436,24 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
     }
     setState(() {
       highlightedMessageIds.remove(action.message.messageId);
+    });
+  }
+
+  showEmojiReactions(Message message) {
+    print("emoji reaction click");
+    emojiOverviewDataList = [];
+    message.emojiReactions.forEach((key, value) {
+      String emoji = value;
+      String broIdString = key;
+      int broId = int.parse(broIdString);
+      Bro? bro = getBro(broId);
+      if (bro != null) {
+        EmojiOverviewData emojiOverviewData = EmojiOverviewData(bro: bro, emoji: emoji);
+        emojiOverviewDataList.add(emojiOverviewData);
+      }
+    });
+    setState(() {
+      showEmojiReactionOverview = true;
     });
   }
 
@@ -790,6 +811,13 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
         // Check if "passedId" is a in the `messageVisibility` Map
         checkMessageIsVisible(passedId);
       }
+    } else if (delta == 3) {
+      // Clicked the emoji reactions on a message
+      // passedId is the messageId
+      Message? clickedMessage = widget.chat.messages.firstWhereOrNull((message) => message.messageId == passedId);
+      if (clickedMessage != null) {
+        showEmojiReactions(clickedMessage);
+      }
     }
   }
 
@@ -1025,7 +1053,8 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
                   repliedMessage: message.repliedMessage,
                   repliedBro: getBroReply(message.repliedMessage),
                   messageHandling: messageHandling,
-                  messageLongPress: messageLongPress);
+                  messageLongPress: messageLongPress,
+              );
               return AnimatedContainer(
                   duration: Duration(milliseconds: 750),
                   curve: Curves.linear,
@@ -1518,6 +1547,15 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
                 position: emojiPopupPosition,
                 onAction: handleMessagePopupAction,
                 options: messagePopupOptions,
+              ),
+            if (showEmojiReactionOverview)
+              EmojiReactionsOverview(
+                emojiOverviewDataList: emojiOverviewDataList,
+                onOutsideTap: () {
+                  setState(() {
+                    showEmojiReactionOverview = false;
+                  });
+                },
               ),
           ],
         ),

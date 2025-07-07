@@ -107,6 +107,11 @@ class _BroupMessageTileState extends State<BroupMessageTile> with SingleTickerPr
     return borderColour;
   }
 
+
+  clickedEmojiReaction() {
+    widget.messageHandling(3, widget.message.messageId);
+  }
+
   replyToMessage() {
     widget.messageHandling(1, widget.message.messageId);
   }
@@ -513,7 +518,7 @@ class _BroupMessageTileState extends State<BroupMessageTile> with SingleTickerPr
           color: Colors.transparent,
           child: InkWell(
             onTap: () {
-              print("Emoji reaction tapped");
+              clickedEmojiReaction();
             },
             child: Container(
               height: emojiWidth,
