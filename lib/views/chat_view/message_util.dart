@@ -1,5 +1,6 @@
 import 'package:intl/intl.dart';
 
+import 'package:collection/collection.dart';
 import '../../objects/bro.dart';
 import '../../objects/broup.dart';
 import '../../objects/me.dart';
@@ -125,9 +126,30 @@ Future<bool> getMessages(int page, Broup chat, Storage storage) async {
 
       if (retrievedMessages.isNotEmpty) {
         List<int> messageIds = retrievedMessages.map((e) => e.messageId).toList();
+
+        // We also check the local db if the messages are stored there.
+        // It's possible that someone did an emoji reaction to one of the messages.
+        // If this was done it would have been received, before the message was.
+        // This is handled by storing a placeholder in the local db.
+        List<Message> messagesDB = await storage.retrieveMessages(messageIds);
+        List<int> messageIdsDb = messagesDB.map((e) => e.messageId).toList();
+        for (Message messageDb in messagesDB) {
+          Message? serverMessage = retrievedMessages.firstWhereOrNull((element) => element.messageId == messageDb.messageId);
+          if (serverMessage != null) {
+            // For now the only thing the placeholder can hold is the emojiReactions.
+            serverMessage.emojiReactions = messageDb.emojiReactions;
+            storage.updateMessage(serverMessage);
+          }
+        }
         messagesServer = retrievedMessages;
         for (Message newMessage in retrievedMessages) {
-          storage.addMessage(newMessage);
+          if (messageIdsDb.contains(newMessage.messageId)) {
+            // We already have this message in the local db and we have probably updated it
+            // with the emoji reactions. We have even updated it already.
+            messageIdsDb.remove(newMessage.messageId);
+          } else {
+            storage.addMessage(newMessage);
+          }
         }
         Message maxMessage = messagesServer.reduce((maxMessage, currentMessage) =>
         currentMessage.messageId > maxMessage.messageId ? currentMessage : maxMessage);

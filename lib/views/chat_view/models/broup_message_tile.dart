@@ -3,11 +3,12 @@ import 'package:brocast/views/chat_view/image_viewer/image_viewer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:gal/gal.dart';
-import 'package:intl/intl.dart';
+import 'package:intl/intl.dart' show DateFormat;
 import 'package:url_launcher/url_launcher.dart';
 import '../../../../objects/message.dart';
 import '../../../objects/bro.dart';
+import 'dart:ui';
+
 import '../../../utils/utils.dart';
 
 class BroupMessageTile extends StatefulWidget {
@@ -214,7 +215,71 @@ class _BroupMessageTileState extends State<BroupMessageTile> with SingleTickerPr
     }
   }
 
-  Widget getMessageContent() {
+  double getOptionWidth(String messageContent, TextStyle textStyle) {
+    final textSpan = TextSpan(
+      text: messageContent,
+      style: textStyle
+    );
+
+    final textPainter = TextPainter(
+      text: textSpan,
+      textDirection: TextDirection.ltr,
+      maxLines: 1,
+    );
+
+    textPainter.layout();
+
+    final textWidth = textPainter.size.width;
+
+    // Add the padding and some final adjustments
+    return textWidth + 8;
+  }
+
+  double getMessageWidgetWidth() {
+    if (widget.message.clicked) {
+      if (isImage) {
+        return MediaQuery.of(context).size.width;
+      }
+    }
+    double widgetWidth = getOptionWidth(widget.message.body, simpleTextStyle());
+    if (widget.message.clicked) {
+      // If it is clicked we want to check which is larger, the body or the textMessage
+      // The width is the largest of the two
+      // Or, if it has data than the width is maximum
+      if (widget.message.textMessage != null && widget.message.textMessage!.isNotEmpty) {
+        double textMessageWidth = getOptionWidth(widget.message.textMessage!, simpleTextStyle());
+        if (textMessageWidth > widgetWidth) {
+          widgetWidth = textMessageWidth;
+        }
+      }
+    }
+    if (widget.message.repliedMessage != null) {
+      Message repliedToMessage = widget.message.repliedMessage!;
+      if (repliedToMessage.body != "") {
+        TextStyle replyTextStyle = TextStyle(color: Colors.white);
+        double repliedToBodyWidth = getOptionWidth(repliedToMessage.body, replyTextStyle);
+        String replySenderName = "Message not available";
+        if (widget.repliedBro != null) {
+          replySenderName = widget.repliedBro!.getFullName();
+        }
+        double repliedToNameWidth = getOptionWidth(replySenderName, replyTextStyle);
+        // Add the reply icon width
+        repliedToNameWidth += 20;
+        if (repliedToBodyWidth > repliedToNameWidth) {
+          if (repliedToBodyWidth > widgetWidth) {
+            widgetWidth = repliedToBodyWidth;
+          }
+        } else {
+          if (repliedToNameWidth > widgetWidth) {
+            widgetWidth = repliedToNameWidth;
+          }
+        }
+      }
+    }
+    return widgetWidth;
+  }
+
+  Widget getMessageContent(double messageWidth) {
     Widget content;
     if (widget.message.clicked) {
       if (isImage) {
@@ -289,7 +354,8 @@ class _BroupMessageTileState extends State<BroupMessageTile> with SingleTickerPr
     return AnimatedSize(
       duration: Duration(milliseconds: 200),
       curve: Curves.easeInOut,
-      child: IntrinsicWidth(
+      child: Container(
+        width: messageWidth,
         child: content,
       ),
     );
@@ -414,6 +480,113 @@ class _BroupMessageTileState extends State<BroupMessageTile> with SingleTickerPr
     return widget.myMessage ? myTimeIndicator(messageWidth) : broTimeIndicator(messageWidth);
   }
 
+  Widget emojiReactionWidget(double messageWidth) {
+    if (widget.message.getEmojiReaction().isEmpty) {
+      return Container();
+    } else {
+      final ScrollController scrollController = ScrollController();
+      List<String> emojiReactions = widget.message.getEmojiReaction().values.toList();
+      double emojiWidth = 24;
+      double totalEmojiWidth = 24;
+      if (emojiReactions.length > 1) {
+        totalEmojiWidth += (emojiReactions.length - 1) * 16.0;
+      }
+
+      double maxPosition = totalEmojiWidth - (messageWidth + 24);
+      bool disableScrolling = totalEmojiWidth < (messageWidth + 24);
+      scrollController.addListener(() {
+        if (scrollController.position.pixels > maxPosition) {
+          scrollController.jumpTo(maxPosition);
+        }
+      });
+      double actualWidth = messageWidth + 24;
+      double difference = 0;
+      if (totalEmojiWidth < actualWidth) {
+        difference = actualWidth - totalEmojiWidth;
+        actualWidth = totalEmojiWidth;
+      }
+      return Positioned(
+        bottom: 0,
+        right: widget.myMessage ? 12 + difference : null,
+        left: widget.myMessage ? null : 12 + difference,
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: () {
+              print("Emoji reaction tapped");
+            },
+            child: Container(
+              height: emojiWidth,
+              width: actualWidth,
+              child: SingleChildScrollView(
+                controller: scrollController,
+                scrollDirection: Axis.horizontal,
+                physics: disableScrolling ? NeverScrollableScrollPhysics() : null,
+                child: Row(
+                  children: List.generate(emojiReactions.length, (index) {
+                    return Transform.translate(
+                      offset: Offset(-index * 8.0, 0),
+                      child: Container(
+                        width: emojiWidth,
+                        height: emojiWidth,
+                        child: Text(
+                          emojiReactions[index],
+                          style: TextStyle(fontSize: 18),
+                        ),
+                      ),
+                    );
+                  }),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+  }
+
+  Widget messageBox() {
+    // The width that is bound by the message content.
+    // Used for the messageBox and the emojiReactionWidget
+    double messageWidth = getMessageWidgetWidth();
+    return Stack(
+      children: [
+        Align(
+          alignment: widget.myMessage ? Alignment.centerRight : Alignment.centerLeft,
+          child: Container(
+            padding: EdgeInsets.only(
+                left: 24,
+                right: 24,
+                top: 12,
+                bottom: widget.message.getEmojiReaction().length == 0 ? 12 : 20
+            ),
+            decoration: BoxDecoration(
+                border: Border.all(
+                  color: getBorderColour(),
+                  width: 2,
+                ),
+                color: widget.myMessage
+                    ? Color(0xFF009E00)
+                    : Color(0xFF0060BB),
+                borderRadius: widget.myMessage
+                    ? BorderRadius.only(
+                    topLeft: Radius.circular(42),
+                    bottomRight: Radius.circular(42),
+                    bottomLeft: Radius.circular(42))
+                    : BorderRadius.only(
+                    bottomLeft: Radius.circular(42),
+                    topRight: Radius.circular(42),
+                    bottomRight: Radius.circular(42))),
+            child: Container(
+                child: getMessageContent(messageWidth)
+            ),
+          ),
+        ),
+        emojiReactionWidget(messageWidth)
+      ],
+    );
+  }
+
   Widget regularMessage() {
     double avatarSize = 50;
     double messageWidth = MediaQuery.of(context).size.width - avatarSize;
@@ -449,29 +622,7 @@ class _BroupMessageTileState extends State<BroupMessageTile> with SingleTickerPr
                             onTap: () {
                               selectMessage(context);
                             },
-                            child: Container(
-                              padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                              decoration: BoxDecoration(
-                                  border: Border.all(
-                                    color: getBorderColour(),
-                                    width: 2,
-                                  ),
-                                  color: widget.myMessage
-                                      ? Color(0xFF009E00)
-                                      : Color(0xFF0060BB),
-                                  borderRadius: widget.myMessage
-                                      ? BorderRadius.only(
-                                      topLeft: Radius.circular(42),
-                                      bottomRight: Radius.circular(42),
-                                      bottomLeft: Radius.circular(42))
-                                      : BorderRadius.only(
-                                      bottomLeft: Radius.circular(42),
-                                      topRight: Radius.circular(42),
-                                      bottomRight: Radius.circular(42))),
-                              child: Container(
-                                  child: getMessageContent()
-                              ),
-                            ),
+                            child: messageBox(),
                           ),
                         ),
                         timeIndicator(messageWidth),
@@ -481,7 +632,7 @@ class _BroupMessageTileState extends State<BroupMessageTile> with SingleTickerPr
                 ),
               ]
           ),
-        )
+        ),
     );
   }
 

@@ -63,6 +63,7 @@ class Storage {
       // To change the type of the data on the message table
       // we have to drop the old one and recreate it.
       await db.execute('DROP TABLE Message');
+      // Recreate the message table, so we also add the new `emojiReactions` column.
       await createTableMessage(db);
 
       //  Insert the data from the old table into the new table
@@ -123,6 +124,7 @@ class Storage {
             data BLOB,
             dataType INTEGER,
             repliedTo INTEGER,
+            emojiReactions TEXT,
             UNIQUE(messageId, broupId, info) ON CONFLICT REPLACE
           );
           ''');
@@ -317,6 +319,20 @@ class Storage {
     );
     if (maps.isNotEmpty) {
       return Broup.fromDbMap(maps.first);
+    } else {
+      return null;
+    }
+  }
+
+  Future<Message?> fetchMessage(int broupId, int messageId) async {
+    Database database = await this.database;
+    List<Map<String, dynamic>> maps = await database.query(
+      'Message',
+      where: 'messageId = ? and broupId = ?',
+      whereArgs: [messageId, broupId],
+    );
+    if (maps.isNotEmpty) {
+      return Message.fromDbMap(maps.first);
     } else {
       return null;
     }

@@ -18,7 +18,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:gal/gal.dart';
-import 'package:visibility_detector/visibility_detector.dart';
 
 import '../../../objects/bro.dart';
 import '../../services/auth/v1_4/auth_service_social.dart';
@@ -32,8 +31,6 @@ import 'chat_details/chat_details.dart';
 import 'image_viewer/image_viewer.dart';
 import 'message_detail_popup.dart';
 import 'message_util.dart';
-import 'models/bro_message_tile.dart';
-import 'models/broup_message_tile.dart';
 import 'models/message_tile.dart';
 
 class ChatMessaging extends StatefulWidget {
@@ -95,7 +92,7 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
   List<int> highlightedMessageIds = [];
   bool showBackToBottomButton = false;
 
-  int emojiReactionIndex = -1;
+  int emojiReactionMessageId = -1;
   bool showEmojiPopup = false;
   Offset emojiPopupPosition = Offset.zero;
 
@@ -248,6 +245,7 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
       checkRepliedMessages();
       checkIsAdmin();
       allMessagesDBRetrieved = value;
+      checkMessageBroIds();
       setState(() {
         busyRetrieving = false;
       });
@@ -308,6 +306,7 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
   }
 
   void handleEmojiPopupAction(EmojiPopupAction action) {
+    highlightedMessageIds.remove(emojiReactionMessageId);
     showEmojiPopup = false;
     if (action is OutsideClicked) {
       print("outside clicked");
@@ -316,14 +315,9 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
       showEmojiKeyboard = true;
     } else if (action is EmojiSelected) {
       final String newEmoji = action.emoji;
-      print("emoji pressed $newEmoji");
-      // if (emojiReactions[emojiReactionIndex] == newEmoji) {
-      //   emojiReactions[emojiReactionIndex] = '';
-      // } else {
-      //   emojiReactions[emojiReactionIndex] = action.emoji;
-      // }
-      emojiReactionIndex = -1;
+      emojiReaction(newEmoji, emojiReactionMessageId);
     }
+    emojiReactionMessageId = -1;
     setState(() {});
   }
 
@@ -355,9 +349,10 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
   }
 
   void handleMessagePopupAction(MessagePopupAction action) {
+
     print("message popoup action");
     showEmojiPopup = false;
-    emojiReactionIndex = -1;
+    emojiReactionMessageId = -1;
 
     if (action is MessageBroPopupAction) {
       Me? me = settings.getMe();
@@ -436,13 +431,32 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
         }
       });
     }
-    setState(() {});
+    setState(() {
+      highlightedMessageIds.remove(action.message.messageId);
+    });
+  }
+
+  emojiReaction(String emoji, emojiReactionMessageId) {
+    print("emoji pressed $emoji");
+    AuthServiceSocialV15().messageEmojiReaction(widget.chat.broupId, emojiReactionMessageId, emoji, true).then((value) {
+      if (value) {
+        Message? messageInBroup = widget.chat.messages.firstWhereOrNull((element) => element.messageId == emojiReactionMessageId);
+        if (messageInBroup != null) {
+          // We update the emoji reaction when the REST call is successful.
+          // We will also update it via sockets, but we already know it worked so we set it here.
+          if (me != null) {
+            messageInBroup.addEmojiReaction(emoji, me!.getId());
+          }
+        }
+        print("successful emoji reaction!");
+      }
+    });
   }
 
   void onActionEmojiChanged(String emoji) {
-    print("on action emoji changed $emoji");
-    if (emojiReactionIndex != -1) {
-      emojiReactionIndex = -1;
+    if (emojiReactionMessageId != -1) {
+      emojiReaction(emoji, emojiReactionMessageId);
+      emojiReactionMessageId = -1;
       if (showEmojiKeyboard) {
         showEmojiKeyboard = false;
       }
@@ -684,11 +698,12 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
   }
 
   messageLongPress(Message message, Offset pressPosition) {
-    print("long pressed message ${message.messageId}");
+    highlightedMessageIds.add(message.messageId);
 
     bool broAdded = getIsAdded(message.senderId);
     bool myMessage = message.senderId == settings.getMe()!.getId();
     bool broIsAdmin = getIsAdmin(message.senderId);
+    bool broInBroup = widget.chat.broIds.contains(message.senderId);
 
     bool messageBroOption = broAdded && !myMessage && !widget.chat.private;
     bool addBroOption = !broAdded && !myMessage;
@@ -697,32 +712,45 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
     bool saveImageOption = message.data != null && message.clicked;
 
     messagePopupOptions = [];
-    if (messageBroOption) {
+    if (messageBroOption && broInBroup) {
       messagePopupOptions.add({'text': 'Message Bro', 'icon': Icons.message, 'action': MessageBroPopupAction(message: message, broId: message.senderId)});
     }
-    if (addBroOption) {
+    if (addBroOption && broInBroup) {
       messagePopupOptions.add({'text': 'Add New Bro', 'icon': Icons.person_add, 'action': AddNewBroPopupAction(message: message, broId: message.senderId)});
     }
-    if (makeBroAdmin) {
+    if (makeBroAdmin && broInBroup) {
       messagePopupOptions.add({'text': 'Make Bro Admin', 'icon': Icons.admin_panel_settings, 'action': MakeBroAdminPopupAction(message: message, broId: message.senderId)});
     }
-    if (dismissBroAdmin) {
+    if (dismissBroAdmin && broInBroup) {
       messagePopupOptions.add({'text': 'Dismiss Bro Admin', 'icon': Icons.admin_panel_settings_outlined, 'action': DismissBroAdminPopupAction(message: message, broId: message.senderId)});
     }
     if (saveImageOption) {
       messagePopupOptions.add({'text': 'Save Image', 'icon': Icons.save_alt, 'action': SaveImagePopupAction(message: message)});
       messagePopupOptions.add({'text': 'View Image', 'icon': Icons.remove_red_eye, 'action': ViewImagePopupAction(message: message)});
     }
-    if (meAdmin && !myMessage && !widget.chat.private) {
+    if (meAdmin && !myMessage && !widget.chat.private && broInBroup) {
       messagePopupOptions.add({'text': 'Remove bro from broup', 'icon': Icons.person_remove, 'action': RemoveBroFromBroupPopupAction(message: message, broId: message.senderId)});
     }
     messagePopupOptions.add({'text': 'Reply to Message', 'icon': Icons.reply, 'action': ReplyToMessagePopupAction(message: message)});
 
-    emojiReactionIndex = message.messageId;
+    emojiReactionMessageId = message.messageId;
     setState(() {
       showEmojiPopup = true;
       emojiPopupPosition = pressPosition;
     });
+  }
+
+  String? getEmojiReaction(int messageId) {
+    // Get the emoji that was placed by you on the message
+    Message? message = widget.chat.messages.firstWhereOrNull((message) => message.messageId == messageId);
+    if (message != null) {
+      if (me != null) {
+        if (message.emojiReactions.containsKey(me!.getId().toString())) {
+          return message.emojiReactions[me!.getId().toString()];
+        }
+      }
+    }
+    return null;
   }
 
   messageHandling(int delta, int passedId) {
@@ -733,6 +761,7 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
     if (delta == 1) {
       // replied to message
       repliedToMessage = widget.chat.messages.firstWhereOrNull((message) => message.messageId == passedId);
+      highlightedMessageIds.add(passedId);
       if (repliedToMessage != null) {
         setState(() {
           repliedToInterface = true;
@@ -811,6 +840,7 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
       if (repliedToMessage != null) {
         repliedToMessageId = repliedToMessage!.messageId;
         setState(() {
+          highlightedMessageIds.remove(repliedToMessage!.messageId);
           repliedToMessage = null;
           repliedToInterface = false;
         });
@@ -988,7 +1018,7 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
               return AnimatedContainer(
                   duration: Duration(milliseconds: 750),
                   curve: Curves.linear,
-                  color: isHighlighted ? Colors.teal : Colors.transparent,
+                  color: isHighlighted ? widget.chat.getColor() : Colors.transparent,
                   child: messageTile
               );
             })
@@ -1031,7 +1061,7 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
   }
 
   void onTapAppendTextField() {
-    emojiReactionIndex = -1;
+    emojiReactionMessageId = -1;
     if (showEmojiPopup) {
       setState(() {
         showEmojiPopup = false;
@@ -1045,8 +1075,8 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
   }
 
   void backButtonFunctionality() {
-    if (emojiReactionIndex != -1) {
-      emojiReactionIndex = -1;
+    if (emojiReactionMessageId != -1) {
+      emojiReactionMessageId = -1;
     }
     if (showEmojiPopup) {
       setState(() {
@@ -1232,6 +1262,7 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
             right: 0,
             child: GestureDetector(
               onTap: () {
+                highlightedMessageIds.remove(repliedToMessage!.messageId);
                 setState(() {
                   repliedToMessage = null;
                   repliedToInterface = false;
@@ -1449,22 +1480,29 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
                   Align(
                     alignment: Alignment.bottomCenter,
                     child: EmojiKeyboard(
-                      emojiController: emojiReactionIndex == -1 ? broMessageController : null,
+                      emojiController: emojiReactionMessageId == -1 ? broMessageController : null,
                       onEmojiChanged: onActionEmojiChanged,
                       emojiKeyboardHeight: 350,
                       showEmojiKeyboard: showEmojiKeyboard,
                       darkMode: settings.getEmojiKeyboardDarkMode(),
+                      emojiKeyboardAnimationDuration: const Duration(
+                          milliseconds: 400),
                     ),
                   ),
                 ],
               ),
             ),
-            if (showEmojiPopup)
-              EmojiKeyboardPopup(
-                position: emojiPopupPosition,
-                onAction: handleEmojiPopupAction,
-                darkMode: settings.getEmojiKeyboardDarkMode(),
-              ),
+            EmojiKeyboardPopup(
+              position: emojiPopupPosition,
+              showEmojiPopup: showEmojiPopup,
+              onAction: handleEmojiPopupAction,
+              darkMode: settings.getEmojiKeyboardDarkMode(),
+              highlightedEmoji: emojiReactionMessageId == -1
+                  ? null
+                  : getEmojiReaction(emojiReactionMessageId),
+              emojiPopupAnimationDuration: const Duration(
+                  milliseconds: 400),
+            ),
             if (showEmojiPopup)
               MessageDetailPopup(
                 position: emojiPopupPosition,

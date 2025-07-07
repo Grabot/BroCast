@@ -90,4 +90,58 @@ class AuthServiceSocialV15 {
       }
     }
   }
+
+  Future<bool> messageEmojiReaction(int broupId, int messageId, String emoji, bool isAdd) async {
+    String endPoint = "message/emoji_reaction";
+
+    var data;
+    if (!isAdd) {
+      data = jsonEncode(<String, dynamic>{
+        "broup_id": broupId,
+        "message_id": messageId,
+        "emoji": emoji,
+        "is_add": isAdd,
+      });
+    } else {
+      data = jsonEncode(<String, dynamic>{
+        "broup_id": broupId,
+        "message_id": messageId,
+        "emoji": emoji,
+      });
+    }
+    print("emoji reaction $data");
+    var response = await AuthApiV1_5().dio.post(endPoint,
+        options: Options(headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+        }),
+        data: data
+    );
+
+    Map<String, dynamic> json = response.data;
+    if (!json.containsKey("result")) {
+      return false;
+    } else {
+      return json["result"];
+    }
+  }
+
+  Future<bool> receivedEmojiReaction(int broupId) async {
+    String endPoint = "emoji_reaction/received";
+
+    var response = await AuthApiV1_5().dio.post(endPoint,
+        options: Options(headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+        }),
+        data: jsonEncode(<String, dynamic>{
+          "broup_id": broupId,
+        })
+    );
+
+    Map<String, dynamic> json = response.data;
+    if (!json.containsKey("result")) {
+      return false;
+    } else {
+      return json["result"];
+    }
+  }
 }

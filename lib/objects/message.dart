@@ -24,10 +24,10 @@ class Message {
   // The Message object is not stored in the local db.
   // But it is retrieved when needed and stored on this object.
   Message? repliedMessage;
-  // We keep track of the collapsed height of the message.
-  // This is also for replied messages.
-  // If you click it we can find where it is based on the height of all the messages
-  int? height;
+
+  // A mapping of the emoji reactions on the Message object.
+  // It is a mapping of the bro id and the emoji reaction.
+  Map<String, String> emojiReactions = {};
 
   Message(this.messageId, this.senderId, this.body, this.textMessage, this.timestamp,
       this.data, this.info, this.broupId) {
@@ -78,6 +78,7 @@ class Message {
     map['data'] = data;
     map['dataType'] = dataType;
     map['repliedTo'] = repliedTo;
+    map['emojiReactions'] = jsonEncode(emojiReactions);
     return map;
   }
 
@@ -114,6 +115,9 @@ class Message {
     dataType = map['dataType'];
     repliedTo = map['repliedTo'];
     isRead = map['isRead'];
+    print("map['emojiReactions'] ${map['emojiReactions']}");
+    emojiReactions = Map<String, String>.from(jsonDecode(map['emojiReactions']));
+    print("emojiReactions $emojiReactions");
     clicked = false;
   }
 
@@ -151,8 +155,22 @@ class Message {
     if (json.containsKey('replied_to') && json['replied_to'] != null) {
       repliedTo = json['replied_to'];
     }
+    // emojiReactions are handled via the broup object from the server.
     isRead = 0;
     clicked = false;
+  }
+
+  addEmojiReaction(String emoji, int broId) {
+    print("add emoij reaction $emoji bro $broId");
+    emojiReactions[broId.toString()] = emoji;
+  }
+
+  updateEmojiReactions(Map<String, String> emojiReactions) {
+    this.emojiReactions = emojiReactions;
+  }
+
+  getEmojiReaction() {
+    return emojiReactions;
   }
 
   @override

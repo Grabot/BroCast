@@ -285,6 +285,47 @@ class Broup {
     this.muteValue = muteUntil;
   }
 
+  processEmojiReactions(Map<String, dynamic> emojiReactions) {
+    // After retrieval we will process it immediately by setting it on the right message
+    Storage storage = Storage();
+    List<String> messagesToRetrieveStrings = [...emojiReactions.keys];
+    List<int> messagesToRetrieve = messagesToRetrieveStrings.map((e) => int.parse(e)).toList();
+    storage.retrieveMessages(messagesToRetrieve).then((messagesEmojiReactions) {
+      for (Message emojiReactionMessage in messagesEmojiReactions) {
+        messagesToRetrieve.remove(emojiReactionMessage.messageId);
+        Map<String, dynamic> emojiReaction = emojiReactions[emojiReactionMessage.messageId.toString()]!;
+        List<String> broIdsReactionsStrings = [...emojiReaction.keys];
+        List<int> broIdsReactions = broIdsReactionsStrings.map((e) => int.parse(e)).toList();
+        // We don't need to retrieve the bro here, the id is enough
+        for (int broIdReaction in broIdsReactions) {
+          String emoji = emojiReaction[broIdReaction.toString()]!;
+          emojiReactionMessage.addEmojiReaction(emoji, broIdReaction);
+          storage.updateMessage(emojiReactionMessage);
+        }
+      }
+      if (messagesToRetrieve.isNotEmpty) {
+        // It's highly possible that the message was not yet retrieved. It will only do that
+        // If you open the chat.
+        // If you don't open the chat, you won't retrieve the message.
+        // To process the emoji reaction, we will create a placeholder Message
+        // And store it, if we retrieve the messages later it might be updated.
+        for (int messageId in messagesToRetrieve) {
+          Map<String, dynamic> emojiReaction = emojiReactions[messageId.toString()]!;
+          List<String> broIdsReactionsStrings = [...emojiReaction.keys];
+          List<int> broIdsReactions = broIdsReactionsStrings.map((e) => int.parse(e)).toList();
+          // We create the message with what we know.
+          // We don't know the senderId yet, so we set it to -1
+          for (int broIdReaction in broIdsReactions) {
+            String emoji = emojiReaction[broIdReaction.toString()]!;
+            Message placeHolderMessage = Message(messageId, -1, "", null, DateTime.now().toUtc().toString(), null, false, this.broupId);
+            placeHolderMessage.addEmojiReaction(emoji, broIdReaction);
+            storage.addMessage(placeHolderMessage);
+          }
+        }
+      }
+    });
+  }
+
   Broup.fromJson(Map<String, dynamic> json) {
     // These 4 values should always be present
     broupId = json["broup_id"];
@@ -297,6 +338,12 @@ class Broup {
     deleted = json.containsKey("deleted") ? json["deleted"] : false;
     removed = json.containsKey("removed") ? json["removed"] : false;
     newAvatar = json.containsKey("new_avatar") ? json["new_avatar"] : false;
+    if (json.containsKey("emoji_reactions")) {
+      // We retrieve the emoji reactions on message via the broup object.
+      // This is because the message object will be removed if everyone has received them.
+      // So if a emoji reaction is made later we will let the bro know via the broup object.
+      processEmojiReactions(json["emoji_reactions"]);
+    }
 
     // These are the core chat values. Stored in a coupling table on the server
     broupName = "";

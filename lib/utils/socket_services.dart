@@ -1,13 +1,12 @@
 import 'package:brocast/constants/base_url.dart';
 import 'package:brocast/services/auth/v1_4/auth_service_social.dart';
-import 'package:brocast/utils/life_cycle_service.dart';
+import 'package:brocast/services/auth/v1_5/auth_service_social_v1_5.dart';
+import 'package:collection/collection.dart';
 import 'package:brocast/utils/socket_services_util.dart';
-import 'package:brocast/utils/utils.dart';
 import 'package:brocast/views/bro_home/bro_home_change_notifier.dart';
 import 'package:brocast/views/chat_view/messaging_change_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:socket_io_client/socket_io_client.dart' as io;
-import '../objects/bro.dart';
 import '../objects/message.dart';
 import '../objects/broup.dart';
 import '../objects/me.dart';
@@ -410,6 +409,51 @@ class SocketServices extends ChangeNotifier {
     BroHomeChangeNotifier().notify();
   }
 
+  emojiReactionReceived(data) async {
+    print("emoji reaction!!!! $data");
+    int broupId = data["broup_id"];
+    int messageId = data["message_id"];
+    String emoji = data["emoji"];
+    int broId = data["bro_id"];
+    Me? me = Settings().getMe();
+    if (me != null) {
+      Broup? broup = me.broups.firstWhereOrNull((element) => element.broupId == broupId);
+      if (broup != null) {
+        // The message might not be loaded on the broup, so retrieve it from storage
+        Storage().fetchMessage(broupId, messageId).then((message) {
+          print("message retrieved from db! $message");
+          if (message != null) {
+            message.addEmojiReaction(emoji, broId);
+            Storage().updateMessage(message).then((value) {
+              if (value > 0) {
+                // update worked, so update the server that the emoji reaction was received
+                AuthServiceSocialV15().receivedEmojiReaction(broupId).then((value) {
+                  print("received emoji reaction: $value");
+                });
+              }
+            });
+            print("message updated!");
+            Message? messageInBroup = broup.messages.firstWhereOrNull((element) => element.messageId == messageId);
+            if (messageInBroup != null) {
+              print("update message that is now in broup");
+              // The only thing that changed is the emojiReactions, so we can just update that.
+              messageInBroup.updateEmojiReactions(message.emojiReactions);
+              notifyListeners();
+            }
+          } else {
+            // The message is not yet in the local db,
+            // it could be because the message is not retrieved yet.
+            // Create a placeholder message with the emoji reactions.
+            print("found information, creating placeholder");
+            Message placeHolderMessage = Message(messageId, -1, "", null, DateTime.now().toUtc().toString(), null, false, broupId);
+            placeHolderMessage.addEmojiReaction(emoji, broId);
+            Storage().addMessage(placeHolderMessage);
+          }
+        });
+      }
+    }
+  }
+
   messageReceived(data) async {
     Message message = Message.fromJson(data);
     Storage storage = Storage();
@@ -524,6 +568,9 @@ class SocketServices extends ChangeNotifier {
     this.socket.on('message_received', (data) {
       messageReceived(data);
     });
+    this.socket.on('emoji_reaction', (data) {
+      emojiReactionReceived(data);
+    });
     this.socket.on('message_read', (data) {
       messageRead(data);
     });
@@ -540,6 +587,7 @@ class SocketServices extends ChangeNotifier {
     this.socket.off('chat_added');
     this.socket.off('bro_update');
     this.socket.off('message_received');
+    this.socket.off('emoji_reaction');
     this.socket.off('message_read');
     this.socket.off('avatar_change');
   }

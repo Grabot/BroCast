@@ -95,6 +95,30 @@ class MessageDetailPopupState extends State<MessageDetailPopup> {
     super.dispose();
   }
 
+  double getOptionWidth(String title, double widgetHeight) {
+    final textSpan = TextSpan(
+      text: title,
+      style: TextStyle(
+        fontSize: 16,
+        color: Colors.white,
+      ),
+    );
+
+    final textPainter = TextPainter(
+      text: textSpan,
+      textDirection: TextDirection.ltr,
+      maxLines: 1,
+    );
+
+    textPainter.layout();
+
+    final textWidth = textPainter.size.width;
+
+    double optionPadding = 20;
+    // Add the padding and some final adjustments
+    return textWidth + optionPadding + 4;
+  }
+
   double getOptionHeight(String title, double widgetWidth) {
     final textSpan = TextSpan(
       text: title,
