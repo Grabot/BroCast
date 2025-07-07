@@ -165,6 +165,12 @@ class Message {
     emojiReactions[broId.toString()] = emoji;
   }
 
+  removeEmojiReaction(int broId) {
+    if (emojiReactions.containsKey(broId.toString())) {
+      emojiReactions.remove(broId.toString());
+    }
+  }
+
   updateEmojiReactions(Map<String, String> emojiReactions) {
     this.emojiReactions = emojiReactions;
   }

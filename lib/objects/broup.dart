@@ -298,8 +298,17 @@ class Broup {
         List<int> broIdsReactions = broIdsReactionsStrings.map((e) => int.parse(e)).toList();
         // We don't need to retrieve the bro here, the id is enough
         for (int broIdReaction in broIdsReactions) {
-          String emoji = emojiReaction[broIdReaction.toString()]!;
-          emojiReactionMessage.addEmojiReaction(emoji, broIdReaction);
+          List<dynamic> emojiList = emojiReaction[broIdReaction.toString()]!;
+          String emoji = emojiList[0];
+          bool isAdd = true;
+          if (emojiList[1] == "0") {
+            isAdd = false;
+          }
+          if (isAdd) {
+            emojiReactionMessage.addEmojiReaction(emoji, broIdReaction);
+          } else {
+            emojiReactionMessage.removeEmojiReaction(broIdReaction);
+          }
           storage.updateMessage(emojiReactionMessage);
         }
       }
@@ -316,10 +325,25 @@ class Broup {
           // We create the message with what we know.
           // We don't know the senderId yet, so we set it to -1
           for (int broIdReaction in broIdsReactions) {
-            String emoji = emojiReaction[broIdReaction.toString()]!;
-            Message placeHolderMessage = Message(messageId, -1, "", null, DateTime.now().toUtc().toString(), null, false, this.broupId);
-            placeHolderMessage.addEmojiReaction(emoji, broIdReaction);
-            storage.addMessage(placeHolderMessage);
+            List<dynamic> emojiList = emojiReaction[broIdReaction.toString()]!;
+            String emoji = emojiList[0];
+            bool isAdd = true;
+            if (emojiList[1] == "0") {
+              isAdd = false;
+            }
+            if (isAdd) {
+              Message placeHolderMessage = Message(
+                  messageId,
+                  -1,
+                  "",
+                  null,
+                  DateTime.now().toUtc().toString(),
+                  null,
+                  false,
+                  this.broupId);
+              placeHolderMessage.addEmojiReaction(emoji, broIdReaction);
+              storage.addMessage(placeHolderMessage);
+            }
           }
         }
       }

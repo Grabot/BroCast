@@ -437,15 +437,24 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
   }
 
   emojiReaction(String emoji, emojiReactionMessageId) {
+    String? currentEmojiReaction = getEmojiReaction(emojiReactionMessageId);
+    bool isAdd = true;
+    if (currentEmojiReaction != null && currentEmojiReaction == emoji) {
+      isAdd = false;
+    }
     print("emoji pressed $emoji");
-    AuthServiceSocialV15().messageEmojiReaction(widget.chat.broupId, emojiReactionMessageId, emoji, true).then((value) {
+    AuthServiceSocialV15().messageEmojiReaction(widget.chat.broupId, emojiReactionMessageId, emoji, isAdd).then((value) {
       if (value) {
         Message? messageInBroup = widget.chat.messages.firstWhereOrNull((element) => element.messageId == emojiReactionMessageId);
         if (messageInBroup != null) {
           // We update the emoji reaction when the REST call is successful.
           // We will also update it via sockets, but we already know it worked so we set it here.
           if (me != null) {
-            messageInBroup.addEmojiReaction(emoji, me!.getId());
+            if (isAdd) {
+              messageInBroup.addEmojiReaction(emoji, me!.getId());
+            } else {
+              messageInBroup.removeEmojiReaction(me!.getId());
+            }
           }
         }
         print("successful emoji reaction!");
@@ -691,7 +700,9 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
             });
           }
           checkIsAdmin();
-          setState(() {});
+          if (mounted) {
+            setState(() {});
+          }
         });
       }
     }
@@ -1485,8 +1496,7 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
                       emojiKeyboardHeight: 350,
                       showEmojiKeyboard: showEmojiKeyboard,
                       darkMode: settings.getEmojiKeyboardDarkMode(),
-                      emojiKeyboardAnimationDuration: const Duration(
-                          milliseconds: 400),
+                      emojiKeyboardAnimationDuration: const Duration(milliseconds: 200),
                     ),
                   ),
                 ],
@@ -1501,7 +1511,7 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
                   ? null
                   : getEmojiReaction(emojiReactionMessageId),
               emojiPopupAnimationDuration: const Duration(
-                  milliseconds: 400),
+                  milliseconds: 200),
             ),
             if (showEmojiPopup)
               MessageDetailPopup(

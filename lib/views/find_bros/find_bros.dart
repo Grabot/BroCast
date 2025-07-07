@@ -347,10 +347,12 @@ class _FindBrosState extends State<FindBros> {
               Align(
                 alignment: Alignment.bottomCenter,
                 child: EmojiKeyboard(
-                    emojiController: bromotionController,
-                    emojiKeyboardHeight: 350,
-                    showEmojiKeyboard: showEmojiKeyboard,
-                    darkMode: settings.getEmojiKeyboardDarkMode()),
+                  emojiController: bromotionController,
+                  emojiKeyboardHeight: 350,
+                  showEmojiKeyboard: showEmojiKeyboard,
+                  darkMode: settings.getEmojiKeyboardDarkMode(),
+                  emojiKeyboardAnimationDuration: const Duration(milliseconds: 200),
+                ),
               ),
             ],
           ),

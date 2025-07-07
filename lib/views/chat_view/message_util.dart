@@ -131,9 +131,9 @@ Future<bool> getMessages(int page, Broup chat, Storage storage) async {
         // It's possible that someone did an emoji reaction to one of the messages.
         // If this was done it would have been received, before the message was.
         // This is handled by storing a placeholder in the local db.
-        List<Message> messagesDB = await storage.retrieveMessages(messageIds);
-        List<int> messageIdsDb = messagesDB.map((e) => e.messageId).toList();
-        for (Message messageDb in messagesDB) {
+        List<Message> messagesDBNew = await storage.retrieveMessages(messageIds);
+        List<int> messageIdsDb = messagesDBNew.map((e) => e.messageId).toList();
+        for (Message messageDb in messagesDBNew) {
           Message? serverMessage = retrievedMessages.firstWhereOrNull((element) => element.messageId == messageDb.messageId);
           if (serverMessage != null) {
             // For now the only thing the placeholder can hold is the emojiReactions.
@@ -147,6 +147,9 @@ Future<bool> getMessages(int page, Broup chat, Storage storage) async {
             // We already have this message in the local db and we have probably updated it
             // with the emoji reactions. We have even updated it already.
             messageIdsDb.remove(newMessage.messageId);
+            // We also remove it from the `messageDB` list because it's not an existing message.
+            // This was just a placeholder, so we want to replace it with the serverMessage
+            messagesDB.removeWhere((element) => element.messageId == newMessage.messageId);
           } else {
             storage.addMessage(newMessage);
           }

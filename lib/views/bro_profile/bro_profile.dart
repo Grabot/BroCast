@@ -728,10 +728,12 @@ class _BroProfileState extends State<BroProfile> {
               Align(
                 alignment: Alignment.bottomCenter,
                 child: EmojiKeyboard(
-                    emojiController: bromotionChangeController,
-                    emojiKeyboardHeight: 350,
-                    showEmojiKeyboard: showEmojiKeyboard,
-                    darkMode: settings.getEmojiKeyboardDarkMode()),
+                  emojiController: bromotionChangeController,
+                  emojiKeyboardHeight: 350,
+                  showEmojiKeyboard: showEmojiKeyboard,
+                  darkMode: settings.getEmojiKeyboardDarkMode(),
+                  emojiKeyboardAnimationDuration: const Duration(milliseconds: 200),
+                ),
               )
             ]
           )

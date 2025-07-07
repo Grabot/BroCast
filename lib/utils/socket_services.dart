@@ -415,6 +415,10 @@ class SocketServices extends ChangeNotifier {
     int messageId = data["message_id"];
     String emoji = data["emoji"];
     int broId = data["bro_id"];
+    bool isAdd = true;
+    if (data.containsKey("is_add")) {
+      isAdd = data["is_add"];
+    }
     Me? me = Settings().getMe();
     if (me != null) {
       Broup? broup = me.broups.firstWhereOrNull((element) => element.broupId == broupId);
@@ -423,7 +427,11 @@ class SocketServices extends ChangeNotifier {
         Storage().fetchMessage(broupId, messageId).then((message) {
           print("message retrieved from db! $message");
           if (message != null) {
-            message.addEmojiReaction(emoji, broId);
+            if (isAdd) {
+              message.addEmojiReaction(emoji, broId);
+            } else {
+              message.removeEmojiReaction(broId);
+            }
             Storage().updateMessage(message).then((value) {
               if (value > 0) {
                 // update worked, so update the server that the emoji reaction was received
@@ -448,6 +456,9 @@ class SocketServices extends ChangeNotifier {
             Message placeHolderMessage = Message(messageId, -1, "", null, DateTime.now().toUtc().toString(), null, false, broupId);
             placeHolderMessage.addEmojiReaction(emoji, broId);
             Storage().addMessage(placeHolderMessage);
+            AuthServiceSocialV15().receivedEmojiReaction(broupId).then((value) {
+              print("received emoji reaction: $value");
+            });
           }
         });
       }
