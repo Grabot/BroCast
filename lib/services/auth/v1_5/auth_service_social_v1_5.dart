@@ -109,7 +109,6 @@ class AuthServiceSocialV15 {
         "emoji": emoji,
       });
     }
-    print("emoji reaction $data");
     var response = await AuthApiV1_5().dio.post(endPoint,
         options: Options(headers: {
           HttpHeaders.contentTypeHeader: "application/json",

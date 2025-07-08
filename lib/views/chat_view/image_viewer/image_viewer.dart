@@ -145,19 +145,20 @@ class _ImageViewerState extends State<ImageViewer> {
                 child: GestureDetector(
                   onTapDown: handleTapDown,
                   onTapUp: handleTapUp,
-                  child: InteractiveViewer(
-                    panEnabled: true,
-                    minScale: 0.00001,
-                    maxScale: 9999999,
-                    scaleEnabled: true,
-                    boundaryMargin: EdgeInsets.all(double.infinity),
-                    child: Container(
-                      child: Transform.rotate(
-                        angle: rotationAngle * (math.pi / 180),
-                        child: Transform.scale(
-                          scale: (scaleFactor + currentScaleMovement),
-                          child: FittedBox(
-                            fit: BoxFit.contain,
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height,
+                    child: InteractiveViewer(
+                      panEnabled: true,
+                      minScale: 0.00001,
+                      maxScale: 9999999,
+                      scaleEnabled: true,
+                      boundaryMargin: EdgeInsets.all(double.infinity),
+                      child: Container(
+                        child: Transform.rotate(
+                          angle: rotationAngle * (math.pi / 180),
+                          child: Transform.scale(
+                            scale: (scaleFactor + currentScaleMovement),
                             child: Image.memory(widget.image),
                           ),
                         ),

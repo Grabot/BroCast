@@ -58,7 +58,11 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
       messageTile = BroMessageTile(
           key: UniqueKey(),
           message: widget.message,
+          bro: widget.bro,
+          broAdded: widget.broAdded,
+          broAdmin: widget.broAdmin,
           myMessage: widget.myMessage,
+          userAdmin: widget.userAdmin,
           repliedMessage: widget.repliedMessage,
           repliedBro: widget.repliedBro,
           messageHandling: widget.messageHandling,

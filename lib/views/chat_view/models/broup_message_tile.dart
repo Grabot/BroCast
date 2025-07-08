@@ -606,7 +606,7 @@ class _BroupMessageTileState extends State<BroupMessageTile> with SingleTickerPr
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
-                    padding: EdgeInsets.symmetric(vertical: 20),
+                    padding: EdgeInsets.symmetric(vertical: 10),
                     width: avatarSize,
                     child: widget.myMessage ? Container() : avatarBox(avatarSize, avatarSize, broAvatar)
                 ),
@@ -669,7 +669,6 @@ class _BroupMessageTileState extends State<BroupMessageTile> with SingleTickerPr
   }
 
   void onLongPressMessage(BuildContext context, LongPressStartDetails details) {
-    print("long pressed message");
     Offset pressPosition = details.globalPosition;
     widget.messageLongPress(widget.message, pressPosition);
   }

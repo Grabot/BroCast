@@ -410,7 +410,6 @@ class SocketServices extends ChangeNotifier {
   }
 
   emojiReactionReceived(data) async {
-    print("emoji reaction!!!! $data");
     int broupId = data["broup_id"];
     int messageId = data["message_id"];
     String emoji = data["emoji"];
@@ -425,7 +424,6 @@ class SocketServices extends ChangeNotifier {
       if (broup != null) {
         // The message might not be loaded on the broup, so retrieve it from storage
         Storage().fetchMessage(broupId, messageId).then((message) {
-          print("message retrieved from db! $message");
           if (message != null) {
             if (isAdd) {
               message.addEmojiReaction(emoji, broId);
@@ -436,14 +434,11 @@ class SocketServices extends ChangeNotifier {
               if (value > 0) {
                 // update worked, so update the server that the emoji reaction was received
                 AuthServiceSocialV15().receivedEmojiReaction(broupId).then((value) {
-                  print("received emoji reaction: $value");
                 });
               }
             });
-            print("message updated!");
             Message? messageInBroup = broup.messages.firstWhereOrNull((element) => element.messageId == messageId);
             if (messageInBroup != null) {
-              print("update message that is now in broup");
               // The only thing that changed is the emojiReactions, so we can just update that.
               messageInBroup.updateEmojiReactions(message.emojiReactions);
               notifyListeners();
@@ -452,12 +447,11 @@ class SocketServices extends ChangeNotifier {
             // The message is not yet in the local db,
             // it could be because the message is not retrieved yet.
             // Create a placeholder message with the emoji reactions.
-            print("found information, creating placeholder");
             Message placeHolderMessage = Message(messageId, -1, "", null, DateTime.now().toUtc().toString(), null, false, broupId);
             placeHolderMessage.addEmojiReaction(emoji, broId);
             Storage().addMessage(placeHolderMessage);
             AuthServiceSocialV15().receivedEmojiReaction(broupId).then((value) {
-              print("received emoji reaction: $value");
+              notifyListeners();
             });
           }
         });

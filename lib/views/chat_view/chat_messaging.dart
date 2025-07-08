@@ -240,7 +240,6 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
   }
 
   fetchExtraMessagesLocal(int? untilMessageId) {
-    print("fetching extra message  $amountViewed");
     busyRetrieving = true;
     amountViewed += 1;
     fetchExtraMessages(amountViewed, widget.chat, storage).then((value) {
@@ -312,9 +311,8 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
     highlightedMessageIds.remove(emojiReactionMessageId);
     showEmojiPopup = false;
     if (action is OutsideClicked) {
-      print("outside clicked");
+      // outside clicked
     } else if (action is ButtonPressed) {
-      print("button pressed");
       showEmojiKeyboard = true;
     } else if (action is EmojiSelected) {
       final String newEmoji = action.emoji;
@@ -353,7 +351,6 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
 
   void handleMessagePopupAction(MessagePopupAction action) {
 
-    print("message popoup action");
     showEmojiPopup = false;
     emojiReactionMessageId = -1;
 
@@ -371,7 +368,6 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
         }
       }
     } else if (action is AddNewBroPopupAction) {
-      print("add new bro");
       AuthServiceSocial().addNewBro(action.broId).then((response) {
         if (response.getResult()) {
           // The broup added, move to the home screen where it will be shown
@@ -381,7 +377,6 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
         }
       });
     } else if (action is MakeBroAdminPopupAction) {
-      print("make bro admin");
       AuthServiceSocial().makeBroAdmin(widget.chat.broupId, action.broId).then((value) {
         if (value) {
           setState(() {
@@ -391,7 +386,6 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
         }
       });
     } else if (action is DismissBroAdminPopupAction) {
-      print("dismiss bro admin");
       AuthServiceSocial().dismissBroAdmin(widget.chat.broupId, action.broId).then((value) {
         if (value) {
           setState(() {
@@ -401,10 +395,8 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
         }
       });
     } else if (action is SaveImagePopupAction) {
-      print("save image");
       saveImageToGallery(action.message);
     } else if (action is ViewImagePopupAction) {
-      print("view image");
       Navigator.of(context).push(
         MaterialPageRoute(
           builder: (context) => ImageViewer(
@@ -414,7 +406,6 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
         ),
       ).then((_) { });
     } else if (action is ReplyToMessagePopupAction) {
-      print("reply to message");
       repliedToMessage = widget.chat.messages.firstWhereOrNull((message) => message.messageId == action.message.messageId);
       if (repliedToMessage != null) {
         setState(() {
@@ -422,7 +413,6 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
         });
       }
     } else if (action is RemoveBroFromBroupPopupAction) {
-      print("removing bro from broup");
       AuthServiceSocial().removeBroToBroup(widget.chat.broupId, action.broId).then((value) {
         if (value) {
           setState(() {
@@ -440,7 +430,6 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
   }
 
   showEmojiReactions(Message message) {
-    print("emoji reaction click");
     emojiOverviewDataList = [];
     message.emojiReactions.forEach((key, value) {
       String emoji = value;
@@ -463,7 +452,6 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
     if (currentEmojiReaction != null && currentEmojiReaction == emoji) {
       isAdd = false;
     }
-    print("emoji pressed $emoji");
     AuthServiceSocialV15().messageEmojiReaction(widget.chat.broupId, emojiReactionMessageId, emoji, isAdd).then((value) {
       if (value) {
         Message? messageInBroup = widget.chat.messages.firstWhereOrNull((element) => element.messageId == emojiReactionMessageId);
@@ -478,7 +466,6 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
             }
           }
         }
-        print("successful emoji reaction!");
       }
     });
   }

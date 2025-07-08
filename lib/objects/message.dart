@@ -115,9 +115,7 @@ class Message {
     dataType = map['dataType'];
     repliedTo = map['repliedTo'];
     isRead = map['isRead'];
-    print("map['emojiReactions'] ${map['emojiReactions']}");
     emojiReactions = Map<String, String>.from(jsonDecode(map['emojiReactions']));
-    print("emojiReactions $emojiReactions");
     clicked = false;
   }
 
@@ -161,7 +159,6 @@ class Message {
   }
 
   addEmojiReaction(String emoji, int broId) {
-    print("add emoij reaction $emoji bro $broId");
     emojiReactions[broId.toString()] = emoji;
   }
 
