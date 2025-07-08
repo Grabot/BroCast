@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:jwt_decode/jwt_decode.dart';
 import 'package:oktoast/oktoast.dart';
+import 'package:collection/collection.dart';
 
 import '../objects/bro.dart';
 import '../objects/broup.dart';
@@ -129,7 +130,6 @@ immediateBroupRetrieval(Broup broupToBeRetrieved, Me settingsMe) {
   Future.delayed(Duration(milliseconds: 100)).then((value) {
     AuthServiceSocial().retrieveBroup(broupToBeRetrieved.broupId).then((newBroupMe) {
       if (newBroupMe != null) {
-        broupToBeRetrieved.addBlockMessage(newBroupMe);
         broupToBeRetrieved.updateBroupDataServer(newBroupMe);
         Storage().updateBroup(broupToBeRetrieved);
         if (broupToBeRetrieved.private) {
@@ -301,6 +301,31 @@ setBroupsAfterLogin(Me settingsMe, List<int>? broupIds) async {
       if (remainingBroupIds.isNotEmpty) {
         Future.delayed(Duration(milliseconds: 100)).then((val) async {
           AuthServiceSocial().broupDetails(remainingBroupIds, remainingBroupIds);
+          // We will retrieve the last message Id for each broup.
+          // But we want to wait a bit to allow the broup details to be retrieved.
+          Future.delayed(Duration(milliseconds: 2500)).then((val) async {
+            for (int remainingBroupId in remainingBroupIds) {
+              int messageReadId = await AuthServiceSocialV15().updateLocalBroupReadId(remainingBroupId);
+              Broup? settingsMeBroup = await settingsMe.broups.firstWhereOrNull((broup) => broup.broupId == remainingBroupId);
+              if (settingsMeBroup != null) {
+                settingsMeBroup.localLastMessageReadId = messageReadId;
+                settingsMeBroup.lastMessageReadId = messageReadId;
+                settingsMeBroup.lastMessageId = messageReadId;
+                settingsMeBroup.unreadMessages = 0;
+                settingsMeBroup.newMessages = true;
+              }
+              Broup? settingsMeDb = await storage.fetchBroup(remainingBroupId);
+              if (settingsMeDb != null) {
+                settingsMeDb.localLastMessageReadId = messageReadId;
+                settingsMeDb.lastMessageReadId = messageReadId;
+                settingsMeDb.lastMessageId = messageReadId;
+                settingsMeDb.unreadMessages = 0;
+                settingsMeDb.newMessages = true;
+                await storage.updateBroup(settingsMeDb);
+              }
+            }
+            getBroupData(storage, settingsMe);
+          });
         });
       }
 

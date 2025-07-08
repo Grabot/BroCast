@@ -723,7 +723,6 @@ class AuthServiceSocial {
       Map<String, dynamic> json = response.data;
       if (!json.containsKey("result")) {
         return;
-        // return false;
       } else {
         // We'll gather the bro data and store it in the db here.
         if (json.containsKey("broups")) {
