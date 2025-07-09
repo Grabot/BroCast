@@ -916,7 +916,8 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
               PreviewPageChat(
                 key: UniqueKey(),
                 chat: widget.chat,
-                image: photoData,
+                isVideo: true,
+                media: photoData,
               ),
             ),
         ).then((_) { });
@@ -935,7 +936,7 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
     )
   ];
 
-  sendMessageData(Uint8List imageData) {
+  sendMessageData(Uint8List imageData, bool isVideo) {
     // clear the text field because it is taken from the preview page.
     broMessageController.text = "";
     appendTextMessageController.text = "";
@@ -946,7 +947,8 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
             PreviewPageChat(
               key: UniqueKey(),
               chat: widget.chat,
-              image: imageData,
+              isVideo: isVideo,
+              media: imageData,
             ),
       ),
     ).then((_) { });
@@ -955,20 +957,20 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
   addNewComponent(int popupIndex) {
     Navigator.of(context).pop();
     if (popupIndex == 0) {
-      availableCameras().then((value) {
-        Navigator.push(context, MaterialPageRoute(
-          builder: (context) => CameraPage(
-            key: UniqueKey(),
-            chat: widget.chat,
-            isMe: false,
-            cameras: value,
-          )
-        ),
-        ).then((imageData) async {
-          if (imageData != null) {
-            sendMessageData(imageData);
+      Navigator.push(context, MaterialPageRoute(
+        builder: (context) => CameraPage(
+          key: UniqueKey(),
+          isMe: false,
+        )
+      ),
+      ).then((imageData) async {
+        if (imageData != null) {
+          if (imageData[0] != null) {
+            if (imageData[1] != null) {
+              sendMessageData(imageData[0], imageData[1]);
+            }
           }
-        });
+        }
       });
     } else {
       imageLoaded();

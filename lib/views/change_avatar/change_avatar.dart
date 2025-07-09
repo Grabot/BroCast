@@ -357,9 +357,7 @@ class _ChangeAvatarState extends State<ChangeAvatar> {
       Navigator.push(context, MaterialPageRoute(
           builder: (context) => CameraPage(
             key: UniqueKey(),
-            chat: widget.chat,
             isMe: widget.isMe,
-            cameras: value,
           )
         ),
       ).then((value) async {
