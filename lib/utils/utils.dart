@@ -1,6 +1,7 @@
 import'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
+import 'package:flutter/services.dart' show rootBundle;
 
 import 'package:brocast/services/auth/v1_4/auth_service_login.dart';
 import 'package:brocast/services/auth/v1_4/auth_service_social.dart';
@@ -811,12 +812,16 @@ actuallyLogout(Settings settings, SocketServices socketServices, BuildContext co
   SecureStorage().logout();
 }
 
-Uint8List getImageData(String imageLoc) {
-  print("getting image location");
+Uint8List? getMessageData(String imageLoc) {
   final file = File(imageLoc);
   if (file.existsSync()) {
     return file.readAsBytesSync();
   } else {
-    throw Exception('File not found at location: $imageLoc');
+    return null;
   }
+}
+
+Future<Uint8List> loadImageAsUint8List(String assetPath) async {
+  final byteData = await rootBundle.load(assetPath);
+  return byteData.buffer.asUint8List();
 }

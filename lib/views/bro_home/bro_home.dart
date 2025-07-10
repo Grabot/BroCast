@@ -51,6 +51,7 @@ class _BrocastHomeState extends State<BrocastHome> {
     super.initState();
     socketServices = SocketServices();
     settings = Settings();
+    settings.setNotFoundImage();
     storage = Storage();
     notificationController = NotificationController();
     broHomeChangeNotifier = BroHomeChangeNotifier();

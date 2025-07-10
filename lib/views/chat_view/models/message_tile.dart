@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:typed_data';
 import 'package:brocast/views/chat_view/image_viewer/image_viewer.dart';
 import 'package:flutter/material.dart';
@@ -5,10 +6,12 @@ import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:url_launcher/url_launcher.dart';
+import 'package:video_player/video_player.dart';
 import '../../../../objects/message.dart';
 import '../../../objects/bro.dart';
 import 'dart:ui';
 
+import '../../../utils/settings.dart';
 import '../../../utils/utils.dart';
 
 class MessageTile extends StatefulWidget {
@@ -46,9 +49,13 @@ class MessageTile extends StatefulWidget {
 class _MessageTileState extends State<MessageTile> with SingleTickerProviderStateMixin {
 
   bool isImage = false;
+  bool isVideo = false;
+  VideoPlayerController? _videoController;
+
+  bool isLoading = false;
 
   selectMessage(BuildContext context) {
-    if ((widget.message.textMessage != null && widget.message.textMessage!.isNotEmpty) || isImage) {
+    if ((widget.message.textMessage != null && widget.message.textMessage!.isNotEmpty) || isImage || isVideo) {
       setState(() {
         widget.message.clicked = !widget.message.clicked;
       });
@@ -64,7 +71,16 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
   void initState() {
     super.initState();
     if (widget.message.data != null) {
-      isImage = true;
+      if (widget.message.dataType != null) {
+        if (widget.message.dataType == 0) {
+          isImage = true;
+          isVideo = false;
+        } else if (widget.message.dataType == 1) {
+          isImage = false;
+          isVideo = true;
+          _initializeVideoController();
+        }
+      }
     }
 
     // If the slide is made we want to trigger the replied to functionality.
@@ -86,9 +102,27 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
     });
   }
 
-  Uint8List getMessageData() {
+  void _initializeVideoController() async {
+    if (widget.message.data != null) {
+        final file = File(widget.message.data!);
+        _videoController = VideoPlayerController.file(file)
+          ..initialize().then((_) {
+            setState(() {
+              isLoading = false; // Set loading to false when video is initialized
+            });
+            _videoController?.setLooping(true);
+            _videoController?.play();
+          });
+    }
+  }
+
+  Uint8List getMessageDataContent() {
     if (messageData == null && widget.message.data != null) {
-      messageData = getImageData(widget.message.data!);
+      messageData = getMessageData(widget.message.data!);
+    }
+    if (messageData == null) {
+      // return the image `not_found.png` in the assets images folder
+      return Settings().notFoundImage;
     }
     return messageData!;
   }
@@ -97,6 +131,7 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
   void dispose() {
     controller.endGesture.removeListener(() {});
     replying = false;
+    _videoController?.dispose();
     super.dispose();
   }
 
@@ -111,6 +146,9 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
 
     if (isImage) {
       borderColour = Colors.red;
+    }
+    if (isVideo) {
+      borderColour = Colors.pinkAccent;
     }
 
     return borderColour;
@@ -153,7 +191,7 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
                   MaterialPageRoute(
                     builder: (context) => ImageViewer(
                       key: UniqueKey(),
-                      image: getMessageData(),
+                      image: getMessageDataContent(),
                     ),
                   ),
                 ).then((_) { });
@@ -251,7 +289,7 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
 
   double getMessageWidgetWidth() {
     if (widget.message.clicked) {
-      if (isImage) {
+      if (isImage || isVideo) {
         return MediaQuery.of(context).size.width;
       }
     }
@@ -293,76 +331,127 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
     return widgetWidth;
   }
 
-  Widget getMessageContent(double messageWidth) {
-    Widget content;
-    if (widget.message.clicked) {
-      if (isImage) {
-        if (widget.message.textMessage != null && widget.message.textMessage!.isNotEmpty) {
-          content = Column(
-              mainAxisAlignment: widget.myMessage ? MainAxisAlignment.end : MainAxisAlignment.start,
-              crossAxisAlignment: widget.myMessage ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-              children: [
-                viewImageButton(),
-                repliedToView(),
-                Text(
-                    widget.message.body,
-                    style: simpleTextStyle()
-                ),
-                Image.memory(getMessageData()),
-                Linkify(
-                    onOpen: _onOpen,
-                    text: widget.message.textMessage!,
-                    linkStyle: TextStyle(color: Color(0xffFFC0CB), fontSize: 18),
-                    style: simpleTextStyle()
-                )
-              ]
-          );
-        } else {
-          content = Column(
-              mainAxisAlignment: widget.myMessage ? MainAxisAlignment.end : MainAxisAlignment.start,
-              crossAxisAlignment: widget.myMessage ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-              children: [
-                viewImageButton(),
-                repliedToView(),
-                Text(
-                    widget.message.body,
-                    style: simpleTextStyle()
-                ),
-                Image.memory(getMessageData()),
-              ]
-          );
-        }
-      } else {
-        content = Column(
-            mainAxisAlignment: widget.myMessage ? MainAxisAlignment.end : MainAxisAlignment.start,
-            crossAxisAlignment: widget.myMessage ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-            children: [
-              repliedToView(),
-              Text(
-                  widget.message.body,
-                  style: simpleTextStyle()
-              ),
-              Linkify(
-                  onOpen: _onOpen,
-                  text: widget.message.textMessage!,
-                  linkStyle: TextStyle(color: Color(0xffFFC0CB), fontSize: 18),
-                  style: simpleTextStyle()
-              ),
-            ]
-        );
-      }
+  Widget getVideoContent() {
+    if (widget.message.textMessage != null && widget.message.textMessage!.isNotEmpty) {
+      return Container();
     } else {
-      content = Column(
+      return Column(
           mainAxisAlignment: widget.myMessage ? MainAxisAlignment.end : MainAxisAlignment.start,
           crossAxisAlignment: widget.myMessage ? CrossAxisAlignment.end : CrossAxisAlignment.start,
           children: [
+            viewImageButton(),
             repliedToView(),
             Text(
                 widget.message.body,
                 style: simpleTextStyle()
             ),
+            _videoController != null && _videoController!.value.isInitialized
+                ? AspectRatio(
+              aspectRatio: _videoController!.value.aspectRatio,
+              child: VideoPlayer(_videoController!),
+            )
+                : CircularProgressIndicator(),
+            ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  _videoController!.value.isPlaying
+                      ? _videoController!.pause()
+                      : _videoController!.play();
+                });
+              },
+              child: Icon(
+                _videoController!.value.isPlaying ? Icons.pause : Icons.play_arrow,
+              ),
+            ),
           ]
       );
+    }
+  }
+
+  Widget getImageContent() {
+    if (widget.message.textMessage != null && widget.message.textMessage!.isNotEmpty) {
+      return Column(
+          mainAxisAlignment: widget.myMessage ? MainAxisAlignment.end : MainAxisAlignment.start,
+          crossAxisAlignment: widget.myMessage ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+          children: [
+            viewImageButton(),
+            repliedToView(),
+            Text(
+                widget.message.body,
+                style: simpleTextStyle()
+            ),
+            Image.memory(getMessageDataContent()),
+            Linkify(
+                onOpen: _onOpen,
+                text: widget.message.textMessage!,
+                linkStyle: TextStyle(color: Color(0xffFFC0CB), fontSize: 18),
+                style: simpleTextStyle()
+            )
+          ]
+      );
+    } else {
+      return Column(
+          mainAxisAlignment: widget.myMessage ? MainAxisAlignment.end : MainAxisAlignment.start,
+          crossAxisAlignment: widget.myMessage ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+          children: [
+            viewImageButton(),
+            repliedToView(),
+            Text(
+                widget.message.body,
+                style: simpleTextStyle()
+            ),
+            Image.memory(getMessageDataContent()),
+          ]
+      );
+    }
+  }
+
+  getTextContent() {
+    return Column(
+        mainAxisAlignment: widget.myMessage ? MainAxisAlignment.end : MainAxisAlignment.start,
+        crossAxisAlignment: widget.myMessage ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+        children: [
+          repliedToView(),
+          Text(
+              widget.message.body,
+              style: simpleTextStyle()
+          ),
+          Linkify(
+              onOpen: _onOpen,
+              text: widget.message.textMessage!,
+              linkStyle: TextStyle(color: Color(0xffFFC0CB), fontSize: 18),
+              style: simpleTextStyle()
+          ),
+        ]
+    );
+  }
+
+  getBodyContent() {
+    return Column(
+        mainAxisAlignment: widget.myMessage ? MainAxisAlignment.end : MainAxisAlignment.start,
+        crossAxisAlignment: widget.myMessage ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+        children: [
+          repliedToView(),
+          Text(
+              widget.message.body,
+              style: simpleTextStyle()
+          ),
+        ]
+    );
+  }
+
+  Widget getMessageContent(double messageWidth) {
+    Widget content;
+    if (widget.message.clicked) {
+      if (isImage) {
+        content = getImageContent();
+      } else if (isVideo) {
+        content = getVideoContent();
+      } else {
+        content = getTextContent();
+      }
+    } else {
+      content = getBodyContent();
     }
 
     return AnimatedSize(

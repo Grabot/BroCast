@@ -340,14 +340,24 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
       }
       if (message.data != null) {
         String dataLoc = message.data!;
-        Uint8List decoded = getImageData(dataLoc);
-        final albumName = "Brocast";
-        await Gal.putImageBytes(decoded, album: albumName);
-        showToastMessage("Image saved");
+        Uint8List? decoded = getMessageData(dataLoc);
+        if (decoded != null) {
+          final albumName = "Brocast";
+          await Gal.putImageBytes(decoded, album: albumName);
+          showToastMessage("Image saved");
+        }
       }
     } catch (e) {
       showToastMessage("Failed to save image: $e");
     }
+  }
+
+  Uint8List getImage(Message message) {
+    Uint8List? imageData = getMessageData(message.data!);
+    if (imageData != null) {
+      return imageData;
+    }
+    return Settings().notFoundImage;
   }
 
   void handleMessagePopupAction(MessagePopupAction action) {
@@ -402,7 +412,7 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
         MaterialPageRoute(
           builder: (context) => ImageViewer(
             key: UniqueKey(),
-            image: getImageData(action.message.data!),
+            image: getImage(action.message),
           ),
         ),
       ).then((_) { });

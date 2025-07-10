@@ -97,6 +97,7 @@ flutter:
     - assets/images/apple_button.png
     - assets/images/reddit_button.png
     - assets/images/default_avatar.png
+    - assets/images/not_found.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

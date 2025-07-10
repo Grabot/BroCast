@@ -1,10 +1,7 @@
-// A class to store anything that might be useful at any point in the app.
 import 'package:brocast/objects/me.dart';
 import 'package:brocast/utils/shared.dart';
-import 'package:intl/intl.dart';
-
-import '../objects/broup.dart';
-import '../objects/message.dart';
+import 'package:brocast/utils/utils.dart';
+import 'dart:typed_data';
 
 class Settings {
   static final Settings _instance = Settings._internal();
@@ -19,6 +16,8 @@ class Settings {
 
   bool retrievedBroupData = false;
 
+  Uint8List notFoundImage = Uint8List(0);
+
   Settings._internal() {
     HelperFunction.getDarkKeyboard().then((value) {
       if (value != null) {
@@ -29,6 +28,10 @@ class Settings {
 
   factory Settings() {
     return _instance;
+  }
+
+  void setNotFoundImage() async {
+    notFoundImage = await loadImageAsUint8List("assets/images/not_found.png");
   }
 
   void setEmojiKeyboardDarkMode(bool darkMode) {
