@@ -1,4 +1,5 @@
 import 'package:brocast/router.dart' as router;
+import 'package:brocast/utils/directory_initialization.dart';
 import 'package:brocast/utils/navigation_service.dart';
 import 'package:brocast/utils/notification_controller.dart';
 import 'package:brocast/utils/secure_storage.dart';
@@ -13,7 +14,6 @@ import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
   setupLocator();
 
   await NotificationController.initializeLocalNotifications(debug: false);
@@ -29,6 +29,8 @@ void main() async {
   // Initialize some singleton classes so we don't have to wait later.
   Settings();
   SecureStorage();
+
+  await initializeDirectories();
 
   runApp(OKToast(child: LifeCycle(child: MyApp())));
 }

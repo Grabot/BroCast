@@ -8,6 +8,9 @@ import 'package:brocast/utils/utils.dart';
 import 'package:brocast/views/sign_in/signin.dart';
 import "package:flutter/material.dart";
 
+import '../../objects/broup.dart';
+import '../../objects/me.dart';
+
 
 class BroSettings extends StatefulWidget {
   BroSettings({required Key key}) : super(key: key);
@@ -109,6 +112,12 @@ class _BroSettingsState extends State<BroSettings> {
 
   clearMessages() async {
     await storage.clearMessages();
+    Me? me = Settings().getMe();
+    if (me != null) {
+      for (Broup broup in me.broups) {
+        broup.messages = [];
+      }
+    }
     showToastMessage("Messages cleared");
     Navigator.of(context).pop();
   }

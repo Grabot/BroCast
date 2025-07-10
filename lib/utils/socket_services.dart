@@ -460,7 +460,7 @@ class SocketServices extends ChangeNotifier {
   }
 
   messageReceived(data) async {
-    Message message = Message.fromJson(data);
+    Message message = await Message.fromJson(data);
     Storage storage = Storage();
     storage.addMessage(message);
     // We only want to do the receive update when the app is opened.

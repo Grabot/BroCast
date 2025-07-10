@@ -87,5 +87,9 @@
 	<false/>
 	<key>UILocalNotificationDefaultSoundName</key>
     <string>res_brodio.caf</string>
+    <key>LSSupportsOpeningDocumentsInPlace</key>
+    <true/>
+    <key>UIFileSharingEnabled</key>
+    <true/>
 </dict>
 </plist>

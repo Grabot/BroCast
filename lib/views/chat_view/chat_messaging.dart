@@ -339,7 +339,8 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
         return;
       }
       if (message.data != null) {
-        Uint8List decoded = message.data!;
+        String dataLoc = message.data!;
+        Uint8List decoded = getImageData(dataLoc);
         final albumName = "Brocast";
         await Gal.putImageBytes(decoded, album: albumName);
         showToastMessage("Image saved");
@@ -401,7 +402,7 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
         MaterialPageRoute(
           builder: (context) => ImageViewer(
             key: UniqueKey(),
-            image: action.message.data!,
+            image: getImageData(action.message.data!),
           ),
         ),
       ).then((_) { });
@@ -871,7 +872,7 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
           repliedToInterface = false;
         });
       }
-      AuthServiceSocialV15().sendMessage(widget.chat.getBroupId(), message, textMessage, null, repliedToMessageId).then((value) {
+      AuthServiceSocialV15().sendMessage(widget.chat.getBroupId(), message, textMessage, null, null, repliedToMessageId).then((value) {
         isLoadingMessages = false;
         if (value) {
           setState(() {

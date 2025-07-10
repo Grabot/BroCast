@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
+import 'dart:io';
+import 'package:path_provider/path_provider.dart';
 
 class Message {
   late int messageId;
@@ -16,7 +18,7 @@ class Message {
 
   late int broupId;
 
-  Uint8List? data;
+  String? data;
   int? dataType;
   // Used to determine if the message is a reply to another message.
   // repliedTo is stored on the local db and is a reference to a message Id
@@ -82,27 +84,6 @@ class Message {
     return map;
   }
 
-  Message.fromDbMapV14(Map<String, dynamic> map) {
-    // For the update of the database we have this function which can retrieve messages the old way
-    // It will retrieve all the messages and turn the string data to blob data
-    // and stores it in the new updated database.
-    messageId = map['messageId'];
-    senderId = map['senderId'];
-    broupId = map['broupId'];
-    body = map['body'];
-    textMessage = map['textMessage'];
-    info = map['info'] == 1;
-    timestamp = map['timestamp'];
-    String? oldData = map['data'];
-    if (oldData != null) {
-      data = base64.decode(oldData);
-    }
-    dataType = map['dataType'];
-    repliedTo = map['repliedTo'];
-    isRead = map['isRead'];
-    clicked = false;
-  }
-
   Message.fromDbMap(Map<String, dynamic> map) {
     messageId = map['messageId'];
     senderId = map['senderId'];
@@ -119,43 +100,44 @@ class Message {
     clicked = false;
   }
 
-  Message.fromJson(Map<String, dynamic> json) {
-    messageId = json['message_id'];
-    senderId = json['sender_id'];
-    broupId = json['broup_id'];
-    body = json['body'];
-    if (json.containsKey('text_message')) {
-      textMessage = json['text_message'];
-    } else {
-      textMessage = "";
+  static Future<Message> fromJson(Map<String, dynamic> json) async {
+    String timeStampMessage = json['timestamp'];
+    if (!timeStampMessage.endsWith("Z")) {
+      timeStampMessage = timeStampMessage + "Z";
     }
-    info = json['info'];
-    this.timestamp = json['timestamp'];
-    if (!timestamp.endsWith("Z")) {
-      this.timestamp = timestamp + "Z";
-    }
+    final message = Message(
+      json['message_id'],
+      json['sender_id'],
+      json['body'],
+      json.containsKey('text_message') ? json['text_message'] : "",
+      timeStampMessage,
+      null,
+      json['info'],
+      json['broup_id'],
+    );
 
     if (json.containsKey('data') && json['data'] != null) {
       Map<String, dynamic> messageData = json['data'];
 
       if (messageData.containsKey('data')) {
         if (messageData['data'] is List<int>) {
-          data = Uint8List.fromList(messageData['data']);
+          Uint8List dataBytes = Uint8List.fromList(messageData['data']);
+          message.data = await saveImageData(dataBytes);
+          print("saved image on location ${message.data}");
         } else if (messageData['data'] is String) {
-          data = base64Decode(messageData['data'].replaceAll("\n", ""));
+          Uint8List dataBytes = base64Decode(messageData['data'].replaceAll("\n", ""));
+          message.data = await saveImageData(dataBytes);
         }
       }
       if (messageData.containsKey('type')) {
-        dataType = messageData['type'];
+        message.dataType = messageData['type'];
       }
     }
 
     if (json.containsKey('replied_to') && json['replied_to'] != null) {
-      repliedTo = json['replied_to'];
+      message.repliedTo = json['replied_to'];
     }
-    // emojiReactions are handled via the broup object from the server.
-    isRead = 0;
-    clicked = false;
+    return message;
   }
 
   addEmojiReaction(String emoji, int broId) {
@@ -195,4 +177,22 @@ class Message {
   String toString() {
     return 'Message{messageId: $messageId, senderId: $senderId, body: $body, textMessage: $textMessage, timestamp: $timestamp, isRead: $isRead, clicked: $clicked, info: $info, broupId: $broupId, data: ${data != null}';
   }
+}
+
+Future<String> saveImageData(Uint8List imageData) async {
+  final directory = await getApplicationDocumentsDirectory();
+  final imageDirectory = Directory('${directory.path}/images');
+  final filePath = '${imageDirectory.path}/${DateTime.now().millisecondsSinceEpoch}.brocastPng';
+  final file = File(filePath);
+  await file.writeAsBytes(imageData);
+  return filePath;
+}
+
+Future<String> saveVideoData(Uint8List videoData) async {
+  final directory = await getApplicationDocumentsDirectory();
+  final imageDirectory = Directory('${directory.path}/videos');
+  final filePath = '${imageDirectory.path}/${DateTime.now().millisecondsSinceEpoch}.brocastMp4';
+  final file = File(filePath);
+  await file.writeAsBytes(videoData);
+  return filePath;
 }

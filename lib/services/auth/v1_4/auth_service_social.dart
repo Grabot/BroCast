@@ -233,7 +233,7 @@ class AuthServiceSocial {
         if (json.containsKey("messages")) {
           List<Message> messages = [];
           for (var message in json["messages"]) {
-            messages.add(Message.fromJson(message));
+            messages.add(await Message.fromJson(message));
           }
           return messages;
         } else {

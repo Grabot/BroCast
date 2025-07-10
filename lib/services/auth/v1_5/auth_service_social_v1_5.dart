@@ -14,7 +14,7 @@ class AuthServiceSocialV15 {
 
   AuthServiceSocialV15._internal();
 
-  Future<bool> sendMessage(int broupId, String message, String? textMessage, Uint8List? messageData, int? repliedToMessageId) async {
+  Future<bool> sendMessage(int broupId, String message, String? textMessage, Uint8List? messageData, bool? isVideo, int? repliedToMessageId) async {
     String endPoint = "message/send";
 
     final formMap = <String, dynamic>{
@@ -26,11 +26,19 @@ class AuthServiceSocialV15 {
       formMap["text_message"] = textMessage;
     }
 
-    if (messageData != null) {
-      formMap["message_data"] = MultipartFile.fromBytes(
-          messageData,
-          filename: "image.jpg"
-      );
+    if (messageData != null && isVideo != null) {
+      if (isVideo) {
+        print("adding video");
+        formMap["video_data"] = MultipartFile.fromBytes(
+            messageData,
+            filename: "video.mp4"
+        );
+      } else {
+        formMap["message_data"] = MultipartFile.fromBytes(
+            messageData,
+            filename: "image.jpg"
+        );
+      }
     }
 
     if (repliedToMessageId != null) {

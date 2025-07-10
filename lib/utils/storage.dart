@@ -1,3 +1,7 @@
+import 'dart:convert';
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:brocast/objects/broup.dart';
 import 'package:brocast/objects/message.dart';
 import 'package:sqflite/sqflite.dart';
@@ -31,7 +35,7 @@ class Storage {
 
     return await openDatabase(
       path,
-      version: 3,
+      version: 4,
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
     );
@@ -51,26 +55,74 @@ class Storage {
       List<Map<String, dynamic>> maps = await db.query(
         'Message',
       );
-      List<Message> messages = [];
+      List<Map<String, dynamic>> newMessageMaps = [];
       if (maps.isNotEmpty) {
-        messages = maps
-            .map((map) => Message.fromDbMapV14(map))
-            .toList();
-      }
-      if (messages.isNotEmpty) {
-        messages.sort((a, b) => a.messageId.compareTo(b.messageId));
+        for (Map<String, dynamic> messageMap in maps) {
+          Map<String, dynamic> newMap = Map<String, dynamic>.from(messageMap);
+          // In this version we had string as data representation and we want to switch to Uint8List
+          String? data = newMap['data'];
+          // It will later change again, but to upgrade to v14 we will first go to bytes
+          if (data != null) {
+            Uint8List newData = base64.decode(data);
+            newMap['data'] = newData;
+          }
+          newMessageMaps.add(newMap);
+        }
       }
       // To change the type of the data on the message table
       // we have to drop the old one and recreate it.
       await db.execute('DROP TABLE Message');
       // Recreate the message table, so we also add the new `emojiReactions` column.
       await createTableMessage(db);
-
-      //  Insert the data from the old table into the new table
-      for (Message message in messages) {
-        await db.insert('Message', message.toDbMap());
+      if (newMessageMaps.isNotEmpty) {
+        //  Insert the data from the old table into the new table
+        for (Map<String, dynamic> message in newMessageMaps) {
+          await db.insert('Message', message);
+        }
       }
       db.execute('ALTER TABLE Broup ADD localLastMessageReadId INTEGER DEFAULT 0');
+    }
+    if ((oldVersion == 1 || oldVersion == 2 || oldVersion == 3) && newVersion >= 4) {
+      String query = "SELECT messageId, broupId FROM Message";
+      List<Map<String, dynamic>> maps = await db.rawQuery(query);
+      List<List<int>> messageIdGroups = [];
+      List<Map<String, dynamic>> newMessageMaps = [];
+      if (maps.isNotEmpty) {
+        messageIdGroups = maps
+            .map((map) => [map['messageId'] as int, map['broupId'] as int])
+            .toList();
+        for (List<int> messageIdGroup in messageIdGroups) {
+          int messageId = messageIdGroup[0];
+          int broupId = messageIdGroup[1];
+          // We retrieve each message separately because we found an issue with a database query limit.
+          String query = "SELECT * FROM Message WHERE messageId = $messageId AND broupId = $broupId";
+
+          List<Map<String, dynamic>> messageMap = await db.rawQuery(query);
+          // We do these message by message, so the list will be of length 1.
+          if (messageMap.isNotEmpty && messageMap.length == 1) {
+            // The messageMap is almost correct, but the data is not in the right format.
+            // It is a Uint8List now but we want it to be a path location.
+            Map<String, dynamic> newMap = Map<String, dynamic>.from(messageMap[0]);
+            Uint8List? data = newMap['data'];
+            if (data != null) {
+              String path = await saveImageData(data);
+              newMap['data'] = path;
+            }
+            newMessageMaps.add(newMap);
+          }
+        }
+      }
+      // To change the type of the data on the message table
+      // we have to drop the old one and recreate it.
+      await db.execute('DROP TABLE Message');
+      // Recreate the message table, so we also add the new `emojiReactions` column.
+      await createTableMessage(db);
+      if (newMessageMaps.isNotEmpty) {
+        //  Insert the data from the old table into the new table
+        for (Map<String, dynamic> message in newMessageMaps) {
+          await db.insert('Message', message);
+        }
+      }
     }
   }
 
@@ -121,7 +173,7 @@ class Storage {
             info INTEGER,
             timestamp TEXT,
             isRead INTEGER,
-            data BLOB,
+            data TEXT,
             dataType INTEGER,
             repliedTo INTEGER,
             emojiReactions TEXT,
@@ -239,6 +291,35 @@ class Storage {
 
   Future<int> deleteChatMessages(int broupId) async {
     Database database = await this.database;
+
+    // We will first go over all the messages and remove any data attached to them.
+    String query = "SELECT messageId, broupId FROM Message where broupId = $broupId";
+    List<Map<String, dynamic>> maps = await database.rawQuery(query);
+    List<List<int>> messageIdGroups = [];
+    if (maps.isNotEmpty) {
+      messageIdGroups = maps
+          .map((map) => [map['messageId'] as int, map['broupId'] as int])
+          .toList();
+      for (List<int> messageIdGroup in messageIdGroups) {
+        int messageId = messageIdGroup[0];
+        int broupId = messageIdGroup[1];
+        String query = "SELECT * FROM Message WHERE messageId = $messageId AND broupId = $broupId";
+
+        List<Map<String, dynamic>> messageMap = await database.rawQuery(query);
+        // We do these message by message, so the list will be of length 1.
+        if (messageMap.isNotEmpty && messageMap.length == 1) {
+          String? dataPath = messageMap[0]['data'];
+          // remove the file if it exists
+          if (dataPath != null) {
+            File file = File(dataPath);
+            if (await file.exists()) {
+              await file.delete();
+            }
+          }
+        }
+      }
+    }
+
     return database.delete(
       'Message',
       where: 'broupId = ?',
@@ -342,6 +423,36 @@ class Storage {
     Database database = await this.database;
     await database.execute("DROP TABLE IF EXISTS Bro");
     await database.execute("DROP TABLE IF EXISTS Broup");
+
+    // We will first go over all the messages and remove any data attached to them.
+    String query = "SELECT messageId, broupId FROM Message";
+    List<Map<String, dynamic>> maps = await database.rawQuery(query);
+    List<List<int>> messageIdGroups = [];
+    if (maps.isNotEmpty) {
+      messageIdGroups = maps
+          .map((map) => [map['messageId'] as int, map['broupId'] as int])
+          .toList();
+      for (List<int> messageIdGroup in messageIdGroups) {
+        int messageId = messageIdGroup[0];
+        int broupId = messageIdGroup[1];
+        String query = "SELECT * FROM Message WHERE messageId = $messageId AND broupId = $broupId";
+
+        List<Map<String, dynamic>> messageMap = await database.rawQuery(query);
+        // We do these message by message, so the list will be of length 1.
+        if (messageMap.isNotEmpty && messageMap.length == 1) {
+          String? dataPath = messageMap[0]['data'];
+          // remove the file if it exists
+          if (dataPath != null) {
+            File file = File(dataPath);
+            if (await file.exists()) {
+              await file.delete();
+              print("Deleted file at $dataPath");
+            }
+          }
+        }
+      }
+    }
+
     await database.execute("DROP TABLE IF EXISTS Message");
     await createTableBroup(database);
     await createTableBro(database);
@@ -350,6 +461,36 @@ class Storage {
 
   clearMessages() async {
     Database database = await this.database;
+
+    // We will first go over all the messages and remove any data attached to them.
+    String query = "SELECT messageId, broupId FROM Message";
+    List<Map<String, dynamic>> maps = await database.rawQuery(query);
+    List<List<int>> messageIdGroups = [];
+    if (maps.isNotEmpty) {
+      messageIdGroups = maps
+          .map((map) => [map['messageId'] as int, map['broupId'] as int])
+          .toList();
+      for (List<int> messageIdGroup in messageIdGroups) {
+        int messageId = messageIdGroup[0];
+        int broupId = messageIdGroup[1];
+        String query = "SELECT * FROM Message WHERE messageId = $messageId AND broupId = $broupId";
+
+        List<Map<String, dynamic>> messageMap = await database.rawQuery(query);
+        // We do these message by message, so the list will be of length 1.
+        if (messageMap.isNotEmpty && messageMap.length == 1) {
+          String? dataPath = messageMap[0]['data'];
+          // remove the file if it exists
+          if (dataPath != null) {
+            File file = File(dataPath);
+            if (await file.exists()) {
+              await file.delete();
+              print("Deleted file at $dataPath");
+            }
+          }
+        }
+      }
+    }
+
     await database.execute("DROP TABLE IF EXISTS Message");
     await createTableMessage(database);
   }

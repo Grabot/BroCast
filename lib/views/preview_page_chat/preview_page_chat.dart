@@ -11,6 +11,8 @@ import '../../../objects/broup.dart';
 import '../../../utils/settings.dart';
 import '../../../utils/socket_services.dart';
 import '../../objects/message.dart';
+import '../../services/auth/v1_5/auth_service_social_v1_5.dart';
+import '../../utils/utils.dart';
 
 class PreviewPageChat extends StatefulWidget {
   final Broup chat;
@@ -65,10 +67,12 @@ class _PreviewPageChatState extends State<PreviewPageChat> {
     mediaPreviewData = widget.media;
 
     if (widget.isVideo) {
+      broMessageController.text = "🎥";
       _initializeVideo();
     } else {
+      broMessageController.text = "📸";
       setState(() {
-        isLoading = false; // Set loading to false for images
+        isLoading = false;
       });
     }
 
@@ -104,7 +108,11 @@ class _PreviewPageChatState extends State<PreviewPageChat> {
     if (!appendingCaption) {
       focusCaptionField.requestFocus();
       if (broMessageController.text == "") {
-        broMessageController.text = "📸";
+        if (widget.isVideo) {
+          broMessageController.text = "🎥";
+        } else {
+          broMessageController.text = "📸";
+        }
       }
       setState(() {
         showEmojiKeyboard = false;
@@ -161,19 +169,19 @@ class _PreviewPageChatState extends State<PreviewPageChat> {
       setState(() {
         widget.chat.messages.insert(0, mes);
       });
-      // AuthServiceSocialV15().sendMessage(widget.chat.getBroupId(), message, messageTextMessage, messageData, isVideo).then((value) {
-      //   if (value) {
-      //     setState(() {
-      //       mes.isRead = 0;
-      //       // Go back to the chat.
-      //       Navigator.of(context).pop(null);
-      //     });
-      //     // message send
-      //   } else {
-      //     // The message was not sent, we remove it from the list
-      //     showToastMessage("there was an issue sending the message");
-      //   }
-      // });
+      AuthServiceSocialV15().sendMessage(widget.chat.getBroupId(), message, messageTextMessage, messageData, isVideo, null).then((value) {
+        if (value) {
+          setState(() {
+            mes.isRead = 0;
+            // Go back to the chat.
+            Navigator.of(context).pop(null);
+          });
+          // message send
+        } else {
+          // The message was not sent, we remove it from the list
+          showToastMessage("there was an issue sending the message");
+        }
+      });
       broMessageController.clear();
       captionMessageController.clear();
     }
@@ -208,16 +216,55 @@ class _PreviewPageChatState extends State<PreviewPageChat> {
   Widget mediaPreview() {
     if (widget.isVideo) {
       return _videoController != null && _videoController!.value.isInitialized
-          ? Container(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
-        child: Center(
-          child: AspectRatio(
-            aspectRatio: _videoController!.value.aspectRatio,
-            child: VideoPlayer(_videoController!),
+          ? Column(
+        children: [
+          Container(
+            margin: EdgeInsets.all(10),
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height - (75 + MediaQuery.of(context).padding.bottom + 16 + 20) - 50 - 10,
+            child: Center(
+              child: AspectRatio(
+                aspectRatio: _videoController!.value.aspectRatio,
+                child: VideoPlayer(_videoController!),
+              ),
+            ),
           ),
-        ),
-      ) : Center(child: CircularProgressIndicator());
+          Container(
+            height: 10.0,
+            child: VideoProgressIndicator(
+              _videoController!,
+              allowScrubbing: true,
+              colors: VideoProgressColors(
+                playedColor: Colors.blueAccent,
+                bufferedColor: Colors.blueAccent.withValues(alpha: 0.5),
+                backgroundColor: Colors.grey.withValues(alpha: 0.3),
+              ),
+            ),
+          ),
+          Container(
+            height: 50.0,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                IconButton(
+                  icon: Icon(
+                    _videoController!.value.isPlaying ? Icons.pause : Icons.play_arrow,
+                    color: Colors.blueAccent,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      _videoController!.value.isPlaying
+                          ? _videoController!.pause()
+                          : _videoController!.play();
+                    });
+                  },
+                ),
+              ],
+            ),
+          ),
+        ],
+      )
+          : Center(child: CircularProgressIndicator());
     } else {
       return Center(
         child: FittedBox(

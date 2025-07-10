@@ -1,3 +1,4 @@
+import'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
 
@@ -808,4 +809,14 @@ actuallyLogout(Settings settings, SocketServices socketServices, BuildContext co
   settings.setLoggingIn(false);
   settings.retrievedBroupData = false;
   SecureStorage().logout();
+}
+
+Uint8List getImageData(String imageLoc) {
+  print("getting image location");
+  final file = File(imageLoc);
+  if (file.existsSync()) {
+    return file.readAsBytesSync();
+  } else {
+    throw Exception('File not found at location: $imageLoc');
+  }
 }
