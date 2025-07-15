@@ -6,6 +6,8 @@ import 'package:brocast/services/auth/v1_5/auth_api_v1_5.dart';
 import 'package:brocast/utils/utils.dart';
 import 'package:dio/dio.dart';
 
+import '../../../objects/message.dart';
+
 class AuthServiceSocialV15 {
 
   static AuthServiceSocialV15? _instance;
@@ -149,6 +151,66 @@ class AuthServiceSocialV15 {
       return false;
     } else {
       return json["result"];
+    }
+  }
+
+  Future<Uint8List?> getMessageData(int broupId, int messageId) async {
+    String endPoint = "message/get/data";
+
+    var response = await AuthApiV1_5().dio.post(endPoint,
+        options: Options(
+        responseType: ResponseType.bytes,
+        headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+        }),
+        data: jsonEncode(<String, dynamic>{
+          "broup_id": broupId,
+          "message_id": messageId,
+        })
+    );
+
+    if (response.statusCode == 200) {
+      return response.data;
+    } else if (response.statusCode == 404) {
+      return null;
+    } else if (response.statusCode == 500) {
+      // TODO: do a 'data is present' check?
+      return null;
+    } else {
+      return null;
+    }
+  }
+
+  Future<List<Message>> retrieveMessages(int broupId, int lastMessageId) async {
+    String endPoint = "message/get";
+    var response = await AuthApiV1_5().dio.post(endPoint,
+        options: Options(headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+        }),
+        data: jsonEncode(<String, dynamic> {
+          "broup_id": broupId,
+          "last_message_id": lastMessageId
+        }
+      )
+    );
+
+    Map<String, dynamic> json = response.data;
+    if (!json.containsKey("result")) {
+      return [];
+    } else {
+      if (json["result"]) {
+        if (json.containsKey("messages")) {
+          List<Message> messages = [];
+          for (var message in json["messages"]) {
+            messages.add(await Message.fromJson(message));
+          }
+          return messages;
+        } else {
+          return [];
+        }
+      } else {
+        return [];
+      }
     }
   }
 }

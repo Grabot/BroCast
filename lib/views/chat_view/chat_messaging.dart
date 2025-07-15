@@ -29,7 +29,7 @@ import '../../utils/storage.dart';
 import '../camera_page/camera_page.dart';
 import '../preview_page_chat/preview_page_chat.dart';
 import 'chat_details/chat_details.dart';
-import 'image_viewer/image_viewer.dart';
+import 'media_viewer/image_viewer.dart';
 import 'message_detail_popup.dart';
 import 'message_util.dart';
 import 'models/message_tile.dart';

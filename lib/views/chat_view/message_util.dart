@@ -1,3 +1,4 @@
+import 'package:brocast/services/auth/v1_5/auth_service_social_v1_5.dart';
 import 'package:intl/intl.dart';
 
 import 'package:collection/collection.dart';
@@ -121,7 +122,7 @@ Future<bool> getMessages(int page, Broup chat, Storage storage) async {
   if (!chat.removed) {
     if (chat.newMessages) {
       chat.newMessages = false;
-      List<Message> retrievedMessages = await AuthServiceSocial()
+      List<Message> retrievedMessages = await AuthServiceSocialV15()
           .retrieveMessages(chat.getBroupId(), chat.lastMessageId);
 
       if (retrievedMessages.isNotEmpty) {
@@ -152,6 +153,13 @@ Future<bool> getMessages(int page, Broup chat, Storage storage) async {
             messagesDB.removeWhere((element) => element.messageId == newMessage.messageId);
           } else {
             storage.addMessage(newMessage);
+          }
+
+          if (!newMessage.dataIsReceived) {
+            // If the data is not yet received we don't want to mark it as received
+            // Because it will get deleted if everyone has received the message.
+            // Once the data is retrieved we will mark it as retrieved.
+            messageIds.remove(newMessage.messageId);
           }
         }
         Message maxMessage = messagesServer.reduce((maxMessage, currentMessage) =>

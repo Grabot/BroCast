@@ -31,6 +31,8 @@ class Message {
   // It is a mapping of the bro id and the emoji reaction.
   Map<String, String> emojiReactions = {};
 
+  bool dataIsReceived = true;
+
   Message(this.messageId, this.senderId, this.body, this.textMessage, this.timestamp,
       this.data, this.info, this.broupId) {
     if (timestamp.endsWith("Z")) {
@@ -79,6 +81,7 @@ class Message {
     map['isRead'] = isRead;
     map['data'] = data;
     map['dataType'] = dataType;
+    map['dataIsReceived'] = dataIsReceived ? 1 : 0;
     map['repliedTo'] = repliedTo;
     map['emojiReactions'] = jsonEncode(emojiReactions);
     return map;
@@ -94,6 +97,7 @@ class Message {
     timestamp = map['timestamp'];
     data = map['data'];
     dataType = map['dataType'];
+    dataIsReceived = map['dataIsReceived'] == 1;
     repliedTo = map['repliedTo'];
     isRead = map['isRead'];
     emojiReactions = Map<String, String>.from(jsonDecode(map['emojiReactions']));
@@ -118,13 +122,16 @@ class Message {
 
     if (json.containsKey('data') && json['data'] != null) {
       Map<String, dynamic> messageData = json['data'];
-
+      // If there is data we want to set the flag to not received.
+      message.dataIsReceived = false;
       if (messageData.containsKey('data')) {
         if (messageData['data'] is List<int>) {
+          // If the data is present, we set the flag to received
+          message.dataIsReceived = true;
           Uint8List dataBytes = Uint8List.fromList(messageData['data']);
           message.data = await saveImageData(dataBytes);
-          print("saved image on location ${message.data}");
         } else if (messageData['data'] is String) {
+          message.dataIsReceived = true;
           Uint8List dataBytes = base64Decode(messageData['data'].replaceAll("\n", ""));
           message.data = await saveImageData(dataBytes);
         }

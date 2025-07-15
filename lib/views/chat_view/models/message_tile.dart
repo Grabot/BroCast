@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:typed_data';
-import 'package:brocast/views/chat_view/image_viewer/image_viewer.dart';
+import 'package:brocast/services/auth/v1_5/auth_service_social_v1_5.dart';
+import 'package:brocast/views/chat_view/media_viewer/image_viewer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -11,8 +12,11 @@ import '../../../../objects/message.dart';
 import '../../../objects/bro.dart';
 import 'dart:ui';
 
+import '../../../services/auth/v1_4/auth_service_social.dart';
 import '../../../utils/settings.dart';
+import '../../../utils/storage.dart';
 import '../../../utils/utils.dart';
+import '../media_viewer/video_viewer.dart';
 
 class MessageTile extends StatefulWidget {
   final Message message;
@@ -54,11 +58,45 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
 
   bool isLoading = false;
 
-  selectMessage(BuildContext context) {
+  selectMessage(BuildContext context) async {
     if ((widget.message.textMessage != null && widget.message.textMessage!.isNotEmpty) || isImage || isVideo) {
       setState(() {
         widget.message.clicked = !widget.message.clicked;
       });
+      if (widget.message.clicked) {
+        if (widget.message.dataType != null && !widget.message.dataIsReceived) {
+          // There should be data in this message, but it is not yet received from the server yet.
+          isLoading = true;
+          AuthServiceSocialV15().getMessageData(widget.message.broupId, widget.message.messageId).then((messageDataResponse) async {
+            // For a video we first want to load the video controller
+            if (widget.message.dataType != 1) {
+              isLoading = false;
+            }
+            if (messageDataResponse != null) {
+              // If the data is present, we set the flag to received
+              widget.message.dataIsReceived = true;
+              widget.message.data = await saveImageData(messageDataResponse);
+              _initializeVideoController();
+              Storage().updateMessage(widget.message);
+              setState(() {
+                messageData = getMessageData(widget.message.data!);
+              });
+              // We have now actually received the full message, so indicate as such.
+              AuthServiceSocial().receivedMessageSingle(widget.message.broupId, widget.message.messageId).then((value) {
+                if (value) {
+                  // do something special on success?
+                }
+              });
+            }
+          });
+        }
+      } else {
+        if (isVideo) {
+          setState(() {
+            _videoController!.pause();
+          });
+        }
+      }
     }
   }
 
@@ -70,16 +108,14 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
   @override
   void initState() {
     super.initState();
-    if (widget.message.data != null) {
-      if (widget.message.dataType != null) {
-        if (widget.message.dataType == 0) {
-          isImage = true;
-          isVideo = false;
-        } else if (widget.message.dataType == 1) {
-          isImage = false;
-          isVideo = true;
-          _initializeVideoController();
-        }
+    if (widget.message.dataType != null) {
+      if (widget.message.dataType == 0) {
+        isImage = true;
+        isVideo = false;
+      } else if (widget.message.dataType == 1) {
+        isImage = false;
+        isVideo = true;
+        _initializeVideoController();
       }
     }
 
@@ -108,7 +144,7 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
         _videoController = VideoPlayerController.file(file)
           ..initialize().then((_) {
             setState(() {
-              isLoading = false; // Set loading to false when video is initialized
+              isLoading = false;
             });
             _videoController?.setLooping(true);
             _videoController?.play();
@@ -122,6 +158,7 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
     }
     if (messageData == null) {
       // return the image `not_found.png` in the assets images folder
+      // TODO: Maybe something better? It might be loading so not found is not the best option
       return Settings().notFoundImage;
     }
     return messageData!;
@@ -129,9 +166,9 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
 
   @override
   void dispose() {
+    _videoController?.dispose();
     controller.endGesture.removeListener(() {});
     replying = false;
-    _videoController?.dispose();
     super.dispose();
   }
 
@@ -153,7 +190,6 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
 
     return borderColour;
   }
-
 
   clickedEmojiReaction() {
     widget.messageHandling(3, widget.message.messageId);
@@ -180,6 +216,31 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
     }
   }
 
+  goToMediaViewer() {
+    if (widget.message.dataType == 0) {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => ImageViewer(
+            key: UniqueKey(),
+            image: getMessageDataContent(),
+          ),
+        ),
+      ).then((_) { });
+    } else if (widget.message.dataType == 1) {
+      if (widget.message.data != null) {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) =>
+                VideoViewer(
+                    key: UniqueKey(),
+                    videoFilePath: widget.message.data!
+                ),
+          ),
+        ).then((_) {});
+      }
+    }
+  }
+
   Widget viewImageButton() {
     return Row(
         mainAxisAlignment: MainAxisAlignment.end,
@@ -187,14 +248,7 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
           Container(
             child: InkWell(
               onTap: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => ImageViewer(
-                      key: UniqueKey(),
-                      image: getMessageDataContent(),
-                    ),
-                  ),
-                ).then((_) { });
+                goToMediaViewer();
               },
               child: Padding(
                 padding: EdgeInsets.all(10.0),
@@ -333,6 +387,7 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
 
   Widget getVideoContent() {
     if (widget.message.textMessage != null && widget.message.textMessage!.isNotEmpty) {
+      // TODO:!?!?!?!
       return Container();
     } else {
       return Column(
@@ -345,7 +400,9 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
                 widget.message.body,
                 style: simpleTextStyle()
             ),
-            _videoController != null && _videoController!.value.isInitialized
+            isLoading
+                ? CircularProgressIndicator()
+                : _videoController != null && _videoController!.value.isInitialized
                 ? AspectRatio(
               aspectRatio: _videoController!.value.aspectRatio,
               child: VideoPlayer(_videoController!),
@@ -359,9 +416,9 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
                       : _videoController!.play();
                 });
               },
-              child: Icon(
+              child: _videoController != null && _videoController!.value.isInitialized ? Icon(
                 _videoController!.value.isPlaying ? Icons.pause : Icons.play_arrow,
-              ),
+              ) : Container(),
             ),
           ]
       );
@@ -380,7 +437,9 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
                 widget.message.body,
                 style: simpleTextStyle()
             ),
-            Image.memory(getMessageDataContent()),
+            isLoading
+                ? CircularProgressIndicator()
+                : Image.memory(getMessageDataContent()),
             Linkify(
                 onOpen: _onOpen,
                 text: widget.message.textMessage!,
@@ -400,7 +459,9 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
                 widget.message.body,
                 style: simpleTextStyle()
             ),
-            Image.memory(getMessageDataContent()),
+            isLoading
+                ? CircularProgressIndicator()
+                : Image.memory(getMessageDataContent()),
           ]
       );
     }
@@ -722,7 +783,7 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
                         child: GestureDetector(
                           onLongPressStart: (details) =>
                               onLongPressMessage(context, details),
-                          onTap: () {
+                          onTap: () async {
                             selectMessage(context);
                           },
                           child: messageBox(),

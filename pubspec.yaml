@@ -59,6 +59,7 @@ dependencies:
   camerawesome: ^2.5.0
   open_filex: ^4.7.0
   video_player: ^2.2.19
+  chewie: ^1.2.2
 
 dev_dependencies:
   flutter_test:

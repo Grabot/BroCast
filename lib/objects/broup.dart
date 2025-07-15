@@ -847,38 +847,61 @@ class Broup {
       // The bro is up to date with all the messages
       // We will increase the lastMessageId
       lastMessageId += 1;
-      AuthServiceSocial().receivedMessageSingle(broupId, message.messageId).then((value) {
-        if (value) {
-          // The message that was received really was the last one so no update required
-          newMessages = false;
-          if (MessagingChangeNotifier().getBroupId() != broupId) {
-            if (!message.isInformation()) {
-              unreadMessages++;
-            }
-          } else {
-            if (LifeCycleService().appOpen) {
-              unreadMessages = 0;
-              // We had the correct page open, so we have read the message.
-              if (localLastMessageReadId < lastMessageId) {
-                AuthServiceSocial().readMessages(broupId, lastMessageId).then((value) {
-                  if (value) {
-                    localLastMessageReadId = lastMessageId;
-                    unreadMessages = 0;
-                  }
-                });
+      print("checking receiving ${message.dataType}");
+      if (message.dataType == null && message.dataIsReceived) {
+        print("it has no data so send receival");
+        AuthServiceSocial().receivedMessageSingle(broupId, message.messageId).then((value) {
+          if (value) {
+            // The message that was received really was the last one so no update required
+            newMessages = false;
+            if (MessagingChangeNotifier().getBroupId() != broupId) {
+              if (!message.isInformation()) {
+                unreadMessages++;
+              }
+            } else {
+              if (LifeCycleService().appOpen) {
+                unreadMessages = 0;
+                // We had the correct page open, so we have read the message.
+                if (localLastMessageReadId < lastMessageId) {
+                  AuthServiceSocial().readMessages(broupId, lastMessageId).then((value) {
+                    if (value) {
+                      localLastMessageReadId = lastMessageId;
+                      unreadMessages = 0;
+                    }
+                  });
+                }
               }
             }
+          } else {
+            if (!newMessages) {
+              newMessages = true;
+            }
           }
+          // notify the home screen because the call
+          // might not have finished when a notify was send out
+          Storage().updateBroup(this);
+          BroHomeChangeNotifier().notify();
+        });
+      } else {
+        print("reading a message with data");
+        // The message has data, but the bro will still have read it if the chat is open.
+        if (MessagingChangeNotifier().getBroupId() != broupId) {
+          unreadMessages++;
         } else {
-          if (!newMessages) {
-            newMessages = true;
+          if (LifeCycleService().appOpen) {
+            unreadMessages = 0;
+            // We had the correct page open, so we have read the message.
+            if (localLastMessageReadId < lastMessageId) {
+              AuthServiceSocial().readMessages(broupId, lastMessageId).then((value) {
+                if (value) {
+                  localLastMessageReadId = lastMessageId;
+                  unreadMessages = 0;
+                }
+              });
+            }
           }
         }
-        // notify the home screen because the call
-        // might not have finished when a notify was send out
-        Storage().updateBroup(this);
-        BroHomeChangeNotifier().notify();
-      });
+      }
     } else {
       if (!message.isInformation()) {
         unreadMessages++;

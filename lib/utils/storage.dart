@@ -108,6 +108,7 @@ class Storage {
               String path = await saveImageData(data);
               newMap['data'] = path;
             }
+            newMap['dataIsReceived'] = 1;
             newMessageMaps.add(newMap);
           }
         }
@@ -116,6 +117,7 @@ class Storage {
       // we have to drop the old one and recreate it.
       await db.execute('DROP TABLE Message');
       // Recreate the message table, so we also add the new `emojiReactions` column.
+      // This will also add the new `dataIsReceived` column
       await createTableMessage(db);
       if (newMessageMaps.isNotEmpty) {
         //  Insert the data from the old table into the new table
@@ -175,6 +177,7 @@ class Storage {
             isRead INTEGER,
             data TEXT,
             dataType INTEGER,
+            dataIsReceived INTEGER,
             repliedTo INTEGER,
             emojiReactions TEXT,
             UNIQUE(messageId, broupId, info) ON CONFLICT REPLACE
