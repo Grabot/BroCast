@@ -98,7 +98,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		CA4434EF2DA1ADEC00DF7A53 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+		CA4434EF2DA1ADEC00DF7A53 /* Exceptions for "BrocastExtension" folder in "BrocastExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
@@ -108,7 +108,18 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		CA4434E42DA1ADEC00DF7A53 /* BrocastExtension */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (CA4434EF2DA1ADEC00DF7A53 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = BrocastExtension; sourceTree = "<group>"; };
+		CA4434E42DA1ADEC00DF7A53 /* BrocastExtension */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				CA4434EF2DA1ADEC00DF7A53 /* Exceptions for "BrocastExtension" folder in "BrocastExtension" target */,
+			);
+			explicitFileTypes = {
+			};
+			explicitFolders = (
+			);
+			path = BrocastExtension;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
