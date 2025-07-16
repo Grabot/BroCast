@@ -447,7 +447,17 @@ class SocketServices extends ChangeNotifier {
             // The message is not yet in the local db,
             // it could be because the message is not retrieved yet.
             // Create a placeholder message with the emoji reactions.
-            Message placeHolderMessage = Message(messageId, -1, "", null, DateTime.now().toUtc().toString(), null, false, broupId);
+            Message placeHolderMessage = Message(
+                messageId: messageId,
+                messageIdentifier: "messageIdentifier",
+                senderId: -1,
+                body: "",
+                textMessage: null,
+                timestamp: DateTime.now().toUtc().toString(),
+                data: null,
+                info: false,
+                broupId: broupId
+            );
             placeHolderMessage.addEmojiReaction(emoji, broId);
             Storage().addMessage(placeHolderMessage);
             AuthServiceSocialV15().receivedEmojiReaction(broupId).then((value) {
@@ -462,7 +472,7 @@ class SocketServices extends ChangeNotifier {
   messageReceived(data) async {
     Message message = await Message.fromJson(data);
     Storage storage = Storage();
-    storage.addMessage(message);
+    await storage.addMessage(message);
     // We only want to do the receive update when the app is opened.
     int broupId = message.broupId;
     Me? me = Settings().getMe();

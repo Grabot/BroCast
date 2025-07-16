@@ -24,6 +24,8 @@ import '../../../objects/bro.dart';
 import '../../services/auth/v1_4/auth_service_social.dart';
 import '../../objects/me.dart';
 import '../../utils/life_cycle_service.dart';
+import '../../utils/locator.dart';
+import '../../utils/navigation_service.dart';
 import '../../utils/popup_menu_override.dart';
 import '../../utils/storage.dart';
 import '../camera_page/camera_page.dart';
@@ -33,6 +35,7 @@ import 'media_viewer/image_viewer.dart';
 import 'message_detail_popup.dart';
 import 'message_util.dart';
 import 'models/message_tile.dart';
+import 'package:brocast/constants/route_paths.dart' as routes;
 
 class ChatMessaging extends StatefulWidget {
   final Broup chat;
@@ -100,6 +103,8 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
   Offset emojiPopupPosition = Offset.zero;
 
   List<Map<String, dynamic>> messagePopupOptions = [];
+
+  final NavigationService _navigationService = locator<NavigationService>();
 
   @override
   void initState() {
@@ -613,14 +618,15 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
       // If you join a broup later on? You won't have the message and you can't get the message.
       // We will add a empty message to indicate that the message is not available.
       Message emptyMessage = Message(
-          0,
-          0,
-          "",
-          "",
-          DateTime.now().toIso8601String(),
-          null,
-          true,
-          widget.chat.broupId
+          messageId: 0,
+          messageIdentifier: "messageIdentifier",
+          senderId: 0,
+          body: "",
+          textMessage: "",
+          timestamp: DateTime.now().toUtc().toString(),
+          data: null,
+          info: false,
+          broupId: widget.chat.broupId
       );
       emptyMessage.repliedTo = -1;
       for (Message message in widget.chat.messages) {
@@ -856,17 +862,31 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
 
   sendMessage() {
     if (formKey.currentState!.validate()) {
+      int meId = -1;
+      int newMessageId = widget.chat.lastMessageId + 1;
+      String messageIdentifier = "";
+      Me? me = settings.getMe();
+      if (me == null) {
+        showToastMessage("we had an issues getting your user information. Please log in again.");
+        // This needs to be filled if the user is logged in, if it's not we send the bro back to the login
+        _navigationService.navigateTo(routes.SignInRoute);
+        return;
+      } else {
+        meId = me.getId();
+        messageIdentifier = meId.toString() + "_" + newMessageId.toString();
+      }
       String message = broMessageController.text;
       String textMessage = appendTextMessageController.text;
-      Message mes = new Message(
-        widget.chat.lastMessageId + 1,
-        settings.getMe()!.getId(),
-        message,
-        textMessage,
-        DateTime.now().toUtc().toString(),
-        null,
-        false,
-        widget.chat.getBroupId(),
+      Message mes = Message(
+          messageId: newMessageId,
+          messageIdentifier: messageIdentifier,
+          senderId: meId,
+          body: message,
+          textMessage: textMessage,
+          timestamp: DateTime.now().toUtc().toString(),
+          data: null,
+          info: false,
+          broupId: widget.chat.broupId
       );
       mes.isRead = 2;
       setState(() {
@@ -882,7 +902,7 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
           repliedToInterface = false;
         });
       }
-      AuthServiceSocialV15().sendMessage(widget.chat.getBroupId(), message, textMessage, null, null, repliedToMessageId).then((value) {
+      AuthServiceSocialV15().sendMessage(widget.chat.getBroupId(), message, messageIdentifier, textMessage, null, null, repliedToMessageId).then((value) {
         isLoadingMessages = false;
         if (value) {
           setState(() {

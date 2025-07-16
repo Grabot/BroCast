@@ -333,14 +333,16 @@ class Broup {
             }
             if (isAdd) {
               Message placeHolderMessage = Message(
-                  messageId,
-                  -1,
-                  "",
-                  null,
-                  DateTime.now().toUtc().toString(),
-                  null,
-                  false,
-                  this.broupId);
+                  messageId: messageId,
+                  messageIdentifier: "messageIdentifier",
+                  senderId: -1,
+                  body: "",
+                  textMessage: null,
+                  timestamp: DateTime.now().toUtc().toString(),
+                  data: null,
+                  info: false,
+                  broupId: getBroupId()
+              );
               placeHolderMessage.addEmojiReaction(emoji, broIdReaction);
               storage.addMessage(placeHolderMessage);
             }
@@ -524,14 +526,15 @@ class Broup {
       blockMessageText = "You are removed from the broup! 😭";
     }
     Message blockMessage = Message(
-      lastMessageId + 1,
-      0,
-      blockMessageText,
-      "",
-      DateTime.now().toUtc().toString(),
-      null,
-      true,
-      localBroup.getBroupId(),
+        messageId: lastMessageId + 1,
+        messageIdentifier: "messageIdentifier",
+        senderId: 0,
+        body: blockMessageText,
+        textMessage: "",
+        timestamp: DateTime.now().toUtc().toString(),
+        data: null,
+        info: true,
+        broupId: getBroupId()
     );
     Storage().addMessage(blockMessage);
     this.messages.insert(
@@ -765,14 +768,15 @@ class Broup {
         blockMessageText = "You are removed from the broup! 😭";
       }
       Message blockMessage = Message(
-        lastMessageId + 1,
-        0,
-        blockMessageText,
-        "",
-        DateTime.now().toUtc().toString(),
-        null,
-        true,
-        serverBroup.getBroupId(),
+          messageId: lastMessageId + 1,
+          messageIdentifier: "messageIdentifier",
+          senderId: 0,
+          body: blockMessageText,
+          textMessage: "",
+          timestamp: DateTime.now().toUtc().toString(),
+          data: null,
+          info: true,
+          broupId: getBroupId()
       );
       Storage().addMessage(blockMessage);
       this.messages.insert(
@@ -803,15 +807,16 @@ class Broup {
 
       DateTime datetimeTimeMessage = DateTime(message.getTimeStamp().year,
           message.getTimeStamp().month, message.getTimeStamp().day);
-      Message timeMessage = new Message(
-        0,
-        0,
-        "Today",
-        "",
-        datetimeTimeMessage.toUtc().toString(),
-        null,
-        true,
-        getBroupId(),
+      Message timeMessage = Message(
+          messageId: 0,
+          messageIdentifier: "messageIdentifier",
+          senderId: 0,
+          body: "Today",
+          textMessage: "",
+          timestamp: datetimeTimeMessage.toUtc().toString(),
+          data: null,
+          info: true,
+          broupId: getBroupId()
       );
       this.messages.insert(0, timeMessage);
     }
@@ -819,21 +824,35 @@ class Broup {
 
   updateMessages(Message message) {
     Me? me = Settings().getMe();
+    bool updated = false;
     if (me != null) {
       if (!message.isInformation() && message.senderId == Settings().getMe()!.getId()) {
         // We added it immediately as a placeholder.
         // When we get it from the server we add it for real and remove the placeholder
         // Do a few simple extra checks, like body comparison
-        if (messages[0] == message) {
-          // TODO: There might be some messages retrieved in between this period. Check for the correct message to remove.
-          this.messages.removeAt(0);
+        for (int i = 0; i < 5; i++) {
+          // There might be some messages retrieved in between this period.
+          // While this is unlikely, check for the correct message to remove.
+          if (messages[i] == message) {
+            print("message was from me!");
+            // Update the message with the messageId, which might have changed on the server.
+            Message m = messages[i];
+            m.messageId = message.messageId;
+            updated = true;
+            break;
+          }
         }
       }
     }
     updateDateTiles(message);
     // `isRead` 0 indicates it was successfully send to the server
     message.isRead = 0;
-    this.messages.insert(0, message);
+    print("message updated $updated");
+    if (!updated) {
+      this.messages.insert(0, message);
+    } else {
+      Storage().updateMessage(message);
+    }
     checkReceivedMessages(message);
   }
 

@@ -756,14 +756,15 @@ addWelcomeMessage(Broup broup) {
   DateTime now = DateTime.now();
   DateTime currentDayMessage = DateTime(now.year, now.month, now.day);
   Message unBlockMessage = Message(
-    1,
-    0,
-    "Welcome to the Chat! 🥰",
-    "",
-    currentDayMessage.toUtc().toString(),
-    null,
-    true,
-    broup.getBroupId(),
+      messageId: 1,
+      messageIdentifier: "messageIdentifier",
+      senderId: 0,
+      body: "Welcome to the Chat! 🥰",
+      textMessage: "",
+      timestamp: currentDayMessage.toUtc().toString(),
+      data: null,
+      info: true,
+      broupId: broup.getBroupId(),
   );
   broup.updateLastActivity(currentDayMessage.toUtc().toString());
   Storage().addMessage(unBlockMessage);

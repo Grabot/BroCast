@@ -41,7 +41,7 @@ class _VideoViewerState extends State<VideoViewer> {
                   playedColor: Colors.red,
               handleColor: Colors.red,
               backgroundColor: Colors.grey,
-              bufferedColor: Colors.grey.withOpacity(0.5),
+              bufferedColor: Colors.grey.withValues(alpha: 0.5),
                 ),
             placeholder: Center(child: CircularProgressIndicator()),
             autoInitialize: true,

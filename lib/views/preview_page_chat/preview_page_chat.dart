@@ -10,9 +10,13 @@ import 'package:video_player/video_player.dart';
 import '../../../objects/broup.dart';
 import '../../../utils/settings.dart';
 import '../../../utils/socket_services.dart';
+import '../../objects/me.dart';
 import '../../objects/message.dart';
 import '../../services/auth/v1_5/auth_service_social_v1_5.dart';
+import '../../utils/locator.dart';
+import '../../utils/navigation_service.dart';
 import '../../utils/utils.dart';
+import 'package:brocast/constants/route_paths.dart' as routes;
 
 class PreviewPageChat extends StatefulWidget {
   final Broup chat;
@@ -48,6 +52,8 @@ class _PreviewPageChatState extends State<PreviewPageChat> {
 
   late Uint8List mediaPreviewData;
   VideoPlayerController? _videoController;
+
+  final NavigationService _navigationService = locator<NavigationService>();
 
   @override
   void dispose() {
@@ -149,27 +155,51 @@ class _PreviewPageChatState extends State<PreviewPageChat> {
     Navigator.of(context).pop(null);
   }
 
-  sendMediaMessage(Uint8List messageData, String message, String textMessage, bool isVideo) {
+  sendMediaMessage(Uint8List messageData, String message, String textMessage, bool isVideo) async {
+    // TODO: A image sending loading option?
+    int dataType = 0;
+    if (isVideo) {
+      dataType = 1;
+    }
+    int meId = -1;
+    int newMessageId = widget.chat.lastMessageId + 1;
+    String messageIdentifier = "";
+    Me? me = settings.getMe();
+    if (me == null) {
+      showToastMessage("we had an issues getting your user information. Please log in again.");
+      // This needs to be filled if the user is logged in, if it's not we send the bro back to the login
+      _navigationService.navigateTo(routes.SignInRoute);
+      return;
+    } else {
+      meId = me.getId();
+      messageIdentifier = meId.toString() + "_" + newMessageId.toString();
+      print("message identifier $messageIdentifier");
+    }
     String? messageTextMessage;
     if (textMessage != "") {
       messageTextMessage = textMessage;
     }
     if (formKey.currentState!.validate()) {
+      // We will save all the data already on the message. But not yet store it in the db.
+      // We will receive it again via the socket and we will update some server information
+      // On this object and then store it in the db.
       Message mes = Message(
-        widget.chat.lastMessageId + 1,
-        settings.getMe()!.getId(),
-        message,
-        messageTextMessage,
-        DateTime.now().toUtc().toString(),
-        null,
-        false,
-        widget.chat.getBroupId(),
+          messageId: newMessageId,
+          messageIdentifier: messageIdentifier,
+          senderId: meId,
+          body: message,
+          textMessage: messageTextMessage,
+          timestamp: DateTime.now().toUtc().toString(),
+          data: await saveMediaData(messageData, dataType),
+          dataType: dataType,
+          info: false,
+          broupId: widget.chat.getBroupId()
       );
       mes.isRead = 2;
       setState(() {
         widget.chat.messages.insert(0, mes);
       });
-      AuthServiceSocialV15().sendMessage(widget.chat.getBroupId(), message, messageTextMessage, messageData, isVideo, null).then((value) {
+      AuthServiceSocialV15().sendMessage(widget.chat.getBroupId(), message, messageIdentifier, messageTextMessage, messageData, dataType, null).then((value) {
         if (value) {
           setState(() {
             mes.isRead = 0;
@@ -180,6 +210,8 @@ class _PreviewPageChatState extends State<PreviewPageChat> {
         } else {
           // The message was not sent, we remove it from the list
           showToastMessage("there was an issue sending the message");
+          // TODO: There might be some messages retrieved in between this period. Check for the correct message to remove.
+          widget.chat.messages.removeAt(0);
         }
       });
       broMessageController.clear();

@@ -5,6 +5,8 @@ import 'package:path_provider/path_provider.dart';
 
 class Message {
   late int messageId;
+  // Can be null for information messages
+  String? messageIdentifier;
   late int senderId;
   late String body;
   late String? textMessage;
@@ -33,8 +35,18 @@ class Message {
 
   bool dataIsReceived = true;
 
-  Message(this.messageId, this.senderId, this.body, this.textMessage, this.timestamp,
-      this.data, this.info, this.broupId) {
+  Message({
+    required this.messageId,
+    required this.messageIdentifier,
+    required this.broupId,
+    required this.senderId,
+    required this.body,
+    required this.textMessage,
+    required this.timestamp,
+    required this.info,
+    this.data,
+    this.dataType,
+  }) {
     if (timestamp.endsWith("Z")) {
       this.timestamp = timestamp;
     } else {
@@ -110,14 +122,15 @@ class Message {
       timeStampMessage = timeStampMessage + "Z";
     }
     final message = Message(
-      json['message_id'],
-      json['sender_id'],
-      json['body'],
-      json.containsKey('text_message') ? json['text_message'] : "",
-      timeStampMessage,
-      null,
-      json['info'],
-      json['broup_id'],
+        messageId: json['message_id'],
+        messageIdentifier: json['message_identifier'],
+        senderId: json['sender_id'],
+        body: json['body'],
+        textMessage: json.containsKey('text_message') ? json['text_message'] : "",
+        timestamp: timeStampMessage,
+        data: null,
+        info: json['info'],
+        broupId: json['broup_id'],
     );
 
     if (json.containsKey('data') && json['data'] != null) {
@@ -170,12 +183,10 @@ class Message {
     if (other.runtimeType != runtimeType) {
       return false;
     }
-    // We don't check the messageId because it's not available when sending.
-    // similarly we don't check the timestamp
-    // We also don't check the body, text_message and the data because the rest is sufficient.
-    // Basically just the messageId is sufficient since it's unique.
+    // We just check the messageIdentifier, senderId and broupId since these are the fields that
+    // are now client side when sending the message. This combination will be unique.
     return other is Message
-        && other.messageId == messageId
+        && other.messageIdentifier == messageIdentifier
         && other.senderId == senderId
         && other.broupId == broupId;
   }
@@ -199,6 +210,27 @@ Future<String> saveVideoData(Uint8List videoData) async {
   final directory = await getApplicationDocumentsDirectory();
   final imageDirectory = Directory('${directory.path}/videos');
   final filePath = '${imageDirectory.path}/${DateTime.now().millisecondsSinceEpoch}.brocastMp4';
+  final file = File(filePath);
+  await file.writeAsBytes(videoData);
+  return filePath;
+}
+
+Future<String> saveMediaData(Uint8List videoData, int dataType) async {
+  final directory = await getApplicationDocumentsDirectory();
+  Directory? mediaDirectory;
+  if (dataType == 1) {
+    mediaDirectory = Directory('${directory.path}/videos');
+  } else {
+    // dataType 0
+    mediaDirectory = Directory('${directory.path}/images');
+  }
+  String? extension;
+  if (dataType == 1) {
+    extension = 'brocastMp4';
+  } else {
+    extension = 'brocastPng';
+  }
+  final filePath = '${mediaDirectory.path}/${DateTime.now().millisecondsSinceEpoch}.${extension}';
   final file = File(filePath);
   await file.writeAsBytes(videoData);
   return filePath;

@@ -271,15 +271,16 @@ setDateTiles(Broup chat, int fromIndex) {
 
   DateTime datetimeTimeMessage = DateTime(messageFirst.getTimeStamp().year,
       messageFirst.getTimeStamp().month, messageFirst.getTimeStamp().day);
-  Message timeMessage = new Message(
-    0,
-    0,
-    timeMessageFirst,
-    "",
-    datetimeTimeMessage.toUtc().toString(),
-    null,
-    true,
-    chat.getBroupId(),
+  Message timeMessage = Message(
+      messageId: 0,
+      messageIdentifier: "messageIdentifier",
+      senderId: 0,
+      body: timeMessageFirst,
+      textMessage: "",
+      timestamp: datetimeTimeMessage.toUtc().toString(),
+      data: null,
+      info: true,
+      broupId: chat.getBroupId()
   );
   for (int i = fromIndex; i < chat.messages.length; i++) {
     DateTime current = chat.messages[i].getTimeStamp();
@@ -298,15 +299,16 @@ setDateTiles(Broup chat, int fromIndex) {
       }
 
       chat.messages.insert(i, timeMessage);
-      timeMessage = new Message(
-        0,
-        0,
-        timeMessageTile,
-        "",
-        dayMessage.toUtc().toString(),
-        null,
-        true,
-        chat.getBroupId(),
+      timeMessage = Message(
+          messageId: 0,
+          messageIdentifier: "messageIdentifier",
+          senderId: 0,
+          body: timeMessageTile,
+          textMessage: "",
+          timestamp: dayMessage.toUtc().toString(),
+          data: null,
+          info: true,
+          broupId: chat.getBroupId()
       );
     }
   }
