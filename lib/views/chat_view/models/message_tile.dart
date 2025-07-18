@@ -147,7 +147,7 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
               isLoading = false;
             });
             _videoController?.setLooping(true);
-            _videoController?.play();
+            _videoController?.pause();
           });
     }
   }
@@ -185,7 +185,7 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
       borderColour = Colors.red;
     }
     if (isVideo) {
-      borderColour = Colors.pinkAccent;
+      borderColour = Colors.pinkAccent[100]!;
     }
 
     return borderColour;

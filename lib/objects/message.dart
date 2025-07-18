@@ -204,7 +204,7 @@ class Message {
 Future<String> saveImageData(Uint8List imageData) async {
   final directory = await getApplicationDocumentsDirectory();
   final imageDirectory = Directory('${directory.path}/images');
-  final filePath = '${imageDirectory.path}/${DateTime.now().millisecondsSinceEpoch}.brocastPng';
+  final filePath = '${imageDirectory.path}/${DateTime.now().millisecondsSinceEpoch}.png';
   final file = File(filePath);
   await file.writeAsBytes(imageData);
   return filePath;
@@ -213,7 +213,7 @@ Future<String> saveImageData(Uint8List imageData) async {
 Future<String> saveVideoData(Uint8List videoData) async {
   final directory = await getApplicationDocumentsDirectory();
   final imageDirectory = Directory('${directory.path}/videos');
-  final filePath = '${imageDirectory.path}/${DateTime.now().millisecondsSinceEpoch}.brocastMp4';
+  final filePath = '${imageDirectory.path}/${DateTime.now().millisecondsSinceEpoch}.mp4';
   final file = File(filePath);
   await file.writeAsBytes(videoData);
   return filePath;
