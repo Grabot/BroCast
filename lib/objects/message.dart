@@ -46,6 +46,8 @@ class Message {
     required this.info,
     this.data,
     this.dataType,
+    this.repliedTo,
+    this.repliedMessage,
   }) {
     if (timestamp.endsWith("Z")) {
       this.timestamp = timestamp;
@@ -84,6 +86,7 @@ class Message {
   Map<String, dynamic> toDbMap() {
     var map = Map<String, dynamic>();
     map['messageId'] = messageId;
+    map['messageIdentifier'] = messageIdentifier;
     map['senderId'] = senderId;
     map['broupId'] = broupId;
     map['body'] = body;
@@ -101,6 +104,7 @@ class Message {
 
   Message.fromDbMap(Map<String, dynamic> map) {
     messageId = map['messageId'];
+    messageIdentifier = map['messageIdentifier'];
     senderId = map['senderId'];
     broupId = map['broupId'];
     body = map['body'];

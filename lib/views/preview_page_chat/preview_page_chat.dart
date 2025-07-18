@@ -18,16 +18,20 @@ import '../../utils/navigation_service.dart';
 import '../../utils/utils.dart';
 import 'package:brocast/constants/route_paths.dart' as routes;
 
+import '../camera_page/camera_page.dart';
+
 class PreviewPageChat extends StatefulWidget {
-  final Broup chat;
+  final bool fromGallery;
+  final Broup? chat;
   final Uint8List media;
-  final bool isVideo;
+  final int? dataType;
 
   const PreviewPageChat({
     Key? key,
+    required this.fromGallery,
     required this.chat,
     required this.media,
-    required this.isVideo,
+    required this.dataType,
   }) : super(key: key);
 
   @override
@@ -72,7 +76,7 @@ class _PreviewPageChatState extends State<PreviewPageChat> {
 
     mediaPreviewData = widget.media;
 
-    if (widget.isVideo) {
+    if (widget.dataType == 1) {
       broMessageController.text = "🎥";
       _initializeVideo();
     } else {
@@ -114,7 +118,7 @@ class _PreviewPageChatState extends State<PreviewPageChat> {
     if (!appendingCaption) {
       focusCaptionField.requestFocus();
       if (broMessageController.text == "") {
-        if (widget.isVideo) {
+        if (widget.dataType == 1) {
           broMessageController.text = "🎥";
         } else {
           broMessageController.text = "📸";
@@ -135,34 +139,31 @@ class _PreviewPageChatState extends State<PreviewPageChat> {
   }
 
   goBackToCamera() {
-    // TODO: How to do?
-    // Navigator.push(context, MaterialPageRoute(
-    //     builder: (context) => CameraPage(
-    //       key: UniqueKey(),
-    //       isMe: false,
-    //     )
-    //   ),
-    // ).then((imageData) async {
-    //   if (imageData != null) {
-    //     setState(() {
-    //       imagePreviewData = imageData;
-    //     });
-    //   }
-    // });
+    Navigator.pushReplacement(
+      context, MaterialPageRoute(
+        builder: (context) => CameraPage(
+          key: UniqueKey(),
+          chat: widget.chat,
+          changeAvatar: false,
+        )
+      ),
+    );
   }
 
   exitPreviewMode() async {
-    Navigator.of(context).pop(null);
+    if (widget.chat != null) {
+      navigateToChat(context, settings, widget.chat!);
+    }
   }
 
-  sendMediaMessage(Uint8List messageData, String message, String textMessage, bool isVideo) async {
+  sendMediaMessage(Uint8List messageData, String message, String textMessage, int dataType) async {
     // TODO: A image sending loading option?
-    int dataType = 0;
-    if (isVideo) {
-      dataType = 1;
+    if (widget.chat == null) {
+      // You shouldn't get here if the chat is null
+      return;
     }
     int meId = -1;
-    int newMessageId = widget.chat.lastMessageId + 1;
+    int newMessageId = widget.chat!.lastMessageId + 1;
     String messageIdentifier = "";
     Me? me = settings.getMe();
     if (me == null) {
@@ -193,25 +194,24 @@ class _PreviewPageChatState extends State<PreviewPageChat> {
           data: await saveMediaData(messageData, dataType),
           dataType: dataType,
           info: false,
-          broupId: widget.chat.getBroupId()
+          broupId: widget.chat!.getBroupId()
       );
       mes.isRead = 2;
       setState(() {
-        widget.chat.messages.insert(0, mes);
+        widget.chat!.messages.insert(0, mes);
       });
-      AuthServiceSocialV15().sendMessage(widget.chat.getBroupId(), message, messageIdentifier, messageTextMessage, messageData, dataType, null).then((value) {
+      AuthServiceSocialV15().sendMessage(widget.chat!.getBroupId(), message, messageIdentifier, messageTextMessage, messageData, dataType, null).then((value) {
         if (value) {
           setState(() {
             mes.isRead = 0;
             // Go back to the chat.
-            Navigator.of(context).pop(null);
+            navigateToChat(context, settings, widget.chat!);
           });
           // message send
         } else {
           // The message was not sent, we remove it from the list
           showToastMessage("there was an issue sending the message");
-          // TODO: There might be some messages retrieved in between this period. Check for the correct message to remove.
-          widget.chat.messages.removeAt(0);
+          widget.chat!.messages.removeAt(0);
         }
       });
       broMessageController.clear();
@@ -220,10 +220,13 @@ class _PreviewPageChatState extends State<PreviewPageChat> {
   }
 
   sendMedia() async {
+    if (widget.dataType == null) {
+      return null;
+    }
     if (formKey.currentState!.validate()) {
       String emojiMessage = broMessageController.text;
       String textMessage = captionMessageController.text;
-      sendMediaMessage(mediaPreviewData, emojiMessage, textMessage, widget.isVideo);
+      sendMediaMessage(mediaPreviewData, emojiMessage, textMessage, widget.dataType!);
     }
   }
 
@@ -246,7 +249,7 @@ class _PreviewPageChatState extends State<PreviewPageChat> {
   }
 
   Widget mediaPreview() {
-    if (widget.isVideo) {
+    if (widget.dataType == 1) {
       return _videoController != null && _videoController!.value.isInitialized
           ? Column(
         children: [
@@ -524,14 +527,15 @@ class _PreviewPageChatState extends State<PreviewPageChat> {
                         ),
                         Spacer(), // Spacers to align the close button properly
                         Spacer(),
-                        IconButton(
-                          padding: EdgeInsets.zero,
-                          iconSize: 20,
-                          icon: Icon(Icons.camera_alt, color: Colors.white),
-                          onPressed: () async {
-                            goBackToCamera();
-                          },
-                        ),
+                        if (!widget.fromGallery)
+                          IconButton(
+                            padding: EdgeInsets.zero,
+                            iconSize: 20,
+                            icon: Icon(Icons.camera_alt, color: Colors.white),
+                            onPressed: () async {
+                              goBackToCamera();
+                            },
+                          ),
                       ],
                     ),
                   ),

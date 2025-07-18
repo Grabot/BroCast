@@ -313,17 +313,21 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
   }
 
   void handleEmojiPopupAction(EmojiPopupAction action) {
-    highlightedMessageIds.remove(emojiReactionMessageId);
-    showEmojiPopup = false;
     if (action is OutsideClicked) {
-      // outside clicked
+      highlightedMessageIds.remove(emojiReactionMessageId);
+      showEmojiPopup = false;
+      emojiReactionMessageId = -1;
     } else if (action is ButtonPressed) {
+      focusEmojiTextField.requestFocus();
+      showEmojiPopup = false;
       showEmojiKeyboard = true;
     } else if (action is EmojiSelected) {
+      highlightedMessageIds.remove(emojiReactionMessageId);
+      showEmojiPopup = false;
       final String newEmoji = action.emoji;
       emojiReaction(newEmoji, emojiReactionMessageId);
+      emojiReactionMessageId = -1;
     }
-    emojiReactionMessageId = -1;
     setState(() {});
   }
 
@@ -488,6 +492,7 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
 
   void onActionEmojiChanged(String emoji) {
     if (emojiReactionMessageId != -1) {
+      highlightedMessageIds.remove(emojiReactionMessageId);
       emojiReaction(emoji, emojiReactionMessageId);
       emojiReactionMessageId = -1;
       if (showEmojiKeyboard) {
@@ -734,6 +739,9 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
   }
 
   messageLongPress(Message message, Offset pressPosition) {
+    if (emojiReactionMessageId != -1) {
+      highlightedMessageIds.remove(emojiReactionMessageId);
+    }
     highlightedMessageIds.add(message.messageId);
 
     bool broAdded = getIsAdded(message.senderId);
@@ -838,6 +846,7 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
   }
 
   appendTextMessage() {
+    print("appending text message: $appendingMessage");
     if (!appendingMessage) {
       focusAppendText.requestFocus();
       if (broMessageController.text == "") {
@@ -875,6 +884,12 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
         meId = me.getId();
         messageIdentifier = meId.toString() + "_" + newMessageId.toString();
       }
+
+      int? repliedToMessageId;
+      if (repliedToMessage != null) {
+        repliedToMessageId = repliedToMessage!.messageId;
+      }
+
       String message = broMessageController.text;
       String textMessage = appendTextMessageController.text;
       Message mes = Message(
@@ -886,22 +901,23 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
           timestamp: DateTime.now().toUtc().toString(),
           data: null,
           info: false,
-          broupId: widget.chat.broupId
+          broupId: widget.chat.broupId,
+          repliedMessage: repliedToMessage,
+          repliedTo: repliedToMessageId,
       );
       mes.isRead = 2;
       setState(() {
         widget.chat.messages.insert(0, mes);
       });
-      // Send the message. The data is always null here because it's only send via the preview page.
-      int? repliedToMessageId;
+
       if (repliedToMessage != null) {
-        repliedToMessageId = repliedToMessage!.messageId;
         setState(() {
           highlightedMessageIds.remove(repliedToMessage!.messageId);
           repliedToMessage = null;
           repliedToInterface = false;
         });
       }
+      // Send the message. The data is always null here because it's only send via the preview page.
       AuthServiceSocialV15().sendMessage(widget.chat.getBroupId(), message, messageIdentifier, textMessage, null, null, repliedToMessageId).then((value) {
         isLoadingMessages = false;
         if (value) {
@@ -932,6 +948,7 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
   }
 
   imageLoaded() async {
+    // TODO: Add video?
     FilePickerResult? picked = await FilePicker.platform.pickFiles(withData: true);
 
     if (picked != null) {
@@ -941,17 +958,18 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
       } else {
         Uint8List photoData = picked.files.first.bytes!;
 
-        Navigator.of(context).push(
+        Navigator.of(context).pushReplacement(
           MaterialPageRoute(
             builder: (context) =>
               PreviewPageChat(
                 key: UniqueKey(),
+                fromGallery: true,
                 chat: widget.chat,
-                isVideo: true,
                 media: photoData,
+                dataType: 0,
               ),
             ),
-        ).then((_) { });
+        );
       }
     }
   }
@@ -967,42 +985,18 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
     )
   ];
 
-  sendMessageData(Uint8List imageData, bool isVideo) {
-    // clear the text field because it is taken from the preview page.
-    broMessageController.text = "";
-    appendTextMessageController.text = "";
-    // Returned from the camera with the image
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) =>
-            PreviewPageChat(
-              key: UniqueKey(),
-              chat: widget.chat,
-              isVideo: isVideo,
-              media: imageData,
-            ),
-      ),
-    ).then((_) { });
-  }
-
   addNewComponent(int popupIndex) {
     Navigator.of(context).pop();
     if (popupIndex == 0) {
-      Navigator.push(context, MaterialPageRoute(
-        builder: (context) => CameraPage(
-          key: UniqueKey(),
-          isMe: false,
-        )
-      ),
-      ).then((imageData) async {
-        if (imageData != null) {
-          if (imageData[0] != null) {
-            if (imageData[1] != null) {
-              sendMessageData(imageData[0], imageData[1]);
-            }
-          }
-        }
-      });
+      Navigator.pushReplacement(
+        context, MaterialPageRoute(
+          builder: (context) => CameraPage(
+            key: UniqueKey(),
+            chat: widget.chat,
+            changeAvatar: false,
+          )
+        ),
+      );
     } else {
       imageLoaded();
     }
@@ -1121,21 +1115,16 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
   }
 
   void onTapAppendTextField() {
-    emojiReactionMessageId = -1;
-    if (showEmojiPopup) {
+    if (showEmojiKeyboard) {
       setState(() {
-        showEmojiPopup = false;
-      });
-    }
-    if (!showEmojiKeyboard) {
-      setState(() {
-        showEmojiKeyboard = true;
+        showEmojiKeyboard = false;
       });
     }
   }
 
   void backButtonFunctionality() {
     if (emojiReactionMessageId != -1) {
+      highlightedMessageIds.remove(emojiReactionMessageId);
       emojiReactionMessageId = -1;
     }
     if (showEmojiPopup) {

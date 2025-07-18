@@ -834,10 +834,14 @@ class Broup {
           // There might be some messages retrieved in between this period.
           // While this is unlikely, check for the correct message to remove.
           if (messages[i] == message) {
-            print("message was from me!");
             // Update the message with the messageId, which might have changed on the server.
             Message m = messages[i];
-            m.messageId = message.messageId;
+            // Update the received message object with the local data that you don't need to retrieve again.
+            message.data = m.data;
+            message.repliedMessage = m.repliedMessage;
+            message.repliedTo = m.repliedTo;
+            message.dataIsReceived = true;
+            messages[i] = message;
             updated = true;
             break;
           }

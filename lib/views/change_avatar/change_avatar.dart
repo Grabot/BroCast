@@ -353,23 +353,22 @@ class _ChangeAvatarState extends State<ChangeAvatar> {
   }
 
   takePicture() async {
-    availableCameras().then((value) {
-      Navigator.push(context, MaterialPageRoute(
-          builder: (context) => CameraPage(
+    Navigator.push(context, MaterialPageRoute(
+        builder: (context) => CameraPage(
             key: UniqueKey(),
-            isMe: widget.isMe,
-          )
-        ),
-      ).then((value) async {
-        if (value != null) {
-          isLoading = true;
-          setState(() {
-            imageCrop = value;
-            imageMain = value;
-            cropController.image = imageMain;
-          });
-        };
-      });
+            changeAvatar: true,
+            chat: null
+        )
+      ),
+    ).then((value) async {
+      if (value != null) {
+        isLoading = true;
+        setState(() {
+          imageCrop = value;
+          imageMain = value;
+          cropController.image = imageMain;
+        });
+      };
     });
   }
 

@@ -35,7 +35,7 @@ class Storage {
 
     return await openDatabase(
       path,
-      version: 4,
+      version: 5,
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
     );
@@ -82,47 +82,45 @@ class Storage {
       }
       db.execute('ALTER TABLE Broup ADD localLastMessageReadId INTEGER DEFAULT 0');
     }
-    if ((oldVersion == 1 || oldVersion == 2 || oldVersion == 3) && newVersion >= 4) {
-      String query = "SELECT messageId, broupId FROM Message";
-      List<Map<String, dynamic>> maps = await db.rawQuery(query);
-      List<List<int>> messageIdGroups = [];
-      List<Map<String, dynamic>> newMessageMaps = [];
-      if (maps.isNotEmpty) {
-        messageIdGroups = maps
-            .map((map) => [map['messageId'] as int, map['broupId'] as int])
-            .toList();
-        for (List<int> messageIdGroup in messageIdGroups) {
-          int messageId = messageIdGroup[0];
-          int broupId = messageIdGroup[1];
-          // We retrieve each message separately because we found an issue with a database query limit.
-          String query = "SELECT * FROM Message WHERE messageId = $messageId AND broupId = $broupId";
-
-          List<Map<String, dynamic>> messageMap = await db.rawQuery(query);
-          // We do these message by message, so the list will be of length 1.
-          if (messageMap.isNotEmpty && messageMap.length == 1) {
-            // The messageMap is almost correct, but the data is not in the right format.
-            // It is a Uint8List now but we want it to be a path location.
-            Map<String, dynamic> newMap = Map<String, dynamic>.from(messageMap[0]);
-            Uint8List? data = newMap['data'];
-            if (data != null) {
-              String path = await saveImageData(data);
-              newMap['data'] = path;
-            }
-            newMap['dataIsReceived'] = 1;
-            newMessageMaps.add(newMap);
-          }
-        }
-      }
-      // To change the type of the data on the message table
-      // we have to drop the old one and recreate it.
+    if ((oldVersion <= 3) && newVersion >= 4) {
       await db.execute('DROP TABLE Message');
-      // Recreate the message table, so we also add the new `emojiReactions` column.
-      // This will also add the new `dataIsReceived` column
       await createTableMessage(db);
-      if (newMessageMaps.isNotEmpty) {
-        //  Insert the data from the old table into the new table
-        for (Map<String, dynamic> message in newMessageMaps) {
-          await db.insert('Message', message);
+    }
+    if ((oldVersion <= 4) && newVersion >= 5) {
+      await db.execute('DROP TABLE Message');
+      await createTableMessage(db);
+
+      String query = "SELECT broupId FROM Broup";
+      List<Map<String, dynamic>> maps = await db.rawQuery(query);
+      List<int> broupIdGroups = [];
+      if (maps.isNotEmpty) {
+        broupIdGroups = maps
+            .map((map) => map['broupId'] as int)
+            .toList();
+        if (broupIdGroups.isNotEmpty) {
+          DateTime now = DateTime.now();
+          DateTime currentDayMessage = DateTime(now.year, now.month, now.day);
+          Map<String, String> emojiReaction = {};
+          for (int broupId in broupIdGroups) {
+            // put welcome to chat message back.
+            Map<String, dynamic> messageWelcome = {
+              'messageId': 1,
+              'messageIdentifier': null,
+              'senderId': 0,
+              'broupId': broupId,
+              'body': 'Welcome to the Chat! 🥰',
+              'textMessage': '',
+              'info': 1,
+              'timestamp': currentDayMessage.toUtc().toString(),
+              'isRead': 1,
+              'data': null,
+              'dataType': null,
+              'dataIsReceived': 1,
+              'repliedTo': null,
+              'emojiReactions': jsonEncode(emojiReaction),
+            };
+            await db.insert('Message', messageWelcome);
+          }
         }
       }
     }
@@ -168,6 +166,7 @@ class Storage {
           CREATE TABLE Message (
             id INTEGER PRIMARY KEY,
             messageId INTEGER,
+            messageIdentifier TEXT,
             senderId INTEGER,
             broupId INTEGER,
             body TEXT,
