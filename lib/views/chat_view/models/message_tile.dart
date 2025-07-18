@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:path_provider/path_provider.dart';
 import 'package:brocast/services/auth/v1_5/auth_service_social_v1_5.dart';
 import 'package:brocast/views/chat_view/media_viewer/image_viewer.dart';
 import 'package:flutter/material.dart';
@@ -141,7 +143,12 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
   void _initializeVideoController() async {
     if (widget.message.data != null) {
         final file = File(widget.message.data!);
-        _videoController = VideoPlayerController.file(file)
+        final tempDirectory = await getTemporaryDirectory();
+        // The video will be stored and loaded in a hidden folder with the
+        // default name which is reused for each new video.
+        String newFilePath = '${tempDirectory.path}/previewVideo.mp4';
+        final fileView = await file.copy(newFilePath);
+        _videoController = VideoPlayerController.file(fileView)
           ..initialize().then((_) {
             setState(() {
               isLoading = false;

@@ -6,7 +6,6 @@ import 'package:brocast/utils/socket_services.dart';
 import 'package:brocast/utils/storage.dart';
 import 'package:brocast/utils/utils.dart';
 import 'package:brocast/views/chat_view/chat_details/chat_details.dart';
-import 'package:camera/camera.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -14,13 +13,12 @@ import 'package:image/image.dart' as image;
 import '../../../objects/me.dart';
 import '../../services/auth/v1_4/auth_service_settings.dart';
 import '../../objects/broup.dart';
-import '../../objects/message.dart';
 import '../camera_page/camera_page.dart';
 import '../ui_util/crop/controller.dart';
 import '../ui_util/crop/crop.dart';
 
 class ChangeAvatar extends StatefulWidget {
-  final bool isMe;  // Indicates that you're changing your own profile or a broup photo
+  final bool isMe;
   final Uint8List avatar;
   final bool isDefault;
   final Broup? chat;
@@ -102,7 +100,6 @@ class _ChangeAvatarState extends State<ChangeAvatar> {
       type: FileType.custom,
       allowedExtensions: ['png', 'jpg', 'jpeg'],
     );
-    // FilePickerResult? picked = await FilePicker.platform.pickFiles(withData: true);
 
     if (picked != null) {
       String? extension = picked.files.first.extension;

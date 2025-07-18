@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
 import 'package:brocast/views/chat_view/emoji_reactions_overview.dart';
 import 'package:collection/collection.dart';
+import 'package:path_provider/path_provider.dart';
 
 import 'package:brocast/objects/broup.dart';
 import 'package:brocast/objects/message.dart';
@@ -32,6 +34,7 @@ import '../camera_page/camera_page.dart';
 import '../preview_page_chat/preview_page_chat.dart';
 import 'chat_details/chat_details.dart';
 import 'media_viewer/image_viewer.dart';
+import 'media_viewer/video_viewer.dart';
 import 'message_detail_popup.dart';
 import 'message_util.dart';
 import 'models/message_tile.dart';
@@ -349,11 +352,20 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
       }
       if (message.data != null) {
         String dataLoc = message.data!;
-        Uint8List? decoded = getMessageData(dataLoc);
-        if (decoded != null) {
-          final albumName = "Brocast";
-          await Gal.putImageBytes(decoded, album: albumName);
+        final albumName = "Brocast";
+        final directory = await getApplicationDocumentsDirectory();
+        if (message.dataType == 0) {
+          final imagePath = '${directory.path}/brocast_${message.messageIdentifier}.png';
+          final file = File(dataLoc);
+          await file.copy(imagePath);
+          await Gal.putImage(imagePath, album: albumName);
           showToastMessage("Image saved");
+        } else if (message.dataType == 1) {
+          final videoPath = '${directory.path}/brocast_${message.messageIdentifier}.mp4';
+          final file = File(dataLoc);
+          await file.copy(videoPath);
+          await Gal.putVideo(videoPath, album: albumName);
+          showToastMessage("Video saved");
         }
       }
     } catch (e) {
@@ -417,14 +429,27 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
     } else if (action is SaveImagePopupAction) {
       saveImageToGallery(action.message);
     } else if (action is ViewImagePopupAction) {
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (context) => ImageViewer(
-            key: UniqueKey(),
-            image: getImage(action.message),
+      if (action.message.dataType == 0) {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) =>
+                ImageViewer(
+                  key: UniqueKey(),
+                  image: getImage(action.message),
+                ),
           ),
-        ),
-      ).then((_) { });
+        );
+      } else {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) =>
+                VideoViewer(
+                  key: UniqueKey(),
+                  videoFilePath: action.message.data!,
+                ),
+          ),
+        );
+      }
     } else if (action is ReplyToMessagePopupAction) {
       repliedToMessage = widget.chat.messages.firstWhereOrNull((message) => message.messageId == action.message.messageId);
       if (repliedToMessage != null) {
@@ -769,8 +794,9 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
       messagePopupOptions.add({'text': 'Dismiss Bro Admin', 'icon': Icons.admin_panel_settings_outlined, 'action': DismissBroAdminPopupAction(message: message, broId: message.senderId)});
     }
     if (saveImageOption) {
-      messagePopupOptions.add({'text': 'Save Image', 'icon': Icons.save_alt, 'action': SaveImagePopupAction(message: message)});
-      messagePopupOptions.add({'text': 'View Image', 'icon': Icons.remove_red_eye, 'action': ViewImagePopupAction(message: message)});
+      String type = message.dataType == 0 ? "Image" : "Video";
+      messagePopupOptions.add({'text': 'Save $type', 'icon': Icons.save_alt, 'action': SaveImagePopupAction(message: message)});
+      messagePopupOptions.add({'text': 'View $type', 'icon': Icons.remove_red_eye, 'action': ViewImagePopupAction(message: message)});
     }
     if (meAdmin && !myMessage && !widget.chat.private && broInBroup) {
       messagePopupOptions.add({'text': 'Remove bro from broup', 'icon': Icons.person_remove, 'action': RemoveBroFromBroupPopupAction(message: message, broId: message.senderId)});
@@ -948,27 +974,29 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
   }
 
   imageLoaded() async {
-    // TODO: Add video?
-    FilePickerResult? picked = await FilePicker.platform.pickFiles(withData: true);
+    FilePickerResult? picked = await FilePicker.platform.pickFiles(
+      withData: true,
+      type: FileType.custom,
+      allowedExtensions: ['png', 'jpg', 'jpeg', 'mp4'],
+    );
 
     if (picked != null) {
       String? extension = picked.files.first.extension;
-      if (extension != "png" && extension != "jpg" && extension != "jpeg") {
-        showToastMessage("Can only upload images with extension .png, .jpg or .jpeg");
+      if (extension != "png" && extension != "mp4" && extension != "jpg" && extension != "jpeg") {
+        showToastMessage("Can only upload images or videos with extension .png, .jpg, .jpeg. or .mp4");
       } else {
-        Uint8List photoData = picked.files.first.bytes!;
-
+        Uint8List mediaData = picked.files.first.bytes!;
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
             builder: (context) =>
-              PreviewPageChat(
-                key: UniqueKey(),
-                fromGallery: true,
-                chat: widget.chat,
-                media: photoData,
-                dataType: 0,
-              ),
-            ),
+                PreviewPageChat(
+                  key: UniqueKey(),
+                  fromGallery: true,
+                  chat: widget.chat,
+                  media: mediaData,
+                  dataType: extension == "mp4" ? 1 : 0,
+                ),
+          ),
         );
       }
     }

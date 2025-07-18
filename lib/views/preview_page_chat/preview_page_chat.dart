@@ -41,7 +41,8 @@ class PreviewPageChat extends StatefulWidget {
 class _PreviewPageChatState extends State<PreviewPageChat> {
   bool showEmojiKeyboard = false;
   bool appendingCaption = false;
-  bool isLoading = true; // Added to track loading state
+  bool isLoading = true;
+  bool isSending = false;
 
   FocusNode focusEmojiTextField = FocusNode();
   FocusNode focusCaptionField = FocusNode();
@@ -58,6 +59,7 @@ class _PreviewPageChatState extends State<PreviewPageChat> {
   VideoPlayerController? _videoController;
 
   final NavigationService _navigationService = locator<NavigationService>();
+
 
   @override
   void dispose() {
@@ -91,7 +93,9 @@ class _PreviewPageChatState extends State<PreviewPageChat> {
 
   Future<void> _initializeVideo() async {
     final directory = await getTemporaryDirectory();
-    final file = File('${directory.path}/temp_video.mp4');
+    // The video will be stored and loaded in a hidden folder with the
+    // default name which is reused for each new video.
+    final file = File('${directory.path}/previewVideo.mp4');
     await file.writeAsBytes(mediaPreviewData);
 
     _videoController = VideoPlayerController.file(file)
@@ -100,7 +104,7 @@ class _PreviewPageChatState extends State<PreviewPageChat> {
           isLoading = false; // Set loading to false when video is initialized
         });
         _videoController?.setLooping(true);
-        _videoController?.play();
+        _videoController?.pause();
       });
   }
 
@@ -146,7 +150,7 @@ class _PreviewPageChatState extends State<PreviewPageChat> {
           chat: widget.chat,
           changeAvatar: false,
         )
-      ),
+    ),
     );
   }
 
@@ -157,7 +161,9 @@ class _PreviewPageChatState extends State<PreviewPageChat> {
   }
 
   sendMediaMessage(Uint8List messageData, String message, String textMessage, int dataType) async {
-    // TODO: A image sending loading option?
+    setState(() {
+      isSending = true; // Set sending state to true
+    });
     if (widget.chat == null) {
       // You shouldn't get here if the chat is null
       return;
@@ -201,6 +207,9 @@ class _PreviewPageChatState extends State<PreviewPageChat> {
         widget.chat!.messages.insert(0, mes);
       });
       AuthServiceSocialV15().sendMessage(widget.chat!.getBroupId(), message, messageIdentifier, messageTextMessage, messageData, dataType, null).then((value) {
+        setState(() {
+          isSending = false; // Set sending state to false
+        });
         if (value) {
           setState(() {
             mes.isRead = 0;
@@ -542,6 +551,10 @@ class _PreviewPageChatState extends State<PreviewPageChat> {
                 ],
               ),
             ),
+            if (isSending)
+              Center(
+                child: CircularProgressIndicator(),
+              ),
           ],
         ),
       ),
