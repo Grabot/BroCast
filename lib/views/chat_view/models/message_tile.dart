@@ -394,8 +394,44 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
 
   Widget getVideoContent() {
     if (widget.message.textMessage != null && widget.message.textMessage!.isNotEmpty) {
-      // TODO:!?!?!?!
-      return Container();
+      return Column(
+          mainAxisAlignment: widget.myMessage ? MainAxisAlignment.end : MainAxisAlignment.start,
+          crossAxisAlignment: widget.myMessage ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+          children: [
+            viewImageButton(),
+            repliedToView(),
+            Text(
+                widget.message.body,
+                style: simpleTextStyle()
+            ),
+            isLoading
+                ? CircularProgressIndicator()
+                : _videoController != null && _videoController!.value.isInitialized
+                ? AspectRatio(
+              aspectRatio: _videoController!.value.aspectRatio,
+              child: VideoPlayer(_videoController!),
+            )
+                : CircularProgressIndicator(),
+            ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  _videoController!.value.isPlaying
+                      ? _videoController!.pause()
+                      : _videoController!.play();
+                });
+              },
+              child: _videoController != null && _videoController!.value.isInitialized ? Icon(
+                _videoController!.value.isPlaying ? Icons.pause : Icons.play_arrow,
+              ) : Container(),
+            ),
+            Linkify(
+                onOpen: _onOpen,
+                text: widget.message.textMessage!,
+                linkStyle: TextStyle(color: Color(0xffFFC0CB), fontSize: 18),
+                style: simpleTextStyle()
+            )
+          ]
+      );
     } else {
       return Column(
           mainAxisAlignment: widget.myMessage ? MainAxisAlignment.end : MainAxisAlignment.start,
@@ -716,10 +752,18 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
     }
   }
 
-  Widget messageBox() {
+  Widget messageBox(bool broup) {
     // The width that is bound by the message content.
     // Used for the messageBox and the emojiReactionWidget
     double messageWidth = getMessageWidgetWidth();
+    double maximumMessageWith = MediaQuery.of(context).size.width - 24 - 24;
+    if (broup) {
+      // Subtract the width of the avatar
+      maximumMessageWith -= 50;
+    }
+    if (messageWidth > maximumMessageWith) {
+      messageWidth = maximumMessageWith;
+    }
     return Stack(
       children: [
         Align(
@@ -793,7 +837,7 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
                           onTap: () async {
                             selectMessage(context);
                           },
-                          child: messageBox(),
+                          child: messageBox(true),
                         ),
                       ),
                       timeIndicator(messageWidth),
@@ -829,7 +873,7 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
                           onTap: () {
                             selectMessage(context);
                           },
-                          child: messageBox(),
+                          child: messageBox(false),
                         ),
                       ),
                       timeIndicator(messageWidth),
