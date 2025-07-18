@@ -448,7 +448,6 @@ class Storage {
             File file = File(dataPath);
             if (await file.exists()) {
               await file.delete();
-              print("Deleted file at $dataPath");
             }
           }
         }
@@ -486,7 +485,6 @@ class Storage {
             File file = File(dataPath);
             if (await file.exists()) {
               await file.delete();
-              print("Deleted file at $dataPath");
             }
           }
         }

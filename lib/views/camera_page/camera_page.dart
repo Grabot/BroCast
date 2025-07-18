@@ -144,9 +144,7 @@ class CameraPageState extends State<CameraPage> {
                       setState(() {
                         isLoading = true;
                       });
-                      print("currently capturing!");
                     } else if (event.status == MediaCaptureStatus.success) {
-                      print("picture done!");
                       event.captureRequest.when(
                         single: (single) async {
                           if (single.file != null) {
@@ -167,9 +165,7 @@ class CameraPageState extends State<CameraPage> {
                     }
                   } else if (!event.isPicture && event.isVideo) {
                     if (event.status == MediaCaptureStatus.capturing) {
-                      print("currently capturing!");
                     } else if (event.status == MediaCaptureStatus.success) {
-                      print("video done!");
                       event.captureRequest.when(
                         single: (single) async {
                           if (single.file != null) {

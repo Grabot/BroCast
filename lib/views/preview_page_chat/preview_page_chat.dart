@@ -180,7 +180,6 @@ class _PreviewPageChatState extends State<PreviewPageChat> {
     } else {
       meId = me.getId();
       messageIdentifier = meId.toString() + "_" + newMessageId.toString();
-      print("message identifier $messageIdentifier");
     }
     String? messageTextMessage;
     if (textMessage != "") {

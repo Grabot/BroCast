@@ -872,7 +872,6 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
   }
 
   appendTextMessage() {
-    print("appending text message: $appendingMessage");
     if (!appendingMessage) {
       focusAppendText.requestFocus();
       if (broMessageController.text == "") {

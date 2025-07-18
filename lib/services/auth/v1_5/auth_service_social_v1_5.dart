@@ -39,7 +39,6 @@ class AuthServiceSocialV15 {
 
     if (messageData != null && dataType != null) {
       if (dataType == 1) {
-        print("adding video");
         formMap["video_data"] = MultipartFile.fromBytes(
             messageData,
             filename: "video.mp4"

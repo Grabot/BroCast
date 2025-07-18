@@ -851,7 +851,6 @@ class Broup {
     updateDateTiles(message);
     // `isRead` 0 indicates it was successfully send to the server
     message.isRead = 0;
-    print("message updated $updated");
     if (!updated) {
       this.messages.insert(0, message);
     } else {
@@ -870,9 +869,7 @@ class Broup {
       // The bro is up to date with all the messages
       // We will increase the lastMessageId
       lastMessageId += 1;
-      print("checking receiving ${message.dataType}");
       if (message.dataType == null && message.dataIsReceived) {
-        print("it has no data so send receival");
         AuthServiceSocial().receivedMessageSingle(broupId, message.messageId).then((value) {
           if (value) {
             // The message that was received really was the last one so no update required
@@ -906,7 +903,6 @@ class Broup {
           BroHomeChangeNotifier().notify();
         });
       } else {
-        print("reading a message with data");
         // The message has data, but the bro will still have read it if the chat is open.
         if (MessagingChangeNotifier().getBroupId() != broupId) {
           unreadMessages++;
