@@ -230,9 +230,9 @@ Future<String> saveMediaData(Uint8List videoData, int dataType) async {
   }
   String? extension;
   if (dataType == 1) {
-    extension = 'brocastMp4';
+    extension = 'mp4';
   } else {
-    extension = 'brocastPng';
+    extension = 'png';
   }
   final filePath = '${mediaDirectory.path}/${DateTime.now().millisecondsSinceEpoch}.${extension}';
   final file = File(filePath);
