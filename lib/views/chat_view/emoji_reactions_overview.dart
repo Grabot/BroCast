@@ -34,7 +34,7 @@ class EmojiReactionsOverviewState extends State<EmojiReactionsOverview> {
       children: [
         Positioned.fill(
           child: Container(
-            color: Colors.black.withOpacity(0.5),
+            color: Colors.black.withValues(alpha: 0.5),
           ),
         ),
         GestureDetector(
@@ -55,7 +55,7 @@ class EmojiReactionsOverviewState extends State<EmojiReactionsOverview> {
               borderRadius: BorderRadius.circular(10),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.2),
+                  color: Colors.black.withValues(alpha: 0.2),
                   spreadRadius: 5,
                   blurRadius: 7,
                   offset: Offset(0, 3),

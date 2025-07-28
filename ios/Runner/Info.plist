@@ -78,7 +78,7 @@
 	<key>NSCameraUsageDescription</key>
 	<string>This app uses the camera to create photos and videos that you can send to your bros or set as your avatar or broup photo.</string>
 	<key>NSMicrophoneUsageDescription</key>
-    <string>This app uses the camera to create photos and videos that you can send to your bros. The video will be recorded with audio.</string>
+    <string>You can record audio and send it to your bros and this app uses the camera to create videos that you can send to your bros. The video will be recorded with audio.</string>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>

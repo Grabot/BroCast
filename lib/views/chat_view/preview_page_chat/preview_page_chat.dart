@@ -8,17 +8,17 @@ import 'package:path_provider/path_provider.dart';
 import 'package:video_player/video_player.dart';
 
 import '../../../objects/broup.dart';
+import '../../../objects/me.dart';
+import '../../../objects/message.dart';
+import '../../../services/auth/v1_5/auth_service_social_v1_5.dart';
+import '../../../utils/locator.dart';
+import '../../../utils/navigation_service.dart';
 import '../../../utils/settings.dart';
 import '../../../utils/socket_services.dart';
-import '../../objects/me.dart';
-import '../../objects/message.dart';
-import '../../services/auth/v1_5/auth_service_social_v1_5.dart';
-import '../../utils/locator.dart';
-import '../../utils/navigation_service.dart';
-import '../../utils/utils.dart';
 import 'package:brocast/constants/route_paths.dart' as routes;
 
-import '../camera_page/camera_page.dart';
+import '../../../utils/utils.dart';
+import '../../camera_page/camera_page.dart';
 
 class PreviewPageChat extends StatefulWidget {
   final bool fromGallery;

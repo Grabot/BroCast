@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:math';
-import 'dart:typed_data';
 import 'package:brocast/views/chat_view/emoji_reactions_overview.dart';
+import 'package:brocast/views/chat_view/message_attachment_popup.dart';
+import 'package:brocast/views/chat_view/preview_page_chat/preview_page_chat.dart';
+import 'package:brocast/views/chat_view/record_view_chat/record_view_chat.dart';
 import 'package:collection/collection.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -14,11 +16,9 @@ import 'package:brocast/utils/settings.dart';
 import 'package:brocast/utils/socket_services.dart';
 import 'package:brocast/utils/utils.dart';
 import 'package:brocast/views/chat_view/messaging_change_notifier.dart';
-import 'package:camera/camera.dart';
 import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:gal/gal.dart';
 
@@ -28,10 +28,8 @@ import '../../objects/me.dart';
 import '../../utils/life_cycle_service.dart';
 import '../../utils/locator.dart';
 import '../../utils/navigation_service.dart';
-import '../../utils/popup_menu_override.dart';
 import '../../utils/storage.dart';
 import '../camera_page/camera_page.dart';
-import '../preview_page_chat/preview_page_chat.dart';
 import 'chat_details/chat_details.dart';
 import 'media_viewer/image_viewer.dart';
 import 'media_viewer/video_viewer.dart';
@@ -87,8 +85,7 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
   String barrierLabel = "";
   CapturedThemes? capturedThemes;
 
-  // The key for the photo Icon
-  GlobalKey photoKey = GlobalKey();
+  GlobalKey mediaKey = GlobalKey();
 
   Me? me;
 
@@ -108,6 +105,9 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
   List<Map<String, dynamic>> messagePopupOptions = [];
 
   final NavigationService _navigationService = locator<NavigationService>();
+
+  bool showMediaPopup = false;
+  double mediaPopupYPos = 0;
 
   @override
   void initState() {
@@ -1001,75 +1001,6 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
     }
   }
 
-  List<Icon> popupItems = [
-    Icon(
-      Icons.camera_alt,
-      color: Colors.blue,
-    ),
-    Icon(
-      Icons.image,
-      color: Colors.blue,
-    )
-  ];
-
-  addNewComponent(int popupIndex) {
-    Navigator.of(context).pop();
-    if (popupIndex == 0) {
-      Navigator.pushReplacement(
-        context, MaterialPageRoute(
-          builder: (context) => CameraPage(
-            key: UniqueKey(),
-            chat: widget.chat,
-            changeAvatar: false,
-          )
-        ),
-      );
-    } else {
-      imageLoaded();
-    }
-  }
-
-  _showPopupPhoto(GlobalKey keyKey) async {
-    RenderBox? box = keyKey.currentContext!.findRenderObject() as RenderBox?;
-
-    Offset position = box!.localToGlobal(Offset.zero);
-
-    double xPos = MediaQuery.of(context).size.width / 2;
-    double yPos = position.dy - 20;
-
-    // We want space for 2 buttons, gallery and camera
-    double widthPopup = 140;
-    double heightPopup = 70;
-
-    RelativeRect popupPosition = RelativeRect.fromLTRB(
-        xPos - widthPopup / 2,
-        yPos - heightPopup,
-        xPos + widthPopup / 2,
-        yPos - heightPopup
-    );
-
-    if (navigator != null && capturedThemes != null) {
-      showMenuOverride(
-        position: popupPosition,
-        widthPopup: widthPopup,
-        heightPopup: heightPopup,
-        color: Colors.transparent,
-        navigator: navigator!,
-        barrierLabel: barrierLabel,
-        capturedThemes: capturedThemes!,
-        items: [
-          ComponentDetailPopup(
-              key: UniqueKey(),
-              components: popupItems,
-              addNewComponent: addNewComponent
-          )
-        ],
-      ).then((value) {
-        return;
-      });
-    }
-  }
-
   Widget messageList() {
     return widget.chat.messages.isNotEmpty
         ? ListView.builder(
@@ -1080,7 +1011,10 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
             itemBuilder: (context, index) {
               Message message = widget.chat.messages[index];
               messageVisibility[message.messageId] = true;
-              GlobalKey messageKey = messageKeys.putIfAbsent(message.messageId, () => GlobalKey());
+              GlobalKey messageKey = GlobalKey();
+              if (!message.info) {
+                messageKey = messageKeys.putIfAbsent(message.messageId, () => GlobalKey());
+              }
               bool isHighlighted = highlightedMessageIds.contains(message.messageId);
               MessageTile messageTile = MessageTile(
                   key: messageKey,
@@ -1104,6 +1038,18 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
               );
             })
         : Container();
+  }
+
+  _showPopupMedia() async {
+    RenderBox? box = mediaKey.currentContext!.findRenderObject() as RenderBox?;
+
+    Offset mediaPopupPosition = box!.localToGlobal(Offset.zero);
+
+    mediaPopupYPos = mediaPopupPosition.dy;
+
+    setState(() {
+      showMediaPopup = true;
+    });
   }
 
   Bro? getBroReply(Message? repliedMessage) {
@@ -1154,7 +1100,11 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
       highlightedMessageIds.remove(emojiReactionMessageId);
       emojiReactionMessageId = -1;
     }
-    if (showEmojiPopup) {
+    if (showMediaPopup) {
+      setState(() {
+        showMediaPopup = false;
+      });
+    } else if (showEmojiPopup) {
       setState(() {
         showEmojiPopup = false;
       });
@@ -1356,6 +1306,39 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
     );
   }
 
+  void handleMediaPopupAction(MessageAttachmentPopupAction action) {
+    if (action is AttachmentOutsideClicked) {
+      showMediaPopup = false;
+    } else if (action is AttachmentGalleryClicked) {
+      imageLoaded();
+      showMediaPopup = false;
+    } else if (action is AttachmentCameraClicked) {
+      Navigator.pushReplacement(
+        context, MaterialPageRoute(
+          builder: (context) => CameraPage(
+            key: UniqueKey(),
+            chat: widget.chat,
+            changeAvatar: false,
+          )
+        ),
+      );
+      showMediaPopup = false;
+    } else if (action is AttachmentMicClicked) {
+      Navigator.push(
+        context, MaterialPageRoute(
+          builder: (context) => RecordViewChat(
+            key: UniqueKey(),
+            chat: widget.chat,
+          )
+        ),
+      );
+    } else if (action is AttachmentLocationClicked) {
+      print("location clicked");
+    }
+
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return PopScope(
@@ -1474,10 +1457,10 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
                               ),
                               GestureDetector(
                                 onTap: () async {
-                                  _showPopupPhoto(photoKey);
+                                  _showPopupMedia();
                                 },
                                 child: Container(
-                                    key: photoKey,
+                                    key: mediaKey,
                                     height: 35,
                                     width: 35,
                                     decoration: BoxDecoration(
@@ -1593,6 +1576,11 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
                   });
                 },
               ),
+              MessageAttachmentPopup(
+                onAction: handleMediaPopupAction,
+                showMediaPopup: showMediaPopup,
+                yPosition: mediaPopupYPos,
+              )
           ],
         ),
       ),

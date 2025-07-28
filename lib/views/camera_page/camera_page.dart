@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 
 import '../../objects/broup.dart';
 import '../../utils/settings.dart';
-import '../preview_page_chat/preview_page_chat.dart';
+import '../chat_view/preview_page_chat/preview_page_chat.dart';
 
 class CameraPage extends StatefulWidget {
   final bool changeAvatar;

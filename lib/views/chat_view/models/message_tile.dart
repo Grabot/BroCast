@@ -57,6 +57,7 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
   bool isImage = false;
   bool isVideo = false;
   VideoPlayerController? _videoController;
+  bool videoControllerInitialized = false;
 
   bool isLoading = false;
 
@@ -91,6 +92,9 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
               });
             }
           });
+        } else {
+          _initializeVideoController();
+          setState(() {});
         }
       } else {
         if (isVideo) {
@@ -117,7 +121,6 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
       } else if (widget.message.dataType == 1) {
         isImage = false;
         isVideo = true;
-        _initializeVideoController();
       }
     }
 
@@ -141,7 +144,8 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
   }
 
   void _initializeVideoController() async {
-    if (widget.message.data != null) {
+    if (widget.message.data != null && !videoControllerInitialized) {
+      videoControllerInitialized = true;
         final file = File(widget.message.data!);
         final tempDirectory = await getTemporaryDirectory();
         // The video will be stored and loaded in a hidden folder with the
@@ -893,7 +897,7 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
         ? informationMessage()
         : Slidable(
       controller: controller,
-      key: const ValueKey(0),
+      key: UniqueKey(),
       closeOnScroll: true,
       // The start action pane is the one at the left or the top side.
       startActionPane: ActionPane(

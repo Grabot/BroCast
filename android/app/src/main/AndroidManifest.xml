@@ -2,9 +2,7 @@
     <application
         android:label="Brocast"
         android:name="${applicationName}"
-        android:enableOnBackInvokedCallback="true"
-        android:icon="@mipmap/ic_launcher"
-        android:requestLegacyExternalStorage="true">
+        android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
             android:exported="true"
