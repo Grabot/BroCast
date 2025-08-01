@@ -447,7 +447,6 @@ class SocketServices extends ChangeNotifier {
             // The message is not yet in the local db,
             // it could be because the message is not retrieved yet.
             // Create a placeholder message with the emoji reactions.
-            print("placeholder 2");
             Message placeHolderMessage = Message(
                 messageId: messageId,
                 senderId: -1,

@@ -334,7 +334,6 @@ class Broup {
               isAdd = false;
             }
             if (isAdd) {
-              print("placeholder 1");
               Message placeHolderMessage = Message(
                   messageId: messageId,
                   senderId: -1,
