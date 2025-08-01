@@ -765,7 +765,6 @@ addWelcomeMessage(Broup broup) {
       info: true,
       broupId: broup.getBroupId(),
   );
-  broup.updateLastActivity(currentDayMessage.toUtc().toString());
   Storage().addMessage(unBlockMessage);
   broup.messages.insert(
       0,

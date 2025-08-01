@@ -1150,7 +1150,7 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
           child: AppBar(
               leading: IconButton(
                   icon:
-                      Icon(Icons.arrow_back, color: getTextColor(widget.chat.getColor())),
+                  Icon(Icons.arrow_back, color: getTextColor(widget.chat.getColor())),
                   onPressed: () {
                     backButtonFunctionality();
                   }),
@@ -1163,14 +1163,18 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
                     child: avatarBox(50, 50, widget.chat.getAvatar()),
                   ),
                   SizedBox(width: 5),
-                  Container(
-                    alignment: Alignment.centerLeft,
-                    color: Colors.transparent,
-                    child: Text(widget.chat.getBroupNameOrAlias(),
-                        style: TextStyle(
-                            color: getTextColor(widget.chat.getColor()),
-                            fontSize: 20)
-                    )
+                  Expanded(
+                    child: Container(
+                        alignment: Alignment.centerLeft,
+                        color: Colors.transparent,
+                        child: Text(widget.chat.getBroupNameOrAlias(),
+                          style: TextStyle(
+                              color: getTextColor(widget.chat.getColor()),
+                              fontSize: 20),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                        )
+                    ),
                   )
                 ],
               ),
@@ -1179,12 +1183,12 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
                     icon: Icon(Icons.more_vert, color: getTextColor(widget.chat.getColor())),
                     onSelected: (item) => onSelectChat(context, item),
                     itemBuilder: (context) => [
-                          PopupMenuItem<int>(value: 0, child: Text("Profile")),
-                          PopupMenuItem<int>(value: 1, child: Text("Settings")),
-                          PopupMenuItem<int>(
-                              value: 2, child: Text("Broup details")),
-                          PopupMenuItem<int>(value: 3, child: Text("Home"))
-                        ])
+                      PopupMenuItem<int>(value: 0, child: Text("Profile")),
+                      PopupMenuItem<int>(value: 1, child: Text("Settings")),
+                      PopupMenuItem<int>(
+                          value: 2, child: Text("Broup details")),
+                      PopupMenuItem<int>(value: 3, child: Text("Home"))
+                    ])
               ]),
         ),
       ),

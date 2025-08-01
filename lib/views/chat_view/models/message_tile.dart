@@ -372,24 +372,22 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
     }
     if (widget.message.repliedMessage != null) {
       Message repliedToMessage = widget.message.repliedMessage!;
-      if (repliedToMessage.body != "") {
-        TextStyle replyTextStyle = TextStyle(color: Colors.white);
-        double repliedToBodyWidth = getOptionWidth(repliedToMessage.body, replyTextStyle);
-        String replySenderName = "Message not available";
-        if (widget.repliedBro != null) {
-          replySenderName = widget.repliedBro!.getFullName();
+      TextStyle replyTextStyle = TextStyle(color: Colors.white);
+      double repliedToBodyWidth = getOptionWidth(repliedToMessage.body, replyTextStyle);
+      String replySenderName = "Message not available";
+      if (widget.repliedBro != null) {
+        replySenderName = widget.repliedBro!.getFullName();
+      }
+      double repliedToNameWidth = getOptionWidth(replySenderName, replyTextStyle);
+      // Add the reply icon width
+      repliedToNameWidth += 20;
+      if (repliedToBodyWidth > repliedToNameWidth) {
+        if (repliedToBodyWidth > widgetWidth) {
+          widgetWidth = repliedToBodyWidth;
         }
-        double repliedToNameWidth = getOptionWidth(replySenderName, replyTextStyle);
-        // Add the reply icon width
-        repliedToNameWidth += 20;
-        if (repliedToBodyWidth > repliedToNameWidth) {
-          if (repliedToBodyWidth > widgetWidth) {
-            widgetWidth = repliedToBodyWidth;
-          }
-        } else {
-          if (repliedToNameWidth > widgetWidth) {
-            widgetWidth = repliedToNameWidth;
-          }
+      } else {
+        if (repliedToNameWidth > widgetWidth) {
+          widgetWidth = repliedToNameWidth;
         }
       }
     }

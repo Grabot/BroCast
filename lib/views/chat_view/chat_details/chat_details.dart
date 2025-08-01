@@ -252,14 +252,18 @@ class _ChatDetailsState extends State<ChatDetails> {
                 child: avatarBox(50, 50, widget.chat.getAvatar()),
               ),
               SizedBox(width: 5),
-              Container(
-                  alignment: Alignment.centerLeft,
-                  color: Colors.transparent,
-                  child: Text(widget.chat.getBroupNameOrAlias(),
+              Expanded(
+                child: Container(
+                    alignment: Alignment.centerLeft,
+                    color: Colors.transparent,
+                    child: Text(widget.chat.getBroupNameOrAlias(),
                       style: TextStyle(
                           color: getTextColor(widget.chat.getColor()),
-                          fontSize: 20)
-                  )
+                          fontSize: 20),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                    )
+                ),
               )
             ],
           ),

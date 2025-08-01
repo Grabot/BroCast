@@ -413,6 +413,7 @@ class Broup {
       newUpdateBroAvatarIds = brosAvatarUpdate;
     }
     lastMessageReadId = json.containsKey("last_message_read_id_chat") ? json["last_message_read_id_chat"] : 0;
+    lastActivity = DateTime.now().toUtc().toString();
   }
 
   Map<String, dynamic> toDbMap() {
