@@ -5,8 +5,6 @@ import 'package:path_provider/path_provider.dart';
 
 class Message {
   late int messageId;
-  // Can be null for information messages
-  String? messageIdentifier;
   late int senderId;
   late String body;
   late String? textMessage;
@@ -37,7 +35,6 @@ class Message {
 
   Message({
     required this.messageId,
-    required this.messageIdentifier,
     required this.broupId,
     required this.senderId,
     required this.body,
@@ -86,7 +83,6 @@ class Message {
   Map<String, dynamic> toDbMap() {
     var map = Map<String, dynamic>();
     map['messageId'] = messageId;
-    map['messageIdentifier'] = messageIdentifier;
     map['senderId'] = senderId;
     map['broupId'] = broupId;
     map['body'] = body;
@@ -104,7 +100,6 @@ class Message {
 
   Message.fromDbMap(Map<String, dynamic> map) {
     messageId = map['messageId'];
-    messageIdentifier = map['messageIdentifier'];
     senderId = map['senderId'];
     broupId = map['broupId'];
     body = map['body'];
@@ -127,7 +122,6 @@ class Message {
     }
     final message = Message(
         messageId: json['message_id'],
-        messageIdentifier: json['message_identifier'],
         senderId: json['sender_id'],
         body: json['body'],
         textMessage: json.containsKey('text_message') ? json['text_message'] : "",
@@ -187,10 +181,8 @@ class Message {
     if (other.runtimeType != runtimeType) {
       return false;
     }
-    // We just check the messageIdentifier, senderId and broupId since these are the fields that
-    // are now client side when sending the message. This combination will be unique.
     return other is Message
-        && other.messageIdentifier == messageIdentifier
+        && other.messageId == messageId
         && other.senderId == senderId
         && other.broupId == broupId;
   }

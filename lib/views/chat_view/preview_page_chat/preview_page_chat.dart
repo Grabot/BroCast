@@ -17,6 +17,7 @@ import '../../../utils/settings.dart';
 import '../../../utils/socket_services.dart';
 import 'package:brocast/constants/route_paths.dart' as routes;
 
+import '../../../utils/storage.dart';
 import '../../../utils/utils.dart';
 import '../../camera_page/camera_page.dart';
 
@@ -170,7 +171,6 @@ class _PreviewPageChatState extends State<PreviewPageChat> {
     }
     int meId = -1;
     int newMessageId = widget.chat!.lastMessageId + 1;
-    String messageIdentifier = "";
     Me? me = settings.getMe();
     if (me == null) {
       showToastMessage("we had an issues getting your user information. Please log in again.");
@@ -179,7 +179,6 @@ class _PreviewPageChatState extends State<PreviewPageChat> {
       return;
     } else {
       meId = me.getId();
-      messageIdentifier = meId.toString() + "_" + newMessageId.toString();
     }
     String? messageTextMessage;
     if (textMessage != "") {
@@ -191,7 +190,6 @@ class _PreviewPageChatState extends State<PreviewPageChat> {
       // On this object and then store it in the db.
       Message mes = Message(
           messageId: newMessageId,
-          messageIdentifier: messageIdentifier,
           senderId: meId,
           body: message,
           textMessage: messageTextMessage,
@@ -205,22 +203,35 @@ class _PreviewPageChatState extends State<PreviewPageChat> {
       setState(() {
         widget.chat!.messages.insert(0, mes);
       });
-      AuthServiceSocialV15().sendMessage(widget.chat!.getBroupId(), message, messageIdentifier, messageTextMessage, messageData, dataType, null).then((value) {
+      setState(() {
+        widget.chat!.sendingMessage = true;
+      });
+      await Storage().addMessage(mes);
+
+      AuthServiceSocialV15().sendMessage(widget.chat!.getBroupId(), message, messageTextMessage, messageData, dataType, null).then((messageId) {
         setState(() {
           isSending = false; // Set sending state to false
         });
-        if (value) {
+        if (messageId != null) {
+          mes.isRead = 0;
+          if (mes.messageId != messageId) {
+            Storage().updateMessageId(mes.messageId, messageId, widget.chat!.getBroupId());
+            mes.messageId = messageId;
+          }
           setState(() {
-            mes.isRead = 0;
             // Go back to the chat.
             navigateToChat(context, settings, widget.chat!);
           });
           // message send
         } else {
+          Storage().deleteMessage(mes.messageId, widget.chat!.broupId);
           // The message was not sent, we remove it from the list
           showToastMessage("there was an issue sending the message");
           widget.chat!.messages.removeAt(0);
         }
+        setState(() {
+          widget.chat!.sendingMessage = false;
+        });
       });
       broMessageController.clear();
       captionMessageController.clear();

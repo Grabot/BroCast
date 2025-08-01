@@ -423,7 +423,7 @@ class SocketServices extends ChangeNotifier {
       Broup? broup = me.broups.firstWhereOrNull((element) => element.broupId == broupId);
       if (broup != null) {
         // The message might not be loaded on the broup, so retrieve it from storage
-        Storage().fetchMessage(broupId, messageId).then((message) {
+        Storage().fetchMessageWithId(broupId, messageId).then((message) {
           if (message != null) {
             if (isAdd) {
               message.addEmojiReaction(emoji, broId);
@@ -447,14 +447,16 @@ class SocketServices extends ChangeNotifier {
             // The message is not yet in the local db,
             // it could be because the message is not retrieved yet.
             // Create a placeholder message with the emoji reactions.
+            print("placeholder 2");
             Message placeHolderMessage = Message(
                 messageId: messageId,
-                messageIdentifier: "messageIdentifier",
                 senderId: -1,
                 body: "",
                 textMessage: null,
                 timestamp: DateTime.now().toUtc().toString(),
                 data: null,
+                dataType: null,
+                repliedTo: null,
                 info: false,
                 broupId: broupId
             );
@@ -472,13 +474,31 @@ class SocketServices extends ChangeNotifier {
   messageReceived(data) async {
     Message message = await Message.fromJson(data);
     Storage storage = Storage();
-    await storage.addMessage(message);
     // We only want to do the receive update when the app is opened.
     int broupId = message.broupId;
     Me? me = Settings().getMe();
     if (me != null) {
       Broup broup = me.broups.firstWhere((element) => element.broupId == broupId);
-      // Always add the message, if the broup is removed it should not be listening to the sockets anymore.
+      if (broup.sendingMessage) {
+        // If we are sending a message we do not want to update the messages yet. Wait a bit and try again
+        await Future.delayed(const Duration(milliseconds: 500));
+        messageReceived(data);
+        return;
+      }
+      Message? storageMessage;
+      storageMessage = await storage.fetchMessageWithId(message.messageId, message.broupId);
+      // We update the newly created message with data from what we retrieved locally.
+      // We update it with data that is not sent over the socket and might already be stored locally.
+      if (storageMessage != null) {
+        message.dataType = storageMessage.dataType;
+        message.data = storageMessage.data;
+        message.repliedTo = storageMessage.repliedTo;
+        message.emojiReactions = storageMessage.emojiReactions;
+        await storage.updateMessage(message);
+      } else {
+        await storage.addMessage(message);
+      }
+
       broup.updateMessages(message);
       broup.updateLastActivity(message.timestamp);
       storage.updateBroup(broup);

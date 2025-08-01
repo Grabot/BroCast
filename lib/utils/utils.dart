@@ -757,7 +757,6 @@ addWelcomeMessage(Broup broup) {
   DateTime currentDayMessage = DateTime(now.year, now.month, now.day);
   Message unBlockMessage = Message(
       messageId: 1,
-      messageIdentifier: "messageIdentifier",
       senderId: 0,
       body: "Welcome to the Chat! 🥰",
       textMessage: "",

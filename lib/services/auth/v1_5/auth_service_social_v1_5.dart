@@ -16,10 +16,9 @@ class AuthServiceSocialV15 {
 
   AuthServiceSocialV15._internal();
 
-  Future<bool> sendMessage(
+  Future<int?> sendMessage(
       int broupId,
       String message,
-      String messageIdentifier,
       String? textMessage,
       Uint8List? messageData,
       int? dataType,
@@ -27,10 +26,9 @@ class AuthServiceSocialV15 {
     ) async {
     String endPoint = "message/send";
 
-    final formMap = <String, dynamic>{
+    final formMap = <String, dynamic> {
       "broup_id": broupId,
       "message": message,
-      "message_identifier": messageIdentifier,
     };
 
     if (textMessage != null) {
@@ -67,9 +65,17 @@ class AuthServiceSocialV15 {
 
       Map<String, dynamic> json = response.data;
       if (!json.containsKey("result")) {
-        return false;
+        return null;
       } else {
-        return json.containsKey("result");
+        if (json["result"]) {
+          if (json.containsKey("message_id")) {
+            return json["message_id"];
+          } else {
+            return null;
+          }
+        } else {
+          return null;
+        }
       }
     }).catchError((e) {
       if (e is DioException) {
@@ -77,7 +83,7 @@ class AuthServiceSocialV15 {
       } else {
         showToastMessage("Error while sending message: $e");
       }
-      return false;
+      return null;
     });
   }
 

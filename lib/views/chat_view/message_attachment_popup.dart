@@ -44,13 +44,20 @@ class MessageAttachmentPopupState extends State<MessageAttachmentPopup> with Sin
   late AnimationController _controller;
   late Animation<double> _animation;
 
-
   Widget button(IconData icon, Color iconColor, String text, double buttonSize, double animationValue, VoidCallback onTap) {
+    double buttonWidth = buttonSize * animationValue - 5;
+    double buttonHeight = buttonSize * animationValue - 5;
+    if (buttonWidth < 0) {
+      buttonWidth = 0;
+    }
+    if (buttonHeight < 0) {
+      buttonHeight = 0;
+    }
     return Column(
       children: [
         Container(
-          width: buttonSize * animationValue,
-          height: buttonSize * animationValue,
+          width: buttonWidth,
+          height: buttonHeight,
           decoration: BoxDecoration(
             color: Color(0xff1e202b),
             borderRadius: BorderRadius.circular(8.0),
@@ -156,24 +163,35 @@ class MessageAttachmentPopupState extends State<MessageAttachmentPopup> with Sin
             animation: _animation,
             builder: (context, child) {
               return Container(
+                padding: EdgeInsets.only(top: (14.0 * _animation.value)),
                 width: popupWidth * _animation.value,
-                height: singleEntity * 1.5 * _animation.value,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    button(Icons.collections, Colors.blue, 'Gallery', singleEntity, _animation.value, () {
-                      widget.onAction(const AttachmentGalleryClicked());
-                    }),
-                    button(Icons.camera_alt, Colors.red, 'Camera', singleEntity, _animation.value, () {
-                      widget.onAction(const AttachmentCameraClicked());
-                    }),
-                    button(Icons.mic, Colors.purple, 'Record', singleEntity, _animation.value, () {
-                      widget.onAction(const AttachmentMicClicked());
-                    }),
-                    button(Icons.location_on, Colors.green, 'Location', singleEntity, _animation.value, () {
-                      widget.onAction(const AttachmentLocationClicked());
-                    }),
-                  ],
+                height: singleEntity * 1.8 * _animation.value,
+                decoration: BoxDecoration(
+                  color: Colors.black,
+                  borderRadius: BorderRadius.circular(12.0),
+                  border: Border.all(
+                    color: Colors.grey,
+                    width: 2.0,
+                  ),
+                ),
+                child: Center(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      button(Icons.collections, Colors.blue, 'Gallery', singleEntity, _animation.value, () {
+                        widget.onAction(const AttachmentGalleryClicked());
+                      }),
+                      button(Icons.camera_alt, Colors.red, 'Camera', singleEntity, _animation.value, () {
+                        widget.onAction(const AttachmentCameraClicked());
+                      }),
+                      // button(Icons.mic, Colors.purple, 'Record', singleEntity, _animation.value, () {
+                      //   widget.onAction(const AttachmentMicClicked());
+                      // }),
+                      // button(Icons.location_on, Colors.green, 'Location', singleEntity, _animation.value, () {
+                      //   widget.onAction(const AttachmentLocationClicked());
+                      // }),
+                    ],
+                  ),
                 ),
               );
             },

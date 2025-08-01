@@ -128,7 +128,6 @@ class _RecordViewChatState extends State<RecordViewChat> {
     }
     int meId = -1;
     int newMessageId = widget.chat!.lastMessageId + 1;
-    String messageIdentifier = "";
     Me? me = settings.getMe();
     if (me == null) {
       showToastMessage("we had an issues getting your user information. Please log in again.");
@@ -136,7 +135,6 @@ class _RecordViewChatState extends State<RecordViewChat> {
       return;
     } else {
       meId = me.getId();
-      messageIdentifier = meId.toString() + "_" + newMessageId.toString();
     }
     String? messageTextMessage;
     if (textMessage != "") {
@@ -146,7 +144,6 @@ class _RecordViewChatState extends State<RecordViewChat> {
     // if (formAudioKey.currentState!.validate()) {
     //   Message mes = Message(
     //       messageId: newMessageId,
-    //       messageIdentifier: messageIdentifier,
     //       senderId: meId,
     //       body: message,
     //       textMessage: messageTextMessage,
@@ -160,7 +157,7 @@ class _RecordViewChatState extends State<RecordViewChat> {
     //   setState(() {
     //     widget.chat!.messages.insert(0, mes);
     //   });
-    //   AuthServiceSocialV15().sendMessage(widget.chat!.getBroupId(), message, messageIdentifier, messageTextMessage, messageData, dataType, null).then((value) {
+    //   AuthServiceSocialV15().sendMessage(widget.chat!.getBroupId(), message, messageTextMessage, messageData, dataType, null).then((value) {
     //     setState(() {
     //       isSending = false;
     //     });

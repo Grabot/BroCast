@@ -64,6 +64,8 @@ class Broup {
 
   String? lastActivity;
 
+  bool sendingMessage = false;
+
   Broup(
       this.broupId,
       this.broIds,
@@ -290,7 +292,7 @@ class Broup {
     Storage storage = Storage();
     List<String> messagesToRetrieveStrings = [...emojiReactions.keys];
     List<int> messagesToRetrieve = messagesToRetrieveStrings.map((e) => int.parse(e)).toList();
-    storage.retrieveMessages(messagesToRetrieve).then((messagesEmojiReactions) {
+    storage.retrieveMessages(this.broupId, messagesToRetrieve).then((messagesEmojiReactions) {
       for (Message emojiReactionMessage in messagesEmojiReactions) {
         messagesToRetrieve.remove(emojiReactionMessage.messageId);
         Map<String, dynamic> emojiReaction = emojiReactions[emojiReactionMessage.messageId.toString()]!;
@@ -332,14 +334,16 @@ class Broup {
               isAdd = false;
             }
             if (isAdd) {
+              print("placeholder 1");
               Message placeHolderMessage = Message(
                   messageId: messageId,
-                  messageIdentifier: "messageIdentifier",
                   senderId: -1,
                   body: "",
                   textMessage: null,
                   timestamp: DateTime.now().toUtc().toString(),
                   data: null,
+                  dataType: null,
+                  repliedTo: null,
                   info: false,
                   broupId: getBroupId()
               );
@@ -527,7 +531,6 @@ class Broup {
     }
     Message blockMessage = Message(
         messageId: lastMessageId + 1,
-        messageIdentifier: "messageIdentifier",
         senderId: 0,
         body: blockMessageText,
         textMessage: "",
@@ -769,7 +772,6 @@ class Broup {
       }
       Message blockMessage = Message(
           messageId: lastMessageId + 1,
-          messageIdentifier: "messageIdentifier",
           senderId: 0,
           body: blockMessageText,
           textMessage: "",
@@ -809,7 +811,6 @@ class Broup {
           message.getTimeStamp().month, message.getTimeStamp().day);
       Message timeMessage = Message(
           messageId: 0,
-          messageIdentifier: "messageIdentifier",
           senderId: 0,
           body: "Today",
           textMessage: "",
@@ -838,6 +839,7 @@ class Broup {
             Message m = messages[i];
             // Update the received message object with the local data that you don't need to retrieve again.
             message.data = m.data;
+            message.dataType = m.dataType;
             message.repliedMessage = m.repliedMessage;
             message.repliedTo = m.repliedTo;
             message.dataIsReceived = true;

@@ -126,18 +126,32 @@ Future<bool> getMessages(int page, Broup chat, Storage storage) async {
           .retrieveMessages(chat.getBroupId(), chat.lastMessageId);
 
       if (retrievedMessages.isNotEmpty) {
+        // The messages from the server will have the correct messageId, we use it to track what messages to mark as received.
         List<int> messageIds = retrievedMessages.map((e) => e.messageId).toList();
 
         // We also check the local db if the messages are stored there.
         // It's possible that someone did an emoji reaction to one of the messages.
         // If this was done it would have been received, before the message was.
         // This is handled by storing a placeholder in the local db.
-        List<Message> messagesDBNew = await storage.retrieveMessages(messageIds);
+        List<Message> messagesDBNew = await storage.retrieveMessages(chat.broupId, messageIds);
         List<int> messageIdsDb = messagesDBNew.map((e) => e.messageId).toList();
         for (Message messageDb in messagesDBNew) {
           Message? serverMessage = retrievedMessages.firstWhereOrNull((element) => element.messageId == messageDb.messageId);
           if (serverMessage != null) {
-            // For now the only thing the placeholder can hold is the emojiReactions.
+            // It's possible that the message is already locally stored, like when you send it yourself.
+            // We check if any of the following columns is not null. If it's not null, we update the local db.
+            // data, dataType, repliedMessage
+            // It's also possible that you received emojiReactions before retrieving the message
+            // The emojiReaction therefore also taken from the local db, since it can not be filled if from the server.
+            if (messageDb.dataType != null) {
+              serverMessage.dataType = messageDb.dataType;
+            }
+            if (messageDb.data != null) {
+              serverMessage.data = messageDb.data;
+            }
+            if (messageDb.repliedTo != null) {
+              serverMessage.repliedTo = messageDb.repliedTo;
+            }
             serverMessage.emojiReactions = messageDb.emojiReactions;
             storage.updateMessage(serverMessage);
           }
@@ -273,7 +287,6 @@ setDateTiles(Broup chat, int fromIndex) {
       messageFirst.getTimeStamp().month, messageFirst.getTimeStamp().day);
   Message timeMessage = Message(
       messageId: 0,
-      messageIdentifier: "messageIdentifier",
       senderId: 0,
       body: timeMessageFirst,
       textMessage: "",
@@ -301,7 +314,6 @@ setDateTiles(Broup chat, int fromIndex) {
       chat.messages.insert(i, timeMessage);
       timeMessage = Message(
           messageId: 0,
-          messageIdentifier: "messageIdentifier",
           senderId: 0,
           body: timeMessageTile,
           textMessage: "",

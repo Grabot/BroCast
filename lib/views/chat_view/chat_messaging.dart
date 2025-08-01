@@ -354,14 +354,16 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
         String dataLoc = message.data!;
         final albumName = "Brocast";
         final directory = await getApplicationDocumentsDirectory();
+        int randomNumber = Random().nextInt(100);
+        String fileName = "brocast_${message.broupId}_${message.messageId}_$randomNumber";
         if (message.dataType == 0) {
-          final imagePath = '${directory.path}/brocast_${message.messageIdentifier}.png';
+          final imagePath = '${directory.path}/${fileName}.png';
           final file = File(dataLoc);
           await file.copy(imagePath);
           await Gal.putImage(imagePath, album: albumName);
           showToastMessage("Image saved");
         } else if (message.dataType == 1) {
-          final videoPath = '${directory.path}/brocast_${message.messageIdentifier}.mp4';
+          final videoPath = '${directory.path}/${fileName}.mp4';
           final file = File(dataLoc);
           await file.copy(videoPath);
           await Gal.putVideo(videoPath, album: albumName);
@@ -615,14 +617,16 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
       if (repliedMessageBrosNotYetLoaded.isNotEmpty) {
         AuthServiceSocial().broDetails([], repliedMessageBrosNotYetLoaded, widget.chat.broupId).then((value) {
           // If we have retrieved the bros we call the reply function again
-          checkRepliedMessages();
+          if (value) {
+            checkRepliedMessages();
+          }
         });
       }
     });
   }
 
   retrieveRepliedMessages(List<int> retrieveMessagesIds) async {
-    List<Message> newMessages = await storage.retrieveMessages(retrieveMessagesIds);
+    List<Message> newMessages = await storage.retrieveMessages(widget.chat.broupId, retrieveMessagesIds);
     List<int> repliedMessageBrosNotYetLoaded = [];
     for (Message message in widget.chat.messages) {
       if (message.repliedTo != null) {
@@ -649,7 +653,6 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
       // We will add a empty message to indicate that the message is not available.
       Message emptyMessage = Message(
           messageId: 0,
-          messageIdentifier: "messageIdentifier",
           senderId: 0,
           body: "",
           textMessage: "",
@@ -722,6 +725,9 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
     // These are information messages, so we don't need to check them
     if (messageBroIds.contains(0)) {
       messageBroIds.remove(0);
+    }
+    if (messageBroIds.contains(-1)) {
+      messageBroIds.remove(-1);
     }
     if (messageBroIds.contains(settings.getMe()!.getId())) {
       messageBroIds.remove(settings.getMe()!.getId());
@@ -894,11 +900,10 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
     }
   }
 
-  sendMessage() {
+  sendMessage() async {
     if (formKey.currentState!.validate()) {
       int meId = -1;
       int newMessageId = widget.chat.lastMessageId + 1;
-      String messageIdentifier = "";
       Me? me = settings.getMe();
       if (me == null) {
         showToastMessage("we had an issues getting your user information. Please log in again.");
@@ -907,7 +912,6 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
         return;
       } else {
         meId = me.getId();
-        messageIdentifier = meId.toString() + "_" + newMessageId.toString();
       }
 
       int? repliedToMessageId;
@@ -919,7 +923,6 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
       String textMessage = appendTextMessageController.text;
       Message mes = Message(
           messageId: newMessageId,
-          messageIdentifier: messageIdentifier,
           senderId: meId,
           body: message,
           textMessage: textMessage,
@@ -931,9 +934,7 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
           repliedTo: repliedToMessageId,
       );
       mes.isRead = 2;
-      setState(() {
-        widget.chat.messages.insert(0, mes);
-      });
+      widget.chat.messages.insert(0, mes);
 
       if (repliedToMessage != null) {
         setState(() {
@@ -942,22 +943,33 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
           repliedToInterface = false;
         });
       }
+      setState(() {
+        widget.chat.sendingMessage = true;
+      });
+      // We already add it now, we can overwrite it later if we receive it from the sockets.
+      await storage.addMessage(mes);
       // Send the message. The data is always null here because it's only send via the preview page.
-      AuthServiceSocialV15().sendMessage(widget.chat.getBroupId(), message, messageIdentifier, textMessage, null, null, repliedToMessageId).then((value) {
+      AuthServiceSocialV15().sendMessage(widget.chat.getBroupId(), message, textMessage, null, null, repliedToMessageId).then((messageId) async {
         isLoadingMessages = false;
-        if (value) {
-          setState(() {
-            mes.isRead = 0;
-          });
+        // We predict what the messageId will be but in the end it is determined by the server.
+        // If it's different we want to update it.
+        if (messageId != null) {
+          mes.isRead = 0;
+          if (mes.messageId != messageId) {
+            await storage.updateMessageId(mes.messageId, messageId, widget.chat.broupId);
+            mes.messageId = messageId;
+          }
           // message send
         } else {
-          // The message was not sent, we remove it from the list
+          // The message was not sent, we remove it from the list and the database
+          storage.deleteMessage(mes.messageId, widget.chat.broupId);
           showToastMessage("there was an issue sending the message");
-          setState(() {
-            // TODO: There might be some messages retrieved in between this period. Check for the correct message to remove.
-            widget.chat.messages.removeAt(0);
-          });
+          // TODO: There might be some messages retrieved in between this period. Check for the correct message to remove.
+          widget.chat.messages.removeAt(0);
         }
+        setState(() {
+          widget.chat.sendingMessage = false;
+        });
       });
       broMessageController.clear();
       appendTextMessageController.clear();

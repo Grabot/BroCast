@@ -35,7 +35,7 @@ class Storage {
 
     return await openDatabase(
       path,
-      version: 5,
+      version: 6,
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
     );
@@ -105,7 +105,6 @@ class Storage {
             // put welcome to chat message back.
             Map<String, dynamic> messageWelcome = {
               'messageId': 1,
-              'messageIdentifier': null,
               'senderId': 0,
               'broupId': broupId,
               'body': 'Welcome to the Chat! 🥰',
@@ -123,6 +122,9 @@ class Storage {
           }
         }
       }
+    }
+    if ((oldVersion <= 5) && newVersion >= 6) {
+      db.execute('ALTER TABLE Message DROP COLUMN messageIdentifier');
     }
   }
 
@@ -166,7 +168,6 @@ class Storage {
           CREATE TABLE Message (
             id INTEGER PRIMARY KEY,
             messageId INTEGER,
-            messageIdentifier TEXT,
             senderId INTEGER,
             broupId INTEGER,
             body TEXT,
@@ -349,14 +350,34 @@ class Storage {
     return List.empty();
   }
 
-  Future<List<Message>> retrieveMessages(List<int> retrieveMessagesIds) async {
+  Future<List<Message>> retrieveMessages(int broupId, List<int> retrieveMessagesIds) async {
     Database database = await this.database;
-    String query = "SELECT * FROM Message WHERE messageId IN (${retrieveMessagesIds.join(',')})";
+    String query = "SELECT * FROM Message WHERE  broupId = $broupId and messageId IN (${retrieveMessagesIds.join(',')})";
     List<Map<String, dynamic>> maps = await database.rawQuery(query);
     if (maps.isNotEmpty) {
       return maps.map((map) => Message.fromDbMap(map)).toList();
     }
     return List.empty();
+  }
+
+  Future<int> updateMessageId(int oldMessageId, int newMessageId, int broupId) async {
+    Database database = await this.database;
+    return database.update(
+      'Message',
+      {'messageId': newMessageId},
+      where: 'messageId = ? and broupId = ?',
+      whereArgs: [oldMessageId, broupId],
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+  Future<int> deleteMessage(int messageId, int broupId) async {
+    Database database = await this.database;
+    return database.delete(
+      'Message',
+      where: 'messageId = ? and broupId = ?',
+      whereArgs: [messageId, broupId],
+    );
   }
 
   Future<List<Bro>> fetchBros(List<int> broIds) async {
@@ -407,7 +428,7 @@ class Storage {
     }
   }
 
-  Future<Message?> fetchMessage(int broupId, int messageId) async {
+  Future<Message?> fetchMessageWithId(int broupId, int messageId) async {
     Database database = await this.database;
     List<Map<String, dynamic>> maps = await database.query(
       'Message',

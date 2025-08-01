@@ -571,7 +571,7 @@ class AuthServiceSocial {
     }
   }
 
-  Future<void> broDetails(List<int> brosToUpdate, List<int> broAvatarsToUpdate, int? broupId) async {
+  Future<bool> broDetails(List<int> brosToUpdate, List<int> broAvatarsToUpdate, int? broupId) async {
     String endPoint = "bro/details";
 
     var response = await AuthApi().dio.post(endPoint,
@@ -595,48 +595,50 @@ class AuthServiceSocial {
 
     Storage storage = Storage();
     Map<String, dynamic> json = response.data;
-    storage.fetchBros(combinedList).then((dbBros) {
-      Map<String, Bro> brosDbMap = {for (var bro in dbBros) bro.getId().toString(): bro};
-      if (!json.containsKey("result")) {
-        // something went wrong.
-        return;
-      } else {
-        // We'll gather the bro data and store it in the db here.
-        if (json.containsKey("bros")) {
-          for (var bro in json["bros"]) {
-            Bro newBro = Bro.fromJson(bro);
-            if (broAvatarsToUpdateCheck.contains(newBro.id)) {
-              // Bro with avatar. Here we'll have all the bro data so just override in the db.
-              storage.addBro(newBro);
+    List<Bro> dbBros = await storage.fetchBros(combinedList);
+    Map<String, Bro> brosDbMap = {for (var bro in dbBros) bro.getId().toString(): bro};
+    if (!json.containsKey("result")) {
+      // something went wrong.
+      return false;
+    }
+    if (!json["result"]) {
+      return false;
+    }
+    // We'll gather the bro data and store it in the db here.
+    if (json.containsKey("bros")) {
+      for (var bro in json["bros"]) {
+        Bro newBro = Bro.fromJson(bro);
+        if (broAvatarsToUpdateCheck.contains(newBro.id)) {
+          // Bro with avatar. Here we'll have all the bro data so just override in the db.
+          storage.addBro(newBro);
 
-              broAvatarsToUpdateCheck.remove(newBro.id);
-              if (brosToUpdateCheck.contains(newBro.id)) {
-                brosToUpdateCheck.remove(newBro.id);
-              }
-
-              if (brosToUpdateCheck.isEmpty && broAvatarsToUpdateCheck.isEmpty) {
-                broDetailsDone(brosToUpdate, broAvatarsToUpdate, broupId);
-              }
-            } else if (brosToUpdateCheck.contains(newBro.id)) {
-              Bro? storedBro = brosDbMap[newBro.id.toString()];
-              if (storedBro != null) {
-                // Bro with avatar.
-                newBro.avatar = storedBro.avatar;
-                storage.updateBro(newBro);
-              } else {
-                storage.addBro(newBro);
-              }
-              brosToUpdateCheck.remove(newBro.id);
-              if (brosToUpdateCheck.isEmpty && broAvatarsToUpdateCheck.isEmpty) {
-                broDetailsDone(brosToUpdate, broAvatarsToUpdate, broupId);
-              }
-            } else {
-              // Bro not in the lists, should not be possible
-            }
+          broAvatarsToUpdateCheck.remove(newBro.id);
+          if (brosToUpdateCheck.contains(newBro.id)) {
+            brosToUpdateCheck.remove(newBro.id);
           }
+
+          if (brosToUpdateCheck.isEmpty && broAvatarsToUpdateCheck.isEmpty) {
+            broDetailsDone(brosToUpdate, broAvatarsToUpdate, broupId);
+          }
+        } else if (brosToUpdateCheck.contains(newBro.id)) {
+          Bro? storedBro = brosDbMap[newBro.id.toString()];
+          if (storedBro != null) {
+            // Bro with avatar.
+            newBro.avatar = storedBro.avatar;
+            storage.updateBro(newBro);
+          } else {
+            storage.addBro(newBro);
+          }
+          brosToUpdateCheck.remove(newBro.id);
+          if (brosToUpdateCheck.isEmpty && broAvatarsToUpdateCheck.isEmpty) {
+            broDetailsDone(brosToUpdate, broAvatarsToUpdate, broupId);
+          }
+        } else {
+          // Bro not in the lists, should not be possible? skip
         }
       }
-    });
+    }
+    return true;
   }
 
   broupDetailsDone(List<int> combinedList) {
