@@ -184,12 +184,12 @@ class MessageAttachmentPopupState extends State<MessageAttachmentPopup> with Sin
                       button(Icons.camera_alt, Colors.red, 'Camera', singleEntity, _animation.value, () {
                         widget.onAction(const AttachmentCameraClicked());
                       }),
-                      // button(Icons.mic, Colors.purple, 'Record', singleEntity, _animation.value, () {
-                      //   widget.onAction(const AttachmentMicClicked());
-                      // }),
-                      // button(Icons.location_on, Colors.green, 'Location', singleEntity, _animation.value, () {
-                      //   widget.onAction(const AttachmentLocationClicked());
-                      // }),
+                      button(Icons.mic, Colors.purple, 'Record', singleEntity, _animation.value, () {
+                        widget.onAction(const AttachmentMicClicked());
+                      }),
+                      button(Icons.location_on, Colors.green, 'Location', singleEntity, _animation.value, () {
+                        widget.onAction(const AttachmentLocationClicked());
+                      }),
                     ],
                   ),
                 ),

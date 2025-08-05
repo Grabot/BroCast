@@ -1,33 +1,21 @@
 import 'dart:async';
-import 'dart:io';
-import 'dart:typed_data';
-
 import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:video_player/video_player.dart';
 import 'package:audio_waveforms/audio_waveforms.dart';
-
 import '../../../objects/broup.dart';
-import '../../../objects/me.dart';
-import '../../../objects/message.dart';
-import '../../../services/auth/v1_5/auth_service_social_v1_5.dart';
 import '../../../utils/locator.dart';
 import '../../../utils/navigation_service.dart';
 import '../../../utils/settings.dart';
 import '../../../utils/socket_services.dart';
-import 'package:brocast/constants/route_paths.dart' as routes;
-
 import '../../../utils/utils.dart';
 
 class RecordViewChat extends StatefulWidget {
   final Broup? chat;
-
   const RecordViewChat({
     Key? key,
     required this.chat,
   }) : super(key: key);
-
   @override
   State<RecordViewChat> createState() => _RecordViewChatState();
 }
@@ -38,19 +26,15 @@ class _RecordViewChatState extends State<RecordViewChat> {
   bool appendingCaption = false;
   bool isSending = false;
   bool isRecording = false;
-
   FocusNode focusEmojiTextField = FocusNode();
   FocusNode focusCaptionField = FocusNode();
-
   TextEditingController captionMessageController = TextEditingController();
   TextEditingController broMessageController = TextEditingController();
-
   SocketServices socketServices = SocketServices();
   Settings settings = Settings();
 
-  // final formAudioKey = GlobalKey<FormState>();
-
-  final NavigationService _navigationService = locator<NavigationService>();
+  Timer? _recordingTimer;
+  Duration _recordingDuration = Duration.zero;
 
   late final RecorderController _recorderController;
   late final PlayerController _playerController;
@@ -60,14 +44,11 @@ class _RecordViewChatState extends State<RecordViewChat> {
   void initState() {
     super.initState();
     broMessageController.text = "🎤";
-
     _recorderController = RecorderController()
       ..androidEncoder = AndroidEncoder.aac
       ..androidOutputFormat = AndroidOutputFormat.mpeg4
       ..iosEncoder = IosEncoder.kAudioFormatMPEG4AAC
       ..sampleRate = 44100;
-
-
     _playerController = PlayerController();
     setState(() {});
   }
@@ -80,6 +61,7 @@ class _RecordViewChatState extends State<RecordViewChat> {
     broMessageController.dispose();
     _recorderController.dispose();
     _playerController.dispose();
+    _stopRecordingTimer();
     super.dispose();
   }
 
@@ -119,71 +101,8 @@ class _RecordViewChatState extends State<RecordViewChat> {
     }
   }
 
-  sendMediaMessage(Uint8List messageData, String message, String textMessage, int dataType) async {
-    setState(() {
-      isSending = true;
-    });
-    if (widget.chat == null) {
-      return;
-    }
-    int meId = -1;
-    int newMessageId = widget.chat!.lastMessageId + 1;
-    Me? me = settings.getMe();
-    if (me == null) {
-      showToastMessage("we had an issues getting your user information. Please log in again.");
-      _navigationService.navigateTo(routes.SignInRoute);
-      return;
-    } else {
-      meId = me.getId();
-    }
-    String? messageTextMessage;
-    if (textMessage != "") {
-      messageTextMessage = textMessage;
-    }
-    // TODO: fix
-    // if (formAudioKey.currentState!.validate()) {
-    //   Message mes = Message(
-    //       messageId: newMessageId,
-    //       senderId: meId,
-    //       body: message,
-    //       textMessage: messageTextMessage,
-    //       timestamp: DateTime.now().toUtc().toString(),
-    //       data: await saveMediaData(messageData, dataType),
-    //       dataType: dataType,
-    //       info: false,
-    //       broupId: widget.chat!.getBroupId()
-    //   );
-    //   mes.isRead = 2;
-    //   setState(() {
-    //     widget.chat!.messages.insert(0, mes);
-    //   });
-    //   AuthServiceSocialV15().sendMessage(widget.chat!.getBroupId(), message, messageTextMessage, messageData, dataType, null).then((value) {
-    //     setState(() {
-    //       isSending = false;
-    //     });
-    //     if (value) {
-    //       setState(() {
-    //         mes.isRead = 0;
-    //         navigateToChat(context, settings, widget.chat!);
-    //       });
-    //     } else {
-    //       showToastMessage("there was an issue sending the message");
-    //       widget.chat!.messages.removeAt(0);
-    //     }
-    //   });
-    //   broMessageController.clear();
-    //   captionMessageController.clear();
-    // }
-  }
-
   sendMedia() async {
-    // TODO: Fix
-    // if (formAudioKey.currentState!.validate()) {
-    //   String emojiMessage = broMessageController.text;
-    //   String textMessage = captionMessageController.text;
-    //   Uint8List recordAudioTemp = Uint8List(0);
-    //   sendMediaMessage(recordAudioTemp, emojiMessage, textMessage, 3);
-    // }
+    // TODO:
   }
 
   onTapEmojiTextField() {
@@ -211,9 +130,9 @@ class _RecordViewChatState extends State<RecordViewChat> {
           AudioFileWaveforms(
             size: Size(MediaQuery.of(context).size.width, 100),
             playerController: _playerController,
-            enableSeekGesture: true, // Allows seeking through the audio by interacting with the waveform
-            waveformType: WaveformType.fitWidth, // Adjust based on your needs
-            playerWaveStyle: const PlayerWaveStyle(
+            enableSeekGesture: true,
+            waveformType: WaveformType.fitWidth,
+            playerWaveStyle: PlayerWaveStyle(
               liveWaveColor: Colors.blue,
               fixedWaveColor: Colors.grey,
               spacing: 6,
@@ -231,26 +150,6 @@ class _RecordViewChatState extends State<RecordViewChat> {
           ),
         SizedBox(height: 20),
         if (_recordedAudioPath != null)
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ElevatedButton(
-                onPressed: _playRecording,
-                child: Text('Play Recording'),
-              ),
-              SizedBox(width: 20),
-              ElevatedButton(
-                onPressed: _stopPlaying,
-                child: Text('Stop Playing'),
-              ),
-            ],
-          )
-        else
-          ElevatedButton(
-            onPressed: isRecording ? _stopRecording : _startRecording,
-            child: Text(isRecording ? 'Stop Recording' : 'Start Recording'),
-          ),
-        if (_recordedAudioPath != null)
           Column(
             children: [
               Row(
@@ -258,12 +157,12 @@ class _RecordViewChatState extends State<RecordViewChat> {
                 children: [
                   ElevatedButton(
                     onPressed: _playRecording,
-                    child: Text('Play Recording'),
+                    child: Icon(Icons.check),
                   ),
                   SizedBox(width: 20),
                   ElevatedButton(
                     onPressed: _stopPlaying,
-                    child: Text('Stop Playing'),
+                    child: Icon(Icons.stop),
                   ),
                 ],
               ),
@@ -275,14 +174,36 @@ class _RecordViewChatState extends State<RecordViewChat> {
             ],
           )
         else
-          ElevatedButton(
-            onPressed: isRecording ? _stopRecording : _startRecording,
-            child: Text(isRecording ? 'Stop Recording' : 'Start Recording'),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton(
+                onPressed: isRecording ? _stopRecording : _startRecording,
+                child: Icon(isRecording ? Icons.stop : Icons.mic),
+              ),
+              SizedBox(width: 20),
+              if (isRecording)
+                ElevatedButton(
+                  onPressed: _pauseRecording,
+                  child: Icon(Icons.pause),
+                ),
+            ],
           ),
       ],
     );
   }
 
+  void _pauseRecording() async {
+    try {
+      await _recorderController.pause();
+      _stopRecordingTimer();
+      setState(() {
+        isRecording = false;
+      });
+    } catch (e) {
+      print('Error pausing recording: $e');
+    }
+  }
 
   void _startRecording() async {
     try {
@@ -291,7 +212,9 @@ class _RecordViewChatState extends State<RecordViewChat> {
         await _recorderController.record(path: path);
         setState(() {
           isRecording = true;
+          _recordingDuration = Duration.zero;
         });
+        _startRecordingTimer();
       } else {
         print('Error: Could not get path for recording.');
       }
@@ -304,9 +227,18 @@ class _RecordViewChatState extends State<RecordViewChat> {
     try {
       String? path = await _recorderController.stop();
       if (path != null) {
+        _stopRecordingTimer();
+        _recordedAudioPath = path;
+        _playerController.setFinishMode(finishMode: FinishMode.stop);
+        await _playerController.preparePlayer(
+          path: _recordedAudioPath!,
+          volume: 1.0,
+          noOfSamples: MediaQuery.of(context).size.width ~/ 6,
+        );
+        await _playerController.startPlayer();
+        await _playerController.stopPlayer();
         setState(() {
           isRecording = false;
-          _recordedAudioPath = path;
         });
       } else {
         print('Error: Could not stop recording.');
@@ -316,17 +248,32 @@ class _RecordViewChatState extends State<RecordViewChat> {
     }
   }
 
+  void _startRecordingTimer() {
+    _recordingTimer = Timer.periodic(Duration(seconds: 1), (timer) {
+    setState(() {
+        _recordingDuration += Duration(seconds: 1);
+    });
+    });
+  }
+
+  void _stopRecordingTimer() {
+    _recordingTimer?.cancel();
+    _recordingTimer = null;
+  }
+
   Future<String?> _getPath() async {
     final directory = await getApplicationDocumentsDirectory();
     return '${directory.path}/audio.wav';
   }
 
   void _playRecording() async {
-    // Set the finish mode before starting the player
     _playerController.setFinishMode(finishMode: FinishMode.stop);
-
-    // Start the player
-    await _playerController.preparePlayer(path: _recordedAudioPath!);
+    await _playerController.preparePlayer(
+      path: _recordedAudioPath!,
+      volume: 1.0,
+      shouldExtractWaveform: false,
+      noOfSamples: MediaQuery.of(context).size.width ~/ 6,
+    );
     await _playerController.startPlayer();
   }
 
