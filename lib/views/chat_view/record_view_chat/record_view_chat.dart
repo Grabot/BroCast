@@ -1,21 +1,31 @@
 import 'dart:async';
+import 'dart:io';
+import 'dart:typed_data';
+import 'package:brocast/objects/data_type.dart';
 import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:audio_waveforms/audio_waveforms.dart';
 import '../../../objects/broup.dart';
+import '../../../objects/me.dart';
+import '../../../objects/message.dart';
+import '../../../services/auth/v1_5/auth_service_social_v1_5.dart';
 import '../../../utils/locator.dart';
 import '../../../utils/navigation_service.dart';
 import '../../../utils/settings.dart';
 import '../../../utils/socket_services.dart';
+import '../../../utils/storage.dart';
 import '../../../utils/utils.dart';
+import 'package:brocast/constants/route_paths.dart' as routes;
 
 class RecordViewChat extends StatefulWidget {
   final Broup? chat;
+
   const RecordViewChat({
     Key? key,
     required this.chat,
   }) : super(key: key);
+
   @override
   State<RecordViewChat> createState() => _RecordViewChatState();
 }
@@ -25,7 +35,6 @@ class _RecordViewChatState extends State<RecordViewChat> {
   bool showEmojiKeyboard = false;
   bool appendingCaption = false;
   bool isSending = false;
-  bool isRecording = false;
   FocusNode focusEmojiTextField = FocusNode();
   FocusNode focusCaptionField = FocusNode();
   TextEditingController captionMessageController = TextEditingController();
@@ -33,12 +42,17 @@ class _RecordViewChatState extends State<RecordViewChat> {
   SocketServices socketServices = SocketServices();
   Settings settings = Settings();
 
-  Timer? _recordingTimer;
-  Duration _recordingDuration = Duration.zero;
+  final formKey = GlobalKey<FormState>();
+
+  bool isRecording = false;
+  bool isPlaying = false;
+  bool isPaused = false;
 
   late final RecorderController _recorderController;
   late final PlayerController _playerController;
   String? _recordedAudioPath;
+
+  final NavigationService _navigationService = locator<NavigationService>();
 
   @override
   void initState() {
@@ -61,7 +75,6 @@ class _RecordViewChatState extends State<RecordViewChat> {
     broMessageController.dispose();
     _recorderController.dispose();
     _playerController.dispose();
-    _stopRecordingTimer();
     super.dispose();
   }
 
@@ -102,7 +115,91 @@ class _RecordViewChatState extends State<RecordViewChat> {
   }
 
   sendMedia() async {
-    // TODO:
+    if (formKey.currentState!.validate()) {
+      String emojiMessage = broMessageController.text;
+      String textMessage = captionMessageController.text;
+      if (_recordedAudioPath != null) {
+        Uint8List mediaData = Uint8List.fromList(File(_recordedAudioPath!).readAsBytesSync());
+        sendMediaMessage(mediaData, emojiMessage, textMessage);
+      }
+    }
+  }
+
+  sendMediaMessage(Uint8List messageData, String message, String textMessage) async {
+    setState(() {
+      isSending = true; // Set sending state to true
+    });
+    if (widget.chat == null) {
+      // You shouldn't get here if the chat is null
+      return;
+    }
+    int meId = -1;
+    int newMessageId = widget.chat!.lastMessageId + 1;
+    Me? me = settings.getMe();
+    if (me == null) {
+      showToastMessage("we had an issues getting your user information. Please log in again.");
+      // This needs to be filled if the user is logged in, if it's not we send the bro back to the login
+      _navigationService.navigateTo(routes.SignInRoute);
+      return;
+    } else {
+      meId = me.getId();
+    }
+    String? messageTextMessage;
+    if (textMessage != "") {
+      messageTextMessage = textMessage;
+    }
+    if (formKey.currentState!.validate()) {
+      // We will save all the data already on the message. But not yet store it in the db.
+      // We will receive it again via the socket and we will update some server information
+      // On this object and then store it in the db.
+      Message mes = Message(
+          messageId: newMessageId,
+          senderId: meId,
+          body: message,
+          textMessage: messageTextMessage,
+          timestamp: DateTime.now().toUtc().toString(),
+          data: await saveMediaData(messageData, DataType.audio.value),
+          dataType: DataType.audio.value,
+          info: false,
+          broupId: widget.chat!.getBroupId()
+      );
+      mes.isRead = 2;
+      setState(() {
+        widget.chat!.messages.insert(0, mes);
+      });
+      setState(() {
+        widget.chat!.sendingMessage = true;
+      });
+      await Storage().addMessage(mes);
+
+      AuthServiceSocialV15().sendMessage(widget.chat!.getBroupId(), message, messageTextMessage, messageData, DataType.audio.value, null).then((messageId) {
+        setState(() {
+          isSending = false; // Set sending state to false
+        });
+        if (messageId != null) {
+          mes.isRead = 0;
+          if (mes.messageId != messageId) {
+            Storage().updateMessageId(mes.messageId, messageId, widget.chat!.getBroupId());
+            mes.messageId = messageId;
+          }
+          setState(() {
+            // Go back to the chat.
+            navigateToChat(context, settings, widget.chat!);
+          });
+          // message send
+        } else {
+          Storage().deleteMessage(mes.messageId, widget.chat!.broupId);
+          // The message was not sent, we remove it from the list
+          showToastMessage("there was an issue sending the message");
+          widget.chat!.messages.removeAt(0);
+        }
+        setState(() {
+          widget.chat!.sendingMessage = false;
+        });
+      });
+      broMessageController.clear();
+      captionMessageController.clear();
+    }
   }
 
   onTapEmojiTextField() {
@@ -123,86 +220,157 @@ class _RecordViewChatState extends State<RecordViewChat> {
     }
   }
 
-  Widget mediaPreview() {
+  _pausePlaying() {
+    _playerController.pausePlayer();
+    setState(() {
+      isPaused = true;
+    });
+  }
+
+  Widget playOrPause() {
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      height: MediaQuery.of(context).size.height,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            width: MediaQuery.of(context).size.height/9,
+            height: MediaQuery.of(context).size.height/9,
+            decoration: BoxDecoration(
+              color: Colors.red,
+              shape: BoxShape.circle,
+            ),
+            child: IconButton(
+              icon: Icon(
+                isPlaying && !isPaused ? Icons.pause : Icons.play_arrow,
+                color:  Colors.white,
+                size: MediaQuery.of(context).size.height/18,
+              ),
+              onPressed: isPlaying && !isPaused ? _pausePlaying : _playRecording,
+            ),
+          ),
+          SizedBox(height: 15),
+        ],
+      ),
+    );
+  }
+
+  Widget audioWaveForm() {
+    if (_recordedAudioPath != null) {
+      return AudioFileWaveforms(
+        size: Size(MediaQuery.of(context).size.width-20, MediaQuery.of(context).size.height/5),
+        playerController: _playerController,
+        enableSeekGesture: true,
+        waveformType: WaveformType.fitWidth,
+        playerWaveStyle: PlayerWaveStyle(
+          liveWaveColor: Colors.red,
+          fixedWaveColor: Colors.grey,
+          spacing: 6,
+        ),
+      );
+    } else {
+      return AudioWaveforms(
+        size: Size(MediaQuery.of(context).size.width-20, MediaQuery.of(context).size.height/5),
+        recorderController: _recorderController,
+        waveStyle: WaveStyle(
+          waveColor: Colors.red,
+          extendWaveform: true,
+          showMiddleLine: false,
+        ),
+      );
+    }
+  }
+
+  Widget recordButton() {
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      height: MediaQuery.of(context).size.height/6,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            width: MediaQuery.of(context).size.height/9,
+            height: MediaQuery.of(context).size.height/9,
+            decoration: BoxDecoration(
+              color: Colors.red,
+              shape: BoxShape.circle,
+            ),
+            child: IconButton(
+              icon: Icon(
+                isRecording ? Icons.stop : Icons.mic,
+                color:  Colors.white,
+                size: MediaQuery.of(context).size.height/18,
+              ),
+              onPressed: isRecording ? _stopRecording : _startRecording,
+            ),
+          ),
+          SizedBox(height: 15),
+        ],
+      ),
+    );
+  }
+
+  Widget playButtons() {
     return Column(
       children: [
-        if (_recordedAudioPath != null)
-          AudioFileWaveforms(
-            size: Size(MediaQuery.of(context).size.width, 100),
-            playerController: _playerController,
-            enableSeekGesture: true,
-            waveformType: WaveformType.fitWidth,
-            playerWaveStyle: PlayerWaveStyle(
-              liveWaveColor: Colors.blue,
-              fixedWaveColor: Colors.grey,
-              spacing: 6,
-            ),
-          )
-        else
-          AudioWaveforms(
-            size: Size(MediaQuery.of(context).size.width, 100),
-            recorderController: _recorderController,
-            waveStyle: WaveStyle(
-              waveColor: Colors.blue,
-              extendWaveform: true,
-              showMiddleLine: false,
-            ),
-          ),
-        SizedBox(height: 20),
-        if (_recordedAudioPath != null)
-          Column(
+        Container(
+          height: MediaQuery.of(context).size.height/6,
+          child: playOrPause(),
+        ),
+        Container(
+          height: MediaQuery.of(context).size.height/9,
+          child: Column(
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ElevatedButton(
-                    onPressed: _playRecording,
-                    child: Icon(Icons.check),
+              Container(
+                height: MediaQuery.of(context).size.height/18,
+                child: ElevatedButton(
+                  onPressed: _resetRecording,
+                  child: Icon(
+                      color: Colors.red,
+                      Icons.redo
                   ),
-                  SizedBox(width: 20),
-                  ElevatedButton(
-                    onPressed: _stopPlaying,
-                    child: Icon(Icons.stop),
-                  ),
-                ],
-              ),
-              SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: _resetRecording,
-                child: Text('Record Again'),
-              ),
-            ],
-          )
-        else
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ElevatedButton(
-                onPressed: isRecording ? _stopRecording : _startRecording,
-                child: Icon(isRecording ? Icons.stop : Icons.mic),
-              ),
-              SizedBox(width: 20),
-              if (isRecording)
-                ElevatedButton(
-                  onPressed: _pauseRecording,
-                  child: Icon(Icons.pause),
                 ),
-            ],
+              ),
+              Container(
+                height: MediaQuery.of(context).size.height/18,
+                child: Text(
+                  "Retry recording",
+                  style: simpleTextStyle(),
+                ),
+              )
+            ]
           ),
+        ),
       ],
     );
   }
 
-  void _pauseRecording() async {
-    try {
-      await _recorderController.pause();
-      _stopRecordingTimer();
-      setState(() {
-        isRecording = false;
-      });
-    } catch (e) {
-      print('Error pausing recording: $e');
+  Widget mediaInterface() {
+    if (_recordedAudioPath != null) {
+      // Playback mode
+      return playButtons();
+    } else {
+      // Recording mode
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          recordButton(),
+          SizedBox(width: 20),
+          SizedBox(height: MediaQuery.of(context).size.height/9),
+        ],
+      );
     }
+  }
+
+  Widget mediaPreview() {
+    return Column(
+      children: [
+        audioWaveForm(),
+        SizedBox(height: 20),
+        mediaInterface(),
+      ],
+    );
   }
 
   void _startRecording() async {
@@ -212,9 +380,7 @@ class _RecordViewChatState extends State<RecordViewChat> {
         await _recorderController.record(path: path);
         setState(() {
           isRecording = true;
-          _recordingDuration = Duration.zero;
         });
-        _startRecordingTimer();
       } else {
         print('Error: Could not get path for recording.');
       }
@@ -227,14 +393,15 @@ class _RecordViewChatState extends State<RecordViewChat> {
     try {
       String? path = await _recorderController.stop();
       if (path != null) {
-        _stopRecordingTimer();
         _recordedAudioPath = path;
-        _playerController.setFinishMode(finishMode: FinishMode.stop);
+        _playerController.setFinishMode(finishMode: FinishMode.loop);
         await _playerController.preparePlayer(
           path: _recordedAudioPath!,
           volume: 1.0,
+          shouldExtractWaveform: true,
           noOfSamples: MediaQuery.of(context).size.width ~/ 6,
         );
+        // not sure why but this seems to be necessary.
         await _playerController.startPlayer();
         await _playerController.stopPlayer();
         setState(() {
@@ -248,41 +415,39 @@ class _RecordViewChatState extends State<RecordViewChat> {
     }
   }
 
-  void _startRecordingTimer() {
-    _recordingTimer = Timer.periodic(Duration(seconds: 1), (timer) {
-    setState(() {
-        _recordingDuration += Duration(seconds: 1);
-    });
-    });
-  }
-
-  void _stopRecordingTimer() {
-    _recordingTimer?.cancel();
-    _recordingTimer = null;
-  }
-
   Future<String?> _getPath() async {
-    final directory = await getApplicationDocumentsDirectory();
+    final directory = await getTemporaryDirectory();
     return '${directory.path}/audio.wav';
   }
 
   void _playRecording() async {
-    _playerController.setFinishMode(finishMode: FinishMode.stop);
-    await _playerController.preparePlayer(
-      path: _recordedAudioPath!,
-      volume: 1.0,
-      shouldExtractWaveform: false,
-      noOfSamples: MediaQuery.of(context).size.width ~/ 6,
-    );
-    await _playerController.startPlayer();
+    if (isPlaying) {
+      _playerController.startPlayer(forceRefresh: false);
+      setState(() {
+        isPaused = false;
+      });
+    } else {
+      _playerController.setFinishMode(finishMode: FinishMode.loop);
+      await _playerController.preparePlayer(
+        path: _recordedAudioPath!,
+        volume: 1.0,
+        shouldExtractWaveform: false,
+        noOfSamples: MediaQuery
+            .of(context)
+            .size
+            .width ~/ 6,
+      );
+      await _playerController.startPlayer();
+      setState(() {
+        isPlaying = true;
+      });
+    }
   }
 
-  void _stopPlaying() async {
+  void _resetRecording() async {
     await _playerController.stopPlayer();
-  }
-
-  void _resetRecording() {
     setState(() {
+      isPlaying = false;
       _recordedAudioPath = null;
     });
   }
@@ -350,6 +515,7 @@ class _RecordViewChatState extends State<RecordViewChat> {
                                           child: Container(
                                             padding: EdgeInsets.only(left: 15),
                                             child: Form(
+                                              key: formKey,
                                               child: TextFormField(
                                                 focusNode: focusEmojiTextField,
                                                 validator: (val) {

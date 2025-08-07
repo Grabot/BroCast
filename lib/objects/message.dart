@@ -3,6 +3,8 @@ import 'dart:typed_data';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 
+import 'data_type.dart';
+
 class Message {
   late int messageId;
   late int senderId;
@@ -140,11 +142,11 @@ class Message {
           // If the data is present, we set the flag to received
           message.dataIsReceived = true;
           Uint8List dataBytes = Uint8List.fromList(messageData['data']);
-          message.data = await saveImageData(dataBytes);
+          message.data = await saveMediaData(dataBytes, DataType.image.value);
         } else if (messageData['data'] is String) {
           message.dataIsReceived = true;
           Uint8List dataBytes = base64Decode(messageData['data'].replaceAll("\n", ""));
-          message.data = await saveImageData(dataBytes);
+          message.data = await saveMediaData(dataBytes, DataType.image.value);
         }
       }
       if (messageData.containsKey('type')) {
@@ -193,41 +195,28 @@ class Message {
   }
 }
 
-Future<String> saveImageData(Uint8List imageData) async {
-  final directory = await getApplicationDocumentsDirectory();
-  final imageDirectory = Directory('${directory.path}/images');
-  final filePath = '${imageDirectory.path}/${DateTime.now().millisecondsSinceEpoch}.brocastPng';
-  final file = File(filePath);
-  await file.writeAsBytes(imageData);
-  return filePath;
-}
-
-Future<String> saveVideoData(Uint8List videoData) async {
-  final directory = await getApplicationDocumentsDirectory();
-  final imageDirectory = Directory('${directory.path}/videos');
-  final filePath = '${imageDirectory.path}/${DateTime.now().millisecondsSinceEpoch}.brocastMp4';
-  final file = File(filePath);
-  await file.writeAsBytes(videoData);
-  return filePath;
-}
-
-Future<String> saveMediaData(Uint8List videoData, int dataType) async {
+Future<String> saveMediaData(Uint8List mediaData, int dataType) async {
   final directory = await getApplicationDocumentsDirectory();
   Directory? mediaDirectory;
-  if (dataType == 1) {
-    mediaDirectory = Directory('${directory.path}/videos');
-  } else {
-    // dataType 0
+  if (dataType == DataType.image.value) {
     mediaDirectory = Directory('${directory.path}/images');
+  } else if (dataType == DataType.video.value) {
+    mediaDirectory = Directory('${directory.path}/videos');
+  } else if (dataType == DataType.audio.value) {
+    mediaDirectory = Directory('${directory.path}/audio');
+  } else {
+    throw Exception('Unsupported data type');
   }
   String? extension;
-  if (dataType == 1) {
-    extension = 'brocastMp4';
-  } else {
+  if (dataType == DataType.image.value) {
     extension = 'brocastPng';
+  } else if (dataType == DataType.video.value) {
+    extension = 'brocastMp4';
+  } else if (dataType == DataType.audio.value) {
+    extension = 'brocastMp3';
   }
   final filePath = '${mediaDirectory.path}/${DateTime.now().millisecondsSinceEpoch}.${extension}';
   final file = File(filePath);
-  await file.writeAsBytes(videoData);
+  await file.writeAsBytes(mediaData);
   return filePath;
 }

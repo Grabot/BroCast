@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:brocast/objects/data_type.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:brocast/services/auth/v1_5/auth_service_social_v1_5.dart';
 import 'package:brocast/views/chat_view/media_viewer/image_viewer.dart';
@@ -54,15 +55,13 @@ class MessageTile extends StatefulWidget {
 
 class _MessageTileState extends State<MessageTile> with SingleTickerProviderStateMixin {
 
-  bool isImage = false;
-  bool isVideo = false;
   VideoPlayerController? _videoController;
   bool videoControllerInitialized = false;
 
   bool isLoading = false;
 
   selectMessage(BuildContext context) async {
-    if ((widget.message.textMessage != null && widget.message.textMessage!.isNotEmpty) || isImage || isVideo) {
+    if ((widget.message.textMessage != null && widget.message.textMessage!.isNotEmpty) || widget.message.dataType != null) {
       setState(() {
         widget.message.clicked = !widget.message.clicked;
       });
@@ -72,13 +71,13 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
           isLoading = true;
           AuthServiceSocialV15().getMessageData(widget.message.broupId, widget.message.messageId).then((messageDataResponse) async {
             // For a video we first want to load the video controller
-            if (widget.message.dataType != 1) {
+            if (widget.message.dataType != DataType.video.value) {
               isLoading = false;
             }
             if (messageDataResponse != null) {
               // If the data is present, we set the flag to received
               widget.message.dataIsReceived = true;
-              widget.message.data = await saveImageData(messageDataResponse);
+              widget.message.data = await saveMediaData(messageDataResponse, DataType.image.value);
               _initializeVideoController();
               Storage().updateMessage(widget.message);
               setState(() {
@@ -97,7 +96,7 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
           setState(() {});
         }
       } else {
-        if (isVideo) {
+        if (widget.message.dataType == DataType.video.value) {
           setState(() {
             _videoController!.pause();
           });
@@ -114,16 +113,6 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
   @override
   void initState() {
     super.initState();
-    if (widget.message.dataType != null) {
-      if (widget.message.dataType == 0) {
-        isImage = true;
-        isVideo = false;
-      } else if (widget.message.dataType == 1) {
-        isImage = false;
-        isVideo = true;
-      }
-    }
-
     // If the slide is made we want to trigger the replied to functionality.
     controller.endGesture.addListener(() {
       // We close the controller, which will put the message back in its original position
@@ -192,11 +181,12 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
       borderColour = Colors.yellow;
     }
 
-    if (isImage) {
+    if (widget.message.dataType == DataType.image.value) {
       borderColour = Colors.red;
-    }
-    if (isVideo) {
+    } else if (widget.message.dataType == DataType.video.value) {
       borderColour = Colors.pinkAccent[100]!;
+    } else if (widget.message.dataType == DataType.audio.value) {
+      borderColour = Colors.purpleAccent;
     }
 
     return borderColour;
@@ -228,7 +218,7 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
   }
 
   goToMediaViewer() {
-    if (widget.message.dataType == 0) {
+    if (widget.message.dataType == DataType.image.value) {
       Navigator.of(context).push(
         MaterialPageRoute(
           builder: (context) => ImageViewer(
@@ -237,7 +227,7 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
           ),
         ),
       ).then((_) { });
-    } else if (widget.message.dataType == 1) {
+    } else if (widget.message.dataType == DataType.video.value) {
       if (widget.message.data != null) {
         Navigator.of(context).push(
           MaterialPageRoute(
@@ -354,7 +344,7 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
 
   double getMessageWidgetWidth() {
     if (widget.message.clicked) {
-      if (isImage || isVideo) {
+      if (widget.message.dataType != null) {
         return MediaQuery.of(context).size.width;
       }
     }
@@ -392,6 +382,10 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
       }
     }
     return widgetWidth;
+  }
+
+  Widget getAudioContent() {
+    return Container();
   }
 
   Widget getVideoContent() {
@@ -549,10 +543,12 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
   Widget getMessageContent(double messageWidth) {
     Widget content;
     if (widget.message.clicked) {
-      if (isImage) {
+      if (widget.message.dataType == DataType.image.value) {
         content = getImageContent();
-      } else if (isVideo) {
+      } else if (widget.message.dataType == DataType.video.value) {
         content = getVideoContent();
+      } else if (widget.message.dataType == DataType.audio.value) {
+        content = getAudioContent();
       } else {
         content = getTextContent();
       }

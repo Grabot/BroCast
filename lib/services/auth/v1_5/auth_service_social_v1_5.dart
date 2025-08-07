@@ -6,6 +6,7 @@ import 'package:brocast/services/auth/v1_5/auth_api_v1_5.dart';
 import 'package:brocast/utils/utils.dart';
 import 'package:dio/dio.dart';
 
+import '../../../objects/data_type.dart';
 import '../../../objects/message.dart';
 
 class AuthServiceSocialV15 {
@@ -36,16 +37,18 @@ class AuthServiceSocialV15 {
     }
 
     if (messageData != null && dataType != null) {
-      if (dataType == 1) {
+      if (dataType == DataType.image.value) {
+        formMap["message_data"] = MultipartFile.fromBytes(
+            messageData,
+            filename: "image.png"
+        );
+      } else if (dataType == DataType.video.value) {
         formMap["video_data"] = MultipartFile.fromBytes(
             messageData,
             filename: "video.mp4"
         );
       } else {
-        formMap["message_data"] = MultipartFile.fromBytes(
-            messageData,
-            filename: "image.png"
-        );
+        // TODO: more data types
       }
     }
 

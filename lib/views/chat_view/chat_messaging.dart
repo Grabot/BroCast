@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:math';
+import 'package:brocast/objects/data_type.dart';
 import 'package:brocast/views/chat_view/emoji_reactions_overview.dart';
 import 'package:brocast/views/chat_view/message_attachment_popup.dart';
 import 'package:brocast/views/chat_view/preview_page_chat/preview_page_chat.dart';
@@ -356,13 +357,13 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
         final directory = await getApplicationDocumentsDirectory();
         int randomNumber = Random().nextInt(100);
         String fileName = "brocast_${message.broupId}_${message.messageId}_$randomNumber";
-        if (message.dataType == 0) {
+        if (message.dataType == DataType.image.value) {
           final imagePath = '${directory.path}/${fileName}.png';
           final file = File(dataLoc);
           await file.copy(imagePath);
           await Gal.putImage(imagePath, album: albumName);
           showToastMessage("Image saved");
-        } else if (message.dataType == 1) {
+        } else if (message.dataType == DataType.video.value) {
           final videoPath = '${directory.path}/${fileName}.mp4';
           final file = File(dataLoc);
           await file.copy(videoPath);
@@ -431,7 +432,7 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
     } else if (action is SaveImagePopupAction) {
       saveImageToGallery(action.message);
     } else if (action is ViewImagePopupAction) {
-      if (action.message.dataType == 0) {
+      if (action.message.dataType == DataType.image.value) {
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) =>
@@ -441,7 +442,7 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
                 ),
           ),
         );
-      } else {
+      } else if (action.message.dataType == DataType.video.value) {
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) =>
@@ -451,6 +452,8 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
                 ),
           ),
         );
+      } else {
+        // TODO: add more data types
       }
     } else if (action is ReplyToMessagePopupAction) {
       repliedToMessage = widget.chat.messages.firstWhereOrNull((message) => message.messageId == action.message.messageId);
@@ -799,8 +802,8 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
     if (dismissBroAdmin && broInBroup) {
       messagePopupOptions.add({'text': 'Dismiss Bro Admin', 'icon': Icons.admin_panel_settings_outlined, 'action': DismissBroAdminPopupAction(message: message, broId: message.senderId)});
     }
-    if (saveImageOption) {
-      String type = message.dataType == 0 ? "Image" : "Video";
+    if (saveImageOption && message.dataType != null) {
+      String type = DataType.getByValue(message.dataType!).typeName;
       messagePopupOptions.add({'text': 'Save $type', 'icon': Icons.save_alt, 'action': SaveImagePopupAction(message: message)});
       messagePopupOptions.add({'text': 'View $type', 'icon': Icons.remove_red_eye, 'action': ViewImagePopupAction(message: message)});
     }

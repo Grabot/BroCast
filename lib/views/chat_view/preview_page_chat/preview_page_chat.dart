@@ -8,6 +8,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:video_player/video_player.dart';
 
 import '../../../objects/broup.dart';
+import '../../../objects/data_type.dart';
 import '../../../objects/me.dart';
 import '../../../objects/message.dart';
 import '../../../services/auth/v1_5/auth_service_social_v1_5.dart';
@@ -79,14 +80,16 @@ class _PreviewPageChatState extends State<PreviewPageChat> {
 
     mediaPreviewData = widget.media;
 
-    if (widget.dataType == 1) {
-      broMessageController.text = "🎥";
-      _initializeVideo();
-    } else {
+    if (widget.dataType == DataType.image.value) {
       broMessageController.text = "📸";
       setState(() {
         isLoading = false;
       });
+    } else if (widget.dataType == DataType.video.value) {
+      broMessageController.text = "🎥";
+      _initializeVideo();
+    } else {
+      // TODO: add other data types.
     }
 
     setState(() {});
@@ -123,10 +126,12 @@ class _PreviewPageChatState extends State<PreviewPageChat> {
     if (!appendingCaption) {
       focusCaptionField.requestFocus();
       if (broMessageController.text == "") {
-        if (widget.dataType == 1) {
+        if (widget.dataType == DataType.image.value) {
+          broMessageController.text = "📸";
+        } else if (widget.dataType == DataType.video.value) {
           broMessageController.text = "🎥";
         } else {
-          broMessageController.text = "📸";
+          // TODO: Add other data types.
         }
       }
       setState(() {
