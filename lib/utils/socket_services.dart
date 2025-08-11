@@ -485,7 +485,7 @@ class SocketServices extends ChangeNotifier {
         return;
       }
       Message? storageMessage;
-      storageMessage = await storage.fetchMessageWithId(message.messageId, message.broupId);
+      storageMessage = await storage.fetchMessageWithId(message.broupId, message.messageId);
       // We update the newly created message with data from what we retrieved locally.
       // We update it with data that is not sent over the socket and might already be stored locally.
       if (storageMessage != null) {

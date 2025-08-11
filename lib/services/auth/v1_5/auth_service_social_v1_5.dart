@@ -47,8 +47,11 @@ class AuthServiceSocialV15 {
             messageData,
             filename: "video.mp4"
         );
-      } else {
-        // TODO: more data types
+      } else if (dataType == DataType.audio.value) {
+        formMap["audio_data"] = MultipartFile.fromBytes(
+            messageData,
+            filename: "audio.mp3"
+        );
       }
     }
 

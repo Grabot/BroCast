@@ -45,8 +45,7 @@ class _RecordViewChatState extends State<RecordViewChat> {
   final formKey = GlobalKey<FormState>();
 
   bool isRecording = false;
-  bool isPlaying = false;
-  bool isPaused = false;
+  bool isPaused = true;
 
   late final RecorderController _recorderController;
   late final PlayerController _playerController;
@@ -243,11 +242,11 @@ class _RecordViewChatState extends State<RecordViewChat> {
             ),
             child: IconButton(
               icon: Icon(
-                isPlaying && !isPaused ? Icons.pause : Icons.play_arrow,
+                !isPaused ? Icons.pause : Icons.play_arrow,
                 color:  Colors.white,
                 size: MediaQuery.of(context).size.height/18,
               ),
-              onPressed: isPlaying && !isPaused ? _pausePlaying : _playRecording,
+              onPressed: !isPaused ? _pausePlaying : _playRecording,
             ),
           ),
           SizedBox(height: 15),
@@ -394,16 +393,16 @@ class _RecordViewChatState extends State<RecordViewChat> {
       String? path = await _recorderController.stop();
       if (path != null) {
         _recordedAudioPath = path;
-        _playerController.setFinishMode(finishMode: FinishMode.loop);
         await _playerController.preparePlayer(
           path: _recordedAudioPath!,
           volume: 1.0,
           shouldExtractWaveform: true,
           noOfSamples: MediaQuery.of(context).size.width ~/ 6,
         );
+        _playerController.setFinishMode(finishMode: FinishMode.loop);
         // not sure why but this seems to be necessary.
         await _playerController.startPlayer();
-        await _playerController.stopPlayer();
+        await _playerController.pausePlayer();
         setState(() {
           isRecording = false;
         });
@@ -421,33 +420,15 @@ class _RecordViewChatState extends State<RecordViewChat> {
   }
 
   void _playRecording() async {
-    if (isPlaying) {
-      _playerController.startPlayer(forceRefresh: false);
-      setState(() {
-        isPaused = false;
-      });
-    } else {
-      _playerController.setFinishMode(finishMode: FinishMode.loop);
-      await _playerController.preparePlayer(
-        path: _recordedAudioPath!,
-        volume: 1.0,
-        shouldExtractWaveform: false,
-        noOfSamples: MediaQuery
-            .of(context)
-            .size
-            .width ~/ 6,
-      );
-      await _playerController.startPlayer();
-      setState(() {
-        isPlaying = true;
-      });
-    }
+    _playerController.startPlayer(forceRefresh: false);
+    setState(() {
+      isPaused = false;
+    });
   }
 
   void _resetRecording() async {
     await _playerController.stopPlayer();
     setState(() {
-      isPlaying = false;
       _recordedAudioPath = null;
     });
   }

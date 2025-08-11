@@ -11,6 +11,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:url_launcher/url_launcher.dart';
 import 'package:video_player/video_player.dart';
+import 'package:audioplayers/audioplayers.dart';
 import '../../../../objects/message.dart';
 import '../../../objects/bro.dart';
 import 'dart:ui';
@@ -20,6 +21,7 @@ import '../../../utils/settings.dart';
 import '../../../utils/storage.dart';
 import '../../../utils/utils.dart';
 import '../media_viewer/video_viewer.dart';
+import '../waved_audio/waved_audio_player.dart';
 
 class MessageTile extends StatefulWidget {
   final Message message;
@@ -57,8 +59,11 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
 
   VideoPlayerController? _videoController;
   bool videoControllerInitialized = false;
+  bool audioControllerInitialized = false;
 
   bool isLoading = false;
+  bool audioIsPaused = true;
+  String? audioFilePath;
 
   selectMessage(BuildContext context) async {
     if ((widget.message.textMessage != null && widget.message.textMessage!.isNotEmpty) || widget.message.dataType != null) {
@@ -74,11 +79,16 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
             if (widget.message.dataType != DataType.video.value) {
               isLoading = false;
             }
+            // Audio and images are loaded immediately.
             if (messageDataResponse != null) {
               // If the data is present, we set the flag to received
               widget.message.dataIsReceived = true;
-              widget.message.data = await saveMediaData(messageDataResponse, DataType.image.value);
-              _initializeVideoController();
+              widget.message.data = await saveMediaData(messageDataResponse, widget.message.dataType!);
+              if (widget.message.dataType == DataType.video.value) {
+                _initializeVideoController();
+              } else if (widget.message.dataType == DataType.audio.value) {
+                _initializeAudioController();
+              }
               Storage().updateMessage(widget.message);
               setState(() {
                 messageData = getMessageData(widget.message.data!);
@@ -92,7 +102,11 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
             }
           });
         } else {
-          _initializeVideoController();
+          if (widget.message.dataType == DataType.video.value) {
+            _initializeVideoController();
+          } else if (widget.message.dataType == DataType.audio.value) {
+            _initializeAudioController();
+          }
           setState(() {});
         }
       } else {
@@ -125,15 +139,29 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
 
     controller.direction.addListener(() {
       // 0 means stopped moving. If the replied to was triggered
-      // and it is no longer moving, we want to trigger the replied to functionalit
+      // and it is no longer moving, we want to trigger the replied to functionality
       if (replying && controller.direction.value == 0) {
         replyToMessage();
       }
     });
   }
 
+  void _initializeAudioController() async {
+    if (widget.message.data != null && widget.message.dataType == DataType.audio.value && !audioControllerInitialized) {
+      print("Initializing audio controller");
+      audioControllerInitialized = true;
+      final file = File(widget.message.data!);
+      final tempDirectory = await getTemporaryDirectory();
+      String newFilePath = '${tempDirectory.path}/previewAudio_${widget.message.messageId}.mp3';
+      final fileView = await file.copy(newFilePath);
+      audioFilePath = fileView.path;
+
+      setState(() {});
+    }
+  }
+
   void _initializeVideoController() async {
-    if (widget.message.data != null && !videoControllerInitialized) {
+    if (widget.message.data != null && widget.message.dataType == DataType.video.value && !videoControllerInitialized) {
       videoControllerInitialized = true;
         final file = File(widget.message.data!);
         final tempDirectory = await getTemporaryDirectory();
@@ -141,7 +169,10 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
         // default name which is reused for each new video.
         String newFilePath = '${tempDirectory.path}/previewVideo.mp4';
         final fileView = await file.copy(newFilePath);
-        _videoController = VideoPlayerController.file(fileView)
+        _videoController = VideoPlayerController.file(
+            fileView,
+          videoPlayerOptions: VideoPlayerOptions(mixWithOthers: true)
+        )
           ..initialize().then((_) {
             setState(() {
               isLoading = false;
@@ -384,126 +415,122 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
     return widgetWidth;
   }
 
-  Widget getAudioContent() {
-    return Container();
+  Widget getAudioContent(double messageWidth) {
+    List<Widget> commonChildren = [
+      repliedToView(),
+      Text(
+          widget.message.body,
+          style: simpleTextStyle()
+      ),
+      isLoading || audioFilePath == null
+          ? CircularProgressIndicator()
+          : Container(
+              child: WavedAudioPlayer(
+                key: ValueKey(widget.message.messageId),
+                source: DeviceFileSource(audioFilePath!),
+                messageId: widget.message.messageId,
+                waveWidth: messageWidth - 4,
+                waveHeight: 60,
+                barWidth: 3,
+              )
+            ),
+    ];
+
+    if (widget.message.textMessage != null && widget.message.textMessage!.isNotEmpty) {
+      commonChildren.add(
+          Linkify(
+              onOpen: _onOpen,
+              text: widget.message.textMessage!,
+              linkStyle: TextStyle(color: Color(0xffFFC0CB), fontSize: 18),
+              style: simpleTextStyle()
+          )
+      );
+    }
+
+    return Column(
+        mainAxisAlignment: widget.myMessage ? MainAxisAlignment.end : MainAxisAlignment.start,
+        crossAxisAlignment: widget.myMessage ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+        children: commonChildren
+    );
   }
 
   Widget getVideoContent() {
+    final commonChildren = [
+      viewImageButton(),
+      repliedToView(),
+      Text(
+          widget.message.body,
+          style: simpleTextStyle()
+      ),
+      isLoading
+          ? CircularProgressIndicator()
+          : _videoController != null && _videoController!.value.isInitialized
+          ? AspectRatio(
+        aspectRatio: _videoController!.value.aspectRatio,
+        child: VideoPlayer(_videoController!),
+      )
+          : CircularProgressIndicator(),
+      ElevatedButton(
+        onPressed: () {
+          setState(() {
+            _videoController!.value.isPlaying
+                ? _videoController!.pause()
+                : _videoController!.play();
+          });
+        },
+        child: _videoController != null && _videoController!.value.isInitialized ? Icon(
+          _videoController!.value.isPlaying ? Icons.pause : Icons.play_arrow,
+        ) : Container(),
+      ),
+    ];
+
     if (widget.message.textMessage != null && widget.message.textMessage!.isNotEmpty) {
-      return Column(
-          mainAxisAlignment: widget.myMessage ? MainAxisAlignment.end : MainAxisAlignment.start,
-          crossAxisAlignment: widget.myMessage ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-          children: [
-            viewImageButton(),
-            repliedToView(),
-            Text(
-                widget.message.body,
-                style: simpleTextStyle()
-            ),
-            isLoading
-                ? CircularProgressIndicator()
-                : _videoController != null && _videoController!.value.isInitialized
-                ? AspectRatio(
-              aspectRatio: _videoController!.value.aspectRatio,
-              child: VideoPlayer(_videoController!),
-            )
-                : CircularProgressIndicator(),
-            ElevatedButton(
-              onPressed: () {
-                setState(() {
-                  _videoController!.value.isPlaying
-                      ? _videoController!.pause()
-                      : _videoController!.play();
-                });
-              },
-              child: _videoController != null && _videoController!.value.isInitialized ? Icon(
-                _videoController!.value.isPlaying ? Icons.pause : Icons.play_arrow,
-              ) : Container(),
-            ),
-            Linkify(
-                onOpen: _onOpen,
-                text: widget.message.textMessage!,
-                linkStyle: TextStyle(color: Color(0xffFFC0CB), fontSize: 18),
-                style: simpleTextStyle()
-            )
-          ]
-      );
-    } else {
-      return Column(
-          mainAxisAlignment: widget.myMessage ? MainAxisAlignment.end : MainAxisAlignment.start,
-          crossAxisAlignment: widget.myMessage ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-          children: [
-            viewImageButton(),
-            repliedToView(),
-            Text(
-                widget.message.body,
-                style: simpleTextStyle()
-            ),
-            isLoading
-                ? CircularProgressIndicator()
-                : _videoController != null && _videoController!.value.isInitialized
-                ? AspectRatio(
-              aspectRatio: _videoController!.value.aspectRatio,
-              child: VideoPlayer(_videoController!),
-            )
-                : CircularProgressIndicator(),
-            ElevatedButton(
-              onPressed: () {
-                setState(() {
-                  _videoController!.value.isPlaying
-                      ? _videoController!.pause()
-                      : _videoController!.play();
-                });
-              },
-              child: _videoController != null && _videoController!.value.isInitialized ? Icon(
-                _videoController!.value.isPlaying ? Icons.pause : Icons.play_arrow,
-              ) : Container(),
-            ),
-          ]
+      commonChildren.add(
+          Linkify(
+              onOpen: _onOpen,
+              text: widget.message.textMessage!,
+              linkStyle: TextStyle(color: Color(0xffFFC0CB), fontSize: 18),
+              style: simpleTextStyle()
+          )
       );
     }
+
+    return Column(
+        mainAxisAlignment: widget.myMessage ? MainAxisAlignment.end : MainAxisAlignment.start,
+        crossAxisAlignment: widget.myMessage ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+        children: commonChildren
+    );
   }
 
   Widget getImageContent() {
+    final commonChildren = [
+      viewImageButton(),
+      repliedToView(),
+      Text(
+          widget.message.body,
+          style: simpleTextStyle()
+      ),
+      isLoading
+          ? CircularProgressIndicator()
+          : Image.memory(getMessageDataContent()),
+    ];
+
     if (widget.message.textMessage != null && widget.message.textMessage!.isNotEmpty) {
-      return Column(
-          mainAxisAlignment: widget.myMessage ? MainAxisAlignment.end : MainAxisAlignment.start,
-          crossAxisAlignment: widget.myMessage ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-          children: [
-            viewImageButton(),
-            repliedToView(),
-            Text(
-                widget.message.body,
-                style: simpleTextStyle()
-            ),
-            isLoading
-                ? CircularProgressIndicator()
-                : Image.memory(getMessageDataContent()),
-            Linkify(
-                onOpen: _onOpen,
-                text: widget.message.textMessage!,
-                linkStyle: TextStyle(color: Color(0xffFFC0CB), fontSize: 18),
-                style: simpleTextStyle()
-            )
-          ]
-      );
-    } else {
-      return Column(
-          mainAxisAlignment: widget.myMessage ? MainAxisAlignment.end : MainAxisAlignment.start,
-          crossAxisAlignment: widget.myMessage ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-          children: [
-            viewImageButton(),
-            repliedToView(),
-            Text(
-                widget.message.body,
-                style: simpleTextStyle()
-            ),
-            isLoading
-                ? CircularProgressIndicator()
-                : Image.memory(getMessageDataContent()),
-          ]
+      commonChildren.add(
+          Linkify(
+              onOpen: _onOpen,
+              text: widget.message.textMessage!,
+              linkStyle: TextStyle(color: Color(0xffFFC0CB), fontSize: 18),
+              style: simpleTextStyle()
+          )
       );
     }
+
+    return Column(
+        mainAxisAlignment: widget.myMessage ? MainAxisAlignment.end : MainAxisAlignment.start,
+        crossAxisAlignment: widget.myMessage ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+        children: commonChildren
+    );
   }
 
   getTextContent() {
@@ -548,7 +575,7 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
       } else if (widget.message.dataType == DataType.video.value) {
         content = getVideoContent();
       } else if (widget.message.dataType == DataType.audio.value) {
-        content = getAudioContent();
+        content = getAudioContent(messageWidth);
       } else {
         content = getTextContent();
       }
