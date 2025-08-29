@@ -1,5 +1,6 @@
 import Flutter
 import UIKit
+import GoogleMaps
 import awesome_notifications
 import awesome_notifications_fcm
 import flutter_secure_storage
@@ -27,6 +28,9 @@ import flutter_secure_storage
       FlutterSecureStoragePlugin.register(
         with: registry.registrar(forPlugin: "io.flutter.plugins.fluttersecurestorage.FlutterSecureStoragePlugin")!)
     }
+    // TODO: Add from config?
+    GMSServices.provideAPIKey("<My api key>")
+
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
 }

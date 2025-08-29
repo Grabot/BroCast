@@ -50,6 +50,7 @@ base_url.dart
 google-services.json
 GoogleService-Info.plist
 key.properties
+secrets.properties
 
 # firebase stuff
 firebase.json
