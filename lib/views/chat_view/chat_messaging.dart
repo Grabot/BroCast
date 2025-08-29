@@ -22,6 +22,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gal/gal.dart';
+import 'package:tuple/tuple.dart';
 
 import '../../../objects/bro.dart';
 import '../../services/auth/v1_4/auth_service_social.dart';
@@ -32,6 +33,7 @@ import '../../utils/navigation_service.dart';
 import '../../utils/storage.dart';
 import '../camera_page/camera_page.dart';
 import 'chat_details/chat_details.dart';
+import 'location_view_chat/location_view_chat.dart';
 import 'media_viewer/image_viewer.dart';
 import 'media_viewer/video_viewer.dart';
 import 'message_detail_popup.dart';
@@ -90,7 +92,7 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
 
   Me? me;
 
-  Map<int, GlobalKey> messageKeys = {};
+  Map<int, Tuple2<GlobalKey, GlobalKey>> messageKeys = {};
   bool goingToReply = false;
   Map<int, bool> messageVisibility = {};
   int? goingToReplyMessageId;
@@ -216,9 +218,10 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
       goingToReplyMessageId = passedMessageId;
       goingToReply = true;
       // Not really visible, but it should have context.
-      GlobalKey? messageKey = messageKeys[passedMessageId];
+      Tuple2<GlobalKey, GlobalKey>? messageKeyPair = messageKeys[passedMessageId];
       // We assume that if it's in the `messageVisibility` List that it will have currentContext
-      if (messageKey != null) {
+      if (messageKeyPair != null) {
+        GlobalKey messageKey = messageKeyPair.item1;
         if (messageKey.currentContext != null) {
           Scrollable.ensureVisible(
             messageKey.currentContext!,
@@ -547,10 +550,7 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
               setDateTiles(widget.chat, 0);
               widget.chat.messages.sort((b, a) => a.getTimeStamp().compareTo(b.getTimeStamp()));
             }
-            if (!widget.chat.checkedRemainingBros) {
-              widget.chat.checkedRemainingBros = true;
-              checkMessageBroIds();
-            }
+            checkMessageBroIds();
             checkRepliedMessages();
           }
 
@@ -590,7 +590,9 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
   messagingListener() {
     if (!widget.chat.checkedRemainingBros) {
       retrieveData();
+      widget.chat.checkedRemainingBros = true;
     }
+    checkMessageBroIds();
     checkRepliedMessages();
     checkIsAdmin();
     setState(() {});
@@ -602,6 +604,7 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
     if (widget.chat.newMessages) {
       retrieveData();
     }
+    checkMessageBroIds();
     checkRepliedMessages();
     checkIsAdmin();
     setState(() {});
@@ -1026,13 +1029,16 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
             itemBuilder: (context, index) {
               Message message = widget.chat.messages[index];
               messageVisibility[message.messageId] = true;
-              GlobalKey messageKey = GlobalKey();
+              GlobalKey? messageKey;
+              GlobalKey? messageAnimationKey;
               if (!message.info) {
-                messageKey = messageKeys.putIfAbsent(message.messageId, () => GlobalKey());
+                Tuple2<GlobalKey, GlobalKey> messageKeyPair = messageKeys.putIfAbsent(message.messageId, () => Tuple2(GlobalKey(), GlobalKey()));
+                messageKey = messageKeyPair.item1;
+                messageAnimationKey = messageKeyPair.item2;
               }
               bool isHighlighted = highlightedMessageIds.contains(message.messageId);
               MessageTile messageTile = MessageTile(
-                  key: messageKey,
+                  key: messageKey == null ? GlobalKey() : messageKey,
                   private: widget.chat.private,
                   message: message,
                   bro: getBro(message.senderId),
@@ -1042,6 +1048,7 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
                   userAdmin: meAdmin,
                   repliedMessage: message.repliedMessage,
                   repliedBro: getBroReply(message.repliedMessage),
+                  animationKey: messageAnimationKey == null ? GlobalKey() : messageAnimationKey,
                   messageHandling: messageHandling,
                   messageLongPress: messageLongPress,
               );
@@ -1343,7 +1350,7 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
       );
       showMediaPopup = false;
     } else if (action is AttachmentMicClicked) {
-      Navigator.push(
+      Navigator.pushReplacement(
         context, MaterialPageRoute(
           builder: (context) => RecordViewChat(
             key: UniqueKey(),
@@ -1352,7 +1359,14 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
         ),
       );
     } else if (action is AttachmentLocationClicked) {
-      print("location clicked");
+      Navigator.pushReplacement(
+        context, MaterialPageRoute(
+          builder: (context) => LocationViewChat(
+            key: UniqueKey(),
+            chat: widget.chat,
+          )
+      ),
+      );
     }
 
     setState(() {});

@@ -1,15 +1,15 @@
 import 'dart:io';
 
-import 'package:audioplayers/audioplayers.dart';
+import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:just_audio/just_audio.dart';
 
 import '../../../utils/utils.dart';
 
-
 class WavedAudioPlayer extends StatefulWidget {
-  final Source source;
+  final String filePath;
   final int messageId;
   final Color playedColor;
   final Color unplayedColor;
@@ -20,7 +20,7 @@ class WavedAudioPlayer extends StatefulWidget {
 
   WavedAudioPlayer({
     super.key,
-    required this.source,
+    required this.filePath,
     required this.messageId,
     this.playedColor = Colors.blue,
     this.unplayedColor = Colors.grey,
@@ -36,41 +36,35 @@ class WavedAudioPlayer extends StatefulWidget {
 
 class _WavedAudioPlayerState extends State<WavedAudioPlayer> {
   late AudioPlayer _audioPlayer;
+  late PlayerController playerController;
   List<double> waveformData = [];
   Duration audioDuration = Duration.zero;
   Duration currentPosition = Duration.zero;
   bool isPausing = true;
   Uint8List? _audioBytes;
-  bool released = true;
-
   @override
   void initState() {
     super.initState();
-    _audioPlayer = AudioPlayer(
-        playerId: "player_${widget.messageId}"
-    );
-    print("audio player initialized");
+    _audioPlayer = AudioPlayer();
+    playerController = PlayerController();
     _loadWaveform();
     _setupAudioPlayer();
   }
 
   @override
   void dispose() {
-    _audioPlayer.release();
-    released = true;
     _audioPlayer.dispose();
-    isPausing = true;
+    playerController.dispose();
     super.dispose();
   }
 
   Future<void> _loadWaveform() async {
     try {
       if (_audioBytes == null) {
-        _audioBytes = await _loadDeviceFileAudioWaveform((widget.source as DeviceFileSource).path);
-        waveformData = _extractWaveformData(_audioBytes!);
+        _audioBytes = await _loadDeviceFileAudioWaveform(widget.filePath);
+        waveformData = await _extractWaveformData(widget.filePath);
         setState(() {});
       }
-      _audioPlayer.setSourceAsset((widget.source as DeviceFileSource).path);
     } catch (e) {
       showToastMessage("Error loading waveform: $e");
     }
@@ -88,37 +82,34 @@ class _WavedAudioPlayerState extends State<WavedAudioPlayer> {
   }
 
   void _setupAudioPlayer() {
-    _audioPlayer.onPlayerStateChanged.listen((PlayerState state) {
-      if (state == PlayerState.playing) {
+    _audioPlayer.setAudioSource(
+      AudioSource.uri(
+        Uri.file(widget.filePath),
+      ),
+    );
+
+    _audioPlayer.durationStream.listen((Duration? duration) {
+      if (duration != null) {
         setState(() {
-          isPausing = false;
-        });
-      } else if (state == PlayerState.paused) {
-        setState(() {
-          isPausing = true;
+          audioDuration = duration;
         });
       }
     });
 
-    _audioPlayer.onPlayerComplete.listen((event) {
-      _audioPlayer.release();
-      released = true;
-      currentPosition = Duration.zero;
-      setState(() {
-        isPausing = true;
-      });
-    });
-
-    _audioPlayer.onDurationChanged.listen((Duration duration) {
-      setState(() {
-        audioDuration = duration;
-      });
-    });
-
-    _audioPlayer.onPositionChanged.listen((Duration position) {
+    _audioPlayer.positionStream.listen((Duration position) {
       setState(() {
         currentPosition = position;
       });
+    });
+
+    _audioPlayer.processingStateStream.listen((ProcessingState state) {
+      if (state == ProcessingState.completed) {
+        _audioPlayer.seek(Duration.zero);
+        _audioPlayer.pause();
+        setState(() {
+          isPausing = true;
+        });
+      }
     });
   }
 
@@ -136,16 +127,13 @@ class _WavedAudioPlayerState extends State<WavedAudioPlayer> {
     }
   }
 
-  List<double> _extractWaveformData(Uint8List audioBytes) {
-    List<double> waveData = [];
-    int step = (audioBytes.length /
-            (widget.waveWidth / (widget.barWidth + widget.spacing)))
-        .floor();
-    for (int i = 0; i < audioBytes.length; i += step) {
-      waveData.add(audioBytes[i] / 255);
-    }
-    waveData.add(audioBytes[audioBytes.length - 1] / 255);
-    return waveData;
+  Future<List<double>> _extractWaveformData(String filePath) async {
+    final waveformData = await playerController.extractWaveformData(
+      path: filePath,
+      noOfSamples: widget.waveWidth ~/ (widget.barWidth + widget.spacing),
+    );
+
+    return waveformData;
   }
 
   void _onWaveformTap(double tapX, double width) {
@@ -156,20 +144,18 @@ class _WavedAudioPlayerState extends State<WavedAudioPlayer> {
 
   void _playAudio() async {
     if (_audioBytes == null) return;
-    if (released) {
-      released = false;
-      _audioPlayer.play(BytesSource(_audioBytes!,mimeType: widget.source.mimeType));
-    } else {
-      _audioPlayer.resume();
-    }
-    setState(() {});
+    _audioPlayer.play();
+    setState(() {
+      isPausing = false;
+    });
   }
 
   void _pauseAudio() async {
     _audioPlayer.pause();
-    isPausing = true;
-    setState(() {});
-  }
+    setState(() {
+      isPausing = true;
+    });
+}
 
   @override
   Widget build(BuildContext context) {
@@ -197,7 +183,7 @@ class _WavedAudioPlayerState extends State<WavedAudioPlayer> {
                             : audioDuration.inMilliseconds),
                     playedColor: widget.playedColor,
                     unplayedColor: widget.unplayedColor,
-                    barWidth: widget.barWidth), // Use your wave data
+                    barWidth: widget.barWidth),
               ),
             ),
           ],
@@ -239,7 +225,7 @@ class WaveformPainter extends CustomPainter {
   double barWidth;
 
   WaveformPainter(this.waveformData, this.progress,
-      {this.playedColor = Colors.blue, this.unplayedColor = Colors.grey,this.barWidth = 2});
+      {this.playedColor = Colors.blue, this.unplayedColor = Colors.grey, this.barWidth = 2});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -248,15 +234,24 @@ class WaveformPainter extends CustomPainter {
       ..strokeWidth = barWidth
       ..strokeCap = StrokeCap.round
       ..style = PaintingStyle.stroke;
+
     int playedLines = (waveformData.length * progress).round();
 
-    double middleY = size.height ;
+    double maxHeight = size.height;
 
     for (int i = 0; i < waveformData.length; i++) {
       double x = (size.width / waveformData.length) * i;
-      double y = middleY - (waveformData[i] * middleY);
-      canvas.drawLine(Offset(x, middleY - (y)), Offset(x, y),
-          paint..color = i <= playedLines ? playedColor : unplayedColor);
+
+      double scaledValue = waveformData[i] * maxHeight;
+
+      double startY = size.height / 2 - scaledValue;
+      double endY = size.height / 2 + scaledValue;
+
+      canvas.drawLine(
+        Offset(x, startY),
+        Offset(x, endY),
+        paint..color = i <= playedLines ? playedColor : unplayedColor,
+      );
     }
   }
 

@@ -11,7 +11,6 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:url_launcher/url_launcher.dart';
 import 'package:video_player/video_player.dart';
-import 'package:audioplayers/audioplayers.dart';
 import '../../../../objects/message.dart';
 import '../../../objects/bro.dart';
 import 'dart:ui';
@@ -33,6 +32,7 @@ class MessageTile extends StatefulWidget {
   final bool userAdmin;
   final Message? repliedMessage;
   final Bro? repliedBro;
+  final GlobalKey animationKey;
   final void Function(int, int) messageHandling;
   final void Function(Message, Offset) messageLongPress;
 
@@ -47,6 +47,7 @@ class MessageTile extends StatefulWidget {
     required this.userAdmin,
     required this.repliedMessage,
     required this.repliedBro,
+    required this.animationKey,
     required this.messageHandling,
     required this.messageLongPress
   }) : super(key: key);
@@ -197,6 +198,11 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
 
   @override
   void dispose() {
+    if (widget.message.dataType != null) {
+      if (widget.message.dataType == DataType.video.value) {
+        _videoController?.pause();
+      }
+    }
     _videoController?.dispose();
     controller.endGesture.removeListener(() {});
     replying = false;
@@ -427,7 +433,7 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
           : Container(
               child: WavedAudioPlayer(
                 key: ValueKey(widget.message.messageId),
-                source: DeviceFileSource(audioFilePath!),
+                filePath: audioFilePath!,
                 messageId: widget.message.messageId,
                 waveWidth: messageWidth - 4,
                 waveHeight: 60,
@@ -584,6 +590,7 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
     }
 
     return AnimatedSize(
+      key: widget.animationKey,
       duration: Duration(milliseconds: 200),
       curve: Curves.easeInOut,
       child: Container(
