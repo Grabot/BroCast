@@ -81,6 +81,12 @@
     <string>You can record audio and send it to your bros and this app uses the camera to create videos that you can send to your bros. The video will be recorded with audio.</string>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
+	<key>NSLocationWhenInUseUsageDescription</key>
+    <string>This app needs access to location when open for when you are sending your location to your bros.</string>
+    <key>NSLocationAlwaysUsageDescription</key>
+    <string>This app needs access to location when in the background for when you are sending your location to your bros.</string>
+    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+    <string>This app needs access to location when open and in the background for when you are sending your location to your bros.</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>FLTEnableImpeller</key>
