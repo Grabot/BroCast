@@ -8,9 +8,7 @@ import 'package:dio/dio.dart';
 import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:geocoding/geocoding.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:audio_waveforms/audio_waveforms.dart';
+import 'package:collection/collection.dart';
 import '../../../constants/base_url.dart';
 import '../../../objects/broup.dart';
 import '../../../objects/me.dart';
@@ -59,11 +57,18 @@ class _LocationViewChatState extends State<LocationViewChat> {
   final Dio _dio = Dio();
 
   String? _selectedMarkerId;
+  String? _previousSelectedMarkerId;
+  String? _selectedMarkerInfo;
+  bool showMarkerInfo = false;
   late BitmapDescriptor greenDotIcon;
   late BitmapDescriptor redDotIcon;
 
   bool _showCurrentLocationMarker = false;
-  CameraPosition? _currentCameraPosition;
+  double currentMarkerIconSize = 40;
+  bool markerTapped = false;
+  bool showCurrentLocationMarkerInfo = false;
+
+  LatLng? selectedLocation;
 
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
@@ -155,20 +160,19 @@ class _LocationViewChatState extends State<LocationViewChat> {
               markerId: MarkerId(markerId),
               position: LatLng(lat, lng),
               icon: greenDotIcon,
-              infoWindow: InfoWindow(
-                  title: name["text"],
-                  snippet: place['formattedAddress'] ?? 'No address available'
-              ),
+              infoWindow: InfoWindow.noText,
               onTap: () {
                 setState(() {
+                  print("marker tapped");
+                  markerTapped = true;
                   _selectedMarkerId = markerId;
+                  _selectedMarkerInfo = "${name["text"]}\n${place['formattedAddress'] ?? 'No address available'}";
                   _updateMarkers();
                 });
               },
             ),
           );
         }
-        _updateCurrentLocationMarker();
         setState(() {});
       } else {
         showToastMessage("Failed to fetch places");
@@ -181,28 +185,35 @@ class _LocationViewChatState extends State<LocationViewChat> {
 
   void _updateMarkers() {
     setState(() {
-      _markers = _markers.map((marker) {
-        if (marker.markerId.value == "current_location") {
-          return marker; // Keep the default marker as is
-        }
-        return marker.copyWith(
-          iconParam: marker.markerId.value == _selectedMarkerId
-              ? redDotIcon
-              : greenDotIcon,
+      Marker? updatedMarker = _markers.firstWhereOrNull(
+            (marker) => marker.markerId.value == _selectedMarkerId,
+      );
+
+      if (updatedMarker != null) {
+        _markers.remove(updatedMarker);
+        _markers.add(updatedMarker.copyWith(iconParam: redDotIcon));
+      }
+
+      if (_previousSelectedMarkerId != null) {
+        Marker? updatedMarkerBack = _markers.firstWhereOrNull(
+              (marker) => marker.markerId.value == _previousSelectedMarkerId,
         );
-      }).toSet();
+        if (updatedMarkerBack != null) {
+          _markers.remove(updatedMarkerBack);
+          _markers.add(updatedMarkerBack.copyWith(iconParam: greenDotIcon));
+        }
+      }
+      _previousSelectedMarkerId = _selectedMarkerId;
     });
   }
 
   double getRemainingHeight() {
     double appBarHeight = 50.0;
     double locationButtons = 102; // The location buttons + divider
-    if (_selectedMarkerId != null) {
-      locationButtons += 50; // The added 'select' button
-    }
     double emojiKeyboardHeight = showEmojiKeyboard
         ? 350.0 + locationButtons
         : locationButtons;
+    double regularKeyboardHeight = MediaQuery.of(context).viewInsets.bottom;
     double bottomPadding = showEmojiKeyboard ? 0 : MediaQuery.of(context).padding.bottom;
     double textFieldHeight = 90;
     if (appendingCaption) {
@@ -213,73 +224,164 @@ class _LocationViewChatState extends State<LocationViewChat> {
         appBarHeight -
         emojiKeyboardHeight -
         bottomPadding -
+        regularKeyboardHeight -
         textFieldHeight;
+    // 200 is the minimum we need
+    if (remainingHeight < 200) {
+      remainingHeight = 200;
+    }
     return remainingHeight;
+  }
+
+  double _calculateTextWidth(String text, TextStyle style) {
+    final TextPainter textPainter = TextPainter(
+      text: TextSpan(text: text, style: style),
+      maxLines: 2,
+      textDirection: TextDirection.ltr,
+    )..layout(minWidth: 0, maxWidth: double.infinity);
+    return textPainter.width;
+  }
+
+  Widget showCurrentLocationMarkerLabel() {
+    if (_showCurrentLocationMarker && showCurrentLocationMarkerInfo && _selectedMarkerId == null) {
+      String labelText = "Selected location";
+      TextStyle style = TextStyle(color: Colors.black, fontSize: 16);
+      double labelWidth = _calculateTextWidth(labelText, style);
+      double remainingWidth = MediaQuery.of(context).size.width - labelWidth;
+      return Positioned(
+        top: getRemainingHeight() / 2 - 80,
+        left: remainingWidth / 2,
+        child: Container(
+          padding: EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Text(
+            labelText,
+            style: style,
+          ),
+        ),
+      );
+    } else {
+      return Container();
+    }
+  }
+
+  Widget showSelectedMarkerLabel() {
+    if (showMarkerInfo && _selectedMarkerInfo != null) {
+      TextStyle style = TextStyle(color: Colors.black, fontSize: 16);
+      double labelWidth = _calculateTextWidth(_selectedMarkerInfo!, style);
+      double remainingWidth = MediaQuery
+          .of(context)
+          .size
+          .width - labelWidth;
+      return Positioned(
+        top: getRemainingHeight() / 2 - 100,
+        left: remainingWidth / 2,
+        child: Container(
+          padding: EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Text(
+            _selectedMarkerInfo!,
+            style: style,
+          ),
+        ),
+      );
+    } else {
+      return Container();
+    }
   }
 
   Widget mediaPreview() {
     return Container(
-      width: MediaQuery
-          .of(context)
-          .size
-          .width,
+      width: MediaQuery.of(context).size.width,
       height: getRemainingHeight(),
       child: Stack(
-          children: [
-            GoogleMap(
-              onMapCreated: _onMapCreated,
-              myLocationEnabled: true,
-              myLocationButtonEnabled: true,
-              initialCameraPosition: CameraPosition(
-                target: _currentPosition!,
-                zoom: 17.0,
-              ),
-              markers: _markers,
-              mapType: MapType.normal,
-              onCameraMove: (CameraPosition position) {
-                _currentCameraPosition = position;
-                // Show marker if the map is moved away from current location
-                if (_currentPosition != null) {
-                  final distance = Geolocator.distanceBetween(
-                    _currentPosition!.latitude,
-                    _currentPosition!.longitude,
-                    position.target.latitude,
-                    position.target.longitude,
-                  );
-                  print("distance: $distance");
-                  if (distance > 50) {
-                    setState(() {
-                      _showCurrentLocationMarker = true;
-                      _updateCurrentLocationMarker();
-                    });
-                  }
-                }
-              },
-              onTap: (LatLng pos) {
+        children: [
+          GoogleMap(
+            onMapCreated: _onMapCreated,
+            myLocationEnabled: true,
+            myLocationButtonEnabled: true,
+            initialCameraPosition: CameraPosition(
+              target: _currentPosition!,
+              zoom: 17.0,
+            ),
+            markers: _markers,
+            mapType: MapType.normal,
+            onCameraMove: (CameraPosition position) {
+              if (!markerTapped) {
                 setState(() {
+                  showMarkerInfo = false;
+                  showCurrentLocationMarkerInfo = false;
                   _selectedMarkerId = null;
                   _updateMarkers();
                 });
-              },
+              }
+              selectedLocation = position.target;
+              // Show marker if the map is moved away from current location
+              if (_currentPosition != null) {
+                final distance = Geolocator.distanceBetween(
+                  _currentPosition!.latitude,
+                  _currentPosition!.longitude,
+                  position.target.latitude,
+                  position.target.longitude,
+                );
+
+                if (distance > 50) {
+                  if (!_showCurrentLocationMarker) {
+                    setState(() {
+                      _showCurrentLocationMarker = true;
+                    });
+                  }
+                } else {
+                  if (_showCurrentLocationMarker) {
+                    setState(() {
+                      _showCurrentLocationMarker = false;
+                    });
+                  }
+                }
+              }
+            },
+            onCameraIdle: () {
+              if (markerTapped) {
+                print("marker no longer tapped $_selectedMarkerInfo");
+                setState(() {
+                  showMarkerInfo = true;
+                  markerTapped = false;
+                });
+              } else {
+                setState(() {
+                  showCurrentLocationMarkerInfo = true;
+                });
+              }
+              print("camera idle");
+            },
+            onTap: (LatLng pos) {
+              setState(() {
+                _selectedMarkerId = null;
+                _updateMarkers();
+              });
+            },
+          ),
+          if (_showCurrentLocationMarker)
+            Positioned(
+              top: getRemainingHeight() / 2 - (currentMarkerIconSize+2),
+              left: MediaQuery.of(context).size.width / 2 - (currentMarkerIconSize/2),
+              child: Icon(
+                Icons.location_on,
+                color: darken(widget.chat.getColor(), -0.5),
+                size: currentMarkerIconSize,
+              ),
             ),
-          ]
+          showSelectedMarkerLabel(),
+          showCurrentLocationMarkerLabel()
+        ],
       ),
     );
-  }
-
-  void _updateCurrentLocationMarker() {
-    if (_showCurrentLocationMarker && _currentPosition != null) {
-      _markers.removeWhere((marker) => marker.markerId.value == "current_location");
-      _markers.add(
-        Marker(
-          markerId: MarkerId("current_location"),
-          position: _currentCameraPosition!.target,
-          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueAzure),
-          infoWindow: InfoWindow(title: "Your Location"),
-        ),
-      );
-      _updateMarkers();
-    }
   }
 
   backButtonFunctionality() {
@@ -316,16 +418,23 @@ class _LocationViewChatState extends State<LocationViewChat> {
     navigateToChat(context, settings, widget.chat);
   }
 
-  sendMedia() async {
-    if (formKey.currentState!.validate()) {
-      String emojiMessage = broMessageController.text;
-      String textMessage = captionMessageController.text;
-      Uint8List mediaData = Uint8List(0);
-      sendMediaMessage(mediaData, emojiMessage, textMessage);
-    }
+  String latLngToString(LatLng location) {
+    return '${location.latitude},${location.longitude}';
   }
 
-  sendMediaMessage(Uint8List messageData, String message, String textMessage) async {
+  // LatLng stringToLatLng(String locationString) {
+  //   List<String> parts = locationString.split(',');
+  //   double latitude = double.parse(parts[0]);
+  //   double longitude = double.parse(parts[1]);
+  //   return LatLng(latitude, longitude);
+  // }
+
+  sendLocationMessage(LatLng messageLocation) async {
+    String message = broMessageController.text;
+    String? textMessage;
+    if (captionMessageController.text != "") {
+      textMessage = captionMessageController.text;
+    }
     setState(() {
       isSending = true;
     });
@@ -339,32 +448,29 @@ class _LocationViewChatState extends State<LocationViewChat> {
     } else {
       meId = me.getId();
     }
-    String? messageTextMessage;
-    if (textMessage != "") {
-      messageTextMessage = textMessage;
-    }
+    String messageLoc = latLngToString(messageLocation);
     if (formKey.currentState!.validate()) {
       Message mes = Message(
           messageId: newMessageId,
           senderId: meId,
           body: message,
-          textMessage: messageTextMessage,
+          textMessage: textMessage,
           timestamp: DateTime.now().toUtc().toString(),
-          data: await saveMediaData(messageData, DataType.audio.value),
-          dataType: DataType.audio.value,
+          data: messageLoc,
+          dataType: DataType.location.value,
           info: false,
           broupId: widget.chat.getBroupId()
     );
       mes.isRead = 2;
       setState(() {
-        widget.chat!.messages.insert(0, mes);
+        widget.chat.messages.insert(0, mes);
       });
       setState(() {
         widget.chat.sendingMessage = true;
       });
       await Storage().addMessage(mes);
 
-      AuthServiceSocialV15().sendMessage(widget.chat.getBroupId(), message, messageTextMessage, messageData, DataType.audio.value, null).then((messageId) {
+      AuthServiceSocialV15().sendMessageLocation(widget.chat.getBroupId(), message, textMessage, messageLoc).then((messageId) {
         setState(() {
           isSending = false;
         });
@@ -409,16 +515,32 @@ class _LocationViewChatState extends State<LocationViewChat> {
     }
   }
 
-  Widget selectedLocationButton() {
-    if (_selectedMarkerId == null) {
-      return Container();
+  sendSelectedLocation() {
+    if (selectedLocation != null) {
+      sendLocationMessage(selectedLocation!);
     } else {
+      showToastMessage("Something went wrong");
+    }
+  }
+
+  sendCurrentLocation() {
+    if (_currentPosition != null) {
+      sendLocationMessage(_currentPosition!);
+    } else {
+      showToastMessage("Something went wrong");
+    }
+  }
+
+  Widget currentOrSelectedButton() {
+    if (_showCurrentLocationMarker) {
       return Container(
         height: 50,
-        color: widget.chat.getColor(),
+        color: darken(widget.chat.getColor(), 0.5),
         child: GestureDetector(
           onTap: () {
-            print("send selected location");
+            if (!isLoading) {
+              print("send selected location");
+            }
           },
           child: Container(
             padding: EdgeInsets.all(6),
@@ -444,17 +566,54 @@ class _LocationViewChatState extends State<LocationViewChat> {
           ),
         ),
       );
+    } else {
+      return Container(
+        height: 50,
+        color: darken(widget.chat.getColor(), 0.5),
+        child: GestureDetector(
+          onTap: () {
+            if (!isLoading) {
+              sendCurrentLocation();
+            }
+          },
+          child: Container(
+            padding: EdgeInsets.all(6),
+            child: Row(
+              children: [
+                Container(
+                  height: 50,
+                  width: 50,
+                  decoration: BoxDecoration(
+                    color: Colors.green,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    Icons.gps_fixed,
+                    color: Colors.white,
+                    size: 20,
+                  ),
+                ),
+                SizedBox(width: 12),
+                Text("Send current location", style: TextStyle(color: Colors.white, fontSize: 16)),
+              ],
+            ),
+          ),
+        ),
+      );
     }
   }
+
   Widget getLocationButtons() {
     return Column(
       children: [
         Container(
           height: 50,
-          color: darken(widget.chat.getColor(), 0.5),
+          color: widget.chat.getColor(),
           child: GestureDetector(
             onTap: () {
-              print("Share live location");
+              if (!isLoading) {
+                print("Share live location");
+              }
             },
             child: Container(
               padding: EdgeInsets.all(6),
@@ -496,38 +655,7 @@ class _LocationViewChatState extends State<LocationViewChat> {
           ),
         ),
         Divider(color: Colors.grey[800], height: 2),
-        Container(
-          height: 50,
-          color: darken(widget.chat.getColor(), 0.5),
-          child: GestureDetector(
-            onTap: () {
-              print("send current location");
-            },
-            child: Container(
-              padding: EdgeInsets.all(6),
-              child: Row(
-                children: [
-                  Container(
-                    height: 50,
-                    width: 50,
-                    decoration: BoxDecoration(
-                      color: Colors.green,
-                      shape: BoxShape.circle,
-                    ),
-                    child: Icon(
-                      Icons.gps_fixed,
-                      color: Colors.white,
-                      size: 20,
-                    ),
-                  ),
-                  SizedBox(width: 12),
-                  Text("Send current location", style: TextStyle(color: Colors.white, fontSize: 16)),
-                ],
-              ),
-            ),
-          ),
-        ),
-        selectedLocationButton(),
+        currentOrSelectedButton(),
         showEmojiKeyboard ? Container() : SizedBox(
           height: MediaQuery.of(context).padding.bottom,
         )
@@ -544,7 +672,6 @@ class _LocationViewChatState extends State<LocationViewChat> {
   }
 
   Color darken(Color color, [double amount = 0.1]) {
-    assert(amount >= 0 && amount <= 1, 'Amount must be between 0 and 1');
     return Color.lerp(color, Colors.black, amount)!;
   }
 

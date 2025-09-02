@@ -93,6 +93,53 @@ class AuthServiceSocialV15 {
     });
   }
 
+  Future<int?> sendMessageLocation(
+      int broupId,
+      String message,
+      String? textMessage,
+      String messageLocation,
+      ) async {
+    String endPoint = "message/send/location";
+
+    return await AuthApiV1_5().dio.post(
+      endPoint,
+      options: Options(
+        headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+        },
+      ),
+      data: jsonEncode(<String, dynamic> {
+        "broup_id": broupId,
+        "message": message,
+        "location": messageLocation,
+        "text_message": textMessage ?? "",
+      }),
+    ).timeout(Duration(seconds: 30)).then((response) {
+
+      Map<String, dynamic> json = response.data;
+      if (!json.containsKey("result")) {
+        return null;
+      } else {
+        if (json["result"]) {
+          if (json.containsKey("message_id")) {
+            return json["message_id"];
+          } else {
+            return null;
+          }
+        } else {
+          return null;
+        }
+      }
+    }).catchError((e) {
+      if (e is DioException) {
+        showToastMessage("Dio error while sending sending message: ${e.message}");
+      } else {
+        showToastMessage("Error while sending message: $e");
+      }
+      return null;
+    });
+  }
+
   Future<int> updateLocalBroupReadId(int broupId) async {
     String endPoint = "get/broup/read_time";
     var response = await AuthApiV1_5().dio.post(endPoint,

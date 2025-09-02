@@ -2,7 +2,8 @@
 enum DataType {
   image(0, "Image"),
   video(1, "Video"),
-  audio(2, "Audio");
+  audio(2, "Audio"),
+  location(3, "Location");
 
   const DataType(this.value, this.typeName);
   final int value;
