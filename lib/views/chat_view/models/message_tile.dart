@@ -1,7 +1,12 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:math';
 import 'dart:typed_data';
 import 'package:brocast/objects/data_type.dart';
+import 'package:brocast/utils/location_sharing.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:brocast/services/auth/v1_5/auth_service_social_v1_5.dart';
 import 'package:brocast/views/chat_view/media_viewer/image_viewer.dart';
@@ -15,10 +20,12 @@ import '../../../../objects/message.dart';
 import '../../../objects/bro.dart';
 import 'dart:ui';
 
+import '../../../objects/me.dart';
 import '../../../services/auth/v1_4/auth_service_social.dart';
 import '../../../utils/settings.dart';
 import '../../../utils/storage.dart';
 import '../../../utils/utils.dart';
+import '../media_viewer/location_viewer.dart';
 import '../media_viewer/video_viewer.dart';
 import '../waved_audio/waved_audio_player.dart';
 
@@ -66,12 +73,16 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
   bool audioIsPaused = true;
   String? audioFilePath;
 
+  LocationSharing? locationSharing;
+  Map<int, Marker> locationMarkers = {};
+
   selectMessage(BuildContext context) async {
     if ((widget.message.textMessage != null && widget.message.textMessage!.isNotEmpty) || widget.message.dataType != null) {
       setState(() {
         widget.message.clicked = !widget.message.clicked;
       });
       if (widget.message.clicked) {
+        // TODO: Remove the map live location listener if active.
         if (widget.message.dataType != null && !widget.message.dataIsReceived) {
           // There should be data in this message, but it is not yet received from the server yet.
           isLoading = true;
@@ -107,8 +118,29 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
             _initializeVideoController();
           } else if (widget.message.dataType == DataType.audio.value) {
             _initializeAudioController();
+          } else if (widget.message.dataType == DataType.location.value) {
+            // TODO: ask for location permission
+            locationSharing = LocationSharing();
+            locationSharing!.getPermission();
+            LatLng messageLocation = stringToLatLng(widget.message.data!);
+            locationMarkers[widget.message.senderId] = Marker(
+              markerId: MarkerId('bro_${widget.message.senderId}_Location'),
+              position: messageLocation,
+            );
+          } else if (widget.message.dataType == DataType.liveLocation.value) {
+            // TODO: ask for location permission if not yet done
+            locationSharing = LocationSharing();
+            locationSharing!.getPermission();
+            locationSharing!.addLocationListener(_onLocationUpdate);
+            Marker? locationMarker = await locationSharing!.initializeMessageTileMarker(widget.message, widget.myMessage);
+            setState(() {
+              if (locationMarker != null) {
+                locationMarkers[widget.message.senderId] = locationMarker;
+              } else {
+                // It should get updated soon, put loading on
+              }
+            });
           }
-          setState(() {});
         }
       } else {
         if (widget.message.dataType == DataType.video.value) {
@@ -203,10 +235,35 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
         _videoController?.pause();
       }
     }
+    if (locationSharing != null) {
+      locationSharing!.removeLocationListener(_onLocationUpdate);
+    }
     _videoController?.dispose();
     controller.endGesture.removeListener(() {});
     replying = false;
     super.dispose();
+  }
+
+  void _onLocationUpdate(int broId, LatLng location) {
+    print("New location: ${location.latitude}, ${location.longitude}");
+    Me? me = Settings().getMe();
+    if (me != null) {
+      if (broId == me.getId()) {
+        setState(() {
+          locationMarkers[me.getId()] = Marker(
+            markerId: MarkerId('myLocation'),
+            position: location,
+          );
+        });
+      } else {
+        setState(() {
+          locationMarkers[broId] = Marker(
+            markerId: MarkerId('bro_${widget.message.senderId}_Location'),
+            position: location,
+          );
+        });
+      }
+    }
   }
 
   Color getBorderColour() {
@@ -224,6 +281,10 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
       borderColour = Colors.pinkAccent[100]!;
     } else if (widget.message.dataType == DataType.audio.value) {
       borderColour = Colors.purpleAccent;
+    } else if (widget.message.dataType == DataType.location.value) {
+      borderColour = Colors.tealAccent;
+    } else if (widget.message.dataType == DataType.liveLocation.value) {
+      borderColour = Colors.cyanAccent;
     }
 
     return borderColour;
@@ -275,6 +336,23 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
                 ),
           ),
         ).then((_) {});
+      }
+    } else if (widget.message.dataType == DataType.location.value) {
+      if (widget.message.data != null) {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) =>
+                LocationViewer(
+                    key: UniqueKey(),
+                    locationData: stringToLatLng(widget.message.data!)
+                ),
+          ),
+        ).then((_) {});
+      }
+    } else if (widget.message.dataType == DataType.liveLocation.value) {
+      if (widget.message.data != null) {
+        print("TODO!");
+        // TODO: Live location viewer
       }
     }
   }
@@ -419,6 +497,94 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
       }
     }
     return widgetWidth;
+  }
+
+  late GoogleMapController mapController;
+  void _onMapCreated(GoogleMapController controller) {
+    mapController = controller;
+  }
+
+  Widget getLocationContent() {
+    if (widget.message.dataType == null) {
+      return Container();
+    }
+    LatLng? messageLocation;
+    if (widget.message.dataType == DataType.location.value) {
+      messageLocation = stringToLatLng(widget.message.data!);
+    } else if (widget.message.dataType == DataType.liveLocation.value) {
+      if (locationMarkers.values.toSet().isNotEmpty) {
+        messageLocation = locationMarkers.values.toSet().first.position;
+      } else {
+        // TODO: Fallback. Maybe users current location?
+        messageLocation = stringToLatLng(widget.message.data!.split(";")[0]);
+      }
+    }
+    if (messageLocation == null) {
+      return Container();
+    }
+    List<Widget> commonChildren = [
+      viewImageButton(),
+      repliedToView(),
+      Text(
+          widget.message.body,
+          style: simpleTextStyle()
+      ),
+      GestureDetector(
+        onTap: () {},
+        child: Container(
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height/2,
+          child: GoogleMap(
+            onMapCreated: _onMapCreated,
+            initialCameraPosition: CameraPosition(
+              target: messageLocation,
+              zoom: 17.0,
+            ),
+            myLocationEnabled: true,
+            myLocationButtonEnabled: true,
+            mapType: MapType.normal,
+            markers: locationMarkers.values.toSet(),
+            gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>{
+              Factory<OneSequenceGestureRecognizer>(
+                    () => EagerGestureRecognizer(),
+              ),
+            }.toSet(),
+            onCameraMove: (CameraPosition position) {
+              print("camera move");
+            },
+            onCameraIdle: () {
+              print("camera idle");
+            },
+            onTap: (LatLng pos) {
+              selectMessage(context);
+            },
+            onLongPress: (LatLng pos) {
+              Offset offset = Offset(
+                MediaQuery.of(context).size.width / 2,
+                MediaQuery.of(context).size.height / 2,
+              );
+              onLongPressMessage(context, offset);
+            }
+          ),
+        ),
+      )
+    ];
+
+    if (widget.message.textMessage != null && widget.message.textMessage!.isNotEmpty) {
+      commonChildren.add(
+          Linkify(
+              onOpen: _onOpen,
+              text: widget.message.textMessage!,
+              linkStyle: TextStyle(color: Color(0xffFFC0CB), fontSize: 18),
+              style: simpleTextStyle()
+          )
+      );
+    }
+    return Column(
+        mainAxisAlignment: widget.myMessage ? MainAxisAlignment.end : MainAxisAlignment.start,
+        crossAxisAlignment: widget.myMessage ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+        children: commonChildren
+    );
   }
 
   Widget getAudioContent(double messageWidth) {
@@ -582,6 +748,11 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
         content = getVideoContent();
       } else if (widget.message.dataType == DataType.audio.value) {
         content = getAudioContent(messageWidth);
+      } else if (widget.message.dataType == DataType.location.value) {
+        content = getLocationContent();
+      } else if (widget.message.dataType == DataType.liveLocation.value) {
+        // TODO: live location tonen in message?
+        content = getLocationContent();
       } else {
         content = getTextContent();
       }
@@ -865,7 +1036,7 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
                             : Alignment.bottomLeft,
                         child: GestureDetector(
                           onLongPressStart: (details) =>
-                              onLongPressMessage(context, details),
+                              onLongPressMessage(context, details.globalPosition),
                           onTap: () async {
                             selectMessage(context);
                           },
@@ -901,7 +1072,7 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
                             : Alignment.bottomLeft,
                         child: GestureDetector(
                           onLongPressStart: (details) =>
-                              onLongPressMessage(context, details),
+                              onLongPressMessage(context, details.globalPosition),
                           onTap: () {
                             selectMessage(context);
                           },
@@ -946,8 +1117,7 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
     );
   }
 
-  void onLongPressMessage(BuildContext context, LongPressStartDetails details) {
-    Offset pressPosition = details.globalPosition;
+  void onLongPressMessage(BuildContext context, Offset pressPosition) {
     widget.messageLongPress(widget.message, pressPosition);
   }
 }

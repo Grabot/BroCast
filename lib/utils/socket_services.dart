@@ -6,11 +6,13 @@ import 'package:brocast/utils/socket_services_util.dart';
 import 'package:brocast/views/bro_home/bro_home_change_notifier.dart';
 import 'package:brocast/views/chat_view/messaging_change_notifier.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:socket_io_client/socket_io_client.dart' as io;
 import '../objects/message.dart';
 import '../objects/broup.dart';
 import '../objects/me.dart';
 import '../services/auth/v1_4/auth_service_login.dart';
+import 'location_sharing.dart';
 import 'storage.dart';
 import 'settings.dart';
 
@@ -611,6 +613,9 @@ class SocketServices extends ChangeNotifier {
     this.socket.on('avatar_change', (data) {
       checkAvatarChange(data);
     });
+    this.socket.on('location_updated', (data) {
+      locationUpdated(data);
+    });
   }
 
   joinSocketsBroup() {
@@ -647,5 +652,29 @@ class SocketServices extends ChangeNotifier {
 
   notify() {
     notifyListeners();
+  }
+
+  updateLocation(int meId, int broupId, double lat, double lng) {
+    print("updating location!");
+    this.socket.emit("update_location", {
+      "bro_id": meId,
+      "broup_id": broupId,
+      "lat": lat,
+      "lng": lng,
+    });
+  }
+
+  locationUpdated(data) {
+    if (data.containsKey("bro_id")
+        && data.containsKey("lat")
+        && data.containsKey("lng")) {
+      int broId = data["bro_id"];
+      Me? me = Settings().getMe();
+      if (me != null) {
+        print("going to update location");
+        LatLng latLng = LatLng(data["lat"], data["lng"]);
+        LocationSharing().updateBroLocation(broId, latLng);
+      }
+    }
   }
 }

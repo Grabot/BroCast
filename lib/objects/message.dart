@@ -137,7 +137,7 @@ class Message {
       Map<String, dynamic> messageData = json['data'];
       // If there is data we want to set the flag to not received.
       message.dataIsReceived = false;
-      if (messageData.containsKey('data')) {
+      if (messageData.containsKey('data') || messageData.containsKey('location_data')) {
         if (messageData['data'] is List<int>) {
           // If the data is present, we set the flag to received
           message.dataIsReceived = true;
@@ -147,6 +147,11 @@ class Message {
           message.dataIsReceived = true;
           Uint8List dataBytes = base64Decode(messageData['data'].replaceAll("\n", ""));
           message.data = await saveMediaData(dataBytes, DataType.image.value);
+        }
+        if (messageData['location_data'] is String) {
+          message.dataIsReceived = true;
+          // For location data we don't save a path, but just the data itself
+          message.data = messageData['location_data'];
         }
       }
       if (messageData.containsKey('type')) {

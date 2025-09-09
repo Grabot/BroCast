@@ -20,7 +20,7 @@ class Me extends Bro {
   Me(this.id, this.broName, this.bromotion, this.origin, this.avatar, this.broups)
       : super(id, broName, bromotion, avatar);
 
-  getId() {
+  int getId() {
     return id;
   }
 

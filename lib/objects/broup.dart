@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
 
@@ -8,13 +9,14 @@ import 'package:brocast/utils/life_cycle_service.dart';
 import 'package:brocast/utils/socket_services.dart';
 import 'package:brocast/views/bro_home/bro_home_change_notifier.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
 
 import '../utils/settings.dart';
 import '../utils/storage.dart';
-import 'package:collection/collection.dart';
 import '../views/chat_view/messaging_change_notifier.dart';
 import 'bro.dart';
+import 'data_type.dart';
 
 class Broup {
   late int broupId;
@@ -871,7 +873,10 @@ class Broup {
       // The bro is up to date with all the messages
       // We will increase the lastMessageId
       lastMessageId += 1;
-      if (message.dataType == null && message.dataIsReceived) {
+      if ((message.dataType == null
+          || message.dataType == DataType.location.value
+          || message.dataType == DataType.liveLocation.value)
+            && message.dataIsReceived) {
         AuthServiceSocial().receivedMessageSingle(broupId, message.messageId).then((value) {
           if (value) {
             // The message that was received really was the last one so no update required
@@ -988,3 +993,4 @@ class Broup {
     });
   }
 }
+

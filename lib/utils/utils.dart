@@ -8,6 +8,7 @@ import 'package:brocast/services/auth/v1_4/auth_service_social.dart';
 import 'package:brocast/utils/storage.dart';
 import 'package:brocast/views/bro_home/bro_home_change_notifier.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:jwt_decode/jwt_decode.dart';
 import 'package:oktoast/oktoast.dart';
@@ -823,4 +824,11 @@ Uint8List? getMessageData(String imageLoc) {
 Future<Uint8List> loadImageAsUint8List(String assetPath) async {
   final byteData = await rootBundle.load(assetPath);
   return byteData.buffer.asUint8List();
+}
+
+LatLng stringToLatLng(String locationString) {
+  List<String> parts = locationString.split(',');
+  double latitude = double.parse(parts[0]);
+  double longitude = double.parse(parts[1]);
+  return LatLng(latitude, longitude);
 }

@@ -5,6 +5,7 @@ import 'dart:typed_data';
 import 'package:brocast/services/auth/v1_5/auth_api_v1_5.dart';
 import 'package:brocast/utils/utils.dart';
 import 'package:dio/dio.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../../objects/data_type.dart';
 import '../../../objects/message.dart';
@@ -98,6 +99,7 @@ class AuthServiceSocialV15 {
       String message,
       String? textMessage,
       String messageLocation,
+      int dataType
       ) async {
     String endPoint = "message/send/location";
 
@@ -113,6 +115,7 @@ class AuthServiceSocialV15 {
         "message": message,
         "location": messageLocation,
         "text_message": textMessage ?? "",
+        "data_type": dataType
       }),
     ).timeout(Duration(seconds: 30)).then((response) {
 
@@ -277,6 +280,35 @@ class AuthServiceSocialV15 {
         }
       } else {
         return [];
+      }
+    }
+  }
+
+  Future<LatLng?> getBroLocation(int broupId, int broId) async {
+    String endPoint = "bro/location";
+    var response = await AuthApiV1_5().dio.post(endPoint,
+        options: Options(headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+        }),
+        data: jsonEncode(<String, dynamic>{
+          "broup_id": broupId,
+          "bro_id": broId
+        }
+      )
+    );
+
+    Map<String, dynamic> json = response.data;
+    if (!json.containsKey("result")) {
+      return null;
+    } else {
+      if (json["result"]) {
+        if (json.containsKey("lat") && json.containsKey("lng")) {
+          return LatLng(json["lat"], json["lng"]);
+        } else {
+          return null;
+        }
+      } else {
+        return null;
       }
     }
   }

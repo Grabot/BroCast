@@ -14,6 +14,7 @@ import '../../../objects/broup.dart';
 import '../../../objects/me.dart';
 import '../../../objects/message.dart';
 import '../../../services/auth/v1_5/auth_service_social_v1_5.dart';
+import '../../../utils/location_sharing.dart';
 import '../../../utils/locator.dart';
 import '../../../utils/navigation_service.dart';
 import '../../../utils/settings.dart';
@@ -100,22 +101,74 @@ class _LocationViewChatState extends State<LocationViewChat> {
     super.dispose();
   }
 
-  getLocation() async {
-    LocationPermission permission = await Geolocator.requestPermission();
+  String? _errorMessage;
+  Future<void> getLocation() async {
+    try {
+      // 1. Check if location services are enabled
+      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) {
+        setState(() {
+          isLoading = false;
+          _errorMessage = "Location services are disabled. Please enable them in settings.";
+          print(_errorMessage);
+        });
+        return;
+      }
 
-    Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
-    double lat = position.latitude;
-    double long = position.longitude;
+      LocationPermission permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) {
+          setState(() {
+            isLoading = false;
+            _errorMessage = "Location permissions are denied. Cannot fetch location.";
+            print(_errorMessage);
+          });
+          return;
+        }
+      }
 
-    LatLng location = LatLng(lat, long);
+      if (permission == LocationPermission.deniedForever) {
+        setState(() {
+          isLoading = false;
+          _errorMessage = "Location permissions are permanently denied. Please enable them in app settings.";
+          print(_errorMessage);
+        });
+        return;
+      }
 
-    setState(() {
-      _currentPosition = location;
-      _fetchNearbyPlaces(_currentPosition!);
-      isLoading = false;
-    });
+      Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      ).timeout(const Duration(seconds: 10));
+
+      setState(() {
+        _currentPosition = LatLng(position.latitude, position.longitude);
+        isLoading = false;
+        _errorMessage = null;
+      });
+
+      await _fetchNearbyPlaces(_currentPosition!);
+    } on TimeoutException {
+      setState(() {
+        isLoading = false;
+        _errorMessage = "Timeout while fetching location. Please try again.";
+        print(_errorMessage);
+      });
+    } on PlatformException catch (e) {
+      setState(() {
+        isLoading = false;
+        _errorMessage = "Failed to get location: ${e.message}";
+        print(_errorMessage);
+      });
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+        _errorMessage = "An unexpected error occurred: $e";
+        print(_errorMessage);
+      });
+    }
   }
+
 
   Future<void> _fetchNearbyPlaces(LatLng location) async {
     try {
@@ -422,14 +475,8 @@ class _LocationViewChatState extends State<LocationViewChat> {
     return '${location.latitude},${location.longitude}';
   }
 
-  // LatLng stringToLatLng(String locationString) {
-  //   List<String> parts = locationString.split(',');
-  //   double latitude = double.parse(parts[0]);
-  //   double longitude = double.parse(parts[1]);
-  //   return LatLng(latitude, longitude);
-  // }
 
-  sendLocationMessage(LatLng messageLocation) async {
+  sendLocationMessage(String messageLoc, bool liveLocation) async {
     String message = broMessageController.text;
     String? textMessage;
     if (captionMessageController.text != "") {
@@ -448,7 +495,10 @@ class _LocationViewChatState extends State<LocationViewChat> {
     } else {
       meId = me.getId();
     }
-    String messageLoc = latLngToString(messageLocation);
+    int dataType = DataType.location.value;
+    if (liveLocation) {
+      dataType = DataType.liveLocation.value;
+    }
     if (formKey.currentState!.validate()) {
       Message mes = Message(
           messageId: newMessageId,
@@ -457,11 +507,12 @@ class _LocationViewChatState extends State<LocationViewChat> {
           textMessage: textMessage,
           timestamp: DateTime.now().toUtc().toString(),
           data: messageLoc,
-          dataType: DataType.location.value,
+          dataType: dataType,
           info: false,
           broupId: widget.chat.getBroupId()
-    );
+      );
       mes.isRead = 2;
+      mes.dataIsReceived = true;
       setState(() {
         widget.chat.messages.insert(0, mes);
       });
@@ -470,7 +521,7 @@ class _LocationViewChatState extends State<LocationViewChat> {
       });
       await Storage().addMessage(mes);
 
-      AuthServiceSocialV15().sendMessageLocation(widget.chat.getBroupId(), message, textMessage, messageLoc).then((messageId) {
+      AuthServiceSocialV15().sendMessageLocation(widget.chat.getBroupId(), message, textMessage, messageLoc, dataType).then((messageId) {
         setState(() {
           isSending = false;
         });
@@ -517,7 +568,7 @@ class _LocationViewChatState extends State<LocationViewChat> {
 
   sendSelectedLocation() {
     if (selectedLocation != null) {
-      sendLocationMessage(selectedLocation!);
+      sendLocationMessage(latLngToString(selectedLocation!), false);
     } else {
       showToastMessage("Something went wrong");
     }
@@ -525,7 +576,7 @@ class _LocationViewChatState extends State<LocationViewChat> {
 
   sendCurrentLocation() {
     if (_currentPosition != null) {
-      sendLocationMessage(_currentPosition!);
+      sendLocationMessage(latLngToString(_currentPosition!), false);
     } else {
       showToastMessage("Something went wrong");
     }
@@ -533,70 +584,66 @@ class _LocationViewChatState extends State<LocationViewChat> {
 
   Widget currentOrSelectedButton() {
     if (_showCurrentLocationMarker) {
-      return Container(
-        height: 50,
-        color: darken(widget.chat.getColor(), 0.5),
-        child: GestureDetector(
-          onTap: () {
-            if (!isLoading) {
-              print("send selected location");
-            }
-          },
-          child: Container(
-            padding: EdgeInsets.all(6),
-            child: Row(
-              children: [
-                Container(
-                  height: 50,
-                  width: 50,
-                  decoration: BoxDecoration(
-                    color: Colors.green,
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(
-                    Icons.gps_fixed,
-                    color: Colors.white,
-                    size: 20,
-                  ),
+      return GestureDetector(
+        onTap: () {
+          if (!isLoading) {
+            sendSelectedLocation();
+          }
+        },
+        child: Container(
+          padding: EdgeInsets.all(6),
+          height: 50,
+          color: darken(widget.chat.getColor(), 0.5),
+          child: Row(
+            children: [
+              Container(
+                height: 50,
+                width: 50,
+                decoration: BoxDecoration(
+                  color: Colors.green,
+                  shape: BoxShape.circle,
                 ),
-                SizedBox(width: 12),
-                Text("Send selected location", style: TextStyle(color: Colors.white, fontSize: 16)),
-              ],
-            ),
+                child: Icon(
+                  Icons.gps_fixed,
+                  color: Colors.white,
+                  size: 20,
+                ),
+              ),
+              SizedBox(width: 12),
+              Text("Send selected location", style: TextStyle(color: getTextColor(Colors.white), fontSize: 16)),
+            ],
           ),
         ),
       );
     } else {
-      return Container(
-        height: 50,
-        color: darken(widget.chat.getColor(), 0.5),
-        child: GestureDetector(
-          onTap: () {
-            if (!isLoading) {
-              sendCurrentLocation();
-            }
-          },
-          child: Container(
-            padding: EdgeInsets.all(6),
-            child: Row(
-              children: [
-                Container(
-                  height: 50,
-                  width: 50,
-                  decoration: BoxDecoration(
-                    color: Colors.green,
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(
-                    Icons.gps_fixed,
-                    color: Colors.white,
-                    size: 20,
-                  ),
+      return GestureDetector(
+        onTap: () {
+          if (!isLoading) {
+            sendCurrentLocation();
+          }
+        },
+        child: Container(
+          padding: EdgeInsets.all(6),
+          height: 50,
+          color: darken(widget.chat.getColor(), 0.5),
+          child: Row(
+            children: [
+              Container(
+                height: 50,
+                width: 50,
+                decoration: BoxDecoration(
+                  color: Colors.green,
+                  shape: BoxShape.circle,
                 ),
-                SizedBox(width: 12),
-                Text("Send current location", style: TextStyle(color: Colors.white, fontSize: 16)),
-              ],
-            ),
+                child: Icon(
+                  Icons.gps_fixed,
+                  color: Colors.white,
+                  size: 20,
+                ),
+              ),
+              SizedBox(width: 12),
+              Text("Send current location", style: TextStyle(color: getTextColor(Colors.white), fontSize: 16)),
+            ],
           ),
         ),
       );
@@ -606,51 +653,49 @@ class _LocationViewChatState extends State<LocationViewChat> {
   Widget getLocationButtons() {
     return Column(
       children: [
-        Container(
-          height: 50,
-          color: widget.chat.getColor(),
-          child: GestureDetector(
-            onTap: () {
-              if (!isLoading) {
-                print("Share live location");
-              }
-            },
-            child: Container(
-              padding: EdgeInsets.all(6),
-              child: Row(
-                children: [
-                  Container(
-                    height: 50,
-                    width: 50,
-                    decoration: BoxDecoration(
-                      color: Colors.green,
-                      shape: BoxShape.circle,
-                    ),
-                    child: Stack(
-                      alignment: Alignment.center, // Center all children
-                      children: [
-                        // White circular border (smaller than the green circle)
-                        CustomPaint(
-                          painter: PartialCircleBorderPainter(
-                            color: Colors.white,
-                            strokeWidth: 2.0,
-                            radius: 10, // Half the height of the vertical lines
-                          ),
-                          size: Size(24, 24), // Match the icon size
-                        ),
-                        // Icon (centered)
-                        Icon(
-                          Icons.location_on,
-                          color: Colors.white,
-                          size: 20, // Icon size
-                        ),
-                      ],
-                    ),
+        GestureDetector(
+          onTap: () {
+            if (!isLoading) {
+              showDialogLiveLocationChat(context);
+            }
+          },
+          child: Container(
+            padding: EdgeInsets.all(6),
+            height: 50,
+            color: widget.chat.getColor(),
+            child: Row(
+              children: [
+                Container(
+                  height: 50,
+                  width: 50,
+                  decoration: BoxDecoration(
+                    color: Colors.green,
+                    shape: BoxShape.circle,
                   ),
-                  SizedBox(width: 12),
-                  Text("Share live location", style: TextStyle(color: Colors.white, fontSize: 16)),
-                ],
-              ),
+                  child: Stack(
+                    alignment: Alignment.center, // Center all children
+                    children: [
+                      // White circular border (smaller than the green circle)
+                      CustomPaint(
+                        painter: PartialCircleBorderPainter(
+                          color: Colors.white,
+                          strokeWidth: 2.0,
+                          radius: 10, // Half the height of the vertical lines
+                        ),
+                        size: Size(24, 24), // Match the icon size
+                      ),
+                      // Icon (centered)
+                      Icon(
+                        Icons.location_on,
+                        color: Colors.white,
+                        size: 20, // Icon size
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(width: 12),
+                Text("Share live location", style: TextStyle(color: getTextColor(Colors.white), fontSize: 16)),
+              ],
             ),
           ),
         ),
@@ -737,6 +782,30 @@ class _LocationViewChatState extends State<LocationViewChat> {
         print("TODO");
         break;
     }
+  }
+
+  startShareLocation(int selectedIndex) {
+    DateTime now = DateTime.now().toUtc();
+    DateTime endTime;
+    if (selectedIndex == 0) {
+      endTime = now.add(Duration(minutes: 15));
+    } else if (selectedIndex == 1) {
+      endTime = now.add(Duration(hours: 1));
+    } else {
+      // selectedIndex = 2
+      endTime = now.add(Duration(hours: 8));
+    }
+    Navigator.of(context).pop();
+    String location = latLngToString(_currentPosition!);
+    String endTimeString = endTime.toIso8601String();
+    String locationWithEndTime = '$location;$endTimeString';
+    sendLocationMessage(locationWithEndTime, true);
+
+    Me? me = settings.getMe();
+    if (me == null) {
+      return;
+    }
+    LocationSharing().startSharing(me, widget.chat.getBroupId());
   }
 
   @override
@@ -900,6 +969,66 @@ class _LocationViewChatState extends State<LocationViewChat> {
       ),
     );
   }
+
+  void showDialogLiveLocationChat(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          int selectedRadio = 0;
+          return AlertDialog(
+            title: new Text("Share live location for..."),
+            content: StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: List<Widget>.generate(3, (int index) {
+                    return InkWell(
+                      onTap: () {
+                        setState(() => selectedRadio = index);
+                      },
+                      child: Row(children: [
+                        Radio<int>(
+                            value: index,
+                            groupValue: selectedRadio,
+                            onChanged: (int? value) {
+                              if (value != null) {
+                                setState(() => selectedRadio = value);
+                              }
+                            }),
+                        index == 0
+                            ? Container(child: Text("15 minutes"))
+                            : Container(),
+                        index == 1
+                            ? Container(child: Text("1 hour"))
+                            : Container(),
+                        index == 2
+                            ? Container(child: Text("8 hours"))
+                            : Container(),
+                      ]),
+                    );
+                  }),
+                );
+              },
+            ),
+            actions: <Widget>[
+              new TextButton(
+                child: new Text("Cancel"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              new TextButton(
+                child: new Text("Share"),
+                onPressed: () {
+                  startShareLocation(selectedRadio);
+                },
+              ),
+            ],
+          );
+        });
+  }
+
+
 }
 
 class PartialCircleBorderPainter extends CustomPainter {
