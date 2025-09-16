@@ -1,8 +1,11 @@
 import 'dart:convert';
 import 'dart:typed_data';
 import 'dart:io';
+import 'package:brocast/utils/location_sharing.dart';
 import 'package:path_provider/path_provider.dart';
 
+import '../utils/secure_storage.dart';
+import '../utils/storage.dart';
 import 'data_type.dart';
 
 class Message {
@@ -156,6 +159,30 @@ class Message {
       }
       if (messageData.containsKey('type')) {
         message.dataType = messageData['type'];
+        // If it's a live location message we keep track
+        // of how long it needs to be active and from whom it is (and in which broup)
+        if (message.dataType == DataType.liveLocation.value) {
+          if (message.data != null) {
+            // Get the information from the data field.
+            String endTimeString = message.data!.split(";")[1];
+            DateTime endTime = DateTime.parse(endTimeString).toLocal();
+            int broId = message.senderId;
+            int broupId = message.broupId;
+            print("start sharing $broupId $endTime");
+            print("now time ${DateTime.now().toLocal()}");
+            print("if statement ${endTime.isAfter(DateTime.now().toLocal())}");
+            if (!DateTime.now().toLocal().isAfter(endTime)) {
+              // Still active
+              await Storage().addLocationSharing(
+                  broId: broId,
+                  broupId: broupId,
+                  endTime: endTime,
+                  meSharing: false
+              );
+              LocationSharing().startEndTimeBroTimer(endTime, broupId, broId);
+            }
+          }
+        }
       }
     }
 

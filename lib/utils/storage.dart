@@ -7,6 +7,7 @@ import 'package:brocast/objects/message.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import '../objects/bro.dart';
+import 'location_sharing.dart';
 
 
 class Storage {
@@ -35,7 +36,7 @@ class Storage {
 
     return await openDatabase(
       path,
-      version: 6,
+      version: 7,
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
     );
@@ -45,6 +46,7 @@ class Storage {
     await createTableBroup(db);
     await createTableMessage(db);
     await createTableBro(db);
+    await createTableLocationSharing(db);
   }
 
   Future _onUpgrade(Database db, int oldVersion, int newVersion,) async {
@@ -126,6 +128,9 @@ class Storage {
     if ((oldVersion <= 5) && newVersion >= 6) {
       db.execute('ALTER TABLE Message DROP COLUMN messageIdentifier');
     }
+    if ((oldVersion <= 6) && newVersion >= 7) {
+      createTableLocationSharing(db);
+    }
   }
 
   createTableBroup(Database db) async {
@@ -194,6 +199,19 @@ class Storage {
             bromotion TEXT,
             avatar BLOB,
             UNIQUE(broId) ON CONFLICT REPLACE
+          );
+          ''');
+  }
+
+  createTableLocationSharing(Database db) async {
+    await db.execute('''
+          CREATE TABLE LocationSharing (
+            id INTEGER PRIMARY KEY,
+            broId INTEGER,
+            broupId INTEGER,
+            endTime TEXT,
+            meSharing INTEGER,
+            UNIQUE(broId, broupId, meSharing) ON CONFLICT REPLACE
           );
           ''');
   }
@@ -446,6 +464,7 @@ class Storage {
     Database database = await this.database;
     await database.execute("DROP TABLE IF EXISTS Bro");
     await database.execute("DROP TABLE IF EXISTS Broup");
+    await database.execute("DROP TABLE IF EXISTS LocationSharing");
 
     // We will first go over all the messages and remove any data attached to them.
     String query = "SELECT messageId, broupId FROM Message";
@@ -479,6 +498,7 @@ class Storage {
     await createTableBroup(database);
     await createTableBro(database);
     await createTableMessage(database);
+    await createTableLocationSharing(database);
   }
 
   clearMessages() async {
@@ -514,5 +534,45 @@ class Storage {
 
     await database.execute("DROP TABLE IF EXISTS Message");
     await createTableMessage(database);
+  }
+
+  Future<int> addLocationSharing({
+    required int broId,
+    required int broupId,
+    required DateTime endTime,
+    required bool meSharing,
+  }) async {
+    Database database = await this.database;
+    return database.insert(
+      'LocationSharing',
+      {
+        'broId': broId,
+        'broupId': broupId,
+        'endTime': endTime.toUtc().toIso8601String(),
+        'meSharing': meSharing ? 1 : 0,
+      },
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+  Future<int> removeLocationSharing(int broId, int broupId, bool meSharing) async {
+    Database database = await this.database;
+    return database.delete(
+      'LocationSharing',
+      where: 'broId = ? AND broupId = ? AND meSharing = ?',
+      whereArgs: [broId, broupId, meSharing ? 1 : 0],
+    );
+  }
+
+  Future<List<LocationSharingData>?> getAllActiveLocationSharing() async {
+    Database database = await this.database;
+    List<Map<String, dynamic>> maps = await database.query(
+      'LocationSharing',
+    );
+    if (maps.isNotEmpty) {
+      return maps.map((map) => LocationSharingData.fromDbMap(map)).toList();
+    } else {
+      return null;
+    }
   }
 }

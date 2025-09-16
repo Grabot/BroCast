@@ -119,7 +119,6 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
           } else if (widget.message.dataType == DataType.audio.value) {
             _initializeAudioController();
           } else if (widget.message.dataType == DataType.location.value) {
-            // TODO: ask for location permission
             locationSharing = LocationSharing();
             locationSharing!.getPermission();
             LatLng messageLocation = stringToLatLng(widget.message.data!);
@@ -128,18 +127,11 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
               position: messageLocation,
             );
           } else if (widget.message.dataType == DataType.liveLocation.value) {
-            // TODO: ask for location permission if not yet done
             locationSharing = LocationSharing();
             locationSharing!.getPermission();
             locationSharing!.addLocationListener(_onLocationUpdate);
-            Marker? locationMarker = await locationSharing!.initializeMessageTileMarker(widget.message, widget.myMessage);
-            setState(() {
-              if (locationMarker != null) {
-                locationMarkers[widget.message.senderId] = locationMarker;
-              } else {
-                // It should get updated soon, put loading on
-              }
-            });
+            locationSharing!.getBroupLocationsInit(widget.message.broupId);
+            setState(() {});
           }
         }
       } else {
@@ -244,26 +236,27 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
     super.dispose();
   }
 
-  void _onLocationUpdate(int broId, LatLng location) {
-    print("New location: ${location.latitude}, ${location.longitude}");
-    Me? me = Settings().getMe();
-    if (me != null) {
-      if (broId == me.getId()) {
-        setState(() {
-          locationMarkers[me.getId()] = Marker(
-            markerId: MarkerId('myLocation'),
-            position: location,
-          );
-        });
+  void _onLocationUpdate(int broId, LatLng? location, bool remove) async {
+    if (remove) {
+      // When the markers are set we use this flag to know when to remove the markers.
+      if (locationMarkers.containsKey(broId)) {
+        locationMarkers.remove(broId);
+      }
+    } else {
+      // Here a location is available and we will update the markers.
+      Marker? broMarker = await locationSharing!.getBroMarker(broId);
+      if (broMarker != null) {
+        print("got bro marker");
+        locationMarkers[broId] = broMarker;
       } else {
-        setState(() {
-          locationMarkers[broId] = Marker(
-            markerId: MarkerId('bro_${widget.message.senderId}_Location'),
-            position: location,
-          );
-        });
+        locationMarkers[broId] = Marker(
+          markerId: MarkerId('bro_${widget.message.senderId}_Location'),
+          position: location!,
+        );
+        print("New location: ${location.latitude}, ${location.longitude}");
       }
     }
+    setState(() {});
   }
 
   Color getBorderColour() {

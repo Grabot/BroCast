@@ -17,6 +17,7 @@ import '../../../services/auth/v1_5/auth_service_social_v1_5.dart';
 import '../../../utils/location_sharing.dart';
 import '../../../utils/locator.dart';
 import '../../../utils/navigation_service.dart';
+import '../../../utils/secure_storage.dart';
 import '../../../utils/settings.dart';
 import '../../../utils/socket_services.dart';
 import '../../../utils/storage.dart';
@@ -81,6 +82,8 @@ class _LocationViewChatState extends State<LocationViewChat> {
     getLocation();
     broMessageController.text = "🗺️";
     _loadCustomIcons();
+    // TODO: When the bro moves the current location is not updated which causes issues with the `selected/current` check.
+    // TODO: Fix location view for regular chat.
   }
 
   Future<void> _loadCustomIcons() async {
@@ -104,7 +107,6 @@ class _LocationViewChatState extends State<LocationViewChat> {
   String? _errorMessage;
   Future<void> getLocation() async {
     try {
-      // 1. Check if location services are enabled
       bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
       if (!serviceEnabled) {
         setState(() {
@@ -475,8 +477,7 @@ class _LocationViewChatState extends State<LocationViewChat> {
     return '${location.latitude},${location.longitude}';
   }
 
-
-  sendLocationMessage(String messageLoc, bool liveLocation) async {
+  sendLocationMessage(String messageLoc, bool liveLocation, DateTime? endTime) async {
     String message = broMessageController.text;
     String? textMessage;
     if (captionMessageController.text != "") {
@@ -531,6 +532,14 @@ class _LocationViewChatState extends State<LocationViewChat> {
             Storage().updateMessageId(mes.messageId, messageId, widget.chat.getBroupId());
             mes.messageId = messageId;
           }
+          // Message send correctly start live location if data type is live type
+          if (dataType == DataType.liveLocation.value && endTime != null) {
+            Me? me = settings.getMe();
+            if (me == null) {
+              return;
+            }
+            LocationSharing().startSharing(me, widget.chat.getBroupId(), endTime);
+          }
           setState(() {
             navigateToChat(context, settings, widget.chat);
           });
@@ -568,7 +577,7 @@ class _LocationViewChatState extends State<LocationViewChat> {
 
   sendSelectedLocation() {
     if (selectedLocation != null) {
-      sendLocationMessage(latLngToString(selectedLocation!), false);
+      sendLocationMessage(latLngToString(selectedLocation!), false, null);
     } else {
       showToastMessage("Something went wrong");
     }
@@ -576,7 +585,7 @@ class _LocationViewChatState extends State<LocationViewChat> {
 
   sendCurrentLocation() {
     if (_currentPosition != null) {
-      sendLocationMessage(latLngToString(_currentPosition!), false);
+      sendLocationMessage(latLngToString(_currentPosition!), false, null);
     } else {
       showToastMessage("Something went wrong");
     }
@@ -788,7 +797,8 @@ class _LocationViewChatState extends State<LocationViewChat> {
     DateTime now = DateTime.now().toUtc();
     DateTime endTime;
     if (selectedIndex == 0) {
-      endTime = now.add(Duration(minutes: 15));
+      // TODO: Put back to 15 minutes!
+      endTime = now.add(Duration(minutes: 3));
     } else if (selectedIndex == 1) {
       endTime = now.add(Duration(hours: 1));
     } else {
@@ -799,13 +809,7 @@ class _LocationViewChatState extends State<LocationViewChat> {
     String location = latLngToString(_currentPosition!);
     String endTimeString = endTime.toIso8601String();
     String locationWithEndTime = '$location;$endTimeString';
-    sendLocationMessage(locationWithEndTime, true);
-
-    Me? me = settings.getMe();
-    if (me == null) {
-      return;
-    }
-    LocationSharing().startSharing(me, widget.chat.getBroupId());
+    sendLocationMessage(locationWithEndTime, true, endTime);
   }
 
   @override

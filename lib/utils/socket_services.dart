@@ -79,6 +79,7 @@ class SocketServices extends ChangeNotifier {
         meBroup.joinedBroupRoom = true;
       }
     }
+    checkShareLocation();
   }
 
   bool isConnected() {
@@ -674,6 +675,19 @@ class SocketServices extends ChangeNotifier {
         print("going to update location");
         LatLng latLng = LatLng(data["lat"], data["lng"]);
         LocationSharing().updateBroLocation(broId, latLng);
+      }
+    }
+  }
+
+  checkShareLocation() {
+    print("checking share location!!@!!");
+    LocationSharing locationSharing = LocationSharing();
+    if (locationSharing.endTimeShareMe != {}) {
+      print("there was somethign running, start again!");
+      Me? me = Settings().getMe();
+      if (me != null) {
+        print("call all function");
+        locationSharing.startSharingAll(me);
       }
     }
   }

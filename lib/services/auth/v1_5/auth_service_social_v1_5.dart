@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:brocast/services/auth/v1_5/auth_api_v1_5.dart';
+import 'package:brocast/utils/location_sharing.dart';
 import 'package:brocast/utils/utils.dart';
 import 'package:dio/dio.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -309,6 +310,43 @@ class AuthServiceSocialV15 {
         }
       } else {
         return null;
+      }
+    }
+  }
+
+  Future<bool> getBroupLocation(int broupId) async {
+    String endPoint = "broup/location";
+    var response = await AuthApiV1_5().dio.post(endPoint,
+        options: Options(headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+        }),
+        data: jsonEncode(<String, dynamic>{
+          "broup_id": broupId,
+        }
+      )
+    );
+
+    Map<String, dynamic> json = response.data;
+    if (!json.containsKey("result")) {
+      return false;
+    } else {
+      if (json["result"]) {
+        if (json.containsKey("bro_locations")) {
+          LocationSharing locationSharing = LocationSharing();
+          print("updating broup location");
+          for (var broLocation in json["bro_locations"]) {
+            if (broLocation.containsKey("lat") && broLocation.containsKey("lng") && broLocation.containsKey("bro_id")) {
+              LatLng locationBro = LatLng(broLocation["lat"], broLocation["lng"]);
+              locationSharing.broPositions[broLocation["bro_id"]] = locationBro;
+              print("updated broup location $broLocation");
+            }
+          }
+          return true;
+        } else {
+          return false;
+        }
+      } else {
+        return false;
       }
     }
   }

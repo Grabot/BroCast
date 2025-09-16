@@ -1,6 +1,5 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-
 class SecureStorage {
 
   final storage = const FlutterSecureStorage();
@@ -135,9 +134,6 @@ class SecureStorage {
     await storage.write(key: _avatarDefault, value: null);
     await storage.write(key: _keyFCMToken, value: null);
     await storage.write(key: _origin, value: null);
-    // We exclude the broId because it's used to determine if a different person logged back in.
-    // await storage.write(key: _broId, value: null);
-
     await storage.write(key: _keyAccessToken, value: null);
     await storage.write(key: _keyRefreshToken, value: null);
     await storage.write(key: _keyAccessTokenExpiration, value: null);
