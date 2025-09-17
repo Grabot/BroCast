@@ -1,8 +1,13 @@
 import 'dart:async';
+import 'dart:ui' as ui;
+import 'package:brocast/utils/utils.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:brocast/utils/socket_services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:tuple/tuple.dart';
 
 import '../objects/bro.dart';
 import '../objects/me.dart';
@@ -24,7 +29,7 @@ class LocationSharing {
 
   Map<int, LatLng> broPositions = {};
   final List<LocationUpdateCallback> _listeners = [];
-  Map<int, BitmapDescriptor> broMarkerIcon = {};
+  Map<int, Tuple2<BitmapDescriptor, InfoWindow>?> broMarkerIcon = {};
 
   // A mapping between the broupId and the endTime for the location sharing
   // We expect there only to be 1 location sharing at the time, but it's possible to share in multiple broups
@@ -46,16 +51,75 @@ class LocationSharing {
     _listeners.add(listener);
   }
 
+  Future<BitmapDescriptor> createCustomMarkerWithText(
+      Uint8List avatar, String text, double avatarWidth, double avatarHeight) async {
+    double textHeight = avatarHeight;
+    final ui.PictureRecorder pictureRecorder = ui.PictureRecorder();
+    final Canvas canvas = Canvas(pictureRecorder);
+    final Paint paint = Paint()..color = Colors.white;
+    final TextPainter textPainter = TextPainter(
+      text: TextSpan(
+        text: text,
+        style: TextStyle(fontSize: 70, color: Colors.black),
+      ),
+      textDirection: TextDirection.ltr,
+    );
+    textPainter.layout(minWidth: 0, maxWidth: 10000);
+
+    double slightVerticalOffsetAndOverlap = (avatarHeight/2.5);
+    final double scale = 2.0;
+    final double scaledWidth = (avatarWidth * scale);
+    final double scaledHeight = (avatarHeight * scale);
+    final double textOffsetX = (scaledWidth - textPainter.width) / 2;
+    textPainter.paint(canvas, Offset(textOffsetX, slightVerticalOffsetAndOverlap/2));
+
+    final ui.Image avatarImage = await decodeImageFromList(avatar);
+    final ui.PictureRecorder hexagonRecorder = ui.PictureRecorder();
+    final Canvas hexagonCanvas = Canvas(hexagonRecorder);
+
+    final HexagonClipper hexagonClipper = HexagonClipper();
+    final Path hexagonPath = hexagonClipper.getClip(Size(scaledWidth, scaledHeight));
+    hexagonCanvas.clipPath(hexagonPath);
+    hexagonCanvas.drawImageRect(
+      avatarImage,
+      Rect.fromLTWH(0, 0, avatarImage.width.toDouble(), avatarImage.height.toDouble()),
+      Rect.fromLTWH(0, 0, scaledWidth, scaledHeight),
+      paint,
+    );
+
+    final ui.Image hexagonImage = await hexagonRecorder.endRecording().toImage(scaledWidth.toInt(), scaledHeight.toInt());
+    canvas.drawImage(hexagonImage, Offset(0, scaledHeight-slightVerticalOffsetAndOverlap), paint);
+
+    final Paint trianglePaint = Paint()..color = Colors.black87;
+    final Path trianglePath = Path();
+    double triangleSize = 20;
+    trianglePath.moveTo(scaledWidth / 2, scaledHeight + (textHeight * scale) - 0);
+    trianglePath.lineTo(scaledWidth / 2 - triangleSize, scaledHeight + (textHeight * scale) - 0 - triangleSize);
+    trianglePath.lineTo(scaledWidth / 2 + triangleSize, scaledHeight + (textHeight * scale) - 0 - triangleSize);
+    trianglePath.close();
+    canvas.drawPath(trianglePath, trianglePaint);
+
+    final ui.Image image = await pictureRecorder.endRecording().toImage(scaledWidth.toInt(), (scaledHeight + (textHeight*scale)).toInt());
+    final ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+    final Uint8List pngBytes = byteData!.buffer.asUint8List();
+
+    return BitmapDescriptor.bytes(pngBytes, width: avatarWidth, height: avatarHeight+textHeight);
+  }
+
   Future<void> createBroMarker(int broId) async {
     Bro? bro = await Storage().fetchBro(broId);
     if (bro != null) {
       if (bro.getAvatar() != null) {
         print("Creating marker for bro ${bro.getId()}");
-        broMarkerIcon[bro.getId()] = BitmapDescriptor.bytes(
+        broMarkerIcon[bro.getId()] = Tuple2(await createCustomMarkerWithText(
             bro.getAvatar()!,
-            width: 40,
-            height: 40
-        );
+            bro.getBromotion(),
+            60,
+            60
+        ), InfoWindow(
+            title: bro.getFullName(),
+            snippet: "Sharing live location till 6.23"
+        ));
       } else {
         print("no avatar?");
         // TODO: retrieve avatar?
@@ -76,14 +140,12 @@ class LocationSharing {
           _notifyListenersBro(broId, broPositions[broId]!);
         }
       }
+      Tuple2<BitmapDescriptor, InfoWindow>? markerIcon = broMarkerIcon[broId];
       return Marker(
           markerId: MarkerId('bro_${broId}_Location'),
           position: broPositions[broId]!,
-          icon: broMarkerIcon[broId] ?? BitmapDescriptor.defaultMarker,
-          infoWindow: InfoWindow(
-              title: "bro with id: $broId",
-              snippet: ":)"
-          ),
+          icon: markerIcon?.item1 ?? BitmapDescriptor.defaultMarker,
+          infoWindow: markerIcon?.item2 ?? InfoWindow(title: "Bro $broId")
       );
     } else {
       return null;
