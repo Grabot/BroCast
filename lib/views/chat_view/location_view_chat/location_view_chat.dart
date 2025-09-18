@@ -538,7 +538,7 @@ class _LocationViewChatState extends State<LocationViewChat> {
             if (me == null) {
               return;
             }
-            LocationSharing().startSharing(me, widget.chat.getBroupId(), endTime);
+            LocationSharing().startSharing(me, widget.chat.getBroupId(), endTime.toLocal());
           }
           setState(() {
             navigateToChat(context, settings, widget.chat);

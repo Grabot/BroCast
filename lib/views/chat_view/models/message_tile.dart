@@ -122,10 +122,24 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
             locationSharing = LocationSharing();
             locationSharing!.getPermission();
             LatLng messageLocation = stringToLatLng(widget.message.data!);
+            BitmapDescriptor broIcon = BitmapDescriptor.defaultMarker;
+            String broTitle = "bro location";
+            String broSnippet = "shared location";
+            if (widget.bro != null && widget.bro!.getAvatar() != null) {
+              broIcon = await locationSharing!.createCustomMarkerWithText(
+                  widget.bro!.getAvatar()!, widget.bro!.bromotion, 60, 60);
+              broTitle = widget.bro!.getFullName();
+            }
             locationMarkers[widget.message.senderId] = Marker(
               markerId: MarkerId('bro_${widget.message.senderId}_Location'),
               position: messageLocation,
+              icon: broIcon,
+              infoWindow: InfoWindow(
+                  title: broTitle,
+                  snippet: broSnippet
+              )
             );
+            setState(() {});
           } else if (widget.message.dataType == DataType.liveLocation.value) {
             locationSharing = LocationSharing();
             locationSharing!.getPermission();
@@ -244,7 +258,7 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
       }
     } else {
       // Here a location is available and we will update the markers.
-      Marker? broMarker = await locationSharing!.getBroMarker(broId);
+      Marker? broMarker = await locationSharing!.getBroMarker(widget.message.broupId, broId);
       if (broMarker != null) {
         print("got bro marker");
         locationMarkers[broId] = broMarker;
@@ -497,6 +511,73 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
     mapController = controller;
   }
 
+  Widget currentLiveLocationInformation() {
+    List<Widget> liveLocationInformationBros = [];
+    if (widget.message.dataType != DataType.liveLocation.value) {
+      String locationInformation = "";
+      if (widget.bro != null) {
+        locationInformation = "${widget.bro!.getFullName()} sent this location!";
+      }
+      liveLocationInformationBros.add(
+        RichText(
+          textAlign: TextAlign.center,
+          maxLines: 3,
+          overflow: TextOverflow.ellipsis,
+          text: TextSpan(
+            text: locationInformation,
+            style: simpleTextStyle(),
+          ),
+        ),
+      );
+    } else {
+      if (locationSharing != null) {
+        if (locationSharing!.liveSharingBroInformation.containsKey(widget.message.broupId)) {
+          Map<int, String>? liveLocationBros = locationSharing!.liveSharingBroInformation[widget
+              .message.broupId];
+          if (liveLocationBros != null) {
+            for (String broShareInformation in liveLocationBros.values) {
+              liveLocationInformationBros.add(
+                RichText(
+                  textAlign: TextAlign.center,
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis,
+                  text: TextSpan(
+                    text: broShareInformation,
+                    style: simpleTextStyle(),
+                  ),
+                ),
+              );
+            }
+          }
+        }
+      }
+      if (liveLocationInformationBros.isEmpty) {
+        if (widget.bro != null) {
+          String infoShare = "Bro ${widget.bro!.getFullName()} was sharing their Live Location";
+          if (widget.myMessage) {
+            infoShare = "You were sharing your Live Location";
+          }
+          liveLocationInformationBros.add(
+            RichText(
+              textAlign: TextAlign.center,
+              maxLines: 3,
+              overflow: TextOverflow.ellipsis,
+              text: TextSpan(
+                text: infoShare,
+                style: simpleTextStyle(),
+              ),
+            ),
+          );
+        }
+      }
+    }
+    return Column(
+        mainAxisAlignment: widget.myMessage ? MainAxisAlignment.end : MainAxisAlignment.start,
+        crossAxisAlignment: widget.myMessage ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+        children: liveLocationInformationBros
+    );
+  }
+
   Widget getLocationContent() {
     if (widget.message.dataType == null) {
       return Container();
@@ -508,7 +589,7 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
       if (locationMarkers.values.toSet().isNotEmpty) {
         messageLocation = locationMarkers.values.toSet().first.position;
       } else {
-        // TODO: Fallback. Maybe users current location?
+        // After live location is done we show where it started as placeholder.
         messageLocation = stringToLatLng(widget.message.data!.split(";")[0]);
       }
     }
@@ -518,6 +599,7 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
     List<Widget> commonChildren = [
       viewImageButton(),
       repliedToView(),
+      currentLiveLocationInformation(),
       Text(
           widget.message.body,
           style: simpleTextStyle()
