@@ -1,36 +1,24 @@
-import 'dart:async';
-import 'dart:convert';
-import 'dart:math';
-import 'dart:io';
-import 'dart:typed_data';
-import 'package:brocast/objects/data_type.dart';
-import 'package:dio/dio.dart';
-import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:collection/collection.dart';
-import '../../../constants/base_url.dart';
-import '../../../objects/broup.dart';
-import '../../../objects/me.dart';
-import '../../../objects/message.dart';
-import '../../../services/auth/v1_5/auth_service_social_v1_5.dart';
-import '../../../utils/locator.dart';
-import '../../../utils/navigation_service.dart';
-import '../../../utils/settings.dart';
-import '../../../utils/socket_services.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+
+import '../../../objects/bro.dart';
+import '../../../utils/location_sharing.dart';
 import '../../../utils/storage.dart';
 import '../../../utils/utils.dart';
-import 'package:brocast/constants/route_paths.dart' as routes;
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:geolocator/geolocator.dart';
 
 
 class LocationViewer extends StatefulWidget {
-  final LatLng locationData;
+  final String locationData;
+  final bool liveLocation;
+  final int broupId;
+  final Bro? bro;
 
   const LocationViewer({
     Key? key,
     required this.locationData,
+    required this.liveLocation,
+    required this.broupId,
+    required this.bro,
   }) : super(key: key);
 
   @override
@@ -40,11 +28,76 @@ class LocationViewer extends StatefulWidget {
 class _LocationViewerState extends State<LocationViewer> {
 
   late GoogleMapController mapController;
+  late LatLng startPosition;
+  late LocationSharing locationSharing;
+  Map<int, Marker> locationMarkers = {};
+  Map<int, Bro> liveLocationInformation = {};
+
+  late Storage storage;
 
   @override
   void initState() {
     super.initState();
+    locationSharing = LocationSharing();
+    locationSharing.getPermission();
+    storage = Storage();
+    if (widget.liveLocation) {
+      startPosition = stringToLatLng(widget.locationData.split(";")[0]);
+      locationSharing.addLocationListener(_onLocationUpdate);
+      locationSharing.getBroupLocationsInit(widget.broupId);
+    } else {
+      startPosition = stringToLatLng(widget.locationData);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        loadLocationMarker();
+      });
+    }
   }
+
+  loadLocationMarker() async {
+    BitmapDescriptor broIcon = BitmapDescriptor.defaultMarker;
+    String broTitle = "bro location";
+    String broSnippet = "shared location";
+    if (widget.bro != null && widget.bro!.getAvatar() != null) {
+      broIcon = await locationSharing.createCustomMarkerWithText(
+          widget.bro!.getAvatar()!, widget.bro!.bromotion, 60, 60);
+      broTitle = widget.bro!.getFullName();
+    }
+    locationMarkers[widget.bro!.id] = Marker(
+        markerId: MarkerId('bro_${widget.bro!.id}_Location'),
+        position: startPosition,
+        icon: broIcon,
+        infoWindow: InfoWindow(
+            title: broTitle,
+            snippet: broSnippet
+        )
+    );
+    setState(() {});
+  }
+
+  void _onLocationUpdate(int broId, LatLng? location, bool remove) async {
+    print("Got update!");
+    if (remove) {
+      // When the markers are set we use this flag to know when to remove the markers.
+      if (locationMarkers.containsKey(broId)) {
+        locationMarkers.remove(broId);
+      }
+    } else {
+      // Here a location is available and we will update the markers.
+      Marker? broMarker = await locationSharing.getBroMarker(widget.broupId, broId);
+      if (broMarker != null) {
+        print("got bro marker");
+        locationMarkers[broId] = broMarker;
+      } else {
+        locationMarkers[broId] = Marker(
+          markerId: MarkerId('bro_${broId}_Location'),
+          position: location!,
+        );
+        print("New location: ${location.latitude}, ${location.longitude}");
+      }
+    }
+    setState(() {});
+  }
+
 
   @override
   void dispose() {
@@ -65,6 +118,84 @@ class _LocationViewerState extends State<LocationViewer> {
 
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
+  }
+
+  Widget currentLiveLocationInformation() {
+    // TODO: Make this clickable and show a popup of all the bros sharing live location (like with emoji reactions)
+    List<Widget> liveLocationInformationBros = [];
+    if (!widget.liveLocation) {
+      String locationInformation = "";
+      if (widget.bro != null) {
+        locationInformation = "${widget.bro!.getFullName()} sent this location!";
+      }
+      liveLocationInformationBros.add(
+        RichText(
+          textAlign: TextAlign.center,
+          maxLines: 3,
+          overflow: TextOverflow.ellipsis,
+          text: TextSpan(
+            text: locationInformation,
+            style: simpleTextStyle(),
+          ),
+        ),
+      );
+    } else {
+      if (locationSharing.endTimeShareOfTheBros.containsKey(widget.broupId)) {
+        Map<int, DateTime>? liveLocationBros = locationSharing.endTimeShareOfTheBros[widget.broupId];
+        if (liveLocationBros != null) {
+          for (int broShareId in liveLocationBros.keys) {
+            if (liveLocationInformation.containsKey(broShareId) && liveLocationInformation[broShareId] != null) {
+              Bro broShared = liveLocationInformation[broShareId]!;
+              DateTime? endTime = liveLocationBros[broShareId];
+              if (endTime != null) {
+                liveLocationInformationBros.add(
+                  Container(
+                    width: MediaQuery.of(context).size.width,
+                    child: Row(
+                      children: [
+                        avatarBox(
+                            50,
+                            50,
+                            broShared.getAvatar()
+                        ),
+                        RichText(
+                        textAlign: TextAlign.center,
+                        maxLines: 3,
+                        overflow: TextOverflow.ellipsis,
+                        text: TextSpan(
+                          text: "${broShared.getFullName()} is sharing location till ${endTime.hour.toString().padLeft(2, '0')}:${endTime.minute.toString().padLeft(2, '0')}",
+                          style: simpleTextStyle(),
+                        ),
+                      ),
+                    ]
+                    ),
+                  ),
+                );
+              }
+            } else {
+              storage.fetchBro(broShareId).then((bro) {
+                if (bro != null) {
+                  setState(() {
+                    liveLocationInformation[broShareId] = bro;
+                    print("set bro, bro!");
+                  });
+                }
+              });
+            }
+          }
+        }
+      }
+    }
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      height: 80,
+      color: Colors.black,
+      child: SingleChildScrollView(
+        child: Column(
+            children: liveLocationInformationBros
+        ),
+      ),
+    );
   }
 
   @override
@@ -114,15 +245,10 @@ class _LocationViewerState extends State<LocationViewer> {
                   myLocationEnabled: true,
                   myLocationButtonEnabled: true,
                   initialCameraPosition: CameraPosition(
-                    target: widget.locationData,
+                    target: startPosition,
                     zoom: 17.0,
                   ),
-                  markers: {
-                    Marker(
-                      markerId: MarkerId('messageLocation'),
-                      position: widget.locationData,
-                    ),
-                  },
+                  markers: locationMarkers.values.toSet(),
                   mapType: MapType.normal,
                   onCameraMove: (CameraPosition position) {
                     print("camera moved");
@@ -136,6 +262,7 @@ class _LocationViewerState extends State<LocationViewer> {
                 )
               ),
             ),
+            currentLiveLocationInformation()
           ],
         ),
       ),

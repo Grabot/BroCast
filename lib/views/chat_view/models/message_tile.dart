@@ -264,7 +264,7 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
         locationMarkers[broId] = broMarker;
       } else {
         locationMarkers[broId] = Marker(
-          markerId: MarkerId('bro_${widget.message.senderId}_Location'),
+          markerId: MarkerId('bro_${broId}_Location'),
           position: location!,
         );
         print("New location: ${location.latitude}, ${location.longitude}");
@@ -350,16 +350,29 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
           MaterialPageRoute(
             builder: (context) =>
                 LocationViewer(
-                    key: UniqueKey(),
-                    locationData: stringToLatLng(widget.message.data!)
+                  key: UniqueKey(),
+                  locationData: widget.message.data!,
+                  liveLocation: false,
+                  broupId: widget.message.broupId,
+                  bro: widget.bro,
                 ),
           ),
         ).then((_) {});
       }
     } else if (widget.message.dataType == DataType.liveLocation.value) {
       if (widget.message.data != null) {
-        print("TODO!");
-        // TODO: Live location viewer
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) =>
+                LocationViewer(
+                  key: UniqueKey(),
+                  locationData: widget.message.data!,
+                  liveLocation: true,
+                  broupId: widget.message.broupId,
+                  bro: null,
+                ),
+          ),
+        ).then((_) {});
       }
     }
   }
