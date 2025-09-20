@@ -245,7 +245,6 @@ class AuthServiceSocialV15 {
     } else if (response.statusCode == 404) {
       return null;
     } else if (response.statusCode == 500) {
-      // TODO: do a 'data is present' check?
       return null;
     } else {
       return null;
@@ -310,6 +309,46 @@ class AuthServiceSocialV15 {
         }
       } else {
         return null;
+      }
+    }
+  }
+
+  Future<bool> getBrosLocation(int broupId, List<int> broIds) async {
+    String endPoint = "bros/location";
+    var response = await AuthApiV1_5().dio.post(endPoint,
+        options: Options(headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+        }),
+        data: jsonEncode(<String, dynamic>{
+          "broup_id": broupId,
+          "bro_ids": broIds
+        }
+      )
+    );
+
+    Map<String, dynamic> json = response.data;
+    if (!json.containsKey("result")) {
+      return false;
+    } else {
+      if (json["result"]) {
+        if (json.containsKey("bro_locations")) {
+          LocationSharing locationSharing = LocationSharing();
+          print("updating broup location");
+          for (var broLocation in json["bro_locations"]) {
+            if (broLocation.containsKey("lat") && broLocation.containsKey("lng") &&
+                broLocation.containsKey("bro_id")) {
+              LatLng locationBro = LatLng(broLocation["lat"], broLocation["lng"]);
+              locationSharing.broPositions[broLocation["bro_id"]] = locationBro;
+              locationSharing.notifyListenersBro(broLocation["bro_id"], locationBro);
+              print("updated broup location $broLocation");
+            }
+          }
+          return true;
+        } else {
+          return false;
+        }
+      } else {
+        return false;
       }
     }
   }

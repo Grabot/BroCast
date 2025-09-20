@@ -82,7 +82,6 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
         widget.message.clicked = !widget.message.clicked;
       });
       if (widget.message.clicked) {
-        // TODO: Remove the map live location listener if active.
         if (widget.message.dataType != null && !widget.message.dataIsReceived) {
           // There should be data in this message, but it is not yet received from the server yet.
           isLoading = true;
@@ -153,6 +152,11 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
           setState(() {
             _videoController!.pause();
           });
+        }
+        if (widget.message.dataType == DataType.location.value || widget.message.dataType == DataType.liveLocation.value) {
+          if (locationSharing != null) {
+            locationSharing!.removeLocationListener(_onLocationUpdate);
+          }
         }
       }
     }
@@ -251,26 +255,32 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
   }
 
   void _onLocationUpdate(int broId, LatLng? location, bool remove) async {
-    if (remove) {
-      // When the markers are set we use this flag to know when to remove the markers.
-      if (locationMarkers.containsKey(broId)) {
-        locationMarkers.remove(broId);
+    Storage().fetchBroup(widget.message.broupId).then((broup) async {
+      if (broup != null) {
+        if (broup.broIds.contains(broId)) {
+          if (remove) {
+            // When the markers are set we use this flag to know when to remove the markers.
+            if (locationMarkers.containsKey(broId)) {
+              locationMarkers.remove(broId);
+            }
+          } else {
+            // Here a location is available and we will update the markers.
+            Marker? broMarker = await locationSharing!.getBroMarker(widget.message.broupId, broId);
+            if (broMarker != null) {
+              print("got bro marker");
+              locationMarkers[broId] = broMarker;
+            } else {
+              locationMarkers[broId] = Marker(
+                markerId: MarkerId('bro_${broId}_Location'),
+                position: location!,
+              );
+              print("New location: ${location.latitude}, ${location.longitude}");
+            }
+          }
+          setState(() {});
+        }
       }
-    } else {
-      // Here a location is available and we will update the markers.
-      Marker? broMarker = await locationSharing!.getBroMarker(widget.message.broupId, broId);
-      if (broMarker != null) {
-        print("got bro marker");
-        locationMarkers[broId] = broMarker;
-      } else {
-        locationMarkers[broId] = Marker(
-          markerId: MarkerId('bro_${broId}_Location'),
-          position: location!,
-        );
-        print("New location: ${location.latitude}, ${location.longitude}");
-      }
-    }
-    setState(() {});
+    });
   }
 
   Color getBorderColour() {
@@ -355,6 +365,7 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
                   liveLocation: false,
                   broupId: widget.message.broupId,
                   bro: widget.bro,
+                  myMessage: widget.myMessage,
                 ),
           ),
         ).then((_) {});
@@ -370,6 +381,7 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
                   liveLocation: true,
                   broupId: widget.message.broupId,
                   bro: null,
+                  myMessage: widget.myMessage,
                 ),
           ),
         ).then((_) {});
@@ -528,7 +540,9 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
     List<Widget> liveLocationInformationBros = [];
     if (widget.message.dataType != DataType.liveLocation.value) {
       String locationInformation = "";
-      if (widget.bro != null) {
+      if (widget.myMessage) {
+        locationInformation = "You sent this location!";
+      } else if (widget.bro != null) {
         locationInformation = "${widget.bro!.getFullName()} sent this location!";
       }
       liveLocationInformationBros.add(
@@ -626,7 +640,7 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
             onMapCreated: _onMapCreated,
             initialCameraPosition: CameraPosition(
               target: messageLocation,
-              zoom: 17.0,
+              zoom: calculateZoomLevel(500),
             ),
             myLocationEnabled: true,
             myLocationButtonEnabled: true,
@@ -839,7 +853,6 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
       } else if (widget.message.dataType == DataType.location.value) {
         content = getLocationContent();
       } else if (widget.message.dataType == DataType.liveLocation.value) {
-        // TODO: live location tonen in message?
         content = getLocationContent();
       } else {
         content = getTextContent();

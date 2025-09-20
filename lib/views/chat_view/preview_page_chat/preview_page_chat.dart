@@ -88,8 +88,6 @@ class _PreviewPageChatState extends State<PreviewPageChat> {
     } else if (widget.dataType == DataType.video.value) {
       broMessageController.text = "🎥";
       _initializeVideo();
-    } else {
-      // TODO: add other data types.
     }
 
     setState(() {});
@@ -130,8 +128,6 @@ class _PreviewPageChatState extends State<PreviewPageChat> {
           broMessageController.text = "📸";
         } else if (widget.dataType == DataType.video.value) {
           broMessageController.text = "🎥";
-        } else {
-          // TODO: Add other data types.
         }
       }
       setState(() {

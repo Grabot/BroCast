@@ -564,6 +564,20 @@ class Storage {
     );
   }
 
+  Future<List<LocationSharingData>?> getAllActiveLocationSharingBroup(int broupId, bool meSharing) async {
+    Database database = await this.database;
+    List<Map<String, dynamic>> maps = await database.query(
+      'LocationSharing',
+      where: 'broupId = ? AND meSharing = ?',
+      whereArgs: [broupId, meSharing ? 1 : 0],
+    );
+    if (maps.isNotEmpty) {
+      return maps.map((map) => LocationSharingData.fromDbMap(map)).toList();
+    } else {
+      return null;
+    }
+  }
+
   Future<List<LocationSharingData>?> getAllActiveLocationSharing() async {
     Database database = await this.database;
     List<Map<String, dynamic>> maps = await database.query(

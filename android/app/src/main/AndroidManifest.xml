@@ -4,7 +4,6 @@
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
 
-        <!-- TODO: DON'T COMMIT YOUR KEY! Find a way to fetch it from settings -->
         <meta-data android:name="com.google.android.geo.API_KEY"
             android:value="${MAPS_API_KEY}"/>
 

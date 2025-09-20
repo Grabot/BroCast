@@ -228,10 +228,8 @@ class _BroProfileState extends State<BroProfile> {
       String newBromotion = bromotionChangeController.text;
       AuthServiceSettings().changeBromotion(newBromotion).then((value) {
         if (value == "Bromotion changed") {
-          showToastMessage("bromotion changed successfully");
-          SecureStorage().setBromotion(newBromotion);
           setState(() {
-            settings.getMe()!.setBromotion(newBromotion);
+            showToastMessage("bromotion changed successfully");
           });
         } else {
           showToastMessage(value);
@@ -717,24 +715,24 @@ class _BroProfileState extends State<BroProfile> {
                           bromotionWidget(),
                           avatarWidget(),
                           passwordWidget(),
-                          showEmojiKeyboard ? SizedBox(height: 400) : SizedBox(height: 100),
+                          showEmojiKeyboard ? SizedBox(height: 40) : SizedBox(height: 100),
                         ]
                     ),
                   ),
                 ),
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: EmojiKeyboard(
+                    emojiController: bromotionChangeController,
+                    emojiKeyboardHeight: 350,
+                    showEmojiKeyboard: showEmojiKeyboard,
+                    darkMode: settings.getEmojiKeyboardDarkMode(),
+                    emojiKeyboardAnimationDuration: const Duration(milliseconds: 200),
+                  ),
+                )
               ]
               ),
             ),
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: EmojiKeyboard(
-                  emojiController: bromotionChangeController,
-                  emojiKeyboardHeight: 350,
-                  showEmojiKeyboard: showEmojiKeyboard,
-                  darkMode: settings.getEmojiKeyboardDarkMode(),
-                  emojiKeyboardAnimationDuration: const Duration(milliseconds: 200),
-                ),
-              )
             ]
           )
       ),

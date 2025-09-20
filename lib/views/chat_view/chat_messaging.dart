@@ -35,6 +35,7 @@ import '../camera_page/camera_page.dart';
 import 'chat_details/chat_details.dart';
 import 'location_view_chat/location_view_chat.dart';
 import 'media_viewer/image_viewer.dart';
+import 'media_viewer/location_viewer.dart';
 import 'media_viewer/video_viewer.dart';
 import 'message_detail_popup.dart';
 import 'message_util.dart';
@@ -455,8 +456,46 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
                 ),
           ),
         );
-      } else {
-        // TODO: add more data types
+      } else if (action.message.dataType == DataType.location.value) {
+        Me? me = Settings().getMe();
+        if (me != null) {
+          storage.fetchBro(action.broId).then((bro) {
+            if (action.message.data != null) {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) =>
+                      LocationViewer(
+                        key: UniqueKey(),
+                        locationData: action.message.data!,
+                        liveLocation: false,
+                        broupId: action.message.broupId,
+                        bro: bro,
+                        myMessage: me.getId() == action.message.senderId,
+                      ),
+                ),
+              ).then((_) {});
+            }
+          });
+        }
+      } else if (action.message.dataType == DataType.liveLocation.value) {
+        Me? me = Settings().getMe();
+        if (me != null) {
+          if (action.message.data != null) {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) =>
+                    LocationViewer(
+                      key: UniqueKey(),
+                      locationData: action.message.data!,
+                      liveLocation: true,
+                      broupId: action.message.broupId,
+                      bro: null,
+                      myMessage: me.getId() == action.message.senderId,
+                    ),
+              ),
+            ).then((_) {});
+          }
+        }
       }
     } else if (action is ReplyToMessagePopupAction) {
       repliedToMessage = widget.chat.messages.firstWhereOrNull((message) => message.messageId == action.message.messageId);
@@ -808,7 +847,7 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
     if (saveImageOption && message.dataType != null) {
       String type = DataType.getByValue(message.dataType!).typeName;
       messagePopupOptions.add({'text': 'Save $type', 'icon': Icons.save_alt, 'action': SaveImagePopupAction(message: message)});
-      messagePopupOptions.add({'text': 'View $type', 'icon': Icons.remove_red_eye, 'action': ViewImagePopupAction(message: message)});
+      messagePopupOptions.add({'text': 'View $type', 'icon': Icons.remove_red_eye, 'action': ViewImagePopupAction(message: message, broId: message.senderId)});
     }
     if (meAdmin && !myMessage && !widget.chat.private && broInBroup) {
       messagePopupOptions.add({'text': 'Remove bro from broup', 'icon': Icons.person_remove, 'action': RemoveBroFromBroupPopupAction(message: message, broId: message.senderId)});
@@ -970,8 +1009,14 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
           // The message was not sent, we remove it from the list and the database
           storage.deleteMessage(mes.messageId, widget.chat.broupId);
           showToastMessage("there was an issue sending the message");
-          // TODO: There might be some messages retrieved in between this period. Check for the correct message to remove.
-          widget.chat.messages.removeAt(0);
+          for (int i = 0; i < 5; i++) {
+            // There might be some messages retrieved in between this period.
+            // While this is unlikely, check for the correct message to remove.
+            if (widget.chat.messages[i] == mes) {
+              widget.chat.messages.removeAt(i);
+              break;
+            }
+          }
         }
         setState(() {
           widget.chat.sendingMessage = false;
@@ -1135,6 +1180,8 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
         showEmojiKeyboard = false;
       });
     } else {
+      // Set all the "clicked" messages back to false
+      widget.chat.messages.where((message) => message.clicked).forEach((message) => message.clicked = false);
       navigateToHome(context, settings);
     }
   }
@@ -1235,7 +1282,18 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
       width: MediaQuery.of(context).size.width,
       margin: EdgeInsets.only(left: 10, right: 10),
       padding: EdgeInsets.only(left: 10, right: 10, bottom: 10, top: 5),
-      color: Colors.black.withAlpha(64),
+      decoration: BoxDecoration(
+        color: Colors.black.withValues(alpha: 0.6),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.3),
+            blurRadius: 10,
+            offset: Offset(0, 2),
+          ),
+        ],
+      ),
       child: Stack(
         children: [
           Column(

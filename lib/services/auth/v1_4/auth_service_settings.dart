@@ -101,6 +101,12 @@ class AuthServiceSettings {
       return "Something went wrong";
     } else {
       if (json["result"]) {
+        SecureStorage().setBromotion(bromotion);
+        Me? me = Settings().getMe();
+        if (me != null) {
+          me.setBromotion(bromotion);
+          Storage().updateBro(me);
+        }
         return "Bromotion changed";
       } else {
         if (json.containsKey("message")) {
@@ -130,8 +136,10 @@ class AuthServiceSettings {
       if (json["result"]) {
         SecureStorage().setBroName(broname);
         Settings settings = Settings();
-        settings.getMe()!.setBroName(broname);
-        Storage().updateBro(settings.getMe()!);
+        if (settings.getMe() != null) {
+          settings.getMe()!.setBroName(broname);
+          Storage().updateBro(settings.getMe()!);
+        }
         return true;
       } else {
         if (json.containsKey("message")) {

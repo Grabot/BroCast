@@ -48,7 +48,9 @@ class SaveImagePopupAction extends MessagePopupAction {
 }
 
 class ViewImagePopupAction extends MessagePopupAction {
+  final int broId;
   const ViewImagePopupAction({
+    required this.broId,
     required super.message
   });
 }

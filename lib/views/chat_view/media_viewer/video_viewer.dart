@@ -35,8 +35,8 @@ class _VideoViewerState extends State<VideoViewer> {
             videoPlayerController: _videoPlayerController!,
             aspectRatio: _videoPlayerController!.value.aspectRatio,
             autoPlay: true,
-            looping: true,
-            showControlsOnInitialize: false, // Hide controls initially
+            looping: false,
+            showControlsOnInitialize: false,
             materialProgressColors: ChewieProgressColors(
                   playedColor: Colors.red,
               handleColor: Colors.red,
@@ -44,7 +44,7 @@ class _VideoViewerState extends State<VideoViewer> {
               bufferedColor: Colors.grey.withValues(alpha: 0.5),
                 ),
             placeholder: Center(child: CircularProgressIndicator()),
-            autoInitialize: true,
+            autoInitialize: false,
           );
         });
       });

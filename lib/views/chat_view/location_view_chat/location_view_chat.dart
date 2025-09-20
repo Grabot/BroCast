@@ -65,6 +65,8 @@ class _LocationViewChatState extends State<LocationViewChat> {
   late BitmapDescriptor greenDotIcon;
   late BitmapDescriptor redDotIcon;
 
+  double mapsCameraPositionLatitude = 0;
+  double mapsCameraPositionLongitude = 0;
   bool _showCurrentLocationMarker = false;
   double currentMarkerIconSize = 40;
   bool markerTapped = false;
@@ -80,10 +82,8 @@ class _LocationViewChatState extends State<LocationViewChat> {
   void initState() {
     super.initState();
     getLocation();
-    broMessageController.text = "🗺️";
+    broMessageController.text = "🗺️📍";
     _loadCustomIcons();
-    // TODO: When the bro moves the current location is not updated which causes issues with the `selected/current` check.
-    // TODO: Fix location view for regular chat.
   }
 
   Future<void> _loadCustomIcons() async {
@@ -139,12 +139,31 @@ class _LocationViewChatState extends State<LocationViewChat> {
         return;
       }
 
+      Geolocator.getPositionStream(
+        locationSettings: LocationSettings(
+          accuracy: LocationAccuracy.high,
+          distanceFilter: 10, // Update if user moves 10 meters
+        ),
+      ).listen((Position position) {
+        setState(() {
+          _currentPosition = LatLng(position.latitude, position.longitude);
+          if (mapsCameraPositionLatitude != 0 && mapsCameraPositionLongitude != 0) {
+            checkDistance(mapsCameraPositionLatitude, mapsCameraPositionLongitude);
+          }
+        });
+      });
+
       Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high,
+        locationSettings: LocationSettings(
+          accuracy: LocationAccuracy.high,
+          distanceFilter: 10,
+        ),
       ).timeout(const Duration(seconds: 10));
 
       setState(() {
         _currentPosition = LatLng(position.latitude, position.longitude);
+        mapsCameraPositionLatitude = position.latitude;
+        mapsCameraPositionLongitude = position.longitude;
         isLoading = false;
         _errorMessage = null;
       });
@@ -177,7 +196,18 @@ class _LocationViewChatState extends State<LocationViewChat> {
       final response = await _dio.post(
         'https://places.googleapis.com/v1/places:searchNearby',
         data: jsonEncode({
-          "includedTypes": ["restaurant"],
+          "includedTypes": [
+            "restaurant",
+            "tourist_attraction",
+            "museum",
+            "park",
+            "cafe",
+            "shopping_mall",
+            "amusement_park",
+            "zoo",
+            "aquarium",
+            "stadium"
+          ],
           "maxResultCount": 10,
           "rankPreference": "POPULARITY",
           "locationRestriction": {
@@ -186,7 +216,7 @@ class _LocationViewChatState extends State<LocationViewChat> {
                 "latitude": location.latitude,
                 "longitude": location.longitude,
               },
-              "radius": 100.0,
+              "radius": 500.0,
             }
           },
         }),
@@ -274,13 +304,15 @@ class _LocationViewChatState extends State<LocationViewChat> {
     if (appendingCaption) {
       textFieldHeight += 45;
     }
+    double paddingHeight = 15;
 
     double remainingHeight = MediaQuery.of(context).size.height -
         appBarHeight -
         emojiKeyboardHeight -
         bottomPadding -
         regularKeyboardHeight -
-        textFieldHeight;
+        textFieldHeight -
+        paddingHeight;
     // 200 is the minimum we need
     if (remainingHeight < 200) {
       remainingHeight = 200;
@@ -351,6 +383,29 @@ class _LocationViewChatState extends State<LocationViewChat> {
     }
   }
 
+  checkDistance(double latitude, double longitude) {
+    final distance = Geolocator.distanceBetween(
+      _currentPosition!.latitude,
+      _currentPosition!.longitude,
+      latitude,
+      longitude,
+    );
+
+    if (distance > 50) {
+      if (!_showCurrentLocationMarker) {
+        setState(() {
+          _showCurrentLocationMarker = true;
+        });
+      }
+    } else {
+      if (_showCurrentLocationMarker) {
+        setState(() {
+          _showCurrentLocationMarker = false;
+        });
+      }
+    }
+  }
+
   Widget mediaPreview() {
     return Container(
       width: MediaQuery.of(context).size.width,
@@ -363,11 +418,13 @@ class _LocationViewChatState extends State<LocationViewChat> {
             myLocationButtonEnabled: true,
             initialCameraPosition: CameraPosition(
               target: _currentPosition!,
-              zoom: 17.0,
+              zoom: calculateZoomLevel(500),
             ),
             markers: _markers,
             mapType: MapType.normal,
             onCameraMove: (CameraPosition position) {
+              mapsCameraPositionLatitude = position.target.latitude;
+              mapsCameraPositionLongitude = position.target.longitude;
               if (!markerTapped) {
                 setState(() {
                   showMarkerInfo = false;
@@ -379,26 +436,7 @@ class _LocationViewChatState extends State<LocationViewChat> {
               selectedLocation = position.target;
               // Show marker if the map is moved away from current location
               if (_currentPosition != null) {
-                final distance = Geolocator.distanceBetween(
-                  _currentPosition!.latitude,
-                  _currentPosition!.longitude,
-                  position.target.latitude,
-                  position.target.longitude,
-                );
-
-                if (distance > 50) {
-                  if (!_showCurrentLocationMarker) {
-                    setState(() {
-                      _showCurrentLocationMarker = true;
-                    });
-                  }
-                } else {
-                  if (_showCurrentLocationMarker) {
-                    setState(() {
-                      _showCurrentLocationMarker = false;
-                    });
-                  }
-                }
+                checkDistance(position.target.latitude, position.target.longitude);
               }
             },
             onCameraIdle: () {
@@ -428,7 +466,7 @@ class _LocationViewChatState extends State<LocationViewChat> {
               left: MediaQuery.of(context).size.width / 2 - (currentMarkerIconSize/2),
               child: Icon(
                 Icons.location_on,
-                color: darken(widget.chat.getColor(), -0.5),
+                color: widget.chat.getColor(),
                 size: currentMarkerIconSize,
               ),
             ),
@@ -453,7 +491,7 @@ class _LocationViewChatState extends State<LocationViewChat> {
     if (!appendingCaption) {
       focusCaptionField.requestFocus();
       if (broMessageController.text == "") {
-        broMessageController.text = "🗺️";
+        broMessageController.text = "🗺️📍";
       }
       setState(() {
         showEmojiKeyboard = false;
@@ -602,7 +640,7 @@ class _LocationViewChatState extends State<LocationViewChat> {
         child: Container(
           padding: EdgeInsets.all(6),
           height: 50,
-          color: darken(widget.chat.getColor(), 0.5),
+          color: widget.chat.getColor(),
           child: Row(
             children: [
               Container(
@@ -634,7 +672,7 @@ class _LocationViewChatState extends State<LocationViewChat> {
         child: Container(
           padding: EdgeInsets.all(6),
           height: 50,
-          color: darken(widget.chat.getColor(), 0.5),
+          color: widget.chat.getColor(),
           child: Row(
             children: [
               Container(
@@ -725,10 +763,6 @@ class _LocationViewChatState extends State<LocationViewChat> {
     );
   }
 
-  Color darken(Color color, [double amount = 0.1]) {
-    return Color.lerp(color, Colors.black, amount)!;
-  }
-
   PreferredSize appBarLocation() {
     return PreferredSize(
       preferredSize: const Size.fromHeight(50),
@@ -770,11 +804,7 @@ class _LocationViewChatState extends State<LocationViewChat> {
                   icon: Icon(Icons.more_vert, color: getTextColor(widget.chat.getColor())),
                   onSelected: (item) => onSelectLocation(context, item),
                   itemBuilder: (context) => [
-                    PopupMenuItem<int>(value: 0, child: Text("Profile")),  // TODO:
-                    PopupMenuItem<int>(value: 1, child: Text("Settings")),
-                    PopupMenuItem<int>(
-                        value: 2, child: Text("Broup details")),
-                    PopupMenuItem<int>(value: 3, child: Text("Home"))
+                    PopupMenuItem<int>(value: 0, child: Text("Back to Chat")),
                   ])
             ]
             ),
@@ -785,10 +815,7 @@ class _LocationViewChatState extends State<LocationViewChat> {
   void onSelectLocation(BuildContext context, int item) {
     switch (item) {
       case 0:
-        print("TODO:");
-        break;
-      case 1:
-        print("TODO");
+        exitPreviewMode();
         break;
     }
   }
@@ -797,8 +824,7 @@ class _LocationViewChatState extends State<LocationViewChat> {
     DateTime now = DateTime.now().toUtc();
     DateTime endTime;
     if (selectedIndex == 0) {
-      // TODO: Put back to 15 minutes!
-      endTime = now.add(Duration(minutes: 3));
+      endTime = now.add(Duration(minutes: 15));
     } else if (selectedIndex == 1) {
       endTime = now.add(Duration(hours: 1));
     } else {

@@ -832,3 +832,8 @@ LatLng stringToLatLng(String locationString) {
   double longitude = double.parse(parts[1]);
   return LatLng(latitude, longitude);
 }
+
+double calculateZoomLevel(double radius) {
+  double zoomLevel = 15 - log(radius / 500) / log(2);
+  return zoomLevel;
+}

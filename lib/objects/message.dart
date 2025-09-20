@@ -168,9 +168,6 @@ class Message {
             DateTime endTime = DateTime.parse(endTimeString).toLocal();
             int broId = message.senderId;
             int broupId = message.broupId;
-            print("start sharing $broupId $endTime");
-            print("now time ${DateTime.now().toLocal()}");
-            print("if statement ${endTime.isAfter(DateTime.now().toLocal())}");
             if (!DateTime.now().toLocal().isAfter(endTime)) {
               // Still active
               await Storage().addLocationSharing(

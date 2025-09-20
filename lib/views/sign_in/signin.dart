@@ -240,7 +240,6 @@ class _SignInState extends State<SignIn> {
     authService.getRegister(registerRequest).then((loginResponse) {
       if (loginResponse.getResult()) {
         // We securely store information locally on the phone
-        // TODO: doen we dit zo bewaren? Denk ik niet nodig?
         secureStorage.setBroName(broNameRegister);
         secureStorage.setBromotion(bromotionRegister);
         secureStorage.setPassword(passwordRegister);

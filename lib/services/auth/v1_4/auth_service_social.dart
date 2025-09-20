@@ -180,7 +180,7 @@ class AuthServiceSocial {
     }
   }
 
-  Future<List<Broup>> retrieveBroups(List<int> broupIds) async {
+  Future<List<Broup>> roups(List<int> broupIds) async {
     String endPoint = "broup/get";
     var response = await AuthApi().dio.post(endPoint,
         options: Options(headers: {
@@ -956,7 +956,7 @@ class AuthServiceSocial {
           Bro? bro = await Storage().fetchBro(broId);
           if (bro != null) {
             bro.setAvatar(avatar);
-            Storage().updateBro(bro);
+            await Storage().updateBro(bro);
             updateBroups(bro);
             return true;
           } else {
@@ -977,20 +977,18 @@ class AuthServiceSocial {
     }
   }
 
-  updateBroups(Bro bro) {
-    Storage().addBro(bro);
+  updateBroups(Bro bro) async {
+    await Storage().addBro(bro);
     Me? me = Settings().getMe();
     if (me != null) {
       for (Broup broup in me.broups) {
         if (broup.broIds.contains(bro.id)) {
           broup.addBro(bro);
-          if (broup.private) {
-            // TODO: `new_avatar` back to false?
-          }
         }
       }
       BroHomeChangeNotifier().notify();
     }
+    return;
   }
 
   Future<bool> getAvatarBroup(int broupId) async {
