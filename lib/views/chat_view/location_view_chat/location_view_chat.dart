@@ -295,9 +295,9 @@ class _LocationViewChatState extends State<LocationViewChat> {
     double bottomPadding = showEmojiKeyboard ? 0 : MediaQuery.of(context).padding.bottom;
     double textFieldHeight = 90;
     if (appendingCaption) {
-      textFieldHeight += 45;
+      textFieldHeight += 46;
     }
-    double paddingHeight = 15;
+    double paddingHeight = 20;
 
     double remainingHeight = MediaQuery.of(context).size.height -
         appBarHeight -
