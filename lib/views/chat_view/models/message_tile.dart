@@ -123,24 +123,25 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
             locationSharing = LocationSharing();
             locationSharing!.getPermission();
             LatLng messageLocation = stringToLatLng(widget.message.data!);
-            BitmapDescriptor broIcon = BitmapDescriptor.defaultMarker;
-            String broTitle = "bro location";
-            String broSnippet = "shared location";
-            if (widget.bro != null && widget.bro!.getAvatar() != null) {
-              broIcon = await locationSharing!.createCustomMarkerWithText(
-                  widget.bro!.getAvatar()!, widget.bro!.bromotion, 60, 60);
-              broTitle = widget.bro!.getFullName();
-            }
-            locationMarkers[widget.message.senderId] = Marker(
-              markerId: MarkerId('bro_${widget.message.senderId}_Location'),
-              position: messageLocation,
-              icon: broIcon,
-              infoWindow: InfoWindow(
-                  title: broTitle,
-                  snippet: broSnippet
-              )
-            );
-            setState(() {});
+            loadLocationMarker(messageLocation);
+            // BitmapDescriptor broIcon = BitmapDescriptor.defaultMarker;
+            // String broTitle = "bro location";
+            // String broSnippet = "shared location";
+            // if (widget.bro != null && widget.bro!.getAvatar() != null) {
+            //   broIcon = await locationSharing!.createCustomMarkerWithText(
+            //       widget.bro!.getAvatar()!, widget.bro!.bromotion, 60, 60);
+            //   broTitle = widget.bro!.getFullName();
+            // }
+            // locationMarkers[widget.message.senderId] = Marker(
+            //   markerId: MarkerId('bro_${widget.message.senderId}_Location'),
+            //   position: messageLocation,
+            //   icon: broIcon,
+            //   infoWindow: InfoWindow(
+            //       title: broTitle,
+            //       snippet: broSnippet
+            //   )
+            // );
+            // setState(() {});
           } else if (widget.message.dataType == DataType.liveLocation.value) {
             locationSharing = LocationSharing();
             locationSharing!.getPermission();
@@ -163,6 +164,33 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
         }
       }
     }
+  }
+
+  loadLocationMarker(LatLng startPosition) async {
+    BitmapDescriptor broIcon = BitmapDescriptor.defaultMarker;
+    String broTitle = "bro location";
+    String broSnippet = "shared location";
+    if (widget.bro != null && widget.bro!.getAvatar() != null) {
+      if (locationSharing != null) {
+        print("wupadfadsfpoewa");
+        broIcon = await locationSharing!.createCustomMarkerWithText(
+            widget.bro!.getAvatar()!, widget.bro!.bromotion, 60, 60);
+        broTitle = widget.bro!.getFullName();
+
+        locationMarkers[widget.bro!.id] = Marker(
+            markerId: MarkerId('bro_${widget.bro!.id}_Location'),
+            position: startPosition,
+            icon: broIcon,
+            infoWindow: InfoWindow(
+                title: broTitle,
+                snippet: broSnippet
+            )
+        );
+      }
+    }
+    setState(() {
+      mapMarkers = locationMarkers.values.toSet();
+    });
   }
 
   late final controller = SlidableController(this);
@@ -291,8 +319,7 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
           }
         }
         setState(() {
-          Set<Marker> locationMarkersNow = locationMarkers.values.toSet();
-          mapMarkers = locationMarkersNow;
+          mapMarkers = locationMarkers.values.toSet();
         });
       }
     }
