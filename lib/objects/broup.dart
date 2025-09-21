@@ -548,12 +548,6 @@ class Broup {
   }
 
   updateBroupLocalDB(Broup localBroup) {
-    // This is only called if the broup is updated, so we will update the update time.
-    // It's not perfect, since it will not update the broup that was updated the most recently
-    // but it updates all the broups that were updated since the last time the app was opened.
-    // This is good enough and is just as user friendly as the perfect last update time.
-    // But this way we don't need to keep track of this time on the server and only on the client.
-    updateLastActivity(DateTime.now().toUtc().toString());
     // Check if the data from the server indicates that the bro is now blocked from the chat.
     if (this.removed && !localBroup.removed) {
       // It's possible that a blocked message is already added, we will not add it again
@@ -597,6 +591,7 @@ class Broup {
     }
     // If updateBroup was true, these values should be taken from the server, which are now on `this` broup object.
     if (this.updateBroup) {
+      updateLastActivity(DateTime.now().toUtc().toString());
       this
         ..alias = this.alias
         ..unreadMessages = this.unreadMessages
@@ -613,6 +608,7 @@ class Broup {
         ..broupColour = this.broupColour
         ..lastMessageReadId = this.lastMessageReadId;
     } else if (this.newAvatar) {
+      updateLastActivity(DateTime.now().toUtc().toString());
       this
         ..unreadMessages = this.unreadMessages
         ..newMessages = this.newMessages
@@ -630,6 +626,7 @@ class Broup {
         ..broupDescription = localBroup.broupDescription
         ..broupColour = localBroup.broupColour;
     } else if (this.newMessages) {
+      updateLastActivity(DateTime.now().toUtc().toString());
       // If newMessages is true, (and updateBroup is false) we want to take the
       // `newMessages` and `unreadMessages` from the server
       // Which means we take everything from the db except these values.
