@@ -656,7 +656,6 @@ class SocketServices extends ChangeNotifier {
   }
 
   updateLocation(int meId, int broupId, double lat, double lng) {
-    print("updating location!");
     this.socket.emit("update_location", {
       "bro_id": meId,
       "broup_id": broupId,
@@ -672,7 +671,6 @@ class SocketServices extends ChangeNotifier {
       int broId = data["bro_id"];
       Me? me = Settings().getMe();
       if (me != null) {
-        print("going to update location");
         LatLng latLng = LatLng(data["lat"], data["lng"]);
         LocationSharing().updateBroLocation(broId, latLng);
       }
@@ -680,13 +678,10 @@ class SocketServices extends ChangeNotifier {
   }
 
   checkShareLocation() {
-    print("checking share location!!@!!");
     LocationSharing locationSharing = LocationSharing();
     if (locationSharing.endTimeShareMe != {}) {
-      print("there was somethign running, start again!");
       Me? me = Settings().getMe();
       if (me != null) {
-        print("call all function");
         locationSharing.startSharingAll(me);
       }
     }

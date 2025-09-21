@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../../objects/bro.dart';
+import '../../../objects/me.dart';
+import '../../../objects/message.dart';
 import '../../../utils/location_sharing.dart';
+import '../../../utils/settings.dart';
 import '../../../utils/storage.dart';
 import '../../../utils/utils.dart';
 import 'location_sharing_overview.dart';
@@ -14,6 +17,7 @@ class LocationViewer extends StatefulWidget {
   final int broupId;
   final Bro? bro;
   final bool myMessage;
+  final Message? currentMessage;
 
   const LocationViewer({
     Key? key,
@@ -22,6 +26,7 @@ class LocationViewer extends StatefulWidget {
     required this.broupId,
     required this.bro,
     required this.myMessage,
+    required this.currentMessage,
   }) : super(key: key);
 
   @override
@@ -80,7 +85,6 @@ class _LocationViewerState extends State<LocationViewer> {
   }
 
   void _onLocationUpdate(int broId, LatLng? location, bool remove) async {
-    print("Got update!");
     Storage().fetchBroup(widget.broupId).then((broup) async {
       if (broup != null) {
         if (broup.broIds.contains(broId)) {
@@ -99,14 +103,12 @@ class _LocationViewerState extends State<LocationViewer> {
             // Here a location is available and we will update the markers.
             Marker? broMarker = await locationSharing.getBroMarker(widget.broupId, broId);
             if (broMarker != null) {
-              print("got bro marker");
               locationMarkers[broId] = broMarker;
             } else {
               locationMarkers[broId] = Marker(
                 markerId: MarkerId('bro_${broId}_Location'),
                 position: location!,
               );
-              print("New location: ${location.latitude}, ${location.longitude}");
             }
           }
           setState(() {});
@@ -144,17 +146,74 @@ class _LocationViewerState extends State<LocationViewer> {
     });
   }
 
-  double getHeightForLiveLocationShareBox(List<Widget> liveLocationInformationBros) {
-    if (liveLocationInformationBros.isEmpty) {
-      return 0.0;
-    } else if (liveLocationInformationBros.length == 1) {
-      return 50.0;
-    } else {
-      return 80.0;
+  bool currentlySharing() {
+    if (widget.bro != null) {
+      // Regular location view.
+      return false;
+    }
+    if (!locationSharing.endTimeShareMe.containsKey(widget.broupId)) {
+      return false;
+    }
+    DateTime? endTimeMe = locationSharing.endTimeShareMe[widget.broupId];
+    if (endTimeMe == null) {
+      return false;
+    }
+    if (DateTime.now().toLocal().isAfter(endTimeMe.toLocal())) {
+      return false;
+    }
+    return true;
+  }
+
+
+  showDialogStopSharing(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: new Text("Stop Sharing live location?"),
+            content: RichText(
+              textAlign: TextAlign.center,
+              text: TextSpan(
+                children: [
+                  TextSpan(
+                    text: "Are you sure?\nThis will stop sharing your live location with this broup!",
+                    style: TextStyle(color: Colors.black, fontSize: 16),
+                  ),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              new TextButton(
+                child: new Text("Cancel"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              new TextButton(
+                child: new Text("Stop Sharing"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  stopLiveSharing();
+                },
+              ),
+            ],
+          );
+        });
+  }
+
+  stopLiveSharing() async {
+    Me? me = Settings().getMe();
+    if (me != null) {
+      if (widget.currentMessage != null) {
+        await locationSharing.sendMessageStopSharing(me, widget.broupId, widget.currentMessage!);
+        await locationSharing.stopSharingLocation(me, widget.broupId);
+        backButtonFunctionality();
+      }
     }
   }
 
   Widget currentLiveLocationInformation() {
+    double liveLocationHeight = 0.0;
     List<Widget> liveLocationInformationBros = [];
     if (!widget.liveLocation) {
       if (widget.bro != null) {
@@ -187,6 +246,11 @@ class _LocationViewerState extends State<LocationViewer> {
             ),
           ),
         );
+        if (liveLocationHeight == 0) {
+          liveLocationHeight = 50;
+        } else if (liveLocationHeight == 50) {
+          liveLocationHeight = 80;
+        }
       }
     } else {
       if (locationSharing.endTimeShareOfTheBros.containsKey(widget.broupId)) {
@@ -220,6 +284,11 @@ class _LocationViewerState extends State<LocationViewer> {
                       ),
                     ),
                   );
+                  if (liveLocationHeight == 0) {
+                    liveLocationHeight = 50;
+                  } else if (liveLocationHeight == 50) {
+                    liveLocationHeight = 80;
+                  }
                 } else {
                   storage.fetchBro(broShareId).then((bro) {
                     if (bro != null) {
@@ -227,7 +296,6 @@ class _LocationViewerState extends State<LocationViewer> {
                       setState(() {
                         liveLocationInformation[broShareId] = bro;
                         locationSharingDataList[broShareId] = LocationSharingOverviewData(bro: bro, locationInformation: locationString);
-                        print("set bro, bro!");
                       });
                     }
                   });
@@ -237,32 +305,60 @@ class _LocationViewerState extends State<LocationViewer> {
         }
       }
     }
-    return GestureDetector(
-      onTap: () {
-        if (widget.liveLocation) {
-          tappedLiveLocationShareBox();
-        }
-      },
-      child: Container(
+
+    Widget stopSharingButton = Container();
+    if (currentlySharing()) {
+      stopSharingButton = Container(
         width: MediaQuery.of(context).size.width,
-        height: getHeightForLiveLocationShareBox(liveLocationInformationBros),
-        decoration: BoxDecoration(
-          color: Colors.black.withValues(alpha: 0.6),
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.3),
-              blurRadius: 10,
-              offset: Offset(0, 2),
+        height: 30,
+        margin: EdgeInsets.symmetric(horizontal: 16),
+        child: ElevatedButton(
+          onPressed: () {
+            showDialogStopSharing(context);
+          },
+          child: Text("Stop Sharing"),
+          style: ElevatedButton.styleFrom(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
             ),
-          ],
-        ),
-        child: SingleChildScrollView(
-          child: Column(
-              children: liveLocationInformationBros
           ),
         ),
+      );
+    }
+
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      child: Column(
+        children: [
+          GestureDetector(
+            onTap: () {
+              if (widget.liveLocation) {
+                tappedLiveLocationShareBox();
+              }
+            },
+            child: Container(
+              height: liveLocationHeight + 2,
+              decoration: BoxDecoration(
+                color: Colors.black.withValues(alpha: 0.6),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.3),
+                    blurRadius: 10,
+                    offset: Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: SingleChildScrollView(
+                child: Column(
+                    children: liveLocationInformationBros
+                ),
+              ),
+            ),
+          ),
+          stopSharingButton,
+        ]
       ),
     );
   }
@@ -320,13 +416,10 @@ class _LocationViewerState extends State<LocationViewer> {
                   markers: locationMarkers.values.toSet(),
                   mapType: MapType.normal,
                   onCameraMove: (CameraPosition position) {
-                    print("camera moved");
                   },
                   onCameraIdle: () {
-                    print("camera idle");
                   },
                   onTap: (LatLng pos) {
-                    print("map tapped");
                   },
                 )
               ),

@@ -4,7 +4,8 @@ enum DataType {
   video(1, "Video"),
   audio(2, "Audio"),
   location(3, "Location"),
-  liveLocation(4, "LiveLocation");
+  liveLocation(4, "LiveLocation"),
+  liveLocationStop(5, "LiveLocationStop");
 
   const DataType(this.value, this.typeName);
   final int value;

@@ -104,15 +104,13 @@ class _LocationViewChatState extends State<LocationViewChat> {
     super.dispose();
   }
 
-  String? _errorMessage;
   Future<void> getLocation() async {
     try {
       bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
       if (!serviceEnabled) {
         setState(() {
           isLoading = false;
-          _errorMessage = "Location services are disabled. Please enable them in settings.";
-          print(_errorMessage);
+          showToastMessage("Location services are disabled. Please enable them in settings.");
         });
         return;
       }
@@ -123,8 +121,7 @@ class _LocationViewChatState extends State<LocationViewChat> {
         if (permission == LocationPermission.denied) {
           setState(() {
             isLoading = false;
-            _errorMessage = "Location permissions are denied. Cannot fetch location.";
-            print(_errorMessage);
+            showToastMessage("Location permissions are denied. Cannot fetch location.");
           });
           return;
         }
@@ -133,8 +130,7 @@ class _LocationViewChatState extends State<LocationViewChat> {
       if (permission == LocationPermission.deniedForever) {
         setState(() {
           isLoading = false;
-          _errorMessage = "Location permissions are permanently denied. Please enable them in app settings.";
-          print(_errorMessage);
+          showToastMessage("Location permissions are permanently denied. Please enable them in app settings.");
         });
         return;
       }
@@ -165,27 +161,23 @@ class _LocationViewChatState extends State<LocationViewChat> {
         mapsCameraPositionLatitude = position.latitude;
         mapsCameraPositionLongitude = position.longitude;
         isLoading = false;
-        _errorMessage = null;
       });
 
       await _fetchNearbyPlaces(_currentPosition!);
     } on TimeoutException {
       setState(() {
         isLoading = false;
-        _errorMessage = "Timeout while fetching location. Please try again.";
-        print(_errorMessage);
+        showToastMessage("Timeout while fetching location. Please try again.");
       });
     } on PlatformException catch (e) {
       setState(() {
         isLoading = false;
-        _errorMessage = "Failed to get location: ${e.message}";
-        print(_errorMessage);
+        showToastMessage("Failed to get location: ${e.message}");
       });
     } catch (e) {
       setState(() {
         isLoading = false;
-        _errorMessage = "An unexpected error occurred: $e";
-        print(_errorMessage);
+        showToastMessage("An unexpected error occurred: $e");
       });
     }
   }
@@ -229,7 +221,6 @@ class _LocationViewChatState extends State<LocationViewChat> {
         ),
       );
 
-      print("Response: ${response.data}");
       if (response.statusCode == 200) {
         final results = response.data['places'] as List;
 
@@ -248,7 +239,6 @@ class _LocationViewChatState extends State<LocationViewChat> {
               infoWindow: InfoWindow.noText,
               onTap: () {
                 setState(() {
-                  print("marker tapped");
                   markerTapped = true;
                   _selectedMarkerId = markerId;
                   _selectedMarkerInfo = "${name["text"]}\n${place['formattedAddress'] ?? 'No address available'}";
@@ -260,11 +250,14 @@ class _LocationViewChatState extends State<LocationViewChat> {
         }
         setState(() {});
       } else {
-        showToastMessage("Failed to fetch places");
+        if (mounted) {
+          showToastMessage("Failed to fetch places");
+        }
       }
     } on DioException catch (e) {
-      print("Dio Error: ${e.message}");
-      showToastMessage("Error fetching places: ${e.message}");
+      if (mounted) {
+        showToastMessage("Error fetching places: ${e.message}");
+      }
     }
   }
 
@@ -441,7 +434,6 @@ class _LocationViewChatState extends State<LocationViewChat> {
             },
             onCameraIdle: () {
               if (markerTapped) {
-                print("marker no longer tapped $_selectedMarkerInfo");
                 setState(() {
                   showMarkerInfo = true;
                   markerTapped = false;
@@ -451,7 +443,6 @@ class _LocationViewChatState extends State<LocationViewChat> {
                   showCurrentLocationMarkerInfo = true;
                 });
               }
-              print("camera idle");
             },
             onTap: (LatLng pos) {
               setState(() {
@@ -560,7 +551,7 @@ class _LocationViewChatState extends State<LocationViewChat> {
       });
       await Storage().addMessage(mes);
 
-      AuthServiceSocialV15().sendMessageLocation(widget.chat.getBroupId(), message, textMessage, messageLoc, dataType).then((messageId) {
+      AuthServiceSocialV15().sendMessageLocation(widget.chat.getBroupId(), message, textMessage, messageLoc, dataType, null).then((messageId) {
         setState(() {
           isSending = false;
         });
@@ -576,7 +567,7 @@ class _LocationViewChatState extends State<LocationViewChat> {
             if (me == null) {
               return;
             }
-            LocationSharing().startSharing(me, widget.chat.getBroupId(), endTime.toLocal());
+            LocationSharing().startSharing(me, widget.chat.getBroupId(), endTime.toLocal(), mes.messageId);
           }
           setState(() {
             navigateToChat(context, settings, widget.chat);
@@ -824,7 +815,8 @@ class _LocationViewChatState extends State<LocationViewChat> {
     DateTime now = DateTime.now().toUtc();
     DateTime endTime;
     if (selectedIndex == 0) {
-      endTime = now.add(Duration(minutes: 15));
+      // TODO: Put back!
+      endTime = now.add(Duration(minutes: 3));
     } else if (selectedIndex == 1) {
       endTime = now.add(Duration(hours: 1));
     } else {

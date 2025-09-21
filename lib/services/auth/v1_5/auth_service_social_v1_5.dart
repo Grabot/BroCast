@@ -99,8 +99,9 @@ class AuthServiceSocialV15 {
       int broupId,
       String message,
       String? textMessage,
-      String messageLocation,
-      int dataType
+      String? messageLocation,
+      int dataType,
+      int? repliedToMessageId,
       ) async {
     String endPoint = "message/send/location";
 
@@ -111,12 +112,13 @@ class AuthServiceSocialV15 {
           HttpHeaders.contentTypeHeader: "application/json",
         },
       ),
-      data: jsonEncode(<String, dynamic> {
+      data: jsonEncode(<String, dynamic>{
         "broup_id": broupId,
         "message": message,
-        "location": messageLocation,
+        "location": messageLocation ?? null,
         "text_message": textMessage ?? "",
-        "data_type": dataType
+        "data_type": dataType,
+        "replied_to_message_id": repliedToMessageId ?? null
       }),
     ).timeout(Duration(seconds: 30)).then((response) {
 
@@ -333,14 +335,12 @@ class AuthServiceSocialV15 {
       if (json["result"]) {
         if (json.containsKey("bro_locations")) {
           LocationSharing locationSharing = LocationSharing();
-          print("updating broup location");
           for (var broLocation in json["bro_locations"]) {
             if (broLocation.containsKey("lat") && broLocation.containsKey("lng") &&
                 broLocation.containsKey("bro_id")) {
               LatLng locationBro = LatLng(broLocation["lat"], broLocation["lng"]);
               locationSharing.broPositions[broLocation["bro_id"]] = locationBro;
               locationSharing.notifyListenersBro(broLocation["bro_id"], locationBro);
-              print("updated broup location $broLocation");
             }
           }
           return true;
@@ -372,12 +372,10 @@ class AuthServiceSocialV15 {
       if (json["result"]) {
         if (json.containsKey("bro_locations")) {
           LocationSharing locationSharing = LocationSharing();
-          print("updating broup location");
           for (var broLocation in json["bro_locations"]) {
             if (broLocation.containsKey("lat") && broLocation.containsKey("lng") && broLocation.containsKey("bro_id")) {
               LatLng locationBro = LatLng(broLocation["lat"], broLocation["lng"]);
               locationSharing.broPositions[broLocation["bro_id"]] = locationBro;
-              print("updated broup location $broLocation");
             }
           }
           return true;

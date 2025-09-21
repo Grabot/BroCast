@@ -1,5 +1,8 @@
 import 'dart:async';
 import 'dart:ui' as ui;
+import 'package:brocast/objects/data_type.dart';
+import 'package:brocast/utils/settings.dart';
+import 'package:brocast/constants/route_paths.dart' as routes;
 import 'package:brocast/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -10,17 +13,22 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:tuple/tuple.dart';
 
 import '../objects/bro.dart';
+import '../objects/broup.dart';
 import '../objects/me.dart';
 import '../objects/message.dart';
 import '../services/auth/v1_4/auth_service_social.dart';
 import '../services/auth/v1_5/auth_service_social_v1_5.dart';
 import '../../../utils/storage.dart';
+import 'locator.dart';
+import 'navigation_service.dart';
 
 
 typedef LocationUpdateCallback = void Function(int broId, LatLng? location, bool remove);
 
 class LocationSharing {
   static final LocationSharing _instance = LocationSharing._internal();
+
+  final NavigationService _navigationService = locator<NavigationService>();
 
   Map<int, Timer?> _inactivityTimer = {};
   Map<int, Stream<Position>?> positionStream = {};
@@ -51,7 +59,6 @@ class LocationSharing {
   }
 
   void addLocationListener(LocationUpdateCallback listener) {
-    print("Adding Location listener");
     _listeners.add(listener);
   }
 
@@ -155,7 +162,6 @@ class LocationSharing {
     Bro? bro = await storage.fetchBro(broId);
     if (bro != null) {
       if (bro.getAvatar() != null) {
-        print("Creating marker for bro ${bro.getId()}");
         setBroData(bro, broupId);
       } else {
         await AuthServiceSocial().getAvatarBro(broId);
@@ -168,7 +174,6 @@ class LocationSharing {
         }
       }
     } else {
-      print("bro not found?");
       Bro? newBro = await AuthServiceSocial().retrieveBroAvatar(broId);
       if (newBro != null) {
         await AuthServiceSocial().updateBroups(newBro);
@@ -186,7 +191,6 @@ class LocationSharing {
   Future<Marker?> getBroMarker(int broupId, int broId) async {
     if (broPositions.containsKey(broId) && broPositions[broId] != null) {
       if (!broMarkerIcon.containsKey(broId)) {
-        print("creating bro marker icon");
         await createBroMarker(broupId, broId);
         if (broPositions.containsKey(broId)) {
           notifyListenersBro(broId, broPositions[broId]!);
@@ -217,7 +221,6 @@ class LocationSharing {
           createBroMarker(broupId, broId);
         }
       }
-      _notifyListenersBroup();
     }
     if (retrieveBroLocation.isNotEmpty) {
       if (retrieveBroLocation.length == 1) {
@@ -228,19 +231,20 @@ class LocationSharing {
             notifyListenersBro(singleBroId, broPos);
           }
         });
+      } else {
+        AuthServiceSocialV15().getBrosLocation(broupId, retrieveBroLocation).then((posSet) {});
       }
-      AuthServiceSocialV15().getBrosLocation(broupId, retrieveBroLocation).then((posSet) {
-      });
+    }
+    if (broPositions.isNotEmpty) {
+      _notifyListenersBroup();
     }
   }
 
   void removeLocationListener(LocationUpdateCallback listener) {
-    print("Removing Location listener");
     _listeners.remove(listener);
   }
 
   void notifyListenersBro(int broId, LatLng location) {
-    print("Notifying listeners $_listeners");
     for (final listener in _listeners) {
       listener(broId, location, false);
     }
@@ -248,7 +252,6 @@ class LocationSharing {
 
   void _notifyListenersBroup() {
     for (final entry in broPositions.entries) {
-      print("Notifying listeners for bro ID: ${entry.key} with location: ${entry.value}");
       int broId = entry.key;
       LatLng location = entry.value;
       for (final listener in _listeners) {
@@ -258,7 +261,6 @@ class LocationSharing {
   }
 
   startSharingAll(Me me) async {
-    print("start sharing all?");
     List<LocationSharingData>? endTimeShares = await storage.getAllActiveLocationSharing();
     if (endTimeShares != null) {
       List<LocationSharingData> timeShareMe = endTimeShares.where((share) => share.meSharing).toList();
@@ -266,19 +268,17 @@ class LocationSharing {
       for (LocationSharingData endTimeShare in timeShareMe) {
         int broupId = endTimeShare.broupId;
         DateTime endTime = endTimeShare.dateTime.toLocal();
-        print("start sharing $broupId $endTime");
-        print("now time ${DateTime.now().toLocal()}");
-        print("if statement ${endTime.isAfter(DateTime.now().toLocal())}");
         if (DateTime.now().toLocal().isAfter(endTime)) {
           // Now is after the endtime so the sharing is over.
-          print("removing $broupId");
           if (endTimeShareMe.containsKey(broupId)) {
             endTimeShareMe.remove(broupId);
           }
           storage.removeLocationSharing(me.id, broupId, true);
         } else {
-          print("start sharing $broupId");
-          startSharing(me, broupId, endTime);
+          int messageId = endTimeShare.messageId;
+          if (messageId != -1) {
+            startSharing(me, broupId, endTime, messageId);
+          }
         }
       }
       // Check if other bros are sharing
@@ -286,12 +286,9 @@ class LocationSharing {
         int broId = endTimeShareBro.broId;
         int broupId = endTimeShareBro.broupId;
         DateTime endTime = endTimeShareBro.dateTime.toLocal();
-        print("bro start sharing $broupId $endTime");
-        print("bro now time ${DateTime.now().toLocal()}");
-        print("bro if statement ${endTime.isAfter(DateTime.now().toLocal())}");
         if (DateTime.now().toLocal().isAfter(endTime)) {
           // no longer sharing, so remove the bro entry from the list
-          await broShareTimeReached(endTime, broupId, broId, false);
+          await broShareTimeReached(broupId, broId, false);
         } else {
           getLocationSharingInformation(broupId, broId, endTime);
           if (!endTimeShareBroTimers.containsKey(broupId)) {
@@ -301,17 +298,15 @@ class LocationSharing {
             endTimeShareBroTimers[broupId]![broId]!.cancel();
           }
           endTimeShareBroTimers[broupId]![broId] = Timer(Duration(milliseconds: endTime.toLocal().difference(DateTime.now().toLocal()).inMilliseconds), () async {
-            print("End time reached for bro sharing. $broupId");
-            await broShareTimeReached(endTimeShareBro.dateTime, endTimeShareBro.broupId, endTimeShareBro.broId, false);
+            await broShareTimeReached(endTimeShareBro.broupId, endTimeShareBro.broId, false);
           });
         }
       }
     }
   }
 
-  broShareTimeReached(DateTime dateTime, int broupId, int broId, bool meSharing) async {
+  broShareTimeReached(int broupId, int broId, bool meSharing) async {
     await storage.removeLocationSharing(broId, broupId, meSharing);
-    print("bro share time reached $broupId - $broId");
     if (endTimeShareBroTimers.containsKey(broupId)) {
       endTimeShareBroTimers[broupId]!.remove(broId);
     }
@@ -342,7 +337,7 @@ class LocationSharing {
     }
   }
 
-  startEndTimeBroTimer(DateTime endTime, int broupId, int broId) {
+  startEndTimeBroTimer(DateTime endTime, int broupId, int broId) async {
     getLocationSharingInformation(broupId, broId, endTime);
     if (!endTimeShareBroTimers.containsKey(broupId)) {
       endTimeShareBroTimers[broupId] = {};
@@ -350,20 +345,26 @@ class LocationSharing {
     if (endTimeShareBroTimers[broupId]![broId] != null) {
       endTimeShareBroTimers[broupId]![broId]!.cancel();
     }
+    if (!broPositions.containsKey(broId)) {
+      LatLng? broPos = await AuthServiceSocialV15().getBroLocation(broupId, broId);
+      if (broPos != null) {
+        broPositions[broId] = broPos;
+        notifyListenersBro(broId, broPos);
+      }
+    }
     endTimeShareBroTimers[broupId]![broId] = Timer(Duration(milliseconds: endTime.toLocal().difference(DateTime.now().toLocal()).inMilliseconds), () async {
-      print("End time reached for bro sharing. $broupId   $broId");
-      await broShareTimeReached(endTime, broupId, broId, false);
+      await broShareTimeReached(broupId, broId, false);
     });
   }
 
-  void startSharing(Me me, int broupId, DateTime endTime) async {
-    print("Starting location sharing for bro ID: ${me.getId()} in broup ID: $broupId");
-    await stopSharingLocation(me,  broupId, endTime);
+  void startSharing(Me me, int broupId, DateTime endTime, int messageId) async {
+    await stopSharingLocation(me,  broupId);
     await storage.addLocationSharing(
         broId: me.id,
         broupId: broupId,
         endTime: endTime,
-        meSharing: true
+        meSharing: true,
+        messageId: messageId
     );
     getLocationSharingInformation(broupId, me.id, endTime);
     endTimeShareMe[broupId] = endTime;
@@ -378,33 +379,26 @@ class LocationSharing {
     );
 
     void _startInactivityTimer(int broupId) {
-      print("Starting inactivity timer");
       _inactivityTimer[broupId]?.cancel();
       _inactivityTimer[broupId] = Timer(const Duration(minutes: 5), () {
 
-        print("No movement for 1 minute, forcing update");
         Geolocator.getLastKnownPosition().then((Position? position) {
           if (position != null) {
-            print("Forced update with position: ${position.latitude}, ${position.longitude}");
             SocketServices().updateLocation(
               me.getId(),
               broupId,
               position.latitude,
               position.longitude,
             );
-          }else {
-            print("Failed to get last known position");
           }
         }).catchError((e) {
-          print("Error getting last known position: $e");
+          showToastMessage("Error getting last known position: $e");
         });
         _startInactivityTimer(broupId); // Restart the timer after forced update
       });
     }
 
     _streamSubscription[broupId] = positionStream[broupId]!.listen((Position position) {
-      print("Update because the bro moved to position: ${position.latitude}, ${position.longitude}");
-      // Update location on movement
       SocketServices().updateLocation(
         me.getId(),
         broupId,
@@ -420,13 +414,11 @@ class LocationSharing {
     // Start the initial timer
     _startInactivityTimer(broupId);
     _endTimeTimers[broupId] = Timer(Duration(milliseconds: endTime.toLocal().difference(DateTime.now().toLocal()).inMilliseconds), () {
-      print("End time reached for broup $broupId");
-      stopSharingLocation(me, broupId, endTime);
+      stopSharingLocation(me, broupId);
     });
   }
 
-  Future stopSharingLocation(Me me, int broupId, DateTime endTime) async {
-    print("stopSharingLocation");
+  Future stopSharingLocation(Me me, int broupId) async {
     if (_streamSubscription.containsKey(broupId)) {
       await _streamSubscription[broupId]?.cancel();
       _streamSubscription.remove(broupId);
@@ -445,23 +437,20 @@ class LocationSharing {
       _endTimeTimers[broupId]?.cancel();
       _endTimeTimers.remove(broupId);
     }
-    await broShareTimeReached(endTime, broupId, me.id, true);
+    await broShareTimeReached(broupId, me.id, true);
     return;
   }
 
   updateBroLocation(int broId, LatLng location) {
-    print("Updating bro location for bro ID: $broId to position: ${location.latitude}, ${location.longitude}");
     broPositions[broId] = location;
     notifyListenersBro(broId, location);
   }
 
-  String? _errorMessage;
   Future<void> getLocation() async {
     // 1. Check if location services are enabled
     bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      _errorMessage = "Location services are disabled. Please enable them in settings.";
-      print(_errorMessage);
+      showToastMessage("Location services are disabled. Please enable them in settings.");
       return;
     }
 
@@ -469,18 +458,15 @@ class LocationSharing {
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
-        _errorMessage = "Location permissions are denied. Cannot fetch location.";
-        print(_errorMessage);
+        showToastMessage("Location permissions are denied. Cannot fetch location.");
         return;
       }
     }
 
     if (permission == LocationPermission.deniedForever) {
-      _errorMessage = "Location permissions are permanently denied. Please enable them in app settings.";
-      print(_errorMessage);
+      showToastMessage("Location permissions are permanently denied. Please enable them in app settings.");
       return;
     }
-    _errorMessage = null;
   }
 
   getPermission() async {
@@ -488,15 +474,13 @@ class LocationSharing {
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
-        _errorMessage = "Location permissions are denied. Cannot fetch location.";
-        print(_errorMessage);
+        showToastMessage("Location permissions are denied. Cannot fetch location.");
         return;
       }
     }
 
     if (permission == LocationPermission.deniedForever) {
-      _errorMessage = "Location permissions are permanently denied. Please enable them in app settings.";
-      print(_errorMessage);
+      showToastMessage("Location permissions are permanently denied. Please enable them in app settings.");
       return;
     }
   }
@@ -518,6 +502,87 @@ class LocationSharing {
       }
     });
   }
+
+  sendMessageStopSharing(Me? me, int broupId, Message liveLocationMessage) async {
+    // loop over the broups on `me` to find the one with the broupId
+    Broup? currentBroup = null;
+    if (me == null) {
+      showToastMessage("we had an issues getting your user information. Please log in again.");
+      _navigationService.navigateTo(routes.SignInRoute);
+      return;
+    }
+    for (Broup broup in me.broups) {
+      if (broup.broupId == broupId) {
+        currentBroup = broup;
+        break;
+      }
+    }
+    if (currentBroup == null) {
+      Broup? dbBroup = await storage.fetchBroup(broupId);
+      if (dbBroup != null) {
+        currentBroup = dbBroup;
+      }
+    }
+    if (currentBroup == null) {
+      showToastMessage("we had an issues getting your user information. Please log in again.");
+      _navigationService.navigateTo(routes.SignInRoute);
+      return;
+    }
+    int meId = -1;
+    int newMessageId = currentBroup.lastMessageId + 1;
+    meId = me.getId();
+
+    String message = "🚫🗺️📍😭";
+    String textMessage = "Stopped sharing live location";
+    Message mes = Message(
+      messageId: newMessageId,
+      senderId: meId,
+      body: message,
+      textMessage: textMessage,
+      timestamp: DateTime.now().toUtc().toString(),
+      data: null,
+      dataType: DataType.liveLocationStop.value,
+      info: false,
+      broupId: currentBroup.broupId,
+      repliedMessage: liveLocationMessage,
+      repliedTo: liveLocationMessage.messageId,
+    );
+    mes.isRead = 2;
+    if (currentBroup.messages.length > 0) {
+      currentBroup.messages.insert(0, mes);
+    }
+
+    currentBroup.sendingMessage = true;
+
+    await storage.addMessage(mes);
+    // Send the message. The data is always null here because it's only send via the preview page.
+    int? messageId = await AuthServiceSocialV15().sendMessageLocation(currentBroup.getBroupId(), message, textMessage, null, DataType.liveLocationStop.value, liveLocationMessage.messageId);
+    // isLoadingMessages = false;
+    // We predict what the messageId will be but in the end it is determined by the server.
+    // If it's different we want to update it.
+    if (messageId != null) {
+      mes.isRead = 0;
+      if (mes.messageId != messageId) {
+        await storage.updateMessageId(mes.messageId, messageId, currentBroup.broupId);
+        mes.messageId = messageId;
+      }
+      // message send
+    } else {
+      // The message was not sent, we remove it from the list and the database
+      storage.deleteMessage(mes.messageId, currentBroup.broupId);
+      showToastMessage("there was an issue sending the message");
+      for (int i = 0; i < 5; i++) {
+        // There might be some messages retrieved in between this period.
+        // While this is unlikely, check for the correct message to remove.
+        if (currentBroup.messages[i] == mes) {
+          currentBroup.messages.removeAt(i);
+          break;
+        }
+      }
+    }
+    currentBroup.sendingMessage = false;
+    return;
+  }
 }
 
 class LocationSharingData {
@@ -525,8 +590,9 @@ class LocationSharingData {
   late int broupId;
   late int broId;
   late bool meSharing;
+  late int messageId;
 
-  LocationSharingData(this.dateTime, this.broupId, this.broId, this.meSharing);
+  LocationSharingData(this.dateTime, this.broupId, this.broId, this.meSharing, this.messageId);
 
   LocationSharingData.fromDbMap(Map<String, dynamic> map) {
     broupId = map['broupId'];
@@ -534,5 +600,6 @@ class LocationSharingData {
     dateTime = DateTime.parse(endTimeString).toLocal();
     broId = map["broId"];
     meSharing = map["meSharing"] == 1;
+    messageId = map["messageId"];
   }
 }

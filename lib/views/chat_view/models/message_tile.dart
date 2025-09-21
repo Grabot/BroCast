@@ -20,6 +20,7 @@ import '../../../../objects/message.dart';
 import '../../../objects/bro.dart';
 import 'dart:ui';
 
+import '../../../objects/broup.dart';
 import '../../../objects/me.dart';
 import '../../../services/auth/v1_4/auth_service_social.dart';
 import '../../../utils/settings.dart';
@@ -75,6 +76,7 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
 
   LocationSharing? locationSharing;
   Map<int, Marker> locationMarkers = {};
+  Set<Marker> mapMarkers = {};
 
   selectMessage(BuildContext context) async {
     if ((widget.message.textMessage != null && widget.message.textMessage!.isNotEmpty) || widget.message.dataType != null) {
@@ -144,7 +146,8 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
             locationSharing!.getPermission();
             locationSharing!.addLocationListener(_onLocationUpdate);
             locationSharing!.getBroupLocationsInit(widget.message.broupId);
-            setState(() {});
+            setState(() {
+            });
           }
         }
       } else {
@@ -191,7 +194,6 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
 
   void _initializeAudioController() async {
     if (widget.message.data != null && widget.message.dataType == DataType.audio.value && !audioControllerInitialized) {
-      print("Initializing audio controller");
       audioControllerInitialized = true;
       final file = File(widget.message.data!);
       final tempDirectory = await getTemporaryDirectory();
@@ -255,32 +257,45 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
   }
 
   void _onLocationUpdate(int broId, LatLng? location, bool remove) async {
-    Storage().fetchBroup(widget.message.broupId).then((broup) async {
-      if (broup != null) {
-        if (broup.broIds.contains(broId)) {
-          if (remove) {
-            // When the markers are set we use this flag to know when to remove the markers.
-            if (locationMarkers.containsKey(broId)) {
-              locationMarkers.remove(broId);
-            }
-          } else {
-            // Here a location is available and we will update the markers.
-            Marker? broMarker = await locationSharing!.getBroMarker(widget.message.broupId, broId);
-            if (broMarker != null) {
-              print("got bro marker");
-              locationMarkers[broId] = broMarker;
-            } else {
-              locationMarkers[broId] = Marker(
-                markerId: MarkerId('bro_${broId}_Location'),
-                position: location!,
-              );
-              print("New location: ${location.latitude}, ${location.longitude}");
-            }
-          }
-          setState(() {});
+    Broup? chat;
+    Me? me = Settings().getMe();
+    if (me != null) {
+      for (Broup meBroup in me.broups) {
+        if (meBroup.broupId == widget.message.broupId) {
+          chat = meBroup;
+          break;
         }
       }
-    });
+    }
+    if (chat == null) {
+      chat = await Storage().fetchBroup(widget.message.broupId);
+    }
+
+    if (chat != null) {
+      if (chat.broIds.contains(broId)) {
+        if (remove) {
+          // When the markers are set we use this flag to know when to remove the markers.
+          if (locationMarkers.containsKey(broId)) {
+            locationMarkers.remove(broId);
+          }
+        } else {
+          // Here a location is available and we will update the markers.
+          Marker? broMarker = await locationSharing!.getBroMarker(widget.message.broupId, broId);
+          if (broMarker != null) {
+            locationMarkers[broId] = broMarker;
+          } else {
+            locationMarkers[broId] = Marker(
+              markerId: MarkerId('bro_${broId}_Location'),
+              position: location!,
+            );
+          }
+        }
+        setState(() {
+          Set<Marker> locationMarkersNow = locationMarkers.values.toSet();
+          mapMarkers = locationMarkersNow;
+        });
+      }
+    }
   }
 
   Color getBorderColour() {
@@ -300,7 +315,7 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
       borderColour = Colors.purpleAccent;
     } else if (widget.message.dataType == DataType.location.value) {
       borderColour = Colors.tealAccent;
-    } else if (widget.message.dataType == DataType.liveLocation.value) {
+    } else if (widget.message.dataType == DataType.liveLocation.value || widget.message.dataType == DataType.liveLocationStop.value) {
       borderColour = Colors.cyanAccent;
     }
 
@@ -366,6 +381,7 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
                   broupId: widget.message.broupId,
                   bro: widget.bro,
                   myMessage: widget.myMessage,
+                  currentMessage: null,
                 ),
           ),
         ).then((_) {});
@@ -382,6 +398,7 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
                   broupId: widget.message.broupId,
                   bro: null,
                   myMessage: widget.myMessage,
+                  currentMessage: widget.message,
                 ),
           ),
         ).then((_) {});
@@ -536,6 +553,96 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
     mapController = controller;
   }
 
+  showDialogStopSharing(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: new Text("Stop Sharing live location?"),
+            content: RichText(
+              textAlign: TextAlign.center,
+              text: TextSpan(
+                children: [
+                  TextSpan(
+                    text: "Are you sure?\nThis will stop sharing your live location with this broup!",
+                    style: TextStyle(color: Colors.black, fontSize: 16),
+                  ),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              new TextButton(
+                child: new Text("Cancel"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              new TextButton(
+                child: new Text("Stop Sharing"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  stopLiveSharing();
+                },
+              ),
+            ],
+          );
+        });
+  }
+
+  stopLiveSharing() async {
+    Me? me = Settings().getMe();
+    if (me != null) {
+      if (locationSharing != null) {
+        await locationSharing!.sendMessageStopSharing(me, widget.message.broupId, widget.message);
+        await locationSharing!.stopSharingLocation(me, widget.message.broupId);
+      }
+    }
+  }
+
+  Widget stopLiveSharingButton() {
+    if (widget.message.dataType != DataType.liveLocation.value) {
+      return Container();
+    }
+    if (locationSharing == null) {
+      return Container();
+    }
+    if (!locationSharing!.endTimeShareMe.containsKey(widget.message.broupId)) {
+      return Container();
+    }
+    if (!widget.myMessage) {
+      return Container();
+    }
+    DateTime? endTimeMe = locationSharing!.endTimeShareMe[widget.message.broupId];
+    if (endTimeMe == null) {
+      return Container();
+    }
+    if (DateTime.now().toLocal().isAfter(endTimeMe.toLocal())) {
+      return Container();
+    }
+    // Still some sharing being done
+    return Column(
+      children: [
+        SizedBox(height: 10),
+        Container(
+          width: MediaQuery.of(context).size.width,
+          height: 30,
+          margin: EdgeInsets.symmetric(horizontal: 16),
+          child: ElevatedButton(
+            onPressed: () {
+              showDialogStopSharing(context);
+            },
+            child: Text("Stop Sharing"),
+            style: ElevatedButton.styleFrom(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+          ),
+        ),
+      ]
+    );
+  }
+
   Widget currentLiveLocationInformation() {
     List<Widget> liveLocationInformationBros = [];
     if (widget.message.dataType != DataType.liveLocation.value) {
@@ -645,17 +752,15 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
             myLocationEnabled: true,
             myLocationButtonEnabled: true,
             mapType: MapType.normal,
-            markers: locationMarkers.values.toSet(),
+            markers: mapMarkers,
             gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>{
               Factory<OneSequenceGestureRecognizer>(
                     () => EagerGestureRecognizer(),
               ),
             }.toSet(),
             onCameraMove: (CameraPosition position) {
-              print("camera move");
             },
             onCameraIdle: () {
-              print("camera idle");
             },
             onTap: (LatLng pos) {
               selectMessage(context);
@@ -669,7 +774,8 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
             }
           ),
         ),
-      )
+      ),
+      stopLiveSharingButton(),
     ];
 
     if (widget.message.textMessage != null && widget.message.textMessage!.isNotEmpty) {
@@ -854,6 +960,9 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
         content = getLocationContent();
       } else if (widget.message.dataType == DataType.liveLocation.value) {
         content = getLocationContent();
+      } else if (widget.message.dataType == DataType.liveLocationStop.value) {
+        // The location share stop content is basically a text message
+        content = getTextContent();
       } else {
         content = getTextContent();
       }

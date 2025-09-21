@@ -471,6 +471,7 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
                         broupId: action.message.broupId,
                         bro: bro,
                         myMessage: me.getId() == action.message.senderId,
+                        currentMessage: null,
                       ),
                 ),
               ).then((_) {});
@@ -491,6 +492,7 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
                       broupId: action.message.broupId,
                       bro: null,
                       myMessage: me.getId() == action.message.senderId,
+                      currentMessage: action.message,
                     ),
               ),
             ).then((_) {});

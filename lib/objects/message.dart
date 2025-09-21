@@ -163,6 +163,7 @@ class Message {
         // of how long it needs to be active and from whom it is (and in which broup)
         if (message.dataType == DataType.liveLocation.value) {
           if (message.data != null) {
+            message.dataIsReceived = true;
             // Get the information from the data field.
             String endTimeString = message.data!.split(";")[1];
             DateTime endTime = DateTime.parse(endTimeString).toLocal();
@@ -174,11 +175,17 @@ class Message {
                   broId: broId,
                   broupId: broupId,
                   endTime: endTime,
-                  meSharing: false
+                  meSharing: false,
+                  messageId: message.messageId
               );
-              LocationSharing().startEndTimeBroTimer(endTime, broupId, broId);
+              await LocationSharing().startEndTimeBroTimer(endTime, broupId, broId);
             }
           }
+        } else if (message.dataType == DataType.liveLocationStop.value) {
+          message.dataIsReceived = true;
+          int broId = message.senderId;
+          int broupId = message.broupId;
+          await LocationSharing().broShareTimeReached(broupId, broId, false);
         }
       }
     }

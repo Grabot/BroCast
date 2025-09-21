@@ -380,11 +380,9 @@ class _RecordViewChatState extends State<RecordViewChat> {
         setState(() {
           isRecording = true;
         });
-      } else {
-        print('Error: Could not get path for recording.');
       }
     } catch (e) {
-      print('Error starting recording: $e');
+      showToastMessage('Error starting recording: $e');
     }
   }
 
@@ -406,11 +404,9 @@ class _RecordViewChatState extends State<RecordViewChat> {
         setState(() {
           isRecording = false;
         });
-      } else {
-        print('Error: Could not stop recording.');
       }
     } catch (e) {
-      print('Error stopping recording: $e');
+      showToastMessage('Error stopping recording: $e');
     }
   }
 

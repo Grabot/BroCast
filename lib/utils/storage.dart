@@ -211,6 +211,7 @@ class Storage {
             broupId INTEGER,
             endTime TEXT,
             meSharing INTEGER,
+            messageId INTEGER,
             UNIQUE(broId, broupId, meSharing) ON CONFLICT REPLACE
           );
           ''');
@@ -541,6 +542,7 @@ class Storage {
     required int broupId,
     required DateTime endTime,
     required bool meSharing,
+    required int messageId
   }) async {
     Database database = await this.database;
     return database.insert(
@@ -550,6 +552,7 @@ class Storage {
         'broupId': broupId,
         'endTime': endTime.toUtc().toIso8601String(),
         'meSharing': meSharing ? 1 : 0,
+        'messageId': messageId
       },
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
