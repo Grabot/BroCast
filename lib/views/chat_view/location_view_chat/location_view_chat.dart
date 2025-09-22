@@ -215,7 +215,7 @@ class _LocationViewChatState extends State<LocationViewChat> {
         options: Options(
           headers: {
             'Content-Type': 'application/json',
-            'X-Goog-Api-Key': MAPS_API_KEY,
+            'X-Goog-Api-Key': MAPS_API_KEY_WEB,
             'X-Goog-FieldMask': 'places.displayName,places.location,places.id,places.formattedAddress',
           },
         ),
@@ -252,11 +252,13 @@ class _LocationViewChatState extends State<LocationViewChat> {
       } else {
         if (mounted) {
           showToastMessage("Failed to fetch places");
+          print("Failed to fetch places");
         }
       }
     } on DioException catch (e) {
       if (mounted) {
         showToastMessage("Error fetching places: ${e.message}");
+        print("Error fetching places: ${e.message}");
       }
     }
   }
