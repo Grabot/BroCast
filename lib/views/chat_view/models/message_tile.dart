@@ -225,7 +225,7 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
       audioControllerInitialized = true;
       final file = File(widget.message.data!);
       final tempDirectory = await getTemporaryDirectory();
-      String newFilePath = '${tempDirectory.path}/previewAudio_${widget.message.messageId}.mp3';
+      String newFilePath = '${tempDirectory.path}/previewAudio_${widget.message.messageId}.m4a';
       final fileView = await file.copy(newFilePath);
       audioFilePath = fileView.path;
 

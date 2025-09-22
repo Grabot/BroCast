@@ -411,8 +411,8 @@ class _RecordViewChatState extends State<RecordViewChat> {
   }
 
   Future<String?> _getPath() async {
-    Directory appDirectory = await getApplicationDocumentsDirectory();
-    return "${appDirectory.path}/recording.m4a";
+    Directory tempDirectory = await getTemporaryDirectory();
+    return "${tempDirectory.path}/recording.m4a";
   }
 
   void _playRecording() async {
