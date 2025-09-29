@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:brocast/utils/utils.dart';
@@ -26,7 +27,7 @@ class CameraPage extends StatefulWidget {
 class CameraPageState extends State<CameraPage> {
   bool isLoading = false;
 
-  takePicture(Uint8List pictureBytes) async {
+  takePicture(File imageFile) async {
     if (!widget.changeAvatar) {
       isLoading = false;
       Navigator.of(context).pushReplacement(
@@ -35,17 +36,18 @@ class CameraPageState extends State<CameraPage> {
               PreviewPageChat(
                 fromGallery: false,
                 chat: widget.chat,
-                media: pictureBytes,
+                mediaFile: imageFile,
                 dataType: 0,
               ),
         ),
       );
     } else {
+      Uint8List pictureBytes = await imageFile.readAsBytes();
       Navigator.of(context).pop(pictureBytes);
     }
   }
 
-  takeVideo(Uint8List videoBytes) async {
+  takeVideo(File videoFile) async {
     if (!widget.changeAvatar) {
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
@@ -53,7 +55,7 @@ class CameraPageState extends State<CameraPage> {
               PreviewPageChat(
                 fromGallery: false,
                 chat: widget.chat,
-                media: videoBytes,
+                mediaFile: videoFile,
                 dataType: 1,
               ),
         ),
@@ -148,8 +150,9 @@ class CameraPageState extends State<CameraPage> {
                       event.captureRequest.when(
                         single: (single) async {
                           if (single.file != null) {
-                            Uint8List bytes = await single.file!.readAsBytes();
-                            takePicture(bytes);
+                            File imageFile = File(single.file!.path);
+                            // Uint8List bytes = await single.file!.readAsBytes();
+                            takePicture(imageFile);
                           }
                         },
                         multiple: (multiple) async {
@@ -169,14 +172,13 @@ class CameraPageState extends State<CameraPage> {
                       event.captureRequest.when(
                         single: (single) async {
                           if (single.file != null) {
-                            Uint8List bytes = await single.file!.readAsBytes();
-                            takeVideo(bytes);
+                            File videoFile = File(single.file!.path);
+                            takeVideo(videoFile);
                           }
                         },
                         multiple: (multiple) async {
                           multiple.fileBySensor.forEach((key, value) async {
                             if (value != null) {
-                              Uint8List bytes = await value.readAsBytes();
                               // Navigator.of(context).pop(bytes);
                               // TODO: Handle multiple files?
                             }

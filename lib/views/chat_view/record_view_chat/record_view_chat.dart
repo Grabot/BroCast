@@ -124,6 +124,7 @@ class _RecordViewChatState extends State<RecordViewChat> {
     }
   }
 
+  // TODO: change to file like with video?
   sendMediaMessage(Uint8List messageData, String message, String textMessage) async {
     setState(() {
       isSending = true; // Set sending state to true
@@ -171,7 +172,7 @@ class _RecordViewChatState extends State<RecordViewChat> {
       });
       await Storage().addMessage(mes);
 
-      AuthServiceSocialV15().sendMessage(widget.chat!.getBroupId(), message, messageTextMessage, messageData, DataType.audio.value, null).then((messageId) {
+      AuthServiceSocialV15().sendMessage(widget.chat!.getBroupId(), message, messageTextMessage, mes.data, DataType.audio.value, null).then((messageId) {
         setState(() {
           isSending = false; // Set sending state to false
         });

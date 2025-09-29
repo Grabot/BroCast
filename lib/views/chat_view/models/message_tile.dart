@@ -77,6 +77,7 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
   LocationSharing? locationSharing;
   Map<int, Marker> locationMarkers = {};
   Set<Marker> mapMarkers = {};
+  File? imageFile;
 
   selectMessage(BuildContext context) async {
     if ((widget.message.textMessage != null && widget.message.textMessage!.isNotEmpty) || widget.message.dataType != null) {
@@ -91,6 +92,15 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
             // For a video we first want to load the video controller
             if (widget.message.dataType != DataType.video.value) {
               isLoading = false;
+            }
+            if (widget.message.dataType == DataType.image.value) {
+              getImageDataContent().then((file) {
+                setState(() {
+                  setState(() {
+                    imageFile = file;
+                  });
+                });
+              });
             }
             // Audio and images are loaded immediately.
             if (messageDataResponse != null) {
@@ -115,7 +125,13 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
             }
           });
         } else {
-          if (widget.message.dataType == DataType.video.value) {
+          if (widget.message.dataType == DataType.image.value) {
+            getImageDataContent().then((file) {
+              setState(() {
+                imageFile = file;
+              });
+            });
+          } else if (widget.message.dataType == DataType.video.value) {
             _initializeVideoController();
           } else if (widget.message.dataType == DataType.audio.value) {
             _initializeAudioController();
@@ -124,24 +140,6 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
             locationSharing!.getPermission();
             LatLng messageLocation = stringToLatLng(widget.message.data!);
             loadLocationMarker(messageLocation);
-            // BitmapDescriptor broIcon = BitmapDescriptor.defaultMarker;
-            // String broTitle = "bro location";
-            // String broSnippet = "shared location";
-            // if (widget.bro != null && widget.bro!.getAvatar() != null) {
-            //   broIcon = await locationSharing!.createCustomMarkerWithText(
-            //       widget.bro!.getAvatar()!, widget.bro!.bromotion, 60, 60);
-            //   broTitle = widget.bro!.getFullName();
-            // }
-            // locationMarkers[widget.message.senderId] = Marker(
-            //   markerId: MarkerId('bro_${widget.message.senderId}_Location'),
-            //   position: messageLocation,
-            //   icon: broIcon,
-            //   infoWindow: InfoWindow(
-            //       title: broTitle,
-            //       snippet: broSnippet
-            //   )
-            // );
-            // setState(() {});
           } else if (widget.message.dataType == DataType.liveLocation.value) {
             locationSharing = LocationSharing();
             locationSharing!.getPermission();
@@ -172,7 +170,6 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
     String broSnippet = "shared location";
     if (widget.bro != null && widget.bro!.getAvatar() != null) {
       if (locationSharing != null) {
-        print("wupadfadsfpoewa");
         broIcon = await locationSharing!.createCustomMarkerWithText(
             widget.bro!.getAvatar()!, widget.bro!.bromotion, 60, 60);
         broTitle = widget.bro!.getFullName();
@@ -256,20 +253,20 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
     }
   }
 
-  Uint8List getMessageDataContent() {
-    if (messageData == null && widget.message.data != null) {
-      messageData = getMessageData(widget.message.data!);
+  Future<File?> getImageDataContent() async {
+    if (widget.message.data != null && widget.message.dataType == DataType.image.value) {
+      final file = File(widget.message.data!);
+      final tempDirectory = await getTemporaryDirectory();
+      String newFilePath = '${tempDirectory.path}/previewImage_${widget.message.messageId}.png';
+      File fileView = await file.copy(newFilePath);
+      return fileView;
     }
-    if (messageData == null) {
-      // return the image `not_found.png` in the assets images folder
-      // TODO: Maybe something better? It might be loading so not found is not the best option
-      return Settings().notFoundImage;
-    }
-    return messageData!;
+    return null;
   }
 
   @override
   void dispose() {
+    widget.message.clicked = false;
     if (widget.message.dataType != null) {
       if (widget.message.dataType == DataType.video.value) {
         _videoController?.pause();
@@ -374,16 +371,21 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
     }
   }
 
-  goToMediaViewer() {
+  goToMediaViewer() async {
     if (widget.message.dataType == DataType.image.value) {
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (context) => ImageViewer(
-            key: UniqueKey(),
-            image: getMessageDataContent(),
+      if (imageFile != null) {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) =>
+                ImageViewer(
+                  key: UniqueKey(),
+                  image: imageFile!,
+                ),
           ),
-        ),
-      ).then((_) { });
+        ).then((_) {});
+      } else {
+        showToastMessage("Could not load image");
+      }
     } else if (widget.message.dataType == DataType.video.value) {
       if (widget.message.data != null) {
         Navigator.of(context).push(
@@ -910,6 +912,9 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
   }
 
   Widget getImageContent() {
+    if (imageFile == null) {
+      return Container();
+    }
     final commonChildren = [
       viewImageButton(),
       repliedToView(),
@@ -919,7 +924,7 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
       ),
       isLoading
           ? CircularProgressIndicator()
-          : Image.memory(getMessageDataContent()),
+          : Image.file(imageFile!),
     ];
 
     if (widget.message.textMessage != null && widget.message.textMessage!.isNotEmpty) {

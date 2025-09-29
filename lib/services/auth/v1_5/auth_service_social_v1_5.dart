@@ -23,7 +23,7 @@ class AuthServiceSocialV15 {
       int broupId,
       String message,
       String? textMessage,
-      Uint8List? messageData,
+      String? filePath,
       int? dataType,
       int? repliedToMessageId
     ) async {
@@ -38,21 +38,22 @@ class AuthServiceSocialV15 {
       formMap["text_message"] = textMessage;
     }
 
-    if (messageData != null && dataType != null) {
+    // TODO: Test new way to send files
+    if (filePath != null && dataType != null) {
       if (dataType == DataType.image.value) {
-        formMap["message_data"] = MultipartFile.fromBytes(
-            messageData,
+        formMap["message_data"] = await MultipartFile.fromFile(
+            filePath,
             filename: "image.png"
         );
       } else if (dataType == DataType.video.value) {
-        formMap["video_data"] = MultipartFile.fromBytes(
-            messageData,
+        formMap["video_data"] = await MultipartFile.fromFile(
+            filePath,
             filename: "video.mp4"
         );
       } else if (dataType == DataType.audio.value) {
-        formMap["audio_data"] = MultipartFile.fromBytes(
-            messageData,
-            filename: "audio.mp3"
+        formMap["audio_data"] = await MultipartFile.fromFile(
+            filePath,
+            filename: "audio.m4a"
         );
       }
     }

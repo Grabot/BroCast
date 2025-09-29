@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:emoji_keyboard_flutter/emoji_keyboard_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
@@ -25,14 +26,14 @@ import '../../camera_page/camera_page.dart';
 class PreviewPageChat extends StatefulWidget {
   final bool fromGallery;
   final Broup? chat;
-  final Uint8List media;
+  final File? mediaFile;
   final int? dataType;
 
   const PreviewPageChat({
     Key? key,
     required this.fromGallery,
     required this.chat,
-    required this.media,
+    required this.mediaFile,
     required this.dataType,
   }) : super(key: key);
 
@@ -57,7 +58,6 @@ class _PreviewPageChatState extends State<PreviewPageChat> {
 
   final formKey = GlobalKey<FormState>();
 
-  late Uint8List mediaPreviewData;
   VideoPlayerController? _videoController;
 
   final NavigationService _navigationService = locator<NavigationService>();
@@ -78,8 +78,6 @@ class _PreviewPageChatState extends State<PreviewPageChat> {
     super.initState();
     broMessageController.text = "📸";
 
-    mediaPreviewData = widget.media;
-
     if (widget.dataType == DataType.image.value) {
       broMessageController.text = "📸";
       setState(() {
@@ -94,20 +92,19 @@ class _PreviewPageChatState extends State<PreviewPageChat> {
   }
 
   Future<void> _initializeVideo() async {
-    final directory = await getTemporaryDirectory();
-    // The video will be stored and loaded in a hidden folder with the
-    // default name which is reused for each new video.
-    final file = File('${directory.path}/previewVideo.mp4');
-    await file.writeAsBytes(mediaPreviewData);
-
-    _videoController = VideoPlayerController.file(file)
-      ..initialize().then((_) {
-        setState(() {
-          isLoading = false; // Set loading to false when video is initialized
+    if (widget.mediaFile != null) {
+      _videoController = VideoPlayerController.file(widget.mediaFile!)
+        ..initialize().then((_) {
+          setState(() {
+            isLoading = false; // Set loading to false when video is initialized
+          });
+          _videoController?.setLooping(true);
+          _videoController?.pause();
         });
-        _videoController?.setLooping(true);
-        _videoController?.pause();
-      });
+    } else {
+      print("No video data available");
+      showToastMessage("No video data available");
+    }
   }
 
   backButtonFunctionality() {
@@ -162,8 +159,9 @@ class _PreviewPageChatState extends State<PreviewPageChat> {
     }
   }
 
-  sendMediaMessage(Uint8List messageData, String message, String textMessage, int dataType) async {
+  sendMediaMessage(File messageFile, String message, String textMessage, int dataType) async {
     setState(() {
+      showEmojiKeyboard = false;
       isSending = true; // Set sending state to true
     });
     if (widget.chat == null) {
@@ -195,7 +193,7 @@ class _PreviewPageChatState extends State<PreviewPageChat> {
           body: message,
           textMessage: messageTextMessage,
           timestamp: DateTime.now().toUtc().toString(),
-          data: await saveMediaData(messageData, dataType),
+          data: await saveMediaFile(messageFile, dataType),
           dataType: dataType,
           info: false,
           broupId: widget.chat!.getBroupId()
@@ -209,7 +207,7 @@ class _PreviewPageChatState extends State<PreviewPageChat> {
       });
       await Storage().addMessage(mes);
 
-      AuthServiceSocialV15().sendMessage(widget.chat!.getBroupId(), message, messageTextMessage, messageData, dataType, null).then((messageId) {
+      AuthServiceSocialV15().sendMessage(widget.chat!.getBroupId(), message, messageTextMessage, mes.data, dataType, null).then((messageId) {
         setState(() {
           isSending = false; // Set sending state to false
         });
@@ -246,7 +244,9 @@ class _PreviewPageChatState extends State<PreviewPageChat> {
     if (formKey.currentState!.validate()) {
       String emojiMessage = broMessageController.text;
       String textMessage = captionMessageController.text;
-      sendMediaMessage(mediaPreviewData, emojiMessage, textMessage, widget.dataType!);
+      if (widget.mediaFile != null) {
+        sendMediaMessage(widget.mediaFile!, emojiMessage, textMessage, widget.dataType!);
+      }
     }
   }
 
@@ -269,7 +269,7 @@ class _PreviewPageChatState extends State<PreviewPageChat> {
   }
 
   Widget mediaPreview() {
-    if (widget.dataType == 1) {
+    if (widget.dataType == DataType.image.value) {
       return _videoController != null && _videoController!.value.isInitialized
           ? Column(
         children: [
@@ -320,7 +320,7 @@ class _PreviewPageChatState extends State<PreviewPageChat> {
         ],
       )
           : Center(child: CircularProgressIndicator());
-    } else {
+    } else if (widget.dataType == DataType.video.value) {
       return Center(
         child: FittedBox(
           fit: BoxFit.contain,
@@ -328,8 +328,8 @@ class _PreviewPageChatState extends State<PreviewPageChat> {
             margin: EdgeInsets.all(10),
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height - (75 + MediaQuery.of(context).padding.bottom + 16 + 20),  // 75 is the height of the bottom area, 16 is padding and sizedboxes, 20 is margin top and bottom
-            child: Image.memory(
-              mediaPreviewData,
+            child: Image.file(
+              widget.mediaFile!,
               width: 1,
               height: 1,
               gaplessPlayback: true,
@@ -338,6 +338,8 @@ class _PreviewPageChatState extends State<PreviewPageChat> {
           ),
         ),
       );
+    } else {
+      return Container();
     }
   }
 

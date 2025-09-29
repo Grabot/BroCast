@@ -286,8 +286,10 @@ class NotificationController extends ChangeNotifier {
               if (me != null) {
                 for (Broup meBroup in me.broups) {
                   if (meBroup.broupId == broupId) {
-                    _instance._navigationService.navigateTo(routes.ChatRoute,
-                        arguments: meBroup);
+                    _instance._navigationService.navigateTo(
+                        routes.ChatRoute,
+                        arguments: meBroup,
+                    );
                     return;
                   }
                 }

@@ -817,8 +817,7 @@ class _LocationViewChatState extends State<LocationViewChat> {
     DateTime now = DateTime.now().toUtc();
     DateTime endTime;
     if (selectedIndex == 0) {
-      // TODO: Put back!
-      endTime = now.add(Duration(minutes: 3));
+      endTime = now.add(Duration(minutes: 15));
     } else if (selectedIndex == 1) {
       endTime = now.add(Duration(hours: 1));
     } else {

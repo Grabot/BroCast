@@ -1,9 +1,10 @@
+import 'dart:io';
+
 import "package:flutter/material.dart";
-import 'dart:typed_data';
 import 'dart:math' as math;
 
 class ImageViewer extends StatefulWidget {
-  final Uint8List image;
+  final File image;
 
   ImageViewer({
     required Key key,
@@ -159,7 +160,7 @@ class _ImageViewerState extends State<ImageViewer> {
                           angle: rotationAngle * (math.pi / 180),
                           child: Transform.scale(
                             scale: (scaleFactor + currentScaleMovement),
-                            child: Image.memory(widget.image),
+                            child: Image.file(widget.image),
                           ),
                         ),
                       ),

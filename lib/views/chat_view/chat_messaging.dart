@@ -388,7 +388,7 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
     return Settings().notFoundImage;
   }
 
-  void handleMessagePopupAction(MessagePopupAction action) {
+  Future<void> handleMessagePopupAction(MessagePopupAction action) async {
 
     showEmojiPopup = false;
     emojiReactionMessageId = -1;
@@ -437,12 +437,16 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
       saveImageToGallery(action.message);
     } else if (action is ViewImagePopupAction) {
       if (action.message.dataType == DataType.image.value) {
+        final file = File(action.message.data!);
+        final tempDirectory = await getTemporaryDirectory();
+        String newFilePath = '${tempDirectory.path}/previewImage_${action.message.messageId}.png';
+        File fileView = await file.copy(newFilePath);
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) =>
                 ImageViewer(
                   key: UniqueKey(),
-                  image: getImage(action.message),
+                  image: fileView,
                 ),
           ),
         );
@@ -1038,18 +1042,26 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
   }
 
   imageLoaded() async {
+    // TODO: Add audio?
     FilePickerResult? picked = await FilePicker.platform.pickFiles(
-      withData: true,
-      type: FileType.custom,
-      allowedExtensions: ['png', 'jpg', 'jpeg', 'mp4'],
+      withData: false,
+      type: FileType.any,
+      allowMultiple: false,
     );
 
     if (picked != null) {
       String? extension = picked.files.first.extension;
-      if (extension != "png" && extension != "mp4" && extension != "jpg" && extension != "jpeg") {
-        showToastMessage("Can only upload images or videos with extension .png, .jpg, .jpeg. or .mp4");
+      if (extension != "png" && extension != "mp4" && extension != "jpg" && extension != "jpeg" && extension != "mp3" && extension != "wav" && extension != "m4a") {
+        showToastMessage("Can only upload images with .png, .jpg or .jpeg extension, videos with extension .mp4 or audio with extension .mp3, .wav or .m4a");
       } else {
-        Uint8List mediaData = picked.files.first.bytes!;
+        int dataType = 0;
+        if (extension == "mp4") {
+          dataType = DataType.video.value;
+        } else if (extension == "mp3" || extension == "wav" || extension == "m4a") {
+          dataType = DataType.audio.value;
+        }
+        PlatformFile platformFile = picked.files.first;
+        File mediaFile = File(platformFile.path!);
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
             builder: (context) =>
@@ -1057,8 +1069,8 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
                   key: UniqueKey(),
                   fromGallery: true,
                   chat: widget.chat,
-                  media: mediaData,
-                  dataType: extension == "mp4" ? 1 : 0,
+                  mediaFile: mediaFile,
+                  dataType: dataType,
                 ),
           ),
         );

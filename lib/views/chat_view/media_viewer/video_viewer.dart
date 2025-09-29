@@ -3,6 +3,9 @@ import 'dart:io';
 import "package:flutter/material.dart";
 import 'package:video_player/video_player.dart';
 import 'package:chewie/chewie.dart';
+import 'package:flutter/foundation.dart';
+import 'package:path_provider/path_provider.dart';
+import 'dart:ui';
 
 class VideoViewer extends StatefulWidget {
   final String videoFilePath;
@@ -26,9 +29,14 @@ class _VideoViewerState extends State<VideoViewer> {
     _initializeVideoController();
   }
 
-  void _initializeVideoController() {
+  void _initializeVideoController() async {
     final file = File(widget.videoFilePath);
-    _videoPlayerController = VideoPlayerController.file(file)
+    final tempDirectory = await getTemporaryDirectory();
+    // The video will be stored and loaded in a hidden folder with the
+    // default name which is reused for each new video.
+    String newFilePath = '${tempDirectory.path}/previewVideo.mp4';
+    final fileView = await file.copy(newFilePath);
+    _videoPlayerController = VideoPlayerController.file(fileView)
       ..initialize().then((_) {
         setState(() {
           _chewieController = ChewieController(

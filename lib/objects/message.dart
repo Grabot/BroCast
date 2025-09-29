@@ -249,10 +249,36 @@ Future<String> saveMediaData(Uint8List mediaData, int dataType) async {
   } else if (dataType == DataType.video.value) {
     extension = 'brocastMp4';
   } else if (dataType == DataType.audio.value) {
-    extension = 'brocastMp3';
+    extension = 'brocastM4a';
   }
   final filePath = '${mediaDirectory.path}/${DateTime.now().millisecondsSinceEpoch}.${extension}';
   final file = File(filePath);
   await file.writeAsBytes(mediaData);
+  return filePath;
+}
+
+
+Future<String> saveMediaFile(File mediaFile, int dataType) async {
+  final directory = await getApplicationDocumentsDirectory();
+  Directory? mediaDirectory;
+  if (dataType == DataType.image.value) {
+    mediaDirectory = Directory('${directory.path}/images');
+  } else if (dataType == DataType.video.value) {
+    mediaDirectory = Directory('${directory.path}/videos');
+  } else if (dataType == DataType.audio.value) {
+    mediaDirectory = Directory('${directory.path}/audio');
+  } else {
+    throw Exception('Unsupported data type');
+  }
+  String? extension;
+  if (dataType == DataType.image.value) {
+    extension = 'brocastPng';
+  } else if (dataType == DataType.video.value) {
+    extension = 'brocastMp4';
+  } else if (dataType == DataType.audio.value) {
+    extension = 'brocastM4a';
+  }
+  final filePath = '${mediaDirectory.path}/${DateTime.now().millisecondsSinceEpoch}.${extension}';
+  await mediaFile.copy(filePath);
   return filePath;
 }
