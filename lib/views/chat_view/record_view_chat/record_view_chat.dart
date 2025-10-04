@@ -158,7 +158,7 @@ class _RecordViewChatState extends State<RecordViewChat> {
           body: message,
           textMessage: messageTextMessage,
           timestamp: DateTime.now().toUtc().toString(),
-          data: await saveMediaData(messageData, DataType.audio.value),
+          data: await saveMediaData(messageData, DataType.audio.value, null),
           dataType: DataType.audio.value,
           info: false,
           broupId: widget.chat!.getBroupId()
@@ -315,31 +315,24 @@ class _RecordViewChatState extends State<RecordViewChat> {
     return Column(
       children: [
         Container(
-          height: MediaQuery.of(context).size.height/6,
+          height: MediaQuery.of(context).size.height / 6,
           child: playOrPause(),
         ),
         Container(
-          height: MediaQuery.of(context).size.height/9,
-          child: Column(
-            children: [
-              Container(
-                height: MediaQuery.of(context).size.height/18,
-                child: ElevatedButton(
-                  onPressed: _resetRecording,
-                  child: Icon(
-                      color: Colors.red,
-                      Icons.redo
-                  ),
-                ),
-              ),
-              Container(
-                height: MediaQuery.of(context).size.height/18,
-                child: Text(
-                  "Retry recording",
-                  style: simpleTextStyle(),
-                ),
-              )
-            ]
+          height: MediaQuery.of(context).size.height / 18,
+          child: ElevatedButton(
+            onPressed: _resetRecording,
+            child: Icon(
+              color: Colors.red,
+              Icons.redo,
+            ),
+          ),
+        ),
+        Container(
+          height: MediaQuery.of(context).size.height / 18,
+          child: Text(
+            "Retry recording",
+            style: simpleTextStyle(),
           ),
         ),
       ],
@@ -363,9 +356,72 @@ class _RecordViewChatState extends State<RecordViewChat> {
     }
   }
 
+  Widget timeIndicator() {
+    if (_recordedAudioPath != null) {
+      // Playback mode
+      return StreamBuilder<Duration>(
+          stream: _playerController.onCurrentDurationChanged.map(
+                (millis) => Duration(milliseconds: millis),
+          ),
+          builder: (context, snapshot) {
+            final duration = snapshot.data ?? Duration.zero;
+            final totalDuration = Duration(milliseconds: _playerController.maxDuration);
+            final clampedDuration = duration.inMilliseconds > totalDuration.inMilliseconds
+                ? totalDuration
+                : duration;
+            return Column(
+              children: [
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "${clampedDuration.inMinutes}:${(clampedDuration.inSeconds % 60).toString().padLeft(2, '0')} / "
+                            "${totalDuration.inMinutes}:${(totalDuration.inSeconds % 60).toString().padLeft(2, '0')}",
+                        style: simpleTextStyle(),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            );
+          },
+        );
+    } else {
+      if (!isRecording) {
+        return Container();
+      }
+      return StreamBuilder<Duration>(
+        stream: _recorderController.onCurrentDuration,
+        builder: (context, snapshot) {
+          final duration = snapshot.data ?? Duration.zero;
+          return Column(
+            children: [
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "${duration.inMinutes}:${(duration.inSeconds % 60).toString().padLeft(2, '0')}",
+                      style: simpleTextStyle(),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          );
+        },
+      );
+    }
+  }
+
   Widget mediaPreview() {
     return Column(
       children: [
+        timeIndicator(),
+        SizedBox(height: 20),
         audioWaveForm(),
         SizedBox(height: 20),
         mediaInterface(),
@@ -399,7 +455,6 @@ class _RecordViewChatState extends State<RecordViewChat> {
           noOfSamples: MediaQuery.of(context).size.width ~/ 6,
         );
         _playerController.setFinishMode(finishMode: FinishMode.loop);
-        // not sure why but this seems to be necessary.
         await _playerController.startPlayer();
         await _playerController.pausePlayer();
         setState(() {

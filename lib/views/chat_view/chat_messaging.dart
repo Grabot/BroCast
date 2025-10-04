@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:math';
+import 'package:android_path_provider/android_path_provider.dart';
 import 'package:brocast/objects/data_type.dart';
 import 'package:brocast/views/chat_view/emoji_reactions_overview.dart';
 import 'package:brocast/views/chat_view/message_attachment_popup.dart';
@@ -22,6 +23,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gal/gal.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:tuple/tuple.dart';
 
 import '../../../objects/bro.dart';
@@ -348,7 +350,44 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
     }
   }
 
-  Future<void> saveImageToGallery(Message message) async {
+  Future<String?> _getDownloadPath() async {
+    Directory? directory;
+    try {
+      if (Platform.isIOS) {
+        directory = await getApplicationDocumentsDirectory();
+      } else {
+        directory = Directory('/storage/emulated/0/Download');
+        if (!await directory.exists()) {
+          directory = await getExternalStorageDirectory();
+        }
+      }
+    } catch (e) {
+    }
+    return directory?.path;
+  }
+
+  Future<PermissionStatus> _getStoragePermission() async {
+    var permissionStatus = Platform.isIOS
+        ? await Permission.storage.request()
+        : await Permission.manageExternalStorage.request();
+    if (permissionStatus.isDenied || permissionStatus.isRestricted) {
+      // Here just ask for the permission for the first time
+      permissionStatus = await Permission.storage.request();
+
+      // I noticed that sometimes popup won't show after user press deny
+      // so I do the check once again but now go straight to appSettings
+      if (permissionStatus.isDenied) {
+        await openAppSettings();
+      }
+    } else if (permissionStatus.isPermanentlyDenied) {
+      // Here open app settings for user to manually enable permission in case
+      // where permission was permanently denied
+      await openAppSettings();
+    }
+    return permissionStatus;
+  }
+
+  Future<void> saveDataToGallery(Message message) async {
     try {
       bool access = await requestPermissions();
       if (!access) {
@@ -361,8 +400,11 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
         final directory = await getApplicationDocumentsDirectory();
         int randomNumber = Random().nextInt(100);
         String fileName = "brocast_${message.broupId}_${message.messageId}_$randomNumber";
-        if (message.dataType == DataType.image.value) {
-          final imagePath = '${directory.path}/${fileName}.png';
+        if (message.dataType == DataType.image.value || message.dataType == DataType.gif.value) {
+          String imagePath = '${directory.path}/${fileName}.png';
+          if (message.dataType == DataType.gif.value) {
+            imagePath = '${directory.path}/${fileName}.gif';
+          }
           final file = File(dataLoc);
           await file.copy(imagePath);
           await Gal.putImage(imagePath, album: albumName);
@@ -373,6 +415,43 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
           await file.copy(videoPath);
           await Gal.putVideo(videoPath, album: albumName);
           showToastMessage("Video saved");
+        } else if (message.dataType == DataType.audio.value) {
+          PermissionStatus permissionStatus = await _getStoragePermission();
+          if (permissionStatus == PermissionStatus.granted) {
+            String? externalStoragePath = await _getDownloadPath();
+            if (externalStoragePath == null) {
+              showToastMessage("Storage permission denied");
+              return;
+            }
+            final audioDir = Directory('$externalStoragePath/$albumName');
+            if (!await audioDir.exists()) {
+              await audioDir.create(recursive: true);
+            }
+            final audioPath = '${audioDir.path}/$fileName.m4a';
+            final file = File(dataLoc);
+            final newAudioFile = File(audioPath);
+            await newAudioFile.writeAsBytes(file.readAsBytesSync());
+            showToastMessage("Audio saved to storage");
+          }
+        } else if (message.dataType == DataType.other.value) {
+          PermissionStatus permissionStatus = await _getStoragePermission();
+          if (permissionStatus == PermissionStatus.granted) {
+            String? externalStoragePath = await _getDownloadPath();
+            if (externalStoragePath == null) {
+              showToastMessage("Storage permission denied");
+              return;
+            }
+            final docDir = Directory('$externalStoragePath/$albumName');
+            if (!await docDir.exists()) {
+              await docDir.create(recursive: true);
+            }
+            String docFileName = message.data!.split("/").last;
+            final docPath = '${docDir.path}/$docFileName';
+            final file = File(dataLoc);
+            final newAudioFile = File(docPath);
+            await newAudioFile.writeAsBytes(file.readAsBytesSync());
+            showToastMessage("File saved to storage");
+          }
         }
       }
     } catch (e) {
@@ -434,12 +513,15 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
         }
       });
     } else if (action is SaveImagePopupAction) {
-      saveImageToGallery(action.message);
+      saveDataToGallery(action.message);
     } else if (action is ViewImagePopupAction) {
-      if (action.message.dataType == DataType.image.value) {
+      if (action.message.dataType == DataType.image.value || action.message.dataType == DataType.gif.value) {
         final file = File(action.message.data!);
         final tempDirectory = await getTemporaryDirectory();
         String newFilePath = '${tempDirectory.path}/previewImage_${action.message.messageId}.png';
+        if (action.message.dataType == DataType.gif.value) {
+          newFilePath = '${tempDirectory.path}/previewImage_${action.message.messageId}.gif';
+        }
         File fileView = await file.copy(newFilePath);
         Navigator.of(context).push(
           MaterialPageRoute(
@@ -851,9 +933,21 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
       messagePopupOptions.add({'text': 'Dismiss Bro Admin', 'icon': Icons.admin_panel_settings_outlined, 'action': DismissBroAdminPopupAction(message: message, broId: message.senderId)});
     }
     if (saveImageOption && message.dataType != null) {
-      String type = DataType.getByValue(message.dataType!).typeName;
-      messagePopupOptions.add({'text': 'Save $type', 'icon': Icons.save_alt, 'action': SaveImagePopupAction(message: message)});
-      messagePopupOptions.add({'text': 'View $type', 'icon': Icons.remove_red_eye, 'action': ViewImagePopupAction(message: message, broId: message.senderId)});
+      String type = DataType
+          .getByValue(message.dataType!)
+          .typeName;
+      if (message.dataType != DataType.location.value || message.dataType != DataType.liveLocation.value || message.dataType != DataType.liveLocationStop.value) {
+        messagePopupOptions.add({
+          'text': 'Save $type',
+          'icon': Icons.save_alt,
+          'action': SaveImagePopupAction(message: message)
+        });
+      }
+      messagePopupOptions.add({
+        'text': 'View $type',
+        'icon': Icons.remove_red_eye,
+        'action': ViewImagePopupAction(message: message, broId: message.senderId)
+      });
     }
     if (meAdmin && !myMessage && !widget.chat.private && broInBroup) {
       messagePopupOptions.add({'text': 'Remove bro from broup', 'icon': Icons.person_remove, 'action': RemoveBroFromBroupPopupAction(message: message, broId: message.senderId)});
@@ -912,6 +1006,11 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
       Message? clickedMessage = widget.chat.messages.firstWhereOrNull((message) => message.messageId == passedId);
       if (clickedMessage != null) {
         showEmojiReactions(clickedMessage);
+      }
+    } else if (delta == 4) {
+      Message? clickedMessage = widget.chat.messages.firstWhereOrNull((message) => message.messageId == passedId);
+      if (clickedMessage != null) {
+        saveDataToGallery(clickedMessage);
       }
     }
   }
@@ -1042,7 +1141,6 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
   }
 
   imageLoaded() async {
-    // TODO: Add audio?
     FilePickerResult? picked = await FilePicker.platform.pickFiles(
       withData: false,
       type: FileType.any,
@@ -1051,30 +1149,42 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
 
     if (picked != null) {
       String? extension = picked.files.first.extension;
-      if (extension != "png" && extension != "mp4" && extension != "jpg" && extension != "jpeg" && extension != "mp3" && extension != "wav" && extension != "m4a") {
-        showToastMessage("Can only upload images with .png, .jpg or .jpeg extension, videos with extension .mp4 or audio with extension .mp3, .wav or .m4a");
-      } else {
-        int dataType = 0;
-        if (extension == "mp4") {
-          dataType = DataType.video.value;
-        } else if (extension == "mp3" || extension == "wav" || extension == "m4a") {
-          dataType = DataType.audio.value;
-        }
-        PlatformFile platformFile = picked.files.first;
-        File mediaFile = File(platformFile.path!);
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(
-            builder: (context) =>
-                PreviewPageChat(
-                  key: UniqueKey(),
-                  fromGallery: true,
-                  chat: widget.chat,
-                  mediaFile: mediaFile,
-                  dataType: dataType,
-                ),
-          ),
-        );
+      if (extension == null) {
+        showToastMessage("can't detect extension");
+        return;
       }
+      int dataType = 0;
+      // TODO: Test all image extensions (with retrieving)
+      final imageExtensions = ["jpg", "jpeg", "png", "webp", "heic", "heif", "bmp", "tiff", "tif"];
+      // TODO: Test all video extensions (with retrieving)
+      final videoExtensions = ["mp4", "mov", "m4v", "avi", "mkv", "flv", "wmv", "3gp", "webm"];
+      // TODO: Test all audio extensions (with retrieving)
+      final audioExtensions = ["mp3", "aac", "wav", "ogg", "flac", "m4a", "wma", "amr", "opus"];
+      if (imageExtensions.contains(extension.toLowerCase())) {
+        dataType = DataType.image.value;
+      } else if (videoExtensions.contains(extension.toLowerCase())) {
+        dataType = DataType.video.value;
+      } else if (audioExtensions.contains(extension.toLowerCase())) {
+        dataType = DataType.audio.value;
+      } else if (extension == "gif") {
+        dataType = DataType.gif.value;
+      } else {
+        dataType = DataType.other.value;
+      }
+      PlatformFile platformFile = picked.files.first;
+      File mediaFile = File(platformFile.path!);
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (context) =>
+              PreviewPageChat(
+                key: UniqueKey(),
+                fromGallery: true,
+                chat: widget.chat,
+                mediaFile: mediaFile,
+                dataType: dataType,
+              ),
+        ),
+      );
     }
   }
 

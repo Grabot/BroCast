@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:brocast/utils/location_sharing.dart';
 import 'package:path_provider/path_provider.dart';
 
-import '../utils/secure_storage.dart';
 import '../utils/storage.dart';
 import 'data_type.dart';
 
@@ -145,11 +144,11 @@ class Message {
           // If the data is present, we set the flag to received
           message.dataIsReceived = true;
           Uint8List dataBytes = Uint8List.fromList(messageData['data']);
-          message.data = await saveMediaData(dataBytes, DataType.image.value);
+          message.data = await saveMediaData(dataBytes, DataType.image.value, null);
         } else if (messageData['data'] is String) {
           message.dataIsReceived = true;
           Uint8List dataBytes = base64Decode(messageData['data'].replaceAll("\n", ""));
-          message.data = await saveMediaData(dataBytes, DataType.image.value);
+          message.data = await saveMediaData(dataBytes, DataType.image.value, null);
         }
         if (messageData['location_data'] is String) {
           message.dataIsReceived = true;
@@ -231,54 +230,89 @@ class Message {
   }
 }
 
-Future<String> saveMediaData(Uint8List mediaData, int dataType) async {
+Future<String> saveMediaData(Uint8List mediaData, int dataType, String? fileName) async {
   final directory = await getApplicationDocumentsDirectory();
   Directory? mediaDirectory;
-  if (dataType == DataType.image.value) {
+  if (dataType == DataType.image.value || dataType == DataType.gif.value) {
     mediaDirectory = Directory('${directory.path}/images');
   } else if (dataType == DataType.video.value) {
     mediaDirectory = Directory('${directory.path}/videos');
   } else if (dataType == DataType.audio.value) {
     mediaDirectory = Directory('${directory.path}/audio');
+  } else if (dataType == DataType.other.value) {
+    mediaDirectory = Directory('${directory.path}/other');
   } else {
     throw Exception('Unsupported data type');
   }
-  String? extension;
+  String extension = "";
   if (dataType == DataType.image.value) {
     extension = 'brocastPng';
   } else if (dataType == DataType.video.value) {
     extension = 'brocastMp4';
   } else if (dataType == DataType.audio.value) {
     extension = 'brocastM4a';
+  } else if (dataType == DataType.gif.value) {
+    extension = 'brocastGif';
+  } else if (dataType == DataType.other.value) {
+    print("other filename: $fileName");
+    if (fileName == null) {
+      throw Exception('Unsupported extension');
+    }
   }
-  final filePath = '${mediaDirectory.path}/${DateTime.now().millisecondsSinceEpoch}.${extension}';
+  String filePath = '${mediaDirectory.path}/${DateTime.now().millisecondsSinceEpoch}.${extension}';
+  if (dataType == DataType.other.value) {
+    filePath = '${mediaDirectory.path}/${fileName}';
+    print("other file path $filePath");
+  }
   final file = File(filePath);
   await file.writeAsBytes(mediaData);
   return filePath;
 }
 
-
 Future<String> saveMediaFile(File mediaFile, int dataType) async {
   final directory = await getApplicationDocumentsDirectory();
   Directory? mediaDirectory;
-  if (dataType == DataType.image.value) {
+  if (dataType == DataType.image.value || dataType == DataType.gif.value) {
     mediaDirectory = Directory('${directory.path}/images');
   } else if (dataType == DataType.video.value) {
     mediaDirectory = Directory('${directory.path}/videos');
   } else if (dataType == DataType.audio.value) {
     mediaDirectory = Directory('${directory.path}/audio');
+  } else if (dataType == DataType.other.value) {
+    mediaDirectory = Directory('${directory.path}/other');
   } else {
     throw Exception('Unsupported data type');
   }
-  String? extension;
+  String extension = "";
   if (dataType == DataType.image.value) {
     extension = 'brocastPng';
   } else if (dataType == DataType.video.value) {
     extension = 'brocastMp4';
   } else if (dataType == DataType.audio.value) {
     extension = 'brocastM4a';
+  } else if (dataType == DataType.gif.value) {
+    extension = 'brocastGif';
   }
-  final filePath = '${mediaDirectory.path}/${DateTime.now().millisecondsSinceEpoch}.${extension}';
+  String filePath = '${mediaDirectory.path}/${DateTime.now().millisecondsSinceEpoch}.${extension}';
+  if (dataType == DataType.other.value) {
+    // For "other" we keep the original filename.
+    String fileName = mediaFile.path.split("/").last;
+    print("save media other, filename $fileName");
+    List<String> notAllowedExtensions = [
+      'sh', 'bash', 'zsh', 'py', 'js', 'ts', 'ps1', 'rb', 'pl', 'php',
+      'lua', 'bat', 'cmd', 'vbs', 'awk', 'sed', 'fish', 'tcl', 'psm1',
+      'exe', 'msi', 'bin', 'out', 'run', 'app', 'jar',
+    ];
+    filePath = '${mediaDirectory.path}/${fileName}';
+    String fileExtension = fileName.split('.').last.toLowerCase();
+    print("file extension $fileExtension");
+    if (notAllowedExtensions.contains(fileExtension)) {
+      fileName += ".txt";
+      print("new file name $fileName");
+      filePath = '${mediaDirectory.path}/${fileName}';
+    }
+  }
+  print("new file path $filePath");
   await mediaFile.copy(filePath);
   return filePath;
 }

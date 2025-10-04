@@ -26,7 +26,7 @@ import '../../camera_page/camera_page.dart';
 class PreviewPageChat extends StatefulWidget {
   final bool fromGallery;
   final Broup? chat;
-  final File? mediaFile;
+  final File mediaFile;
   final int? dataType;
 
   const PreviewPageChat({
@@ -62,6 +62,8 @@ class _PreviewPageChatState extends State<PreviewPageChat> {
 
   final NavigationService _navigationService = locator<NavigationService>();
 
+  PlayerController? _playerController;
+  bool isPausedAudio = true;
 
   @override
   void dispose() {
@@ -70,6 +72,7 @@ class _PreviewPageChatState extends State<PreviewPageChat> {
     captionMessageController.dispose();
     broMessageController.dispose();
     _videoController?.dispose();
+    _playerController?.dispose();
     super.dispose();
   }
 
@@ -86,26 +89,74 @@ class _PreviewPageChatState extends State<PreviewPageChat> {
     } else if (widget.dataType == DataType.video.value) {
       broMessageController.text = "🎥";
       _initializeVideo();
+    } else if (widget.dataType == DataType.audio.value) {
+      broMessageController.text = "🎤";
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _initializeAudio();
+      });
+    } else if (widget.dataType == DataType.gif.value) {
+      broMessageController.text = "🖼️";
+      setState(() {
+        isLoading = false;
+      });
+    } else if (widget.dataType == DataType.other.value) {
+      broMessageController.text = "📄";
+      setState(() {
+        isLoading = false;
+      });
     }
 
     setState(() {});
   }
 
+  Future<void> _initializeAudio() async {
+    _playerController = PlayerController();
+    await _playerController!.preparePlayer(
+      path: widget.mediaFile.path,
+      volume: 1.0,
+      shouldExtractWaveform: true,
+      noOfSamples: MediaQuery.of(context).size.width ~/ 6,
+    );
+    _playerController!.setFinishMode(finishMode: FinishMode.loop);
+    // not sure why but this seems to be necessary.
+    await _playerController!.startPlayer();
+    await _playerController!.pausePlayer();
+    setState(() {
+      _playRecording();
+      isLoading = false;
+    });
+  }
+
   Future<void> _initializeVideo() async {
-    if (widget.mediaFile != null) {
-      _videoController = VideoPlayerController.file(widget.mediaFile!)
-        ..initialize().then((_) {
-          setState(() {
-            isLoading = false; // Set loading to false when video is initialized
-          });
-          _videoController?.setLooping(true);
-          _videoController?.pause();
+    _videoController = VideoPlayerController.file(widget.mediaFile!)
+      ..initialize().then((_) {
+        _videoController?.setLooping(true);
+        _videoController?.pause();
+        setState(() {
+          isLoading = false;
         });
-    } else {
-      print("No video data available");
-      showToastMessage("No video data available");
+      });
+  }
+
+  _pausePlaying() {
+    if (_playerController != null) {
+      _playerController!.pausePlayer();
+      setState(() {
+        isPausedAudio = true;
+      });
     }
   }
+
+
+  void _playRecording() async {
+    if (_playerController != null) {
+      _playerController!.startPlayer(forceRefresh: false);
+      setState(() {
+        isPausedAudio = false;
+      });
+    }
+  }
+
 
   backButtonFunctionality() {
     if (showEmojiKeyboard) {
@@ -125,6 +176,12 @@ class _PreviewPageChatState extends State<PreviewPageChat> {
           broMessageController.text = "📸";
         } else if (widget.dataType == DataType.video.value) {
           broMessageController.text = "🎥";
+        } else if (widget.dataType == DataType.audio.value) {
+          broMessageController.text = "🎤";
+        } else if (widget.dataType == DataType.gif.value) {
+          broMessageController.text = "🖼️";
+        } else if (widget.dataType == DataType.other.value) {
+          broMessageController.text = "📄";
         }
       }
       setState(() {
@@ -156,6 +213,67 @@ class _PreviewPageChatState extends State<PreviewPageChat> {
   exitPreviewMode() async {
     if (widget.chat != null) {
       navigateToChat(context, settings, widget.chat!);
+    }
+  }
+
+  gifOrOther(String message, String? messageTextMessage, Message mes) {
+    if (widget.dataType == DataType.gif.value) {
+      AuthServiceSocialV15().sendMessageGif(
+          widget.chat!.getBroupId(), message, messageTextMessage, mes.data!, null).then((
+          messageId) {
+        setState(() {
+          isSending = false; // Set sending state to false
+        });
+        if (messageId != null) {
+          mes.isRead = 0;
+          if (mes.messageId != messageId) {
+            Storage().updateMessageId(mes.messageId, messageId, widget.chat!.getBroupId());
+            mes.messageId = messageId;
+          }
+          setState(() {
+            // Go back to the chat.
+            navigateToChat(context, settings, widget.chat!);
+          });
+          // message send
+        } else {
+          Storage().deleteMessage(mes.messageId, widget.chat!.broupId);
+          // The message was not sent, we remove it from the list
+          showToastMessage("there was an issue sending the message");
+          widget.chat!.messages.removeAt(0);
+        }
+        setState(() {
+          widget.chat!.sendingMessage = false;
+        });
+      });
+    } else {
+      // other
+      AuthServiceSocialV15().sendMessageOther(
+          widget.chat!.getBroupId(), message, messageTextMessage, mes.data!, null).then((
+          messageId) {
+        setState(() {
+          isSending = false; // Set sending state to false
+        });
+        if (messageId != null) {
+          mes.isRead = 0;
+          if (mes.messageId != messageId) {
+            Storage().updateMessageId(mes.messageId, messageId, widget.chat!.getBroupId());
+            mes.messageId = messageId;
+          }
+          setState(() {
+            // Go back to the chat.
+            navigateToChat(context, settings, widget.chat!);
+          });
+          // message send
+        } else {
+          Storage().deleteMessage(mes.messageId, widget.chat!.broupId);
+          // The message was not sent, we remove it from the list
+          showToastMessage("there was an issue sending the message");
+          widget.chat!.messages.removeAt(0);
+        }
+        setState(() {
+          widget.chat!.sendingMessage = false;
+        });
+      });
     }
   }
 
@@ -207,31 +325,37 @@ class _PreviewPageChatState extends State<PreviewPageChat> {
       });
       await Storage().addMessage(mes);
 
-      AuthServiceSocialV15().sendMessage(widget.chat!.getBroupId(), message, messageTextMessage, mes.data, dataType, null).then((messageId) {
-        setState(() {
-          isSending = false; // Set sending state to false
-        });
-        if (messageId != null) {
-          mes.isRead = 0;
-          if (mes.messageId != messageId) {
-            Storage().updateMessageId(mes.messageId, messageId, widget.chat!.getBroupId());
-            mes.messageId = messageId;
+      if ((dataType == DataType.gif.value || dataType == DataType.other.value) && mes.data != null) {
+        gifOrOther(message, messageTextMessage, mes);
+      } else {
+        AuthServiceSocialV15().sendMessage(
+            widget.chat!.getBroupId(), message, messageTextMessage, mes.data, dataType, null).then((
+            messageId) {
+          setState(() {
+            isSending = false; // Set sending state to false
+          });
+          if (messageId != null) {
+            mes.isRead = 0;
+            if (mes.messageId != messageId) {
+              Storage().updateMessageId(mes.messageId, messageId, widget.chat!.getBroupId());
+              mes.messageId = messageId;
+            }
+            setState(() {
+              // Go back to the chat.
+              navigateToChat(context, settings, widget.chat!);
+            });
+            // message send
+          } else {
+            Storage().deleteMessage(mes.messageId, widget.chat!.broupId);
+            // The message was not sent, we remove it from the list
+            showToastMessage("there was an issue sending the message");
+            widget.chat!.messages.removeAt(0);
           }
           setState(() {
-            // Go back to the chat.
-            navigateToChat(context, settings, widget.chat!);
+            widget.chat!.sendingMessage = false;
           });
-          // message send
-        } else {
-          Storage().deleteMessage(mes.messageId, widget.chat!.broupId);
-          // The message was not sent, we remove it from the list
-          showToastMessage("there was an issue sending the message");
-          widget.chat!.messages.removeAt(0);
-        }
-        setState(() {
-          widget.chat!.sendingMessage = false;
         });
-      });
+      }
       broMessageController.clear();
       captionMessageController.clear();
     }
@@ -244,9 +368,7 @@ class _PreviewPageChatState extends State<PreviewPageChat> {
     if (formKey.currentState!.validate()) {
       String emojiMessage = broMessageController.text;
       String textMessage = captionMessageController.text;
-      if (widget.mediaFile != null) {
-        sendMediaMessage(widget.mediaFile!, emojiMessage, textMessage, widget.dataType!);
-      }
+      sendMediaMessage(widget.mediaFile, emojiMessage, textMessage, widget.dataType!);
     }
   }
 
@@ -268,8 +390,44 @@ class _PreviewPageChatState extends State<PreviewPageChat> {
     }
   }
 
+  Widget playButtons() {
+    return Column(
+      children: [
+        Container(
+          height: MediaQuery.of(context).size.height/6,
+          child: Container(
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  width: MediaQuery.of(context).size.height/9,
+                  height: MediaQuery.of(context).size.height/9,
+                  decoration: BoxDecoration(
+                    color: Colors.red,
+                    shape: BoxShape.circle,
+                  ),
+                  child: IconButton(
+                    icon: Icon(
+                      !isPausedAudio ? Icons.pause : Icons.play_arrow,
+                      color:  Colors.white,
+                      size: MediaQuery.of(context).size.height/18,
+                    ),
+                    onPressed: !isPausedAudio ? _pausePlaying : _playRecording,
+                  ),
+                ),
+                SizedBox(height: 15),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget mediaPreview() {
-    if (widget.dataType == DataType.image.value) {
+    if (widget.dataType == DataType.video.value) {
       return _videoController != null && _videoController!.value.isInitialized
           ? Column(
         children: [
@@ -320,7 +478,7 @@ class _PreviewPageChatState extends State<PreviewPageChat> {
         ],
       )
           : Center(child: CircularProgressIndicator());
-    } else if (widget.dataType == DataType.video.value) {
+    } else if (widget.dataType == DataType.image.value) {
       return Center(
         child: FittedBox(
           fit: BoxFit.contain,
@@ -329,7 +487,48 @@ class _PreviewPageChatState extends State<PreviewPageChat> {
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height - (75 + MediaQuery.of(context).padding.bottom + 16 + 20),  // 75 is the height of the bottom area, 16 is padding and sizedboxes, 20 is margin top and bottom
             child: Image.file(
-              widget.mediaFile!,
+              widget.mediaFile,
+              width: 1,
+              height: 1,
+              gaplessPlayback: true,
+              fit: BoxFit.contain,  // show all of the available image
+            ),
+          ),
+        ),
+      );
+    } else if (widget.dataType == DataType.audio.value) {
+      if (_playerController == null) {
+        return Container();
+      } else {
+        return Column(
+          children: [
+            AudioFileWaveforms(
+              size: Size(MediaQuery.of(context).size.width - 20,
+                  MediaQuery.of(context).size.height / 5),
+              playerController: _playerController!,
+              enableSeekGesture: true,
+              waveformType: WaveformType.fitWidth,
+              playerWaveStyle: PlayerWaveStyle(
+                liveWaveColor: Colors.red,
+                fixedWaveColor: Colors.grey,
+                spacing: 6,
+              ),
+            ),
+            SizedBox(height: 20),
+            playButtons()
+          ]
+        );
+      }
+    } else if (widget.dataType == DataType.gif.value) {
+      return Center(
+        child: FittedBox(
+          fit: BoxFit.contain,
+          child: Container(
+            margin: EdgeInsets.all(10),
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height - (75 + MediaQuery.of(context).padding.bottom + 16 + 20),  // 75 is the height of the bottom area, 16 is padding and sizedboxes, 20 is margin top and bottom
+            child: Image.file(
+              widget.mediaFile,
               width: 1,
               height: 1,
               gaplessPlayback: true,
@@ -339,7 +538,35 @@ class _PreviewPageChatState extends State<PreviewPageChat> {
         ),
       );
     } else {
-      return Container();
+      // Other data types
+      return Center(
+        child: FittedBox(
+          fit: BoxFit.contain,
+          child: Container(
+            margin: EdgeInsets.all(10),
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height - (75 + MediaQuery.of(context).padding.bottom + 16 + 20),  // 75 is the height of the bottom area, 16 is padding and sizedboxes, 20 is margin top and bottom
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.insert_drive_file,
+                  size: 100,
+                  color: Colors.grey,
+                ),
+                SizedBox(height: 10),
+                Text(
+                  widget.mediaFile.path.split('/').last,
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
     }
   }
 

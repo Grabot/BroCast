@@ -38,7 +38,6 @@ class AuthServiceSocialV15 {
       formMap["text_message"] = textMessage;
     }
 
-    // TODO: Test new way to send files
     if (filePath != null && dataType != null) {
       if (dataType == DataType.image.value) {
         formMap["message_data"] = await MultipartFile.fromFile(
@@ -147,6 +146,128 @@ class AuthServiceSocialV15 {
     });
   }
 
+  Future<int?> sendMessageGif(
+      int broupId,
+      String message,
+      String? textMessage,
+      String filePath,
+      int? repliedToMessageId,
+      ) async {
+    String endPoint = "message/send/gif";
+
+    final formMap = <String, dynamic> {
+      "broup_id": broupId,
+      "message": message,
+      "gif_data": await MultipartFile.fromFile(
+          filePath,
+          filename: "image.gif"
+      ),
+    };
+
+    if (textMessage != null) {
+      formMap["text_message"] = textMessage;
+    }
+
+    if (repliedToMessageId != null) {
+      formMap["replied_to_message_id"] = repliedToMessageId;
+    }
+
+    return await AuthApiV1_5().dio.post(
+      endPoint,
+      options: Options(
+        headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+        },
+      ),
+      data: FormData.fromMap(formMap),
+    ).timeout(Duration(seconds: 30)).then((response) {
+
+      Map<String, dynamic> json = response.data;
+      if (!json.containsKey("result")) {
+        return null;
+      } else {
+        if (json["result"]) {
+          if (json.containsKey("message_id")) {
+            return json["message_id"];
+          } else {
+            return null;
+          }
+        } else {
+          return null;
+        }
+      }
+    }).catchError((e) {
+      if (e is DioException) {
+        showToastMessage("Dio error while sending sending message: ${e.message}");
+      } else {
+        showToastMessage("Error while sending message: $e");
+      }
+      return null;
+    });
+  }
+
+  Future<int?> sendMessageOther(
+      int broupId,
+      String message,
+      String? textMessage,
+      String filePath,
+      int? repliedToMessageId,
+      ) async {
+    String endPoint = "message/send/other";
+
+    String fileName = filePath.split("/").last;
+    final formMap = <String, dynamic> {
+      "broup_id": broupId,
+      "message": message,
+      "other_data": await MultipartFile.fromFile(
+          filePath,
+          filename: fileName
+      ),
+    };
+
+    if (textMessage != null) {
+      formMap["text_message"] = textMessage;
+    }
+
+    if (repliedToMessageId != null) {
+      formMap["replied_to_message_id"] = repliedToMessageId;
+    }
+
+    return await AuthApiV1_5().dio.post(
+      endPoint,
+      options: Options(
+        headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+        },
+      ),
+      data: FormData.fromMap(formMap),
+    ).timeout(Duration(seconds: 30)).then((response) {
+
+      Map<String, dynamic> json = response.data;
+      if (!json.containsKey("result")) {
+        return null;
+      } else {
+        if (json["result"]) {
+          if (json.containsKey("message_id")) {
+            return json["message_id"];
+          } else {
+            return null;
+          }
+        } else {
+          return null;
+        }
+      }
+    }).catchError((e) {
+      if (e is DioException) {
+        showToastMessage("Dio error while sending sending message: ${e.message}");
+      } else {
+        showToastMessage("Error while sending message: $e");
+      }
+      return null;
+    });
+  }
+
+
   Future<int> updateLocalBroupReadId(int broupId) async {
     String endPoint = "get/broup/read_time";
     var response = await AuthApiV1_5().dio.post(endPoint,
@@ -245,6 +366,33 @@ class AuthServiceSocialV15 {
 
     if (response.statusCode == 200) {
       return response.data;
+    } else if (response.statusCode == 404) {
+      return null;
+    } else if (response.statusCode == 500) {
+      return null;
+    } else {
+      return null;
+    }
+  }
+
+  Future<String?> getMessageOtherFileName(int broupId, int messageId) async {
+    String endPoint = "message/get/data/other/filename";
+
+    var response = await AuthApiV1_5().dio.post(endPoint,
+        options: Options(
+            responseType: ResponseType.bytes,
+            headers: {
+              HttpHeaders.contentTypeHeader: "application/json",
+            }),
+        data: jsonEncode(<String, dynamic>{
+          "broup_id": broupId,
+          "message_id": messageId,
+        })
+    );
+
+    if (response.statusCode == 200) {
+      Uint8List fileNameBytes = response.data;
+      return utf8.decode(fileNameBytes);
     } else if (response.statusCode == 404) {
       return null;
     } else if (response.statusCode == 500) {

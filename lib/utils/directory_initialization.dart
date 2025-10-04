@@ -6,6 +6,7 @@ Future<void> initializeDirectories() async {
   final imageDirectory = Directory('${directory.path}/images');
   final videosDirectory = Directory('${directory.path}/videos');
   final audioDirectory = Directory('${directory.path}/audio');
+  final otherDirectory = Directory('${directory.path}/other');
   if (!await imageDirectory.exists()) {
     await imageDirectory.create(recursive: true);
   }
@@ -14,5 +15,8 @@ Future<void> initializeDirectories() async {
   }
   if (!await audioDirectory.exists()) {
     await audioDirectory.create(recursive: true);
+  }
+  if (!await otherDirectory.exists()) {
+    await otherDirectory.create(recursive: true);
   }
 }

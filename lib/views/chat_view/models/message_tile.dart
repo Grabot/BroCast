@@ -78,6 +78,7 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
   Map<int, Marker> locationMarkers = {};
   Set<Marker> mapMarkers = {};
   File? imageFile;
+  File? otherFile;
 
   selectMessage(BuildContext context) async {
     if ((widget.message.textMessage != null && widget.message.textMessage!.isNotEmpty) || widget.message.dataType != null) {
@@ -88,29 +89,41 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
         if (widget.message.dataType != null && !widget.message.dataIsReceived) {
           // There should be data in this message, but it is not yet received from the server yet.
           isLoading = true;
+          // For other data types we need to know the extension,
+          // when we get the data it might get deleted from the server
+          // so we need to do it before getting the data.
+          String? otherFileName;
+          if (widget.message.dataType == DataType.other.value) {
+            // For other we want to know the extension of the file, for this we need another server call
+            otherFileName = await AuthServiceSocialV15().getMessageOtherFileName(widget.message.broupId, widget.message.messageId);
+            print("other file name: $otherFileName");
+          }
           AuthServiceSocialV15().getMessageData(widget.message.broupId, widget.message.messageId).then((messageDataResponse) async {
             // For a video we first want to load the video controller
             if (widget.message.dataType != DataType.video.value) {
               isLoading = false;
             }
-            if (widget.message.dataType == DataType.image.value) {
-              getImageDataContent().then((file) {
-                setState(() {
-                  setState(() {
-                    imageFile = file;
-                  });
-                });
-              });
-            }
             // Audio and images are loaded immediately.
             if (messageDataResponse != null) {
               // If the data is present, we set the flag to received
               widget.message.dataIsReceived = true;
-              widget.message.data = await saveMediaData(messageDataResponse, widget.message.dataType!);
-              if (widget.message.dataType == DataType.video.value) {
+              widget.message.data = await saveMediaData(messageDataResponse, widget.message.dataType!, otherFileName);
+              if (widget.message.dataType == DataType.image.value || widget.message.dataType == DataType.gif.value) {
+                getImageDataContent().then((file) {
+                  setState(() {
+                    imageFile = file;
+                  });
+                });
+              } else if (widget.message.dataType == DataType.video.value) {
                 _initializeVideoController();
               } else if (widget.message.dataType == DataType.audio.value) {
                 _initializeAudioController();
+              } else if (widget.message.dataType == DataType.other.value) {
+                getOtherDataContent().then((file) {
+                  setState(() {
+                    otherFile = file;
+                  });
+                });
               }
               Storage().updateMessage(widget.message);
               setState(() {
@@ -125,7 +138,7 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
             }
           });
         } else {
-          if (widget.message.dataType == DataType.image.value) {
+          if (widget.message.dataType == DataType.image.value || widget.message.dataType == DataType.gif.value) {
             getImageDataContent().then((file) {
               setState(() {
                 imageFile = file;
@@ -146,6 +159,12 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
             locationSharing!.addLocationListener(_onLocationUpdate);
             locationSharing!.getBroupLocationsInit(widget.message.broupId);
             setState(() {
+            });
+          } else if (widget.message.dataType == DataType.other.value) {
+            getOtherDataContent().then((file) {
+              setState(() {
+                otherFile = file;
+              });
             });
           }
         }
@@ -254,10 +273,28 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
   }
 
   Future<File?> getImageDataContent() async {
-    if (widget.message.data != null && widget.message.dataType == DataType.image.value) {
+    if (widget.message.data != null
+        && (widget.message.dataType == DataType.image.value
+            || widget.message.dataType == DataType.gif.value)) {
       final file = File(widget.message.data!);
       final tempDirectory = await getTemporaryDirectory();
       String newFilePath = '${tempDirectory.path}/previewImage_${widget.message.messageId}.png';
+      if (widget.message.dataType == DataType.gif.value) {
+        newFilePath = '${tempDirectory.path}/previewImage_${widget.message.messageId}.gif';
+      }
+      File fileView = await file.copy(newFilePath);
+      print("copied gif or image file: ${fileView.path}");
+      return fileView;
+    }
+    return null;
+  }
+
+  Future<File?> getOtherDataContent() async {
+    if (widget.message.data != null
+        && widget.message.dataType == DataType.other.value) {
+      final file = File(widget.message.data!);
+      final tempDirectory = await getTemporaryDirectory();
+      String newFilePath = '${tempDirectory.path}/${file.path.split('/').last}';
       File fileView = await file.copy(newFilePath);
       return fileView;
     }
@@ -331,7 +368,7 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
       borderColour = Colors.yellow;
     }
 
-    if (widget.message.dataType == DataType.image.value) {
+    if (widget.message.dataType == DataType.image.value || widget.message.dataType == DataType.gif.value) {
       borderColour = Colors.red;
     } else if (widget.message.dataType == DataType.video.value) {
       borderColour = Colors.pinkAccent[100]!;
@@ -341,6 +378,8 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
       borderColour = Colors.tealAccent;
     } else if (widget.message.dataType == DataType.liveLocation.value || widget.message.dataType == DataType.liveLocationStop.value) {
       borderColour = Colors.cyanAccent;
+    } else if (widget.message.dataType == DataType.other.value) {
+      borderColour = Colors.white;
     }
 
     return borderColour;
@@ -372,7 +411,7 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
   }
 
   goToMediaViewer() async {
-    if (widget.message.dataType == DataType.image.value) {
+    if (widget.message.dataType == DataType.image.value || widget.message.dataType == DataType.gif.value) {
       if (imageFile != null) {
         Navigator.of(context).push(
           MaterialPageRoute(
@@ -979,10 +1018,46 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
     );
   }
 
+  Widget getOtherContent() {
+    if (otherFile == null) {
+      return Container();
+    }
+    return Container(
+      margin: EdgeInsets.all(10),
+      width: MediaQuery.of(context).size.width,
+      height: MediaQuery.of(context).size.height/3,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.insert_drive_file,
+            size: 100,
+            color: Colors.grey,
+          ),
+          SizedBox(height: 10),
+          Text(
+            otherFile!.path.split('/').last,
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          SizedBox(height: 10),
+          ElevatedButton(
+            onPressed: () {
+              widget.messageHandling(4, widget.message.messageId);
+            },
+            child: Icon(Icons.save),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget getMessageContent(double messageWidth) {
     Widget content;
     if (widget.message.clicked) {
-      if (widget.message.dataType == DataType.image.value) {
+      if (widget.message.dataType == DataType.image.value || widget.message.dataType == DataType.gif.value) {
         content = getImageContent();
       } else if (widget.message.dataType == DataType.video.value) {
         content = getVideoContent();
@@ -995,6 +1070,8 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
       } else if (widget.message.dataType == DataType.liveLocationStop.value) {
         // The location share stop content is basically a text message
         content = getTextContent();
+      } else if (widget.message.dataType == DataType.other.value) {
+        content = getOtherContent();
       } else {
         content = getTextContent();
       }
