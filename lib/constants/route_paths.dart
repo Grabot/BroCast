@@ -10,3 +10,4 @@ const String SettingsRoute = 'Settings';
 const String FindBroRoute = 'FindBro';
 const String AddBroupRoute = 'AddBroup';
 const String BroAccessRoute = 'BroAccess';
+const String ShareWithRoute = 'ShareWith';

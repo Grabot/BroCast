@@ -16,9 +16,9 @@ class AuthApi {
     var dio = Dio(
         BaseOptions(
           baseUrl: apiUrl_v1_4,
-          receiveTimeout: const Duration(milliseconds: 15000),
-          connectTimeout: const Duration(milliseconds: 15000),
-          sendTimeout: const Duration(milliseconds: 15000),
+          receiveTimeout: const Duration(seconds: 600),
+          connectTimeout: const Duration(seconds: 600),
+          sendTimeout: const Duration(seconds: 600),
         )
     );
 

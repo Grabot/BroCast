@@ -15,6 +15,7 @@ import '../../objects/broup.dart';
 import '../../objects/me.dart';
 import '../../utils/life_cycle_service.dart';
 import '../../utils/notification_controller.dart';
+import '../../utils/share_with_service.dart';
 import '../../utils/storage.dart';
 import 'bro_home_change_notifier.dart';
 import 'models/bro_tile.dart';
@@ -36,6 +37,7 @@ class _BrocastHomeState extends State<BrocastHome> {
 
   late SocketServices socketServices;
   late Settings settings;
+  late ShareWithService shareWithService;
   late Storage storage;
 
   late BroHomeChangeNotifier broHomeChangeNotifier;
@@ -59,16 +61,18 @@ class _BrocastHomeState extends State<BrocastHome> {
     lifeCycleService = LifeCycleService();
     lifeCycleService.addListener(lifeCycleChangeListener);
     socketServices.addListener(broHomeChangeListener);
+    bromotionController.addListener(bromotionListener);
 
     // Wait until page is loaded
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       broHomeChangeListener();
       checkNotificationListener();
+      shareWithService = ShareWithService();
 
       // A hacky way to check if all the avatars are available.
       // If one of the private or broup chats do not have a avatar after a few seconds we can assume something went wrong.
       Future.delayed(Duration(seconds: 2)).then((value) {
-        if (me != null) {
+        if (me != null && mounted) {
           List<int> broAvatarIds = [];
           List<int> broupAvatarIds = [];
           for (Broup meBroup in me!.broups) {
@@ -212,8 +216,12 @@ class _BrocastHomeState extends State<BrocastHome> {
     onChangedBroNameField(broNameController.text, bromotionController.text);
   }
 
-  backButtonFunctionality() {
-    if (searchMode) {
+  void backButtonFunctionality() {
+    if (showEmojiKeyboard) {
+      setState(() {
+        showEmojiKeyboard = false;
+      });
+    } else if (searchMode) {
       setState(() {
         searchMode = false;
       });
@@ -547,10 +555,6 @@ class _BrocastHomeState extends State<BrocastHome> {
                         Container(
                           child: Expanded(child: listOfBros()),
                         ),
-                      ]
-                  ),
-                  Column(
-                      children: [
                         !showEmojiKeyboard ? SizedBox(
                           height: MediaQuery.of(context).padding.bottom,
                         ) : Container(),

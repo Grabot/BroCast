@@ -28,14 +28,14 @@ class CameraPageState extends State<CameraPage> {
   bool isLoading = false;
 
   takePicture(File imageFile) async {
-    if (!widget.changeAvatar) {
+    if (!widget.changeAvatar && widget.chat != null) {
       isLoading = false;
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
           builder: (context) =>
               PreviewPageChat(
                 fromGallery: false,
-                chat: widget.chat,
+                chat: widget.chat!,
                 mediaFile: imageFile,
                 dataType: 0,
               ),
@@ -48,13 +48,13 @@ class CameraPageState extends State<CameraPage> {
   }
 
   takeVideo(File videoFile) async {
-    if (!widget.changeAvatar) {
+    if (!widget.changeAvatar && widget.chat != null) {
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
           builder: (context) =>
               PreviewPageChat(
                 fromGallery: false,
-                chat: widget.chat,
+                chat: widget.chat!,
                 mediaFile: videoFile,
                 dataType: 1,
               ),

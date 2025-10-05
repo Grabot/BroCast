@@ -487,6 +487,7 @@ class SocketServices extends ChangeNotifier {
         messageReceived(data);
         return;
       }
+      broup.newMessages = true;
       Message? storageMessage;
       storageMessage = await storage.fetchMessageWithId(message.broupId, message.messageId);
       // We update the newly created message with data from what we retrieved locally.

@@ -61,6 +61,8 @@ class AuthServiceSocialV15 {
       formMap["replied_to_message_id"] = repliedToMessageId;
     }
 
+    print("formMap: $formMap");
+
     return await AuthApiV1_5().dio.post(
       endPoint,
       options: Options(
@@ -69,7 +71,7 @@ class AuthServiceSocialV15 {
         },
       ),
       data: FormData.fromMap(formMap),
-    ).timeout(Duration(seconds: 30)).then((response) {
+    ).timeout(Duration(seconds: 600)).then((response) {
 
       Map<String, dynamic> json = response.data;
       if (!json.containsKey("result")) {
@@ -86,6 +88,7 @@ class AuthServiceSocialV15 {
         }
       }
     }).catchError((e) {
+      print("Error while sending message: $e");
       if (e is DioException) {
         showToastMessage("Dio error while sending sending message: ${e.message}");
       } else {

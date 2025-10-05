@@ -1,6 +1,7 @@
 import 'package:brocast/views/bro_home/bro_home.dart';
 import 'package:brocast/views/chat_view/chat_messaging.dart';
 import 'package:brocast/views/opening_screen/opening_screen.dart';
+import 'package:brocast/views/share_with/share_with.dart';
 import 'package:brocast/views/sign_in/signin.dart';
 import 'package:flutter/material.dart';
 import 'package:brocast/constants/route_paths.dart' as routes;
@@ -9,8 +10,6 @@ import 'objects/broup.dart';
 
 Route<dynamic> generateRoute(RouteSettings settings) {
   switch (settings.name) {
-    case routes.OpeningRoute:
-      return MaterialPageRoute(builder: (context) => OpeningScreen());
     case routes.SignInRoute:
       return MaterialPageRoute(builder: (context) => SignIn(key: UniqueKey(), showRegister: false));
     case routes.BroHomeRoute:
@@ -24,13 +23,13 @@ Route<dynamic> generateRoute(RouteSettings settings) {
             chat: chat,
           )
       );
-    default:
+    case routes.ShareWithRoute:
       return MaterialPageRoute(
-        builder: (context) => Scaffold(
-          body: Center(
-            child: Text('No path for ${settings.name}'),
-          ),
-        ),
+          builder: (context) => ShareWith(
+            key: UniqueKey(),
+          )
       );
+    default:
+      return MaterialPageRoute(builder: (context) => OpeningScreen());
   }
 }

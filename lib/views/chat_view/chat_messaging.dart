@@ -8,6 +8,7 @@ import 'package:brocast/views/chat_view/message_attachment_popup.dart';
 import 'package:brocast/views/chat_view/preview_page_chat/preview_page_chat.dart';
 import 'package:brocast/views/chat_view/record_view_chat/record_view_chat.dart';
 import 'package:collection/collection.dart';
+import 'package:image/image.dart' as img;
 import 'package:path_provider/path_provider.dart';
 
 import 'package:brocast/objects/broup.dart';
@@ -1148,18 +1149,17 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
     );
 
     if (picked != null) {
-      String? extension = picked.files.first.extension;
+      PlatformFile platformFile = picked.files.first;
+      String? extension = platformFile.extension;
+      File mediaFile = File(platformFile.path!);
       if (extension == null) {
         showToastMessage("can't detect extension");
         return;
       }
       int dataType = 0;
-      // TODO: Test all image extensions (with retrieving)
-      final imageExtensions = ["jpg", "jpeg", "png", "webp", "heic", "heif", "bmp", "tiff", "tif"];
-      // TODO: Test all video extensions (with retrieving)
+      final imageExtensions = ["jpg", "jpeg", "png", "webp", "heic", "heif", "bmp"];
       final videoExtensions = ["mp4", "mov", "m4v", "avi", "mkv", "flv", "wmv", "3gp", "webm"];
-      // TODO: Test all audio extensions (with retrieving)
-      final audioExtensions = ["mp3", "aac", "wav", "ogg", "flac", "m4a", "wma", "amr", "opus"];
+      final audioExtensions = ["mp3", "aac", "m4a"];
       if (imageExtensions.contains(extension.toLowerCase())) {
         dataType = DataType.image.value;
       } else if (videoExtensions.contains(extension.toLowerCase())) {
@@ -1171,8 +1171,6 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
       } else {
         dataType = DataType.other.value;
       }
-      PlatformFile platformFile = picked.files.first;
-      File mediaFile = File(platformFile.path!);
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
           builder: (context) =>
@@ -1221,11 +1219,14 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
                   messageHandling: messageHandling,
                   messageLongPress: messageLongPress,
               );
-              return AnimatedContainer(
-                  duration: Duration(milliseconds: 750),
-                  curve: Curves.linear,
-                  color: isHighlighted ? widget.chat.getColor() : Colors.transparent,
-                  child: messageTile
+              return Container(
+                padding: EdgeInsets.only(top: 4),
+                child: AnimatedContainer(
+                    duration: Duration(milliseconds: 750),
+                    curve: Curves.linear,
+                    color: isHighlighted ? widget.chat.getColor() : Colors.transparent,
+                    child: messageTile
+                ),
               );
             })
         : Container();

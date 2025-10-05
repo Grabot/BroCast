@@ -427,6 +427,7 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
       }
     } else if (widget.message.dataType == DataType.video.value) {
       if (widget.message.data != null) {
+        _videoController?.pause();
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) =>
