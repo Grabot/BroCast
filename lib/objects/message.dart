@@ -37,6 +37,9 @@ class Message {
 
   bool dataIsReceived = true;
 
+  bool deleted = false;
+  int? deletedByBroId;
+
   Message({
     required this.messageId,
     required this.broupId,
@@ -99,6 +102,8 @@ class Message {
     map['dataIsReceived'] = dataIsReceived ? 1 : 0;
     map['repliedTo'] = repliedTo;
     map['emojiReactions'] = jsonEncode(emojiReactions);
+    map['deleted'] = deleted ? 1 : 0;
+    map['deletedByBroId'] = deletedByBroId;
     return map;
   }
 
@@ -117,6 +122,8 @@ class Message {
     isRead = map['isRead'];
     emojiReactions = Map<String, String>.from(jsonDecode(map['emojiReactions']));
     clicked = false;
+    deleted = map['deleted'] == 1;
+    deletedByBroId = map['deletedByBroId'];
   }
 
   static Future<Message> fromJson(Map<String, dynamic> json) async {
@@ -192,6 +199,11 @@ class Message {
     if (json.containsKey('replied_to') && json['replied_to'] != null) {
       message.repliedTo = json['replied_to'];
     }
+    if (json.containsKey('deleted') && json['deleted'] != null) {
+      message.deleted = json['deleted'];
+      // deleted by bro id will be send as a message update on the broup.
+    }
+
     return message;
   }
 
@@ -228,6 +240,22 @@ class Message {
   String toString() {
     return 'Message{messageId: $messageId, senderId: $senderId, body: $body, textMessage: $textMessage, timestamp: $timestamp, isRead: $isRead, clicked: $clicked, info: $info, broupId: $broupId, data: ${data != null}';
   }
+
+  deleteMessageLocally(int broIdDelete) {
+    if (data != null) {
+      String filePath = data!;
+      // Delete the file if it exists no matter the extension
+      File file = File(filePath);
+      if (file.existsSync()) {
+        file.deleteSync();
+      }
+    }
+    if (emojiReactions.isNotEmpty) {
+      emojiReactions = {};
+    }
+    deleted = true;
+    deletedByBroId = broIdDelete;
+  }
 }
 
 Future<String> saveMediaData(Uint8List mediaData, int dataType, String? fileName) async {
@@ -254,7 +282,6 @@ Future<String> saveMediaData(Uint8List mediaData, int dataType, String? fileName
   } else if (dataType == DataType.gif.value) {
     extension = 'brocastGif';
   } else if (dataType == DataType.other.value) {
-    print("other filename: $fileName");
     if (fileName == null) {
       throw Exception('Unsupported extension');
     }
@@ -262,7 +289,6 @@ Future<String> saveMediaData(Uint8List mediaData, int dataType, String? fileName
   String filePath = '${mediaDirectory.path}/${DateTime.now().millisecondsSinceEpoch}.${extension}';
   if (dataType == DataType.other.value) {
     filePath = '${mediaDirectory.path}/${fileName}';
-    print("other file path $filePath");
   }
   final file = File(filePath);
   await file.writeAsBytes(mediaData);
@@ -297,7 +323,6 @@ Future<String> saveMediaFile(File mediaFile, int dataType) async {
   if (dataType == DataType.other.value) {
     // For "other" we keep the original filename.
     String fileName = mediaFile.path.split("/").last;
-    print("save media other, filename $fileName");
     List<String> notAllowedExtensions = [
       'sh', 'bash', 'zsh', 'py', 'js', 'ts', 'ps1', 'rb', 'pl', 'php',
       'lua', 'bat', 'cmd', 'vbs', 'awk', 'sed', 'fish', 'tcl', 'psm1',
@@ -305,14 +330,11 @@ Future<String> saveMediaFile(File mediaFile, int dataType) async {
     ];
     filePath = '${mediaDirectory.path}/${fileName}';
     String fileExtension = fileName.split('.').last.toLowerCase();
-    print("file extension $fileExtension");
     if (notAllowedExtensions.contains(fileExtension)) {
       fileName += ".txt";
-      print("new file name $fileName");
       filePath = '${mediaDirectory.path}/${fileName}';
     }
   }
-  print("new file path $filePath");
   await mediaFile.copy(filePath);
   return filePath;
 }

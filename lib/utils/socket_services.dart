@@ -428,6 +428,9 @@ class SocketServices extends ChangeNotifier {
         // The message might not be loaded on the broup, so retrieve it from storage
         Storage().fetchMessageWithId(broupId, messageId).then((message) {
           if (message != null) {
+            if (message.deleted) {
+              return;
+            }
             if (isAdd) {
               message.addEmojiReaction(emoji, broId);
             } else {
@@ -618,6 +621,9 @@ class SocketServices extends ChangeNotifier {
     this.socket.on('location_updated', (data) {
       locationUpdated(data);
     });
+    this.socket.on('message_deleted', (data) {
+      messageDeleted(data);
+    });
   }
 
   joinSocketsBroup() {
@@ -631,6 +637,8 @@ class SocketServices extends ChangeNotifier {
     this.socket.off('emoji_reaction');
     this.socket.off('message_read');
     this.socket.off('avatar_change');
+    this.socket.off('location_updated');
+    this.socket.off('message_deleted');
   }
 
   leaveSocketsBroup() {
@@ -685,6 +693,47 @@ class SocketServices extends ChangeNotifier {
       if (me != null) {
         locationSharing.startSharingAll(me);
       }
+    }
+  }
+
+  messageDeleted(data) {
+    if (data.containsKey("message_id") && data.containsKey("broup_id") && data.containsKey("deleted_by")) {
+      int messageId = data["message_id"];
+      int deletedByBroId = data["deleted_by"];
+      int broupId = data["broup_id"];
+      Storage().fetchMessageWithId(broupId, messageId).then((deleteMessage) {
+        if (deleteMessage != null) {
+          deleteMessage.deleted = true;
+          deleteMessage.deletedByBroId = deletedByBroId;
+          Storage().updateMessage(deleteMessage);
+          Me? me = Settings().getMe();
+          if (me != null) {
+            Broup broup = me.broups.firstWhere((element) => element.broupId == broupId);
+            broup.messages.removeWhere((element) => element.messageId == messageId);
+            broup.messages.add(deleteMessage);
+            broup.messages.sort((b, a) => a.getTimeStamp().compareTo(b.getTimeStamp()));
+            notify();
+          }
+        } else {
+          Message placeHolderDeleteMessage = Message(
+              messageId: messageId,
+              senderId: -1,
+              body: "",
+              textMessage: null,
+              timestamp: DateTime.now().toUtc().toString(),
+              data: null,
+              dataType: null,
+              repliedTo: null,
+              info: false,
+              broupId: broupId
+          );
+          placeHolderDeleteMessage.deleteMessageLocally(deletedByBroId);
+          Storage().addMessage(placeHolderDeleteMessage);
+          AuthServiceSocialV15().receivedDeletionMessage(broupId).then((value) {
+            notifyListeners();
+          });
+        }
+      });
     }
   }
 }

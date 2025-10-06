@@ -252,13 +252,11 @@ class _LocationViewChatState extends State<LocationViewChat> {
       } else {
         if (mounted) {
           showToastMessage("Failed to fetch places");
-          print("Failed to fetch places");
         }
       }
     } on DioException catch (e) {
       if (mounted) {
         showToastMessage("Error fetching places: ${e.message}");
-        print("Error fetching places: ${e.message}");
       }
     }
   }

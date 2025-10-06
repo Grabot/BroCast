@@ -67,6 +67,7 @@ dependencies:
   permission_handler: ^12.0.1
   image: ^4.5.4
   flutter_sharing_intent: ^1.1.1
+  share_plus: ^12.0.0
 
 dev_dependencies:
   flutter_test:

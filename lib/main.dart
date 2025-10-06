@@ -15,7 +15,6 @@ import 'firebase_options.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   setupLocator();
-  print("starting app");
 
   await NotificationController.initializeLocalNotifications(debug: false);
 
@@ -32,8 +31,6 @@ void main() async {
   SecureStorage();
 
   await initializeDirectories();
-
-  print("app initialized");
 
   runApp(OKToast(child: LifeCycle(child: MyApp())));
 }

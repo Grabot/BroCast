@@ -296,24 +296,26 @@ class Broup {
     List<int> messagesToRetrieve = messagesToRetrieveStrings.map((e) => int.parse(e)).toList();
     storage.retrieveMessages(this.broupId, messagesToRetrieve).then((messagesEmojiReactions) {
       for (Message emojiReactionMessage in messagesEmojiReactions) {
-        messagesToRetrieve.remove(emojiReactionMessage.messageId);
-        Map<String, dynamic> emojiReaction = emojiReactions[emojiReactionMessage.messageId.toString()]!;
-        List<String> broIdsReactionsStrings = [...emojiReaction.keys];
-        List<int> broIdsReactions = broIdsReactionsStrings.map((e) => int.parse(e)).toList();
-        // We don't need to retrieve the bro here, the id is enough
-        for (int broIdReaction in broIdsReactions) {
-          List<dynamic> emojiList = emojiReaction[broIdReaction.toString()]!;
-          String emoji = emojiList[0];
-          bool isAdd = true;
-          if (emojiList[1] == "0") {
-            isAdd = false;
+        if (!emojiReactionMessage.deleted) {
+          messagesToRetrieve.remove(emojiReactionMessage.messageId);
+          Map<String, dynamic> emojiReaction = emojiReactions[emojiReactionMessage.messageId.toString()]!;
+          List<String> broIdsReactionsStrings = [...emojiReaction.keys];
+          List<int> broIdsReactions = broIdsReactionsStrings.map((e) => int.parse(e)).toList();
+          // We don't need to retrieve the bro here, the id is enough
+          for (int broIdReaction in broIdsReactions) {
+            List<dynamic> emojiList = emojiReaction[broIdReaction.toString()]!;
+            String emoji = emojiList[0];
+            bool isAdd = true;
+            if (emojiList[1] == "0") {
+              isAdd = false;
+            }
+            if (isAdd) {
+              emojiReactionMessage.addEmojiReaction(emoji, broIdReaction);
+            } else {
+              emojiReactionMessage.removeEmojiReaction(broIdReaction);
+            }
+            storage.updateMessage(emojiReactionMessage);
           }
-          if (isAdd) {
-            emojiReactionMessage.addEmojiReaction(emoji, broIdReaction);
-          } else {
-            emojiReactionMessage.removeEmojiReaction(broIdReaction);
-          }
-          storage.updateMessage(emojiReactionMessage);
         }
       }
       if (messagesToRetrieve.isNotEmpty) {
@@ -357,6 +359,61 @@ class Broup {
     });
   }
 
+  processDeletedMessages(Map<String, dynamic> deleteMessagesDetails) {
+    Storage storage = Storage();
+    List<String> messagesToRetrieveStrings = [...deleteMessagesDetails.keys];
+    List<int> messagesToRetrieve = messagesToRetrieveStrings.map((e) => int.parse(e)).toList();
+    storage.retrieveMessages(this.broupId, messagesToRetrieve).then((deleteMessagesStorage) {
+      for (Message deletionMessage in deleteMessagesStorage) {
+        messagesToRetrieve.remove(deletionMessage.messageId);
+        // add a check if the key is in the list
+        if (deleteMessagesDetails.containsKey(deletionMessage.messageId.toString())) {
+          int broIdThatDeletedMessage = deleteMessagesDetails[deletionMessage.messageId.toString()];
+          // update the message to be deleted
+          deletionMessage.deleted = true;
+          deletionMessage.deletedByBroId = broIdThatDeletedMessage;
+          storage.updateMessage(deletionMessage);
+          if (MessagingChangeNotifier().isOpen && MessagingChangeNotifier().broupId == broupId) {
+            Me? me = Settings().getMe();
+            if (me != null) {
+              Broup broup = me.broups.firstWhere((element) => element.broupId == broupId);
+              broup.messages.removeWhere((element) =>
+              element.messageId == deletionMessage.messageId);
+              broup.messages.add(deletionMessage);
+              broup.messages.sort((b, a) => a.getTimeStamp().compareTo(b.getTimeStamp()));
+            }
+          }
+        }
+      }
+      if (messagesToRetrieve.isNotEmpty) {
+        // It's highly possible that the message was not yet retrieved. It will only do that
+        // If you open the chat.
+        // If you don't open the chat, you won't retrieve the message.
+        // To process the deleted messages, we will create a placeholder deleted Message
+        // And store it, if we retrieve the messages later it will be updated.
+        for (int messageId in messagesToRetrieve) {
+          if (deleteMessagesDetails.containsKey(messageId.toString())) {
+            int deleteMessageDeleteBroId = deleteMessagesDetails[messageId.toString()];
+            Message placeHolderDeleteMessage = Message(
+                messageId: messageId,
+                senderId: -1,
+                body: "",
+                textMessage: null,
+                timestamp: DateTime.now().toUtc().toString(),
+                data: null,
+                dataType: null,
+                repliedTo: null,
+                info: false,
+                broupId: getBroupId()
+            );
+            placeHolderDeleteMessage.deleteMessageLocally(deleteMessageDeleteBroId);
+            storage.addMessage(placeHolderDeleteMessage);
+          }
+        }
+      }
+    });
+  }
+
   Broup.fromJson(Map<String, dynamic> json) {
     // These 4 values should always be present
     broupId = json["broup_id"];
@@ -374,6 +431,10 @@ class Broup {
       // This is because the message object will be removed if everyone has received them.
       // So if a emoji reaction is made later we will let the bro know via the broup object.
       processEmojiReactions(json["emoji_reactions"]);
+    }
+    if (json.containsKey("message_updates")) {
+      // If messages are deleted while logged out we will receive them here.
+      processDeletedMessages(json["message_updates"]);
     }
 
     // These are the core chat values. Stored in a coupling table on the server

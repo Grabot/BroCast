@@ -36,7 +36,7 @@ class Storage {
 
     return await openDatabase(
       path,
-      version: 7,
+      version: 8,
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
     );
@@ -131,6 +131,30 @@ class Storage {
     if ((oldVersion <= 6) && newVersion >= 7) {
       createTableLocationSharing(db);
     }
+    if ((oldVersion <= 7) && newVersion >= 8) {
+      // We again re create the messages table because we have a new constraint that we want to add
+      List<Map<String, dynamic>> maps = await db.query(
+        'Message',
+      );
+      List<Map<String, dynamic>> newMessageMaps = [];
+      if (maps.isNotEmpty) {
+        for (Map<String, dynamic> messageMap in maps) {
+          Map<String, dynamic> newMap = Map<String, dynamic>.from(messageMap);
+          // There is a new column, we add it and set it to false.
+          newMap["deleted"] = 0;
+          newMap["deletedByBroId"] = null;
+          newMessageMaps.add(newMap);
+        }
+      }
+      await db.execute('DROP TABLE Message');
+      await createTableMessage(db);
+      if (newMessageMaps.isNotEmpty) {
+        //  Insert the data from the old table into the new table
+        for (Map<String, dynamic> message in newMessageMaps) {
+          await db.insert('Message', message);
+        }
+      }
+    }
   }
 
   createTableBroup(Database db) async {
@@ -185,7 +209,9 @@ class Storage {
             dataIsReceived INTEGER,
             repliedTo INTEGER,
             emojiReactions TEXT,
-            UNIQUE(messageId, broupId, info) ON CONFLICT REPLACE
+            deleted INTEGER,
+            deletedByBroId INTEGER,
+            UNIQUE(messageId, senderId, broupId, info) ON CONFLICT REPLACE
           );
           ''');
   }

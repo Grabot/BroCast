@@ -28,6 +28,8 @@ class PreviewPageChat extends StatefulWidget {
   final Broup chat;
   final File mediaFile;
   final int dataType;
+  final String? messageBodyForward;
+  final String? textMessageForward;
 
   const PreviewPageChat({
     Key? key,
@@ -35,6 +37,8 @@ class PreviewPageChat extends StatefulWidget {
     required this.chat,
     required this.mediaFile,
     required this.dataType,
+    this.messageBodyForward,
+    this.textMessageForward,
   }) : super(key: key);
 
   @override
@@ -101,6 +105,19 @@ class _PreviewPageChatState extends State<PreviewPageChat> {
       });
     } else if (widget.dataType == DataType.other.value) {
       broMessageController.text = "📄";
+      setState(() {
+        isLoading = false;
+      });
+    }
+    if (widget.messageBodyForward != null && widget.messageBodyForward != "") {
+      broMessageController.text = widget.messageBodyForward!;
+      setState(() {
+        isLoading = false;
+      });
+    }
+    if (widget.textMessageForward != null && widget.textMessageForward != "") {
+      captionMessageController.text = widget.textMessageForward!;
+      appendingCaption = true;
       setState(() {
         isLoading = false;
       });
@@ -214,19 +231,19 @@ class _PreviewPageChatState extends State<PreviewPageChat> {
     navigateToChat(context, settings, widget.chat);
   }
 
-  gifOrOther(String message, String? messageTextMessage, Message mes) {
+  gifOrOther(String message, String? messageTextMessage, Message mes) async {
     if (widget.dataType == DataType.gif.value) {
       AuthServiceSocialV15().sendMessageGif(
           widget.chat.getBroupId(), message, messageTextMessage, mes.data!, null).then((
-          messageId) {
+          messageId) async {
         setState(() {
           isSending = false; // Set sending state to false
         });
         if (messageId != null) {
           mes.isRead = 0;
           if (mes.messageId != messageId) {
-            Storage().updateMessageId(mes.messageId, messageId, widget.chat.getBroupId());
             mes.messageId = messageId;
+            await Storage().addMessage(mes);
           }
           setState(() {
             // Go back to the chat.
@@ -248,15 +265,15 @@ class _PreviewPageChatState extends State<PreviewPageChat> {
       // other
       AuthServiceSocialV15().sendMessageOther(
           widget.chat.getBroupId(), message, messageTextMessage, mes.data!, null).then((
-          messageId) {
+          messageId) async {
         setState(() {
           isSending = false; // Set sending state to false
         });
         if (messageId != null) {
           mes.isRead = 0;
           if (mes.messageId != messageId) {
-            Storage().updateMessageId(mes.messageId, messageId, widget.chat.getBroupId());
             mes.messageId = messageId;
+            await Storage().addMessage(mes);
           }
           setState(() {
             // Go back to the chat.
@@ -319,25 +336,21 @@ class _PreviewPageChatState extends State<PreviewPageChat> {
       setState(() {
         widget.chat.sendingMessage = true;
       });
-      await Storage().addMessage(mes);
-      print("Message saved to local storage");
 
       if ((dataType == DataType.gif.value || dataType == DataType.other.value) && mes.data != null) {
         gifOrOther(message, messageTextMessage, mes);
       } else {
-        print("sending message");
         AuthServiceSocialV15().sendMessage(
             widget.chat.getBroupId(), message, messageTextMessage, mes.data, dataType, null).then((
-            messageId) {
-              print("send message done");
+            messageId) async {
           setState(() {
             isSending = false; // Set sending state to false
           });
           if (messageId != null) {
             mes.isRead = 0;
             if (mes.messageId != messageId) {
-              Storage().updateMessageId(mes.messageId, messageId, widget.chat.getBroupId());
               mes.messageId = messageId;
+              await Storage().addMessage(mes);
             }
             setState(() {
               // Go back to the chat.

@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_sharing_intent/model/sharing_file.dart';
 import 'package:image/image.dart' as img;
 import '../../../objects/broup.dart';
+import '../../../objects/message.dart';
 import '../../../services/auth/v1_4/auth_service_social.dart';
 import '../../../utils/settings.dart';
 import '../../../utils/storage.dart';
@@ -16,120 +17,57 @@ import '../../chat_view/preview_page_chat/preview_page_chat.dart';
 import '../../chat_view/preview_page_text_chat/preview_page_text_chat.dart';
 
 
-class BroTileShare extends StatefulWidget {
+class BroTileForward extends StatefulWidget {
   final Broup chat;
+  final Message forwardMessage;
   final void Function() callback;
 
-  BroTileShare({required Key key, required this.chat, required this.callback}) : super(key: key);
+  BroTileForward({required Key key, required this.chat, required this.forwardMessage, required this.callback}) : super(key: key);
 
   @override
-  _BroTileShareState createState() => _BroTileShareState();
+  _BroTileForwardState createState() => _BroTileForwardState();
 }
 
-class _BroTileShareState extends State<BroTileShare> {
+class _BroTileForwardState extends State<BroTileForward> {
   var _tapPosition;
 
   selectBro(BuildContext context) {
-    shareWithBroup(context, widget.chat);
+    shareWithBroup(context, widget.chat, widget.forwardMessage);
   }
 
-  bool isAnimatedWebP(Uint8List bytes) {
-    final image = img.decodeWebP(bytes);
-    if (image == null) {
-      return false;
-    }
-    return image.numFrames > 1;
-  }
+  shareWithBroup(BuildContext context, Broup broupShare, Message forwardMessage) async {
 
-  shareWithBroup(BuildContext context, Broup broupShare) async {
-    List<SharedFile> sharedFiles = ShareWithService().sharedFiles;
-    if (sharedFiles.length > 1) {
-      showToastMessage("We apologize, but you can only share one file at a time (for now)");
-      navigateToHome(context, Settings());
-      return;
-    } else {
-      bool fromUrl = false;
-      SharedFile file = sharedFiles[0];
-      String? shareFilePath = file.value;
-      if (shareFilePath == null) {
-        showToastMessage("We are unable to share this file.");
-        return;
-      }
-      SharedMediaType mediaType = file.type;
-      int? dataType;
-      if (mediaType == SharedMediaType.TEXT) {
-        dataType = null;
-      } else if (mediaType == SharedMediaType.IMAGE) {
-        final fileExtension = shareFilePath.split('.').last.toLowerCase();
-        final imageExtensions = ["jpg", "jpeg", "png", "webp", "heic", "heif", "bmp"];
-        if (fileExtension == "gif") {
-          dataType = DataType.gif.value;
-        } else if (imageExtensions.contains(fileExtension)) {
-          if (fileExtension == "webp") {
-            final bytes = await File(shareFilePath).readAsBytes();
-            if (isAnimatedWebP(bytes)) {
-              dataType = DataType.gif.value;
-            } else {
-              dataType = DataType.image.value;
-            }
-          } else {
-            dataType = DataType.image.value;
-          }
-        } else {
-          dataType = DataType.other.value;
-        }
-      } else if (mediaType == SharedMediaType.VIDEO) {
-        final fileExtension = shareFilePath.split('.').last.toLowerCase();
-        final videoExtensions = ["mp4", "mov", "m4v", "avi", "mkv", "flv", "wmv", "3gp", "webm"];
-        if (videoExtensions.contains(fileExtension)) {
-          dataType = DataType.video.value;
-        } else {
-          dataType = DataType.other.value;
-        }
-      } else if (mediaType == SharedMediaType.FILE) {
-        final fileExtension = shareFilePath.split('.').last.toLowerCase();
-        final audioExtensions = ["mp3", "aac", "m4a"];
-        if (audioExtensions.contains(fileExtension)) {
-          dataType = DataType.audio.value;
-        } else {
-          dataType = DataType.other.value;
-        }
-      } else if (mediaType == SharedMediaType.OTHER) {
-        dataType = DataType.other.value;
-      } else if (mediaType == SharedMediaType.URL) {
-        fromUrl = true;
-        dataType = null;
-      }
-      if (dataType == null) {
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(
-            builder: (context) =>
-                PreviewPageTextChat(
-                    key: UniqueKey(),
-                    chat: broupShare,
-                    shareText: shareFilePath,
-                    shareTextBody: null,
-                    url: fromUrl
-                ),
-          ),
-        );
-        return;
-      } else {
-        File mediaFile = File(shareFilePath);
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(
-            builder: (context) =>
-                PreviewPageChat(
+    if (forwardMessage.dataType != null && forwardMessage.dataType != "") {
+      File mediaFile = File(forwardMessage.data!);
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (context) =>
+              PreviewPageChat(
                   key: UniqueKey(),
                   fromGallery: true,
                   chat: broupShare,
                   mediaFile: mediaFile,
-                  dataType: dataType!,
-                ),
-          ),
-        );
-        return;
-      }
+                  dataType: forwardMessage.dataType!,
+                  messageBodyForward: forwardMessage.body,
+                  textMessageForward: forwardMessage.textMessage
+              ),
+        ),
+      );
+      return;
+    } else {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (context) =>
+              PreviewPageTextChat(
+                  key: UniqueKey(),
+                  chat: broupShare,
+                  shareText: forwardMessage.textMessage,
+                  shareTextBody: forwardMessage.body,
+                  url: false
+              ),
+        ),
+      );
+      return;
     }
   }
 

@@ -7,6 +7,7 @@ import 'package:brocast/views/chat_view/emoji_reactions_overview.dart';
 import 'package:brocast/views/chat_view/message_attachment_popup.dart';
 import 'package:brocast/views/chat_view/preview_page_chat/preview_page_chat.dart';
 import 'package:brocast/views/chat_view/record_view_chat/record_view_chat.dart';
+import 'package:brocast/views/forward_to/forward_to.dart';
 import 'package:collection/collection.dart';
 import 'package:image/image.dart' as img;
 import 'package:path_provider/path_provider.dart';
@@ -25,6 +26,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gal/gal.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:tuple/tuple.dart';
 
 import '../../../objects/bro.dart';
@@ -105,6 +107,7 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
 
   int emojiReactionMessageId = -1;
   bool showEmojiPopup = false;
+  bool showEmojiPopupDeleted = false;
   bool showEmojiReactionOverview = false;
   List<EmojiOverviewData> emojiOverviewDataList = [];
   Offset emojiPopupPosition = Offset.zero;
@@ -327,14 +330,17 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
     if (action is OutsideClicked) {
       highlightedMessageIds.remove(emojiReactionMessageId);
       showEmojiPopup = false;
+      showEmojiPopupDeleted = false;
       emojiReactionMessageId = -1;
     } else if (action is ButtonPressed) {
       focusEmojiTextField.requestFocus();
       showEmojiPopup = false;
+      showEmojiPopupDeleted = false;
       showEmojiKeyboard = true;
     } else if (action is EmojiSelected) {
       highlightedMessageIds.remove(emojiReactionMessageId);
       showEmojiPopup = false;
+      showEmojiPopupDeleted = false;
       final String newEmoji = action.emoji;
       emojiReaction(newEmoji, emojiReactionMessageId);
       emojiReactionMessageId = -1;
@@ -471,6 +477,7 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
   Future<void> handleMessagePopupAction(MessagePopupAction action) async {
 
     showEmojiPopup = false;
+    showEmojiPopupDeleted = false;
     emojiReactionMessageId = -1;
 
     if (action is MessageBroPopupAction) {
@@ -604,10 +611,176 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
           });
         }
       });
+    } else if (action is ShareMessagePopupAction) {
+      Message messageShare = action.message;
+      String emojiBody = messageShare.body;
+      String? textMessage = messageShare.textMessage;
+      String title = "Brocast message from broup " + widget.chat.broupName;
+      if (widget.chat.private) {
+        title = "Brocast message from bro " + widget.chat.broupName;
+      }
+      String shareText = emojiBody;
+      if (textMessage != null) {
+        shareText = emojiBody + "\n" + textMessage;
+      }
+      List<XFile>? filesShare = null;
+      if (messageShare.dataType != null) {
+        if (messageShare.dataType != DataType.location.value) {
+          if (messageShare.dataType != DataType.liveLocation.value) {
+            if (messageShare.dataType != DataType.liveLocationStop.value) {
+              if (messageShare.data != null) {
+                final file = File(messageShare.data!);
+                final tempDirectory = await getTemporaryDirectory();
+                String newFilePath = "";
+                if (messageShare.dataType == DataType.image.value) {
+                  newFilePath = '${tempDirectory.path}/previewImage_${messageShare.messageId}.png';
+                } else if (messageShare.dataType == DataType.video.value) {
+                  newFilePath = '${tempDirectory.path}/previewVideo_${messageShare.messageId}.mp4';
+                } else if (messageShare.dataType == DataType.audio.value) {
+                  newFilePath = '${tempDirectory.path}/previewAudio_${messageShare.messageId}.m4a';
+                } else if (messageShare.dataType == DataType.gif.value) {
+                  newFilePath = '${tempDirectory.path}/previewImage_${messageShare.messageId}.gif';
+                } else if (messageShare.dataType == DataType.other.value) {
+                  newFilePath = file.path;
+                }
+                if (newFilePath.isNotEmpty) {
+                  final fileView = await file.copy(newFilePath);
+                  filesShare = [XFile(fileView.path)];
+                }
+              }
+            }
+          }
+        }
+      }
+      SharePlus.instance.share(
+          ShareParams(
+              title: title,
+              text: shareText,
+              files: filesShare
+          )
+      );
+    } else if (action is ForwardMessagePopupAction) {
+      Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (context) => ForwardTo(
+            key: UniqueKey(),
+            forwardMessage: action.message,
+          )));
+    } else if (action is DeleteMessagePopupAction) {
+      showDialogDeleteMessage(context, action.message);
+    } else if (action is RemoveMessagePopupAction) {
+      Storage().deleteMessage(action.message.messageId, action.message.broupId).then((deleteMes) {
+        widget.chat.messages.removeWhere((element) => element.messageId == action.message.messageId);
+        setState(() {
+
+        });
+      });
     }
+
     setState(() {
       highlightedMessageIds.remove(action.message.messageId);
     });
+  }
+
+  deleteMessageForMe(Message deleteMessage) {
+    Me? me = Settings().getMe();
+    if (me == null) {
+      showToastMessage("we had an issues getting your user information. Please log in again.");
+      _navigationService.navigateTo(routes.SignInRoute);
+      return;
+    }
+    deleteMessage.deleteMessageLocally(me.id);
+    storage.updateMessage(deleteMessage).then((del) {
+      setState(() {
+
+      });
+    });
+  }
+
+  deleteMessageForEveryone(Message deleteMessage) {
+    Me? me = Settings().getMe();
+    if (me == null) {
+      showToastMessage("we had an issues getting your user information. Please log in again.");
+      _navigationService.navigateTo(routes.SignInRoute);
+      return;
+    }
+    AuthServiceSocialV15().deleteMessageEverybody(widget.chat.broupId, deleteMessage.messageId).then((value) {
+      deleteMessage.deleteMessageLocally(me.id);
+      storage.updateMessage(deleteMessage).then((del) {
+        setState(() {
+
+        });
+      });
+    });
+  }
+
+  deleteTheMessage(int deleteType, Message deleteMessage) {
+    if (deleteType == 0) {
+      deleteMessageForMe(deleteMessage);
+    } else {
+      deleteMessageForEveryone(deleteMessage);
+    }
+    Navigator.pop(context);
+  }
+
+  void showDialogDeleteMessage(BuildContext context, Message deleteMessage) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          int selectedRadio = 0;
+          return AlertDialog(
+            title: new Text("Delete message..."),
+            content: StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: List<Widget>.generate(2, (int index) {
+                    return InkWell(
+                      onTap: () {
+                        setState(() => selectedRadio = index);
+                      },
+                      child: Row(children: [
+                        Radio<int>(
+                            value: index,
+                            groupValue: selectedRadio,
+                            onChanged: (int? value) {
+                              if (value != null) {
+                                setState(() => selectedRadio = value);
+                              }
+                            }),
+                        index == 0
+                            ? Container(child: Text("only for me"))
+                            : Container(),
+                        index == 1
+                            ? Container(child: Text("for everybody"))
+                            : Container(),
+                      ]),
+                    );
+                  }),
+                );
+              },
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: Text("Cancel"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              TextButton(
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.delete),
+                    Text("Delete"),
+                  ],
+                ),
+                onPressed: () {
+                  deleteTheMessage(selectedRadio, deleteMessage);
+                },
+              ),
+            ],
+          );
+        });
   }
 
   showEmojiReactions(Message message) {
@@ -921,43 +1094,83 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
     bool saveImageOption = message.data != null && message.clicked;
 
     messagePopupOptions = [];
-    if (messageBroOption && broInBroup) {
-      messagePopupOptions.add({'text': 'Message Bro', 'icon': Icons.message, 'action': MessageBroPopupAction(message: message, broId: message.senderId)});
-    }
-    if (addBroOption && broInBroup) {
-      messagePopupOptions.add({'text': 'Add New Bro', 'icon': Icons.person_add, 'action': AddNewBroPopupAction(message: message, broId: message.senderId)});
-    }
-    if (makeBroAdmin && broInBroup) {
-      messagePopupOptions.add({'text': 'Make Bro Admin', 'icon': Icons.admin_panel_settings, 'action': MakeBroAdminPopupAction(message: message, broId: message.senderId)});
-    }
-    if (dismissBroAdmin && broInBroup) {
-      messagePopupOptions.add({'text': 'Dismiss Bro Admin', 'icon': Icons.admin_panel_settings_outlined, 'action': DismissBroAdminPopupAction(message: message, broId: message.senderId)});
-    }
-    if (saveImageOption && message.dataType != null) {
-      String type = DataType
-          .getByValue(message.dataType!)
-          .typeName;
-      if (message.dataType != DataType.location.value || message.dataType != DataType.liveLocation.value || message.dataType != DataType.liveLocationStop.value) {
+    if (!message.deleted) {
+      if (messageBroOption && broInBroup) {
         messagePopupOptions.add({
-          'text': 'Save $type',
-          'icon': Icons.save_alt,
-          'action': SaveImagePopupAction(message: message)
+          'text': 'Message Bro',
+          'icon': Icons.message,
+          'action': MessageBroPopupAction(message: message, broId: message.senderId)
+        });
+      }
+      if (addBroOption && broInBroup) {
+        messagePopupOptions.add({
+          'text': 'Add New Bro',
+          'icon': Icons.person_add,
+          'action': AddNewBroPopupAction(message: message, broId: message.senderId)
+        });
+      }
+      if (makeBroAdmin && broInBroup) {
+        messagePopupOptions.add({
+          'text': 'Make Bro Admin',
+          'icon': Icons.admin_panel_settings,
+          'action': MakeBroAdminPopupAction(message: message, broId: message.senderId)
+        });
+      }
+      if (dismissBroAdmin && broInBroup) {
+        messagePopupOptions.add({
+          'text': 'Dismiss Bro Admin',
+          'icon': Icons.admin_panel_settings_outlined,
+          'action': DismissBroAdminPopupAction(message: message, broId: message.senderId)
+        });
+      }
+      if (saveImageOption && message.dataType != null) {
+        String type = DataType
+            .getByValue(message.dataType!)
+            .typeName;
+        if (message.dataType != DataType.location.value ||
+            message.dataType != DataType.liveLocation.value ||
+            message.dataType != DataType.liveLocationStop.value) {
+          messagePopupOptions.add({
+            'text': 'Save $type',
+            'icon': Icons.save_alt,
+            'action': SaveImagePopupAction(message: message)
+          });
+        }
+        messagePopupOptions.add({
+          'text': 'View $type',
+          'icon': Icons.remove_red_eye,
+          'action': ViewImagePopupAction(message: message, broId: message.senderId)
+        });
+      }
+      if (meAdmin && !myMessage && !widget.chat.private && broInBroup) {
+        messagePopupOptions.add({
+          'text': 'Remove bro from broup',
+          'icon': Icons.person_remove,
+          'action': RemoveBroFromBroupPopupAction(message: message, broId: message.senderId)
         });
       }
       messagePopupOptions.add({
-        'text': 'View $type',
-        'icon': Icons.remove_red_eye,
-        'action': ViewImagePopupAction(message: message, broId: message.senderId)
+        'text': 'Reply to Message',
+        'icon': Icons.reply,
+        'action': ReplyToMessagePopupAction(message: message)
       });
+      if (message.dataType != DataType.location.value && message.dataType != DataType.liveLocation.value && message.dataType != DataType.liveLocationStop.value) {
+        messagePopupOptions.add({'text': 'Share message', 'icon': Icons.share, 'action': ShareMessagePopupAction(message: message)});
+        messagePopupOptions.add({'text': 'Forward message', 'icon': Icons.forward, 'action': ForwardMessagePopupAction(message: message)});
+      }
+
+      messagePopupOptions.add({'text': 'Delete message', 'icon': Icons.delete, 'action': DeleteMessagePopupAction(message: message)});
+    } else {
+      messagePopupOptions.add({'text': 'Remove message', 'icon': Icons.cleaning_services, 'action': RemoveMessagePopupAction(message: message)});
     }
-    if (meAdmin && !myMessage && !widget.chat.private && broInBroup) {
-      messagePopupOptions.add({'text': 'Remove bro from broup', 'icon': Icons.person_remove, 'action': RemoveBroFromBroupPopupAction(message: message, broId: message.senderId)});
-    }
-    messagePopupOptions.add({'text': 'Reply to Message', 'icon': Icons.reply, 'action': ReplyToMessagePopupAction(message: message)});
 
     emojiReactionMessageId = message.messageId;
     setState(() {
       showEmojiPopup = true;
+      showEmojiPopupDeleted = true;
+      if (message.deleted) {
+        showEmojiPopupDeleted = false;
+      }
       emojiPopupPosition = pressPosition;
     });
   }
@@ -1097,8 +1310,6 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
       setState(() {
         widget.chat.sendingMessage = true;
       });
-      // We already add it now, we can overwrite it later if we receive it from the sockets.
-      await storage.addMessage(mes);
       // Send the message. The data is always null here because it's only send via the preview page.
       AuthServiceSocialV15().sendMessage(widget.chat.getBroupId(), message, textMessage, null, null, repliedToMessageId).then((messageId) async {
         isLoadingMessages = false;
@@ -1107,8 +1318,8 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
         if (messageId != null) {
           mes.isRead = 0;
           if (mes.messageId != messageId) {
-            await storage.updateMessageId(mes.messageId, messageId, widget.chat.broupId);
             mes.messageId = messageId;
+            await storage.addMessage(mes);
           }
           // message send
         } else {
@@ -1299,6 +1510,7 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
     } else if (showEmojiPopup) {
       setState(() {
         showEmojiPopup = false;
+        showEmojiPopupDeleted = false;
       });
     } else if (showEmojiKeyboard) {
       setState(() {
@@ -1771,6 +1983,7 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
               showEmojiPopup: showEmojiPopup,
               onAction: handleEmojiPopupAction,
               darkMode: settings.getEmojiKeyboardDarkMode(),
+              popupWidth: showEmojiPopupDeleted ? 350 : 0,
               highlightedEmoji: emojiReactionMessageId == -1
                   ? null
                   : getEmojiReaction(emojiReactionMessageId),

@@ -61,6 +61,30 @@ class ReplyToMessagePopupAction extends MessagePopupAction {
   });
 }
 
+class ShareMessagePopupAction extends MessagePopupAction {
+  const ShareMessagePopupAction({
+    required super.message
+  });
+}
+
+class ForwardMessagePopupAction extends MessagePopupAction {
+  const ForwardMessagePopupAction({
+    required super.message
+  });
+}
+
+class DeleteMessagePopupAction extends MessagePopupAction {
+  const DeleteMessagePopupAction({
+    required super.message
+  });
+}
+
+class RemoveMessagePopupAction extends MessagePopupAction {
+  const RemoveMessagePopupAction({
+    required super.message
+  });
+}
+
 class RemoveBroFromBroupPopupAction extends MessagePopupAction {
   final int broId;
   const RemoveBroFromBroupPopupAction({

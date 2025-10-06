@@ -79,12 +79,16 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
   Set<Marker> mapMarkers = {};
   File? imageFile;
   File? otherFile;
+  Bro? broDeleter;
 
   selectMessage(BuildContext context) async {
     if ((widget.message.textMessage != null && widget.message.textMessage!.isNotEmpty) || widget.message.dataType != null) {
       setState(() {
         widget.message.clicked = !widget.message.clicked;
       });
+      if (widget.message.deleted) {
+        return;
+      }
       if (widget.message.clicked) {
         if (widget.message.dataType != null && !widget.message.dataIsReceived) {
           // There should be data in this message, but it is not yet received from the server yet.
@@ -96,7 +100,6 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
           if (widget.message.dataType == DataType.other.value) {
             // For other we want to know the extension of the file, for this we need another server call
             otherFileName = await AuthServiceSocialV15().getMessageOtherFileName(widget.message.broupId, widget.message.messageId);
-            print("other file name: $otherFileName");
           }
           AuthServiceSocialV15().getMessageData(widget.message.broupId, widget.message.messageId).then((messageDataResponse) async {
             // For a video we first want to load the video controller
@@ -234,6 +237,10 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
         replyToMessage();
       }
     });
+
+    if (widget.message.deletedByBroId != null) {
+      getBroDelete();
+    }
   }
 
   void _initializeAudioController() async {
@@ -283,7 +290,6 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
         newFilePath = '${tempDirectory.path}/previewImage_${widget.message.messageId}.gif';
       }
       File fileView = await file.copy(newFilePath);
-      print("copied gif or image file: ${fileView.path}");
       return fileView;
     }
     return null;
@@ -380,6 +386,9 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
       borderColour = Colors.cyanAccent;
     } else if (widget.message.dataType == DataType.other.value) {
       borderColour = Colors.white;
+    }
+    if (widget.message.deleted) {
+      borderColour = Colors.black;
     }
 
     return borderColour;
@@ -504,7 +513,7 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
       return Container();
     } else {
       String replySenderName = "Message not available";
-      if (widget.repliedBro != null) {
+      if (widget.repliedBro != null && !repliedToMessage.deleted) {
         replySenderName = widget.repliedBro!.getFullName();
       }
       return Material(
@@ -538,7 +547,7 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
                   ],
                 ),
                 SizedBox(height: 4),
-                if (repliedToMessage.body != "")
+                if (repliedToMessage.body != "" && !repliedToMessage.deleted)
                   Text(
                     repliedToMessage.body,
                     style: TextStyle(
@@ -575,6 +584,26 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
     return textWidth + 8;
   }
 
+  getBroDelete() async {
+    if (widget.message.deletedByBroId != null && widget.message.deletedByBroId != -1) {
+      Storage().fetchBro(widget.message.deletedByBroId!).then((broDeleteDb) {
+        if (broDeleteDb != null) {
+          setState(() {
+            broDeleter = broDeleteDb;
+          });
+        }
+      });
+    }
+  }
+
+  String getBroDeleteMessage() {
+    String deletionMessage = "Message was deleted";
+    if (broDeleter != null) {
+      deletionMessage = "Message deleted by ${broDeleter!.getFullName()}";
+    }
+    return deletionMessage;
+  }
+
   double getMessageWidgetWidth() {
     if (widget.message.clicked) {
       if (widget.message.dataType != null) {
@@ -582,6 +611,9 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
       }
     }
     double widgetWidth = getOptionWidth(widget.message.body, simpleTextStyle());
+    if (widget.message.deleted) {
+      widgetWidth = getOptionWidth(getBroDeleteMessage(), simpleTextStyle());
+    }
     if (widget.message.clicked) {
       // If it is clicked we want to check which is larger, the body or the textMessage
       // The width is the largest of the two
@@ -598,7 +630,7 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
       TextStyle replyTextStyle = TextStyle(color: Colors.white);
       double repliedToBodyWidth = getOptionWidth(repliedToMessage.body, replyTextStyle);
       String replySenderName = "Message not available";
-      if (widget.repliedBro != null) {
+      if (widget.repliedBro != null && !repliedToMessage.deleted) {
         replySenderName = widget.repliedBro!.getFullName();
       }
       double repliedToNameWidth = getOptionWidth(replySenderName, replyTextStyle);
@@ -1055,29 +1087,53 @@ class _MessageTileState extends State<MessageTile> with SingleTickerProviderStat
     );
   }
 
+  getDeletedContent(bool clicked) {
+    return Column(
+        mainAxisAlignment: widget.myMessage ? MainAxisAlignment.end : MainAxisAlignment.start,
+        crossAxisAlignment: widget.myMessage ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+        children: [
+          clicked ? Icon(Icons.block, color: Colors.grey) : Container(),
+          clicked ? SizedBox(width: 8) : Container(),
+          Text(
+              getBroDeleteMessage(),
+              style: simpleTextStyle()
+          ),
+        ]
+    );
+  }
+
   Widget getMessageContent(double messageWidth) {
     Widget content;
     if (widget.message.clicked) {
-      if (widget.message.dataType == DataType.image.value || widget.message.dataType == DataType.gif.value) {
-        content = getImageContent();
-      } else if (widget.message.dataType == DataType.video.value) {
-        content = getVideoContent();
-      } else if (widget.message.dataType == DataType.audio.value) {
-        content = getAudioContent(messageWidth);
-      } else if (widget.message.dataType == DataType.location.value) {
-        content = getLocationContent();
-      } else if (widget.message.dataType == DataType.liveLocation.value) {
-        content = getLocationContent();
-      } else if (widget.message.dataType == DataType.liveLocationStop.value) {
-        // The location share stop content is basically a text message
-        content = getTextContent();
-      } else if (widget.message.dataType == DataType.other.value) {
-        content = getOtherContent();
+      if (widget.message.deleted) {
+        content = getDeletedContent(widget.message.clicked);
       } else {
-        content = getTextContent();
+        if (widget.message.dataType == DataType.image.value ||
+            widget.message.dataType == DataType.gif.value) {
+          content = getImageContent();
+        } else if (widget.message.dataType == DataType.video.value) {
+          content = getVideoContent();
+        } else if (widget.message.dataType == DataType.audio.value) {
+          content = getAudioContent(messageWidth);
+        } else if (widget.message.dataType == DataType.location.value) {
+          content = getLocationContent();
+        } else if (widget.message.dataType == DataType.liveLocation.value) {
+          content = getLocationContent();
+        } else if (widget.message.dataType == DataType.liveLocationStop.value) {
+          // The location share stop content is basically a text message
+          content = getTextContent();
+        } else if (widget.message.dataType == DataType.other.value) {
+          content = getOtherContent();
+        } else {
+          content = getTextContent();
+        }
       }
     } else {
-      content = getBodyContent();
+      if (widget.message.deleted) {
+        content = getDeletedContent(widget.message.clicked);
+      } else {
+        content = getBodyContent();
+      }
     }
 
     return AnimatedSize(

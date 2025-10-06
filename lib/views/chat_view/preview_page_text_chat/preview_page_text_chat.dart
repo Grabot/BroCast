@@ -25,13 +25,15 @@ import '../../camera_page/camera_page.dart';
 
 class PreviewPageTextChat extends StatefulWidget {
   final Broup chat;
-  final String shareText;
+  final String? shareText;
+  final String? shareTextBody;
   final bool url;
 
   const PreviewPageTextChat({
     Key? key,
     required this.chat,
     required this.shareText,
+    required this.shareTextBody,
     required this.url,
   }) : super(key: key);
 
@@ -78,13 +80,20 @@ class _PreviewPageTextChatState extends State<PreviewPageTextChat> {
   void initState() {
     super.initState();
 
-    if (widget.url) {
-      broMessageController.text = "📤🤝🔗";
+    if (widget.shareTextBody != null) {
+      broMessageController.text = widget.shareTextBody!;
     } else {
-      broMessageController.text = "📤🤝";
+      if (widget.url) {
+        broMessageController.text = "📤🤝🔗";
+      } else {
+        broMessageController.text = "📤🤝";
+      }
     }
-
-    captionMessageController.text = widget.shareText;
+    if (widget.shareText != null && widget.shareText != "") {
+      captionMessageController.text = widget.shareText!;
+    } else {
+      appendingCaption = false;
+    }
 
     setState(() {});
   }
@@ -103,14 +112,20 @@ class _PreviewPageTextChatState extends State<PreviewPageTextChat> {
     if (!appendingCaption) {
       focusCaptionField.requestFocus();
       if (broMessageController.text == "") {
-        if (widget.url) {
-          broMessageController.text = "📤🤝🔗";
+        if (widget.shareTextBody != null) {
+          broMessageController.text = widget.shareTextBody!;
         } else {
-          broMessageController.text = "📤🤝";
+          if (widget.url) {
+            broMessageController.text = "📤🤝🔗";
+          } else {
+            broMessageController.text = "📤🤝";
+          }
         }
       }
       if (captionMessageController.text == "") {
-        captionMessageController.text = widget.shareText;
+        if (widget.shareText != null && widget.shareText != "") {
+          captionMessageController.text = widget.shareText!;
+        }
       }
       setState(() {
         showEmojiKeyboard = false;
@@ -172,16 +187,15 @@ class _PreviewPageTextChatState extends State<PreviewPageTextChat> {
       setState(() {
         widget.chat.sendingMessage = true;
       });
-      await Storage().addMessage(mes);
-      AuthServiceSocialV15().sendMessage(widget.chat.getBroupId(), emojiMessage, messageTextMessage, null, null, null).then((messageId) {
+      AuthServiceSocialV15().sendMessage(widget.chat.getBroupId(), emojiMessage, messageTextMessage, null, null, null).then((messageId) async {
         setState(() {
           isSending = false;
         });
         if (messageId != null) {
           mes.isRead = 0;
           if (mes.messageId != messageId) {
-            Storage().updateMessageId(mes.messageId, messageId, widget.chat.getBroupId());
             mes.messageId = messageId;
+            await Storage().addMessage(mes);
           }
           setState(() {
             // Go back to the chat.
@@ -309,7 +323,7 @@ class _PreviewPageTextChatState extends State<PreviewPageTextChat> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(
-                Icons.share,
+                widget.shareTextBody != null ? Icons.forward : Icons.share,
                 size: 100,
                 color: Colors.grey,
               ),

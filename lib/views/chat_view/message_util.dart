@@ -152,6 +152,12 @@ Future<bool> getMessages(int page, Broup chat, Storage storage) async {
             if (messageDb.repliedTo != null) {
               serverMessage.repliedTo = messageDb.repliedTo;
             }
+            if (messageDb.deleted) {
+              serverMessage.deleted = messageDb.deleted;
+            }
+            if (messageDb.deletedByBroId != null) {
+              serverMessage.deletedByBroId = messageDb.deletedByBroId;
+            }
             serverMessage.emojiReactions = messageDb.emojiReactions;
             storage.updateMessage(serverMessage);
           }
@@ -165,6 +171,7 @@ Future<bool> getMessages(int page, Broup chat, Storage storage) async {
             // We also remove it from the `messageDB` list because it's not an existing message.
             // This was just a placeholder, so we want to replace it with the serverMessage
             messagesDB.removeWhere((element) => element.messageId == newMessage.messageId);
+            storage.updateMessage(newMessage);
           } else {
             storage.addMessage(newMessage);
           }

@@ -61,8 +61,6 @@ class AuthServiceSocialV15 {
       formMap["replied_to_message_id"] = repliedToMessageId;
     }
 
-    print("formMap: $formMap");
-
     return await AuthApiV1_5().dio.post(
       endPoint,
       options: Options(
@@ -88,7 +86,6 @@ class AuthServiceSocialV15 {
         }
       }
     }).catchError((e) {
-      print("Error while sending message: $e");
       if (e is DioException) {
         showToastMessage("Dio error while sending sending message: ${e.message}");
       } else {
@@ -539,4 +536,46 @@ class AuthServiceSocialV15 {
       }
     }
   }
+
+  Future<bool> deleteMessageEverybody(int broupId, int messageId) async {
+    String endPoint = "message/delete";
+    var response = await AuthApiV1_5().dio.post(endPoint,
+        options: Options(headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+        }),
+        data: jsonEncode(<String, dynamic>{
+          "broup_id": broupId,
+          "delete_message_id": messageId,
+        }
+      )
+    );
+
+    Map<String, dynamic> json = response.data;
+    if (!json.containsKey("result")) {
+      return false;
+    } else {
+      return json["result"];
+    }
+  }
+
+  Future<bool> receivedDeletionMessage(int broupId) async {
+    String endPoint = "delete/message/received";
+
+    var response = await AuthApiV1_5().dio.post(endPoint,
+        options: Options(headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+        }),
+        data: jsonEncode(<String, dynamic>{
+          "broup_id": broupId,
+        })
+    );
+
+    Map<String, dynamic> json = response.data;
+    if (!json.containsKey("result")) {
+      return false;
+    } else {
+      return json["result"];
+    }
+  }
+
 }

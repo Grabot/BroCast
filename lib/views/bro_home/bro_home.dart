@@ -133,7 +133,13 @@ class _BrocastHomeState extends State<BrocastHome> {
       // Set all bros to be shown, except when the bro is searching.
       if (!searchMode) {
         shownBros = me!.broups.where((broup) => !broup.deleted).toList();
-        shownBros.sort((a, b) => b.getLastActivity().compareTo(a.getLastActivity()));
+        shownBros.sort((a, b) {
+          int unreadCompare = b.unreadMessages.compareTo(a.unreadMessages);
+          if (unreadCompare != 0) {
+            return unreadCompare;
+          }
+          return b.getLastActivity().compareTo(a.getLastActivity());
+        });
       }
       // Join Broups if not already joined.
       for (Broup broup in me!.broups) {
@@ -199,7 +205,13 @@ class _BrocastHomeState extends State<BrocastHome> {
         // the broup objects from `me.broups` where the deleted is false.
         shownBros = me!.broups.where((group) => !group.deleted).toList();
       }
-      shownBros.sort((a, b) => b.getLastActivity().compareTo(a.getLastActivity()));
+      shownBros.sort((a, b) {
+        int unreadCompare = b.unreadMessages.compareTo(a.unreadMessages);
+        if (unreadCompare != 0) {
+          return unreadCompare;
+        }
+        return b.getLastActivity().compareTo(a.getLastActivity());
+      });
     }
     setState(() {});
   }
