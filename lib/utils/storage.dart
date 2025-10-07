@@ -132,28 +132,10 @@ class Storage {
       createTableLocationSharing(db);
     }
     if ((oldVersion <= 7) && newVersion >= 8) {
-      // We again re create the messages table because we have a new constraint that we want to add
-      List<Map<String, dynamic>> maps = await db.query(
-        'Message',
-      );
-      List<Map<String, dynamic>> newMessageMaps = [];
-      if (maps.isNotEmpty) {
-        for (Map<String, dynamic> messageMap in maps) {
-          Map<String, dynamic> newMap = Map<String, dynamic>.from(messageMap);
-          // There is a new column, we add it and set it to false.
-          newMap["deleted"] = 0;
-          newMap["deletedByBroId"] = null;
-          newMessageMaps.add(newMap);
-        }
-      }
-      await db.execute('DROP TABLE Message');
-      await createTableMessage(db);
-      if (newMessageMaps.isNotEmpty) {
-        //  Insert the data from the old table into the new table
-        for (Map<String, dynamic> message in newMessageMaps) {
-          await db.insert('Message', message);
-        }
-      }
+      print("quick test!");
+      db.execute('ALTER TABLE Message ADD deleted INTEGER DEFAULT 0');
+      db.execute('ALTER TABLE Message ADD deletedByBroId INTEGER');
+      print("quick test!2");
     }
   }
 
@@ -211,7 +193,7 @@ class Storage {
             emojiReactions TEXT,
             deleted INTEGER,
             deletedByBroId INTEGER,
-            UNIQUE(messageId, senderId, broupId, info) ON CONFLICT REPLACE
+            UNIQUE(messageId, broupId, info) ON CONFLICT REPLACE
           );
           ''');
   }

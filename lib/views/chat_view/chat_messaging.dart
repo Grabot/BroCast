@@ -691,7 +691,12 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
     deleteMessage.deleteMessageLocally(me.id);
     storage.updateMessage(deleteMessage).then((del) {
       setState(() {
-
+        // We have updated the message, we want to reflect that with the message in storage
+        // So we remove it from the storage list and add it the way we changed it
+        widget.chat.messages.removeWhere((element) => element.messageId == deleteMessage.messageId);
+        widget.chat.messages.add(deleteMessage);
+        widget.chat.messages.sort((b, a) => a.getTimeStamp().compareTo(b.getTimeStamp()));
+        print("but");
       });
     });
   }
@@ -707,7 +712,10 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
       deleteMessage.deleteMessageLocally(me.id);
       storage.updateMessage(deleteMessage).then((del) {
         setState(() {
-
+          widget.chat.messages.removeWhere((element) => element.messageId == deleteMessage.messageId);
+          widget.chat.messages.add(deleteMessage);
+          widget.chat.messages.sort((b, a) => a.getTimeStamp().compareTo(b.getTimeStamp()));
+          print("wqut");
         });
       });
     });

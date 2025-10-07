@@ -490,7 +490,6 @@ class SocketServices extends ChangeNotifier {
         messageReceived(data);
         return;
       }
-      broup.newMessages = true;
       Message? storageMessage;
       storageMessage = await storage.fetchMessageWithId(message.broupId, message.messageId);
       // We update the newly created message with data from what we retrieved locally.
@@ -703,8 +702,7 @@ class SocketServices extends ChangeNotifier {
       int broupId = data["broup_id"];
       Storage().fetchMessageWithId(broupId, messageId).then((deleteMessage) {
         if (deleteMessage != null) {
-          deleteMessage.deleted = true;
-          deleteMessage.deletedByBroId = deletedByBroId;
+          deleteMessage.deleteMessageLocally(deletedByBroId);
           Storage().updateMessage(deleteMessage);
           Me? me = Settings().getMe();
           if (me != null) {

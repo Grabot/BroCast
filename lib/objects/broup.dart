@@ -370,8 +370,7 @@ class Broup {
         if (deleteMessagesDetails.containsKey(deletionMessage.messageId.toString())) {
           int broIdThatDeletedMessage = deleteMessagesDetails[deletionMessage.messageId.toString()];
           // update the message to be deleted
-          deletionMessage.deleted = true;
-          deletionMessage.deletedByBroId = broIdThatDeletedMessage;
+          deletionMessage.deleteMessageLocally(broIdThatDeletedMessage);
           storage.updateMessage(deletionMessage);
           if (MessagingChangeNotifier().isOpen && MessagingChangeNotifier().broupId == broupId) {
             Me? me = Settings().getMe();
