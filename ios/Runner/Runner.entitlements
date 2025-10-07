@@ -6,6 +6,7 @@
 	<string>development</string>
 	<key>com.apple.security.application-groups</key>
 	<array>
+		<string>group.awnfcm.brocast.nl</string>
 		<string>group.nl.brocast</string>
 	</array>
 </dict>
