@@ -430,10 +430,7 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
               showToastMessage("Storage permission denied");
               return;
             }
-            final audioDir = Directory('$externalStoragePath/$albumName');
-            if (!await audioDir.exists()) {
-              await audioDir.create(recursive: true);
-            }
+            final audioDir = Directory('$externalStoragePath');
             final audioPath = '${audioDir.path}/$fileName.m4a';
             final file = File(dataLoc);
             final newAudioFile = File(audioPath);
@@ -448,10 +445,7 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
               showToastMessage("Storage permission denied");
               return;
             }
-            final docDir = Directory('$externalStoragePath/$albumName');
-            if (!await docDir.exists()) {
-              await docDir.create(recursive: true);
-            }
+            final docDir = Directory('$externalStoragePath');
             String docFileName = message.data!.split("/").last;
             final docPath = '${docDir.path}/$docFileName';
             final file = File(dataLoc);
