@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>AwnAppGroupName</key>
-	<string>group.awnfcm.brocast.nl</string>
+	<string>group.nl.brocast</string>
 	<key>NSExtension</key>
 	<dict>
 		<key>NSExtensionPointIdentifier</key>
