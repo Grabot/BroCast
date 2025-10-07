@@ -4,8 +4,6 @@
 <dict>
 	<key>AwnAppGroupName</key>
 	<string>group.awnfcm.brocast.nl</string>
-	<key>AppGroupId</key>
-	<string>group.nl.brocast</string> 
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
@@ -33,7 +31,6 @@
 			<array>
 				<string>com.googleusercontent.apps.886075854015-7k8non2j5ohnbv2tvob047eomn8onj6n</string>
                 <string>nl.brocast</string>
-				<string>SharingMedia-$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 			</array>
 		</dict>
 	</array>
