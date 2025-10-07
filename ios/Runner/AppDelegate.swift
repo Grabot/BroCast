@@ -4,6 +4,7 @@ import GoogleMaps
 import awesome_notifications
 import awesome_notifications_fcm
 import flutter_secure_storage
+import flutter_sharing_intent
 
 @main
 @objc class AppDelegate: FlutterAppDelegate {
@@ -28,9 +29,13 @@ import flutter_secure_storage
       FlutterSecureStoragePlugin.register(
         with: registry.registrar(forPlugin: "io.flutter.plugins.fluttersecurestorage.FlutterSecureStoragePlugin")!)
     }
-    // TODO: Add from config?
-    GMSServices.provideAPIKey("<My api key>")
 
-    return super.application(application, didFinishLaunchingWithOptions: launchOptions)
+    let sharingIntent = SwiftFlutterSharingIntentPlugin.instance
+      
+      if sharingIntent.hasSameSchemePrefix(url: url) {
+        return sharingIntent.application(app, open: url, options: options)
+      }
+      
+      return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
 }
