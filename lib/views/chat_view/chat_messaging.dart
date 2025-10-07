@@ -696,7 +696,6 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
         widget.chat.messages.removeWhere((element) => element.messageId == deleteMessage.messageId);
         widget.chat.messages.add(deleteMessage);
         widget.chat.messages.sort((b, a) => a.getTimeStamp().compareTo(b.getTimeStamp()));
-        print("but");
       });
     });
   }
@@ -715,7 +714,6 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
           widget.chat.messages.removeWhere((element) => element.messageId == deleteMessage.messageId);
           widget.chat.messages.add(deleteMessage);
           widget.chat.messages.sort((b, a) => a.getTimeStamp().compareTo(b.getTimeStamp()));
-          print("wqut");
         });
       });
     });
@@ -1334,7 +1332,11 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
           // The message was not sent, we remove it from the list and the database
           storage.deleteMessage(mes.messageId, widget.chat.broupId);
           showToastMessage("there was an issue sending the message");
-          for (int i = 0; i < 5; i++) {
+          int topNumber = 5;
+          if (widget.chat.messages.length <= 5) {
+            topNumber = widget.chat.messages.length - 1;
+          }
+          for (int i = 0; i < topNumber; i++) {
             // There might be some messages retrieved in between this period.
             // While this is unlikely, check for the correct message to remove.
             if (widget.chat.messages[i] == mes) {

@@ -890,7 +890,11 @@ class Broup {
         // We added it immediately as a placeholder.
         // When we get it from the server we add it for real and remove the placeholder
         // Do a few simple extra checks, like body comparison
-        for (int i = 0; i < 5; i++) {
+        int topNumber = 5;
+        if (messages.length <= 5) {
+          topNumber = messages.length - 1;
+        }
+        for (int i = 0; i < topNumber; i++) {
           // There might be some messages retrieved in between this period.
           // While this is unlikely, check for the correct message to remove.
           if (messages[i] == message) {

@@ -132,10 +132,8 @@ class Storage {
       createTableLocationSharing(db);
     }
     if ((oldVersion <= 7) && newVersion >= 8) {
-      print("quick test!");
       db.execute('ALTER TABLE Message ADD deleted INTEGER DEFAULT 0');
       db.execute('ALTER TABLE Message ADD deletedByBroId INTEGER');
-      print("quick test!2");
     }
   }
 

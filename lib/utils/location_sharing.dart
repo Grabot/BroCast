@@ -571,7 +571,11 @@ class LocationSharing {
       // The message was not sent, we remove it from the list and the database
       storage.deleteMessage(mes.messageId, currentBroup.broupId);
       showToastMessage("there was an issue sending the message");
-      for (int i = 0; i < 5; i++) {
+      int topNumber = 5;
+      if (currentBroup.messages.length <= 5) {
+        topNumber = currentBroup.messages.length - 1;
+      }
+      for (int i = 0; i < topNumber; i++) {
         // There might be some messages retrieved in between this period.
         // While this is unlikely, check for the correct message to remove.
         if (currentBroup.messages[i] == mes) {
