@@ -1319,8 +1319,8 @@ class _ChatMessagingState extends State<ChatMessaging> with SingleTickerProvider
           mes.isRead = 0;
           if (mes.messageId != messageId) {
             mes.messageId = messageId;
-            await storage.addMessage(mes);
           }
+          await storage.addMessage(mes);
           // message send
         } else {
           // The message was not sent, we remove it from the list and the database

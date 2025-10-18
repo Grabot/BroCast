@@ -554,18 +554,19 @@ class LocationSharing {
 
     currentBroup.sendingMessage = true;
 
-    await storage.addMessage(mes);
     // Send the message. The data is always null here because it's only send via the preview page.
     int? messageId = await AuthServiceSocialV15().sendMessageLocation(currentBroup.getBroupId(), message, textMessage, null, DataType.liveLocationStop.value, liveLocationMessage.messageId);
+
+
     // isLoadingMessages = false;
     // We predict what the messageId will be but in the end it is determined by the server.
     // If it's different we want to update it.
     if (messageId != null) {
       mes.isRead = 0;
       if (mes.messageId != messageId) {
-        await storage.updateMessageId(mes.messageId, messageId, currentBroup.broupId);
         mes.messageId = messageId;
       }
+      await storage.addMessage(mes);
       // message send
     } else {
       // The message was not sent, we remove it from the list and the database

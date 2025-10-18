@@ -170,18 +170,17 @@ class _RecordViewChatState extends State<RecordViewChat> {
       setState(() {
         widget.chat!.sendingMessage = true;
       });
-      await Storage().addMessage(mes);
 
-      AuthServiceSocialV15().sendMessage(widget.chat!.getBroupId(), message, messageTextMessage, mes.data, DataType.audio.value, null).then((messageId) {
+      AuthServiceSocialV15().sendMessage(widget.chat!.getBroupId(), message, messageTextMessage, mes.data, DataType.audio.value, null).then((messageId) async {
         setState(() {
           isSending = false; // Set sending state to false
         });
         if (messageId != null) {
           mes.isRead = 0;
           if (mes.messageId != messageId) {
-            Storage().updateMessageId(mes.messageId, messageId, widget.chat!.getBroupId());
             mes.messageId = messageId;
           }
+          await Storage().addMessage(mes);
           setState(() {
             // Go back to the chat.
             navigateToChat(context, settings, widget.chat!);

@@ -549,18 +549,17 @@ class _LocationViewChatState extends State<LocationViewChat> {
       setState(() {
         widget.chat.sendingMessage = true;
       });
-      await Storage().addMessage(mes);
 
-      AuthServiceSocialV15().sendMessageLocation(widget.chat.getBroupId(), message, textMessage, messageLoc, dataType, null).then((messageId) {
+      AuthServiceSocialV15().sendMessageLocation(widget.chat.getBroupId(), message, textMessage, messageLoc, dataType, null).then((messageId) async {
         setState(() {
           isSending = false;
         });
         if (messageId != null) {
           mes.isRead = 0;
           if (mes.messageId != messageId) {
-            Storage().updateMessageId(mes.messageId, messageId, widget.chat.getBroupId());
             mes.messageId = messageId;
           }
+          await Storage().addMessage(mes);
           // Message send correctly start live location if data type is live type
           if (dataType == DataType.liveLocation.value && endTime != null) {
             Me? me = settings.getMe();

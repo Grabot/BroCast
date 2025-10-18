@@ -243,8 +243,8 @@ class _PreviewPageChatState extends State<PreviewPageChat> {
           mes.isRead = 0;
           if (mes.messageId != messageId) {
             mes.messageId = messageId;
-            await Storage().addMessage(mes);
           }
+          await Storage().addMessage(mes);
           setState(() {
             // Go back to the chat.
             navigateToChat(context, settings, widget.chat);
@@ -273,8 +273,8 @@ class _PreviewPageChatState extends State<PreviewPageChat> {
           mes.isRead = 0;
           if (mes.messageId != messageId) {
             mes.messageId = messageId;
-            await Storage().addMessage(mes);
           }
+          await Storage().addMessage(mes);
           setState(() {
             // Go back to the chat.
             navigateToChat(context, settings, widget.chat);
@@ -350,8 +350,8 @@ class _PreviewPageChatState extends State<PreviewPageChat> {
             mes.isRead = 0;
             if (mes.messageId != messageId) {
               mes.messageId = messageId;
-              await Storage().addMessage(mes);
             }
+            await Storage().addMessage(mes);
             setState(() {
               // Go back to the chat.
               navigateToChat(context, settings, widget.chat);
